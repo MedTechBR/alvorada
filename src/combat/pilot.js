@@ -11,7 +11,6 @@ const CSS = `
 #moves .mv .cdn { position:absolute; left:0; right:0; top:50%; transform:translateY(-50%); text-align:center; font:900 18px system-ui; color:#fff; text-shadow:0 2px 0 #0008; pointer-events:none; }
 #moves .mv.ready { animation: mvready .35s ease-out; }
 @keyframes mvready { 0% { box-shadow:0 0 0 0 #ffe27a; transform:scale(1.08); } 100% { box-shadow:0 0 0 10px #ffe27a00; transform:scale(1); } }
-.tb.move { background-image: conic-gradient(rgba(20,30,24,.62) calc(var(--cd,0) * 1turn), transparent 0); }
 .tb.move.ready { animation: mvready .35s ease-out; }
 #t-alt { right: 226px; bottom: 50px; } #t-jump { right: 176px; bottom: 214px; }
 #t-alt, #t-jump { display: none; } body.mode-pokemon #t-alt, body.mode-pokemon #t-jump { display: block; }

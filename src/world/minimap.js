@@ -21,18 +21,24 @@ export class Minimap {
     try { this.rotate = localStorage.getItem('alvorada.minimapa.gira') === '1'; } catch { this.rotate = false; }
     this.angle = 0; this.t = 0;
     this.base = this.#bake();
+    // posição e tamanho no CSS (src/ui/style.css, #minimapa): no celular deitado fica ao lado do botão do menu
     const box = document.createElement('div'); box.id = 'minimapa';
-    const size = IS_TOUCH ? 104 : 140;
-    // canto superior direito, logo abaixo do botão do menu
-    box.style.cssText = `position:fixed;top:calc(var(--g, 12px) + var(--st, 0px) + 52px);right:calc(var(--g, 12px) + var(--sr, 0px));width:${size}px;height:${size + 18}px;z-index:15;pointer-events:auto;cursor:pointer;user-select:none`;
     const cv = document.createElement('canvas'); const dpr = Math.min(2, devicePixelRatio || 1);
-    cv.width = size * dpr; cv.height = size * dpr; cv.style.cssText = `width:${size}px;height:${size}px;border-radius:50%;border:3px solid #3a4a3e;box-shadow:0 3px 0 rgba(0,0,0,.25);background:#1b2a1e;display:block;image-rendering:pixelated`;
-    const lab = document.createElement('div'); lab.style.cssText = 'text-align:center;font:800 11px system-ui;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.6);margin-top:2px';
+    const lab = document.createElement('div'); lab.className = 'mm-lab';
     box.append(cv, lab); document.body.appendChild(box);
-    { const st = document.createElement('style'); st.textContent = `#toasts{top:calc(var(--g, 12px) + var(--st, 0px) + ${52 + size + 28}px)!important}`; document.head.appendChild(st); }
+    this.cv = cv; this.dpr = dpr;
+    this.#fit(); addEventListener('resize', () => this.#fit());
     box.addEventListener('pointerdown', (e) => { e.stopPropagation(); this.toggle(); });
     addEventListener('keydown', (e) => { if (e.code === 'KeyN') this.toggle(); });
-    this.cv = cv; this.ctx = cv.getContext('2d'); this.label = lab; this.dpr = dpr; this.size = size;
+    this.ctx = cv.getContext('2d'); this.label = lab;
+  }
+  #fit() {
+    const size = IS_TOUCH ? (innerHeight < 500 ? 84 : 104) : (innerHeight < 640 ? 112 : 140);
+    if (size === this.size) return;
+    this.size = size;
+    this.cv.width = this.cv.height = Math.round(size * this.dpr);
+    this.cv.style.width = this.cv.style.height = size + 'px';
+    this.t = 0;
   }
   toggle() { this.rotate = !this.rotate; try { localStorage.setItem('alvorada.minimapa.gira', this.rotate ? '1' : '0'); } catch {} this.g.toast?.(this.rotate ? 'Minimapa: gira com você' : 'Minimapa: norte para cima'); }
 
@@ -105,7 +111,8 @@ export class Minimap {
       ctx.fillStyle = '#fff'; ctx.font = `800 ${8 * this.dpr}px system-ui`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('N', nx, ny + 0.5);
     }
     const h = Math.floor(this.life.hour), mi = Math.floor((this.life.hour % 1) * 60 / 10) * 10;
-    this.label.textContent = `${String(h).padStart(2, '0')}:${String(mi).padStart(2, '0')} · ${this.rotate ? 'gira' : 'norte'}`;
+    const lt = `${String(h).padStart(2, '0')}:${String(mi).padStart(2, '0')}${this.rotate ? ' · gira' : ''}`;
+    if (this.label.textContent !== lt) this.label.textContent = lt;
   }
 
   // Mapa completo da região (para o menu): fog nos setores não visitados, nomes das áreas e o jogador

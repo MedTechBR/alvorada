@@ -133,7 +133,8 @@
 .gm-mapbox { flex: 1; min-width: 0; position: relative; display: flex; align-items: center; justify-content: center; padding: 6px; }
 .gm-mapcv { border-radius: 10px; display: block; box-shadow: 0 0 0 2px #36426b; }
 .gm-mapload { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border: 2px solid #36426b; border-radius: 999px; padding: 8px 18px; }
-.gm-areas { width: 260px; flex: none; padding: 8px; display: flex; flex-direction: column; }
+.gm-areas { width: 260px; flex: none; padding: 8px; display: flex; flex-direction: column; min-height: 0; }
+.gm-arealist { flex: 1; min-height: 0; }
 .gm-legend { margin-top: auto; padding: 12px 8px 4px; display: flex; flex-direction: column; gap: 5px; font-size: 13px; color: var(--ink-soft); }
 .gm-legend i { display: inline-block; width: 12px; height: 12px; margin-right: 8px; vertical-align: -1px; }
 .lg-you { background: #ff4757; border-radius: 50%; box-shadow: 0 0 0 2px #fff, 0 0 0 3px #ff4757; }
@@ -263,7 +264,7 @@
 .xpbar { height: 4px; background: #e3e7f2; border-radius: 99px; overflow: hidden; margin-top: 4px; }
 .xpbar i { display: block; height: 100%; background: #4aa3ff; }
 .status { font-size: 10px; padding: 1px 6px; border-radius: 6px; color: #fff; }
-.st-par { background: #d4b000; } .st-slp { background: #7d7d9c; } .st-psn { background: #a040a0; } .st-brn { background: #e0662c; }
+.st-par { background: #d4b000; } .st-slp { background: #7d7d9c; } .st-psn { background: #a040a0; } .st-brn { background: #e0662c; } .st-frz { background: #58b8e0; }
 .gm-sumleft .gm-hp { width: 100%; }
 .gm-sumleft .gm-hpt { width: 100%; }
 .gm-stats th { width: auto; }
@@ -271,3 +272,15 @@
 .gm-stats td.iv { width: 46px; padding: 7px 4px; }
 .gm-badge.got { color: #3a2a00; text-shadow: 0 1px 0 rgba(255,255,255,.6); }
 .gm-tc-av { width: 96px; height: 128px; image-rendering: pixelated; display: block; }
+
+/* ---- acabamento: cartão rolável e compacto em tela baixa; corpo das telas sempre rolável ---- */
+.gm-body.gm-cardscr { overflow-y: auto; touch-action: pan-y; justify-content: flex-start; }
+.gm-cardscr .gm-tcard { margin: auto; flex: none; }
+@media (max-height: 520px) {
+  .gm-badges { grid-template-columns: repeat(8, minmax(0, 42px)); justify-content: space-between; gap: 4px; }
+  .gm-tc-badges { padding: 2px 12px 8px; }
+  .gm-tcard .gm-tbl th, .gm-tcard .gm-tbl td { padding: 2px 8px 2px 0; }
+  .gm-tc-av { width: 66px; height: 88px; }
+  .gm-optnote { padding: 6px 14px; font-size: 12px; }
+  .gm-optlist { max-height: 80%; }
+}

@@ -21,6 +21,9 @@ export class UI {
     g.flags ??= {}; g.money ??= 0;
     this.state = 'title';
     if (IS_TOUCH) document.body.classList.add('touch');
+    // telas grandes do computador: a interface cresce junto (zoom do CSS em #ui, #hud, menu e minimapa)
+    const fitK = () => { const k = IS_TOUCH ? 1 : Math.max(1, Math.min(1.75, innerWidth / 1280, innerHeight / 720)); document.documentElement.style.setProperty('--k', k.toFixed(3)); this.k = k; };
+    fitK(); addEventListener('resize', fitK);
     this.hud = new Hud(g, this);
     this.dialog = new Dialog(this);
     this.menu = new GameMenu(this);

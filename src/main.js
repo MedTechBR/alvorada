@@ -79,7 +79,8 @@ class Game {
 
   #resize() {
     // escala inteira para o pixel art ficar nítido; o jogador ajusta com roda, pinça ou + e −
-    const auto = Math.max(2, Math.round(innerHeight / (T * (IS_TOUCH ? 13 : 18))));
+    // (em pé, a largura manda: sem isso o celular em retrato mostraria só 6 blocos de largura)
+    const auto = Math.max(2, Math.round(Math.min(innerHeight, innerWidth * 0.75) / (T * (IS_TOUCH ? 13 : 18))));
     let pref = null; try { pref = +localStorage.getItem('alvorada.zoom') || null; } catch (e) { /* sem armazenamento */ }
     this.zoomAuto = auto;
     this.zoom = Math.max(1, Math.min(6, pref ?? auto));
