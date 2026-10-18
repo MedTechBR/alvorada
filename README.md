@@ -126,15 +126,19 @@ abre **Desafiar, Trocar e Acenar**; o outro aceita ou recusa.
 Interface e história (ramo `interface`):
 - `src/ui/` título com contas locais e criador de personagem, HUD, diálogo clássico, menu (Pokédex, equipe, mochila, mapa, cartão, opções, salvar, PC).
 - `src/net/auth.js` contas locais (hash PBKDF2) e código de transferência do save; ponto de entrada para um servidor futuro.
-- `src/story/` capítulo 1 (Prof. Jatobá, Téo, treinadores, Cidade Campina, Líder Tomé). Posições por pontos nomeados: o mapa pode definir `map.spots` (ver `src/story/spots.js`).
+- **Mundo aberto** (ramo `mundo-aberto`, `docs/jornadas.md`): sem capítulos nem bloqueios de história. Cada cidade
+  tem a sua jornada (começa quando o jogador chega lá, em qualquer ordem) e a trama principal (`src/story/script/trama.js`)
+  avança por número de insígnias e lugares-chave. Ginásios com nível fixo pelo lugar (Jonas ~11, Marina ~15, Tomé ~16,
+  Zélia ~20, Lia ~21; placa na entrada). Montarias liberadas por capacidade. Diário: `game.jornadas.lista()`.
+- `src/story/` abertura e Cidade Campina (Prof. Jatobá, Téo, treinadores, Líder Tomé). Posições por pontos nomeados: o mapa pode definir `map.spots` (ver `src/story/spots.js`).
 - **Motor de roteiro** (`src/story/roteiro.js`): executa os capítulos escritos em dados (`src/story/script/capNN.js`,
-  formato na seção 8 de `docs/historia-completa.md`). O capítulo 1 segue no `story.js`; quando ele termina
-  (`flags.ch1Done`), o motor toca do 2 ao 6 (`JOGAVEIS` em roteiro.js). Gatilhos de lugar, zona, fala, treinador
+  formato na seção 8 de `docs/historia-completa.md`). A abertura segue no `story.js`; depois dos presentes do professor
+  (`flags.balls`), o motor toca as jornadas das cidades (`JOGAVEIS` em roteiro.js) e a trama, sem ordem entre elas. Gatilhos de lugar, zona, fala, treinador
   que avista, vitória, derrota, interrupção de batalha e flag; falas com escolhas; batalhas no mapa (`battle.js`,
   com chefe Alfa sem treinador); insígnia, MT, itens, montaria (`game.unlockMount`, ou `map.setMount` se faltar),
   hora do dia e objetivo do HUD com seta. Perdendo uma luta da história, volta ao último Centro Pokémon e a cena
   pode ser tentada de novo. Quem aparece no mapa: `src/story/elenco.js`; itens-chave: `src/story/itens.js`.
-  Para jogar um capítulo novo: elenco + pontos no mapa + o id em `JOGAVEIS`.
+  Para jogar uma cidade nova: elenco + pontos no mapa + o id em `JOGAVEIS` + a jornada em `src/story/jornadas.js`.
   Extras dos capítulos 4 a 6: batalha em dupla (`dupla: 'teo'`: o Pokémon do Téo luta ao seu lado e não desmaia),
   `depois.pokemon` (Pokémon de presente), `objetivo.porSala` (seta por andar em prédios de vários andares), elenco com
   `segue` (acompanha o jogador), `sempre` (aparece antes do capítulo 2), `loja` (Mercado no esquema de `world/lojas.js`),
@@ -157,7 +161,7 @@ Interface e história (ramo `interface`):
   o Galpão de Barcos, ginásio da Marina), Rota 4 (Rio Lúmen e Restinga), Cidade Coral com o Farol (3 andares), Praia dos
   Corais, Rota 5 (Brejo das Lamparinas), Vila Lamparina com o Cemitério e o Casarão das Velas, Rota 6 (Ferrovia da
   Aurora), Cidade Aurora com a Torre e a Mina Aurora (4 níveis), com interiores. Uma falésia separa os campos da praia:
-  a costa se alcança de Lapras pelo rio (ou pela escadaria do Mirante depois do capítulo 4). O resto está esboçado.
+  a costa se alcança a pé pela escadaria do Mirante (ao sul da vila) ou de montaria que nade, pelo rio. O resto está esboçado.
 - **Arte:** blocos e objetos do Tuxemon (CC BY-SA 4.0, `assets/CREDITOS.md`) + prédios, árvores e móveis desenhados por
   código (`src/world/art.js`, `buildings.js`). Bordas do chão por compositor (`ground.js`).
 - **Código:** `map.js` (GameMap: setores de 16x16 montados sob demanda, colisão, mato alto, `setTile`, `resolve`,
@@ -183,7 +187,7 @@ chama ou dispensa a montaria conforme o terreno; **segurar X** levanta voo. No m
 | `voar` | Corviknight (823) | segurar X | voa por cima de tudo (sem colisão, portas desligadas), sombra no chão, câmera e minimapa afastam; X pousa no lugar livre mais perto (na água vira Lapras) |
 | `mergulhar` | Mantine (226) | X navegando sobre um redemoinho escuro | mostra o fundo (areia, pedras, algas, luz da superfície); X volta à superfície |
 
-- **Desbloqueio:** flags `mounts.<tipo>` (ou `'mounts.<tipo>'`). `game.unlockMount('mudbray' | 'correr' | ...)` grava a flag e mostra o aviso
+- **Desbloqueio por capacidade:** o modo libera assim que o jogador tem (equipe ou PC) um Pokémon que sirva para ele; as montarias da história (Mudbray do professor, Lapras da Marina, Mantine do Seu Nestor) usam as flags `mounts.<tipo>` (ou `'mounts.<tipo>'`). `game.unlockMount('mudbray' | 'correr' | ...)` grava a flag e mostra o aviso
   "Nova montaria"; flags ligadas por fora também ganham o aviso (uma vez). Com `?teste=1` todas ficam liberadas.
 - **Redemoinhos:** água funda (`W`) cercada de água funda, numa grade de 14 blocos, e os pontos do mapa `mergulho_*` / `redemoinho_*`.
 - **Q montado:** desce primeiro (no voo, pousa) e depois joga a Poké Bola do Pokémon.
