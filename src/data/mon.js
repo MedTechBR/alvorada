@@ -51,6 +51,7 @@ export class Mon {
     this.ball = opts.ball ?? 'pokeBall';
     this.metLevel = opts.metLevel ?? this.level;
     this.nick = opts.nick ?? null;
+    this.ot = opts.ot ?? null; // treinador original (Pokémon de troca); null = o jogador
     this.xp = opts.xp ?? expForLevel(sp.growth, this.level);
     this.moves = opts.moves ?? Mon.defaultMoves(dex, this.level, this.form);
     this.status = opts.status ?? null; // par | slp | psn | tox | brn | frz
@@ -189,7 +190,7 @@ export class Mon {
   toJSON() {
     const o = { v: SAVE_VERSION, dex: this.dex, level: this.level, ivs: this.ivs, evs: this.evs, nature: this.nature,
       ability: this.ability, gender: this.gender, shiny: this.shiny, friendship: this.friendship, item: this.item,
-      ball: this.ball, metLevel: this.metLevel, nick: this.nick, xp: this.xp, moves: this.moves, status: this.status,
+      ball: this.ball, metLevel: this.metLevel, nick: this.nick, ...(this.ot ? { ot: this.ot } : {}), xp: this.xp, moves: this.moves, status: this.status,
       hp: this.hp, uid: this.uid };
     if (this.form) o.form = this.form; // só quando existe: o save de quem não tem forma fica igual ao antigo
     return o;

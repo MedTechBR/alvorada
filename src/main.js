@@ -21,6 +21,7 @@ import { Story } from './story/story.js';
 import { evolutionScene } from './ui/evolucao.js';
 import { dexMark } from './ui/menu.js';
 import { NIGHT_ENCOUNTERS } from './data/species.js';
+import { BIOMAS_PADRAO, BIOMAS_NOITE } from './data/habitats-biomas.js'; // biomas novos do mundo ampliado (gerado)
 import { ITEM_INFO, itemInfo, itemName } from './data/items.js';
 import { rollShakes } from './mechanics/capture.js';
 import { setAmbiente, isNight as nightNow } from './mechanics/ambiente.js';
@@ -237,9 +238,9 @@ class Game {
       const near = zone ? this.map.areas.find((a) => a.encounters && a.name === zone.name) : this.#nearestEncounters(x, y); // pedaço do esboço com o mesmo nome, ou área vizinha
       if (near) { own = near.encounters; zone = near; }
     }
-    const day = own ?? BIOME_ENCOUNTERS[biome] ?? BIOME_ENCOUNTERS.campo;
+    const day = own ?? BIOME_ENCOUNTERS[biome] ?? BIOMAS_PADRAO[biome] ?? BIOME_ENCOUNTERS.campo;
     if (!night) return day;
-    const nt = zone?.night ?? NIGHT_ENCOUNTERS[biome];
+    const nt = zone?.night ?? NIGHT_ENCOUNTERS[biome] ?? BIOMAS_NOITE[biome];
     if (!nt?.length) return day;
     if (!own || zone?.night) return own && zone?.night ? zone.night : nt;
     const lo = Math.min(...own.map((e) => e[1])), hi = Math.max(...own.map((e) => e[2]));
@@ -277,6 +278,7 @@ class Game {
         lead.mon.gainEvs(e.mon.sp.evs); lead.mon.addFriendship(1);
         this.giveXp(lead.mon, e.mon.xpYield(false, lead.mon) * (e.isAlpha ? 2 : 1)); // XP escalonada (Gen 7+), EVs e amizade; alfa vale o dobro
         if (e.isAlpha) this.#alphaDrop(e);
+        this.missoes?.evento('derrota', { mon: e.mon, alfa: !!e.isAlpha, ent: e });
       }
       this.later(1.1, () => this.removeEntity(e));
     } else {
@@ -420,6 +422,7 @@ class Game {
         if (bi?.onCatch === 'heal') m.heal();
         if (bi?.onCatch === 'friend') m.friendship = Math.max(m.friendship, 150);
         const novo = dexMark(this, m.dex, 2);
+        this.missoes?.evento('captura', { mon: m, ent: w });
         this.fx.number(b.s.x, b.s.y - 18, 'Capturado!', 0xffe27a, true, 'banner');
         this.fx.emit(b.s.x, b.s.y - 4, { tex: 'star', color: 0xffe27a, n: 8, speed: 70, life: 0.6, spin: 6 });
         if (this.party.length < 6) { this.party.push(m); this.toast(`${m.name} foi capturado e entrou na equipe!`); } else { this.box.push(m); this.toast(`${m.name} foi capturado (enviado ao PC).`); }
@@ -613,7 +616,7 @@ class Game {
     const hw = innerWidth / 2 / z + 40, hh = innerHeight / 2 / z + 40;
     this.map.cullChunks({ x0: c.x - hw, x1: c.x + hw, y0: c.y - hh, y1: c.y + hh });
     const area = this.map.areaName(p.x, p.y);
-    if (area !== this.area) { this.area = area; const el = $('area'); el.textContent = area; el.classList.add('on'); clearTimeout(this.areaT); this.areaT = setTimeout(() => el.classList.remove('on'), 2500); }
+    if (area !== this.area) { this.area = area; this.missoes?.evento('area', { nome: area }); const el = $('area'); el.textContent = area; el.classList.add('on'); clearTimeout(this.areaT); this.areaT = setTimeout(() => el.classList.remove('on'), 2500); }
   }
 
   // ---------- HUD (src/ui/hud.js) ----------
