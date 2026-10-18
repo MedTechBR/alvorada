@@ -1,0 +1,223 @@
+// Capítulo 3: O espelho partido
+// Vila Alvorada → Rota 3 (Margem das Garças) → Porto Espelho → Galpão de Barcos (ginásio) → assalto da Crepúsculo → Lapras.
+
+export default {
+  id: 'cap03',
+  titulo: 'O espelho partido',
+  sol: '6h28',
+  cenas: [
+    {
+      id: 'titulo',
+      local: 'vila_alvorada',
+      gatilho: { tipo: 'inicio', requer: ['ch2Done'] },
+      falas: [['narrador', 'Capítulo 3: O espelho partido']],
+      depois: { flags: { chapter: 3 } },
+    },
+    {
+      id: 'mae_bolo',
+      local: 'casa_jogador',
+      gatilho: { tipo: 'falar', alvo: 'mae', semFlag: ['bolo3'] },
+      falas: [
+        ['mae', 'Olha quem voltou! E com duas insígnias! Senta, que o bolo de laranja ainda está quente.'],
+        ['mae', 'Hoje na rádio eu disse seis e vinte e oito. Seis e vinte e oito! Meus ouvintes estão chegando atrasados no trabalho e pondo a culpa em mim.'],
+        ['mae', 'O Professor passou aqui ontem. Estava esquisito. Perguntou se eu lembrava da Noite Longa, lá em Lamparina, quando você era pequeno.'],
+        ['jogador', 'Noite Longa?'],
+        ['mae', 'Uma noite que durou mais de um dia. A sua avó conta melhor que eu. Eu só lembro do frio e de você chorando. Bom, não importa. Come o bolo.'],
+      ],
+      depois: { flags: { bolo3: true }, itens: [['bolo_laranja', 1]] },
+    },
+    {
+      id: 'ponte',
+      local: 'rota3',
+      gatilho: { tipo: 'pisar', alvo: 'ponte_leste', semFlag: ['viuPonte'] },
+      falas: [
+        ['narrador', 'A ponte velha foi trocada por uma nova, de madeira clara. Nos dois lados, postes com cristais de luzita brilham mesmo de dia.'],
+        ['narrador', 'Uma placa diz: "Reconstruída pela Companhia Aurora. A luz que Alvorada merece."'],
+        ['narrador', 'Embaixo da ponte, um grupo de Psyduck segura a cabeça com as duas mãos. Mais do que o normal.'],
+      ],
+      depois: { flags: { viuPonte: true } },
+    },
+    {
+      id: 'pescador_rota3',
+      local: 'rota3',
+      gatilho: { tipo: 'avistar', alvo: 'r3_seu_bigode' },
+      falas: [['treinador', 'Quarenta anos pescando aqui e nunca vi o lago tão quieto. Até o Magikarp anda triste. Vamos batalhar pra animar!']],
+      depois: { batalha: { id: 'r3_seu_bigode', nome: 'Pescador Bigode', dinheiro: 640, equipe: [[129, 15, ['splash', 'tackle']], [129, 15, ['splash', 'tackle']], [339, 17, ['mudSlap', 'waterGun', 'watersport']]] } },
+    },
+    {
+      id: 'nadadora_rota3',
+      local: 'rota3',
+      gatilho: { tipo: 'avistar', alvo: 'r3_carol' },
+      falas: [['treinador', 'Sabe por que o lago se chama Espelho? Olha pra água. Olhou? Pronto, batalha!']],
+      depois: { batalha: { id: 'r3_carol', nome: 'Garota da Praia Carol', dinheiro: 660, equipe: [[283, 16, ['bubble', 'quickAttack', 'sweetScent']], [580, 17, ['waterGun', 'wingAttack', 'defog']]] } },
+    },
+    {
+      id: 'porto_chegada',
+      local: 'porto_espelho',
+      gatilho: { tipo: 'entrar', alvo: 'porto_espelho', semFlag: ['espelho'] },
+      falas: [
+        ['narrador', 'Porto Espelho. Palafitas coloridas, redes secando ao vento e um lago tão parado que o céu parece estar duas vezes no mundo.'],
+        ['jandira', 'Ô, menino! Primeira vez no porto? Dá pra ver pela cara de quem nunca comeu a minha moqueca.'],
+        ['jandira', 'Eu sou a Jandira. Esse aqui é o Doutor. É um Slowpoke. Ele está pensando numa resposta desde terça-feira.'],
+        ['jandira', 'Se você veio pela Marina, ela está no galpão de barcos, no fim do píer. Mas cuidado, que hoje está cheio de gente estranha no porto.'],
+      ],
+      depois: { flags: { espelho: true }, objetivo: 'Desafie a Líder Marina no galpão de barcos' },
+    },
+    {
+      id: 'nestor_porto',
+      local: 'casa_nestor',
+      gatilho: { tipo: 'falar', alvo: 'nestor', semFlag: ['conheceuNestor'] },
+      falas: [
+        ['nestor', 'Entra, entra. Não repara nas garrafas. Cada uma tem uma história. Algumas têm só areia, mas a maioria tem história.'],
+        ['nestor', 'A Marina é minha neta. Desde pequena bate de frente com o vento. Ganhou do vento tantas vezes que ele agora pede licença.'],
+        ['nestor', 'Antigamente tinha uma Mantine que me acompanhava pelo lago. Ela mergulhava até o fundo, onde dizem que dorme a Asa do Crepúsculo.'],
+        ['nestor', 'Lenda de velho. Mas lenda de velho às vezes é só verdade que ficou cansada.'],
+      ],
+      depois: { flags: { conheceuNestor: true } },
+    },
+    {
+      id: 'galpao_entrada',
+      local: 'galpao_barcos',
+      gatilho: { tipo: 'entrar', alvo: 'galpao_barcos', semFlag: ['galpaoDentro'] },
+      falas: [
+        ['narrador', 'Um galpão enorme sobre a água. Três tanques ligados por comportas, barcos-plataforma boiando em níveis diferentes e três alavancas: vermelha, azul e verde.'],
+        ['aprendiz', 'Bem-vindo! Regra do galpão: a correnteza leva quem não pensa. Fecha a azul pra acalmar a água, abre a verde pra trazer o barco da Marina.'],
+        ['aprendiz', 'A vermelha? Ninguém sabe o que a vermelha faz. Brincadeira. Ela enche o tanque do meio. Mas é mais divertido não saber.'],
+      ],
+      depois: { flags: { galpaoDentro: true } },
+    },
+    {
+      id: 'aprendiz_marina1',
+      local: 'galpao_barcos',
+      gatilho: { tipo: 'avistar', alvo: 'g3_zeca' },
+      falas: [['aprendiz', 'Peixe que nada contra a corrente fica forte! Peixe que nada a favor chega antes. Eu sou dos dois!']],
+      depois: { batalha: { id: 'g3_zeca', nome: 'Pescador Zeca', dinheiro: 700, equipe: [[129, 16, ['splash', 'tackle', 'flail']], [339, 18, ['mudSlap', 'waterGun', 'amnesia']]] } },
+    },
+    {
+      id: 'aprendiz_marina2',
+      local: 'galpao_barcos',
+      gatilho: { tipo: 'avistar', alvo: 'g3_taina' },
+      falas: [['aprendiz', 'Quer chegar na Marina? Primeiro aprende a ficar molhado!']],
+      depois: { batalha: { id: 'g3_taina', nome: 'Nadadora Tainá', dinheiro: 740, equipe: [[278, 17, ['waterGun', 'wingAttack', 'supersonic']], [183, 18, ['bubble', 'rollout', 'defenseCurl']]] } },
+    },
+    {
+      id: 'marina_desafio',
+      local: 'galpao_barcos',
+      gatilho: { tipo: 'falar', alvo: 'marina', requer: ['trainers.g3_zeca', 'trainers.g3_taina'], semFlag: ['badges.espelho'] },
+      falas: [
+        ['marina', 'Olha só! Chegou seco até aqui? Isso nem eu consigo!'],
+        ['marina', 'Eu sou a Marina. Pescadora, velejadora, e quem segura o leme deste ginásio. Meu avô diz que eu grito com o vento. Mentira. Eu converso alto.'],
+        ['marina', 'Vamos ver se você boia! Valendo a Insígnia Gota!'],
+      ],
+      depois: {
+        batalha: {
+          id: 'leader_marina', nome: 'Líder Marina', dinheiro: 2200, perder: 'centro',
+          interrompe: 'assalto', // depois do segundo Pokémon dela, a cena "assalto" interrompe a luta
+          equipe: [
+            [54, 19, ['waterGun', 'confusion', 'scratch']],
+            [418, 20, ['aquaJet', 'quickAttack', 'waterGun']],
+            [79, 20, ['waterGun', 'confusion', 'yawn']],
+            [550, 22, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
+          ],
+        },
+      },
+    },
+    {
+      id: 'assalto',
+      local: 'galpao_barcos',
+      gatilho: { tipo: 'interromper', alvo: 'leader_marina' },
+      falas: [
+        ['narrador', 'BUM! A porta do galpão abre de uma vez. A luz de fora entra junto com uma dúzia de capas roxas.'],
+        ['ebano', 'Ninguém se mexe. Ninguém se machuca. Eu não grito. Eu falo com ênfase.'],
+        ['marina', 'Quem você pensa que é pra entrar no MEU ginásio no meio da MINHA batalha?!'],
+        ['narrador', 'Por entre os recrutas, entra uma mulher de casaco violeta. Cabelo preto com uma mecha branca. Um broche de estrela no peito. Passos sem pressa.'],
+        ['vespera', 'Desculpe a interrupção, Marina. Sei o que essa batalha significa. Também já fui jovem e já tive um ginásio para vencer.'],
+        ['vespera', 'Mas a sua pedra não pode ficar aqui. Não com o que vem por aí.'],
+        ['marina', 'O fragmento da Gota está com a minha família há duzentos anos!'],
+        ['vespera', 'E está seguro há duzentos anos. Hoje não está mais. Eu sinto muito, de verdade.'],
+        ['narrador', 'Véspera abre o cofre embaixo do leme da Marina sem tocar nele. Um Zorua sai de dentro com o fragmento na boca.'],
+        ['vespera', 'E você deve ser o {jogador}. O Jatobá falou de você? Não, imagino que não. Ele não fala de muita coisa.'],
+        ['vespera', 'Você está do lado certo pelas razões erradas, menino. Um dia vai entender. Ébano, segure-o.'],
+      ],
+      depois: {
+        batalha: { id: 'c3_ebano', nome: 'Admin Ébano', dinheiro: 1500, perder: 'continua', equipe: [[41, 19, ['bite', 'supersonic', 'wingAttack']], [228, 20, ['ember', 'bite', 'roar']], [302, 21, ['furySwipes', 'astonish', 'detect']]] },
+      },
+    },
+    {
+      id: 'ebano_depois',
+      local: 'galpao_barcos',
+      gatilho: { tipo: 'apos', cena: 'assalto' },
+      falas: [
+        ['ebano', 'Hm. Forte, o moleque. Vou falar com ênfase sobre você pra chefe.'],
+        ['narrador', 'Lá fora, um bote a motor se afasta pelo lago e some na neblina do meio, onde ninguém do porto gosta de ir.'],
+        ['marina', 'Eles levaram… duzentos anos… num bote alugado.'],
+        ['marina', 'Tá. Respira, Marina. Respira.'],
+        ['marina', 'A gente não terminou a nossa batalha. Vem pro píer. Batalha que começa tem que acabar, nem que seja no meio do caos.'],
+      ],
+      depois: { objetivo: 'Termine a batalha com a Marina no píer' },
+    },
+    {
+      id: 'marina_pier',
+      local: 'porto_espelho',
+      gatilho: { tipo: 'falar', alvo: 'marina', requer: ['trainers.c3_ebano'], semFlag: ['badges.espelho'] },
+      falas: [['marina', 'Onde a gente estava? Ah, é. Eu ganhando. Continua!']],
+      depois: {
+        batalha: {
+          id: 'leader_marina_pier', nome: 'Líder Marina', dinheiro: 2200,
+          equipe: [
+            [79, 20, ['waterGun', 'confusion', 'yawn']],
+            [550, 22, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
+          ],
+        },
+      },
+    },
+    {
+      id: 'marina_perdeu_jogador',
+      local: 'porto_espelho',
+      gatilho: { tipo: 'perder', alvo: 'leader_marina_pier' },
+      falas: [['marina', 'A maré vai e volta, treinador. Você volta também!']],
+    },
+    {
+      id: 'marina_vencida',
+      local: 'porto_espelho',
+      gatilho: { tipo: 'vencer', alvo: 'leader_marina_pier' },
+      falas: [
+        ['marina', 'Ufa! Que dia! Você me venceu no meio de um assalto. Isso vai pra história do porto.'],
+        ['marina', 'Toma: a Insígnia Gota. Fragmento é pedra. Insígnia é gente. Essa é sua, e ninguém rouba.'],
+        ['narrador', '{jogador} recebeu a Insígnia Gota!'],
+        ['marina', 'E a MT Hidro Pulso. Água que bate e confunde. Igual conversa com o meu avô.'],
+        ['marina', 'Mais uma coisa. Eles fugiram pela água, e você vai precisar ir aonde a água vai. Esta é a Bruma.'],
+        ['narrador', 'Um Lapras encosta no píer e esfrega a cabeça na mão da Marina. Depois, devagar, encosta em você.'],
+        ['marina', 'Ela atravessa o lago, o rio e o mar. Cuida dela que ela cuida de você.'],
+        ['narrador', 'Agora o Lapras pode levar {jogador} para NADAR em águas profundas!'],
+      ],
+      depois: { insignia: 'espelho', mt: 'waterPulse', montaria: 'lapras', flags: { 'badges.espelho': true, 'mounts.nadar': true } },
+    },
+    {
+      id: 'radio_noticia',
+      local: 'porto_espelho',
+      gatilho: { tipo: 'apos', cena: 'marina_vencida' },
+      falas: [
+        ['radio', 'Interrompemos a programação com uma notícia de Cidade Campina.'],
+        ['radio', 'Na madrugada de hoje, o fragmento histórico guardado pelo Líder Tomé foi levado por pessoas de capa roxa. Ninguém se feriu. A Lili diz que um dos Mudbray mordeu um deles.'],
+        ['radio', 'Atenção, ouvintes: a Equipe Crepúsculo já levou dois fragmentos. Se você vir alguém de capa roxa…'],
+        ['radio', '…e eu sei que você está me ouvindo, {jogador}: não se meta em encrenca. Mas se se meter, ganha.'],
+      ],
+    },
+    {
+      id: 'ligacao_fim',
+      local: 'porto_espelho',
+      gatilho: { tipo: 'apos', cena: 'radio_noticia' },
+      falas: [
+        ['pokedex', 'Bzzz…'],
+        ['prof', '{jogador}, você está bem? A Marina me ligou. Você… você viu a Véspera?'],
+        ['jogador', 'Ela disse que o senhor não fala de muita coisa.'],
+        ['prof', '…'],
+        ['prof', 'A Véspera e eu trabalhamos juntos, há muito tempo. Ela era a pessoa mais inteligente que eu já conheci. Depois as coisas mudaram.'],
+        ['prof', 'Escute: o próximo ginásio fica em Cidade Coral, descendo o Rio Lúmen. Leve o Lapras pelo rio. E fique longe dela, por favor.'],
+        ['narrador', 'Fim do Capítulo 3'],
+      ],
+      depois: { flags: { ch3Done: true, chapter: 4 }, objetivo: 'Desça o Rio Lúmen até Cidade Coral', fimCapitulo: true },
+    },
+  ],
+};
