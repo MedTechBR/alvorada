@@ -37,14 +37,14 @@ export const ENIGMAS = {
     mina_a: { sala: 'mina_aurora_n1', cells: [[5, 8], [6, 8]], tipo: 'grade', aberto: false },
     mina_b: { sala: 'mina_aurora_n1', cells: [[21, 9], [21, 10], [21, 11]], tipo: 'grade', aberto: true },
     mina_c: { sala: 'mina_aurora_n1', cells: [[27, 8], [28, 8]], tipo: 'grade', aberto: false },
-    casarao_salao: { sala: 'casarao_velas', cells: [[22, 14]], tipo: 'grade' },
+    casarao_salao: { sala: 'casarao_velas', cells: [[40, 14]], tipo: 'grade' },
   },
   raios: { farol2_raio: { sala: 'farol_coral_2', linhas: [[[11, 8], [12, 8], [13, 8], [14, 8], [15, 8]], [[11, 5], [12, 5], [13, 5], [14, 5], [15, 5]]], periodo: 2 } },
   geradores: { id: 'topo', sala: 'farol_topo', gens: [[3, 5, 'p'], [7, 4, 'g'], [11, 5, 'p']], ordem: ['p', 'g', 'p'], flag: 'geradoresLigados' },
-  espelhos: { id: 'luar', sala: 'casarao_velas', feixe: [22, 1, 0, 1], area: [16, 2, 13, 11],
-    espelhos: [[22, 4, '/'], [27, 4, '/'], [27, 10, '\\'], [17, 10, '/'], [17, 2, '\\'], [20, 7, '/']],
-    candelabros: [[25, 4], [27, 7], [17, 6]], flag: 'candelabrosAcesos', abre: 'casarao_salao' },
-  quadros: { id: 'quadros', sala: 'casarao_velas', portas: [[3, 11], [7, 11], [11, 11]], volta: [7, 18], certo: [22, 12], face: 'up' },
+  espelhos: { id: 'luar', sala: 'casarao_velas', feixe: [40, 1, 0, 1], area: [34, 2, 13, 11],
+    espelhos: [[40, 4, '/'], [45, 4, '/'], [45, 10, '\\'], [35, 10, '/'], [35, 2, '\\'], [38, 7, '/']],
+    candelabros: [[43, 4], [45, 7], [35, 6]], flag: 'candelabrosAcesos', abre: 'casarao_salao' },
+  quadros: { id: 'quadros', sala: 'casarao_velas', portas: [[3, 11], [7, 11], [11, 11]], volta: [7, 18], certo: [40, 12], face: 'up' },
   alavancas: [
     { sala: 'mina_aurora_n1', x: 19, y: 14, alterna: ['mina_a', 'mina_b'], nome: 'Alavanca dos desvios' },
     { sala: 'mina_aurora_n1', x: 3, y: 3, alterna: ['mina_c'], nome: 'Alavanca da rampa' },
@@ -69,7 +69,7 @@ export const ENIGMAS = {
     { de: ['mina_aurora_n3', 27, 2], para: ['mina_aurora_n4', 14, 15], face: 'up', requer: ['achouHeitor'], msg: 'Pedras soltas. Melhor ver quem está preso aqui antes de descer.', label: 'poço' },
     { de: ['mina_aurora_n4', 14, 17], para: ['mina_aurora_n3', 26, 3], face: 'down', label: 'poço' },
     // Casarão: da sala da Zélia de volta ao saguão
-    { de: ['casarao_velas', 15, 19], para: ['casarao_velas', 7, 17], face: 'down', label: 'porta' },
+    { de: ['casarao_velas', 33, 19], para: ['casarao_velas', 7, 17], face: 'down', label: 'porta' },
   ],
   // clima por lugar (blocos do mapa externo): tinta sobre o chão (multiplica) e névoa que passa por cima
   ambiente: [

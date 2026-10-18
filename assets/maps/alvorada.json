@@ -2,7 +2,7 @@
   "name": "Alvorada",
   "comment": "Mapa da região desenhado à mão (assets/maps/LEIAME.md). Escala da planta: 1 unidade = 6 blocos. O esboço do resto da região vem de esboco.json.",
   "w": 600,
-  "h": 712,
+  "h": 676,
   "outdoorH": 480,
   "base": "grass",
   "include": ["esboco.json"],
@@ -13,7 +13,7 @@
   ],
   "flowerRows": [0, 1, 2, 3, 4, 6],
   "ops": [
-    {"op": "rect", "t": "void", "x": 0, "y": 480, "w": 600, "h": 232},
+    {"op": "rect", "t": "void", "x": 0, "y": 480, "w": 600, "h": 196},
     {"op": "comment", "_": "==== áreas detalhadas à mão (por cima do esboço) ===="},
     {"op": "comment", "_": "---------- Vila Alvorada (praça com relógio de sol, casas, laboratório) ----------"},
     {"op": "rect", "t": "grass", "x": 285, "y": 333, "w": 44, "h": 36},
@@ -1131,7 +1131,7 @@
     {
       "id": "loja_coral",
       "name": "Mercado Pokémon de Cidade Coral",
-      "x": 68,
+      "x": 49,
       "y": 604,
       "rows": [
         "wwwwwwwwwwwww",
@@ -1152,7 +1152,7 @@
     {
       "id": "casa_coral",
       "name": "Casa da Família Brito",
-      "x": 126,
+      "x": 86,
       "y": 604,
       "rows": [
         "wwwwwwwwwww",
@@ -1172,7 +1172,7 @@
     {
       "id": "escola_surfe",
       "name": "Escola de Surfe do Kauã",
-      "x": 184,
+      "x": 121,
       "y": 604,
       "rows": [
         "wwwwwwwwwwwww",
@@ -1192,7 +1192,7 @@
     {
       "id": "casa_iracema",
       "name": "Casa da Iracema",
-      "x": 242,
+      "x": 158,
       "y": 604,
       "rows": [
         "wwwwwwwwwww",
@@ -1211,7 +1211,7 @@
     {
       "id": "farol_coral",
       "name": "Farol Coral — Térreo (Ginásio de Cidade Coral)",
-      "x": 300,
+      "x": 193,
       "y": 604,
       "rows": [
         "wwwwwwwwwwwwwww",
@@ -1235,7 +1235,7 @@
     {
       "id": "farol_coral_2",
       "name": "Farol Coral — Primeiro andar",
-      "x": 358,
+      "x": 232,
       "y": 604,
       "rows": [
         "wwwwwwwwwwwwwwwww",
@@ -1260,7 +1260,7 @@
     {
       "id": "farol_topo",
       "name": "Farol Coral — Lanterna",
-      "x": 416,
+      "x": 273,
       "y": 604,
       "rows": [
         "wwwwwwwwwwwwwww",
@@ -1283,7 +1283,7 @@
     {
       "id": "centro_lamparina",
       "name": "Centro Pokémon de Vila Lamparina",
-      "x": 474,
+      "x": 312,
       "y": 604,
       "rows": [
         "wwwwwwwwwwwwwww",
@@ -1305,7 +1305,7 @@
     {
       "id": "loja_lamparina",
       "name": "Mercado Pokémon de Vila Lamparina",
-      "x": 532,
+      "x": 351,
       "y": 604,
       "rows": [
         "wwwwwwwwwwwww",
@@ -1326,8 +1326,8 @@
     {
       "id": "casa_lamparina",
       "name": "Casa do Seu Bento",
-      "x": 10,
-      "y": 640,
+      "x": 388,
+      "y": 604,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -1346,8 +1346,8 @@
     {
       "id": "casa_benta",
       "name": "Casa da Vó Benta",
-      "x": 68,
-      "y": 640,
+      "x": 423,
+      "y": 604,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -1366,8 +1366,8 @@
     {
       "id": "casa_solano",
       "name": "Casa abandonada dos Solano",
-      "x": 126,
-      "y": 640,
+      "x": 460,
+      "y": 604,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -1387,42 +1387,42 @@
     {
       "id": "casarao_velas",
       "name": "Casarão das Velas — Ginásio de Vila Lamparina",
-      "x": 184,
-      "y": 640,
+      "x": 495,
+      "y": 604,
       "rows": [
-        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
-        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
-        "wwwwwwwwwwwwwwwwfffffffffffffww",
-        "wwwwwwwwwwwwwwwwfffffffffffffww",
-        "wwwwwwwwwwwwwwwwfffffffffffffww",
-        "wwwwwwwwwwwwwwwwfffffffffffffww",
-        "wwwwwwwwwwwwwwwwfffffffffffffww",
-        "wwwwwwwwwwwwwwwwfffffffffffffww",
-        "wwwwwwwwwwwwwwwwfffffffffffffww",
-        "wwwwwwwwwwwwwwwwfffffffffffffww",
-        "wwwwwwwwwwwwwwwwfffffffffffffww",
-        "wwwfwwwfwwwfwwwwfffffffffffffww",
-        "wfffffffffffffwwfffffffffffffww",
-        "wfffffffffffffwwfffffffffffffww",
-        "wfffffffffffffwwwwwwwwfwwwwwwww",
-        "wfffffffffffffwwfffffffffffffww",
-        "wfffffffffffffwwfffffffffffffww",
-        "wfffffffffffffwwfffffffffffffww",
-        "wfffffffffffffwwfffffffffffffww",
-        "wfffffffffffffwffffffffffffffww",
-        "wwwwwwwmwwwwwwwwfffffffffffffww",
-        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wwwfwwwfwwwfwwwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wfffffffffffffwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wfffffffffffffwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wfffffffffffffwwwwwwwwwwwwwwwwwwwwwwwwwwfwwwwwwww",
+        "wfffffffffffffwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wfffffffffffffwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wfffffffffffffwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wfffffffffffffwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wfffffffffffffwwwwwwwwwwwwwwwwwwwffffffffffffffww",
+        "wwwwwwwmwwwwwwwwwwwwwwwwwwwwwwwwwwfffffffffffffww",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
       ],
-      "objects": [{"kind": "velas", "x": 1, "y": 12}, {"kind": "velas", "x": 13, "y": 12}, {"kind": "velas", "x": 1, "y": 19}, {"kind": "velas", "x": 13, "y": 19}, {"kind": "estante", "x": 5, "y": 12, "text": "Livros de histórias de assombração. Um deles se chama \"Fantasmas também têm medo: manual para crianças vivas\"."}, {"kind": "quadro", "x": 16, "y": 15, "text": "Um retrato de duas meninas de tranças rindo na praça de Lamparina. Atrás, a data: há sessenta anos."}, {"kind": "quadro", "x": 28, "y": 15, "text": "Um quadro da Noite Longa: a praça cheia de lampiões e gente cantando."}, {"kind": "velas", "x": 16, "y": 20}, {"kind": "velas", "x": 28, "y": 20}, {"kind": "plant", "x": 2, "y": 15}, {"kind": "table", "x": 20, "y": 19, "text": "Uma xícara de chá ainda quente. Ninguém por perto."}],
-      "decor": [{"kind": "tapeteRoxo", "x": 21, "y": 17}, {"kind": "tapeteRoxo", "x": 6, "y": 16}],
-      "spots": {"g5_odete": [10, 15, "left"], "g5_ciro": [18, 12, "right"], "zelia": [22, 16.6, "down"], "casarao_luar": [22, 12, "up"]},
+      "objects": [{"kind": "velas", "x": 1, "y": 12}, {"kind": "velas", "x": 13, "y": 12}, {"kind": "velas", "x": 1, "y": 19}, {"kind": "velas", "x": 13, "y": 19}, {"kind": "estante", "x": 5, "y": 12, "text": "Livros de histórias de assombração. Um deles se chama \"Fantasmas também têm medo: manual para crianças vivas\"."}, {"kind": "quadro", "x": 34, "y": 15, "text": "Um retrato de duas meninas de tranças rindo na praça de Lamparina. Atrás, a data: há sessenta anos."}, {"kind": "quadro", "x": 46, "y": 15, "text": "Um quadro da Noite Longa: a praça cheia de lampiões e gente cantando."}, {"kind": "velas", "x": 34, "y": 20}, {"kind": "velas", "x": 46, "y": 20}, {"kind": "plant", "x": 2, "y": 15}, {"kind": "table", "x": 38, "y": 19, "text": "Uma xícara de chá ainda quente. Ninguém por perto."}],
+      "decor": [{"kind": "tapeteRoxo", "x": 39, "y": 17}, {"kind": "tapeteRoxo", "x": 6, "y": 16}],
+      "spots": {"g5_odete": [10, 15, "left"], "g5_ciro": [36, 12, "right"], "zelia": [40, 16.6, "down"], "casarao_luar": [40, 12, "up"]},
       "dark": true
     },
     {
       "id": "centro_aurora",
       "name": "Centro Pokémon de Cidade Aurora",
-      "x": 242,
-      "y": 640,
+      "x": 568,
+      "y": 604,
       "rows": [
         "wwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwww",
@@ -1443,7 +1443,7 @@
     {
       "id": "loja_aurora",
       "name": "Mercado Pokémon de Cidade Aurora",
-      "x": 300,
+      "x": 10,
       "y": 640,
       "rows": [
         "wwwwwwwwwwwww",
@@ -1464,7 +1464,7 @@
     {
       "id": "redacao_farol",
       "name": "Redação do jornal \"O Farol\"",
-      "x": 358,
+      "x": 47,
       "y": 640,
       "rows": [
         "wwwwwwwwwwwww",
@@ -1485,7 +1485,7 @@
     {
       "id": "casa_mineiro",
       "name": "Casa do Seu Dito",
-      "x": 416,
+      "x": 84,
       "y": 640,
       "rows": [
         "wwwwwwwwwww",
@@ -1505,7 +1505,7 @@
     {
       "id": "torre_aurora",
       "name": "Torre Aurora — Recepção",
-      "x": 474,
+      "x": 119,
       "y": 640,
       "rows": [
         "wwwwwwwwwwwwwwwwwwwww",
@@ -1531,7 +1531,7 @@
     {
       "id": "mina_aurora_n1",
       "name": "Mina Aurora — Nível 1",
-      "x": 532,
+      "x": 164,
       "y": 640,
       "rows": [
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
@@ -1566,8 +1566,8 @@
     {
       "id": "mina_aurora_n2",
       "name": "Mina Aurora — Nível 2",
-      "x": 10,
-      "y": 676,
+      "x": 222,
+      "y": 640,
       "rows": [
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
@@ -1601,8 +1601,8 @@
     {
       "id": "mina_aurora_n3",
       "name": "Mina Aurora — Nível 3",
-      "x": 68,
-      "y": 676,
+      "x": 280,
+      "y": 640,
       "rows": [
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
@@ -1636,8 +1636,8 @@
     {
       "id": "mina_aurora_n4",
       "name": "Mina Aurora — Nível 4",
-      "x": 126,
-      "y": 676,
+      "x": 334,
+      "y": 640,
       "rows": [
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
