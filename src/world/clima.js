@@ -187,14 +187,14 @@ export class Clima {
   // ---------- névoa baixa (mangue): manchas grandes e claras andando devagar ----------
   #fog(dt) {
     const K = this.k, view = this.g.map.view, n = Math.round(K.nevoa * (this.low ? 6 : 12));
-    while (this.fog.length < n) { const s = new PIXI.Sprite(SPR.puff); s.anchor.set(0.5); s.tint = 0xe8f4ec; s.ph = Math.random() * 6; s.wx = view.x0 + Math.random() * (view.x1 - view.x0); s.wy = view.y0 + Math.random() * (view.y1 - view.y0); s.sc = 5 + Math.random() * 6; this.layer.addChild(s); this.fog.push(s); }
+    while (this.fog.length < n) { const s = new PIXI.Sprite(SPR.puff); s.anchor.set(0.5); s.tint = 0xe8f4ec; s.ph = Math.random() * 6; s.wx = view.x0 + Math.random() * (view.x1 - view.x0); s.wy = view.y0 + Math.random() * (view.y1 - view.y0); s.sc = 8 + Math.random() * 8; this.layer.addChild(s); this.fog.push(s); }
     while (this.fog.length > n) this.fog.pop().destroy();
     for (const s of this.fog) {
       s.wx += (5 + Math.sin(s.ph) * 2) * dt;
       if (s.wx > view.x1 + 60) { s.wx = view.x0 - 60; s.wy = view.y0 + Math.random() * (view.y1 - view.y0); }
       if (s.wy < view.y0 - 60 || s.wy > view.y1 + 60) s.wy = view.y0 + Math.random() * (view.y1 - view.y0);
       s.x = s.wx; s.y = s.wy + Math.sin(this.t * 0.3 + s.ph) * 8; s.scale.set(s.sc, s.sc * 0.45);
-      s.alpha = Math.min(1, K.nevoa) * (0.34 + Math.sin(this.t * 0.25 + s.ph) * 0.1);
+      s.alpha = Math.min(1, K.nevoa) * (0.24 + Math.sin(this.t * 0.25 + s.ph) * 0.08);
     }
   }
 

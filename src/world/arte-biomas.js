@@ -202,14 +202,14 @@ F.reef = fam('reef', 0, {
   shore: [[0.42, [200, 240, 236, 150]]], clear: true,
   px(x, y) {
     const v = vor(x, y, 7, 141), r = 1.4 + v.id * 2.2, cl = fbm(x / 16, y / 16, 144);
-    if (v.id > 0.55 && cl > 0.42 && v.d < r) {
+    if (v.id > 0.62 && cl > 0.5 && v.d < r) {
       const cs = [[236, 112, 138], [240, 146, 84], [160, 112, 204], [232, 200, 104], [92, 196, 160]][Math.floor(hash(Math.round(v.id * 999), 0, 142) * 5)];
       const lit = v.cy > 0.08 && v.cx > -0.05; // luz de cima à esquerda
       if (v.d > r - 0.9) return [...mul(cs, 0.62), 255];
       return [...(lit ? mix(cs, [255, 255, 255], 0.35) : cs), 255];
     }
     const n = fbm(x / 9, y / 9, 143);
-    if (cl > 0.42 && v.id > 0.3 && v.d < 3) return [70, 150, 150, 120]; // sombra do coral
+    if (cl > 0.5 && v.id > 0.4 && v.d < 3) return [70, 150, 150, 110]; // sombra do coral
     return n > 0.55 ? [222, 214, 168, 120] : [120, 226, 218, 90];
   },
 });
@@ -482,7 +482,7 @@ const BUBBLE_F = frames(8, 16, 16, (x, i) => {
 });
 // maré: lâmina d'água rasa (a transparência segue o relógio, ver masmorra.js)
 const TIDE_F = frames(4, 16, 16, (x, i) => {
-  px(x, 'rgba(70,160,214,0.62)', 0, 0, 16, 16);
+  px(x, 'rgba(52,128,206,0.82)', 0, 0, 16, 16);
   for (const [y, o] of [[3, 0], [9, 7], [14, 3]]) { const X = (i * 4 + o) % 16; px(x, 'rgba(220,244,255,0.75)', X, y, 5, 1); if (X + 5 > 16) px(x, 'rgba(220,244,255,0.75)', 0, y, X + 5 - 16, 1); }
 });
 // tipo de bloco → { frames, blend, alpha, fps, interior (só se os 4 vizinhos forem do mesmo tipo) }

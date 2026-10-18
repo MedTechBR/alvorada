@@ -81,7 +81,9 @@ for x in range(112, 120):
     for y in range(18, 23):
         if g[y][x] == 'l': g[y][x] = 'B'
 # a pedra de Força vira chão na lava (atalho para um item)
-for y in range(27, 32): put(100, y, 'l'); put(101, y, 'l')
+for y in range(28, 31):
+    for x in range(102, 105):
+        if (x, y) != (103, 29): put(x, y, 'l')
 obj('strengthRock', 99, 29)
 items.append({'x': 103, 'y': 29, 'item': 'fireStone'})
 for (x, y) in [(88, 8), (106, 26), (120, 6), (90, 14), (124, 16)]: obj('lavaRock', x, y)
