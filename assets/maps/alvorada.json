@@ -2,7 +2,7 @@
   "name": "Alvorada",
   "comment": "Mapa da região desenhado à mão (assets/maps/LEIAME.md). Escala da planta: 1 unidade = 6 blocos. O esboço do resto da região vem de esboco.json.",
   "w": 600,
-  "h": 600,
+  "h": 712,
   "outdoorH": 480,
   "base": "grass",
   "include": ["esboco.json"],
@@ -13,7 +13,7 @@
   ],
   "flowerRows": [0, 1, 2, 3, 4, 6],
   "ops": [
-    {"op": "rect", "t": "void", "x": 0, "y": 480, "w": 600, "h": 80},
+    {"op": "rect", "t": "void", "x": 0, "y": 480, "w": 600, "h": 232},
     {"op": "comment", "_": "==== áreas detalhadas à mão (por cima do esboço) ===="},
     {"op": "comment", "_": "---------- Vila Alvorada (praça com relógio de sol, casas, laboratório) ----------"},
     {"op": "rect", "t": "grass", "x": 285, "y": 333, "w": 44, "h": 36},
@@ -1109,8 +1109,8 @@
     {
       "id": "centro_coral",
       "name": "Centro Pokémon de Cidade Coral",
-      "x": 374,
-      "y": 492,
+      "x": 10,
+      "y": 604,
       "rows": [
         "wwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwww",
@@ -1131,8 +1131,8 @@
     {
       "id": "loja_coral",
       "name": "Mercado Pokémon de Cidade Coral",
-      "x": 393,
-      "y": 492,
+      "x": 68,
+      "y": 604,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -1152,8 +1152,8 @@
     {
       "id": "casa_coral",
       "name": "Casa da Família Brito",
-      "x": 410,
-      "y": 492,
+      "x": 126,
+      "y": 604,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -1172,8 +1172,8 @@
     {
       "id": "escola_surfe",
       "name": "Escola de Surfe do Kauã",
-      "x": 425,
-      "y": 492,
+      "x": 184,
+      "y": 604,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -1192,8 +1192,8 @@
     {
       "id": "casa_iracema",
       "name": "Casa da Iracema",
-      "x": 442,
-      "y": 492,
+      "x": 242,
+      "y": 604,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -1211,8 +1211,8 @@
     {
       "id": "farol_coral",
       "name": "Farol Coral — Térreo (Ginásio de Cidade Coral)",
-      "x": 350,
-      "y": 524,
+      "x": 300,
+      "y": 604,
       "rows": [
         "wwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwww",
@@ -1235,8 +1235,8 @@
     {
       "id": "farol_coral_2",
       "name": "Farol Coral — Primeiro andar",
-      "x": 369,
-      "y": 524,
+      "x": 358,
+      "y": 604,
       "rows": [
         "wwwwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwwwww",
@@ -1260,8 +1260,8 @@
     {
       "id": "farol_topo",
       "name": "Farol Coral — Lanterna",
-      "x": 390,
-      "y": 524,
+      "x": 416,
+      "y": 604,
       "rows": [
         "wwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwww",
@@ -1283,8 +1283,8 @@
     {
       "id": "centro_lamparina",
       "name": "Centro Pokémon de Vila Lamparina",
-      "x": 457,
-      "y": 492,
+      "x": 474,
+      "y": 604,
       "rows": [
         "wwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwww",
@@ -1305,8 +1305,8 @@
     {
       "id": "loja_lamparina",
       "name": "Mercado Pokémon de Vila Lamparina",
-      "x": 476,
-      "y": 492,
+      "x": 532,
+      "y": 604,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -1326,8 +1326,8 @@
     {
       "id": "casa_lamparina",
       "name": "Casa do Seu Bento",
-      "x": 493,
-      "y": 492,
+      "x": 10,
+      "y": 640,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -1346,8 +1346,8 @@
     {
       "id": "casa_benta",
       "name": "Casa da Vó Benta",
-      "x": 540,
-      "y": 492,
+      "x": 68,
+      "y": 640,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -1366,8 +1366,8 @@
     {
       "id": "casa_solano",
       "name": "Casa abandonada dos Solano",
-      "x": 557,
-      "y": 492,
+      "x": 126,
+      "y": 640,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -1387,8 +1387,8 @@
     {
       "id": "casarao_velas",
       "name": "Casarão das Velas — Ginásio de Vila Lamparina",
-      "x": 540,
-      "y": 524,
+      "x": 184,
+      "y": 640,
       "rows": [
         "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
@@ -1421,8 +1421,8 @@
     {
       "id": "centro_aurora",
       "name": "Centro Pokémon de Cidade Aurora",
-      "x": 409,
-      "y": 524,
+      "x": 242,
+      "y": 640,
       "rows": [
         "wwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwww",
@@ -1443,8 +1443,8 @@
     {
       "id": "loja_aurora",
       "name": "Mercado Pokémon de Cidade Aurora",
-      "x": 428,
-      "y": 524,
+      "x": 300,
+      "y": 640,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -1464,8 +1464,8 @@
     {
       "id": "redacao_farol",
       "name": "Redação do jornal \"O Farol\"",
-      "x": 523,
-      "y": 492,
+      "x": 358,
+      "y": 640,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -1485,8 +1485,8 @@
     {
       "id": "casa_mineiro",
       "name": "Casa do Seu Dito",
-      "x": 508,
-      "y": 492,
+      "x": 416,
+      "y": 640,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -1505,8 +1505,8 @@
     {
       "id": "torre_aurora",
       "name": "Torre Aurora — Recepção",
-      "x": 447,
-      "y": 524,
+      "x": 474,
+      "y": 640,
       "rows": [
         "wwwwwwwwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwwwwwwwww",
@@ -1531,8 +1531,8 @@
     {
       "id": "mina_aurora_n1",
       "name": "Mina Aurora — Nível 1",
-      "x": 4,
-      "y": 552,
+      "x": 532,
+      "y": 640,
       "rows": [
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
@@ -1566,8 +1566,8 @@
     {
       "id": "mina_aurora_n2",
       "name": "Mina Aurora — Nível 2",
-      "x": 42,
-      "y": 552,
+      "x": 10,
+      "y": 676,
       "rows": [
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
@@ -1601,8 +1601,8 @@
     {
       "id": "mina_aurora_n3",
       "name": "Mina Aurora — Nível 3",
-      "x": 4,
-      "y": 576,
+      "x": 68,
+      "y": 676,
       "rows": [
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
@@ -1636,8 +1636,8 @@
     {
       "id": "mina_aurora_n4",
       "name": "Mina Aurora — Nível 4",
-      "x": 42,
-      "y": 576,
+      "x": 126,
+      "y": 676,
       "rows": [
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
