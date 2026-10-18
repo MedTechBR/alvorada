@@ -266,6 +266,24 @@ export const NPCS = {
       { se: { hora: 'noite' }, linhas: ['A aurora está dançando agora. Veja pela lente do telescópio: ela pulsa a cada três minutos.'] },
     ],
   },
+  eremita_gelo: {
+    tutor: {
+      golpes: [
+        { golpe: 'icyWind', dinheiro: 1500 },
+        { golpe: 'iceBeam', dinheiro: 3000 },
+        { golpe: 'freezeDry', dinheiro: 4000 },
+        { golpe: 'avalanche', item: ['neverMeltIce', 1] },
+        { golpe: 'blizzard', item: ['iceStone', 1] },
+      ],
+      todos: false,
+      falas: {
+        ola: ['Ninguém vem aqui sem um motivo. Quer aprender um golpe de gelo? Eu ensino por um preço justo.'],
+        tchau: ['Volte quando o vento deixar. O vale não vai a lugar nenhum.'],
+        naoPode: ['Esse Pokémon não aprende esse golpe. O gelo escolhe quem ensina.'],
+        semPagar: ['Sem pagamento, nada de golpe. O frio cobra.'],
+      },
+    },
+  },
   estalajadeira: {
     falas: [
       { se: { missoes: ['sq_avalanche'] }, linhas: ['O mural já está sem nomes riscados. Obrigada por trazer a minha paz de volta.'] },
