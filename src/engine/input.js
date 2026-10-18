@@ -36,7 +36,7 @@ export class Input {
     canvas.addEventListener('touchmove', (e) => {
       if (e.touches.length !== 2 || !pinch) return;
       const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-      if (d > pinch * 1.25) { this.zoomDelta += 1; pinch = d; } else if (d < pinch / 1.25) { this.zoomDelta -= 1; pinch = d; }
+      if (d > pinch * 1.4) { this.zoomDelta += 1; pinch = d; } else if (d < pinch / 1.4) { this.zoomDelta -= 1; pinch = d; } // 1,4: um passo de zoom a cada abertura razoável dos dedos
     }, { passive: true });
     canvas.addEventListener('touchend', () => { pinch = null; }, { passive: true });
     if (IS_TOUCH) this.#touch();

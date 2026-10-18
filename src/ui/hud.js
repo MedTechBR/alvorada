@@ -39,6 +39,13 @@ export class Hud {
     const open = (e) => { e.preventDefault(); e.stopPropagation(); this.ui.openMenu(); };
     mb.addEventListener('touchstart', open, { passive: false });
     mb.addEventListener('click', open);
+    // botões de zoom (+ e −) sempre à vista, ao lado do minimapa; a roda do mouse, a pinça e as teclas + e − também valem
+    const zm = document.createElement('div'); zm.id = 'zoom';
+    zm.innerHTML = '<button data-z="1" aria-label="Aproximar">+</button><button data-z="-1" aria-label="Afastar">−</button>';
+    for (const b of zm.querySelectorAll('button')) {
+      b.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); if (this.ui.state === 'play' && !this.ui.blocking) this.g.setZoom(this.g.zoom + +b.dataset.z); });
+    }
+    document.body.appendChild(zm);
     // painel da batalha contra treinador e objetivo
     this.trainerEl = $('foe');
     this.objEl = $('objective');

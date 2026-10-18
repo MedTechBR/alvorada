@@ -148,7 +148,7 @@ body.touch #toasts { top: auto; right: auto; left: 50%; transform: translateX(-5
 body.touch #toasts div { font-size: 12px; padding: 5px 10px; text-align: center; }
 body.touch .foe { --hud-k: var(--ui-scale); }
 @media (max-height: 430px) {
-  body.touch #lead { width: 170px; padding: 4px 8px 5px; }
+  body.touch #lead { width: 182px; padding: 4px 8px 5px; }
   body.touch .ld-party { margin-top: 4px; }
   body.touch .objective { top: calc(var(--g) + var(--st) + 80px * var(--ui-scale)); max-width: 230px; }
   body.touch .objective:not(.min) .os { display: none; }
@@ -288,7 +288,7 @@ body.at-title #net, body.menu-open #net { visibility: hidden; }
 /* minimapa (src/world/minimap.js): canto superior direito, abaixo do botão do menu;
    no celular deitado vai para o lado do botão (sobra altura para os botões de golpe) */
 #minimapa { position: fixed; top: calc(var(--g) + var(--st) + 52px); right: calc(var(--g) + var(--sr)); z-index: 15; pointer-events: auto; cursor: pointer; user-select: none; }
-#minimapa canvas { display: block; border-radius: 50%; border: 3px solid #3a4a3e; box-shadow: 0 3px 0 rgba(0,0,0,.25); background: #1b2a1e; image-rendering: pixelated; }
+#minimapa canvas { display: block; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 2.5px #36426b, 0 4px 0 2px rgba(0,0,0,.25); background: #1b2a1e; image-rendering: pixelated; }
 #minimapa .mm-lab { text-align: center; font: 800 11px/1.2 Nunito, system-ui, sans-serif; color: #fff; text-shadow: 0 1px 0 rgba(0,0,0,.7), 0 0 3px rgba(0,0,0,.5); margin-top: 2px; white-space: nowrap; }
 body.at-title #minimapa, body.menu-open #minimapa { visibility: hidden; }
 body.touch #minimapa { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) + 8px); }
@@ -318,3 +318,24 @@ body.touch #perf { top: auto; bottom: calc(var(--sb) + 52px); font-size: 10px; w
 .ld-pic img { width: 120%; height: 120%; object-fit: contain; image-rendering: pixelated; }
 .fo-pic { width: 22px; height: 22px; flex: none; border-radius: 50%; background: rgba(255,255,255,.12); overflow: hidden; display: inline-flex; align-items: center; justify-content: center; align-self: center; }
 .fo-pic img { width: 120%; height: 120%; object-fit: contain; image-rendering: pixelated; }
+
+/* zoom (+ e −): pílula vertical à esquerda do minimapa; no celular deitado, embaixo do botão do menu */
+#zoom { position: fixed; z-index: 15; display: flex; flex-direction: column; gap: 0; top: calc(var(--g) + var(--st) + 82px); right: calc(var(--g) + var(--sr) + 152px);
+  border-radius: 99px; border: 3px solid var(--line); background: var(--paper); box-shadow: 0 3px 0 rgba(0,0,0,.25); overflow: hidden; }
+#zoom button { width: 34px; height: 32px; padding: 0; border: 0; background: none; color: var(--line); font: 900 22px/1 Nunito, system-ui, sans-serif; cursor: pointer; touch-action: none; }
+#zoom button + button { border-top: 2px solid #d3ddf2; }
+#zoom button:active { background: #fff0b8; }
+body.at-title #zoom, body.menu-open #zoom, body.dlg-open #zoom { visibility: hidden; }
+body:not(.touch) #zoom { zoom: var(--k, 1); }
+@media (max-height: 640px) { body:not(.touch) #zoom { right: calc(var(--g) + var(--sr) + 124px); top: calc(var(--g) + var(--st) + 70px); } }
+body.touch #zoom { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) + 40px); right: calc(var(--g) + var(--sr) + 116px); transform: scale(var(--ui-scale)); transform-origin: top right; }
+@media (max-height: 500px) {
+  body.touch #zoom { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) + 6px); right: calc(var(--g) + var(--sr) + 6px); }
+  body.touch #zoom button { width: 34px; height: 30px; font-size: 20px; }
+}
+/* celular em pé: nome da área abaixo do painel do Pokémon, zoom embaixo do minimapa, avisos no meio da tela */
+@media (max-width: 520px) {
+  body.touch .area { top: calc(var(--st) + 128px); font-size: 14px; }
+  body.touch #zoom { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) + 140px); right: calc(var(--g) + var(--sr) + 4px); }
+  body.touch #toasts { bottom: auto; top: calc(var(--st) + 168px); flex-direction: column; max-width: calc(100vw - 80px); }
+}
