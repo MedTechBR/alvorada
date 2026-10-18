@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { screenHeight } from '../sprites/scale.js';
 import { folhaTreinador, folhaPronta, chaveDe } from '../sprites/treinador-hgss.js';
+import { toCharLook } from '../ui/looks.js';
 
 // Personagens no estilo FireRed/HeartGold (folhas do ramo assets-hgss, assets/hgss/personagens): no 3D o corpo
 // do treinador, dos moradores, dos personagens da história e dos outros jogadores é desenhado com a folha HGSS
@@ -116,11 +117,11 @@ export class Personagens {
     };
     const p = g.player;
     if (!this.ok) return C;
-    if (p && !g.mount?.active) treinador(p.body, g.look ?? p.look ?? { sexo: 'menino' }, p.dir, (p.speed ?? 0) > 10, (p.speed ?? 0) > 95);
+    if (p && !g.mount?.active) treinador(p.body, toCharLook(g.look ?? p.look ?? g.flags?.look), p.dir, (p.speed ?? 0) > 10, (p.speed ?? 0) > 95);
     for (const n of g.mundo?.people?.list ?? []) por(n.body, n.look ?? n.def?.look, n.dir, !!n.walk || (n.speed ?? 0) > 5, false, n.def?.id ?? n.id ?? n.name);
     for (const n of g.story?.roteiro?.atores?.values?.() ?? []) por(n.body, n.look, n.dir, !!n.walk, false, n.id ?? n.name);
     for (const n of g.story?.npcs?.values?.() ?? []) por(n.body, n.look, n.dir, !!n.walk, false, n.id ?? n.name);
-    for (const r of g.net?.remotes?.map?.values?.() ?? []) { let lk = null; try { lk = r.lookKey ? JSON.parse(r.lookKey) : null; } catch { /* */ } treinador(r.body, lk ?? { sexo: 'menino' }, r.dir, Math.hypot(r.vx ?? 0, r.vy ?? 0) > 10, false); }
+    for (const r of g.net?.remotes?.map?.values?.() ?? []) { let lk = null; try { lk = r.lookKey ? JSON.parse(r.lookKey) : null; } catch { /* */ } treinador(r.body, toCharLook(lk), r.dir, Math.hypot(r.vx ?? 0, r.vy ?? 0) > 10, false); }
     return C;
   }
 }
