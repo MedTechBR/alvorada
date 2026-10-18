@@ -69,7 +69,7 @@ export class Sobreposicao {
     // 2) tela: textura projetada + HUD do Pixi (o mundo fica de fora: ele já está na textura)
     const vw = W.visible; W.visible = false;
     const escTela = this.#esconderTela(stage);
-    const topo = g.arenaGinasio?.topo; if (topo && !topo.destroyed && topo.visible) { topo.visible = false; escTela.push(topo); }
+    if (topo && !topo.destroyed && topo.visible) { topo.visible = false; escTela.push(topo); }
     R.render({ container: stage });
     for (const c of escTela) c.visible = true;
     W.visible = vw;
