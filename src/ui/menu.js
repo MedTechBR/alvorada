@@ -8,10 +8,12 @@ import { BADGES } from '../story/names.js';
 import * as World from '../world/map.js';
 import * as Tiles from '../world/tiles.js';
 import { IS_TOUCH } from '../engine/input.js';
-import { OPTIONS, DEFAULT_OPTS, saveOpts, applyOpts, TEXT_SPEED_PT, UI_SCALES } from './options.js';
+import { OPTIONS, DEFAULT_OPTS, saveOpts, applyOpts, TEXT_SPEED_PT, UI_SCALES, QUALITY_PT } from './options.js';
 import { portraitURL, SILHOUETTE } from './portrait.js';
 import { ICONS } from './hud.js';
 import { exportCode, importCode, Auth } from '../net/auth.js';
+import { NATURES } from '../data/natures.js';
+import { abilityInfo } from '../data/abilities.js';
 import { serialize, writeSave } from '../save.js';
 import { drawLook, FW, FH } from './looks.js';
 
@@ -23,8 +25,10 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 const pad3 = (n) => String(n).padStart(3, '0');
 const hpColor = (f) => (f > 0.5 ? 'var(--hp-hi)' : f > 0.2 ? 'var(--hp-mid)' : 'var(--hp-lo)');
 export const fmtTime = (s) => { s = Math.floor(s || 0); return `${Math.floor(s / 3600)}:${String(Math.floor(s / 60) % 60).padStart(2, '0')}`; };
-const STATUS_PT = { par: ['PAR', 'Paralisado', 'st-par'], slp: ['DOR', 'Dormindo', 'st-slp'], psn: ['ENV', 'Envenenado', 'st-psn'], brn: ['QUE', 'Queimado', 'st-brn'] };
-const STAT_PT = { hp: 'HP', atk: 'Ataque', def: 'Defesa', spa: 'Atq. Esp.', spd: 'Def. Esp.', spe: 'Velocidade', eva: 'Evasão', acc: 'Precisão' };
+const STATUS_PT = { par: ['PAR', 'Paralisado', 'st-par'], slp: ['DOR', 'Dormindo', 'st-slp'], psn: ['ENV', 'Envenenado', 'st-psn'], tox: ['ENV', 'Gravemente envenenado', 'st-psn'],
+  brn: ['QUE', 'Queimado', 'st-brn'], frz: ['CON', 'Congelado', 'st-frz'] };
+const stPT = (s) => STATUS_PT[s] ?? [String(s).toUpperCase().slice(0, 3), String(s), 'st-slp'];
+const STAT_PT = { hp: 'PS', atk: 'Ataque', def: 'Defesa', spa: 'Atq. Esp.', spd: 'Def. Esp.', spe: 'Velocidade', eva: 'Evasão', acc: 'Precisão' };
 const CAT_PT = { phys: ['Físico', '#e8603f'], spec: ['Especial', '#4f7fe0'], status: ['Estado', '#8d93ab'] };
 const KIND_PT = { melee: 'Corpo a corpo', dash: 'Investida', proj: 'Projétil', cone: 'Sopro em leque', wave: 'Onda ao redor', self: 'No próprio usuário',
   cloud: 'Nuvem', rain: 'Cai sobre o alvo', quake: 'Tremor ao redor', multi: 'Vários golpes seguidos' };
@@ -85,12 +89,15 @@ export function monNature(m) {
   const n = m.nature;
   if (!n) return null;
   if (typeof n === 'object') return { name: n.name ?? n.id ?? '—', up: n.up ?? n.plus, down: n.down ?? n.minus };
+  if (NATURES[n]) return { name: NATURES[n].name, up: NATURES[n].up, down: NATURES[n].down };
   return { name: NATURE_PT[n] ?? String(n)[0].toUpperCase() + String(n).slice(1) };
 }
 export function monAbility(m) {
   const a = m.ability ?? m.sp?.abilities?.[0] ?? m.sp?.ability;
   if (!a) return null;
-  return typeof a === 'object' ? { name: a.name ?? a.id, desc: a.desc ?? '' } : { name: String(a), desc: '' };
+  if (typeof a === 'object') return { name: a.name ?? a.id, desc: a.desc ?? '' };
+  const info = abilityInfo(a);
+  return info ? { name: info.name, desc: info.desc ?? '' } : { name: String(a), desc: '' };
 }
 export const heldKey = (m) => m.item ?? m.held ?? m.heldItem ?? null;
 export function setHeld(m, key) { const f = 'held' in m && !('item' in m) ? 'held' : 'heldItem' in m && !('item' in m) ? 'heldItem' : 'item'; m[f] = key ?? null; }
@@ -132,8 +139,12 @@ const typePills = (types) => types.map((t) => `<span class="gm-type" style="back
 function moveEffect(mv) {
   const e = mv.eff ?? {}, out = [];
   const pct = (c) => (c == null || c >= 1 ? '' : ` (${Math.round(c * 100)}%)`);
-  if (e.status) out.push(({ brn: 'Pode queimar', par: 'Pode paralisar', psn: 'Pode envenenar', slp: 'Faz dormir' }[e.status] ?? e.status) + pct(e.chance));
-  if (e.stat) { const up = e.by > 0, n = Math.abs(e.by); out.push(`${up ? 'Aumenta' : 'Diminui'} ${n > 1 ? 'muito ' : ''}${STAT_PT[e.stat] ?? e.stat} ${e.self || mv.kind === 'self' ? 'do usuário' : 'do alvo'}${pct(e.chance)}`); }
+  if (e.status) {
+    const sure = e.chance == null || e.chance >= 1;
+    const t = sure ? { brn: 'Queima', par: 'Paralisa', psn: 'Envenena', tox: 'Envenena gravemente', slp: 'Faz dormir', frz: 'Congela' } : { brn: 'Pode queimar', par: 'Pode paralisar', psn: 'Pode envenenar', tox: 'Pode envenenar gravemente', slp: 'Pode fazer dormir', frz: 'Pode congelar' };
+    out.push((t[e.status] ?? e.status) + pct(e.chance));
+  }
+  if (e.stat) { const up = e.by > 0, n = Math.abs(e.by), ch = e.statChance ?? e.chance, maybe = ch != null && ch < 1; out.push(`${maybe ? 'Pode ' + (up ? 'aumentar' : 'diminuir') : up ? 'Aumenta' : 'Diminui'} ${n > 1 ? 'muito ' : ''}${STAT_PT[e.stat] ?? e.stat} ${e.self || mv.kind === 'self' ? 'do usuário' : 'do alvo'}${pct(ch)}`); }
   if (e.flinch) out.push(`Pode fazer o alvo hesitar${pct(e.flinch)}`);
   if (e.confuse) out.push('Pode confundir');
   if (e.drain) out.push('Recupera parte do dano causado');
@@ -455,7 +466,7 @@ export class GameMenu {
       return;
     }
     const hab = habitat(n, g);
-    const habTxt = Object.entries(hab).map(([b, e]) => `<li><b>${esc(BIOME_PT[b] ?? b)}</b> <span class="gm-soft">${e.day && e.night ? 'dia e noite' : e.night ? 'só à noite' : 'de dia'} · Nv. ${e.lo}–${e.hi}</span></li>`).join('');
+    const habTxt = Object.entries(hab).map(([b, e]) => `<li><b>${esc(BIOME_PT[b] ?? b)}</b> <span class="gm-soft">${e.day && e.night ? 'dia e noite' : e.night ? 'só à noite' : 'só de dia'} · Nv. ${e.lo}–${e.hi}</span></li>`).join('');
     const pv = prevo(n), ev = sp.evolve && SPECIES[sp.evolve.to];
     const evo = [pv ? `Evolui de ${esc(SPECIES[pv.from].name)} no Nv. ${pv.level}.` : '', ev ? `Evolui para ${(g.flags.dex?.[sp.evolve.to] ?? 0) ? esc(ev.name) : '???'} no Nv. ${sp.evolve.level}.` : ''].filter(Boolean).join(' ');
     const caught = s >= 2;
@@ -465,7 +476,7 @@ export class GameMenu {
       <p class="gm-desc">${caught ? esc(DEX_TEXT[n] ?? 'Ainda não há muitos registros sobre este Pokémon.') : 'Capture um para ler os dados completos.'}</p>
       ${evo ? `<p class="gm-soft">${evo}</p>` : ''}
       <div class="gm-sub-t">Onde vive</div>
-      ${habTxt ? `<ul class="gm-hab">${habTxt}</ul>` : `<p class="gm-soft">${[1, 4, 7].includes(n) ? 'Pokémon inicial: recebido do Prof. Jatobá.' : pv ? `Só aparece evoluindo ${esc(SPECIES[pv.from].name)}.` : 'Não aparece na natureza da região.'}</p>`}`;
+      ${habTxt ? `<ul class="gm-hab">${habTxt}</ul>` : `<p class="gm-soft">${[1, 4, 7].includes(n) ? 'Pokémon inicial: recebido do Prof. Jatobá.' : pv ? `Só se obtém evoluindo ${esc(SPECIES[pv.from].name)}.` : 'Não aparece na natureza da região.'}</p>`}`;
     clearTimeout(this.dexTimer);
     this.dexTimer = setTimeout(() => fillPortraits(box), 60);
   }
@@ -479,12 +490,12 @@ export class GameMenu {
       foot: '<b>Setas</b> mover · <b>Enter</b> opções · <b>Esc</b> voltar',
       draw: (body) => {
         body.innerHTML = `<div class="gm-grid">${g.party.map((m, i) => {
-          const f = m.hp / m.stats.hp, st = m.status ? `<span class="status ${STATUS_PT[m.status][2]}">${STATUS_PT[m.status][0]}</span>` : '';
+          const f = m.hp / m.stats.hp, st = m.status ? `<span class="status ${stPT(m.status)[2]}">${stPT(m.status)[0]}</span>` : '';
           return `<div class="nav gm-box gm-pcard ${m.fainted ? 'ko' : ''} ${L.swap === i ? 'swap' : ''}" data-i="${i}">
             <span class="gm-cur">▶</span>${slot(m.dex)}
             <div class="gm-pmain"><div class="gm-pline"><span class="gm-pn">${esc(m.name)}</span>${i === g.leadIdx && g.lead?.alive ? '<span class="gm-tag">Em campo</span>' : ''}${st}${heldKey(m) ? `<span class="gm-ic sm" title="${esc(itemName(heldKey(m)))}">${itemIcon(heldKey(m))}</span>` : ''}</div>
               <div class="gm-pline"><span class="gm-lv">Nv. ${m.level}</span><span class="gm-types">${typePills(m.types)}</span></div>
-              <div class="gm-hp"><span>HP</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div></div>
+              <div class="gm-hp"><span>PS</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div></div>
               <div class="gm-hpt">${m.hp} / ${m.stats.hp}</div></div></div>`;
         }).join('')}</div>${g.box.length ? `<div class="gm-soft gm-pc">No PC: ${g.box.map((m) => `${esc(m.name)} Nv. ${m.level}`).join(' · ')}</div>` : ''}`;
         body.querySelectorAll('.nav').forEach((n) => { const i = +n.dataset.i; n._act = () => this.#partyAct(L, i); });
@@ -786,7 +797,7 @@ export class GameMenu {
           ${slot(m.dex, 'big')}
           <div class="gm-big">${esc(m.name)}</div><div class="gm-soft">Nv. ${m.level} · Nº ${pad3(m.dex)}</div>
           <div class="gm-types">${typePills(m.types)}</div>
-          <div class="gm-hp"><span>HP</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div></div>
+          <div class="gm-hp"><span>PS</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div></div>
           <div class="gm-hpt">${m.hp} / ${m.stats.hp}</div></div>`;
         let right;
         if (L.page === 0) {
@@ -797,7 +808,7 @@ export class GameMenu {
             ['Natureza', esc(monNature(m)?.name ?? '—')],
             ['Habilidade', monAbility(m) ? `<b>${esc(monAbility(m).name)}</b>${monAbility(m).desc ? `<div class="gm-soft">${esc(monAbility(m).desc)}</div>` : ''}` : '—'],
             ['Item', heldKey(m) ? `<span class="gm-ic sm">${itemIcon(heldKey(m))}</span> ${esc(itemName(heldKey(m)))}` : 'Nenhum'],
-            ['Condição', m.fainted ? '<span class="status st-slp">K.O.</span> Desmaiado' : m.status ? `<span class="status ${STATUS_PT[m.status][2]}">${STATUS_PT[m.status][0]}</span> ${STATUS_PT[m.status][1]}` : 'Saudável'],
+            ['Condição', m.fainted ? '<span class="status st-slp">K.O.</span> Desmaiado' : m.status ? `<span class="status ${stPT(m.status)[2]}">${stPT(m.status)[0]}</span> ${stPT(m.status)[1]}` : 'Saudável'],
             ['XP total', m.xp.toLocaleString('pt-BR')],
             ['Para o Nv. ' + (m.level + 1), m.level >= 100 ? '—' : (m.xpToNext() - m.xp).toLocaleString('pt-BR') + ' XP'],
             ['Evolução', ev ? `${esc(ev.name)} no Nv. ${sp.evolve.level}` : '—'],
@@ -809,7 +820,7 @@ export class GameMenu {
           const iv = monIVs(m), ev = monEVs(m), nat = monNature(m);
           const mark = (k) => (nat?.up === k ? ' <span class="nat up">▲</span>' : nat?.down === k ? ' <span class="nat dn">▼</span>' : '');
           right = `<div class="gm-box gm-sumright">
-            <div class="gm-hp big"><span>HP</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div><b>${m.hp} / ${m.stats.hp}</b></div>
+            <div class="gm-hp big"><span>PS</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div><b>${m.hp} / ${m.stats.hp}</b></div>
             <table class="gm-tbl gm-stats"><tr class="hd"><th></th><td>Valor</td><td class="hb">Base da espécie</td><td class="iv">IV</td><td class="iv">EV</td></tr>
             ${STAT_KEYS.map((k, j) => `<tr><th>${STAT_PT[k]}${mark(k)}</th><td><b>${m.stats[k]}</b></td><td class="bar"><span><i style="width:${Math.min(100, sp.base[j] / 1.6)}%"></i></span></td><td class="iv">${iv ? iv[k] : '—'}</td><td class="iv">${ev[k]}</td></tr>`).join('')}</table>
             <div class="gm-soft">Natureza: <b>${esc(nat?.name ?? '—')}</b>. IV vai de 0 a 31 (talento nato); EV cresce com as batalhas.</div></div>`;
@@ -839,7 +850,9 @@ export class GameMenu {
   #bag() {
     const g = this.g;
     const L = this.#screen({
-      title: 'Mochila', cls: 'gm-bag', pocket: this.lastPocket ?? 0,
+      title: 'Mochila', cls: 'gm-bag',
+      // abre no último bolso usado; na primeira vez, no primeiro bolso que tem alguma coisa
+      pocket: this.lastPocket ?? Math.max(0, POCKETS.findIndex(([c]) => Object.keys(g.bag).some((k) => g.bag[k] > 0 && (ITEM_INFO[k]?.pocket ?? 'itens') === c))),
       extra: () => `<span class="gm-chip">₽ <b>${(g.money ?? 0).toLocaleString('pt-BR')}</b></span>`,
       foot: '<b>←→</b> bolso · <b>↑↓</b> mover · <b>Enter</b> usar · <b>Esc</b> voltar',
       draw: (body) => {
@@ -883,7 +896,7 @@ export class GameMenu {
     }
     if (usableOnMon(k)) {
       if (!g.party.length) { await this.#msg('Você não tem Pokémon.'); return; }
-      const c = await this.#choose(`Usar ${esc(ITEM_INFO[k].name)} em quem?`, [...g.party.map((m) => `${esc(m.name)} <span class="gm-soft">${m.fainted ? 'K.O. · ' : m.status ? STATUS_PT[m.status][0] + ' · ' : ''}${m.hp}/${m.stats.hp} HP</span>`), 'Cancelar']);
+      const c = await this.#choose(`Usar ${esc(ITEM_INFO[k].name)} em quem?`, [...g.party.map((m) => `${esc(m.name)} <span class="gm-soft">${m.fainted ? 'K.O. · ' : m.status ? stPT(m.status)[0] + ' · ' : ''}${m.hp}/${m.stats.hp} PS</span>`), 'Cancelar']);
       if (c < 0 || c >= g.party.length) return;
       const r = useItemOn(g, k, g.party[c]);
       if (r.ok) { g.audio?.sfx?.('heal'); this.ui.partyChanged(); }
@@ -904,15 +917,18 @@ export class GameMenu {
   // ---------- Mapa (desenhado dos próprios blocos do mapa) ----------
   #map() {
     const g = this.g;
-    const areas = World.AREAS ?? [];
+    const seen = (a) => this.#visited(a.x, a.y);
     const here = g.map.areaName?.(g.player.x, g.player.y) ?? '';
+    // só as áreas já visitadas (o resto do mapa fica na névoa, sem revelar nomes)
+    const areas = (World.AREAS ?? []).filter((a) => a.name === here || seen(a));
+    this.mapImg = null; // a névoa muda conforme o jogador anda: redesenha a cada abertura
     const L = this.#screen({
       title: 'Mapa da região', cls: 'gm-mapscr', t: 0, sel: Math.max(0, areas.findIndex((a) => a.name === here)),
-      extra: () => `<span class="gm-chip">${esc(here)}</span>`,
+      extra: () => `<span class="gm-chip">${esc(here || 'Região Alvorada')}</span>`,
       foot: '<b>↑↓</b> ver área · <b>Esc</b> voltar',
       draw: (body) => {
         body.innerHTML = `<div class="gm-box gm-mapbox"><canvas class="gm-mapcv"></canvas></div>
-          <div class="gm-box gm-scroll gm-areas">${areas.map((a) => `<div class="nav gm-row" data-k="${esc(a.name)}"><span class="gm-cur">▶</span><span>${esc(a.name)}${a.name === here ? ' <span class="gm-tag">Você</span>' : ''}</span></div>`).join('')}
+          <div class="gm-box gm-areas"><div class="gm-scroll gm-arealist">${areas.map((a) => `<div class="nav gm-row" data-k="${esc(a.name)}"><span class="gm-cur">▶</span><span>${esc(a.name)}${a.name === here ? ' <span class="gm-tag">Você</span>' : ''}</span></div>`).join('') || '<div class="gm-empty">Explore para descobrir a região.</div>'}</div>
           <div class="gm-legend"><span><i class="lg-you"></i>Você</span><span><i class="lg-obj"></i>Objetivo</span><span><i class="lg-house"></i>Construções</span></div></div>`;
         body.querySelectorAll('.nav').forEach((n) => { n._act = () => {}; });
         L.focus = areas.find((a) => a.name === here)?.name;
@@ -923,59 +939,81 @@ export class GameMenu {
     });
     this.#push(L);
   }
+  #visited(tx, ty) { const v = this.g.mundo?.visited; return !v || v.has(Math.floor(tx / 16) + Math.floor(ty / 16) * 64); }
   #regionImage() {
-    const m = this.g.map;
-    if (this.mapImg?.ver === m.tiles) return this.mapImg.c;
-    // O agente do mundo vai entregar um mapa desenhado (world.renderRegionMap); se existir, ele manda.
-    const ext = this.g.world?.renderRegionMap ?? m.renderRegionMap ?? World.renderRegionMap;
-    if (typeof ext === 'function') {
-      try { const c = ext.call(this.g.world?.renderRegionMap ? this.g.world : m, m); if (c?.width) { this.mapImg = { ver: m.tiles, c }; return c; } } catch { /* cai no desenho próprio */ }
-    }
+    if (this.mapImg) return this.mapImg;
+    const m = this.g.map, W = m.w, H = m.outdoorH ?? m.h, mm = this.g.mundo?.minimap;
+    const c = document.createElement('canvas'); c.width = W * 2; c.height = H * 2;
+    if (mm?.renderRegionMap) { try { mm.renderRegionMap(c, { fog: true, player: false, labels: false }); this.mapImg = c; return c; } catch { /* desenho próprio abaixo */ } }
     const TL = Tiles.TILE ?? {};
     const col = {};
-    const put = (k, c) => { if (TL[k] != null) col[TL[k]] = c; };
+    const put = (k, cc) => { if (TL[k] != null) col[TL[k]] = cc; };
     put('GRASS', [118, 186, 92]); put('GRASS2', [110, 178, 86]); put('TALL', [66, 140, 64]); put('PATH', [214, 190, 138]);
     put('WATER', [96, 168, 226]); put('DEEP', [58, 120, 200]); put('SAND', [236, 216, 160]); put('FLOWERS', [150, 196, 96]); put('CLIFF', [120, 104, 88]);
-    const c = document.createElement('canvas'); c.width = m.w; c.height = m.h;
-    const x = c.getContext('2d'), img = x.createImageData(m.w, m.h);
-    for (let j = 0; j < m.h; j++) for (let i = 0; i < m.w; i++) {
-      const t = m.at(i, j), k = (j * m.w + i) * 4, cc = col[t] ?? [118, 186, 92];
-      const tree = m.block?.[i + j * m.w];
-      img.data[k] = tree ? cc[0] * 0.55 : cc[0]; img.data[k + 1] = tree ? cc[1] * 0.62 : cc[1]; img.data[k + 2] = tree ? cc[2] * 0.55 : cc[2]; img.data[k + 3] = 255;
+    const t = document.createElement('canvas'); t.width = W; t.height = H;
+    const x = t.getContext('2d'), img = x.createImageData(W, H);
+    for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {
+      const k = (j * W + i) * 4, cc = this.#visited(i, j) ? col[m.at(i, j)] ?? [118, 186, 92] : [233, 223, 196];
+      img.data[k] = cc[0]; img.data[k + 1] = cc[1]; img.data[k + 2] = cc[2]; img.data[k + 3] = 255;
     }
     x.putImageData(img, 0, 0);
-    x.fillStyle = '#c75b4a';
-    for (const o of m.objects ?? []) if (o.kind === 'house' && !o.dead) x.fillRect(Math.floor(o.x / 16) - 2, Math.floor(o.y / 16) - 2, o.fw ?? 4, o.fh ?? 2);
-    this.mapImg = { ver: m.tiles, c };
+    const cx = c.getContext('2d'); cx.imageSmoothingEnabled = false; cx.drawImage(t, 0, 0, W * 2, H * 2);
+    this.mapImg = c;
     return c;
   }
   #drawMap(L) {
     const cv = this.q('.gm-mapcv');
     if (!cv) return;
-    const g = this.g, m = g.map, box = cv.parentElement;
-    const css = Math.max(120, Math.floor(Math.min(box.clientWidth, box.clientHeight) - 12));
-    const dpr = Math.min(2, devicePixelRatio || 1), px = Math.round(css * dpr);
-    if (cv.width !== px) { cv.width = cv.height = px; cv.style.width = cv.style.height = css + 'px'; }
-    const c = cv.getContext('2d'), k = px / Math.max(m.w, m.h);
+    const g = this.g, m = g.map, box = cv.parentElement, W = m.w, H = m.outdoorH ?? m.h;
+    const cw = Math.max(120, box.clientWidth - 12), ch = Math.max(90, box.clientHeight - 12);
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    if (cv.width !== Math.round(cw * dpr) || cv.height !== Math.round(ch * dpr)) {
+      cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr); cv.style.width = cw + 'px'; cv.style.height = ch + 'px';
+    }
+    // recorte: o que já foi visitado (mais o jogador e a área escolhida), com folga, na proporção da caixa
+    const room = m.interiorAt?.(g.player.x, g.player.y);
+    const ptx = room?.door ? room.door.x : g.player.x / 16, pty = room?.door ? room.door.y : g.player.y / 16;
+    let x0 = ptx, y0 = pty, x1 = ptx, y1 = pty;
+    for (const k of g.mundo?.visited ?? []) { const sx = (k % 64) * 16, sy = Math.floor(k / 64) * 16; if (sy >= H) continue; x0 = Math.min(x0, sx); y0 = Math.min(y0, sy); x1 = Math.max(x1, sx + 16); y1 = Math.max(y1, sy + 16); }
+    const fa = (World.AREAS ?? []).find((a) => a.name === L.focus);
+    const ot = this.ui.hud.obj?.target;
+    if (ot && Number.isFinite(ot.x) && ot.y / 16 < H) { x0 = Math.min(x0, ot.x / 16 - 6); y0 = Math.min(y0, ot.y / 16 - 6); x1 = Math.max(x1, ot.x / 16 + 6); y1 = Math.max(y1, ot.y / 16 + 6); }
+    if (fa) { x0 = Math.min(x0, fa.x - 8); y0 = Math.min(y0, fa.y - 8); x1 = Math.max(x1, fa.x + 8); y1 = Math.max(y1, fa.y + 8); }
+    x0 -= 16; y0 -= 16; x1 += 16; y1 += 16;
+    let vw = Math.max(88, x1 - x0), vh = Math.max(66, y1 - y0);
+    const asp = cw / ch; if (vw / vh < asp) vw = vh * asp; else vh = vw / asp;
+    vw = Math.min(vw, Math.max(W, H * asp)); vh = vw / asp;
+    let vx = (x0 + x1) / 2 - vw / 2, vy = (y0 + y1) / 2 - vh / 2;
+    vx = vw >= W ? (W - vw) / 2 : Math.max(0, Math.min(W - vw, vx)); vy = vh >= H ? (H - vh) / 2 : Math.max(0, Math.min(H - vh, vy));
+    const c = cv.getContext('2d'), k = cv.width / vw;
+    const S = (tx, ty) => [(tx - vx) * k, (ty - vy) * k];
     c.imageSmoothingEnabled = false;
-    c.fillStyle = '#3a78c8'; c.fillRect(0, 0, px, px);
-    c.drawImage(this.#regionImage(), 0, 0, m.w * k, m.h * k);
+    c.fillStyle = '#e9dfc4'; c.fillRect(0, 0, cv.width, cv.height);
+    c.drawImage(this.#regionImage(), 0, 0, W * 2, H * 2, -vx * k, -vy * k, W * k, H * k);
+    // nomes: a escolhida primeiro, depois cidades e vilas, depois o resto; sem sobrepor
     c.textAlign = 'center'; c.textBaseline = 'middle';
-    for (const a of World.AREAS ?? []) {
-      const on = a.name === L.focus, fs = Math.max(10, Math.min(15, css / 30));
-      c.font = `900 ${Math.round((on ? fs * 1.15 : fs) * dpr)}px Nunito, system-ui, sans-serif`;
-      c.lineWidth = 4 * dpr; c.strokeStyle = on ? '#1d2340' : 'rgba(255,255,255,.95)'; c.strokeText(a.name, a.x * k, a.y * k);
-      c.fillStyle = on ? '#ffd23f' : '#1d2340'; c.fillText(a.name, a.x * k, a.y * k);
+    const fs = Math.max(10, Math.min(15, cw / 34)) * dpr, placed = [];
+    const big = (a) => /^(Cidade|Vila|Porto)/.test(a.name);
+    const list = (World.AREAS ?? []).filter((a) => a.name === L.focus || this.#visited(a.x, a.y)).sort((a, b) => (b.name === L.focus) - (a.name === L.focus) || big(b) - big(a));
+    for (const a of list) {
+      const on = a.name === L.focus, size = on ? fs * 1.15 : big(a) ? fs : fs * 0.86;
+      c.font = `900 ${Math.round(size)}px Nunito, system-ui, sans-serif`;
+      const [x, y] = S(a.x, a.y), w = c.measureText(a.name).width + 8 * dpr, h = size + 6 * dpr;
+      const r = [x - w / 2, y - h / 2, x + w / 2, y + h / 2];
+      if (!on && placed.some((q) => r[0] < q[2] && r[2] > q[0] && r[1] < q[3] && r[3] > q[1])) continue;
+      placed.push(r);
+      c.lineWidth = 4 * dpr; c.lineJoin = 'round'; c.strokeStyle = on ? '#1d2340' : 'rgba(255,255,255,.95)'; c.strokeText(a.name, x, y);
+      c.fillStyle = on ? '#ffd23f' : '#1d2340'; c.fillText(a.name, x, y);
     }
     const obj = this.ui.hud.obj?.target;
-    if (obj) { const ox = obj.x / 16 * k, oy = obj.y / 16 * k, r = 7 * dpr; c.beginPath(); c.moveTo(ox, oy - r); c.lineTo(ox + r, oy); c.lineTo(ox, oy + r); c.lineTo(ox - r, oy); c.closePath(); c.fillStyle = '#f2b705'; c.fill(); c.lineWidth = 2 * dpr; c.strokeStyle = '#fff'; c.stroke(); }
-    const x = g.player.x / 16 * k, y = g.player.y / 16 * k;
+    if (obj && Number.isFinite(obj.x)) { const [ox, oy] = S(obj.x / 16, obj.y / 16), r = 7 * dpr; c.beginPath(); c.moveTo(ox, oy - r); c.lineTo(ox + r, oy); c.lineTo(ox, oy + r); c.lineTo(ox - r, oy); c.closePath(); c.fillStyle = '#f2b705'; c.fill(); c.lineWidth = 2 * dpr; c.strokeStyle = '#fff'; c.stroke(); }
+    const [x, y] = S(ptx, pty);
     const pulse = 0.5 + 0.5 * Math.sin((L.t ?? 0) * 6);
     c.beginPath(); c.arc(x, y, (8 + pulse * 6) * dpr, 0, Math.PI * 2); c.fillStyle = `rgba(255,71,87,${0.3 - pulse * 0.18})`; c.fill();
     c.beginPath(); c.arc(x, y, 5 * dpr, 0, Math.PI * 2); c.fillStyle = '#ff4757'; c.fill(); c.lineWidth = 2 * dpr; c.strokeStyle = '#fff'; c.stroke();
     c.font = `900 ${13 * dpr}px Nunito, system-ui, sans-serif`;
-    c.beginPath(); c.arc(px - 22 * dpr, 22 * dpr, 13 * dpr, 0, Math.PI * 2); c.fillStyle = '#e5383b'; c.fill(); c.lineWidth = 2 * dpr; c.strokeStyle = '#fff'; c.stroke();
-    c.fillStyle = '#fff'; c.fillText('N', px - 22 * dpr, 22.5 * dpr);
+    c.beginPath(); c.arc(cv.width - 22 * dpr, 22 * dpr, 13 * dpr, 0, Math.PI * 2); c.fillStyle = '#e5383b'; c.fill(); c.lineWidth = 2 * dpr; c.strokeStyle = '#fff'; c.stroke();
+    c.fillStyle = '#fff'; c.fillText('N', cv.width - 22 * dpr, 22.5 * dpr);
   }
 
   // ---------- Cartão de treinador ----------
@@ -1021,7 +1059,8 @@ export class GameMenu {
       { k: 'textSpeed', label: 'Velocidade do texto', type: 'choice', values: ['lenta', 'normal', 'rapida'], show: (v) => TEXT_SPEED_PT[v] },
       { k: 'uiScale', label: IS_TOUCH ? 'Tamanho dos botões e do HUD' : 'Tamanho do HUD (celular)', type: 'choice', values: UI_SCALES, show: (v) => v + '%' },
       { k: 'vibrate', label: 'Vibrar ao acertar e ser atingido', type: 'bool', on: 'Ligado', off: 'Desligado' },
-      { k: 'fps', label: 'Mostrar FPS', type: 'bool', on: 'Sim', off: 'Não' },
+      { k: 'quality', label: 'Qualidade gráfica', type: 'choice', values: ['auto', 'alta', 'baixa'], show: (v) => QUALITY_PT[v] + (v === 'auto' && this.g.quality ? ` (${this.g.quality.level})` : '') },
+      { k: 'fps', label: 'Mostrar FPS (F3)', type: 'bool', on: 'Sim', off: 'Não' },
     ];
     const set = (r, v) => {
       if (r.type === 'slider') v = Math.max(0, Math.min(10, v));
@@ -1074,21 +1113,31 @@ export class GameMenu {
       foot: '<b>Esc</b> voltar',
       draw: (body) => {
         const row = (a, b) => `<tr><th>${a}</th><td>${b}</td></tr>`;
-        body.innerHTML = `<div class="gm-box gm-scroll gm-ctlbox"><div class="gm-sub-t">Teclado e mouse</div><table class="gm-tbl">
+        const kb = `<div class="gm-sub-t">Teclado e mouse</div><table class="gm-tbl">
             ${row('Andar / correr', '<kbd>WASD</kbd> ou setas · <kbd>Shift</kbd> corre')}
+            ${row('Enviar / voltar', '<kbd>Q</kbd> joga a Poké Bola do Pokémon escolhido · <kbd>Q</kbd> ou <kbd>R</kbd> chama de volta')}
             ${row('Golpes', '<kbd>1</kbd> a <kbd>4</kbd> · clique esquerdo = golpe 1, direito = golpe 2 · a mira segue o mouse')}
-            ${row('Esquiva', '<kbd>Espaço</kbd>')}${row('Enviar / chamar de volta o Pokémon', '<kbd>Q</kbd> · <kbd>R</kbd> chama de volta')}
-            ${row('Capturar', '<kbd>B</kbd> joga a Poké Bola · <kbd>G</kbd> troca o tipo de bola')}${row('Trocar Pokémon', '<kbd>Tab</kbd>')}
-            ${row('Montaria', '<kbd>X</kbd> chama ou dispensa · segurar <kbd>X</kbd> voa')}${row('Zoom', 'roda do mouse ou <kbd>+</kbd> <kbd>−</kbd>')}
-            ${row('Falar / interagir', '<kbd>E</kbd> ou <kbd>Enter</kbd>')}${row('Menu', '<kbd>M</kbd> ou <kbd>Esc</kbd>')}${row('Medidor de FPS', '<kbd>F3</kbd>')}</table>
-          <div class="gm-sub-t">Controle de videogame</div><table class="gm-tbl">
-            ${row('Andar / mirar', 'analógico esquerdo · analógico direito mira')}
+            ${row('Capturar', '<kbd>B</kbd> joga uma Poké Bola vazia · <kbd>G</kbd> troca o tipo de bola')}
+            ${row('Esquiva', '<kbd>Espaço</kbd>')}${row('Escolher Pokémon', '<kbd>Tab</kbd>')}
+            ${row('Montaria', '<kbd>X</kbd> chama ou desce · segure <kbd>X</kbd> para voar')}
+            ${row('Voar, mergulhar, cavar', '<kbd>C</kbd> (controlando o Pokémon) · <kbd>X</kbd> pula')}
+            ${row('Falar / interagir', '<kbd>E</kbd> ou <kbd>Enter</kbd>')}${row('Menu', '<kbd>M</kbd> ou <kbd>Esc</kbd>')}
+            ${row('Zoom', 'roda do mouse ou <kbd>+</kbd> <kbd>−</kbd>')}
+            ${row('Minimapa / objetivo', '<kbd>N</kbd> gira o minimapa · <kbd>J</kbd> recolhe o objetivo')}
+            ${row('Online', '<kbd>O</kbd> abre · <kbd>T</kbd> conversa')}${row('Medidor de FPS', '<kbd>F3</kbd>')}</table>`;
+        const pad = `<div class="gm-sub-t">Controle de videogame</div><table class="gm-tbl">
+            ${row('Andar / mirar', 'analógico esquerdo anda · analógico direito mira')}
             ${row('Golpes', '<kbd>RT</kbd> <kbd>RB</kbd> <kbd>LT</kbd> <kbd>LB</kbd>')}
-            ${row('Esquiva / bola', '<kbd>A</kbd> esquiva · <kbd>X</kbd> Poké Bola')}${row('Falar / trocar', '<kbd>Y</kbd> fala · <kbd>B</kbd> troca')}${row('Menu', '<kbd>Start</kbd>')}</table>
-          <div class="gm-sub-t">Tela de toque</div><table class="gm-tbl">
+            ${row('Esquiva / Pokémon', '<kbd>A</kbd> esquiva · <kbd>X</kbd> envia ou chama de volta o Pokémon')}${row('Capturar', 'com o treinador: <kbd>RB</kbd> joga a Poké Bola')}${row('Falar / trocar', '<kbd>Y</kbd> fala · <kbd>B</kbd> troca')}
+            ${row('Montaria', '<kbd>Select</kbd>')}${row('Menu', '<kbd>Start</kbd>')}</table>`;
+        const touch = `<div class="gm-sub-t">Tela de toque</div><table class="gm-tbl">
             ${row('Andar', 'analógico à esquerda (empurre até a borda para correr)')}
+            ${row('Enviar e capturar', 'botão vermelho envia o Pokémon escolhido · azul joga uma Poké Bola vazia')}
             ${row('Golpes', 'toque = mira automática no mais perto · arraste o botão = mira manual')}
-            ${row('Botões menores', 'bola, esquiva, trocar e <b>A</b> (falar) · <b>☰</b> abre o menu')}</table></div>`;
+            ${row('Botões menores', 'esquiva, <b>A</b> (falar), sela (montaria) · no modo Pokémon: bola (voltar), trocar, voar/cavar e pular')}
+            ${row('Zoom', 'pinça com dois dedos')}
+            ${row('Menu, mapa e objetivo', '<b>☰</b> abre o menu · toque no minimapa para girar · toque no objetivo para abrir ou recolher')}</table>`;
+        body.innerHTML = `<div class="gm-box gm-scroll gm-ctlbox">${IS_TOUCH ? touch + kb + pad : kb + pad + touch}</div>`;
       },
     });
     this.#push(L);

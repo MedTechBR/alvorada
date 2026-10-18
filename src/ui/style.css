@@ -15,7 +15,16 @@ body { font: 800 14px/1.25 "Nunito", "Avenir Next", system-ui, sans-serif; color
 button { font: inherit; color: inherit; }
 kbd { font: 900 11px/1 ui-monospace, Menlo, monospace; background: #fff; border: 1.5px solid #c9d3ea; border-bottom-width: 3px; border-radius: 5px; padding: 1px 5px; color: var(--ink); }
 #game, #game canvas { position: fixed; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
-#loading { position: fixed; inset: 0; display: flex; flex-direction: column; gap: 14px; align-items: center; justify-content: center; color: #fff; font-size: 16px; background: #1b2a1e; z-index: 90; }
+#loading { position: fixed; inset: 0; display: flex; flex-direction: column; gap: 16px; align-items: center; justify-content: center; color: #fff; font-size: 15px; z-index: 90;
+  background: radial-gradient(ellipse at 50% 110%, #ffc878 0%, #f0806a 22%, #8a4a8a 48%, #2a2a6a 78%, #161a3a 100%); transition: opacity .4s; }
+#loading.done { opacity: 0; pointer-events: none; }
+.ld-logo { text-align: center; line-height: 1; color: #ffcb05; }
+.ld-logo small { display: block; font-size: 20px; color: #fff; letter-spacing: 3px; text-shadow: 0 2px 0 #2a5aa8; }
+.ld-logo b { display: block; font-size: clamp(40px, 9vw, 72px); font-weight: 900; -webkit-text-stroke: 3px #2a5aa8; text-shadow: 0 5px 0 #1d3f7a, 0 12px 24px rgba(0,0,0,.35); }
+.ld-bar { width: min(320px, 70vw); height: 14px; border-radius: 99px; background: rgba(0,0,0,.35); border: 3px solid #fff; overflow: hidden; box-shadow: 0 3px 0 rgba(0,0,0,.25); }
+.ld-bar i { display: block; height: 100%; background: linear-gradient(#ffe27a, #f2b705); transform-origin: left; transform: scaleX(0); }
+.ld-txt { font-weight: 800; text-shadow: 0 1px 2px rgba(0,0,0,.5); }
+@media (max-height: 420px) { #loading { gap: 10px; } .ld-logo b { font-size: 40px; } .ld-ball { display: none; } }
 .ld-ball { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; background: linear-gradient(#e5383b 0 45%, #fff 45% 55%, #fff 55%); box-shadow: inset 0 0 0 9px transparent; animation: spin 0.9s linear infinite; position: relative; }
 .ld-ball::after { content: ''; position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px; border-radius: 50%; background: #fff; border: 3px solid #1d2340; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -42,9 +51,18 @@ body.at-title #hud, body.at-title #touch, body.at-title #menu-btn, body.menu-ope
 .ld-party b.empty { background: transparent; box-shadow: inset 0 0 0 1.5px #b9c3da; }
 .ld-party b.cur { outline: 2px solid #f2b705; outline-offset: 1px; }
 
-.objective { position: absolute; left: calc(var(--g) + var(--sl)); top: calc(var(--g) + var(--st) + 96px); max-width: 280px; padding: 7px 12px 8px;
-  background: rgba(251,250,244,.93); border-radius: 12px; border-left: 5px solid #f2b705; box-shadow: 0 3px 0 rgba(0,0,0,.2); transform-origin: top left; transform: scale(var(--hud-k, 1)); }
+.objective { position: absolute; left: calc(var(--g) + var(--sl)); top: calc(var(--g) + var(--st) + 96px); max-width: 280px; padding: 7px 26px 8px 12px;
+  background: rgba(251,250,244,.93); border-radius: 12px; border-left: 5px solid #f2b705; box-shadow: 0 3px 0 rgba(0,0,0,.2); transform-origin: top left; transform: scale(var(--hud-k, 1));
+  pointer-events: auto; cursor: pointer; touch-action: manipulation; }
 .objective .ok { font-size: 10px; font-weight: 900; letter-spacing: .08em; color: #b07a00; text-transform: uppercase; }
+.objective .otg { position: absolute; right: 7px; top: 7px; width: 14px; height: 14px; color: #b07a00; transition: transform .2s; }
+.objective .otg svg { display: block; width: 100%; height: 100%; }
+/* recolhido: uma linha só, com o losango do marcador */
+.objective.min { padding: 5px 24px 5px 10px; max-width: 230px; border-radius: 99px; }
+.objective.min .ok, .objective.min .os { display: none; }
+.objective.min .ot { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 12px; padding-left: 15px; position: relative; }
+.objective.min .ot::before { content: ''; position: absolute; left: 1px; top: 50%; width: 8px; height: 8px; margin-top: -5px; background: #f2b705; border: 1.5px solid #fff; transform: rotate(45deg); box-shadow: 0 0 0 1px #b07a00; }
+.objective.min .otg { top: 50%; margin-top: -7px; right: 6px; transform: rotate(180deg); }
 .objective .ot { font-size: 13px; line-height: 1.25; margin-top: 2px; }
 .objective .os { font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
 .objective.flash { animation: objflash .9s ease-out; }
@@ -65,15 +83,16 @@ body.at-title #hud, body.at-title #touch, body.at-title #menu-btn, body.menu-ope
   padding: 6px 18px; border-radius: 99px; background: rgba(20,30,24,.55); text-shadow: 0 2px 0 rgba(0,0,0,.45); opacity: 0; transition: opacity .6s; }
 .area.on { opacity: 1; }
 body.battle .area { display: none; }
-#toasts { position: absolute; right: calc(var(--g) + var(--sr)); top: calc(var(--g) + var(--st) + 52px); display: flex; flex-direction: column; gap: 6px; align-items: flex-end; max-width: min(360px, 46vw); }
+#toasts { position: absolute; right: calc(var(--g) + var(--sr)); top: calc(var(--g) + var(--st) + 226px); display: flex; flex-direction: column; gap: 6px; align-items: flex-end; max-width: min(360px, 46vw); }
 #toasts div { background: rgba(20,30,40,.86); color: #fff; padding: 6px 11px; border-radius: 9px; font-size: 13px; animation: tin .25s ease-out; box-shadow: 0 2px 0 rgba(0,0,0,.25); }
 @keyframes tin { from { transform: translateY(-6px); opacity: 0; } }
-#moves { position: absolute; bottom: calc(var(--g) + var(--sb)); left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
-#moves .mv { min-width: 124px; padding: 6px 9px 6px 13px; border-radius: 10px; background: var(--paper); border: 3px solid var(--line); position: relative; overflow: hidden; box-shadow: 0 3px 0 rgba(0,0,0,.22); }
+#moves { position: absolute; bottom: calc(var(--g) + var(--sb)); left: 0; right: 0; display: flex; justify-content: center; gap: 6px; padding: 0 160px; flex-wrap: wrap-reverse; }
+#moves .mv { display: flex; align-items: center; gap: 8px; min-width: 128px; max-width: 230px; padding: 6px 12px 6px 14px; border-radius: 10px; background: var(--paper); border: 3px solid var(--line); position: relative; overflow: hidden; box-shadow: 0 3px 0 rgba(0,0,0,.22); }
+#moves .mv > span { min-width: 0; display: flex; flex-direction: column; }
 #moves .mv::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--tc); }
-#moves .mv small { display: block; font-size: 11px; opacity: .7; }
+#moves .mv small { display: block; font-size: 11px; opacity: .7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #moves .mv .cd { position: absolute; inset: 0; background: rgba(30,40,64,.5); transform-origin: left; transform: scaleX(0); }
-#moves .mv kbd { position: absolute; right: 6px; top: 5px; }
+#moves .mv kbd { flex: none; order: -1; min-width: 22px; text-align: center; }
 #perf { position: absolute; left: 50%; top: calc(var(--st) + 48px); transform: translateX(-50%); font: 600 12px ui-monospace, Menlo, monospace; color: #b8ffb0; background: rgba(0,0,0,.6); padding: 4px 9px; border-radius: 7px; white-space: nowrap; }
 #saved { position: absolute; left: calc(var(--g) + var(--sl)); bottom: calc(var(--g) + var(--sb)); background: rgba(20,30,40,.8); color: #fff; padding: 5px 12px 5px 28px; border-radius: 99px; font-size: 12px; opacity: 0; }
 #saved::before { content: ''; position: absolute; left: 9px; top: 50%; width: 11px; height: 11px; margin-top: -6px; border-radius: 2px; background: #9b7cf0; box-shadow: inset 0 3px 0 #fff; }
@@ -98,12 +117,19 @@ body.touch #menu-btn { width: 46px; height: 46px; padding: 0; justify-content: c
 .tb.move { width: 70px; height: 70px; padding: 6px; background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--tc) 70%, #fff), var(--tc) 70%);
   border: 3px solid rgba(255,255,255,.85); box-shadow: 0 4px 0 rgba(0,0,0,.3), 0 0 0 2px rgba(29,35,64,.55); overflow: hidden; }
 .tb.move span { position: relative; z-index: 1; }
-.tb.move::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(rgba(10,14,30,.62) var(--cd, 0%), transparent 0); }
-.tb.move.cool span { opacity: .8; }
+.tb.move::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(rgba(10,14,30,.62) calc(var(--cd, 0) * 1turn), transparent 0); }
+.tb.move span { display: flex; flex-direction: column; align-items: center; gap: 1px; max-width: 100%; }
+.tb.move span.long { font-size: 10px; letter-spacing: -.2px; }
+.tb.move i { font-style: normal; display: block; font-size: 9px; opacity: .92; max-width: 64px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tb.move svg { width: 24px; height: 24px; margin-bottom: 1px; filter: drop-shadow(0 1px 1px rgba(0,0,0,.4)); }
+.tb.move[data-slot="0"] svg { width: 28px; height: 28px; }
 .tb.small { width: 50px; height: 50px; background: rgba(251,250,244,.92); color: var(--line); border: 3px solid var(--line); box-shadow: 0 3px 0 rgba(0,0,0,.3); text-shadow: none; }
 .tb.small svg { width: 26px; height: 26px; }
 .tb:active, .tb.aiming { filter: brightness(1.15); transform: scale(.94); }
 .tb.move[data-slot="0"] { right: 0; bottom: 0; width: 88px; height: 88px; font-size: 13px; }
+.tb.move[data-slot="0"] i { max-width: 76px; font-size: 10px; }
+/* modo treinador: a Poké Bola e a troca já estão nos botões grandes */
+body.touch:not(.mode-pokemon) #t-ball, body.touch:not(.mode-pokemon) #t-swap { display: none; }
 .tb.move[data-slot="1"] { right: 94px; bottom: 2px; }
 .tb.move[data-slot="2"] { right: 6px; bottom: 94px; }
 .tb.move[data-slot="3"] { right: 82px; bottom: 76px; }
@@ -118,17 +144,21 @@ body.touch #lead { width: 186px; padding: 5px 9px 6px; --hud-k: var(--ui-scale);
 body.touch .ld-nm { font-size: 13px; }
 body.touch .objective { top: calc(var(--g) + var(--st) + 80px); max-width: 220px; --hud-k: var(--ui-scale); }
 body.touch .objective .ot { font-size: 12px; }
-body.touch #toasts { top: calc(var(--g) + var(--st) + 58px); }
+body.touch #toasts { top: auto; right: auto; left: 50%; transform: translateX(-50%); bottom: calc(10px + var(--sb)); align-items: center; flex-direction: column-reverse; max-width: min(320px, 44vw); }
+body.touch #toasts div { font-size: 12px; padding: 5px 10px; text-align: center; }
 body.touch .foe { --hud-k: var(--ui-scale); }
 @media (max-height: 430px) {
-  body.touch .objective { top: auto; bottom: auto; top: calc(var(--g) + var(--st) + 74px); max-width: 190px; padding: 5px 9px; }
-  body.touch .objective .os { display: none; }
+  body.touch #lead { width: 182px; padding: 4px 8px 5px; }
+  body.touch .ld-party { margin-top: 4px; }
+  body.touch .objective { top: calc(var(--g) + var(--st) + 80px * var(--ui-scale)); max-width: 230px; }
+  body.touch .objective:not(.min) .os { display: none; }
   #stick { width: 118px; height: 118px; } #stick-knob { left: 34px; top: 34px; width: 48px; height: 48px; }
   #tbtns { transform: scale(calc(var(--ui-scale) * .86)); }
   .area { font-size: 14px; }
 }
 @media (max-width: 520px) { /* retrato */
-  body.touch .objective { top: calc(var(--g) + var(--st) + 80px); max-width: 170px; }
+  body.touch .objective { top: calc(var(--g) + var(--st) + 80px); max-width: min(230px, calc(100vw - 140px)); }
+  body.touch #toasts { bottom: calc(230px + var(--sb)); max-width: 86vw; }
   #tbtns { transform: scale(calc(var(--ui-scale) * .82)); }
   #stick { transform: scale(calc(var(--ui-scale) * .85)); }
   .foe { top: calc(var(--g) + var(--st) + 84px); }
@@ -163,8 +193,14 @@ body.touch .foe { --hud-k: var(--ui-scale); }
 
 /* cenas */
 .fade { position: absolute; inset: 0; background: #000; opacity: 0; transition: opacity .36s; pointer-events: auto; }
-.chapter { position: absolute; inset: 0; background: #05060c; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; padding: 20px; transition: opacity 1.2s; }
-.chapter small { font-size: 13px; letter-spacing: .3em; opacity: .7; } .chapter b { font-size: clamp(20px, 4vw, 30px); }
+.chapter { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 120%, #3a2a5a 0%, #141634 45%, #05060c 80%); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; padding: 20px; transition: opacity 1.2s; animation: chin .9s ease-out; }
+@keyframes chin { from { opacity: 0; } }
+.chapter small { font-size: 12px; letter-spacing: .35em; opacity: .6; }
+.chapter em { font-style: normal; font-size: 15px; letter-spacing: .25em; text-transform: uppercase; color: #ffd23f; animation: chup .9s ease-out both .15s; }
+.chapter b { font-size: clamp(24px, 5vw, 40px); text-shadow: 0 3px 0 rgba(0,0,0,.5); animation: chup .9s ease-out both .3s; }
+.chapter i { display: block; width: min(320px, 60vw); height: 2px; background: linear-gradient(90deg, transparent, #ffd23f, transparent); animation: chline 1.1s ease-out both .45s; }
+@keyframes chup { from { opacity: 0; transform: translateY(10px); } }
+@keyframes chline { from { transform: scaleX(0); opacity: 0; } }
 .chapter.out { opacity: 0; }
 .banner { position: absolute; left: 50%; top: 38%; transform: translate(-50%, -50%); font-size: clamp(26px, 6vw, 54px); font-weight: 900; color: var(--bc); letter-spacing: 2px; white-space: nowrap;
   -webkit-text-stroke: 2px #2a1a00; text-shadow: 0 5px 0 #2a1a00, 0 12px 26px rgba(0,0,0,.5); animation: banner 2.6s ease-out forwards; pointer-events: none !important; }
@@ -241,7 +277,7 @@ body.touch .foe { --hud-k: var(--ui-scale); }
   .tt-h { font-size: 16px; margin-bottom: 6px; } .tt-btn { padding: 9px 14px; font-size: 15px; } .tt-f input { padding: 7px 10px; }
   .cc-prev canvas { width: 68px; height: 92px; } .cc-prev { width: 96px; } .cc-row > span { width: 80px; } .tt-sw button { width: 22px; height: 22px; } .cc-opts { gap: 4px; }
 }
-#moves .mv b { display: block; max-width: 132px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#moves .mv b { display: block; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* modo online (src/ui/online.js): o botão vira item do menu; atalhos rápidos sem cobrir o HUD */
 #net-btn { display: none !important; }
@@ -263,3 +299,66 @@ body.at-title #net, body.menu-open #net { visibility: hidden; }
 .evo-box { position: absolute; left: 50%; bottom: 6vh; transform: translateX(-50%); width: min(720px, 92vw); background: #fbfbff; border: 4px solid #36426b; border-radius: 14px; padding: 16px 22px; font: 800 20px/1.35 Nunito, system-ui, sans-serif; color: #1d2340; display: flex; justify-content: space-between; gap: 12px; box-shadow: 0 6px 0 rgba(0,0,0,.3); }
 .evo-n { visibility: hidden; color: #e5383b; animation: evo-blink .8s steps(2) infinite; }
 @keyframes evo-blink { 50% { opacity: 0; } }
+
+/* minimapa (src/world/minimap.js): canto superior direito, abaixo do botão do menu;
+   no celular deitado vai para o lado do botão (sobra altura para os botões de golpe) */
+#minimapa { position: fixed; top: calc(var(--g) + var(--st) + 52px); right: calc(var(--g) + var(--sr)); z-index: 15; pointer-events: auto; cursor: pointer; user-select: none; }
+#minimapa canvas { display: block; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 2.5px #36426b, 0 4px 0 2px rgba(0,0,0,.25); background: #1b2a1e; image-rendering: pixelated; }
+#minimapa .mm-lab { text-align: center; font: 800 11px/1.2 Nunito, system-ui, sans-serif; color: #fff; text-shadow: 0 1px 0 rgba(0,0,0,.7), 0 0 3px rgba(0,0,0,.5); margin-top: 2px; white-space: nowrap; }
+body.at-title #minimapa, body.menu-open #minimapa { visibility: hidden; }
+body.touch #minimapa { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) + 8px); }
+@media (max-height: 500px) {
+  body.touch #minimapa { top: calc(var(--g) + var(--st)); right: calc(var(--g) + var(--sr) + 46px * var(--ui-scale) + 8px); }
+  body.touch #minimapa .mm-lab { font-size: 10px; margin-top: 1px; }
+}
+@media (max-height: 640px) { body:not(.touch) #toasts { top: calc(var(--g) + var(--st) + 196px); } }
+#t-alt, #t-jump { font-size: 22px; line-height: 1; }
+/* computador com tela grande: tudo da interface cresce proporcionalmente (--k vem de ui.js) */
+body:not(.touch) #hud, body:not(.touch) #ui, body:not(.touch) #menu-btn, body:not(.touch) #minimapa, body:not(.touch) #net { zoom: var(--k, 1); }
+/* criador de personagem em tela baixa: o logo sai para o painel caber sem quebrar as linhas */
+@media (max-height: 480px) {
+  .title.creating .tt-logo { display: none; }
+  .title.creating .tt-wrap { width: min(760px, 100%); }
+  .title.creating .cc-row { flex-wrap: nowrap; }
+  .title.creating .cc-row > .tt-seg, .title.creating .cc-row > .tt-sw { flex-wrap: wrap; }
+}
+/* durante o diálogo os controles de toque e a barra de golpes saem da frente (o A e o toque na tela avançam) */
+body.dlg-open #touch, body.dlg-open #moves { visibility: hidden; }
+/* os botões de golpe têm visibility inline (hud.js): sem o !important eles apareceriam por cima do diálogo/menu */
+body.dlg-open #touch *, body.menu-open #touch *, body.at-title #touch * { visibility: hidden !important; }
+body.touch #perf { top: auto; bottom: calc(var(--sb) + 52px); font-size: 10px; white-space: normal; text-align: center; max-width: 46vw; }
+
+/* retratos no HUD (portraitOf): Pokémon em campo e os do treinador adversário */
+.ld-pic { width: 26px; height: 26px; flex: none; margin: -3px 0 -3px -3px; border-radius: 50%; background: radial-gradient(circle at 50% 60%, #fff 0 45%, #dfe8fa 80%); box-shadow: inset 0 0 0 1.5px #cfdaf2; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.ld-pic img { width: 120%; height: 120%; object-fit: contain; image-rendering: pixelated; }
+.fo-pic { width: 22px; height: 22px; flex: none; border-radius: 50%; background: rgba(255,255,255,.12); overflow: hidden; display: inline-flex; align-items: center; justify-content: center; align-self: center; }
+.fo-pic img { width: 120%; height: 120%; object-fit: contain; image-rendering: pixelated; }
+
+/* zoom (+ e −): pílula vertical à esquerda do minimapa; no celular deitado, embaixo do botão do menu */
+#zoom { position: fixed; z-index: 15; display: flex; flex-direction: column; gap: 0; top: calc(var(--g) + var(--st) + 82px); right: calc(var(--g) + var(--sr) + 152px);
+  border-radius: 99px; border: 3px solid var(--line); background: var(--paper); box-shadow: 0 3px 0 rgba(0,0,0,.25); overflow: hidden; }
+#zoom button { width: 34px; height: 32px; padding: 0; border: 0; background: none; color: var(--line); font: 900 22px/1 Nunito, system-ui, sans-serif; cursor: pointer; touch-action: none; }
+#zoom button + button { border-top: 2px solid #d3ddf2; }
+#zoom button:active { background: #fff0b8; }
+body.at-title #zoom, body.menu-open #zoom, body.dlg-open #zoom { visibility: hidden; }
+body:not(.touch) #zoom { zoom: var(--k, 1); }
+@media (max-height: 640px) { body:not(.touch) #zoom { right: calc(var(--g) + var(--sr) + 124px); top: calc(var(--g) + var(--st) + 70px); } }
+body.touch #zoom { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) + 40px); right: calc(var(--g) + var(--sr) + 116px); transform: scale(var(--ui-scale)); transform-origin: top right; }
+@media (max-height: 500px) {
+  body.touch #zoom { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) + 6px); right: calc(var(--g) + var(--sr) + 6px); }
+  body.touch #zoom button { width: 34px; height: 30px; font-size: 20px; }
+}
+/* celular em pé: nome da área abaixo do painel do Pokémon, zoom embaixo do minimapa, avisos no meio da tela */
+@media (max-width: 520px) {
+  body.touch .area { top: calc(var(--st) + 128px); font-size: 14px; }
+  body.touch #zoom { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) + 140px); right: calc(var(--g) + var(--sr) + 4px); }
+  body.touch #toasts { bottom: auto; top: calc(var(--st) + 168px); flex-direction: column; max-width: calc(100vw - 80px); }
+}
+/* online no celular deitado: janela mais compacta (cabe sem rolar na maioria dos casos) */
+@media (max-height: 430px) {
+  body #net .net-card { padding: 8px 12px 10px; max-height: calc(100vh - 16px); }
+  body #net .net-card h2 { font-size: 16px; margin-bottom: 4px; }
+  body #net button, body #net input { min-height: 36px; padding-top: 4px; padding-bottom: 4px; }
+  body #net label { margin: 4px 0 2px; }
+  body #net .net-row { margin-top: 6px; }
+}

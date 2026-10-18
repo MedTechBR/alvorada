@@ -14,6 +14,7 @@ import { SPECIES, BIOME_ENCOUNTERS } from './data/species.js';
 import { MOVES } from './data/moves.js';
 import { TYPE_PT } from './data/types.js';
 import { Audio } from './audio/audio.js';
+import { Quality } from './engine/quality.js';
 import { Online } from './net/online.js';
 import { UI } from './ui/ui.js';
 import { Story } from './story/story.js';
@@ -34,6 +35,7 @@ class Game {
     this.app = new PIXI.Application();
     await this.app.init({ resizeTo: window, background: 0x1b2a1e, antialias: false, roundPixels: true, resolution: 1, preference: 'webgl', powerPreference: 'high-performance' });
     $('game').appendChild(this.app.canvas);
+    window.__boot?.(0.74, 'Desenhando o mundo…');
     PIXI.TextureSource.defaultOptions.scaleMode = 'nearest';
     this.tx = makeTiles();
     this.input = new Input(this.app.canvas);
@@ -51,6 +53,7 @@ class Game {
     this.world.addChild(this.combat.layer, this.fx.layer);
     this.app.stage.addChild(this.world);
     this.#buildObjects();
+    window.__boot?.(0.84, 'Acordando os Pokémon…');
     this.mundo = new WorldLife(this); // dia e noite, portas, bichinhos, minimapa
     // as mecânicas (Bola do Crepúsculo, evolução por hora, encontros) seguem o relógio do jogo, não o do aparelho
     setAmbiente({ hora: () => this.mundo.hour, caverna: () => !!this.map.interiorAt(this.player.x, this.player.y)?.dark });
@@ -59,13 +62,15 @@ class Game {
     this.mount = new Mounts(this); // montarias do treinador (X): src/world/mounts.js
     this.party = []; this.box = []; this.bag = { pokeball: 0, potion: 0 }; this.money = 0; this.flags = {};
     this.leadIdx = 0; this.entities = [];
+    this.quality = new Quality(this); // qualidade gráfica automática (src/engine/quality.js)
     this.ui = new UI(this);        // HUD, menus, diálogo, título e save (src/ui)
     this.story = new Story(this);  // capítulo 1 (src/story)
+    window.__boot?.(0.92, 'Preparando a aventura…');
     this.available = await fetch('assets/pmd/index.json').then((r) => r.json()).catch(() => [1, 4, 6, 7, 9, 25, 130, 133]);
     this.spawnT = 0; this.wilds = [];
     this.zoom = 3; this.#resize(); addEventListener('resize', () => this.#resize());
     this.cam = { x: this.player.x, y: this.player.y };
-    $('loading').remove();
+    if (window.__bootDone) window.__bootDone(); else $('loading')?.remove();
     this.hudInit();
     this.net = new Online(this); // modo online (src/net): salas, outros jogadores, troca e PvP
     this.app.ticker.maxFPS = 0;
@@ -82,6 +87,7 @@ class Game {
       if (this.ui) this.ui.title = async () => { this.ui.state = 'play'; return 'test'; }; // sem conta: nada é gravado
     }
     const start = await this.ui.title();
+    for (const m of this.party) loadPokemonSprites(m.dex).catch(() => {}); // já baixa a equipe enquanto a história começa
     this.mode = 'trainer';
     this.leadIdx = Math.max(0, this.party.findIndex((m) => !m.fainted));
     this.hudInit();
@@ -90,7 +96,8 @@ class Game {
 
   #resize() {
     // escala inteira para o pixel art ficar nítido; o jogador ajusta com roda, pinça ou + e −
-    const auto = Math.max(2, Math.round(innerHeight / (T * (IS_TOUCH ? 13 : 18))));
+    // (em pé, a largura manda: sem isso o celular em retrato mostraria só 6 blocos de largura)
+    const auto = Math.max(2, Math.round(Math.min(innerHeight, innerWidth * 0.75) / (T * (IS_TOUCH ? 13 : 18))));
     let pref = null; try { pref = +localStorage.getItem('alvorada.zoom') || null; } catch (e) { /* sem armazenamento */ }
     this.zoomAuto = auto;
     this.zoom = Math.max(1, Math.min(6, pref ?? auto));
@@ -208,6 +215,8 @@ class Game {
       const mon = new Mon(dex, lo + Math.floor(Math.random() * (hi - lo + 1)));
       const w = new PokeEntity(this, mon, 'wild', x, y);
       await w.ready;
+      // sem internet: só aparecem espécies cujos sprites já estão guardados (nada de bolinha no lugar do Pokémon)
+      if (w.set?.placeholder && !navigator.onLine) { w.view.destroy({ children: true }); continue; }
       if (Math.random() < 0.15) w.ai.state = 'sleep';
       this.entities.push(w); this.wilds.push(w); this.ents.addChild(w.view);
       w.alpha = 0; w.fadeIn = true;
@@ -459,6 +468,7 @@ class Game {
     this.map.flushDirty();
     this.mundo.update(rdt);
     this.hudUpdate(rdt);
+    this.quality.sample(rdt);
     inp.endFrame();
     this.#perf(rdt, performance.now() - t0);
   }
@@ -601,7 +611,7 @@ class Game {
   toast(text) { this.ui?.toast(text); }
   #perf(dt, ms) {
     const P = (this.perfD ??= { n: 0, t: 0, ms: 0 }); P.n++; P.t += dt; P.ms += ms;
-    if (P.t >= 0.5) { if (!$('perf').hidden) $('perf').textContent = `${Math.round(P.n / P.t)} FPS · lógica ${(P.ms / P.n).toFixed(2)} ms · ${this.entities.length} Pokémon · zoom ${this.zoom}x`; P.n = 0; P.t = 0; P.ms = 0; }
+    if (P.t >= 0.5) { if (!$('perf').hidden) $('perf').textContent = `${Math.round(P.n / P.t)} FPS · lógica ${(P.ms / P.n).toFixed(2)} ms · ${this.entities.length} Pokémon · ${this.fx.count} partículas · zoom ${this.zoom}x · qualidade ${this.quality.level}`; P.n = 0; P.t = 0; P.ms = 0; }
   }
 }
 

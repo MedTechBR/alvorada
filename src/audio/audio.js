@@ -29,18 +29,42 @@ const TRACKS = {
     bass: seq(`D3 D4 D3 D4 D3 D4 D3 D4 | C3 C4 C3 C4 C3 C4 C3 C4 | D3 D4 D3 D4 D3 D4 D3 D4 | Bb2 Bb3 Bb2 Bb3 A2 A3 A2 A3 |
       G2 G3 G2 G3 G2 G3 G2 G3 | C3 C4 C3 C4 C3 C4 C3 C4 | Bb2 Bb3 Bb2 Bb3 A2 A3 A2 A3 | D3 D4 D3 D4 A2 A3 C#3 E3`),
     drums: seq('k h s h k k s h k h s h k s s s') },
+  // tela de título: calma, devagar, sem bateria
+  title: { bpm: 76, lead: seq(`
+    E5 - - - G5 - A5 - B5 - - - A5 - G5 - | E5 - - - D5 - E5 - G5 - - - - - - - |
+    C6 - - - B5 - A5 - G5 - - - E5 - G5 - | A5 - - - G5 - E5 - D5 - - - - - - - |
+    E5 - - - G5 - A5 - B5 - - - D6 - B5 - | C6 - - - B5 - A5 - B5 - - - - - - - |
+    A5 - - - G5 - E5 - G5 - - - A5 - B5 - | G5 - - - - - - - . . . . . . . . |`),
+    bass: seq(`C3 . G3 . E4 . G3 . | G2 . D3 . B3 . D3 . | A2 . E3 . C4 . E3 . | E2 . B2 . G3 . B2 . |
+      F2 . C3 . A3 . C3 . | C3 . G3 . E4 . G3 . | F2 . C3 . A3 . C3 . | G2 . D3 . G3 . . .`), drums: null, soft: true },
+  // bosques e matas: menor, misteriosa
+  forest: { bpm: 104, lead: seq(`
+    A4 - C5 - E5 - D5 C5 B4 - - - G4 - B4 - | A4 - C5 - E5 - G5 F5 E5 - - - . . . . |
+    F5 - E5 - D5 - C5 - B4 - C5 - D5 - - - | E5 - D5 - C5 - B4 - A4 - - - . . . . |`),
+    bass: seq(`A2 . E3 . A2 . E3 . | G2 . D3 . G2 . D3 . | F2 . C3 . F2 . C3 . | E2 . B2 . E2 . G#2 . |
+      D2 . A2 . D2 . A2 . | F2 . C3 . F2 . C3 . | E2 . B2 . E2 . B2 . | A2 . E3 . A2 . . .`),
+    drums: seq('k . . h . . s . k . . h . . . h') },
 };
 
+// sons que tocam muito em combate ganham uma leve variação de altura (não soam sempre iguais)
+const VARY = new Set(['hit', 'hit-weak', 'hit-super', 'hit-heavy', 'pop', 'dodge', 'whoosh', 'crack', 'thud', 'shake', 'warn']);
+
 export class Audio {
-  constructor() { this.ctx = null; this.track = null; this.musicOn = true; }
+  constructor() { this.ctx = null; this.track = null; this.musicOn = true; this.rate = 1; }
 
   unlock() {
     if (this.ctx) { this.ctx.resume?.(); return; }
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
     this.ctx = new AC();
-    this.master = this.ctx.createGain(); this.master.gain.value = 0.55; this.master.connect(this.ctx.destination);
-    this.musicGain = this.ctx.createGain(); this.musicGain.gain.value = 0.32; this.musicGain.connect(this.master);
+    // compressor no fim: explosões e trovões juntos não estouram (alto-falante de celular agradece)
+    this.comp = this.ctx.createDynamicsCompressor();
+    this.comp.threshold.value = -14; this.comp.knee.value = 18; this.comp.ratio.value = 4; this.comp.attack.value = 0.003; this.comp.release.value = 0.25;
+    this.comp.connect(this.ctx.destination);
+    this.master = this.ctx.createGain(); this.master.gain.value = 0.6; this.master.connect(this.comp);
+    // música: volume da opção (musicGain) → abaixa no menu (duckGain) → master
+    this.duckGain = this.ctx.createGain(); this.duckGain.gain.value = this.duckK ?? 1; this.duckGain.connect(this.master);
+    this.musicGain = this.ctx.createGain(); this.musicGain.gain.value = 0.32; this.musicGain.connect(this.duckGain);
     this.sfxGain = this.ctx.createGain(); this.sfxGain.gain.value = 0.8; this.sfxGain.connect(this.master);
     const real = new Float32Array(32), imag = new Float32Array(32);
     for (let n = 1; n < 32; n++) imag[n] = (2 / (n * Math.PI)) * Math.sin(n * Math.PI * 0.25); // pulso 25%
@@ -55,6 +79,7 @@ export class Audio {
 
   #tone(f, t, dur, { type = 'square', vol = 0.2, to = null, dest = this.sfxGain, attack = 0.005 } = {}) {
     const c = this.ctx;
+    if (dest === this.sfxGain && this.rate !== 1) { f *= this.rate; if (to) to *= this.rate; }
     const o = c.createOscillator();
     if (type === 'pulse') o.setPeriodicWave(this.pulse); else o.type = type;
     o.frequency.setValueAtTime(f, t);
@@ -70,6 +95,7 @@ export class Audio {
   #noise(t, dur, { vol = 0.25, freq: f = 2000, q = 0.8, type = 'bandpass', to = null, dest = this.sfxGain } = {}) {
     const c = this.ctx;
     const s = c.createBufferSource(); s.buffer = this.noise;
+    if (dest === this.sfxGain && this.rate !== 1) { f *= this.rate; if (to) to *= this.rate; }
     const fl = c.createBiquadFilter(); fl.type = type; fl.frequency.setValueAtTime(f, t); fl.Q.value = q;
     if (to) fl.frequency.exponentialRampToValueAtTime(to, t + dur);
     const g = c.createGain();
@@ -82,6 +108,7 @@ export class Audio {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
     const T = (...a) => this.#tone(...a), N = (...a) => this.#noise(...a);
+    this.rate = VARY.has(name) ? 0.94 + Math.random() * 0.12 : 1;
     switch (name) {
       case 'blip': T(880, t, 0.05, { vol: 0.08, type: 'pulse' }); break;
       case 'pop': T(300, t, 0.15, { to: 1200, vol: 0.18 }); N(t, 0.12, { freq: 4000, vol: 0.12 }); break;
@@ -162,7 +189,7 @@ export class Audio {
     const tick = () => {
       while (next < this.ctx.currentTime + 0.2) {
         const l = lead[i % lead.length];
-        if (l !== '-' && l !== '.') this.#tone(freq(l), next, step * sustain(lead, i % lead.length) * 0.92, { type: 'pulse', vol: 0.09, dest: this.musicGain, attack: 0.01 });
+        if (l !== '-' && l !== '.') this.#tone(freq(l), next, step * sustain(lead, i % lead.length) * 0.92, { type: tr.soft ? 'triangle' : 'pulse', vol: tr.soft ? 0.16 : 0.09, dest: this.musicGain, attack: tr.soft ? 0.03 : 0.01 });
         const b = bass[i % bass.length];
         if (b !== '-' && b !== '.') this.#tone(freq(b), next, step * 0.9, { type: 'triangle', vol: 0.22, dest: this.musicGain, attack: 0.005 });
         if (drums) {
@@ -176,6 +203,14 @@ export class Audio {
     };
     this.timer = setInterval(tick, 50);
     tick();
+  }
+
+  // abaixa a música (menu aberto) com rampa curta; k = 1 volta ao normal
+  duck(k) {
+    this.duckK = k;
+    if (!this.duckGain) return;
+    const t = this.ctx.currentTime; this.duckGain.gain.cancelScheduledValues(t);
+    this.duckGain.gain.setTargetAtTime(k, t, 0.12);
   }
 
   toggleMusic(on) { this.musicOn = on; const t = this.track; this.track = null; if (on) this.music(t); else clearInterval(this.timer); }

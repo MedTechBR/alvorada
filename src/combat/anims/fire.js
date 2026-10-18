@@ -40,12 +40,12 @@ export default {
     data: D('Presa de Fogo', 'fire', 'phys', 65, 'melee', { eff: { status: 'brn', chance: 0.1, flinch: 0.1 } }),
   },
   fireSpin: { // Redemoinho de Fogo: coluna de fogo girando no alvo
-    data: D('Redemoinho de Fogo', 'fire', 'spec', 35, 'target', { eff: { bind: 3 } }),
+    data: D('Giro de Fogo', 'fire', 'spec', 35, 'target', { eff: { bind: 3 } }),
     target: (v, t, x, y) => { for (let k = 0; k < 40; k++) { const a = k / 40 * 12.56, h = k * 0.9; v.E(x + Math.cos(a) * 9, y + 4 + Math.sin(a) * 4 - h, { frames: 'flame', n: 1, speed: 10, dir: a + 1.57, spread: 0.2, life: 0.5 + k / 80, scale: 1.1, end: 0.3, add: false, vz: 20 }); } v.fx.light(x, y - 10, 0xff6a1a, 40, 0.5); },
     after: IM.scorch(0.8),
   },
   flameCharge: {
-    data: D('Ataque de Chamas', 'fire', 'phys', 50, 'dash', { eff: { stat: 'spe', by: 1, self: true, chance: 1 } }),
+    data: D('Carga de Chamas', 'fire', 'phys', 50, 'dash', { eff: { stat: 'spe', by: 1, self: true, chance: 1 } }),
     dash: (v, u, dt) => { v.E(u.x, u.y - 6, { frames: 'flame', n: R(dt, 90), speed: 15, life: 0.35, scale: 1.1, end: 0.3, add: false, vz: 40, jitter: u.r }); if ((u.ghostT = (u.ghostT ?? 0) - dt) <= 0) { u.ghostT = 0.04; v.afterimage(u, 0xff5a1a, 0.5, 0.25); } v.fx.decal('scorch', u.x, u.y, { scale: 0.35, alpha: 0.7, life: 10 }); },
     impact: IM.type('fire', 1.1),
   },

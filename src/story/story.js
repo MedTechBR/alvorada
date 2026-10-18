@@ -407,7 +407,7 @@ export class Story {
     if (this.battle) return;
     const p = g.player, c = this.spots.get('campina'), v = this.spots.get('village');
     const town = (v && Math.hypot(p.x - v.x, p.y - v.y) < v.r + 2 * T) || (c && Math.hypot(p.x - c.x, p.y - c.y) < c.r + 4 * T) || g.map.biome?.(p.x, p.y) === 'vila';
-    const want = town ? 'town' : 'route';
+    const want = town ? 'town' : g.map.biome?.(p.x, p.y) === 'floresta' ? 'forest' : 'route';
     if (this.music !== want) { this.music = want; g.audio?.music?.(want); }
   }
 

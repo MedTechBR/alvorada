@@ -136,7 +136,7 @@ da água) ou cava (os demais); **X** pula; **Espaço** esquiva com invencibilida
   existem em `src/data/moves.js` entram com dados mínimos da receita (os oficiais, quando chegarem, têm prioridade).
   Formas: `proj`, `melee`, `multi`, `dash`, `cone`, `wave`, `quake`, `cloud`, `rain` e as novas `bolt` (raio direto),
   `sky` (raio do céu), `surf` (onda), `target` (efeito no alvo), `line` (pedras em linha), `shield` (escudo), além de
-  feixes contínuos (`beam` na receita: Lança-Chamas, Hidro Bomba, Raio de Gelo, Raio Solar, Hiper-Raio…).
+  feixes contínuos (`beam` na receita: Lança-Chamas, Hidro Bomba, Raio Congelante, Raio Solar, Hiper-Raio…).
 - **Efeitos** (`src/engine/fx.js` + `fxtex.js`): atlas único desenhado por código (chamas, gotas, folhas, pedras,
   estilhaços, fumaça, marcas no chão e uma fonte pixel com acentos), partículas em `ParticleContainer` com pool,
   anéis de choque, raios, luzes aditivas, clarão de tela, tremor e pausa no impacto.
@@ -172,3 +172,20 @@ da água) ou cava (os demais); **X** pula; **Espaço** esquiva com invencibilida
   preço. Tesouros (Pérola, Pepita, Cogumelos, Pó Estelar) só servem para vender. O PC de qualquer Centro abre a caixa.
 - **Itens escondidos**: `hidden: true` nos `items` do mapa (só um brilho fraco de perto).
 
+
+## Acabamento (ramo `acabamento`)
+
+- **Qualidade gráfica** (`src/engine/quality.js`, opção em Opções): Automática, Alta ou Baixa. A automática começa em
+  baixa em aparelho de toque fraco (≤ 3 GB ou ≤ 4 núcleos) e cai para baixa se ficar abaixo de 45 FPS (celular) ou
+  50 FPS (computador) por 6 s. Baixa = 40% das partículas, sem luzes grandes/halos de janela, desenho a 75%.
+- **F3** mostra FPS, tempo de lógica, partículas e o nível de qualidade.
+- **Carregamento:** barra real em `index.html` (conta os arquivos; o total da última visita fica em
+  `localStorage['alvorada.boot.n']`) e etapas do `main.js` via `window.__boot(fração, texto)` / `window.__bootDone()`.
+- **Service worker** (`sw.js`): código em rede primeiro (6 s de limite, depois a cópia guardada); sprites em cache
+  próprio (`alvorada-sprites-v1`), cache primeiro e só do que aparece. Na primeira visita a página manda ao SW a
+  lista do que já carregou (`{ type: 'guardar', urls }`) para o jogo abrir offline na visita seguinte. Ao mudar a
+  estrutura do cache, troque o nome em `CODE`/`SPR`.
+- **HUD:** objetivo recolhível (toque/clique ou J; no celular fica recolhido e abre 6 s quando muda); minimapa com
+  tamanho e posição no CSS (`#minimapa`); no computador com tela grande a interface cresce pelo `--k` (zoom do CSS).
+- **Som:** faixas `title` (tela de título) e `forest` (bosques) além de `town`, `route` e `battle`; o menu abaixa a
+  música (`audio.duck(k)`); compressor no fim da cadeia.
