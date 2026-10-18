@@ -807,6 +807,22 @@ def describe(m, e):
     return ' '.join(out)
 
 
+# Golpes das gerações 8 e 9 (Legends Arceus, Scarlet/Violet) vêm sem marcas na PokéAPI: as oficiais, à mão,
+# para o tempo real saber o que é de contato (corpo a corpo/investida), soco, corte e som.
+FLAGS_NOVOS = {
+    'contact': 'dire-claw psyshield-bash raging-fury wave-crash headlong-rush ceaseless-edge stone-axe axe-kick jet-punch '
+               'spin-out population-bomb ice-spinner glaive-rush triple-dive mortal-spin kowtow-cleave aqua-step raging-bull '
+               'psyblade collision-course pounce trailblaze hyper-drill rage-fist bitter-blade double-shock comeuppance '
+               'mighty-cleave hard-press temper-flare supercell-slam upper-hand',
+    'punch': 'jet-punch rage-fist',
+    'slicing': 'ceaseless-edge stone-axe kowtow-cleave psyblade bitter-blade aqua-cutter mighty-cleave tachyon-cutter',
+    'sound': 'torch-song alluring-voice psychic-noise',
+}
+SEM_MARCAS = {m for m in moves if not move_flags.get(m)}
+for fl, ids in FLAGS_NOVOS.items():
+    for ident in ids.split():
+        if move_by_ident.get(ident) in SEM_MARCAS:  # só completa quem não tem marca nenhuma
+            move_flags[move_by_ident[ident]].add(fl)
 TYPE_OF = {}
 move_out, missing_pt = {}, []
 for mid in sorted(used_moves):
