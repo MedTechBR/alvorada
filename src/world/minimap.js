@@ -22,13 +22,14 @@ export class Minimap {
     this.angle = 0; this.t = 0;
     this.base = this.#bake();
     const box = document.createElement('div'); box.id = 'minimapa';
-    const size = IS_TOUCH ? 112 : 148;
-    box.style.cssText = `position:fixed;${IS_TOUCH ? 'top:12px' : 'bottom:12px'};right:12px;width:${size}px;height:${size + 18}px;z-index:15;pointer-events:auto;cursor:pointer;user-select:none`;
+    const size = IS_TOUCH ? 104 : 140;
+    // canto superior direito, logo abaixo do botão do menu
+    box.style.cssText = `position:fixed;top:calc(var(--g, 12px) + var(--st, 0px) + 52px);right:calc(var(--g, 12px) + var(--sr, 0px));width:${size}px;height:${size + 18}px;z-index:15;pointer-events:auto;cursor:pointer;user-select:none`;
     const cv = document.createElement('canvas'); const dpr = Math.min(2, devicePixelRatio || 1);
     cv.width = size * dpr; cv.height = size * dpr; cv.style.cssText = `width:${size}px;height:${size}px;border-radius:50%;border:3px solid #3a4a3e;box-shadow:0 3px 0 rgba(0,0,0,.25);background:#1b2a1e;display:block;image-rendering:pixelated`;
     const lab = document.createElement('div'); lab.style.cssText = 'text-align:center;font:800 11px system-ui;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.6);margin-top:2px';
     box.append(cv, lab); document.body.appendChild(box);
-    if (IS_TOUCH) { const st = document.createElement('style'); st.textContent = '#toasts{top:150px!important}'; document.head.appendChild(st); }
+    { const st = document.createElement('style'); st.textContent = `#toasts{top:calc(var(--g, 12px) + var(--st, 0px) + ${52 + size + 28}px)!important}`; document.head.appendChild(st); }
     box.addEventListener('pointerdown', (e) => { e.stopPropagation(); this.toggle(); });
     addEventListener('keydown', (e) => { if (e.code === 'KeyN') this.toggle(); });
     this.cv = cv; this.ctx = cv.getContext('2d'); this.label = lab; this.dpr = dpr; this.size = size;
@@ -82,6 +83,14 @@ export class Minimap {
       const [x, y] = toS(w.x * T + 8, w.y * T + 8); if (Math.hypot(x - R, y - R) > R) continue;
       const u = this.dpr; ctx.fillStyle = '#fff3c8'; ctx.strokeStyle = '#3a2a1a'; ctx.lineWidth = u;
       ctx.beginPath(); ctx.moveTo(x - 3 * u, y); ctx.lineTo(x, y - 3.5 * u); ctx.lineTo(x + 3 * u, y); ctx.lineTo(x + 3 * u, y + 3 * u); ctx.lineTo(x - 3 * u, y + 3 * u); ctx.closePath(); ctx.fill(); ctx.stroke();
+    }
+    // objetivo da história: losango (preso na borda quando está longe)
+    const tg = g.ui?.hud?.obj?.target;
+    if (tg && Number.isFinite(tg.x)) {
+      let [ox, oy] = toS(tg.x, tg.y); const dx = ox - R, dy = oy - R, dd = Math.hypot(dx, dy), lim = R - 8 * this.dpr;
+      if (dd > lim) { ox = R + dx / dd * lim; oy = R + dy / dd * lim; }
+      const u = this.dpr, r = 5 * u; ctx.fillStyle = '#f2b705'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5 * u;
+      ctx.beginPath(); ctx.moveTo(ox, oy - r); ctx.lineTo(ox + r, oy); ctx.lineTo(ox, oy + r); ctx.lineTo(ox - r, oy); ctx.closePath(); ctx.fill(); ctx.stroke();
     }
     // jogador: seta
     const pa = room ? DIR_ANGLE[p.dir] : (this.rotate ? 0 : DIR_ANGLE[p.dir] ?? 0);

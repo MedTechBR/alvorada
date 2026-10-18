@@ -33,7 +33,7 @@ export function buildRegion(J) {
   const set = (x, y, t) => { if (inb(x, y)) tiles[x + y * W] = t; };
   const onOk = (on, x, y) => !on || on.map(tileOf).includes(get(x, y));
   let seed = 1;
-  const objects = [], decor = [];
+  const objects = [], decor = [], people = [...(J.people ?? [])], pets = [...(J.pets ?? [])];
 
   const ops = {
     rect(o) { const t = tileOf(o.t); for (let y = o.y; y < o.y + o.h; y++) for (let x = o.x; x < o.x + o.w; x++) if (onOk(o.on, x, y)) set(x, y, t); },
@@ -109,6 +109,8 @@ export function buildRegion(J) {
     ops.stamp({ x: r.x, y: r.y, rows: r.rows });
     for (const o of r.objects ?? []) objects.push({ ...o, x: r.x + o.x, y: r.y + o.y });
     for (const d of r.decor ?? []) decor.push({ ...d, x: r.x + d.x, y: r.y + d.y });
+    for (const d of r.people ?? []) people.push({ ...d, x: r.x + d.x, y: r.y + d.y, room: r.id });
+    for (const d of r.pets ?? []) pets.push({ ...d, x: r.x + d.x, y: r.y + d.y, room: r.id });
   }
 
   // objetos declarados (posição absoluta)
@@ -159,5 +161,5 @@ export function buildRegion(J) {
     const ks = zone?.kinds ?? fk;
     placed.push({ kind: ks[Math.floor(hash(x, y, 77) * ks.length)], x, y, fw: 2, fh: 1, cells: [], forest: true });
   }
-  return { W, H, tiles, block, objects: placed, decor };
+  return { W, H, tiles, block, objects: placed, decor, people, pets };
 }

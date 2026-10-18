@@ -403,4 +403,13 @@ SPR.fish = texOf(outline(canvas(10, 6, (x) => { ell(x, 4, 3, 4, 2, '#9ab4d0'); p
 SPR.sparkle = texOf(canvas(7, 7, (x) => { px(x, '#fff', 3, 0, 1, 7); px(x, '#fff', 0, 3, 7, 1); px(x, '#fff8c0', 2, 2, 3, 3); }));
 SPR.firefly = texOf(canvas(6, 6, (x) => { const g = x.createRadialGradient(3, 3, 0, 3, 3, 3); g.addColorStop(0, 'rgba(230,255,140,1)'); g.addColorStop(1, 'rgba(230,255,140,0)'); x.fillStyle = g; x.fillRect(0, 0, 6, 6); }));
 SPR.foam = texOf(canvas(16, 6, (x) => { for (let i = 0; i < 16; i++) { const y = Math.round(2 + Math.sin(i / 16 * Math.PI * 2) * 1.2); px(x, 'rgba(255,255,255,0.95)', i, y, 1, 2); if (i % 4 === 1) px(x, 'rgba(220,240,255,0.8)', i, y + 2, 1, 1); } }));
+SPR.puff = texOf(canvas(12, 12, (x) => { const g = x.createRadialGradient(6, 6, 0, 6, 6, 6); g.addColorStop(0, 'rgba(240,240,244,0.95)'); g.addColorStop(0.6, 'rgba(220,222,228,0.7)'); g.addColorStop(1, 'rgba(210,210,220,0)'); x.fillStyle = g; x.fillRect(0, 0, 12, 12); }));
+// varal com roupas (dois quadros: o vento balança)
+export const VARAL = [0, 1].map((f) => texOf(outline(canvas(48, 30, (x) => {
+  px(x, '#8a5a34', 1, 4, 3, 26); px(x, '#8a5a34', 44, 4, 3, 26); px(x, '#c08a56', 1, 4, 1, 26);
+  x.strokeStyle = '#e8e8e8'; x.lineWidth = 1; x.beginPath(); x.moveTo(3, 6); x.quadraticCurveTo(24, 10, 45, 6); x.stroke();
+  const cl = [['#e8584a', 7, 12, 9], ['#4c9ae8', 18, 10, 12], ['#f2c94c', 32, 9, 8]];
+  for (const [c, X, w, h] of cl) { const k = f ? 1 : 0; x.fillStyle = c; x.beginPath(); x.moveTo(X, 8); x.lineTo(X + w, 8); x.lineTo(X + w + k, 8 + h); x.lineTo(X + k, 8 + h); x.fill(); px(x, 'rgba(255,255,255,.4)', X + 1, 9, 2, h - 2); }
+}))));
+SPR.varal = VARAL[0];
 SPR.ripple = texOf(canvas(16, 8, (x) => { x.strokeStyle = 'rgba(255,255,255,0.85)'; x.lineWidth = 1; x.beginPath(); x.ellipse(8, 4, 7, 3, 0, 0, 7); x.stroke(); }));

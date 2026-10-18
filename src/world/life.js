@@ -1,8 +1,9 @@
 import * as PIXI from 'pixi.js';
 import { T, TILE } from './tiles.js';
-import { SPR, LEAVES } from './art.js';
+import { SPR, LEAVES, VARAL } from './art.js';
 import { KINDS } from './objects.js';
 import { Minimap } from './minimap.js';
+import { People } from './people.js';
 
 // Vida do mundo: relógio de dia e noite (tingimento suave + luzes de janela), portas e escadas com fade,
 // bichinhos (borboletas, pássaros, peixes, folhas caindo, vaga-lumes), itens brilhando, árvores de frutas,
@@ -29,6 +30,7 @@ export class WorldLife {
     this.spawnT = { fly: 0, bird: 4, fish: 2, leaf: 0, firefly: 0 };
     this.#itemsInit();
     this.minimap = new Minimap(g, this);
+    this.people = new People(g, this.map, this.map.peopleDefs ?? [], this.map.petDefs ?? []);
     this.signBox = this.#makeSignBox();
     this.warpCool = 0; this.tweens = [];
   }
@@ -50,6 +52,7 @@ export class WorldLife {
     this.#runTweens(Math.min(dt, 0.05));
     const dh = dt * 24 / this.daySeconds; this.hour = (this.hour + dh) % 24; this.totalHours += dh;
     this.berryT = (this.berryT ?? 0) - dt; if (this.berryT <= 0) { this.berryT = 1; this.#berries(); }
+    this.windT = (this.windT ?? 0) - dt; if (this.windT <= 0) { this.windT = 0.45; this.windF = 1 - (this.windF ?? 0); for (const c of map.visible) for (const o of c.objs) if (KINDS[o.kind]?.anim === 'varal' && o.sprite) o.sprite.texture = VARAL[this.windF]; }
     map.update(dt);
     const room = map.interiorAt(p.x, p.y);
     // tingimento: fora segue o céu; dentro de casa fica claro; na gruta é escuro
@@ -60,6 +63,8 @@ export class WorldLife {
     this.lights.position.copyFrom(g.world.position); this.lights.scale.copyFrom(g.world.scale);
     this.#updateLights(dt, room);
     this.#critters(dt, room);
+    this.people.update(dt, paused);
+    this.#smoke(dt, room);
     if (!paused) {
       this.#rustle(dt);
       this.#items(dt);
@@ -210,17 +215,28 @@ export class WorldLife {
   #interact() {
     const g = this.g, inp = g.input, p = g.player;
     if (this.signBox.open && (inp.pressed('act') || Math.hypot(p.x - this.signBox.x, p.y - this.signBox.y) > 40)) { this.closeSign(); return; }
-    if (!inp.pressed('act')) return;
     const f = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] }[p.dir] ?? [0, 1];
     const ax = p.x + f[0] * 14, ay = p.y - 4 + f[1] * 14;
     let best = null, bd = 22;
     for (const c of this.map.visible) for (const o of c.objs) {
-      if (o.dead || !(o.kind === 'sign' || o.berry)) continue;
+      if (o.dead || !(o.text || o.berry)) continue;
       const d = Math.hypot(o.x - ax, o.y - 8 - ay); if (d < bd + (o.berry ? 10 : 0)) { bd = d; best = o; }
     }
+    const who = this.people.nearest(p.x, p.y, p.dir);
+    const hud = g.ui?.hud;
+    // balão "E · Falar" (só quando a história não mostrou o dela neste quadro)
+    if (hud?.setPrompt && (!hud.bubble?.visible || this.ownPrompt)) {
+      if (who) hud.setPrompt({ x: who.o.x, y: who.o.y, h: 30 }, who.kind === 'pet' ? 'Brincar' : 'Falar');
+      else if (best) hud.setPrompt({ x: best.x, y: best.y - 8, h: 24 }, best.berry ? 'Sacudir' : best.kind === 'sign' ? 'Ler' : 'Ver');
+      else if (this.ownPrompt) hud.setPrompt(null);
+      this.ownPrompt = !!(who || best);
+    }
+    if (!inp.pressed('act')) return;
+    if (who) { inp.taps.delete('act'); this.people.talk(who); return; }
     if (!best) return;
-    if (best.kind === 'sign') this.showSign(best.text, best.x, best.y);
-    else this.#shake(best);
+    inp.taps.delete('act');
+    if (best.berry) this.#shake(best);
+    else this.showSign(best.text, best.x, best.y, best.kind === 'sign' ? 'Placa' : '');
   }
   #shake(o) {
     const g = this.g, key = `${o.tx},${o.ty}`, last = this.picked.get(key);
@@ -256,12 +272,23 @@ export class WorldLife {
     document.body.appendChild(el);
     return { el, open: false, x: 0, y: 0 };
   }
-  showSign(text, x, y) {
-    if (this.g.ui?.say) { this.g.ui.say(text.split('\n'), { name: 'Placa' }); return; }
+  showSign(text, x, y, name = 'Placa') {
+    if (this.g.ui?.say) { this.g.ui.say(text.split('\n'), { name }); return; }
     const b = this.signBox; b.el.textContent = text; b.el.style.display = 'block'; b.open = true; b.x = x ?? this.g.player.x; b.y = y ?? this.g.player.y;
     clearTimeout(b.t); b.t = setTimeout(() => this.closeSign(), 6000);
   }
   closeSign() { const b = this.signBox; b.el.style.display = 'none'; b.open = false; }
+
+  // ---------- fumaça das chaminés ----------
+  #smoke(dt, room) {
+    if (room) return;
+    this.smokeT = (this.smokeT ?? 0) - dt; if (this.smokeT > 0) return; this.smokeT = 0.45;
+    for (const c of this.map.visible) for (const o of c.objs) {
+      const K = KINDS[o.kind]; if (!K.smoke || !o.sprite) continue;
+      const sp = o.sprite, x = sp.x - sp.width / 2 + K.smoke[0], y = sp.y - sp.height + K.smoke[1];
+      const s = this.#sprite(SPR.puff, x + (Math.random() - 0.5) * 3, y); s.kind = 'smoke'; s.life = 2.6; s.vx = 4 + Math.random() * 3; s.vy = -9; s.alpha = 0.7;
+    }
+  }
 
   // ---------- bichinhos ----------
   #critters(dt, room) {
@@ -339,8 +366,9 @@ export class WorldLife {
           c.x = c.wx; c.y = c.wy; if (c.wy >= c.ground) { c.vy = 0; c.vx = 0; c.alpha = Math.min(1, c.life); } break;
         }
         case 'ripple': { const k = c.age / 0.8; c.scale.set(0.4 + k * 0.9); c.alpha = 1 - k; break; }
+        case 'smoke': { c.wx += c.vx * dt; c.wy += c.vy * dt; c.x = c.wx; c.y = c.wy; const k = c.age / 2.6; c.scale.set(0.5 + k * 1.3); c.alpha = 0.65 * (1 - k); break; }
       }
-      if (c.kind !== 'ripple' && (Math.abs(c.wx - p.x) > 520 || Math.abs(c.wy - p.y) > 400)) c.life = 0;
+      if (c.kind !== 'ripple' && c.kind !== 'smoke' && (Math.abs(c.wx - p.x) > 520 || Math.abs(c.wy - p.y) > 400)) c.life = 0;
     }
     for (const c of this.critters) if (c.life <= 0) { c.shadow?.destroy(); c.destroy(); }
     this.critters = this.critters.filter((c) => c.life > 0);

@@ -27,6 +27,7 @@ export const KINDS = {
   ...BUILDINGS,
   tuxHouse: { tex: 'houseA', fw: 5, fh: 3, oy: 0, door: 3 }, tuxCenter: { tex: 'center', fw: 5, fh: 3, oy: 0, door: 2 },
   haybale: { tex: 'haybale', fw: 1, fh: 1, oy: 0, breakable: true, hp: 1 }, bale: { tex: 'haybale', fw: 1, fh: 1, oy: 0, push: true },
+  varal: { tex: 'varal', fw: 3, fh: 1, oy: 0, anim: 'varal', solidCells: [[0, 0], [2, 0]] },
   gate: { tex: 'gate', fw: 2, fh: 1, oy: 1 }, menhir: { tex: 'menhir', fw: 1, fh: 1, oy: 1 }, column: { tex: 'column', fw: 1, fh: 1, oy: 1 }, windmill: { tex: 'windmill', fw: 3, fh: 2, oy: 0 },
   bench: { tex: 'bench', fw: 2, fh: 1, oy: 0 }, well: { tex: 'well', fw: 2, fh: 1, oy: 0 },
   sundial: { tex: 'sundial', fw: 2, fh: 1, oy: 0 },

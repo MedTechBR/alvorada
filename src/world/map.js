@@ -37,7 +37,7 @@ export class GameMap {
   constructor(tx) {
     this.tx = tx;
     const R = buildRegion(REGION);
-    this.w = R.W; this.h = R.H; this.tiles = R.tiles; this.block = R.block; this.objects = R.objects; this.decorDefs = R.decor;
+    this.w = R.W; this.h = R.H; this.tiles = R.tiles; this.block = R.block; this.objects = R.objects; this.decorDefs = R.decor; this.peopleDefs = R.people; this.petDefs = R.pets;
     this.outdoorH = REGION.outdoorH ?? this.h; this.areas = ALL_AREAS;
     this.signs = REGION.signs ?? []; this.items = REGION.items ?? [];
     this.interiors = (REGION.interiors ?? []).map((r) => ({ ...r, w: Math.max(...r.rows.map((s) => s.length)), h: r.rows.length }));
@@ -273,8 +273,11 @@ export class GameMap {
       if (built.length > 48) built.sort((a, b) => a.seen - b.seen).slice(0, built.length - 48).forEach((c) => this.#freeChunk(c));
     }
     // água animada só cobre a tela
-    const w = this.water; w.x = Math.floor(view.x0 / 32) * 32; w.y = Math.floor(view.y0 / 32) * 32;
-    w.width = Math.ceil((view.x1 - w.x) / 32 + 1) * 32; w.height = Math.ceil((view.y1 - w.y) / 32 + 1) * 32;
+    // (presa aos limites da parte externa do mapa: fora dele e nos interiores não há água)
+    const w = this.water, X1 = this.w * T, Y1 = this.outdoorH * T;
+    w.x = Math.max(0, Math.floor(view.x0 / 32) * 32); w.y = Math.max(0, Math.floor(view.y0 / 32) * 32);
+    w.width = Math.max(0, Math.min(X1, Math.ceil(view.x1 / 32 + 1) * 32) - w.x); w.height = Math.max(0, Math.min(Y1, Math.ceil(view.y1 / 32 + 1) * 32) - w.y);
+    w.visible = w.width > 0 && w.height > 0;
     this.view = view;
   }
 
