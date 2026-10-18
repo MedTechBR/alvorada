@@ -156,7 +156,7 @@ export class Tocas {
     g.entities.push(e); g.ents.addChild(e.view);
     R.boss = e;
     dexMark(g, m.dex, 1);
-    const k = DMAX_HP * (1.5 + 0.5 * boss.estrelas); // PS do chefe: Dynamax × (2 a 4) pelas estrelas
+    const k = DMAX_HP * (2 + 0.75 * boss.estrelas); // PS do chefe: Dynamax × (2,75 a 5,75) pelas estrelas: ~1 min de luta
     R.bars = boss.estrelas >= 4 ? 3 : boss.estrelas >= 2 ? 2 : 1;
     await g.poder.dynamax(e, { boss: true, hpK: k, quiet: true });
     // seu Pokémon e os aliados da IA (os outros da equipe)
