@@ -20,7 +20,9 @@ export class Combat {
     if (mv.kind === 'wave' || mv.kind === 'quake') return d < this.range(mv) * 0.9;
     return d < this.range(mv) * 0.95;
   }
-  enemiesOf(e) { return this.g.entities.filter((o) => o.alive && o !== e && (e.side === 'wild' ? o.side !== 'wild' : o.side === 'wild')); }
+  // Lados: 'ally' (você e sua equipe) contra 'wild' (selvagens) e 'foe' (Pokémon de treinador, src/story/battle.js).
+  // Selvagens e Pokémon de treinador não brigam entre si.
+  enemiesOf(e) { const ally = e.side === 'ally'; return this.g.entities.filter((o) => o.alive && o !== e && (o.side === 'ally') !== ally); }
 
   // Usa o golpe do espaço `slot` mirando no ponto (ax, ay)
   use(user, slot, ax, ay) {
