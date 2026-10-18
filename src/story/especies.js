@@ -3,7 +3,7 @@ import { MOVES } from '../data/moves.js';
 import { Mon } from '../data/mon.js';
 
 // Rede de segurança para espécies e golpes do roteiro que não existam em src/data (ou sem sprite em assets/pmd):
-// o motor troca por um parecido do mesmo tipo. Com as mecânicas oficiais (448 espécies, 600 golpes) todas as
+// o motor troca por um parecido do mesmo tipo. Com as mecânicas oficiais (as 1025 espécies e seus golpes) todas as
 // equipes dos capítulos 2 e 3 existem e entram como estão; a tabela só vale se algo faltar no futuro.
 export const SUBST_ESPECIE = {
   819: 734, // Skwovet (Normal) → Yungoos

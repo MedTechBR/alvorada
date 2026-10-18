@@ -1,6 +1,5 @@
 // Usar itens e efeitos dos itens equipados no tempo real.
 import { ITEMS, itemId, itemInfo } from '../data/items.js';
-import { SPECIES } from '../data/species.js';
 import { useTM } from './learn.js';
 import { evolutionFor } from './evolve.js';
 import { statusImmune } from './abilities.js';
@@ -15,7 +14,7 @@ const curesStatus = (cure, st) => cure === 'all' || (Array.isArray(cure) && cure
 /**
  * Usa um item da mochila em `mon` (fora ou dentro da luta). Não mexe na mochila: devolve { ok, consumed, msg, events }.
  * ctx: { entity (a entidade no mapa, para Éter/Elixir), replaceIndex (MT), time, weather, partyTypes }
- * events podem conter { type: 'evolve', to } e { type: 'level' | 'learn' } (Doce Raro / Doce de Exp.).
+ * events podem conter { type: 'evolve', to, form } e { type: 'form', form } (itens de forma) e { type: 'level' | 'learn' } (Doce Raro / Doce de Exp.).
  */
 export function useItem(mon, id, ctx = {}) {
   id = itemId(id);
@@ -31,10 +30,20 @@ export function useItem(mon, id, ctx = {}) {
     return { ok: true, consumed: false, msg: `${mon.name} aprendeu ${r.move}!`, events: [{ type: 'learn', move: r.move, replaced: r.replaced }] };
   }
   // evolução
-  if (it.cat === 'evolution' || (it.cat === 'held' && SPECIES[mon.dex]?.evo?.some((e) => e.item === id) && !ctx.hold)) {
+  if (it.cat === 'evolution' || (it.cat === 'held' && mon.sp?.evo?.some((e) => e.item === id) && !ctx.hold)) {
     const ev = evolutionFor(mon, 'item', { ...ctx, item: id });
     if (!ev) return no('Não teve efeito.');
-    return { ok: true, consumed: true, msg: `${mon.name} vai evoluir!`, events: [{ type: 'evolve', to: ev.to, item: id }] };
+    return { ok: true, consumed: true, msg: `${mon.name} vai evoluir!`, events: [{ type: 'evolve', to: ev.to, form: ev.form, item: id }] };
+  }
+  // itens de forma (Catálogo Rotom, Meteorito, Néctares, Placas…): passa para a próxima forma da lista; não se gastam
+  if (it.formChange) {
+    const { dex, forms } = it.formChange;
+    if (!dex.includes(mon.dex) || !forms.length) return no('Não teve efeito.');
+    const i = forms.indexOf(mon.form ?? null);
+    const next = forms[(i + 1) % forms.length] ?? null;
+    const antes = mon.name;
+    if (!mon.setForm(next)) return no('Não teve efeito.');
+    return { ok: true, consumed: false, msg: `${antes} mudou de forma: ${mon.sp.formName ?? 'forma padrão'}!`, events: [{ type: 'form', form: next }] };
   }
   // frutas da mochila usadas direto (Oran, Sitrus, Pecha…)
   if (it.cat === 'berry' && it.berry && !it.evs) {
@@ -93,7 +102,7 @@ export function useItem(mon, id, ctx = {}) {
     return { ok: true, consumed: true, msg: `${mon.name} ganhou experiência!`, events };
   }
   if (it.abilitySwap) {
-    const abs = SPECIES[mon.dex].abilities;
+    const abs = mon.sp.abilities;
     if (abs.length < 2) return no('Não teve efeito.');
     mon.ability = abs[(abs.indexOf(mon.ability) + 1) % abs.length];
     return { ok: true, consumed: true, msg: `A habilidade de ${mon.name} mudou!`, events };

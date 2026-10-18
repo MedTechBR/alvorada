@@ -94,7 +94,7 @@ export function speedMult(x, weather = null) {
 
 // Peso em kg (Metal Pesado/Leve)
 export function weightOf(x) {
-  const w = SPECIES[monOf(x)?.dex]?.weight ?? 20;
+  const w = monOf(x)?.sp?.weight ?? SPECIES[monOf(x)?.dex]?.weight ?? 20;
   const ab = abilityOf(x);
   return ab === 'heavyMetal' ? w * 2 : ab === 'lightMetal' ? w / 2 : w;
 }

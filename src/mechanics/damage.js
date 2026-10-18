@@ -197,7 +197,7 @@ export function calcDamage(atk, def, mv, opts = {}) {
   if (defKey === 'def' && D.ab === 'furCoat') dm *= 2;
   if (defKey === 'def' && D.ab === 'marvelScale' && D.status) dm *= 1.5;
   if (D.it?.statMult?.[defKey]) dm *= D.it.statMult[defKey];
-  if (D.it?.eviolite && SPECIES[D.mon.dex]?.evo?.length) dm *= 1.5;
+  if (D.it?.eviolite && (D.mon.sp ?? SPECIES[D.mon.dex])?.evo?.length) dm *= 1.5;
   if (defKey === 'spd' && weather === 'sand' && D.types.includes('rock')) dm *= 1.5;
   if (defKey === 'def' && weather === 'snow' && D.types.includes('ice')) dm *= 1.5;
   d = Math.max(1, apply(d, dm));

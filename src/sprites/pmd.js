@@ -1,8 +1,11 @@
 import * as PIXI from 'pixi.js';
-import { SPECIES } from '../data/species.js';
+import { speciesOfKey, parseKey } from '../data/species.js';
 import { TYPE_COLOR } from '../data/types.js';
 
-// Sprites do PMD SpriteCollab: assets/pmd/<dex 4 dígitos>/<Anim>-Anim.png + frames.json
+// Sprites do PMD SpriteCollab: assets/pmd/<dex 4 dígitos>/<Anim>-Anim.png + frames.json; formas em
+// assets/pmd/<dex>-<forma>/ (ex.: 0026-alola, 0006-megaX). Todas as funções aceitam o dex (26) ou a chave da
+// forma ("26-alola", Mon.spriteKey). Quem não tem sprite próprio usa o substituto de assets/pmd/substitutos.json
+// (forma mais próxima, pré-evolução ou evolução; a escala pela altura real deixa o substituto do tamanho certo).
 // (frames.json é gerado por tools/pmd_baixar.py a partir de AnimData.xml, *-Shadow.png e *-Offsets.png).
 // Cada folha tem 8 linhas (direções) e N quadros com durações em 1/60 s.
 // Linhas do PMD: baixo, baixo-dir, dir, cima-dir, cima, cima-esq, esq, baixo-esq.
@@ -30,6 +33,11 @@ export function dir8(dx, dy) {
 }
 
 const pad = (dex) => String(dex).padStart(4, '0');
+const folderOf = (key) => { const { dex, form } = parseKey(key); return pad(dex) + (form ? '-' + form : ''); };
+// chave normalizada: 26, "26-alola"
+const norm = (key) => { const { dex, form } = parseKey(key); return form ? `${dex}-${form}` : dex; };
+let SUBST = null; // { "<pasta>": { de: "<pasta>", motivo } }
+const substitutos = () => (SUBST ??= fetch('assets/pmd/substitutos.json').then((r) => (r.ok ? r.json() : {})).catch(() => ({})));
 
 async function loadSheet(base, a) {
   const tex = await PIXI.Assets.load(base + `${a.src}-Anim.png`).catch(() => null);
@@ -44,10 +52,17 @@ async function loadSheet(base, a) {
   return true;
 }
 
-async function loadAnimSet(dex) {
-  const base = `assets/pmd/${pad(dex)}/`;
+async function loadAnimSet(key) {
+  const dex = key;
+  const sub = (await substitutos())[folderOf(key)];
+  const folder = sub?.de ?? folderOf(key);
+  const base = `assets/pmd/${folder}/`;
   const data = await fetch(base + 'frames.json').then((r) => (r.ok ? r.json() : null)).catch(() => null);
-  if (!data?.anims) return loadFromXml(dex, base);
+  if (!data?.anims) {
+    // forma sem pasta (e sem substituto listado): usa a da forma padrão
+    if (typeof key === 'string' && !sub) return loadPokemonSprites(parseKey(key).dex);
+    return loadFromXml(dex, base);
+  }
   const anims = {};
   for (const [name, a] of Object.entries(data.anims)) {
     anims[name] = { name, src: a.src, fw: a.fw, fh: a.fh, rows: a.rows, durs: a.durs, q: a.q, frames: null,
@@ -57,7 +72,7 @@ async function loadAnimSet(dex) {
   const ok = await Promise.all(core.map((n) => loadSheet(base, anims[n])));
   if (!ok.some(Boolean)) return placeholder(dex);
   for (const n of core) if (!anims[n].frames) delete anims[n];
-  const set = finish({ dex, anims, shadow: data.shadow ?? 1 });
+  const set = finish({ dex, anims, shadow: data.shadow ?? 1, folder, substitute: sub ? sub.motivo ?? true : false });
   // o resto das folhas: em segundo plano, sem travar a entrada do Pokémon (só quando ele aparece)
   set.pending = Promise.all(Object.values(anims).filter((a) => !a.frames)
     .map((a) => loadSheet(base, a).then((ok2) => { if (!ok2) delete anims[a.name]; })));
@@ -109,7 +124,7 @@ async function loadFromXml(dex, base) {
 
 // Sem sprite ainda: bolinha na cor do tipo com a inicial
 function placeholder(dex) {
-  const sp = SPECIES[dex];
+  const sp = speciesOfKey(dex);
   const c = document.createElement('canvas'); c.width = c.height = 24;
   const x = c.getContext('2d');
   x.fillStyle = TYPE_COLOR?.[sp?.types?.[0]] ?? '#aaa'; x.beginPath(); x.arc(12, 13, 10, 0, 7); x.fill();
@@ -120,9 +135,10 @@ function placeholder(dex) {
   return finish({ dex, anims: { Idle: one }, shadow: 1, placeholder: true });
 }
 
-export function loadPokemonSprites(dex) {
-  if (!cache.has(dex)) cache.set(dex, loadAnimSet(dex));
-  return cache.get(dex);
+export function loadPokemonSprites(key) {
+  const k = norm(key);
+  if (!cache.has(k)) cache.set(k, loadAnimSet(k));
+  return cache.get(k);
 }
 
 function animOf(set, name) {
@@ -167,6 +183,7 @@ export function frameOf(set, name, dir, t, loop = true) {
 // Ícone/retrato para menus: 1º quadro do Idle, virado para baixo, recortado no conteúdo.
 // Devolve uma Promise de { tex (PIXI.Texture), url (data URL PNG, para <img>), w, h }.
 export function portraitOf(dex, scale = 1) {
+  dex = norm(dex);
   const key = dex + ':' + scale;
   if (!portraits.has(key)) portraits.set(key, (async () => {
     const set = await loadPokemonSprites(dex);
