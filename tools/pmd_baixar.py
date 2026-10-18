@@ -427,6 +427,42 @@ def ler_especies():
     return esp
 
 
+def instalar_pasta(args):
+    """Uma pasta do jogo a partir da pasta de download: (feitas, bytes antes, bytes depois) ou None."""
+    pasta, st, pular = args
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from png_sem_perda import otimizar
+    dst = os.path.join(DEST, pasta)
+    fj = os.path.join(dst, 'frames.json')
+    if pular and os.path.isfile(fj) and json.load(open(fj)).get('v') == 2:
+        return (0, 0, 0)
+    out = frames_da_pasta(st, USADAS)
+    if out is None:
+        return None
+    out['v'] = 2
+    if os.path.isdir(dst):
+        shutil.rmtree(dst)
+    os.makedirs(dst)
+    for nome in ('AnimData.xml', 'credits.txt'):
+        if os.path.isfile(os.path.join(st, nome)):
+            shutil.copyfile(os.path.join(st, nome), os.path.join(dst, nome))
+    antes = depois = 0
+    for ent in out['anims'].values():
+        nome = f"{ent['src']}-Anim.png"
+        if os.path.exists(os.path.join(dst, nome)):
+            continue
+        b = open(os.path.join(st, nome), 'rb').read()
+        if not eh_png(b):
+            continue
+        o = otimizar(b)
+        antes += len(b)
+        depois += len(o)
+        open(os.path.join(dst, nome), 'wb').write(o)
+    with open(fj, 'w') as f:
+        json.dump(out, f, separators=(',', ':'))
+    return (1, antes, depois)
+
+
 def instalar_tudo(stage):
     """Monta assets/pmd a partir da pasta de download (formato de baixar-tudo):
     - <dex>/ e <dex>-<forma>/ com AnimData.xml, credits.txt, frames.json e só as folhas *-Anim.png das animações
@@ -435,8 +471,6 @@ def instalar_tudo(stage):
     - substitutos.json: quem não tem sprite usa a pasta de outro (forma padrão, pré-evolução, evolução ou SUBST_MAO).
     - index.json (dex que aparecem com sprite, próprio ou substituto), fontes.json, CREDITOS.md, SUBSTITUTOS.md.
     PMD_PULAR_EXISTENTES=1 não refaz as pastas já instaladas nesta versão."""
-    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    from png_sem_perda import otimizar
     esp = ler_especies()
     mapa = json.load(open(os.path.join(RAIZ, 'tools', 'pokeapi', 'formas_pmd.json')))  # pasta do jogo -> caminho SC
     ok = lambda d: os.path.isfile(os.path.join(d, '_ok.json')) and json.load(open(os.path.join(d, '_ok.json'))).get('origem')
@@ -461,39 +495,18 @@ def instalar_tudo(stage):
         if re.fullmatch(r'\d{4}(-[A-Za-z0-9]+)?', n) and n not in alvos:
             shutil.rmtree(os.path.join(DEST, n))
     pular = os.environ.get('PMD_PULAR_EXISTENTES') == '1'
+    from concurrent.futures import ProcessPoolExecutor
     feitos, antes, depois = 0, 0, 0
-    for pasta, st in sorted(alvos.items()):
-        dst = os.path.join(DEST, pasta)
-        fj = os.path.join(dst, 'frames.json')
-        if pular and os.path.isfile(fj) and json.load(open(fj)).get('v') == 2:
-            continue
-        out = frames_da_pasta(st, USADAS)
-        if out is None:
-            log(f'{pasta}: sem Idle/Walk utilizável')
-            continue
-        out['v'] = 2
-        if os.path.isdir(dst):
-            shutil.rmtree(dst)
-        os.makedirs(dst)
-        for nome in ('AnimData.xml', 'credits.txt'):
-            if os.path.isfile(os.path.join(st, nome)):
-                shutil.copyfile(os.path.join(st, nome), os.path.join(dst, nome))
-        for ent in out['anims'].values():
-            nome = f"{ent['src']}-Anim.png"
-            if os.path.exists(os.path.join(dst, nome)):
+    with ProcessPoolExecutor() as ex:  # uma pasta por processo (medir quadros e recompactar PNG é pesado)
+        for pasta, r in zip(sorted(alvos), ex.map(instalar_pasta, [(p, alvos[p], pular) for p in sorted(alvos)], chunksize=4)):
+            if r is None:
+                log(f'{pasta}: sem Idle/Walk utilizável')
                 continue
-            b = open(os.path.join(st, nome), 'rb').read()
-            if not eh_png(b):
-                continue
-            o = otimizar(b)
-            antes += len(b)
-            depois += len(o)
-            open(os.path.join(dst, nome), 'wb').write(o)
-        with open(fj, 'w') as f:
-            json.dump(out, f, separators=(',', ':'))
-        feitos += 1
-        if feitos % 50 == 0:
-            log(f'{feitos} pastas ({pasta}); PNG {antes // 1024} KB -> {depois // 1024} KB')
+            feitos += r[0]
+            antes += r[1]
+            depois += r[2]
+            if r[0] and feitos % 100 == 0:
+                log(f'{feitos} pastas ({pasta}); PNG {antes // 1024} KB -> {depois // 1024} KB')
     log(f'instaladas {feitos} pastas; PNG {antes // 1024} KB -> {depois // 1024} KB')
     tem = {n for n in os.listdir(DEST) if os.path.isfile(os.path.join(DEST, n, 'frames.json'))}
     # ---- substitutos
