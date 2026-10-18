@@ -22,7 +22,16 @@ export class PokeEntity {
     this.bar = new PIXI.Graphics();
     this.view.addChild(this.shadow, this.body, this.bar);
     this.r = 6;
-    this.ready = loadPokemonSprites(mon.dex).then((set) => { this.set = set; this.r = Math.max(5, Math.min(18, set.size * 0.22)); this.shadow.scale.set(0.6 + set.shadow * 0.35); });
+    this.ready = loadPokemonSprites(mon.dex).then((set) => { this.set = set; this.r = Math.max(5, Math.min(18, set.size * 0.22)); this.shadow.scale.set(...set.shadowScale); });
+  }
+
+  // Ponto de onde sai um golpe (boca ou mão) no quadro atual, em coordenadas do mundo.
+  // Devolve { x, y, h }: (x, y) = posição no chão abaixo da boca; h = altura da boca acima do chão (px).
+  emitPoint(kind = 'mouth') {
+    const f = this.f, s = this.scale ?? 1;
+    const p = f ? (kind === 'hand' ? f.hand : f.mouth) : { x: 0, y: -(this.set?.top ?? 16) * 0.6 };
+    const lift = Math.max(0, -p.y * s * 0.75) + this.z;  // parte da altura vira profundidade (vista 3/4)
+    return { x: this.x + p.x * s, y: this.y + p.y * s + lift - this.z, h: lift };
   }
 
   get alive() { return !this.dead && this.mon.hp > 0; }
@@ -107,11 +116,12 @@ export class PokeEntity {
     }
     const f = frameOf(this.set, this.anim, this.dir, this.animT * (this.anim === 'Walk' ? Math.max(0.7, Math.hypot(this.vx, this.vy) / 45) : 1), this.animLoop);
     if (!this.animLoop && f.done) this.play('Idle', true);
-    this.body.texture = f.tex;
+    this.body.texture = f.tex; this.f = f;
+    this.body.anchor.set(f.ax, f.ay); // o ponto do chão do quadro (sombra do PMD) fica na posição da entidade
     // posição na tela (y-sort pelo pé)
     const bob = this.dead ? 0 : 0;
     this.view.x = Math.round(this.x); this.view.y = Math.round(this.y);
-    this.body.y = -this.set.size * 0.28 - this.z + bob;
+    this.body.y = -this.z + bob;
     this.shadow.y = 0; this.shadow.alpha = 0.9 - Math.min(0.6, this.z / 40);
     this.body.tint = this.flash > 0 ? 0xffffff : this.mon.status === 'par' && Math.sin(this.animT * 30) > 0.6 ? 0xfff27a : 0xffffff;
     this.body.alpha = this.alpha * (this.iframes > 0 && Math.sin(this.animT * 50) > 0 ? 0.55 : 1);
@@ -120,7 +130,7 @@ export class PokeEntity {
     // barra de vida (selvagens atingidos e o seu Pokémon em combate)
     this.bar.clear();
     if ((this.hpShow > 0 || this.side === 'wild' && this.mon.hp < this.mon.stats.hp) && this.alive) {
-      const w = 22, k = this.mon.hp / this.mon.stats.hp, y = -this.set.size * 0.55 - 6 - this.z;
+      const w = 22, k = this.mon.hp / this.mon.stats.hp, y = -this.set.top - 5 - this.z;
       this.bar.rect(-w / 2 - 1, y - 1, w + 2, 5).fill(0x1b1b1b);
       this.bar.rect(-w / 2, y, w * k, 3).fill(k > 0.5 ? 0x4cd06a : k > 0.2 ? 0xf2c94c : 0xef5b4b);
     }
