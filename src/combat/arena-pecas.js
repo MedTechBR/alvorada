@@ -292,7 +292,7 @@ class Marcas extends Peca {
   lider(alvo) { this.disparar(alvo); return true; }
   desenhar(G0, G1) {
     const d = this.def;
-    if (d.ceu) { const R = this.A.R; G1.rect(R.x0 - 40, R.y0 - 60, R.x1 - R.x0 + 80, R.y1 - R.y0 + 100).fill({ color: 0x1a2040, alpha: 0.2 }); if (Math.random() < 0.5) this.g.fx.emit(rnd(R.x0, R.x1), R.y0 + rnd(0, R.y1 - R.y0) - 30, { tex: 'spark', color: 0x9ac8ff, n: 1, speed: 160, dir: Math.PI / 2 + 0.2, spread: 0, life: 0.2, stretch: 0.02, alpha: 0.6 }); }
+    if (d.ceu) { const R = this.A.R; G1.rect(R.x0, R.y0, R.x1 - R.x0, R.y1 - R.y0).fill({ color: 0x1a2040, alpha: 0.16 + 0.06 * Math.sin(this.g.time * 1.3) }); if (Math.random() < 0.5) this.g.fx.emit(rnd(R.x0, R.x1), R.y0 + rnd(0, R.y1 - R.y0) - 30, { tex: 'spark', color: 0x9ac8ff, n: 1, speed: 160, dir: Math.PI / 2 + 0.2, spread: 0, life: 0.2, stretch: 0.02, alpha: 0.6 }); }
     for (const c of this.caindo) { // a pedra aparece caindo nos últimos instantes do aviso (sombra crescendo)
       const k = c.av.t / c.av.dur; if (k < 0.45) continue;
       const q = (k - 0.45) / 0.55, h = (1 - q) * 160;
