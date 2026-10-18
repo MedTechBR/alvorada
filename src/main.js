@@ -3,6 +3,7 @@ import { Input, IS_TOUCH } from './engine/input.js';
 import { Fx } from './engine/fx.js';
 import { makeTiles, T, TILE } from './world/tiles.js';
 import { GameMap } from './world/map.js';
+import { WorldLife } from './world/life.js';
 import { makeTrainerFrames, dir4 } from './sprites/trainer.js';
 import { loadPokemonSprites } from './sprites/pmd.js';
 import { PokeEntity } from './entities/pokemon.js';
@@ -37,8 +38,9 @@ class Game {
     this.world.addChild(this.combat.layer, this.fx.layer);
     this.app.stage.addChild(this.world);
     this.#buildObjects();
+    this.mundo = new WorldLife(this); // dia e noite, portas, bichinhos, minimapa
     // treinador e equipe
-    this.player = this.#makeTrainer(100 * T, 104 * T);
+    this.player = this.#makeTrainer(this.map.spawn.x, this.map.spawn.y);
     this.party = [new Mon(4, 8), new Mon(7, 7), new Mon(1, 7)];
     this.box = []; this.bag = { pokeball: 10, potion: 5 };
     this.leadIdx = 0; this.entities = [];
@@ -74,13 +76,8 @@ class Game {
   }
 
   #buildObjects() {
-    this.objSprites = new Map();
-    for (const o of this.map.objects) {
-      const s = new PIXI.Sprite(this.tx[o.kind]);
-      s.anchor.set(0.5, 1); s.x = o.x; s.y = o.y + (o.kind === 'house' ? 4 : 2); s.zIndex = s.y;
-      this.ents.addChild(s); o.sprite = s;
-      for (const k of o.cells) this.objSprites.set(k, o);
-    }
+    // o mapa cria os objetos sob demanda (setores visíveis) e devolve o índice bloco -> objeto
+    this.objSprites = this.map.attach(this);
   }
 
   // ---------- equipe ----------
@@ -103,9 +100,8 @@ class Game {
   async spawnWild() {
     const p = this.player;
     for (let tries = 0; tries < 12; tries++) {
-      const a = Math.random() * Math.PI * 2, d = (14 + Math.random() * 14) * T;
-      const x = p.x + Math.cos(a) * d, y = p.y + Math.sin(a) * d;
-      if (this.map.solidAt(x, y) || this.map.solidAt(x + 8, y) || this.map.solidAt(x - 8, y)) continue;
+      const sp = this.map.randomSpawn(p.x, p.y); if (!sp) return; // de preferência no mato alto
+      const { x, y } = sp;
       const biome = this.map.biome(x, y); if (biome === 'vila') continue;
       const table = (BIOME_ENCOUNTERS[biome] ?? BIOME_ENCOUNTERS.campo).filter((e) => this.available.includes(e[0]) && SPECIES[e[0]]);
       const pool = table.length ? table : this.available.filter((d) => SPECIES[d] && d !== 130).map((d) => [d, 3, 8, 1]);
@@ -117,6 +113,7 @@ class Game {
       if (Math.random() < 0.15) w.ai.state = 'sleep';
       this.entities.push(w); this.wilds.push(w); this.ents.addChild(w.view);
       w.alpha = 0; w.fadeIn = true;
+      if (sp.tall) this.map.rustle(x, y, 0.8);
       return;
     }
   }
@@ -161,7 +158,7 @@ class Game {
   blackout() {
     this.toast('Sua equipe desmaiou! Você voltou para a vila.');
     this.party.forEach((m) => m.heal());
-    this.player.x = 100 * T; this.player.y = 104 * T;
+    this.player.x = this.map.spawn.x; this.player.y = this.map.spawn.y;
     this.#sendOut(0);
   }
 
@@ -253,6 +250,7 @@ class Game {
     this.fx.update(dt);
     this.#camera(rdt);
     this.map.flushDirty();
+    this.mundo.update(rdt);
     this.hudUpdate(rdt);
     inp.endFrame();
     this.#perf(rdt, performance.now() - t0);
@@ -354,8 +352,6 @@ class Game {
     this.world.y = Math.round(innerHeight / 2 - (c.y + sy) * z);
     const hw = innerWidth / 2 / z + 40, hh = innerHeight / 2 / z + 40;
     this.map.cullChunks({ x0: c.x - hw, x1: c.x + hw, y0: c.y - hh, y1: c.y + hh });
-    // objetos fora da tela não são desenhados
-    for (const o of this.map.objects) if (o.sprite && !o.dead) o.sprite.visible = Math.abs(o.x - c.x) < hw && Math.abs(o.y - c.y) < hh + 40;
     const area = this.map.areaName(p.x, p.y);
     if (area !== this.area) { this.area = area; const el = $('area'); el.textContent = area; el.classList.add('on'); clearTimeout(this.areaT); this.areaT = setTimeout(() => el.classList.remove('on'), 2500); }
   }
