@@ -39,6 +39,7 @@ const CSS = `
 #reide .rd-bar .rd-back { background: var(--c2); width: 100%; } #reide .rd-bar .rd-front { background: var(--c1); }
 #reide .rd-low { display: flex; justify-content: space-between; margin-top: 3px; font-size: 11px; }
 #reide .rd-x { color: #ffd84a; } #reide .rd-sh { color: #9ef0ff; letter-spacing: 1px; } #reide .rd-ko b { color: #ff7a8a; }
+body:has(#reide:not([hidden])) #net-quick { display: none; } /* online: os botões de canal/chat saem do caminho (T abre o chat) */
 body.touch #reide { width: min(300px, 44vw); padding: 4px 8px 5px; font-size: 11px; top: calc(var(--g, 8px) + var(--st, 0px) + 2px); }
 body.touch #reide .rd-top b { font-size: 12px; }
 `;

@@ -275,7 +275,7 @@ export class Online {
     }
     this.duel.update(dt);
     // perto de alguém: E (ou o botão A) abre as opções com aquele jogador
-    const near = this.duel.active || paused ? null : this.remotes.nearest(p.x, p.y, 40);
+    const near = this.duel.active || paused || g.tocas?.reide ? null : this.remotes.nearest(p.x, p.y, 40);
     this.ui.near(near);
     if (near && g.input.pressed('act') && !this.ui.modalOpen) { g.input.taps.delete('act'); this.ui.playerMenu(near.id); }
   }

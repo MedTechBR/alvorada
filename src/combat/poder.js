@@ -22,7 +22,7 @@ import { typeHex } from './vfx.js';
 // - Dynamax: Bracelete Dynamax, só em lugar especial (Toca de Luz, ginásio marcado com dynamax: true, área do mapa com
 //   "dynamax": true, duelo PvP com a regra ligada). Dura DMAX_S (12 s), PS ×2, Max Golpes no lugar dos 4 golpes,
 //   câmera afasta. Fator G (mon.gmax) vira a forma Gigantamax com o G-Max Golpe.
-// - Teclado: V (ou 5); controle: direcional para cima; celular: botão redondo à esquerda dos golpes.
+// - Teclado: V (o 5 a 0 são os emotes do online); controle: direcional para cima; celular: botão redondo à esquerda dos golpes.
 const M = 16;
 const TAU = Math.PI * 2;
 const QUIET_S = 5;             // luta contra selvagem acaba depois de 5 s sem combate
