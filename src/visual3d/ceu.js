@@ -90,8 +90,14 @@ export class Ceu {
     // sol vindo um pouco do sul: a frente das casas e das árvores (o que a câmera vê) fica iluminada, como no HGSS
     if (A.ceu.nivel) A.ceu.nivel.solNorte = -0.32;
     A.update(dt, { hora: room ? 12 : h, foco: v.alvo, raio, interior: !!room, nevoa: [D * 1.1, D * 3.4], zoom: g.zoom });
+    // noite legível: luar azulado que ainda mostra o chão e os sprites (HGSS); exposição um pouco menor de dia
+    const nt = room ? 0 : (g.mundo?.nightness ?? 0);
+    if (nt > 0) { A.ceu.hemi.intensity = Math.max(A.ceu.hemi.intensity, 1.25 * nt); A.ceu.hemi.color.lerp(this.luar ??= new THREE.Color(0x8aa8ff), nt * 0.6); }
+    if (A.pos.u.exposicao) A.pos.u.exposicao.value = room ? 1.0 : 0.96 + nt * 0.25;
+    if (room) { A.ceu.hemi.intensity = room.escuro ? 0.25 : room.dark ? 0.6 : 1.35; A.ceu.sol.intensity = room.escuro ? 0.2 : room.dark ? 0.5 : 1.9; }
     const ls = v.u.luzSprite.value;
     ls.copy(A.luzP).multiplyScalar(1.05);
+    if (nt > 0) { ls.r = Math.max(ls.r, 0.42 * nt); ls.g = Math.max(ls.g, 0.48 * nt); ls.b = Math.max(ls.b, 0.68 * nt); }
     const m = Math.max(ls.r, ls.g, ls.b); if (m > 1.15) ls.multiplyScalar(1.15 / m);
     if (room) ls.set(room.escuro ? 0.35 : room.dark ? 0.6 : 1, room.escuro ? 0.35 : room.dark ? 0.58 : 0.97, room.escuro ? 0.4 : room.dark ? 0.62 : 0.92);
     this.noite = g.mundo?.nightness ?? 0;

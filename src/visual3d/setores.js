@@ -4,6 +4,7 @@ import { WATER_FRAMES, TALL, CORN } from '../world/art.js';
 import { TALL_SNOW, TALL_DRY, TALL_REED } from '../world/arte-biomas.js';
 import { PAREDE } from './relevo.js';
 import { Modelos } from './modelos.js';
+import { paredesDasSalas } from './salas.js';
 import { comNuvens } from './ceu.js';
 import { CURVA_GLSL } from './curva.js';
 
@@ -188,10 +189,13 @@ export class Setores {
     const gm = A ? null : this.#geometriaMato(s);
     if (gm) { s.mato = new THREE.Mesh(gm, this.matMato); s.mato.receiveShadow = true; s.grupo.add(s.mato); }
     this.modelos.setor(s);
+    if (s.paredes) { s.grupo.remove(s.paredes); s.paredes.geometry.dispose(); s.paredes = null; }
+    if (this.v.amb && s.sy * CH + CH > L.externoH) { const g = paredesDasSalas(this.v, s.sx, s.sy); if (g) { s.paredes = new THREE.Mesh(g, this.modelos.matParede ??= this.v.curvar(this.v.setores.matParedeNovo())); s.paredes.castShadow = s.paredes.receiveShadow = true; s.grupo.add(s.paredes); } }
   }
+  matParedeNovo() { return new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide }); }
   #liberar(s) {
     this.v.scene.remove(s.grupo); this.grupo.remove(s.grupo);
-    for (const m of [s.chao, s.agua, s.mato]) m?.geometry.dispose();
+    for (const m of [s.chao, s.agua, s.mato, s.paredes]) m?.geometry.dispose();
     this.modelos.liberar(s);
     if (this.v.amb) this.v.amb.liberarSetor(s.matChao, s.grama, s.arbustos); else s.matChao.dispose();
     s.tex.dispose(); s.matAgua.dispose();
@@ -203,8 +207,10 @@ export class Setores {
     const R = this.v.relevo, L = this.L;
     const n = R.n(x, y), s = R.s(x, y), t = L.bloco(x, y), H = PAREDE[t];
     if (AGUA[t]) { const f = t === TILE.DEEP ? 16 : 9; return [n - f, s - f, 4]; } // leito: a água fica por cima, com fundo de verdade
-    if (!H) return [n, s, 0];
     const sala = y >= L.externoH;
+    // casa de boneca: dentro das salas, parede e vazio ficam no chão, pretos; as paredes de verdade vêm de salas.js
+    if (sala && this.v.amb && (t === TILE.VOID || t === TILE.WALL)) return [n, s, t === TILE.VOID ? 6 : 5];
+    if (!H) return [n, s, 0];
     const sul = L.bloco(x, y + 1);
     // casa de boneca: dentro das salas, a parede da frente (com o vazio ao sul) fica baixinha
     if (sala && (sul === TILE.VOID || y + 1 >= L.h)) return [n + 5, s + 5, 2];
@@ -231,7 +237,7 @@ export class Setores {
     for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {
       const [hn, hs, tipo] = sup(i, j), x0 = (ox + i) * 16, z0 = (oy + j) * 16, x1 = x0 + 16, z1 = z0 + 16;
       const u0 = U(i), u1 = U(i + 1), v0 = V(j), v1 = V(j + 1);
-      const ks = tipo === 3 ? [0.62, 0.62, 0.62, 0.62] : tipo === 1 ? [1, 1, 0.92, 0.92] : [ao(i, j, hn), ao(i + 1, j, hn), ao(i, j + 1, hs), ao(i + 1, j + 1, hs)];
+      const ks = tipo >= 5 ? [0.03, 0.03, 0.03, 0.03] : tipo === 3 ? [0.62, 0.62, 0.62, 0.62] : tipo === 1 ? [1, 1, 0.92, 0.92] : [ao(i, j, hn), ao(i + 1, j, hn), ao(i, j + 1, hs), ao(i + 1, j + 1, hs)];
       quad([x0, hn, z0], [x1, hn, z0], [x0, hs, z1], [x1, hs, z1], [u0, v0], [u1, v0], [u0, v1], [u1, v1], ks);
       // saia a leste
       const e = sup(i + 1, j);
