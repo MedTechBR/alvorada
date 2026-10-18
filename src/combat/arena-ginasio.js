@@ -31,7 +31,7 @@ export const DIFICULDADE = {
   aviso: (d) => 1.3 - 0.4 * d,      // × tempo de aviso de cada perigo
   dano: (d) => 0.75 + 0.5 * d,      // × fração dos PS que o perigo tira
   ritmo: (d) => 1.1 - 0.35 * d,     // × intervalo entre perigos
-  vigor: (d) => 1.7 + 0.3 * d,      // × PS máximos dos Pokémon do líder (a luta dura o bastante para a arena acontecer)
+  vigor: (d, n = 3) => (n <= 3 ? 1.7 : n === 4 ? 1.45 : 1.3) + 0.2 * d, // × PS máximos dos Pokémon do líder (n = tamanho da equipe)
   reacao: (d) => 0.55 - 0.35 * d,   // s até a IA reagir a um aviso
   esperteza: (d) => 0.4 + 0.5 * d,  // chance de a IA usar a arena (peças, cobertura, fase)
   lider: (d) => 9 - 3 * d,         // s entre um perigo acionado pelo líder e o próximo
@@ -58,7 +58,7 @@ export class ArenaGinasio {
     this.K = { aviso: DIFICULDADE.aviso(d), dano: DIFICULDADE.dano(d), ritmo: DIFICULDADE.ritmo(d) };
     this.reacao = DIFICULDADE.reacao(d); this.esperteza = DIFICULDADE.esperteza(d);
     // Pokémon de líder aguentam mais (como chefe): sem isso a luta acabava em 30 s e a arena mal mudava de fase
-    const vg = cfg.vigor ?? DIFICULDADE.vigor(d);
+    const vg = cfg.vigor ?? DIFICULDADE.vigor(d, b.team.length);
     for (const m of b.team) if (!m.vigorK) { m.vigorK = vg; m.calc(); m.hp = m.stats.hp; }
     this.t = 0; this.done = false; this.fase = -1; this.cenaT = 0; this.liderT = DIFICULDADE.lider(d) * 0.8;
     this.avisos = []; this.tiles = new Map(); this.blocks = new Map(); this.gfxs = []; this.ajudantes = [];
@@ -162,7 +162,7 @@ export class ArenaGinasio {
     // estatística da justiça: quanto aviso esse golpe teve (terreno contínuo = 'terreno', anunciado pela fase)
     const s = this.stats; s.golpes++; s.acertos[e.side === 'foe' ? 'foe' : 'ally']++;
     const nome = o.fonte?.id ?? 'arena'; s.porPerigo[nome] = (s.porPerigo[nome] ?? 0) + 1;
-    if (aviso === 'terreno') { /* zona visível o tempo todo */ } else if (aviso && aviso.dur) s.minAviso = Math.min(s.minAviso, aviso.dur); else s.semAviso++;
+    if (aviso === 'terreno' || aviso === 'consequencia') { /* zona visível o tempo todo / efeito de um golpe que já foi telegrafado */ } else if (aviso && aviso.dur) s.minAviso = Math.min(s.minAviso, aviso.dur); else s.semAviso++;
     g.combat.hurt(e, dmg, null, { mv: { type: tipo, power: o.forca ?? 50, cat: 'phys' }, dx: o.dx ?? 0, dy: o.dy ?? 0, knock: o.knock ?? 1, eff: eff > 1 ? eff : 1, note: o.texto ?? null });
     if (o.status && !e.mon.status && Math.random() < (o.chance ?? 0.2)) { e.mon.status = o.status; g.fx.number(e.x, e.y - 34, { par: 'Paralisado!', brn: 'Queimado!', psn: 'Envenenado!' }[o.status] ?? o.status, '#ff9adf'); }
     if (o.prende) { e.stun = Math.max(e.stun, o.prende); }

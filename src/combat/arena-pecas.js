@@ -1214,10 +1214,11 @@ class Queda extends Peca {
       if (A.voando(e) || this.na(e.x, e.y)) { e.quedaT = 0; continue; }
       e.quedaT = (e.quedaT ?? 0) + dt; if (e.quedaT < 0.15) continue;
       e.quedaT = 0;
+      const doi = this.g.time - (e.caiuT ?? -99) > 3; e.caiuT = this.g.time; // duas quedas seguidas: só volta, sem dano
       let best = null, bd = 1e9; for (const r of this.ps) { const x = Math.max(r.x0 + 10, Math.min(r.x1 - 10, e.x)), y = Math.max(r.y0 + 10, Math.min(r.y1 - 10, e.y)), d = Math.hypot(x - e.x, y - e.y); if (d < bd) { bd = d; best = { x, y }; } }
-      e.iframes = 0; A.ferir(e, this.def.dano ?? 0.12, { aviso: 'terreno', fonte: this, knock: 0 });
+      if (doi) { e.iframes = 0; A.ferir(e, this.def.dano ?? 0.1, { aviso: 'terreno', fonte: this, knock: 0 }); }
       if (best) { e.x = best.x; e.y = best.y; e.kx = e.ky = 0; }
-      e.iframes = Math.max(e.iframes, 1); e.lock = Math.max(e.lock, 0.4); this.g.fx.number(e.x, e.y - 30, 'Caiu!', 0x9ad0ff, true);
+      e.iframes = Math.max(e.iframes, 1.5); e.lock = Math.max(e.lock, 0.4); this.g.fx.number(e.x, e.y - 30, 'Caiu!', 0x9ad0ff, true);
     }
   }
   perigoEm(x, y, e) { return e && this.A.voando(e) ? 0 : this.na(x, y) ? 0 : 1; }

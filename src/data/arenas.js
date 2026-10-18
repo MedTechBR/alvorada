@@ -200,7 +200,7 @@ export const ARENAS = {
     as: { titulo: 'O ás de Celeste', fala: 'Braviary! O céu é seu!', grito: 'Braviary!', corFx: 0x9ad0ff },
     poder: { tipo: 'dynamax', quando: 'entrada' },
     pecas: [
-      { tipo: 'queda', plataformas: [[5, 0, 6, 3], [5, 10, 6, 3], [0, 4, 4, 5], [12, 4, 4, 5], [6, 5, 4, 3]], dano: 0.12 },
+      { tipo: 'queda', plataformas: [[5, 0, 6, 3], [5, 10, 6, 3], [0, 4, 4, 5], [12, 4, 4, 5], [6, 5, 4, 3]], dano: 0.1 },
       { tipo: 'plataforma', barcos: [{ w: 2, h: 2, rota: [[4, 3], [10, 3]], vel: 1, pausa: 1.5 }, { w: 2, h: 2, rota: [[10, 8], [4, 8]], vel: 1, pausa: 1.5 }] },
       { tipo: 'faixa', id: 'rajada', orient: 'v', largura: 3, vel: 7, periodo: [6, 9], aviso: 1.4, dano: 0.02, empurra: 380, chao: false, corta: false, visual: 'rajada', cor: 0xdff4ff, rotulo: 'Rajada!', som: 'whoosh' },
       { tipo: 'giro', id: 'tornado', ativo: false, forca: 50, periodo: 9 },

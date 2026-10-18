@@ -37,7 +37,7 @@ uma linha e opcionais (`g.arenaGinasio?.…`):
 | × tempo de aviso | 1,30 | 1,17 | 0,90 |
 | × dano (fração dos PS máximos) | 0,75 | 0,91 | 1,25 |
 | × intervalo entre perigos | 1,10 | 0,99 | 0,75 |
-| × PS máximos dos Pokémon do líder | 1,70 | 1,80 | 2,00 |
+| × PS máximos dos Pokémon do líder (equipe de 3 / 4 / 5+) | 1,70 / 1,45 / 1,30 | +0,06 | +0,20 |
 | reação da IA ao aviso | 0,55 s | 0,44 s | 0,20 s |
 | chance de a IA usar a arena | 40% | 56% | 90% |
 | líder aciona um perigo a cada | 9 s | 8 s | 6 s |
@@ -96,7 +96,7 @@ Pokémon, painel que pega o seu quadrado, teia em volta, vela soprada, cadeira v
 | `ritmo` | berimbau marca o tempo; golpe no tempo (±0,14 s) vale ×1,3 | Brás |
 | `tabuas` | tábuas racham quando pisadas (o rachado é o aviso) e viram buraco | Brás |
 | `corda` | quem é jogado contra a corda volta lançado e acerta quem estiver no caminho | Brás |
-| `queda` | plataformas no alto; fora delas é queda (12% e volta à plataforma) | Celeste |
+| `queda` | plataformas no alto; fora delas é queda (10% e volta à plataforma; a segunda em 3 s não tira PS) | Celeste |
 
 Peça nova: uma classe com os ganchos que precisar (lista no topo do arquivo) e uma linha em `PECAS`.
 
