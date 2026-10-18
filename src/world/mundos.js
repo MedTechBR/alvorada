@@ -58,7 +58,7 @@ async function montar(id) {
     partes: [], objects: [], decor: [], interiors: [], areas: [], spots: {}, radius: { ...(J.radius ?? {}) }, warps: [], items: [],
     people: [...(J.people ?? [])], pets: [...(J.pets ?? [])], signs: [...(J.signs ?? [])], noTrees: [...(J.noTrees ?? [])],
     viagens: [...(J.viagens ?? [])], ninhos: [...(J.ninhos ?? [])], regioes: [], avisos: [],
-    mecanismos: [...(J.mecanismos ?? [])], buracos: [...(J.buracos ?? [])], enigmas: J.enigmas, teste: J.teste ?? (M.teste ? {} : undefined), formaRegional: J.formaRegional ?? null,
+    mecanismos: [...(J.mecanismos ?? [])], buracos: [...(J.buracos ?? [])], tocas: [...(J.tocas ?? [])], enigmas: J.enigmas, teste: J.teste ?? (M.teste ? {} : undefined), formaRegional: J.formaRegional ?? null,
   };
   // ---- o próprio arquivo do mundo, com os "include" desenhados antes (mesma ordem de sempre: o núcleo não muda) ----
   let ops = J.ops ?? [], trees = J.trees ?? [], objects = J.objects ?? [], decor = J.decor ?? [], areas = J.areas ?? [], items = J.items ?? [], warps = J.warps ?? [], spots = J.spots ?? {};
@@ -95,7 +95,7 @@ async function montar(id) {
     for (const w of F.warps ?? []) R.warps.push(w);
     for (const [k, v] of Object.entries(F.spots ?? {})) { if (R.spots[k]) R.avisos.push(`${F._arquivo}: ponto "${k}" já existe em outro arquivo`); R.spots[k] = v; }
     Object.assign(R.radius, F.radius ?? {});
-    for (const k of ['people', 'pets', 'noTrees', 'signs', 'viagens', 'ninhos', 'forestZones', 'mecanismos', 'buracos']) if (F[k]) R[k].push(...F[k]);
+    for (const k of ['people', 'pets', 'noTrees', 'signs', 'viagens', 'ninhos', 'forestZones', 'mecanismos', 'buracos', 'tocas']) if (F[k]) R[k].push(...F[k]);
     for (const r of F.interiors ?? []) {
       const s = { ...r, parte: pi, ...tamanho(r) };
       if (r.x != null && r.y != null && faixa) { s.x = faixa[0] + r.x; s.y = faixa[1] + r.y; s.relativa = true; } else if (r.x == null || r.y == null) { delete s.x; delete s.y; }

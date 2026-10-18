@@ -48,10 +48,7 @@ const BAR_C = [['#ff4a5a', '#ff9a3a'], ['#ff9a3a', '#ffd84a'], ['#ffd84a', '#7ad
 export class Tocas {
   constructor(g) {
     this.g = g; this.reide = null;
-    const seen = new Set();
-    this.list = [...(TOCAS[MAP_ID] ?? []), ...(g.map.region?.tocas ?? [])].filter((d) => d && !seen.has(d.id) && seen.add(d.id))
-      .map((d) => ({ ...d, px: d.x * T + 8, py: d.y * T + 8, gmax: d.gmax ?? [] }));
-    for (const t of this.list) for (const f of t.gmax) if (!formFromApi(f)) console.warn(`Toca ${t.id}: forma Gigantamax desconhecida ${f}`);
+    this.#lista();
     // desenho: buraco no chão (abaixo das entidades) e pilar de luz (acima)
     this.chao = new PIXI.Graphics();
     g.world.addChildAt(this.chao, g.world.getChildIndex(g.ents));
@@ -60,7 +57,7 @@ export class Tocas {
     // câmera no reide: entre o seu Pokémon e o chefe (o chefe não fica escondido atrás do painel)
     g.camFoco = (x, y) => { const b = this.reide?.boss; return b && !this.reide.done ? { x: x + (b.x - x) * 0.4, y: y + (b.y - (b.topH ?? 40) * 0.5 - y) * 0.45 } : null; };
     this.arenaG = new PIXI.Graphics(); g.world.addChildAt(this.arenaG, g.world.getChildIndex(g.ents));
-    this.luzNoite = this.list.map(() => { const s = new PIXI.Sprite(SPR.glowPink ?? SPR.glow); s.anchor.set(0.5); s.tint = 0xff6a8a; g.mundo?.lights?.addChild(s); return s; });
+    this.#luzes();
     // HUD do reide
     const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
     this.el = document.createElement('div'); this.el.id = 'reide'; this.el.hidden = true;
@@ -82,6 +79,17 @@ export class Tocas {
     return !ts || Date.now() - ts > RECARGA_MS;
   }
   // perto de uma toca (lugar de Dynamax, como em Galar)
+  // tocas do mundo montado: a lista de src/data/tocas.js com a chave do mundo (alvorada, ocaso…) e as "tocas" dos
+  // arquivos do mapa (cada arquivo de região pode trazer as suas; src/world/mundos.js junta)
+  #lista() {
+    const seen = new Set(), id = this.g.map.id ?? MAP_ID;
+    this.list = [...(TOCAS[id] ?? []), ...(this.g.map.region?.tocas ?? [])].filter((d) => d && !seen.has(d.id) && seen.add(d.id))
+      .map((d) => ({ ...d, px: d.x * T + 8, py: d.y * T + 8, gmax: d.gmax ?? [] }));
+    for (const t of this.list) for (const f of t.gmax) if (!formFromApi(f)) console.warn(`Toca ${t.id}: forma Gigantamax desconhecida ${f}`);
+  }
+  #luzes() { this.luzNoite = this.list.map(() => { const s = new PIXI.Sprite(SPR.glowPink ?? SPR.glow); s.anchor.set(0.5); s.tint = 0xff6a8a; this.g.mundo?.lights?.addChild(s); return s; }); }
+  // outro mundo montado (src/world/viagem.js)
+  trocouMapa() { for (const s of this.luzNoite ?? []) s.destroy(); this.#lista(); this.#luzes(); this.chao?.clear?.(); this.pilar?.clear?.(); }
   perto(x, y, r = 7 * T) { return this.list.some((t) => Math.hypot(t.px - x, t.py - y) < r); }
   // luzes para o mapa de luz das salas escuras (src/world/masmorra.js)
   luzes() { return this.list.filter((t) => this.ativa(t)).map((t) => [t.px, t.py - 10, 60]); }

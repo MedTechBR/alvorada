@@ -26,6 +26,8 @@ export function formaRegionalEm(map, px, py, mapId = 'alvorada') {
   if (!map) return null;
   const z = map.interiorAt?.(px, py) ?? map.areaAt?.(px, py);
   if (z?.formaRegional) return z.formaRegional;
+  // motor de mundos (src/world/map.js): a região de construção do ponto, com o "formaRegional" do arquivo de região
+  if (map.regionAt) { const r = map.regionAt(px, py); if (r?.formaRegional) return r.formaRegional; if (map.region?.partes) return map.region.formaRegional ?? null; }
   if (map.region?.formaRegional) return map.region.formaRegional;
   const tx = px / T, ty = py / T, fora = ty < (map.outdoorH ?? Infinity); // abaixo de outdoorH só há interiores
   for (const r of RECTS) if (r.mundo === mapId && dentro(fora ? r.rect : r.interiores, tx, ty)) return FORMA_REGIONAL[r.id] ?? null;

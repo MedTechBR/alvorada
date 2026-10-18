@@ -108,6 +108,7 @@ export class Viagem {
     g.story?.spots?.cache?.clear?.();
     g.story?.roteiro?.trocouMapa?.();
     g.missoes?.trocouMapa?.();
+    g.tocas?.trocouMapa?.(); // Tocas de Luz do mundo novo (src/world/tocas.js)
     g.area = null;
     for (const fn of g.aoTrocarMapa ?? []) { try { fn(g.map); } catch (e) { console.warn(e); } }
   }

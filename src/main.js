@@ -64,7 +64,7 @@ class Game {
     this.viagem = new Viagem(this);    // troca de mundo: navios, voo (Voar para…), passagens entre mapas
     // as mecânicas (Bola do Crepúsculo, evolução por hora, encontros) seguem o relógio do jogo, não o do aparelho
     setAmbiente({ hora: () => this.mundo.hour, caverna: () => !!this.map.interiorAt(this.player.x, this.player.y)?.dark,
-      regiao: () => formaRegionalEm(this.map, this.player.x, this.player.y, MAP_ID) }); // evoluções regionais (src/data/regioes.js)
+      regiao: () => formaRegionalEm(this.map, this.player.x, this.player.y, this.map.id ?? MAP_ID) }); // evoluções regionais (src/data/regioes.js)
     // treinador e equipe
     this.player = this.#makeTrainer(this.map.spawn.x, this.map.spawn.y);
     this.mount = new Mounts(this); // montarias do treinador (X): src/world/mounts.js
