@@ -22,6 +22,7 @@ export const GINASIOS = [
 ];
 export const ginasio = (id) => GINASIOS.find((x) => x.id === id) ?? null;
 
+// Etapa: { texto, feita, opcional?, se? (só aparece quando vale), alvo? (seta do painel) }.
 // Uma condição: texto de flag (o mesmo do roteiro: 'flag', 'flag=valor', 'badges.x', 'trainers.x', 'insignias>=2'),
 // lista (todas valem) ou { algum: [...] } (basta uma).
 export const JORNADAS = [
@@ -101,7 +102,8 @@ export const JORNADAS = [
       { texto: 'Conquiste uma insígnia, em qualquer ginásio', feita: 'insignias>=1' },
       { texto: 'Descubra o que a Equipe Crepúsculo quer com os fragmentos', feita: { algum: ['trainers.c2_recruta', 'trainers.c3_ebano', 'trainers.c4_recruta', 'falouVespera1'] } },
       { texto: 'Conquiste duas insígnias (o Téo quer revanche)', feita: ['insignias>=2', 'rival2'] },
-      { texto: 'Descubra de onde vem a luz da Companhia Aurora', feita: 'reviravolta1' },
+      { texto: 'Encontre a Pipa em Cidade Aurora (Rota 6, a leste de Vila Lamparina)', feita: 'aurora', se: 'pipaLigou', alvo: 'cidade_aurora' },
+      { texto: 'Descubra de onde vem a luz da Companhia Aurora', feita: 'reviravolta1', se: 'aurora', alvo: 'torre_aurora' },
       { texto: 'Conquiste quatro insígnias', feita: ['insignias>=4', 'rival3'] },
       { texto: 'Conquiste seis insígnias', feita: 'insignias>=6' },
       { texto: 'Conquiste as oito insígnias: a Liga Alvorada espera', feita: 'insignias>=8' },
@@ -129,7 +131,7 @@ export class Jornadas {
   }
   iniciada(j) { j = typeof j === 'string' ? jornada(j) : j; return !!(j && (this.st[j.id]?.inicio || this.concluida(j))); }
   concluida(j) { j = typeof j === 'string' ? jornada(j) : j; return !!(j && (this.st[j.id]?.feita || (j.fim && this.cond(j.fim)))); }
-  etapas(j) { return j.etapas.map((e) => ({ ...e, feita: this.cond(e.feita) })); }
+  etapas(j) { return j.etapas.filter((e) => !e.se || this.cond(e.se)).map((e) => ({ ...e, feita: this.cond(e.feita) })); }
   etapaAtual(j) {
     const es = this.etapas(j);
     return es.find((e) => !e.feita && !e.opcional) ?? es.find((e) => !e.feita) ?? null;

@@ -602,8 +602,10 @@ export class Roteiro {
     if (!j) return this.#sugestao();
     if (proprios[j.id]) { const o = proprios[j.id](); if (o) return { ...o, title: j.nome }; }
     const e = J.etapaAtual(j);
-    const o = J.objetivoDe(j.id) ?? j.padrao ?? (e ? { texto: e.texto } : null);
+    let o = J.objetivoDe(j.id) ?? j.padrao ?? (e ? { texto: e.texto, alvo: e.alvo } : null);
     if (!o) return this.#sugestao();
+    // trama sem destino certo (marcos de insígnias): a seta vai para o ginásio sugerido
+    if (j.tipo === 'trama' && !o.alvo) { const gs = J.sugerido(); if (gs) o = { ...o, alvo: gs.alvo, sub: o.sub ?? `Sugestão: ginásio de ${gs.cidade} (equipes de nível ~${gs.nivel})` }; }
     let target = this.#alvo(o.alvo), sub = o.sub;
     if (o.treinadores) {
       const falta = o.treinadores.filter((t) => !f.trainers?.[t]);

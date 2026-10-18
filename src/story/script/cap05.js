@@ -169,7 +169,9 @@ export default {
       gatilho: { tipo: 'falar', alvo: 'zelia', requer: ['candelabrosAcesos', 'trainers.g5_odete', 'trainers.g5_ciro'], semFlag: ['badges.lamparina'] },
       falas: [
         ['zelia', 'Os três candelabros acesos! Faz anos que não vejo a sala assim. Você tem jeito com luz, querido.'],
-        ['zelia', 'Sou amiga da sua avó desde que a gente tinha dentes de leite. Ela me contou que você perguntou da Noite Longa.'],
+        ['zelia', 'Sou amiga da sua avó desde que a gente tinha dentes de leite. Ela me contou que você perguntou da Noite Longa.', { requer: ['ouviuNoiteLonga', 'bolo3'] }],
+        ['zelia', 'Sou amiga da sua avó desde que a gente tinha dentes de leite. Ela me contou que te falou da Noite Longa.', { requer: ['ouviuNoiteLonga'], semFlag: ['bolo3'] }],
+        ['zelia', 'Sou amiga da Benta, sabia? A sua avó. Desde que a gente tinha dentes de leite. Vai visitar ela, que ela tem história pra te contar.', { semFlag: ['ouviuNoiteLonga'] }],
         ['zelia', 'Na Noite Longa, os fantasmas foram os únicos que não ficaram de olho vermelho. Sabe por quê? Porque eles já moram no escuro. Escuro não assusta quem conhece.'],
         ['zelia', 'Agora vamos ver se você conhece! Buuu!'],
       ],
