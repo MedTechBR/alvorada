@@ -97,8 +97,10 @@ export class Combat {
     const core = new PIXI.Sprite(g.tx.glow); core.anchor.set(0.5); core.tint = 0xffffff; core.scale.set(0.55 * big);
     const halo = new PIXI.Sprite(g.tx.glow); halo.anchor.set(0.5); halo.tint = color; halo.scale.set(1.3 * big);
     s.addChild(halo, core); this.layer.addChild(s);
-    const sx = user.x + dx * (user.r + 4), sy = user.y + dy * (user.r + 4) - 8;
-    this.projectiles.push({ user, side: user.side, mv, id, x: sx, y: sy, vx: dx * (mv.speed ?? 15) * M, vy: dy * (mv.speed ?? 15) * M, left: this.range(mv), s, color, r: 5 * big, power: mv.power ?? 30, big });
+    // sai da boca (ponto do quadro do sprite); a altura extra (lift) some no começo do voo
+    const ep = user.emitPoint?.(mv.cat === 'phys' ? 'hand' : 'mouth');
+    const sx = ep ? ep.x + dx * 2 : user.x + dx * (user.r + 4), sy = ep ? ep.y - 8 + dy * 2 : user.y + dy * (user.r + 4) - 8;
+    this.projectiles.push({ user, side: user.side, mv, id, x: sx, y: sy, lift: ep ? Math.max(0, ep.h - 8) : 0, vx: dx * (mv.speed ?? 15) * M, vy: dy * (mv.speed ?? 15) * M, left: this.range(mv), s, color, r: 5 * big, power: mv.power ?? 30, big });
   }
 
   #arc(user, mv, id, dx, dy, color, reach, spread) {
@@ -217,8 +219,9 @@ export class Combat {
       if (p.dead) continue;
       const st = Math.hypot(p.vx, p.vy) * dt;
       p.x += p.vx * dt; p.y += p.vy * dt; p.left -= st;
-      p.s.x = p.x; p.s.y = p.y; p.s.rotation += dt * 8;
-      if (Math.random() < 0.9) g.fx.emit(p.x, p.y, { color: p.color, n: 1, speed: 12, size: 3 + p.big * 2, life: 0.25 });
+      p.lift *= 1 - Math.min(1, dt * 6);
+      p.s.x = p.x; p.s.y = p.y - p.lift; p.s.rotation += dt * 8;
+      if (Math.random() < 0.9) g.fx.emit(p.x, p.s.y, { color: p.color, n: 1, speed: 12, size: 3 + p.big * 2, life: 0.25 });
       if (p.left <= 0) { p.dead = true; g.fx.burst(p.x, p.y, p.color, 0.4); if (p.mv.type === 'fire') g.scorchTile(p.x, p.y + 8); continue; }
       for (const q of this.projectiles) {
         if (q === p || q.dead || q.side === p.side) continue;
