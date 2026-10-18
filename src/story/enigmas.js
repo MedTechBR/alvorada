@@ -372,7 +372,7 @@ export class Enigmas {
     }
     G.circle(P[0].x, P[0].y - 2, 10).fill({ color: 0xb0c8ff, alpha: 0.5 });
     e.sprs.forEach((s, i) => { const v = s.vidro; v.clear(); const o = e.oris[i]; const a = o === '/' ? [-6, -2, 6, -12] : [-6, -12, 6, -2]; v.moveTo(a[0], a[1]).lineTo(a[2], a[3]).stroke({ width: 3, color: 0xcfe0ff }); v.moveTo(a[0], a[1]).lineTo(a[2], a[3]).stroke({ width: 1, color: 0xffffff }); });
-    e.cands.forEach((c, i) => { c.fl.visible = acesos.has(i) || !!f[d.flag]; if (c.fl.visible) G.circle(c.x, c.y - 16, 14).fill({ color: 0xffb84a, alpha: 0.55 }); });
+    e.cands.forEach((c, i) => { c.fl.visible = acesos.has(i) || !!f[d.flag]; if (c.fl.visible) for (const [r, al] of [[18, 0.12], [12, 0.2], [6, 0.35]]) G.circle(c.x, c.y - 22, r).fill({ color: 0xffb84a, alpha: al }); });
     const todos = acesos.size === d.candelabros.length;
     if (todos && !f[d.flag]) {
       f[d.flag] = true;
