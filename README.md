@@ -72,3 +72,26 @@ Interface e história (ramo `interface`):
 - `src/story/` capítulo 1 (Prof. Jatobá, Téo, treinadores, Cidade Campina, Líder Tomé). Posições por pontos nomeados: o mapa pode definir `map.spots` (ver `src/story/spots.js`).
 - `src/save.js` save por conta no localStorage, automático a cada 30 s.
 - PWA: `manifest.webmanifest`, `sw.js` (rede primeiro), ícones em `assets/icons` (`python3 tools/make_icons.py`).
+
+## Mundo (ramo `mundo`)
+
+- **Região:** `assets/maps/alvorada.json`, desenhado à mão (formato em `assets/maps/LEIAME.md`), por cima do esboço
+  gerado da planta `docs/mapa-alvorada.json` (`python3 -I tools/gerar-esboco.py` → `assets/maps/esboco.json`;
+  1 unidade da planta = 6 blocos). 600x480 blocos de 16 px por fora + faixa isolada de interiores.
+  Prontos: Vila Alvorada, Rota 1, Cidade Campina com o ginásio (milharal-labirinto), Fazenda do Tomé, Rota 2,
+  Bosque Sussurrante, Vila Sussurro e Toca do Absol, com interiores. O resto está esboçado (terreno, cidades, rotas).
+- **Arte:** blocos e objetos do Tuxemon (CC BY-SA 4.0, `assets/CREDITOS.md`) + prédios, árvores e móveis desenhados por
+  código (`src/world/art.js`, `buildings.js`). Bordas do chão por compositor (`ground.js`).
+- **Código:** `map.js` (GameMap: setores de 16x16 montados sob demanda, colisão, mato alto, `setTile`, `resolve`,
+  `solidAt`), `build.js` (lê o JSON), `objects.js` (catálogo), `life.js` (`game.mundo`: dia e noite, portas, bichinhos,
+  itens, frutas, placas, porteiras e fardos), `minimap.js`.
+- **Para a história:** `map.spots.<nome>` = `{x, y, dir, r?, map}` em pixels; `map` é `'mundo'` ou o id do interior
+  (ex.: `nurse` está em `centro_campina`). Portas criam `porta_<id>` e `dentro_<id>`. `game.mundo.warpTo(bx, by, dir)`
+  teleporta com fade; `fadeOut/fadeIn`; `isNight()`, `setHour(h)`, `hour`; `saveState()/loadState()` (hora, itens
+  pegos, frutas colhidas, setores visitados).
+- **Montarias:** `map.setMount('correr' | 'nadar' | 'escalar', true)` libera lama, água e paredão com trepadeira.
+  Toras da Mata dos Jequitibás têm `jump: true` (para a montaria Correr saltar).
+- **Minimapa:** canto da tela; clique nele ou tecla N alterna "gira com você" / "norte para cima".
+  Mapa completo para o menu: `game.mundo.renderRegionMap(canvas, { fog: true })` (setores visitados).
+- **Teste:** no console, `await import('/tools/mundo-teste.js')` dá `vista(nome, bx, by, zoom, hora)` e `mapaInteiro()`,
+  que salvam imagens em `tools/shots/`.
