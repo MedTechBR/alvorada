@@ -37,6 +37,8 @@ export class Mon {
     this.dex = dex;
     this.form = opts.form && SPECIES[dex].forms[opts.form] && !isBattleForm(dex, opts.form) ? opts.form : null;
     this.tempForm = null;
+    this.dmaxK = 0; // Dynamax: multiplicador de PS enquanto dura (0 = normal); nunca é gravado
+    this.gmax = !!opts.gmax; // fator G: vira Gigantamax no Dynamax (se a espécie tiver a forma); passa adiante na evolução
     this.gender = opts.gender !== undefined ? opts.gender : rollGender(SPECIES[dex].genderRate, rng);
     if (!this.form) this.form = genderForm(dex, this.gender);
     const sp = this.sp;
@@ -65,13 +67,30 @@ export class Mon {
   get spriteKey() { return this.sp.key; }
   get formKind() { return this.sp.kind ?? null; }
   // Põe (ou tira, com null) a forma de batalha. Mantém a fração de PS. Devolve true se mudou.
+  // Mega e Primitiva trocam também a habilidade (a da forma); ao voltar, a original. A gravada é sempre a original.
   setTempForm(form) {
     const f = form && SPECIES[this.dex].forms[form] ? form : null;
     if (f === this.tempForm) return false;
+    const ratio = this.stats?.hp ? this.hp / this.stats.hp : 1;
     this.tempForm = f;
+    const k = this.sp.kind;
+    if (f && (k === 'mega' || k === 'primal')) { this.baseAbility ??= this.ability; this.ability = this.sp.abilities[0] ?? this.ability; }
+    else if (this.baseAbility != null) { this.ability = this.baseAbility; this.baseAbility = null; }
     this.calc();
+    if (this.hp > 0) this.hp = Math.max(1, Math.min(this.stats.hp, Math.round(this.stats.hp * ratio)));
     return true;
   }
+  // Dynamax: PS máximo × k (0 desliga), mantendo a fração de PS. Não é gravado.
+  setDynamax(k = 0) {
+    k = k > 1 ? k : 0;
+    if (k === this.dmaxK) return false;
+    const ratio = this.stats.hp ? this.hp / this.stats.hp : 1;
+    this.dmaxK = k; this.calc();
+    this.hp = this.hp <= 0 ? 0 : Math.max(1, Math.round(this.stats.hp * ratio));
+    return true;
+  }
+  // volta ao normal (fim da luta, desmaio): sem forma de batalha e sem Dynamax
+  clearBattleForm() { const a = this.setDynamax(0), b = this.setTempForm(null); return a || b; }
   get name() { return this.nick || this.sp.name; }
   get types() { return this.sp.types; }
   get fainted() { return this.hp <= 0; }
@@ -82,6 +101,7 @@ export class Mon {
   calc() {
     const oldMax = this.stats?.hp;
     this.stats = calcStats(this.sp.base, this.ivs, this.evs, this.level, this.nature);
+    if (this.dmaxK) this.stats.hp = Math.round(this.stats.hp * this.dmaxK);
     if (oldMax != null && this.hp != null) this.hp = Math.max(this.hp > 0 ? 1 : 0, Math.min(this.stats.hp, this.hp + (this.stats.hp - oldMax)));
   }
 
@@ -147,7 +167,7 @@ export class Mon {
   // (ou a do gênero, ex.: Espurr fêmea → Meowstic fêmea)
   evolveTo(dex, form = null) {
     if (!SPECIES[dex]) return [];
-    this.tempForm = null;
+    this.clearBattleForm();
     const oldSp = this.sp, ratio = this.stats.hp ? this.hp / this.stats.hp : 1;
     const slot = oldSp.abilities.indexOf(this.ability);
     this.dex = dex;
@@ -189,10 +209,13 @@ export class Mon {
 
   toJSON() {
     const o = { v: SAVE_VERSION, dex: this.dex, level: this.level, ivs: this.ivs, evs: this.evs, nature: this.nature,
-      ability: this.ability, gender: this.gender, shiny: this.shiny, friendship: this.friendship, item: this.item,
+      ability: this.baseAbility ?? this.ability, gender: this.gender, shiny: this.shiny, friendship: this.friendship, item: this.item,
       ball: this.ball, metLevel: this.metLevel, nick: this.nick, ...(this.ot ? { ot: this.ot } : {}), xp: this.xp, moves: this.moves, status: this.status,
       hp: this.hp, uid: this.uid };
     if (this.form) o.form = this.form; // só quando existe: o save de quem não tem forma fica igual ao antigo
+    if (this.gmax) o.gmax = true;      // fator G (Gigantamax), também só quando existe
+    // em Dynamax, grava o PS na escala normal
+    if (this.dmaxK) o.hp = this.hp <= 0 ? 0 : Math.max(1, Math.round(this.hp / this.dmaxK));
     return o;
   }
 

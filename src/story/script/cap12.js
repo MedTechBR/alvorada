@@ -65,7 +65,7 @@ export default {
             [398, 57, ['braveBird', 'closeCombat', 'uTurn', 'quickAttack']],
             [59, 57, ['flareBlitz', 'extremeSpeed', 'crunch', 'wildCharge']],
             [197, 58, ['foulPlay', 'moonlight', 'toxic', 'snarl']],
-            [448, 58, ['auraSphere', 'flashCannon', 'extremeSpeed', 'swordsDance']],
+            [448, 58, ['auraSphere', 'flashCannon', 'extremeSpeed', 'swordsDance'], { item: 'lucarionite' }], // Mega Lucario (src/combat/poder.js)
             [130, 58, ['waterfall', 'crunch', 'dragonDance', 'earthquake']],
             ['rival:3', 60, []],
           ],
@@ -101,7 +101,7 @@ export default {
           equipe: [
             [262, 55, ['crunch', 'suckerPunch', 'playRough']],
             [510, 55, ['nightSlash', 'fakeOut', 'uTurn']],
-            [302, 56, ['shadowClaw', 'foulPlay', 'willOWisp']],
+            [302, 56, ['shadowClaw', 'foulPlay', 'willOWisp'], { item: 'sablenite' }], // Mega Sableye
             [430, 56, ['nightSlash', 'braveBird', 'suckerPunch']],
             [461, 57, ['iceShard', 'nightSlash', 'iceFang']],
             [861, 59, ['spiritBreak', 'darkestLariat', 'thunderWave', 'suckerPunch']],
@@ -130,7 +130,7 @@ export default {
           equipe: [
             [927, 55, ['playRough', 'crunch', 'bodyPress']],
             [547, 56, ['moonblast', 'energyBall', 'tailwind']],
-            [303, 56, ['playRough', 'ironHead', 'suckerPunch']],
+            [303, 56, ['playRough', 'ironHead', 'suckerPunch'], { item: 'mawilite' }], // Mega Mawile
             [671, 57, ['moonblast', 'petalBlizzard', 'psychic']],
             [959, 57, ['gigatonHammer', 'playRough', 'stoneEdge']],
             [700, 59, ['moonblast', 'hyperVoice', 'drainingKiss', 'calmMind']],
@@ -159,7 +159,7 @@ export default {
           equipe: [
             [324, 56, ['heatWave', 'bodyPress', 'stealthRock']],
             [952, 56, ['flamethrower', 'gigaDrain', 'crunch']],
-            [323, 57, ['earthPower', 'flamethrower', 'rockSlide']],
+            [323, 57, ['earthPower', 'flamethrower', 'rockSlide'], { item: 'cameruptite' }], // Mega Camerupt
             [851, 57, ['fireLash', 'leechLife', 'crunch']],
             [936, 58, ['armorCannon', 'psyshock', 'flameCharge']],
             [59, 60, ['flareBlitz', 'extremeSpeed', 'crunch', 'wildCharge']],
@@ -193,7 +193,7 @@ export default {
             [706, 58, ['dragonPulse', 'sludgeBomb', 'thunderbolt']],
             [612, 59, ['outrage', 'dragonDance', 'earthquake']],
             [715, 59, ['dragonPulse', 'airSlash', 'boomburst']],
-            [149, 61, ['dragonClaw', 'extremeSpeed', 'hurricane', 'dragonDance']],
+            [149, 61, ['dragonClaw', 'extremeSpeed', 'hurricane', 'dragonDance'], { item: 'dragoninite' }], // Mega Dragonite
           ],
         },
       },
@@ -236,7 +236,7 @@ export default {
             [468, 62, ['airSlash', 'dazzlingGleam', 'auraSphere', 'roost']],
             [745, 63, ['accelerock', 'stoneEdge', 'crunch', 'closeCombat'], { forma: 'diurna' }],
             [282, 63, ['moonblast', 'psychic', 'mysticalFire']],
-            [445, 64, ['earthquake', 'dragonClaw', 'stoneEdge', 'swordsDance']],
+            [445, 64, ['earthquake', 'dragonClaw', 'stoneEdge', 'swordsDance'], { item: 'garchompite' }], // Mega Garchomp
             [637, 66, ['fieryDance', 'bugBuzz', 'quiverDance', 'gigaDrain']],
           ],
         },
