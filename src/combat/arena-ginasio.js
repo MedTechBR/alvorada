@@ -69,7 +69,7 @@ export class ArenaGinasio {
     if (cfg.poder) { b.poder = { usado: true }; if (cfg.poder.tipo === 'dynamax') b.def.dynamax = true; }
     this.pecas = []; this.porId = new Map();
     for (const def of cfg.pecas ?? []) {
-      const K = PECAS[def.tipo]; if (!K) { console.warn('peça desconhecida', def.tipo); continue; }
+      const K = PECAS[def.tipo]; if (!K) { console.error('arena: peça desconhecida', def.tipo); continue; }
       const p = new K(this, { ...def }); p.id = def.id ?? def.tipo; p.ativo = def.ativo !== false;
       this.pecas.push(p); this.porId.set(p.id, p);
     }
@@ -171,7 +171,8 @@ export class ArenaGinasio {
   async abertura() {
     const g = this.g, cfg = this.cfg, npc = this.b.npc;
     g.arenaGinasio = this;
-    this.antes = { escuro: this.room?.escuro, musica: g.audio?.track };
+    this.antes = { escuro: this.room?.escuro, dark: this.room?.dark, musica: g.audio?.track };
+    if (cfg.acende && this.room) this.room.dark = false; // a sala do líder acende para a luta (o farol com os geradores ligados)
     for (const p of this.pecas) p.iniciar?.();
     const pos = cfg.posicoes;
     if (pos) {
@@ -399,7 +400,7 @@ export class ArenaGinasio {
     for (const [k, v] of this.blocks) m.block[k] = v;
     for (const a of this.ajudantes) this.#some(a);
     for (const e of g.entities) { e.arenaVel = 1; if (e.alpha < 1 && !e.dead && !e.fadeIn) e.alpha = 1; e.cargaArena = null; e.noRitmo = null; }
-    if (this.room) this.room.escuro = this.antes?.escuro;
+    if (this.room) { this.room.escuro = this.antes?.escuro; this.room.dark = this.antes?.dark; }
     this.G0.destroy(); this.G1.destroy(); this.topo.destroy({ children: true });
     for (const G of this.gfxs) G.destroy();
     if (g.camFocus) g.camFocus = null;

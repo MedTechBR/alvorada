@@ -109,7 +109,7 @@ async function caso(b, nome, rodada) {
   const fim = await until(() => p.ev('!!window.__arenaUltima'), CEL ? 600000 : 900000, 1000);
   const r = await p.ev(`(() => { const s = window.__arenaUltima, G = window.game; return s && { ...s, porPerigo: s.porPerigo, minAviso: s.minAviso === Infinity ? null : +s.minAviso.toFixed(2), bot: window.bot.stats, perf: { logicaMs: +(window.__perf.ms / window.__perf.n).toFixed(2), logicaMax: +window.__perf.max.toFixed(1) }, fotos: window.__fotos, equipeViva: G.party.filter((m) => !m.fainted).length }; })()`);
   await sleep(800);
-  const erros = p.logs.filter((s) => /EXC|Error|error|falhou|não montou/.test(s) && !/favicon|ERR_|net::/.test(s));
+  const erros = p.logs.filter((s) => /EXC|Error|error|falhou|não montou|desconhecida/.test(s) && !/favicon|ERR_|net::/.test(s));
   await p.ev('motor(false); bot.desligar()').catch(() => {});
   await p.close();
   return { nome, rodada, ...r, fps, erros: erros.slice(0, 6), fimOk: !!fim };

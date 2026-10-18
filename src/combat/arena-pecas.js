@@ -274,9 +274,9 @@ class Marcas extends Peca {
     if (p.rod) { p.rod.atingido(); return; } // o para-raios bebe o raio: ninguém em volta apanha
     for (const e of A.lutadores()) {
       const dd = Math.hypot(e.x - p.x, e.y - p.y); if (dd > r + e.r) continue;
-      A.ferir(e, d.dano ?? 0.1, { dx: (e.x - p.x) / (dd || 1), dy: (e.y - p.y) / (dd || 1), knock: 1.1, tipo: d.tipo ?? 'electric', status: d.status, chance: d.chance, aviso: av, fonte: this, ar: d.visual !== 'pedra', forca: 80 });
+      A.ferir(e, d.dano ?? 0.1, { dx: (e.x - p.x) / (dd || 1), dy: (e.y - p.y) / (dd || 1), knock: 1.1, tipo: d.tipoDano ?? 'electric', status: d.status, chance: d.chance, aviso: av, fonte: this, ar: d.visual !== 'pedra', forca: 80 });
     }
-    A.impacto(p.x, p.y, { type: d.tipo ?? 'electric', power: 80, cat: 'phys', en: 'Arena' }, 1.3);
+    A.impacto(p.x, p.y, { type: d.tipoDano ?? 'electric', power: 80, cat: 'phys', en: 'Arena' }, 1.3);
     if (d.entulho && Math.random() < d.entulho) A.pecas.find((q) => q.adicionar)?.adicionar(p.x, p.y, 1);
   }
   update(dt) {
@@ -337,7 +337,7 @@ class Paineis extends Peca {
       const L = this.lig; L.t -= dt;
       for (const e of A.lutadores()) {
         if (L.hit.has(e) || A.voando(e) || !L.set.has(key(Math.floor(e.x / T), Math.floor(e.y / T)))) continue;
-        L.hit.add(e); A.ferir(e, d.dano ?? 0.07, { tipo: d.tipo ?? 'electric', status: d.status ?? 'par', chance: d.chance ?? 0.2, aviso: L.av, fonte: this, knock: 0.4 });
+        L.hit.add(e); A.ferir(e, d.dano ?? 0.07, { tipo: d.tipoDano ?? 'electric', status: d.status ?? 'par', chance: d.chance ?? 0.2, aviso: L.av, fonte: this, knock: 0.4 });
       }
       if (Math.random() < dt * 30) { const [tx, ty] = pick(L.cells); this.g.fx.emit(tx * T + rnd(2, 14), ty * T + rnd(2, 14), { tex: 'spark', color: 0xfff27a, n: 2, speed: 50, life: 0.2, stretch: 0.01 }); }
       if (L.t <= 0) this.lig = null;

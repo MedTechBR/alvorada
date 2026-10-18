@@ -6,7 +6,7 @@
 //   coordenadas do mapa aberto), area [x, y, w, h] em blocos relativos à sala, posicoes { jogador, lider } (onde cada
 //   um fica durante a luta; opcional), abertura (fala do líder), musica { luta }, gritos { idDaPeca: fala } (quando o
 //   líder aciona aquela peça), as { titulo, fala, grito, corFx } (entrada do último Pokémon), poder { tipo:
-//   'dynamax' | 'mega', quando: 'entrada' | 'ps', ps } (ramo mega), pecas [ { tipo, id?, ativo?, ...params } ],
+//   'dynamax' | 'mega', quando: 'entrada' | 'ps', ps } (src/combat/poder.js), acende (sala escura acende na luta), pecas [ { tipo, id?, ativo?, ...params } ],
 //   fases [ { id, nome, quando: { desmaios, psEquipe, as, asPS }, titulo, fala, liga, desliga, ajusta, evento,
 //   musica, final } ]. A fase 0 vale desde o início (sem "quando").
 // Os números (avisos em s, dano em fração dos PS máximos, períodos em s) são os de um ginásio médio: o motor escala
@@ -103,7 +103,7 @@ export const ARENAS = {
   // ------------------------------------------------------------------ Jonas (Elétrico): lanterna do farol
   leader_jonas: {
     id: 'jonas', nome: 'Lanterna do Farol', tipo: 'electric', cor: '#ffe23a',
-    sala: 'farol_topo', area: [1, 2, 13, 8], posicoes: { jogador: [4, 8.6], lider: [12, 2.6] },
+    sala: 'farol_topo', area: [1, 2, 13, 8], acende: true, posicoes: { jogador: [4, 8.6], lider: [12, 2.6] },
     abertura: 'O chão do farol é todo circuito! Pisa onde eu não piso, viu?',
     gritos: { paineis: ['Liga o painel!', 'Corrente no chão!'], marcas: ['Cai, raio!', 'Olha pro céu!'] },
     as: { titulo: 'O ás de Jonas', fala: 'Lanturn! Acende o mar!', grito: 'Lanturn!', corFx: 0xffe23a },
@@ -112,7 +112,7 @@ export const ARENAS = {
       { tipo: 'paineis', tam: 2, padroes: ['xadrez', 'linhas', 'colunas', 'anel', 'cruz', 'metade'], periodo: [4.5, 6.5], primeiro: 4, aviso: 1.15, ativo: 0.8, dano: 0.07, status: 'par', chance: 0.2, evita: [[3, 5], [7, 4], [11, 5], [2, 9], [1, 7], [13, 7]] },
       { tipo: 'gerador', pos: [[3, 5], [7, 4], [11, 5]], tempo: 1.3, mult: 1.5, recarga: 7, raio: 1.6 },
       { tipo: 'pararaio', pos: [[1, 7], [13, 7]], raio: 2.4 },
-      { tipo: 'marcas', id: 'marcas', ativo: false, ceu: true, n: [1, 2], periodo: [2.8, 4.2], aviso: 1.2, raio: 1.2, dano: 0.1, tipo: 'electric', status: 'par', chance: 0.15, visual: 'raio', alvo: 'misto' },
+      { tipo: 'marcas', id: 'marcas', ativo: false, ceu: true, n: [1, 2], periodo: [2.8, 4.2], aviso: 1.2, raio: 1.2, dano: 0.1, tipoDano: 'electric', status: 'par', chance: 0.15, visual: 'raio', alvo: 'misto' },
     ],
     fases: [
       { id: 'circuito', nome: 'O circuito' },
@@ -179,7 +179,7 @@ export const ARENAS = {
     poder: { tipo: 'dynamax', quando: 'ps', ps: 0.6 },
     pecas: [
       { tipo: 'plateia', estilo: 'marujo', lugares: [[0, -2, 16, 2]], cores: [0x8a6a4a, 0x6a6a72, 0xe8c040], frases: ['Força, Graça!', 'Segura o teto!', 'Ê, mineiro!'] },
-      { tipo: 'marcas', id: 'marcas', visual: 'pedra', n: [1, 2], periodo: [3.2, 4.6], aviso: 1.3, raio: 1.3, dano: 0.11, tipo: 'rock', entulho: 0.35, alvo: 'misto' },
+      { tipo: 'marcas', id: 'marcas', visual: 'pedra', n: [1, 2], periodo: [3.2, 4.6], aviso: 1.3, raio: 1.3, dano: 0.11, tipoDano: 'rock', entulho: 0.35, alvo: 'misto' },
       { tipo: 'cobertura', id: 'pilares', visual: 'pilar', rola: false, hp: 4, pos: [[4, 4], [11, 4], [4, 8], [11, 8], [8, 6]] },
       { tipo: 'faixa', id: 'faixa', orient: 'h', largura: 1, faixas: [2, 9], trilhos: true, vel: 6, periodo: [7, 10], aviso: 1.4, dano: 0.1, visual: 'vagonete', cor: 0xc8a070, rotulo: 'Vagonete!' },
     ],
