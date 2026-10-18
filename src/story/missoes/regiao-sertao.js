@@ -3148,7 +3148,7 @@ export const NPCS = {
       },
       "da": {
         "dex": 27,
-        "forma": "sandshrew-alola",
+        "forma": "alola",
         "nivel": 30,
         "apelido": "Alolinha"
       },
@@ -3168,6 +3168,38 @@ export const NPCS = {
         ],
         "depois": [
           "Um Sandshrew do deserto! Sinto saudade do de lá."
+        ]
+      }
+    }
+  },
+  "kaleo": {
+    "troca": {
+      "quer": {
+        "especie": 37,
+        "nome": "um Vulpix"
+      },
+      "da": {
+        "dex": 37,
+        "forma": "alola",
+        "nivel": 30,
+        "apelido": "Nevinha"
+      },
+      "repetivel": false,
+      "falas": {
+        "pede": [
+          "Eu tenho um Vulpix de Alola, branquinho como a neve de lá. Troco por um Vulpix daqui, de fogo. Topa?"
+        ],
+        "aceita": [
+          "Que lindo! Sempre quis ver o fogo de perto sem queimar a mão."
+        ],
+        "recusa": [
+          "Sem pressa. A neve não derrete tão rápido."
+        ],
+        "falta": [
+          "Preciso de um Vulpix para a troca."
+        ],
+        "depois": [
+          "O fogo do Vulpix daqui aquece meu quarto de hotel!"
         ]
       }
     }

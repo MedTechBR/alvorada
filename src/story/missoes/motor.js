@@ -384,10 +384,10 @@ export class Missoes {
     await g.ui.say(linhas, { name: '', portrait });
     void n;
   }
-  // { dex, nivel, golpes, item, apelido, shiny, bola, ot, amizade }
+  // { dex, nivel, golpes, item, apelido, shiny, bola, ot, amizade, forma: 'alola' | 'galar' | 'hisui' | 'paldea' }
   criarPokemon(p) {
     const dex = especie(p.dex), nivel = p.nivel ?? 5;
-    const mon = new Mon(dex, nivel, { moves: p.golpes ? golpes(p.golpes, dex, nivel) : undefined, item: p.item ?? null, nick: p.apelido ?? null, shiny: !!p.shiny, ball: p.bola ?? 'pokeBall', friendship: p.amizade });
+    const mon = new Mon(dex, nivel, { moves: p.golpes ? golpes(p.golpes, dex, nivel) : undefined, item: p.item ?? null, nick: p.apelido ?? null, shiny: !!p.shiny, ball: p.bola ?? 'pokeBall', friendship: p.amizade, form: p.forma });
     if (p.ot) mon.ot = p.ot;
     return mon;
   }
