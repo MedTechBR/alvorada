@@ -42,7 +42,11 @@ const lerp = (a, b, k) => a + (b - a) * k;
 // escala da montaria: a mesma regra dos Pokémon (altura real comprimida); sem dados da espécie, usa a altura da tabela
 function mountScale(kind, set) {
   const C = MOUNTS[kind];
-  if (SPECIES[C.dex]?.height) return speciesScale(C.dex, set);
+  if (SPECIES[C.dex]?.height) {
+    // montaria precisa ter porte para carregar o treinador (32 px): no mínimo ~30 px de altura
+    const top = set?.top || 24, min = Math.round((30 / top) * 4) / 4;
+    return Math.max(speciesScale(C.dex, set), min);
+  }
   const h = Math.min(80, 10 + 16 * Math.pow(C.h, 0.85));
   return Math.max(0.5, Math.min(3, Math.round(h / (set?.top || 24) * 4) / 4));
 }
