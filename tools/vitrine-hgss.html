@@ -49,10 +49,55 @@ if (parte === 'personagens' || parte === 'tudo') {
     sprite(b.textura, 10 + (i % 38) * 33, 340 + Math.floor(i / 38) * 34, 32, 32);
   });
 }
+
+if (parte === 'texturas' || parte === 'tudo') {
+  const ox = parte === 'tudo' ? 0 : 0;
+  // atlas inteiro ampliado 4x, e a água/lava animando ao lado
+  const A = H.texturas.indice;
+  const m = sprite(H.texturas.atlas, 10, 10, A.tamanho[0] * 4, A.tamanho[1] * 4, false);
+  const pontos = ['water', 'lava', 'deep', 'tide', 'cur_e', 'hotspring'];
+  pontos.forEach((n, i) => {
+    const mat = new THREE.MeshBasicMaterial({ map: H.texturas.atlas });
+    const g = new THREE.PlaneGeometry(64, 64); const mesh = new THREE.Mesh(g, mat); mesh.position.set(1060 + (i % 3) * 70, HH - (40 + Math.floor(i / 3) * 70), 0); scene.add(mesh);
+    const uvs = g.attributes.uv;
+    vivos.push((t) => { const u = H.texturas.uvNome(H.texturas.quadroAnim(n, t)); uvs.setXY(0, u.u0, u.v1); uvs.setXY(1, u.u1, u.v1); uvs.setXY(2, u.u0, u.v0); uvs.setXY(3, u.u1, u.v0); uvs.needsUpdate = true; });
+  });
+  // um cubo de grama com lateral de parede/copa para provar as UVs de topo e lado
+  out.uv = { grass: H.texturas.uv('grass'), wallLado: H.texturas.uv('wall', 'lado'), forestTopo: H.texturas.uv('forest') };
+}
+if (parte === 'pokemon' || parte === 'tudo') {
+  const dex = [1, 6, 25, 94, 130, 150, 152, 249, 282, 384, 448, 493, 571, 658, 700, 724, 778, 887, 1007, 1025];
+  const formas = [[6, 'megaX'], [19, 'alola'], [3, 'mega']];
+  const y0 = parte === 'tudo' ? 0 : 0;
+  dex.concat([]).forEach((d, i) => {
+    ['f', 'b'].forEach((lado, j) => {
+      const p = H.pokemon(d, { lado }); if (!p) { out.erros.push('sem ' + d + lado); return; }
+      const t = p.clone(); const sc = Math.min(2, 100 / Math.max(p.w, p.h)) * (p.fonte === 'png' ? 1 : 1.5);
+      const ww = p.w * sc, hh = p.h * sc;
+      const s = sprite(t, 20 + (i % 10) * 124 + (62 - ww / 2) + (j ? 0 : 0), 20 + Math.floor(i / 10) * 250 + (j ? 120 : 0) + (110 - hh), ww, hh);
+      vivos.push((tt) => p.aplicar(t, tt * 1000));
+      (out.pk ??= []).push([d, lado, p.n, p.fonte]);
+    });
+  });
+  formas.forEach(([d, f], i) => { ['f', 'b'].forEach((lado, j) => { const p = H.pokemon(d, { forma: f, lado }); if (!p) { out.erros.push('sem forma ' + d + f); return; } const t = p.clone(); const sc = 1.5; sprite(t, 20 + i * 150, 520 + j * 100 - 0, p.w * sc, p.h * sc); vivos.push((tt) => p.aplicar(t, tt * 1000)); }); });
+}
+let camP = null;
+if (parte === 'modelos') {
+  scene.background = new THREE.Color(0x87a8c8);
+  camP = new THREE.PerspectiveCamera(35, W / HH, 0.1, 500);
+  scene.add(new THREE.AmbientLight(0xffffff, 1.6)); const dl = new THREE.DirectionalLight(0xffffff, 2); dl.position.set(5, 10, 6); scene.add(dl);
+  const nomes = ['hgss/pallet/house_player', 'hgss/pallet/lab', 'hgss/pewter_city/pokecenter', 'hgss/pewter_city/pokemart', 'hgss/pewter_city/gym', 'hgss/common/tree', 'hgss/common/fence', 'hgss/common/lamp', 'hgss/common/fountain', 'hgss/common/sign_a', 'hgss/common/bush', 'hgss/common/boulder'];
+  let x = 0; const col = [];
+  for (const n of nomes) {
+    try { const g = await H.modelo(n); const b = new THREE.Box3().setFromObject(g); const sz = b.getSize(new THREE.Vector3()); const sc = 4 / Math.max(sz.x, sz.y, sz.z); g.scale.setScalar(sc); b.setFromObject(g); g.position.x = (x % 4) * 5 - 7.5 - (b.min.x + b.max.x) / 2; g.position.z = Math.floor(x / 4) * -5; g.position.y = -b.min.y; scene.add(g); col.push(n); x++; } catch (e) { out.erros.push(n + ': ' + e.message); }
+  }
+  out.modelos = col;
+  camP.position.set(0, 13, 17); camP.lookAt(0, 0, -3);
+}
 function loop() {
   const t = performance.now() / 1000;
   vivos.forEach((f) => f(t));
-  renderer.render(scene, cam); requestAnimationFrame(loop);
+  renderer.render(scene, camP || cam); requestAnimationFrame(loop);
 }
 loop();
 window.pronto = true;
