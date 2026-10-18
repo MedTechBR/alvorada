@@ -13,8 +13,9 @@ const t = (y, x0, x1, z0, z1) => ({ y, x0, x1, z0, z1 });
 // estante com livros coloridos (3 prateleiras); w = largura, z0 = fundo
 function estante(m, cx, w = 16, h = 30, z0 = -16, d = 8) {
   const x0 = cx - w / 2, x1 = cx + w / 2, z1 = z0 + d;
-  m.caixa(x0, 0, z0, x1, h, z1, MAD[1], { cores: { topo: MAD[2] } });
-  m.quad([x0 + 1, 1, z1 - 2], [x1 - 1, 1, z1 - 2], [x1 - 1, h - 1, z1 - 2], [x0 + 1, h - 1, z1 - 2], MAD[0], { ao: false, sempre: true });
+  m.caixa(x0, 0, z0, x1, h, z1, MAD[1], { sem: ['frente'], cores: { topo: MAD[2] } });
+  m.quad([x0 + 1, 0, z0 + 0.5], [x1 - 1, 0, z0 + 0.5], [x1 - 1, h - 1, z0 + 0.5], [x0 + 1, h - 1, z0 + 0.5], MAD[0], { ao: false, sempre: true });
+  m.caixa(x0, h - 1.5, z0, x1, h, z1, MAD[1], { ao: false, cores: { topo: MAD[2] } });
   const n = 3, hh = (h - 2) / n;
   for (let i = 0; i < n; i++) {
     const y = 1 + i * hh;

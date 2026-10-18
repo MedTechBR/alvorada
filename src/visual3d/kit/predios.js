@@ -173,7 +173,7 @@ function arvorePredio(centro) { // jequitibá com porta no tronco (Centro de Vil
 }
 function estufa(m, c) { // estufa de vidro com teto em arco (laboratório anexo e ginásio da Lia)
   const wl = c.L - 6, zf = -3, zb = -c.D + 5, wh = 34, fr = '#2f7a3a';
-  m.caixa(-wl, 0, zb, wl, wh, zf, '#bfe8d0', { sem: ['topo'], brilho: 0.4, cores: { lado: '#a8d8c0' } });
+  m.caixa(-wl, 0, zb, wl, wh, zf, '#bfe8d0', { sem: ['topo'], brilho: 0.15, cores: { lado: '#a8d8c0' } });
   for (let x = -wl; x <= wl; x += 12) m.caixa(x - 1, 0, zf, x + 1, wh, zf + 1, fr, { ao: false });
   m.caixa(-wl, 18, zf, wl, 20, zf + 1, fr, { ao: false, sem: ['leste', 'oeste'] });
   for (let x = -wl + 8; x < wl - 8; x += 16) m.bloco(x, 0, zf - 6, 10, 10, 8, '#3aa04a', { cores: { topo: '#7ad86a' } });
@@ -182,10 +182,10 @@ function estufa(m, c) { // estufa de vidro com teto em arco (laboratório anexo 
   const p = (a) => [zc + Math.cos(a) * R, wh + Math.sin(a) * R * 1.1];
   for (let i = 0; i < n; i++) {
     const [z0, y0] = p((i / n) * Math.PI), [z1, y1] = p(((i + 1) / n) * Math.PI);
-    m.quad([-wl - 2, y0, z0], [wl + 2, y0, z0], [wl + 2, y1, z1], [-wl - 2, y1, z1], i % 2 ? '#d8f4e4' : '#c8ecd8', { ao: false, brilho: 0.5 });
+    m.quad([-wl - 2, y0, z0], [wl + 2, y0, z0], [wl + 2, y1, z1], [-wl - 2, y1, z1], i % 2 ? '#d8f4e4' : '#c8ecd8', { ao: false, brilho: 0.15 });
     m.quad([-wl - 2, y0 - 1, z0 + 0.5], [wl + 2, y0 - 1, z0 + 0.5], [wl + 2, y0 + 1, z0 + 0.5], [-wl - 2, y0 + 1, z0 + 0.5], fr, { ao: false });
   }
-  for (const s of [-1, 1]) { const pts = []; for (let i = 0; i <= n; i++) { const [z, y] = p((i / n) * Math.PI); pts.push([s * (wl + 2), y, z]); } m.poli(s > 0 ? pts : pts.reverse(), '#a8d8c0', { brilho: 0.4 }); }
+  for (const s of [-1, 1]) { const pts = []; for (let i = 0; i <= n; i++) { const [z, y] = p((i / n) * Math.PI); pts.push([s * (wl + 2), y, z]); } m.poli(s > 0 ? pts : pts.reverse(), '#a8d8c0', { brilho: 0.15 }); }
   for (let x = -wl + 12; x < wl; x += 24) m.caixa(x - 1, wh + R * 1.1 - 1, zc - 1, x + 1, wh + R * 1.1 + 1, zc + 1, fr);
   porta(m, portaX(c), zf, 24, 30, 'glass');
   return { y: wh + R * 1.1, x0: -wl, x1: wl, z0: zc - 4, z1: zc + 4 };
