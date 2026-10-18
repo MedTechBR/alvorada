@@ -33,13 +33,13 @@ export class PokeEntity {
     this.bar = new PIXI.Graphics();
     this.view.addChild(this.shadow, this.body, this.bar);
     this.r = 6;
-    this.ready = loadPokemonSprites(mon.dex).then((set) => this.setSprites(set));
+    this.ready = loadPokemonSprites(mon.spriteKey).then((set) => this.setSprites(set));
   }
 
   // Troca o conjunto de sprites (entrada e evolução) e aplica a escala da espécie (altura real)
   setSprites(set) {
     this.set = set;
-    this.baseScale = speciesScale(this.mon.dex, set);
+    this.baseScale = speciesScale(this.mon.spriteKey ?? this.mon.dex, set);
     this.h = (set.top || 24) * this.baseScale;            // altura na tela (px), sem o tamanho de alfa
     this.r = Math.max(5, Math.min(28, set.size * 0.22 * this.baseScale)) * (this.isAlpha ? 1.3 : 1);
     this.shadow.scale.set(...(set.shadowScale ?? [1, 1]));

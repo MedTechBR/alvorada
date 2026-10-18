@@ -34,7 +34,7 @@ for (const d of dexes) {
     ok(SPECIES[e.to], `${n}: evolui para espécie inexistente ${e.to}`);
     if (e.item) ok(ITEMS[e.item], `${n}: item de evolução inexistente ${e.item}`);
     if (e.move) ok(MOVES[e.move] && learnMethod(d, e.move), `${n}: golpe de evolução ${e.move} não existe ou não é aprendido`);
-    ok(e.level || e.item || e.friendship || e.move || e.moveType, `${n}: evolução sem condição`);
+    ok(e.level || e.item || e.friendship || e.move || e.moveType || e.partySpecies, `${n}: evolução sem condição`);
   }
   if (!s.pmd) avisos.push(`${n} não tem sprite no PMD SpriteCollab`);
 }

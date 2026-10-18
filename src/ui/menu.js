@@ -130,8 +130,8 @@ function itemIcon(k) {
 const slot = (dex, cls = '', shadow = false) => `<div class="gm-pslot ${cls} ${shadow ? 'shadow' : ''}" data-dex="${dex}"><div class="gm-sil">${SILHOUETTE}</div></div>`;
 function fillPortraits(root) {
   root.querySelectorAll('.gm-pslot[data-dex]').forEach((s) => {
-    const dex = +s.dataset.dex;
-    portraitURL(dex).then((src) => { if (src && s.isConnected && +s.dataset.dex === dex) s.innerHTML = `<img class="gm-portrait" src="${src}" alt="">`; });
+    const dex = /^\d+$/.test(s.dataset.dex) ? +s.dataset.dex : s.dataset.dex; // dex ou chave de forma ("26-alola")
+    portraitURL(dex).then((src) => { if (src && s.isConnected && s.dataset.dex === String(dex)) s.innerHTML = `<img class="gm-portrait" src="${src}" alt="">`; });
   });
 }
 const typePills = (types) => types.map((t) => `<span class="gm-type" style="background:${TYPE_COLOR[t]}">${TYPE_PT[t]}</span>`).join('');
@@ -492,7 +492,7 @@ export class GameMenu {
         body.innerHTML = `<div class="gm-grid">${g.party.map((m, i) => {
           const f = m.hp / m.stats.hp, st = m.status ? `<span class="status ${stPT(m.status)[2]}">${stPT(m.status)[0]}</span>` : '';
           return `<div class="nav gm-box gm-pcard ${m.fainted ? 'ko' : ''} ${L.swap === i ? 'swap' : ''}" data-i="${i}">
-            <span class="gm-cur">▶</span>${slot(m.dex)}
+            <span class="gm-cur">▶</span>${slot(m.spriteKey ?? m.dex)}
             <div class="gm-pmain"><div class="gm-pline"><span class="gm-pn">${esc(m.name)}</span>${i === g.leadIdx && g.lead?.alive ? '<span class="gm-tag">Em campo</span>' : ''}${st}${heldKey(m) ? `<span class="gm-ic sm" title="${esc(itemName(heldKey(m)))}">${itemIcon(heldKey(m))}</span>` : ''}</div>
               <div class="gm-pline"><span class="gm-lv">Nv. ${m.level}</span><span class="gm-types">${typePills(m.types)}</span></div>
               <div class="gm-hp"><span>PS</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div></div>
@@ -593,7 +593,7 @@ export class GameMenu {
       extra: () => `<span class="gm-chip">Equipe ${g.party.length}/6</span><span class="gm-chip">Caixa ${g.box.length}</span>`,
       foot: '<b>↑↓</b> mover · <b>Enter</b> guardar/retirar · <b>Esc</b> sair',
       draw: (body) => {
-        const card = (m, where, i) => `<div class="nav gm-row gm-pcrow ${m.fainted ? 'ko' : ''}" data-w="${where}" data-i="${i}"><span class="gm-cur">▶</span>${slot(m.dex, 'mini')}<span class="nm">${esc(m.name)}</span><span class="gm-soft">Nv. ${m.level}</span></div>`;
+        const card = (m, where, i) => `<div class="nav gm-row gm-pcrow ${m.fainted ? 'ko' : ''}" data-w="${where}" data-i="${i}"><span class="gm-cur">▶</span>${slot(m.spriteKey ?? m.dex, 'mini')}<span class="nm">${esc(m.name)}</span><span class="gm-soft">Nv. ${m.level}</span></div>`;
         body.innerHTML = `<div class="gm-box gm-scroll gm-pccol"><div class="gm-sub-t">Equipe</div>${g.party.map((m, i) => card(m, 'p', i)).join('')}</div>
           <div class="gm-box gm-scroll gm-pccol"><div class="gm-sub-t">Caixa 1</div>${g.box.length ? g.box.map((m, i) => card(m, 'b', i)).join('') : '<div class="gm-empty">A caixa está vazia. Pokémon capturados com a equipe cheia vêm para cá.</div>'}</div>`;
         body.querySelectorAll('.nav').forEach((n) => { n._act = () => this.#pcAct(n.dataset.w, +n.dataset.i); });
@@ -660,7 +660,7 @@ export class GameMenu {
         title: 'Aprender golpe', cls: 'gm-sum gm-learn',
         foot: '<b>↑↓</b> escolher · <b>Enter</b> esquecer este · <b>Esc</b> não aprender',
         draw: (body) => {
-          body.innerHTML = `<div class="gm-box gm-sumleft">${slot(m.dex, 'big')}<div class="gm-big">${esc(m.name)}</div><div class="gm-soft">Nv. ${m.level}</div>
+          body.innerHTML = `<div class="gm-box gm-sumleft">${slot(m.spriteKey ?? m.dex, 'big')}<div class="gm-big">${esc(m.name)}</div><div class="gm-soft">Nv. ${m.level}</div>
               <p class="gm-desc">${esc(m.name)} quer aprender <b>${esc(mv.name)}</b>, mas já sabe 4 golpes.<br>Esquecer um golpe para dar lugar a ${esc(mv.name)}?</p></div>
             <div class="gm-box gm-sumright gm-moves"><div class="gm-sub-t">Golpe novo</div>${card(id, 'gm-new')}
               <div class="gm-sub-t">Esquecer qual?</div>
@@ -794,7 +794,7 @@ export class GameMenu {
         const f = m.hp / m.stats.hp;
         const left = `<div class="gm-box gm-sumleft">
           <div class="gm-sumnav"><button class="gm-arrow" data-d="-1">▲</button><span>${L.mi + 1} / ${g.party.length}</span><button class="gm-arrow" data-d="1">▼</button></div>
-          ${slot(m.dex, 'big')}
+          ${slot(m.spriteKey ?? m.dex, 'big')}
           <div class="gm-big">${esc(m.name)}</div><div class="gm-soft">Nv. ${m.level} · Nº ${pad3(m.dex)}</div>
           <div class="gm-types">${typePills(m.types)}</div>
           <div class="gm-hp"><span>PS</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div></div>

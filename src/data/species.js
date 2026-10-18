@@ -4,7 +4,8 @@
 // Cada espécie: name, types, base [PS, Atq, Def, AtqE, DefE, Vel], evs (EVs dados ao ser derrotado),
 // catchRate, baseExp, growth, height (m), weight (kg), genderRate (oitavos de fêmea, −1 = sem gênero),
 // friendship (amizade inicial), abilities / hidden (habilidades), evo (evoluções), learn [[nível, golpe]],
-// tm e tutor (listas de golpes), body (animação), pmd (tem sprite no PMD SpriteCollab).
+// tm e tutor (listas de golpes), body (animação), pmd (tem sprite no PMD SpriteCollab), gen (geração),
+// forms (formas: { id: objeto de espécie completo }, veja speciesOf), genderForms ({ f: 'female' }).
 // Compatibilidade: `evolve` = primeira evolução por nível ({ level, to }), como no formato antigo.
 import { ESPECIES } from './gen/especies.js';
 import { expForLevel as expCurve } from '../mechanics/stats.js';
@@ -17,11 +18,51 @@ const words = (s) => (s ? s.split(' ') : []);
 export const SPECIES = {};
 for (const [k, raw] of Object.entries(ESPECIES)) {
   const dex = +k;
-  const s = { ...raw, dex, tm: words(raw.tm), tutor: words(raw.tutor), body: BODY[dex] ?? raw.shape, evo: raw.evo ?? [] };
-  const byLevel = s.evo.find((e) => e.level && !e.item && !e.friendship && !e.move && !e.moveType && !e.time && !e.gender && !e.rain && !e.partyType);
-  if (byLevel) s.evolve = { level: byLevel.level, to: byLevel.to };
+  const { forms, ...rest } = raw;
+  const s = { ...rest, dex, form: null, key: dex, tm: words(raw.tm), tutor: words(raw.tutor), body: BODY[dex] ?? raw.shape, evo: raw.evo ?? [] };
+  s.evolve = byLevel(s.evo);
+  s.forms = {};
   SPECIES[dex] = s;
+  // Formas: a forma padrão + o que muda (src/data/gen/especies.js → forms). Cada forma vira um objeto completo de
+  // espécie (mesmos campos), com form = id da forma, key = "<dex>-<forma>" (chave do sprite) e kind.
+  for (const [fid, f] of Object.entries(forms ?? {})) {
+    const o = { ...s, ...f, dex, form: fid, key: `${dex}-${fid}`, forms: undefined, parent: s };
+    if (f.tm != null) o.tm = words(f.tm);
+    if (f.tutor != null) o.tutor = words(f.tutor);
+    o.evo = f.evo ?? s.evo;
+    o.evolve = byLevel(o.evo);
+    o.pmd = !!f.pmd;
+    delete o.forms;
+    s.forms[fid] = o;
+  }
 }
+// Compatibilidade: `evolve` = primeira evolução por nível ({ level, to }), como no formato antigo.
+function byLevel(evo) {
+  const e = evo.find((e) => e.level && !e.item && !e.friendship && !e.move && !e.moveType && !e.time && !e.gender && !e.rain && !e.partyType && !e.region && !e.partySpecies && !e.natures && e.atkDef == null && e.split == null);
+  return e ? { level: e.level, to: e.to, form: e.form ?? null } : undefined;
+}
+
+// Espécie de uma forma: speciesOf(26) = Raichu; speciesOf(26, 'alola') = Raichu de Alola. Forma que não existe → a padrão.
+export function speciesOf(dex, form = null) {
+  const s = SPECIES[dex];
+  if (!s) return undefined;
+  return (form && s.forms[form]) || s;
+}
+// Chave de sprite/espécie: 26 ou "26-alola" (assets/pmd/0026-alola/). Aceita também a chave já pronta.
+export function speciesKey(dex, form = null) { return form && SPECIES[dex]?.forms[form] ? `${dex}-${form}` : dex; }
+export function parseKey(key) {
+  if (typeof key === 'number') return { dex: key, form: null };
+  const m = /^(\d+)(?:-(.+))?$/.exec(String(key ?? ''));
+  return m ? { dex: +m[1], form: m[2] ?? null } : { dex: NaN, form: null };
+}
+export const speciesOfKey = (key) => { const { dex, form } = parseKey(key); return speciesOf(dex, form); };
+// Todas as formas, como lista de objetos de espécie (padrão primeiro)
+export function formsOf(dex) { const s = SPECIES[dex]; return s ? [s, ...Object.values(s.forms)] : []; }
+// Forma que o Pokémon assume pelo gênero (Meowstic, Indeedee, Basculegion, Oinkologne…), ou null
+export function genderForm(dex, gender) { return SPECIES[dex]?.genderForms?.[gender] ?? null; }
+// Formas que só existem em batalha (Mega, Primitiva, Gigantamax e as de batalha): não se capturam nem se guardam
+export const BATTLE_KINDS = ['mega', 'primal', 'gmax', 'battle'];
+export const isBattleForm = (dex, form) => BATTLE_KINDS.includes(SPECIES[dex]?.forms[form]?.kind);
 
 // Comportamento no mapa: timid foge, neutral ignora, aggressive vem para a briga.
 const TEMPER_MANUAL = {"3":"neutral","6":"aggressive","9":"neutral","10":"neutral","11":"neutral","12":"timid","13":"neutral","14":"neutral","15":"aggressive","16":"timid","17":"timid","19":"aggressive","20":"aggressive","21":"aggressive","25":"timid","41":"aggressive","48":"neutral","52":"aggressive","54":"neutral","56":"aggressive","59":"aggressive","63":"timid","66":"aggressive","74":"neutral","79":"neutral","92":"aggressive","95":"aggressive","123":"aggressive","129":"neutral","130":"aggressive","133":"timid","167":"aggressive","179":"timid","183":"neutral","194":"neutral","198":"aggressive","200":"neutral","204":"neutral","214":"aggressive","215":"aggressive","216":"aggressive","227":"aggressive","228":"aggressive","234":"timid","246":"neutral","278":"timid","280":"timid","283":"timid","285":"neutral","349":"timid","359":"neutral","396":"timid","403":"aggressive","406":"timid","415":"aggressive","417":"timid","418":"aggressive","422":"neutral","425":"neutral","427":"timid","443":"aggressive","447":"neutral","548":"timid","550":"aggressive","570":"aggressive","590":"neutral","607":"timid","628":"aggressive","656":"timid","659":"timid","664":"neutral","701":"aggressive","708":"aggressive","734":"aggressive","744":"aggressive","750":"neutral","821":"aggressive","903":"aggressive","915":"neutral","926":"neutral"};
@@ -38,8 +79,8 @@ function autoTemper(s) {
 export const TEMPER = {};
 for (const s of Object.values(SPECIES)) TEMPER[s.dex] = TEMPER_MANUAL[s.dex] ?? autoTemper(s);
 
-// Pokédex do jogo, em ordem: a de Lumiose primeiro, depois as que vieram de fora.
-export const DEX_ORDER = Object.keys(SPECIES).map(Number);
+// Pokédex Nacional do jogo, em ordem (1 a 1025).
+export const DEX_ORDER = Object.keys(SPECIES).map(Number).sort((a, b) => a - b);
 
 // Quem vive em cada bioma da região: [dex, nívelMín, nívelMáx, peso]. "noite" substitui de 18h às 6h.
 export const BIOME_ENCOUNTERS = {
@@ -63,8 +104,8 @@ export const NIGHT_ENCOUNTERS = {
 
 
 // Altura usada na cena (m): legível para os pequenos, contida para os gigantes.
-export function displayHeight(dex) {
-  const h = SPECIES[dex]?.height ?? 0.6;
+export function displayHeight(dex, form = null) {
+  const h = speciesOf(dex, form)?.height ?? 0.6;
   return Math.min(6.5, Math.max(0.8, h * 1.5 + 0.35)); // Onix ~6,5 m, Charmander ~1,25 m, Rattata ~0,8 m
 }
 
@@ -72,8 +113,8 @@ export function displayHeight(dex) {
 export function expForLevel(growth, n) { return expCurve(growth, n); }
 
 // Todos os golpes que a espécie pode aprender (nível, MT e ensino)
-export function learnableMoves(dex) {
-  const s = SPECIES[dex];
+export function learnableMoves(dex, form = null) {
+  const s = speciesOf(dex, form);
   if (!s) return [];
   return [...new Set([...s.learn.map(([, id]) => id), ...s.tm, ...s.tutor])];
 }

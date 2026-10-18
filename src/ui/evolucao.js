@@ -1,11 +1,12 @@
 import { portraitURL } from './portrait.js';
-import { SPECIES } from '../data/species.js';
+import { speciesOfKey } from '../data/species.js';
 
 // Cena clássica de evolução (HTML por cima do jogo, com o mundo parado):
 // "O quê? X está evoluindo!" → o retrato pisca entre as duas formas, cada vez mais rápido → clarão → forma nova.
 // Enter, Espaço, E ou toque fecham no fim. Devolve uma promessa.
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// fromDex/toDex: dex ou chave de forma ("26-alola"), como em src/sprites/pmd.js
 export async function evolutionScene(ui, name, fromDex, toDex) {
   const [a, b] = await Promise.all([portraitURL(fromDex), portraitURL(toDex)]);
   const el = document.createElement('div');
@@ -34,7 +35,7 @@ export async function evolutionScene(ui, name, fromDex, toDex) {
     el.classList.add('flash'); g.audio?.sfx?.('caught');
     await sleep(380);
     el.classList.remove('glow');
-    txt.textContent = `Parabéns! ${name} evoluiu para ${SPECIES[toDex]?.name ?? '???'}!`;
+    txt.textContent = `Parabéns! ${name} evoluiu para ${speciesOfKey(toDex)?.name ?? '???'}!`;
     nxt.style.visibility = 'visible';
     await waitKey(el, 7000);
   } finally {
