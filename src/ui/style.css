@@ -339,3 +339,11 @@ body.touch #zoom { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) + 40p
   body.touch #zoom { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) + 140px); right: calc(var(--g) + var(--sr) + 4px); }
   body.touch #toasts { bottom: auto; top: calc(var(--st) + 168px); flex-direction: column; max-width: calc(100vw - 80px); }
 }
+/* online no celular deitado: janela mais compacta (cabe sem rolar na maioria dos casos) */
+@media (max-height: 430px) {
+  body #net .net-card { padding: 8px 12px 10px; max-height: calc(100vh - 16px); }
+  body #net .net-card h2 { font-size: 16px; margin-bottom: 4px; }
+  body #net button, body #net input { min-height: 36px; padding-top: 4px; padding-bottom: 4px; }
+  body #net label { margin: 4px 0 2px; }
+  body #net .net-row { margin-top: 6px; }
+}
