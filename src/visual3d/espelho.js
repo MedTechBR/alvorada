@@ -156,16 +156,16 @@ export class Espelho {
   #spriteHGSS(n, S, a, b, c, d, tx, ty, alpha) {
     const tex = S.tex; if (!tex.image) return;
     const q = this.#quad(), v = this.v, cx = v.cima.x, cy = v.cima.y, cz = v.cima.z, rx = v.direita.x, ry = v.direita.y, rz = v.direita.z;
-    const sx = Math.hypot(a, b) / Math.max(1e-3, Math.hypot(n.scale.x, n.scale.y) / Math.SQRT2), K = 1.45;
-    const x0 = -S.fw / 2 * K, x1 = S.fw / 2 * K, y0 = -S.pe * K, y1 = (S.fh - S.pe) * K;
+    // tamanho da folha HGSS; giro, amassado e desmaio continuam os do sprite do Pixi (a matriz dividida pela escala base)
+    const K = S.k ?? 1.45, base = S.base ?? 1;
+    const x0 = -S.fw / 2 * K / base, x1 = S.fw / 2 * K / base, y0 = -S.pe * K / base, y1 = (S.fh - S.pe) * K / base;
     const P = q.p; let k = 0;
-    // posição do pé: a do sprite do Pixi (inclui pulo e voo); o tamanho é o da folha
     for (const [lx, ly] of [[x0, y0], [x1, y0], [x0, y1], [x1, y1]]) {
-      const X = tx + lx * sx, Y = ty + ly * sx, up = this.gy - Y, dx = X - this.gx;
+      const X = a * lx + c * ly + tx, Y = b * lx + d * ly + ty, up = this.gy - Y, dx = X - this.gx;
       P[k] = this.gx + dx * rx + up * cx; P[k + 1] = this.h + dx * ry + up * cy; P[k + 2] = this.gy + dx * rz + up * cz; k += 3;
     }
     const U = q.uv; U[0] = S.u0; U[1] = S.v0; U[2] = S.u1; U[3] = S.v0; U[4] = S.u0; U[5] = S.v1; U[6] = S.u1; U[7] = S.v1;
-    const C = q.c; C[0] = C[1] = C[2] = 1; C[3] = alpha;
+    const tint = n.tint ?? 0xffffff, C = q.c; C[0] = lin[tint >> 16 & 255]; C[1] = lin[tint >> 8 & 255]; C[2] = lin[tint & 255]; C[3] = alpha;
     q.b[0] = this.gx; q.b[1] = this.h; q.b[2] = this.gy; q.w = n.filters?.length ? 1 : 0; q.d = this.gy;
     const modo = alpha < 0.99 ? 1 : 0;
     this.#lote(tex, modo).add(q);
