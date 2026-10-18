@@ -60,5 +60,9 @@ class ModelosNoMundo extends ModelosKit {
 ModelosNoMundo.prototype.liberarBase = ModelosKit.prototype.liberar;
 ModelosNoMundo.prototype.liberar = function (s) { this.liberarBase(s); if (s.luzes) { s.grupo.remove(s.luzes); s.luzes.geometry.dispose(); s.luzes = null; } if (s.contato) { s.grupo.remove(s.contato); s.contato.geometry.dispose(); s.contato = null; } };
 ModelosNoMundo.prototype.updateBase = ModelosKit.prototype.update;
-ModelosNoMundo.prototype.update = function () { this.updateBase(); const k = this.v.ceu?.sala ? 0 : (this.v.ceu?.noite ?? 0); this.matLuz.opacity = Math.min(1, k * 1.1); };
+ModelosNoMundo.prototype.update = function () {
+  // cenário vivo: objeto que mudou de estado (caiu, virou toco, voltou, quebrou) refaz o setor dele
+  const viv = this.v.g.vivo;
+  if (viv?.on && !this.ouvindoVivo) { this.ouvindoVivo = true; viv.on('objeto', ({ o }) => { const s = o && this.v.setores.mapa.get(Math.floor((o.tx + Math.floor((o.fw ?? 1) / 2)) / 16) + Math.floor((o.ty + (o.fh ?? 1) - 1) / 16) * 4096); if (s) s.sujo = true; }); }
+  this.updateBase(); const k = this.v.ceu?.sala ? 0 : (this.v.ceu?.noite ?? 0); this.matLuz.opacity = Math.min(1, k * 1.1); };
 export const Modelos = new URLSearchParams(location.search).get('kit') === '0' ? ModelosCodigo : ModelosNoMundo;

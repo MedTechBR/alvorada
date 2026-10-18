@@ -953,7 +953,7 @@ export class CenarioVivo {
       for (let k = 0; k < 7; k++) { x += Math.sin(k * 1.3 + i) * 3; y -= 5 + R(i + k + 320) * 4; pts.push(x, y); if (k % 2) G.circle(x + 2, y, 1.6).fill({ color: 0x4ab04a }); }
       G.poly(pts, false).stroke({ width: 1.4, color: 0x2f7a3a, alpha: 0.95 });
     }
-    c.x = sp.x - w / 2; c.y = sp.y - h; c.zIndex = sp.zIndex + 0.01;
+    c.x = sp.x - w / 2; c.y = sp.y - h; c.zIndex = sp.zIndex + 0.01; c.base3d = { x: sp.x, y: sp.y, w, h }; // o visual 3D põe as marcas na fachada
     this.g.ents.addChild(c); s.marcas = c;
   }
   #pedreiro(s, dt) {

@@ -8,18 +8,18 @@ const out = new URL('../shots/', import.meta.url); mkdirSync(out, { recursive: t
 const CENAS = {
   interior: `const s = g.map.spots['dentro_casa_jogador']; g.player.x = s.x; g.player.y = s.y + 24; g.cam.x = s.x; g.cam.y = s.y;`,
   centro: `const s = g.map.spots['dentro_centro_campina'] ?? Object.entries(g.map.spots).find(([k]) => k.startsWith('dentro_centro'))[1]; g.player.x = s.x; g.player.y = s.y; g.cam.x = s.x; g.cam.y = s.y;`,
-  noite: `g.mundo.setHour(21.5); g.player.x = 297 * 16; g.player.y = 340 * 16;`,
+  noite: `g.mundo.setHour(21.5); const s = g.map.spots.inicio; g.player.x = s.x + 20; g.player.y = s.y + 30; g.cam.x = g.player.x; g.cam.y = g.player.y;`,
   tarde: `g.mundo.setHour(17.4); g.player.x = 297 * 16; g.player.y = 347 * 16;`,
-  batalha: `g.player.x = 300 * 16; g.player.y = 318 * 16; g.cam.x = g.player.x; g.cam.y = g.player.y;
+  batalha: `g.player.x = 318 * 16; g.player.y = 292 * 16; g.cam.x = g.player.x; g.cam.y = g.player.y;
     await g.spawnWild(); await g.spawnWild(); const w = g.wilds.find((q) => q.alive); if (w) { w.x = g.player.x + 70; w.y = g.player.y - 50; w.ai.state = 'aggro'; w.aggroTarget = g.player; }
-    g.throwMon(0, g.player.x + 20, g.player.y - 10); await new Promise((r) => setTimeout(r, 1200));
-    if (w) { w.mon.level = Math.max(w.mon.level, 30); w.mon.stats = null; w.mon.calc?.(); w.mon.hp = w.mon.stats?.hp ?? w.mon.hp; }
-    for (let i = 0; i < 3; i++) { const L = g.lead; if (L && w?.alive) { L.cds = [0, 0, 0, 0]; g.combat.use(L, 1, w.x, w.y - 8); } await new Promise((r) => setTimeout(r, 300)); }`,
+    g.throwMon(0, g.player.x + 20, g.player.y - 10); await new Promise((r) => setTimeout(r, 1200)); if (w) { w.x = g.player.x + 60; w.y = g.player.y - 50; w.hpShow = 9; }
+    if (w) { w.busy = false; w.lock = 99; w.mon.level = Math.max(w.mon.level, 30); w.mon.stats = null; w.mon.calc?.(); w.mon.hp = w.mon.stats?.hp ?? w.mon.hp; }
+    for (let i = 0; i < 3; i++) { const L = g.lead; if (L && w?.alive) { L.cds = [0, 0, 0, 0]; g.combat.use(L, 0, w.x, w.y - 8); } await new Promise((r) => setTimeout(r, 300)); }`,
   voar: `g.player.x = 297 * 16; g.player.y = 340 * 16; g.unlockMount('voar', { silent: true }); g.mount.fly?.(); await new Promise((r) => setTimeout(r, 2500)); g.player.y -= 40;`,
-  correr: `g.player.x = 300 * 16; g.player.y = 318 * 16; g.unlockMount('correr', { silent: true }); await g.mount.call('correr');`,
+  correr: `g.player.x = 318 * 16; g.player.y = 292 * 16; g.unlockMount('correr', { silent: true }); await g.mount.call('correr');`,
   nadar: `const L = g.map; let best = null; const p0 = { x: 300, y: 330 }; for (let r = 1; r < 60 && !best; r++) for (let a = 0; a < 40 && !best; a++) { const x = Math.round(p0.x + Math.cos(a / 40 * 6.28) * r), y = Math.round(p0.y + Math.sin(a / 40 * 6.28) * r); if (L.at(x, y) === 4 && L.at(x, y - 3) === 4 && L.at(x + 3, y) === 4) best = { x, y }; }
     g.unlockMount('nadar', { silent: true }); if (best) { g.player.x = best.x * 16 + 8; g.player.y = best.y * 16 + 8; g.cam.x = g.player.x; g.cam.y = g.player.y; } await new Promise((r) => setTimeout(r, 600)); await g.mount.call('nadar');`,
-  dynamax: `g.player.x = 300 * 16; g.player.y = 318 * 16; g.cam.x = g.player.x; g.cam.y = g.player.y;
+  dynamax: `g.player.x = 318 * 16; g.player.y = 292 * 16; g.cam.x = g.player.x; g.cam.y = g.player.y;
     await g.spawnWild(); const w = g.wilds.find((q) => q.alive); if (w) { w.x = g.player.x + 90; w.y = g.player.y - 40; w.ai.state = 'aggro'; w.aggroTarget = g.player; }
     g.throwMon(0, g.player.x + 20, g.player.y - 10); await new Promise((r) => setTimeout(r, 1300));
     g.bag.dynamaxBand = 1; g.poder.lugarDynamax = () => true; g.poder.usar(); await new Promise((r) => setTimeout(r, 2600));`,
@@ -30,6 +30,13 @@ const CENAS = {
   objetos: `const want = ['strengthRock', 'chest', 'stoneDoor', 'barsGate', 'lever', 'iceBlock']; const o = g.map.objects.find((q) => want.includes(q.kind));
     if (o) { g.player.x = o.x + 24; g.player.y = o.y + 20; g.cam.x = g.player.x; g.cam.y = g.player.y; }`,
   toca: `const T = g.tocas; const t = T?.list?.find((q) => T.ativa?.(q)) ?? T?.list?.[0]; if (t) { T.ativa = () => true; g.player.x = t.px + 40; g.player.y = t.py + 60; g.cam.x = g.player.x; g.cam.y = g.player.y; }`,
+  // cenário vivo: uma árvore caindo, uma virando toco, uma casa danificada e o Pokémon no telhado
+  vivo: `const V = g.vivo, M = g.map; const perto = (k, x0, y0, r) => M.objects.filter((o) => !o.dead && k(o.kind) && Math.abs(o.tx - x0) < r && Math.abs(o.ty - y0) < r);
+    const casas = perto((k) => /house|casa/i.test(k), 297, 345, 30), arv = perto((k) => /^tree|pine|autumn/.test(k), 297, 345, 30);
+    const c = casas[0]; if (c) { g.player.x = c.x - 40; g.player.y = c.y + 60; g.cam.x = g.player.x; g.cam.y = g.player.y; for (let i = 0; i < 12; i++) V.golpe(c, { type: 'fighting', cat: 'phys', power: 120 }, 3, g.player); }
+    for (const a of arv.slice(0, 2)) V.golpe(a, null, 6, g.player, { explosao: true });
+    g.throwMon(0, g.player.x + 20, g.player.y); await new Promise((r) => setTimeout(r, 1400));
+    if (c && g.lead) { g.lead.x = c.x; g.lead.y = c.y - 10; V.subir?.(g.lead, c, { instantaneo: true }); }`,
 };
 const b = await launch();
 try {

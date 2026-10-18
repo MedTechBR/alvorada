@@ -25,7 +25,8 @@ export class ModelosKit {
     this.liberar(s);
     const L = this.v.L, itens = [], moveis = [], donos = [];
     for (const o of L.objetosDoSetor(s.sx, s.sy)) {
-      if (o.dead || !kit.temModelo(o.kind)) continue;
+      // cenário vivo: caído, toco, broto ou quebrado usa o sprite 2D (que gira, troca para o toco, cresce)
+      if (o.dead || !kit.temModelo(o.kind) || this.v.g.vivo?.mexido?.(o)) continue;
       if (this.#movel(o)) { moveis.push(o); continue; }
       const md = kit.modelo(o.kind, o), K = kit.ficha(o.kind);
       itens.push({ geometry: md.geometry, x: o.x, y: this.#h(o.x, o.y, K.fh), z: o.y });
@@ -50,7 +51,7 @@ export class ModelosKit {
     kit.noite(v.ceu?.sala ? 0.6 : (v.ceu?.noite ?? 0));
     // sprites com modelo (o espelho pula): refeito a cada quadro, porque o 2D pode recriar sprites
     this.donos.clear();
-    for (const s of this.setores) for (const o of v.L.objetosDoSetor(s.sx, s.sy)) if (o.sprite && !o.dead && kit.temModelo(o.kind)) this.donos.add(o.sprite);
+    for (const s of this.setores) for (const o of v.L.objetosDoSetor(s.sx, s.sy)) if (o.sprite && !o.dead && kit.temModelo(o.kind) && !v.g.vivo?.mexido?.(o)) this.donos.add(o.sprite);
     for (const s of this.setores) {
       if (!s.grupo.visible) continue;
       // objeto que entrou ou saiu do setor (empurrado de um setor para outro): refaz

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { screenHeight } from '../sprites/scale.js';
 
 // Personagens no estilo FireRed/HeartGold (folhas do ramo assets-hgss, assets/hgss/personagens): no 3D o corpo
 // do treinador, dos moradores, dos personagens da história e dos outros jogadores é desenhado com a folha HGSS
@@ -17,14 +18,25 @@ export class Personagens {
     // sprites de batalha dos Pokémon (frente e costas, animados): ?pk=pmd mantém os PMD
     if (new URLSearchParams(location.search).get('pk') !== 'pmd') fetch(RAIZ_PK + 'indice.json').then((r) => (r.ok ? r.json() : null)).then((P) => { if (P?.sprites) this.P = P; }).catch(() => {});
   }
-  #texPk(pasta, chave) {
+  #texPk(pasta, chave, S) {
     const k = pasta + chave; let t = this.texs.get(k);
     if (!t) {
-      t = new THREE.TextureLoader().load(RAIZ_PK + pasta + '/' + chave + '.webp');
+      t = new THREE.TextureLoader().load(RAIZ_PK + pasta + '/' + chave + '.webp', (tx) => this.#medir(tx, S));
       t.magFilter = t.minFilter = THREE.NearestFilter; t.generateMipmaps = false; t.flipY = false; t.colorSpace = THREE.SRGBColorSpace;
       t.uid = 100000 + this.texs.size; this.texs.set(k, t);
     }
     return t;
+  }
+  // altura útil do desenho (sem a sobra transparente do quadro): os quadros do demo têm sobra, os estáticos da
+  // 6ª geração em diante vêm de renders de 96 px; a escala usa só a parte desenhada, então todos batem
+  #medir(tx, S) {
+    try {
+      const img = tx.image, fw = Math.floor(img.width / S.n), c = document.createElement('canvas'); c.width = fw; c.height = img.height;
+      const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(img, 0, 0, fw, img.height, 0, 0, fw, img.height);
+      const d = x.getImageData(0, 0, fw, img.height).data; let top = img.height, bot = 0;
+      for (let y = 0; y < img.height; y++) for (let X = 0; X < fw; X++) if (d[(y * fw + X) * 4 + 3] > 40) { if (y < top) top = y; if (y > bot) bot = y; }
+      if (bot > top) tx.userData.util = { top, bot: bot + 1, h: img.height };
+    } catch { /* imagem de outro domínio: fica a escala pelo quadro */ }
   }
   // Pokémon em campo: de frente quando vem para a câmera, de costas quando se afasta, espelhado para os lados
   #pokemon(e) {
@@ -39,8 +51,11 @@ export class Personagens {
     // os de frente olham para a esquerda, os de costas para a direita: espelha conforme o lado para onde vai
     const espelha = lado === 'f' ? ca > 0.3 : ca < -0.3;
     const u0 = i / S.n, u1 = (i + 1) / S.n;
-    const alturaMundo = Math.max(18, Math.min(120, (e.h ?? 24) * 1.55));
-    return { tex: this.#texPk(lado === 'f' ? 'frente' : 'costas', chave), u0: espelha ? u1 : u0, u1: espelha ? u0 : u1, v0: 0, v1: 1, fw: S.w, fh: S.h, pe: S.pe ?? S.h * 0.92, k: alturaMundo / S.h, base: (e.fullScale ?? 1) * (e.view?.scale?.x ? e.view.scale.x / (e.fullScale || 1) : 1) };
+    // tamanho no mundo: maior que o PMD (como no demo), ainda proporcional à altura da espécie
+    const alturaMundo = screenHeight(m.spriteKey ?? m.dex) * 1.8 * (e.scale ?? 1); // altura real comprimida (scale.js), maior que no 2D
+    const tex = this.#texPk(lado === 'f' ? 'frente' : 'costas', chave, S), U = tex.userData.util;
+    const util = U ? (U.bot - U.top) * (S.h / U.h) : S.h * 0.8, pe = U ? U.bot * (S.h / U.h) : S.h * 0.92;
+    return { tex, u0: espelha ? u1 : u0, u1: espelha ? u0 : u1, v0: 0, v1: 1, fw: S.w, fh: S.h, pe, k: alturaMundo / util, base: e.view?.scale?.x || e.fullScale || 1 };
   }
   #tex(id) {
     let t = this.texs.get(id);

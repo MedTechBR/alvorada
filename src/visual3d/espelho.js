@@ -129,6 +129,9 @@ export class Espelho {
     this.sombra = g.tx?.shadow?.source;
     this.dono = v.setores.modelos.donosDeSprite?.() ?? null;
     this.subst = this.pers.update();
+    const epv = (this.entPorView ??= new Map()); epv.clear();
+    for (const e of g.entities ?? []) if (e.view && e.pouso) epv.set(e.view, e);
+    if (g.player?.pouso) epv.set(g.player.view, g.player);
     const cam = v.camera.position;
     this.cx = cam.x; this.cz = cam.z;
     const vw = v.view;
@@ -141,6 +144,10 @@ export class Espelho {
       const plano = c.zIndex < -1e5;            // placas no chão (objects.js: flat)
       this.sil = c === g.player?.view || (g.lead && c === g.lead.view);
       this.gx = gx; this.gy = gy; this.h = v.altura(gx, gy);
+      // em cima de telhado, copa ou rocha (cenário vivo): o 2D sobe o corpo pela altura dele; no 3D o pouso fica no
+      // topo do modelo de verdade (o.__topo3d), então corrige a diferença
+      const ent = this.entPorView?.get(c); const po = ent?.pouso;
+      if (po?.o?.__topo3d != null) this.h += (po.o.__topo3d - v.altura(po.o.x, po.o.y - 4)) - (ent.piso ?? po.h ?? 0);
       this.#no(c, 1, 0, 0, 1, 0, 0, 1, plano);
     }
     // decoração plana do mapa (setores visíveis)
