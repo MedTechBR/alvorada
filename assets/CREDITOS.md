@@ -38,3 +38,22 @@ de templo e cavernas, trilhos; pinheiro nevado, cactos, mandacaru, xique-xique, 
 selva, umbu, araucária, bambu; estátua, tochas, braseiro, altar, baú, sino, mural; iglu, cabana, casa de taipa; partículas
 de neve, cinza, areia, chuva e névoa; quadros animados de lava, correnteza, maré e bolhas. As músicas novas (neve,
 vulcão, deserto, mangue, caverna e templo) e os sons ambientes também são gerados na hora (src/audio/audio.js).
+
+## Visual 3D HGSS (assets/hgss/)
+
+Projeto pessoal de fã, sem fins comerciais. Pokémon e seus personagens, nomes e sprites são marcas e obras da
+Nintendo, Game Freak e The Pokémon Company; aqui entram só como referência de um jogo de fã.
+
+- **Demo de fã "Pokemon Battle Advanced"** (referencias/pba/, extraído pelo dono, que autorizou o uso dos arquivos; o código
+  do demo não é usado): texturas de 16 px e de interior (`texturas/`), os 307 sprites de personagens FRLG/HGSS e
+  Brendan/May (`personagens/`), os sprites de batalha das 51 espécies do demo (`pokemon/`, marcados `"src": "demo"` no
+  índice) e os modelos 3D `.scn` convertidos para `.glb` (`modelos/`): prédios e objetos HGSS e os kits da
+  **Kenney** (kenney.nl, domínio público CC0: furniture, nature, suburban, town).
+- **PokeAPI/sprites** (https://github.com/PokeAPI/sprites, ramo master, baixados em outubro de 2026): sprites de batalha
+  das demais espécies e formas. Dex 1 a 649: animados da 5ª geração (Black/White, `versions/generation-v/black-white/animated`);
+  650 em diante e formas sem animado: sprites estáticos padrão. Script reprodutível: `tools/hgss/sprites-pokemon.py`
+  (baixa só uma vez, em lotes com pausa; cache em `dados-brutos/`, fora do git).
+- **Desenhado por código** (`tools/hgss/texturas.py`): as demais texturas 16x16 do atlas (biomas, telhados de várias
+  cores, janelas, portas, copas, troncos), na paleta e no estilo das do demo.
+- **Godot 4.4.1** (oficial, github.com/godotengine/godot, SHA512 conferido) só como ferramenta de conversão, em
+  `tools/godot/` (fora do git).
