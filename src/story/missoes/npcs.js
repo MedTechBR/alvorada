@@ -96,7 +96,7 @@ async function troca(M, n, id, t) {
   s.t = M.hoje();
   g.audio?.sfx?.('caught');
   g.ui?.partyChanged?.();
-  await g.ui.say([`${mon.name} foi para ${n?.name ?? 'o outro treinador'}…`, `…e ${novo.name} chegou! Cuide bem dele!`], { name: '', portrait: novo.dex });
+  await g.ui.say([`${mon.name} foi para ${n?.name ?? 'o outro treinador'}…`, `…e ${novo.name} chegou!`], { name: '', portrait: novo.dex });
   await M.say(n, F.aceita ?? ['Obrigado! Ele é danado, mas é muito carinhoso.'], { vars: M.vars({ quer: mon.name, da: novo.name }) });
 }
 

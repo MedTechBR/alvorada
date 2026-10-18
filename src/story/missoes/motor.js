@@ -253,8 +253,11 @@ export class Missoes {
     this.aceitar(m);
     if (m.itensIniciais) await this.dar({ itens: m.itensIniciais });
     // a primeira etapa pode ser com a própria pessoa (ex.: batalha agora mesmo)
-    const e = this.etapa(m);
-    if (e && e.agora && this.#eh(n, e.npc ?? m.de)) await this.#etapaNaConversa(m, e, n);
+    const e = this.etapa(m), g = this.g;
+    if (!e || !this.#eh(n, e.npc ?? (e.tipo === 'falar' ? m.de : null))) return;
+    // já dá para cumprir com a mesma pessoa (batalha agora, ou já tem o item / o Pokémon pedido)
+    const pronto = e.agora || (e.tipo === 'entregar' && (g.bag[e.item] ?? 0) >= (e.n ?? 1)) || (e.tipo === 'mostrar' && g.party.some((x) => this.combina(e, x)));
+    if (pronto) await this.#etapaNaConversa(m, e, n);
   }
 
   // começa uma missão (também usado pela história ou por testes)
