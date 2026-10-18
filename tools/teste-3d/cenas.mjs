@@ -18,6 +18,17 @@ const CENAS = {
   correr: `g.player.x = 300 * 16; g.player.y = 318 * 16; g.unlockMount('correr', { silent: true }); await g.mount.call('correr');`,
   nadar: `const L = g.map; let best = null; const p0 = { x: 300, y: 330 }; for (let r = 1; r < 60 && !best; r++) for (let a = 0; a < 40 && !best; a++) { const x = Math.round(p0.x + Math.cos(a / 40 * 6.28) * r), y = Math.round(p0.y + Math.sin(a / 40 * 6.28) * r); if (L.at(x, y) === 4 && L.at(x, y - 3) === 4 && L.at(x + 3, y) === 4) best = { x, y }; }
     g.unlockMount('nadar', { silent: true }); if (best) { g.player.x = best.x * 16 + 8; g.player.y = best.y * 16 + 8; g.cam.x = g.player.x; g.cam.y = g.player.y; } await new Promise((r) => setTimeout(r, 600)); await g.mount.call('nadar');`,
+  dynamax: `g.player.x = 300 * 16; g.player.y = 318 * 16; g.cam.x = g.player.x; g.cam.y = g.player.y;
+    await g.spawnWild(); const w = g.wilds.find((q) => q.alive); if (w) { w.x = g.player.x + 90; w.y = g.player.y - 40; w.ai.state = 'aggro'; w.aggroTarget = g.player; }
+    g.throwMon(0, g.player.x + 20, g.player.y - 10); await new Promise((r) => setTimeout(r, 1300));
+    g.bag.dynamaxBand = 1; g.poder.lugarDynamax = () => true; g.poder.usar(); await new Promise((r) => setTimeout(r, 2600));`,
+  escalar: `const L = g.map; let a = null; for (let y = 0; y < L.outdoorH && !a; y++) for (let x = 0; x < L.w && !a; x++) if (L.at(x, y) === 27 && L.at(x, y + 1) !== 27 && L.at(x, y + 1) !== 8) a = { x, y: y + 1 };
+    if (a) { g.player.x = a.x * 16 + 8; g.player.y = a.y * 16 + 10; g.cam.x = g.player.x; g.cam.y = g.player.y; g.player.dir = 'up'; } g.unlockMount('escalar', { silent: true }); await g.mount.call('escalar'); g.player.y -= 20;`,
+  mergulhar: `const L = g.map; let best = null; for (let r = 1; r < 90 && !best; r++) for (let a = 0; a < 60 && !best; a++) { const x = Math.round(300 + Math.cos(a / 60 * 6.28) * r), y = Math.round(330 + Math.sin(a / 60 * 6.28) * r); if (L.at(x, y) === 7 && L.at(x + 2, y) === 7 && L.at(x, y + 2) === 7) best = { x, y }; }
+    g.unlockMount('mergulhar', { silent: true }); if (best) { g.player.x = best.x * 16 + 8; g.player.y = best.y * 16 + 8; g.cam.x = g.player.x; g.cam.y = g.player.y; } await new Promise((r) => setTimeout(r, 500)); await g.mount.call('mergulhar'); await new Promise((r) => setTimeout(r, 900)); g.mount.dive?.();`,
+  objetos: `const want = ['strengthRock', 'chest', 'stoneDoor', 'barsGate', 'lever', 'iceBlock']; const o = g.map.objects.find((q) => want.includes(q.kind));
+    if (o) { g.player.x = o.x + 24; g.player.y = o.y + 20; g.cam.x = g.player.x; g.cam.y = g.player.y; }`,
+  toca: `const t = g.tocas?.lista?.[0] ?? g.tocas?.tocas?.[0]; if (t) { g.player.x = (t.x ?? t.tx * 16) + 30; g.player.y = (t.y ?? t.ty * 16) + 30; g.cam.x = g.player.x; g.cam.y = g.player.y; }`,
 };
 const b = await launch();
 try {
