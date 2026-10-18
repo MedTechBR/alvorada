@@ -145,9 +145,21 @@ export class LocalTransport extends Emitter {
     if (m.k === 'fin') { const l = this.links.get(m.link); if (l) { this.links.delete(m.link); l._closed('closed'); } }
   }
   async listen(code) {
-    // se outra aba já usa o código, recusa (igual ao servidor do PeerJS)
-    const busy = await new Promise((res) => { const k = 'probe:' + code; this.waiting.set(k, () => res(true)); this._post({ k: 'probe', code }); setTimeout(() => { this.waiting.delete(k); res(false); }, 300 + this.latency * 2); });
-    if (busy) throw new Error('taken');
+    // se outra aba já usa o código, recusa (igual ao servidor do PeerJS). A reserva é atômica com Web Locks:
+    // duas abas tentando o mesmo código ao mesmo tempo não viram as duas anfitriãs (o servidor do PeerJS também garante isso).
+    if (navigator.locks) {
+      const got = await new Promise((res) => {
+        navigator.locks.request('pkmn-alvorada-code:' + code, { ifAvailable: true }, (lock) => {
+          if (!lock) { res(false); return undefined; }
+          res(true);
+          return new Promise((free) => { this.freeLock = free; }); // segura até destroy() (ou até a aba fechar)
+        }).catch(() => res(false));
+      });
+      if (!got) throw new Error('taken');
+    } else {
+      const busy = await new Promise((res) => { const k = 'probe:' + code; this.waiting.set(k, () => res(true)); this._post({ k: 'probe', code }); setTimeout(() => { this.waiting.delete(k); res(false); }, 300 + this.latency * 2); });
+      if (busy) throw new Error('taken');
+    }
     this.code = code;
   }
   async connect(code, { timeout = 2500 } = {}) {
@@ -165,7 +177,7 @@ export class LocalTransport extends Emitter {
   destroy() {
     if (this.dead) return; this.dead = true;
     for (const l of this.links.values()) l.close();
-    this.links.clear(); this.code = null;
+    this.links.clear(); this.code = null; this.freeLock?.();
     removeEventListener('pagehide', this._bye);
     try { this.ch.close(); } catch {}
   }

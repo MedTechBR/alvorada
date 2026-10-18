@@ -223,7 +223,7 @@ export class Room extends Emitter {
     if (m.k === 'roster') return this.#setRoster(m.roster);
     if (m.k === 'bye') {
       const why = String(m.why ?? '');
-      if (this.channel && (why === 'host-left' || why === 'migrate')) { this.next = typeof m.next === 'string' ? m.next : null; this.#close('O anfitrião do canal saiu.', 'host-lost'); return; }
+      if (this.channel && (why === 'host-left' || why === 'migrate')) { this.next = typeof m.next === 'string' ? m.next : null; this.hostQuit = m.quit === true; this.#close('O anfitrião do canal saiu.', 'host-lost'); return; }
       this.#close({ kick: 'Você foi removido da sala.', flood: 'Você mandou mensagens demais e saiu da sala.', dup: 'Você entrou com a mesma conta em outra janela.' }[why] ?? 'O anfitrião encerrou a sala.', why || 'host-left');
       return;
     }
@@ -295,7 +295,7 @@ export class Room extends Emitter {
   // sair. O anfitrião de um canal indica o sucessor (o primeiro da fila), que assume o código logo.
   leave(code = 'left') {
     if (this.closed) return;
-    if (this.isHost) { const next = this.succession()[0] ?? null; for (const l of this.links.values()) l.send({ k: 'bye', why: this.channel ? 'migrate' : 'host-left', next }); }
+    if (this.isHost) { const next = this.succession()[0] ?? null; for (const l of this.links.values()) l.send({ k: 'bye', why: this.channel ? 'migrate' : 'host-left', next, quit: code !== 'id-lost' }); }
     else this.link?.send({ k: 'bye' });
     // dá tempo de a despedida sair antes de derrubar a conexão
     this.closed = true; clearInterval(this.pinger); clearInterval(this.flusher);

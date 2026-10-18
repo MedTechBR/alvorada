@@ -114,7 +114,7 @@ export class Online {
     this.room = room; this.mode = channel ? 'world' : 'room'; this.lastSelf = room.selfId;
     room.on('roster', (list) => {
       for (const p of list) { this.names.set(p.id, p.name); if (this.ghosts.delete(p.id) && p.id !== room.selfId) { this.trade.onPlayerBack(p.id); this.infoKey = ''; } }
-      this.remotes.sync(list, room.selfId, this.ghosts.keys()); this.ui.render();
+      this.remotes.sync(list, room.selfId, [...this.ghosts.keys()]); this.ui.render();
     });
     room.on('message', (type, data, from) => this.#dispatch(type, data, from));
     room.on('status', (text, lvl) => text && this.ui.toast(text, lvl));
@@ -131,7 +131,8 @@ export class Online {
       if (channel && this.world.running && !this.world.paused) {
         const until = performance.now() + GHOST;
         for (const p of room.roster) if (p.id !== room.selfId) this.ghosts.set(p.id, until);
-        this.remotes.sync([], room.selfId, this.ghosts.keys());
+        if (room.hostQuit && room.hostId) this.ghosts.set(room.hostId, 0); // o anfitrião fechou o jogo: sai já (no próximo quadro)
+        this.remotes.sync([], room.selfId, [...this.ghosts.keys()]);
         this.ui.render();
         return;
       }
@@ -140,7 +141,7 @@ export class Online {
       this.ui.closed(reason);
       this.#backToWorld();
     });
-    this.remotes.sync(room.roster, room.selfId, this.ghosts.keys());
+    this.remotes.sync(room.roster, room.selfId, [...this.ghosts.keys()]);
     this.infoKey = '';
     this.ui.render();
   }
@@ -150,7 +151,7 @@ export class Online {
     this.trade.onPlayerGone(id, left); this.duel.onPlayerGone(id); this.arbiter?.onLeave(id);
   }
   #cleanup() {
-    for (const id of this.ghosts.keys()) this.#gone(id, true, false);
+    for (const id of [...this.ghosts.keys()]) this.#gone(id, true, false);
     this.ghosts.clear();
     this.remotes.clear(); this.duel.abort(); this.trade.abort();
     this.arbiter?.destroy(); this.arbiter = null; this.room = null; this.mode = null;
@@ -242,7 +243,7 @@ export class Online {
     if (this.ghosts.size) {
       const now = performance.now(), out = [...this.ghosts].filter(([, t]) => now > t).map(([id]) => id);
       for (const id of out) this.#gone(id, true, false);
-      if (out.length) this.remotes.sync(this.room?.roster ?? [], this.selfId, this.ghosts.keys());
+      if (out.length) this.remotes.sync(this.room?.roster ?? [], this.selfId, [...this.ghosts.keys()]);
     }
     const g = this.g, p = g.player, l = g.lead;
     if (!this.on) { if (this.ghosts.size) this.remotes.update(dt, this.duel.foeId); return; }

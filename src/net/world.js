@@ -48,7 +48,7 @@ export class World extends Emitter {
       else if (this.paused) { this.paused = false; this.wake(); }
     });
   }
-  get on() { return !!this.room && !this.room.closed; }
+  get connected() { return !!this.room && !this.room.closed; } // (não pode se chamar `on`: é o método do Emitter)
 
   start(ch = 1) {
     if (this.running) return;
