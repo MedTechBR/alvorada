@@ -346,6 +346,7 @@ export class Story {
     out.push(...this.roteiro.interactions());
     out.push(...(g.mundo?.masmorra?.interactions() ?? [])); // alavancas, baús, sinos, tochas e portas das masmorras
     out.push(...(g.vivo?.interactions() ?? [])); // escadas de mão, escalar com a montaria, descer do telhado (src/world/vivo.js)
+    out.push(...(g.tocas?.interactions() ?? [])); // Tocas de Luz (src/world/tocas.js)
     const n = this.spots.get('nurse');
     add({ x: n.x + 22, y: n.y - 6, h: 26 }, 16, 'Usar o PC', () => { g.ui.openPC(); });
     return out;
@@ -418,7 +419,7 @@ export class Story {
     if ((this.musicT -= dt) > 0) return;
     this.musicT = 0.5;
     const g = this.g;
-    if (this.battle) return;
+    if (this.battle || g.tocas?.reide) return; // reide: música de batalha (src/world/tocas.js)
     const p = g.player, c = this.spots.get('campina'), v = this.spots.get('village');
     const town = (v && Math.hypot(p.x - v.x, p.y - v.y) < v.r + 2 * T) || (c && Math.hypot(p.x - c.x, p.y - c.y) < c.r + 4 * T) || g.map.biome?.(p.x, p.y) === 'vila';
     const bio = g.map.biome?.(p.x, p.y);

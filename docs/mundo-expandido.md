@@ -1527,8 +1527,16 @@ Relógio só aparecem depois da trama principal.
 ## 13. Mega e Dynamax (gerado)
 
 As Mega Pedras são lascas da Pedra do Alvorecer que caíram longe do Relógio. As Tocas de Luz são buracos por onde vaza
-a luz do Coração: reides de até 4 jogadores, cooperativos no online (quem estiver no mesmo setor entra junto). A
-mecânica é de outro agente; aqui fica só o onde.
+a luz do Coração: reides de até 4 jogadores, cooperativos no online (quem estiver no mesmo setor entra junto).
+
+A mecânica está pronta: Mega, Primitiva, Dynamax e Gigantamax em `src/combat/poder.js` (regras puras em
+`src/mechanics/poder.js`), as Tocas de Luz em `src/world/tocas.js` e o reide online em `src/net/reide.js`.
+**Para colocar uma toca**, acrescente uma linha em `src/data/tocas.js` (chave = id do mapa) ou um campo `"tocas": [...]`
+no JSON da região, com `id` (o da tabela abaixo), `x`, `y` (bloco do centro, chão livre num raio de 2 blocos e arena
+de ~7 blocos em volta), `gmax` (ids da PokéAPI) e, se preciso, `noite`, `requer`, `nivel`, `chanceGmax`. O cabeçalho
+do arquivo explica cada campo. Uma área, um interior ou um ginásio com `"dynamax": true` também liberam o Dynamax ali;
+um ginásio do roteiro liga com `dynamax: true` na batalha (como a da Celeste). Treinador que segura Mega Pedra
+(`[dex, nível, golpes, { item: 'garchompite' }]` no roteiro) Mega Evolui sozinho no momento certo.
 
 <!-- gerado:mega -->
 Pulseira Mega: Cidade Escarpa, missão A Pedra-Chave (Dona Pedrina lapida três lascas de prisma: Mina Abandonada, Ruínas dos Vigias, Caverna de Gelo Cristalino).
@@ -1538,100 +1546,100 @@ Pulseira Mega: Cidade Escarpa, missão A Pedra-Chave (Dona Pedrina lapida três 
 | venusaur-mega | venusaurite | Templo das Raízes — Câmara da Semente | missão O mapa do templo (Dra. Ybi) |
 | charizard-mega-x | charizarditeX | Templo da Chama — Rio de Lava | tesouro |
 | charizard-mega-y | charizarditeY | Vila Termas | missão O vulcão acordado |
-| blastoise-mega | blastoiseite | Estação Austral | missão O canto das Lapras |
+| blastoise-mega | blastoisinite | Estação Austral | missão O canto das Lapras |
 | beedrill-mega | beedrillite | Rota 2, Trilha das Paineiras | tesouro escondido |
 | pidgeot-mega | pidgeotite | Rota 1, Campos de Lúmen | tesouro escondido no ipê mais alto |
-| raichu-mega-x | raichuiteX | Farol Coral (Cidade Coral) (lanterna) | tesouro escondido da dungeon do tipo |
-| raichu-mega-y | raichuiteY | Farol Coral (Cidade Coral) (lanterna) | tesouro escondido da dungeon do tipo |
-| clefable-mega | clefableite | Ilha Miragem | tesouro |
-| alakazam-mega | alakazamite | Observatório Boreal (Vila Geada) | Dra. Hanna |
+| raichu-mega-x | raichuniteX | Farol Coral (Cidade Coral) (lanterna) | tesouro escondido da dungeon do tipo |
+| raichu-mega-y | raichuniteY | Farol Coral (Cidade Coral) (lanterna) | tesouro escondido da dungeon do tipo |
+| clefable-mega | clefablite | Ilha Miragem | tesouro |
+| alakazam-mega | alakazite | Observatório Boreal (Vila Geada) | Dra. Hanna |
 | victreebel-mega | victreebelite | Templo das Raízes — Átrio | tesouro escondido da dungeon do tipo |
-| slowbro-mega | slowbroite | Porto Espelho | Tia Jandira (o Doutor tem uma) |
+| slowbro-mega | slowbronite | Porto Espelho | Tia Jandira (o Doutor tem uma) |
 | gengar-mega | gengarite | Cemitério das Velas | tesouro escondido (noite) |
 | kangaskhan-mega | kangaskhanite | Campos ao norte da Rota 1 | tesouro no ninho de uma Kangaskhan |
-| starmie-mega | starmieite | Templo das Marés — Nave Alta | tesouro escondido da dungeon do tipo |
+| starmie-mega | starminite | Templo das Marés — Nave Alta | tesouro escondido da dungeon do tipo |
 | pinsir-mega | pinsirite | Bosque Sussurrante | revanche da Lia |
 | gyarados-mega | gyaradosite | Templo das Marés — Nave Alta | tesouro |
 | aerodactyl-mega | aerodactylite | Ruínas de Pedra Pintada — Pátio das Pinturas | tesouro |
-| dragonite-mega | dragoniteite | Liga Alvorada (Cidadela do Zênite) | Iberê, na revanche |
-| mewtwo-mega-x | mewtwoiteX | Gruta das Cataratas — Abismo do Silêncio | tesouro |
-| mewtwo-mega-y | mewtwoiteY | Cidadela do Poente | 49 vitórias na Torre de Batalha |
+| dragonite-mega | dragoninite | Liga Alvorada (Cidadela do Zênite) | Iberê, na revanche |
+| mewtwo-mega-x | mewtwoniteX | Gruta das Cataratas — Abismo do Silêncio | tesouro |
+| mewtwo-mega-y | mewtwoniteY | Cidadela do Poente | 49 vitórias na Torre de Batalha |
 | meganium-mega | meganiumite | Templo das Raízes — Átrio | tesouro escondido da dungeon do tipo |
-| feraligatr-mega | feraligatrite | Templo das Marés — Nave Alta | tesouro escondido da dungeon do tipo |
+| feraligatr-mega | feraligite | Templo das Marés — Nave Alta | tesouro escondido da dungeon do tipo |
 | ampharos-mega | ampharosite | Farol Coral (Cidade Coral) (lanterna) | tesouro |
 | steelix-mega | steelixite | Cidade Aurora | missão O Steelix de cristal |
 | scizor-mega | scizorite | Megaloja Aurora (Cidade Aurora) | loja do 4º andar (₽50000) |
-| heracross-mega | heracrossite | Vila Sussurro | revanche da Lia |
-| skarmory-mega | skarmoryite | Mina Aurora — Nível 4 | tesouro escondido da dungeon do tipo |
-| houndoom-mega | houndoomite | Templo da Chama — Portal de Basalto | tesouro |
+| heracross-mega | heracronite | Vila Sussurro | revanche da Lia |
+| skarmory-mega | skarmorite | Mina Aurora — Nível 4 | tesouro escondido da dungeon do tipo |
+| houndoom-mega | houndoominite | Templo da Chama — Portal de Basalto | tesouro |
 | tyranitar-mega | tyranitarite | Ruínas de Pedra Pintada — Galeria da Areia | tesouro |
-| sceptile-mega | sceptileite | Templo das Raízes — Galerias Inundadas | tesouro |
+| sceptile-mega | sceptilite | Templo das Raízes — Galerias Inundadas | tesouro |
 | blaziken-mega | blazikenite | Cidade Campina | missão Os pintinhos que pegam fogo (depois de evoluir Torchic duas vezes) |
 | swampert-mega | swampertite | Pantanal do Poente | tesouro |
 | gardevoir-mega | gardevoirite | Ruínas dos Vigias — Sala dos Murais | tesouro |
-| sableye-mega | sableyeite | Mina Abandonada (Nível 5) | tesouro |
-| mawile-mega | mawileite | Caminho do Zênite — Caverna | tesouro |
+| sableye-mega | sablenite | Mina Abandonada (Nível 5) | tesouro |
+| mawile-mega | mawilite | Caminho do Zênite — Caverna | tesouro |
 | aggron-mega | aggronite | Mina Aurora — Nível 4 | tesouro |
 | medicham-mega | medichamite | Forte Rochedo | revanche do Brás |
-| manectric-mega | manectricite | Cidade Coral | revanche do Jonas |
-| sharpedo-mega | sharpedoite | Templo das Marés — Nave Afundada | tesouro |
+| manectric-mega | manectite | Cidade Coral | revanche do Jonas |
+| sharpedo-mega | sharpedonite | Templo das Marés — Nave Afundada | tesouro |
 | camerupt-mega | cameruptite | Vila Termas | missão A montanha que anda |
-| altaria-mega | altariaite | Torre do Vento (Mirante dos Ventos) | revanche da Celeste |
-| banette-mega | banetteite | Vila Lamparina | revanche da Zélia |
-| chimecho-mega | chimechoite | Ruínas dos Vigias — Sala dos Murais | tesouro escondido da dungeon do tipo |
+| altaria-mega | altarianite | Torre do Vento (Mirante dos Ventos) | revanche da Celeste |
+| banette-mega | banettite | Vila Lamparina | revanche da Zélia |
+| chimecho-mega | chimechite | Ruínas dos Vigias — Sala dos Murais | tesouro escondido da dungeon do tipo |
 | absol-mega | absolite | Vila Lamparina | missão Sina e Véspera |
 | absol-mega-z | absoliteZ | Ilha do Véu | tesouro escondido da dungeon do tipo |
-| glalie-mega | glalieite | Vila Geada | missão A luz que dança |
-| salamence-mega | salamenceite | Chapada Vermelha | tesouro |
+| glalie-mega | glalitite | Vila Geada | missão A luz que dança |
+| salamence-mega | salamencite | Chapada Vermelha | tesouro |
 | metagross-mega | metagrossite | Cidade Aurora | missão O cofre da cobertura |
 | latias-mega | latiasite | Ilhas Gêmeas | tesouro |
 | latios-mega | latiosite | Ilhas Gêmeas | tesouro |
-| rayquaza-mega | rayquazaite | (não precisa de pedra: Rayquaza com Ascensão do Dragão) | golpe |
-| staraptor-mega | staraptorite | Megaloja Aurora (Cidade Aurora) | tesouro escondido da dungeon do tipo |
-| lopunny-mega | lopunnyite | Cidade Campina | revanche do Tomé |
+| rayquaza-mega | — | (não precisa de pedra: Rayquaza com Ascensão do Dragão) | golpe |
+| staraptor-mega | staraptite | Megaloja Aurora (Cidade Aurora) | tesouro escondido da dungeon do tipo |
+| lopunny-mega | lopunnite | Cidade Campina | revanche do Tomé |
 | garchomp-mega | garchompite | Cidade Buriti | missão Campeão da areia |
 | garchomp-mega-z | garchompiteZ | Caminho do Zênite — Caverna | tesouro escondido da dungeon do tipo |
-| lucario-mega | lucarioite | Cidade Escarpa | junto com a Pulseira Mega |
-| lucario-mega-z | lucarioiteZ | Forte Rochedo | tesouro escondido da dungeon do tipo |
-| abomasnow-mega | abomasnowite | Caverna de Gelo Cristalino — Saguão | tesouro |
-| gallade-mega | galladeite | Ruínas dos Vigias — Sala dos Murais | tesouro |
+| lucario-mega | lucarionite | Cidade Escarpa | junto com a Pulseira Mega |
+| lucario-mega-z | lucarioniteZ | Forte Rochedo | tesouro escondido da dungeon do tipo |
+| abomasnow-mega | abomasite | Caverna de Gelo Cristalino — Saguão | tesouro |
+| gallade-mega | galladite | Ruínas dos Vigias — Sala dos Murais | tesouro |
 | froslass-mega | froslassite | Caverna de Gelo Cristalino — Coração Azul | tesouro |
 | heatran-mega | heatranite | Templo da Chama — Forja Antiga | tesouro |
-| darkrai-mega | darkraiite | Vila Lamparina | capela, na lua nova |
+| darkrai-mega | darkranite | Vila Lamparina | capela, na lua nova |
 | emboar-mega | emboarite | Templo da Chama — Portal de Basalto | tesouro escondido da dungeon do tipo |
-| excadrill-mega | excadrillite | Ruínas de Pedra Pintada — Galeria da Areia | tesouro escondido da dungeon do tipo |
-| audino-mega | audinoite | Vila Alvorada | a Mãe dá (a Dona Fofa usa a dela) |
-| scolipede-mega | scolipedeite | Templo das Raízes — Galerias Inundadas | tesouro escondido da dungeon do tipo |
-| scrafty-mega | scraftyite | Ilha do Véu | tesouro escondido da dungeon do tipo |
+| excadrill-mega | excadrite | Ruínas de Pedra Pintada — Galeria da Areia | tesouro escondido da dungeon do tipo |
+| audino-mega | audinite | Vila Alvorada | a Mãe dá (a Dona Fofa usa a dela) |
+| scolipede-mega | scolipite | Templo das Raízes — Galerias Inundadas | tesouro escondido da dungeon do tipo |
+| scrafty-mega | scraftinite | Ilha do Véu | tesouro escondido da dungeon do tipo |
 | eelektross-mega | eelektrossite | Farol Coral (Cidade Coral) (lanterna) | tesouro escondido da dungeon do tipo |
-| chandelure-mega | chandelureite | Cemitério das Velas | tesouro escondido da dungeon do tipo |
+| chandelure-mega | chandelurite | Cemitério das Velas | tesouro escondido da dungeon do tipo |
 | golurk-mega | golurkite | Ruínas de Pedra Pintada — Galeria da Areia | tesouro escondido da dungeon do tipo |
 | chesnaught-mega | chesnaughtite | Templo das Raízes — Átrio | tesouro escondido da dungeon do tipo |
 | delphox-mega | delphoxite | Templo da Chama — Portal de Basalto | tesouro escondido da dungeon do tipo |
-| greninja-mega | greninjaite | Templo das Marés — Nave Alta | tesouro escondido da dungeon do tipo |
+| greninja-mega | greninjite | Templo das Marés — Nave Alta | tesouro escondido da dungeon do tipo |
 | pyroar-mega | pyroarite | Templo da Chama — Portal de Basalto | tesouro escondido da dungeon do tipo |
-| floette-mega | floetteite | Mata das Araucárias | tesouro escondido da dungeon do tipo |
+| floette-mega | floettite | Mata das Araucárias | tesouro escondido da dungeon do tipo |
 | meowstic-male-mega | meowsticite | Ruínas dos Vigias — Sala dos Murais | tesouro escondido da dungeon do tipo |
 | meowstic-female-mega | meowsticite | Ruínas dos Vigias — Sala dos Murais | tesouro escondido da dungeon do tipo |
 | malamar-mega | malamarite | Ilha do Véu | tesouro escondido da dungeon do tipo |
-| barbaracle-mega | barbaracleite | Mina Abandonada (Nível 5) | tesouro escondido da dungeon do tipo |
-| dragalge-mega | dragalgeite | Rota 5, Brejo das Lamparinas | tesouro escondido da dungeon do tipo |
-| hawlucha-mega | hawluchaite | Forte Rochedo | tesouro escondido da dungeon do tipo |
-| zygarde-mega | zygardeite | Fundo do Cânion | tesouro (com Zygarde capturado) |
-| diancie-mega | diancieite | Fenda Prismática — Salão dos Espelhos | tesouro |
-| crabominable-mega | crabominableite | Forte Rochedo | tesouro escondido da dungeon do tipo |
-| golisopod-mega | golisopodite | Templo das Raízes — Galerias Inundadas | tesouro escondido da dungeon do tipo |
-| drampa-mega | drampaite | Megaloja Aurora (Cidade Aurora) | tesouro escondido da dungeon do tipo |
-| magearna-mega | magearnaite | Oficina do Vô Ernesto (Cidade Aurora) | Vô Ernesto |
-| magearna-original-mega | magearnaite | Oficina do Vô Ernesto (Cidade Aurora) | Vô Ernesto |
-| zeraora-mega | zeraoraite | Rota 6, Ferrovia da Aurora | torre de transmissão |
+| barbaracle-mega | barbaracite | Mina Abandonada (Nível 5) | tesouro escondido da dungeon do tipo |
+| dragalge-mega | dragalgite | Rota 5, Brejo das Lamparinas | tesouro escondido da dungeon do tipo |
+| hawlucha-mega | hawluchanite | Forte Rochedo | tesouro escondido da dungeon do tipo |
+| zygarde-mega | zygardite | Fundo do Cânion | tesouro (com Zygarde capturado) |
+| diancie-mega | diancite | Fenda Prismática — Salão dos Espelhos | tesouro |
+| crabominable-mega | crabominite | Forte Rochedo | tesouro escondido da dungeon do tipo |
+| golisopod-mega | golisopite | Templo das Raízes — Galerias Inundadas | tesouro escondido da dungeon do tipo |
+| drampa-mega | drampanite | Megaloja Aurora (Cidade Aurora) | tesouro escondido da dungeon do tipo |
+| magearna-mega | magearnite | Oficina do Vô Ernesto (Cidade Aurora) | Vô Ernesto |
+| magearna-original-mega | magearnite | Oficina do Vô Ernesto (Cidade Aurora) | Vô Ernesto |
+| zeraora-mega | zeraorite | Rota 6, Ferrovia da Aurora | torre de transmissão |
 | falinks-mega | falinksite | Forte Rochedo | tesouro escondido da dungeon do tipo |
 | scovillain-mega | scovillainite | Templo das Raízes — Átrio | tesouro escondido da dungeon do tipo |
-| glimmora-mega | glimmoraite | Mina Abandonada (Nível 5) | tesouro escondido da dungeon do tipo |
-| tatsugiri-curly-mega | tatsugiriite | Caminho do Zênite — Caverna | tesouro escondido da dungeon do tipo |
-| tatsugiri-droopy-mega | tatsugiriite | Caminho do Zênite — Caverna | tesouro escondido da dungeon do tipo |
-| tatsugiri-stretchy-mega | tatsugiriite | Caminho do Zênite — Caverna | tesouro escondido da dungeon do tipo |
-| baxcalibur-mega | baxcaliburite | Caminho do Zênite — Caverna | tesouro escondido da dungeon do tipo |
+| glimmora-mega | glimmoranite | Mina Abandonada (Nível 5) | tesouro escondido da dungeon do tipo |
+| tatsugiri-curly-mega | tatsugirinite | Caminho do Zênite — Caverna | tesouro escondido da dungeon do tipo |
+| tatsugiri-droopy-mega | tatsugirinite | Caminho do Zênite — Caverna | tesouro escondido da dungeon do tipo |
+| tatsugiri-stretchy-mega | tatsugirinite | Caminho do Zênite — Caverna | tesouro escondido da dungeon do tipo |
+| baxcalibur-mega | baxcalibrite | Caminho do Zênite — Caverna | tesouro escondido da dungeon do tipo |
 
 Bracelete Dynamax: Laboratório do Prof. Jatobá (Vila Alvorada), a Bia monta com as leituras do Prisma; dá a quem levar a ela a foto de uma Toca de Luz acesa (qualquer uma). Tocas comuns sorteiam da tabela de encontros da área (nível da área + 5). Tocas Gigantamax têm a forma fixa listada; as raras só acendem de noite ou com clima.
 

@@ -50,13 +50,14 @@ export function golpes(lista, dex, nivel) {
   return out.slice(0, 4);
 }
 
-// [dex, nível, golpes?] do roteiro → Mon pronto para a batalha. `rival` = flags.rivalStarter (linha do Téo).
+// [dex, nível, golpes?, opções?] do roteiro → Mon pronto para a batalha. `rival` = flags.rivalStarter (linha do Téo).
+// opções: { item } (item segurado; uma Mega Pedra faz o treinador Mega Evoluir, src/combat/poder.js), { gmax: true } (fator G)
 export function montarEquipe(equipe, rival = 7) {
-  return equipe.map(([dex, nivel, mv]) => {
+  return equipe.map(([dex, nivel, mv, op]) => {
     let d = dex;
     if (typeof d === 'string' && d.startsWith('rival:')) d = (rival ?? 7) + (+d.slice(6) - 1);
     const real = especie(d);
-    return new Mon(real, nivel, { moves: golpes(mv, real, nivel), shiny: false });
+    return new Mon(real, nivel, { moves: golpes(mv, real, nivel), shiny: false, item: op?.item ?? null, gmax: !!op?.gmax });
   });
 }
 

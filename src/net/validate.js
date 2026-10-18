@@ -55,7 +55,7 @@ export function validateMon(o) {
     nature: o.nature != null ? String(o.nature).toLowerCase() : 'hardy', ability: o.ability ?? undefined,
     gender: o.gender !== undefined ? o.gender : undefined, shiny: o.shiny === true, friendship: o.friendship ?? undefined,
     item: o.item ?? null, ball: o.ball ?? 'pokeBall', metLevel: isInt(o.metLevel, 1, 100) ? o.metLevel : undefined,
-    nick: o.nick ? cleanText(o.nick, 12) || null : null, xp, moves: o.moves.slice(), status: o.status ?? null, uid, form: o.form ?? null,
+    nick: o.nick ? cleanText(o.nick, 12) || null : null, xp, moves: o.moves.slice(), status: o.status ?? null, uid, form: o.form ?? null, gmax: o.gmax === true,
   });
   // HP: inteiro entre 0 e o máximo recalculado
   mon.hp = Number.isInteger(o.hp) ? Math.max(0, Math.min(mon.stats.hp, o.hp)) : mon.stats.hp;
@@ -95,6 +95,6 @@ export function validateState(s) {
   const out = { x: s.x, y: s.y, d: ['down', 'up', 'left', 'right'].includes(s.d) ? s.d : 'down', r: !!s.r, seq: isInt(s.seq, 0, 1e9) ? s.seq : 0 };
   if (s.l && num(s.l.x) && num(s.l.y) && typeof s.l.u === 'string') out.l = { x: s.l.x, y: s.l.y, u: s.l.u.slice(0, 16), a: isInt(s.l.a, 0, 7) ? s.l.a : 2, z: !!s.l.z, h: Number.isFinite(s.l.h) ? Math.max(0, Math.min(160, s.l.h)) : 0, p: s.l.p === 1 };
   if (Number.isFinite(s.tz)) out.tz = Math.max(0, Math.min(120, s.tz)); // altura do treinador (telhado: src/world/vivo.js)
-  if (['correr', 'nadar', 'escalar', 'voar', 'mergulhar'].includes(s.m)) { out.m = s.m; out.z = Number.isFinite(s.z) ? Math.max(0, Math.min(120, s.z)) : 0; out.u = !!s.u; out.mountDex = isInt(s.mountDex, 1, 1025) ? s.mountDex : null; } // montaria (src/world/mounts.js)
+  if (['correr', 'nadar', 'escalar', 'voar', 'mergulhar'].includes(s.m)) { out.m = s.m; out.z = Number.isFinite(s.z) ? Math.max(0, Math.min(120, s.z)) : 0; out.u = !!s.u; out.mountDex = isInt(s.mountDex, 1, 1025) || (typeof s.mountDex === 'string' && /^\d{1,4}-[A-Za-z]{1,24}$/.test(s.mountDex)) ? s.mountDex : null; } // montaria (src/world/mounts.js); com forma: "59-hisui"
   return out;
 }

@@ -193,7 +193,7 @@ export default {
           equipe: [
             [571, 44, ['nightDaze', 'flamethrower', 'suckerPunch', 'nastyPlot']],
             [430, 45, ['nightSlash', 'braveBird', 'suckerPunch']],
-            [229, 45, ['flamethrower', 'darkPulse', 'willOWisp']],
+            [229, 45, ['flamethrower', 'darkPulse', 'willOWisp'], { item: 'houndoominite' }], // Mega Houndoom (src/combat/poder.js)
             [429, 45, ['shadowBall', 'mysticalFire', 'confuseRay']],
             [461, 45, ['iceShard', 'nightSlash', 'iceFang']],
             [197, 47, ['foulPlay', 'moonlight', 'toxic', 'snarl']],

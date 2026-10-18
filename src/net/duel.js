@@ -26,8 +26,10 @@ export class Duel {
     const net = this.net;
     if (this.busy || net.trade.busy) { net.ui.toast('Termine o que está fazendo antes.'); return; }
     const duel = newId();
-    this.pending = { duel, foe: pid };
-    net.send('d-req', { duel, rematch }, pid);
+    // regra do Dynamax: ligada quando quem desafia está num lugar de Dynamax (perto de uma Toca de Luz, área marcada)
+    const dmax = !!this.g.poder?.lugarDynamax?.();
+    this.pending = { duel, foe: pid, dmax };
+    net.send('d-req', { duel, rematch, dmax }, pid);
     net.ui.toast(`Desafio enviado para ${net.nameOf(pid)}.`);
     this.pending.t = setTimeout(() => { if (this.pending?.duel === duel) { this.pending = null; net.ui.toast(`${net.nameOf(pid)} não respondeu.`); } }, 30000);
   }
@@ -36,14 +38,14 @@ export class Duel {
     if (typeof data.duel !== 'string' || data.duel.length > 16) return;
     if (type === 'd-req') {
       if (this.busy || net.trade.busy) { net.send('d-ans', { duel: data.duel, ok: false, why: 'ocupado' }, from); return; }
-      this.incoming = { duel: String(data.duel), foe: from };
-      net.ui.ask(`${net.nameOf(from)} ${data.rematch ? 'quer revanche!' : 'te desafiou para um duelo!'}`, 'Aceitar', 'Recusar', (ok) => {
+      this.incoming = { duel: String(data.duel), foe: from, dmax: data.dmax === true };
+      net.ui.ask(`${net.nameOf(from)} ${data.rematch ? 'quer revanche!' : 'te desafiou para um duelo!'}${data.dmax === true ? ' (regra: Dynamax ligado)' : ''}`, 'Aceitar', 'Recusar', (ok) => {
         if (this.incoming?.duel !== String(data.duel)) return;
         this.incoming = null;
         if (!ok || !net.on || !net.room?.players.has(from)) { net.send('d-ans', { duel: data.duel, ok: false }, from); return; }
         // eu sou o árbitro: abro o duelo no meu árbitro antes de responder (a equipe do rival já chega nele)
-        this.d = { id: String(data.duel), foe: from, phase: 'pick', ref: net.selfId };
-        net.toArbiter(net.selfId, 'd-open', { duel: String(data.duel), a: from });
+        this.d = { id: String(data.duel), foe: from, phase: 'pick', ref: net.selfId, dmax: data.dmax === true };
+        net.toArbiter(net.selfId, 'd-open', { duel: String(data.duel), a: from, dmax: data.dmax === true });
         net.send('d-ans', { duel: data.duel, ok }, from);
         this.#pick();
       });
@@ -53,7 +55,7 @@ export class Duel {
       if (this.pending?.duel !== data.duel || this.pending.foe !== from) return;
       clearTimeout(this.pending.t); this.pending = null;
       if (!data.ok) { net.ui.toast(data.why === 'ocupado' ? `${net.nameOf(from)} está ocupado.` : `${net.nameOf(from)} recusou o duelo.`); return; }
-      this.d = { id: data.duel, foe: from, phase: 'pick', ref: from }; // o árbitro é quem aceitou
+      this.d = { id: data.duel, foe: from, phase: 'pick', ref: from, dmax: !!this.pending?.dmax }; // o árbitro é quem aceitou
       this.#pick();
       return;
     }
@@ -62,6 +64,7 @@ export class Duel {
     if (type === 'd-bad') { net.ui.toast('Equipe recusada: ' + data.why); this.#pick(); return; }
     if (type === 'd-start') return this.#start(data);
     if (type === 'd-hit') return this.#hit(data);
+    if (type === 'd-poder') return this.#poder(data);
     if (type === 'd-end') return this.#end(data);
     void g;
   }
@@ -87,7 +90,7 @@ export class Duel {
     const foe = (s.teams[d.foe] ?? []).map((o) => validateMon(o)).filter((v) => v.ok).map((v) => v.mon);
     if (!mine.length || !foe.length) return;
     net.ui.closePick?.();
-    Object.assign(d, { phase: 'count', arena: s.arena, mine, foeTeam: foe, saved: { party: g.party, leadIdx: g.leadIdx }, announced: null });
+    Object.assign(d, { phase: 'count', arena: s.arena, mine, foeTeam: foe, saved: { party: g.party, leadIdx: g.leadIdx }, announced: null, dmax: !!s.dmax });
     // sua equipe do duelo entra no lugar da equipe normal (cópias curadas)
     g.party = mine;
     await g.sendOut(0);
@@ -147,8 +150,19 @@ export class Duel {
   onPvpHit(user, t, mv, id, dx, dy) {
     const d = this.d; if (!d || d.phase !== 'fight') return;
     if (user !== this.g.lead || t.remote !== d.foe || !t.alive) return; // só quem ataca pede
-    const slot = user.mon.moves.indexOf(id); if (slot < 0) return;
+    const slot = user.mon.moves.indexOf(mv?.maxBase ?? id); if (slot < 0) return; // Max Golpe: o espaço do golpe de base
     this.net.toArbiter(d.ref, 'd-claim', { duel: d.id, slot, tgt: t.mon.uid, dx: +dx.toFixed(3), dy: +dy.toFixed(3) });
+  }
+
+  // Mega / Dynamax no duelo: pede ao árbitro (k = 'mega' | 'dmax'); a animação só roda quando ele confirma ('d-poder')
+  poder(k, uid) {
+    const d = this.d; if (!d || d.phase !== 'fight') return;
+    this.net.toArbiter(d.ref, 'd-poder', { duel: d.id, uid, k });
+  }
+  #poder(p) {
+    const d = this.d; if (!d?.mine || !['mega', 'dmax', 'fim'].includes(p.k)) return;
+    const e = this.#ent(p.uid); if (!e) return;
+    this.g.poder?.aplicarRede(e, p.k, typeof p.form === 'string' ? p.form : null);
   }
 
   #ent(uid) {

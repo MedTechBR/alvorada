@@ -1,4 +1,4 @@
-import { SPECIES, BIOME_ENCOUNTERS, NIGHT_ENCOUNTERS, DEX_ORDER } from '../data/species.js';
+import { SPECIES, BIOME_ENCOUNTERS, NIGHT_ENCOUNTERS, DEX_ORDER, speciesOfKey } from '../data/species.js';
 import { MOVES } from '../data/moves.js';
 import { TYPE_COLOR, TYPE_PT } from '../data/types.js';
 import { DEX_TEXT } from '../data/dex.js';
@@ -550,7 +550,7 @@ export class GameMenu {
     }
     const m = g.party[i];
     const canSend = i !== g.leadIdx && !m.fainted && !this.ui.story?.busy;
-    const opts = ['Resumo', ...(canSend ? ['Enviar ao campo'] : []), 'Mudar ordem', 'Usar item', 'Item equipado', ...(mountModes(m.dex).length ? ['Usar como montaria'] : []), 'Cancelar'];
+    const opts = ['Resumo', ...(canSend ? ['Enviar ao campo'] : []), 'Mudar ordem', 'Usar item', 'Item equipado', ...(mountModes(m).length ? ['Usar como montaria'] : []), 'Cancelar'];
     const c = await this.#choose(esc(m.name), opts);
     const pick = opts[c];
     if (pick === 'Resumo') this.#summary(i);
@@ -618,7 +618,7 @@ export class GameMenu {
   // ---------- Montarias (src/world/mounts.js): quem leva o treinador em cada modo ----------
   // A padrão de cada modo vem da história; qualquer Pokémon do jogador (equipe ou PC) que carregue gente pode tomar o lugar.
   #mountInfo(m) {
-    const ks = mountModes(m.dex), mt = this.g.mount;
+    const ks = mountModes(m), mt = this.g.mount;
     if (!ks.length) return '<span class="gm-soft">Não carrega o treinador</span>';
     const on = ks.filter((k) => mt?.chosen(k).mon === m);
     return ks.map((k) => (on.includes(k) ? `<b>${MOUNTS[k].label}</b>` : MOUNTS[k].label)).join(' · ') + (on.length ? ' <span class="gm-soft">(em uso)</span>' : '');
@@ -660,9 +660,9 @@ export class GameMenu {
         const opts = mt?.options(kind) ?? [], cur = mt?.chosen(kind).mon ?? null;
         const row = (dex, i, name, sub, on) => `<div class="nav gm-row gm-mtrow ${on ? 'on' : ''}" data-i="${i}"><span class="gm-cur">▶</span>${slot(dex, 'mini')}
           <div class="gm-mtmain"><b>${name}</b><span>${sub}</span></div>${this.#mountSpeed(kind, dex)}${on ? '<span class="gm-chip hot">Em uso</span>' : ''}</div>`;
-        const ex = Object.entries(MONTARIAS).filter(([, e]) => e.m.includes(kind)).map(([d]) => SPECIES[d]?.name).filter(Boolean);
+        const ex = Object.entries(MONTARIAS).filter(([, e]) => e.m.includes(kind)).map(([d]) => speciesOfKey(d)?.name).filter(Boolean);
         body.innerHTML = `<div class="gm-box gm-scroll gm-mtlist">${mt?.padrao?.(kind) ? row(D.dex, -1, esc(D.name), 'Montaria padrão da história', !cur) : ''}
-          ${opts.map((o, i) => row(o.mon.dex, i, esc(o.mon.name), `Nv. ${o.mon.level} · ${o.where}${o.mon.fainted ? ' · sem forças' : ''}`, o.mon === cur)).join('')}</div>
+          ${opts.map((o, i) => row(o.cfg.dex ?? o.mon.dex, i, esc(o.mon.name), `Nv. ${o.mon.level} · ${o.where}${o.mon.fainted ? ' · sem forças' : ''}`, o.mon === cur)).join('')}</div>
           <div class="gm-soft gm-mthint">${opts.length ? '' : 'Nenhum Pokémon seu serve para este modo ainda. '}Servem para ${D.label.toLowerCase()}: ${esc(ex.slice(0, 14).join(', '))}${ex.length > 14 ? ` e mais ${ex.length - 14}` : ''}.</div>`;
         body.querySelectorAll('.nav').forEach((n) => {
           const i = +n.dataset.i;
@@ -681,7 +681,7 @@ export class GameMenu {
   }
   // "Usar como montaria" (equipe, PC): escolhe o modo quando a espécie serve para mais de um
   async #useAsMount(m) {
-    const g = this.g, mt = g.mount, ks = mountModes(m.dex);
+    const g = this.g, mt = g.mount, ks = mountModes(m);
     if (!mt || !ks.length) return;
     let k = ks[0];
     if (ks.length > 1) {
@@ -719,7 +719,7 @@ export class GameMenu {
     if (where === 'p') {
       const m = g.party[i];
       if (g.party.filter((x) => !x.fainted).length <= 1 && !m.fainted) { await this.#msg('Você precisa ficar com pelo menos um Pokémon em condições de lutar!'); return; }
-      const ride = mountModes(m.dex).length ? ['Usar como montaria'] : [];
+      const ride = mountModes(m).length ? ['Usar como montaria'] : [];
       const c = await this.#choose(esc(m.name), ['Guardar na caixa', ...ride, 'Cancelar']);
       if (c === 1 && ride.length) { await this.#useAsMount(m); this.refresh(); return; }
       if (c !== 0) return;
@@ -730,7 +730,7 @@ export class GameMenu {
     } else {
       const m = g.box[i];
       if (g.party.length >= 6) { await this.#msg('Sua equipe está cheia. Guarde um Pokémon antes.'); return; }
-      const ride = mountModes(m.dex).length ? ['Usar como montaria'] : [];
+      const ride = mountModes(m).length ? ['Usar como montaria'] : [];
       const c = await this.#choose(esc(m.name), ['Levar na equipe', ...ride, 'Cancelar']);
       if (c === 1 && ride.length) { await this.#useAsMount(m); this.refresh(); return; }
       if (c !== 0) return;

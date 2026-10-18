@@ -172,6 +172,7 @@ export class PokeEntity {
     if (!white && this.flash > 0) tint = 0xffb4b4;
     else if (this.mon.status === 'par' && Math.sin(this.animT * 30) > 0.6) tint = 0xfff27a;
     else if (this.isAlpha && !this.dead) tint = 0xffe0e0;
+    else if (this.dmaxT > 0 && !this.dead) tint = Math.sin(this.animT * 5) > 0 ? 0xffa0ae : 0xffccd2; // Dynamax: brilho vermelho
     if (hide === 'dive') tint = 0x4a8ad8;
     this.body.tint = tint;
     this.body.visible = hide !== 'dig';

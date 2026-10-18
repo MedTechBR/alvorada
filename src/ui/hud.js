@@ -112,7 +112,7 @@ export class Hud {
     if (!show) { m.visible = false; return; }
     const p = g.player, d = Math.hypot(o.target.x - p.x, o.target.y - p.y);
     if (d < 40) { m.visible = false; return; }
-    const z = g.zoom, W = innerWidth, H = innerHeight;
+    const z = g.world.scale.x, W = innerWidth, H = innerHeight;
     let x = g.world.x + o.target.x * z, y = g.world.y + (o.target.y - 26) * z;
     const padL = 34, padR = 34, padT = IS_TOUCH ? 90 : 120, padB = IS_TOUCH ? 140 : 90;
     let edge = false, ang = 0;
@@ -162,7 +162,8 @@ export class Hud {
     const g = this.g, m = g.party[g.leadIdx];
     const trainer = g.mode !== 'pokemon';
     const bk = trainer ? g.currentBall?.() : null, balls = bk ? g.bag[bk] : 0;
-    const ids = (trainer ? 'T:' + (m?.name ?? '') + ':' + bk + balls : 'P:') + (m ? m.moves.join(',') : '') + '|' + (g.mount?.hint()?.key ?? '');
+    const lead = g.lead?.mon === m ? g.lead : null, dmax = !!lead?.maxMoves; // em Dynamax, os Max Golpes no lugar
+    const ids = (trainer ? 'T:' + (m?.name ?? '') + ':' + bk + balls : 'P:') + (m ? m.moves.join(',') : '') + '|' + (g.mount?.hint()?.key ?? '') + (trainer ? '' : '|' + (dmax ? 'D' + lead.mon.formKind : '') + (g.poder?.hudKey() ?? ''));
     if (ids === this.v.moves) return;
     this.v.moves = ids;
     this.v.cds = null;
@@ -184,20 +185,25 @@ export class Hud {
         b.style.setProperty('--tc', i === 0 ? '#e8584a' : i === 1 ? '#3a8ad8' : '#7a8296');
         b.style.setProperty('--cd', '0');
         b.style.visibility = labels[i] ? 'visible' : 'hidden';
+        b.classList.remove('max');
       }
+      g.poder?.hudHtml(); // esconde o botão do celular no modo treinador
       this.cdEls = null;
       return;
     }
     const keys = ['1', '2', '3', '4'];
+    const mvAt = (i) => (lead ? g.combat.moveAt(lead, i).mv : MOVES[m?.moves[i]]);
+    const power = g.poder?.hudHtml() ?? ''; // botão Mega/Dynamax (src/combat/poder.js)
     $('moves').innerHTML = IS_TOUCH || !m ? '' : m.moves.map((id, i) => {
-      const mv = MOVES[id];
-      return `<div class="mv" style="--tc:${TYPE_COLOR[mv?.type] ?? '#999'}"><kbd>${keys[i]}</kbd><span><b>${esc(mv?.name ?? id)}</b><small>${TYPE_PT[mv?.type] ?? ''} · ${mv?.power || '—'}</small></span><div class="cd"></div></div>`;
-    }).join('');
+      const mv = mvAt(i);
+      return `<div class="mv${dmax ? ' max' : ''}" style="--tc:${TYPE_COLOR[mv?.type] ?? '#999'}"><kbd>${keys[i]}</kbd><span><b>${esc(mv?.name ?? id)}</b><small>${TYPE_PT[mv?.type] ?? ''} · ${mv?.power || '—'}</small></span><div class="cd"></div></div>`;
+    }).join('') + power;
     for (const b of document.querySelectorAll('.tb.move')) {
-      const mv = m && MOVES[m.moves[+b.dataset.slot]];
+      const mv = m && mvAt(+b.dataset.slot);
       b.innerHTML = mv ? `<span class="${mv.name.length > 11 ? 'long' : ''}">${esc(mv.name)}</span>` : '';
       b.style.setProperty('--tc', TYPE_COLOR[mv?.type] ?? '#999');
       b.style.visibility = mv ? 'visible' : 'hidden';
+      b.classList.toggle('max', dmax);
     }
     this.cdEls = IS_TOUCH ? null : [...document.querySelectorAll('#moves .mv .cd')];
   }
@@ -211,7 +217,7 @@ export class Hud {
     // recarga dos golpes (passos de 5%)
     const l = g.lead;
     if (l?.mon && this.cdEls) {
-      const ks = l.mon.moves.map((id, i) => { const mv = MOVES[id]; return mv ? Math.round(Math.max(0, l.cds[i] / (mv.cd || 1)) * 20) : 0; });
+      const ks = l.mon.moves.map((id, i) => { const mv = g.combat.moveAt(l, i).mv; return mv ? Math.round(Math.max(0, l.cds[i] / (mv.cd || 1)) * 20) : 0; });
       const key = ks.join(',');
       if (key !== this.v.cds) {
         this.v.cds = key;
@@ -233,7 +239,7 @@ export class Hud {
     const el = this.trainerEl;
     if (!b || b.done) { this.#set('foe', '', () => { el.hidden = true; }); return; }
     const balls = b.team.map((m, i) => (m.fainted ? 'k' : i < b.next ? 'o' : 'r')).join('');
-    const act = b.active.filter((e) => e.alive).map((e) => `${e.mon.uid}:${Math.round(e.mon.hp / e.mon.stats.hp * 100)}:${e.mon.status ?? ''}`).join('|');
+    const act = b.active.filter((e) => e.alive).map((e) => `${e.mon.uid}:${e.mon.spriteKey}:${Math.round(e.mon.hp / e.mon.stats.hp * 100)}:${e.mon.status ?? ''}`).join('|');
     this.#set('foe', `${b.def.name}#${balls}#${act}`, () => {
       el.hidden = false;
       el.innerHTML = `<div class="fo-top"><b>${esc(b.def.name)}</b><span class="fo-balls">${[...balls].map((c) => `<i class="${c === 'k' ? 'ko' : c === 'o' ? 'out' : ''}"></i>`).join('')}</span></div>` +

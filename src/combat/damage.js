@@ -18,6 +18,7 @@ export function computeDamage(user, target, mv, ctx = {}) {
   const foe = ctx.g && (user?.side === 'wild' || user?.side === 'foe') && target?.side === 'ally' ? FOE_DMG * (user.isAlpha ? 1.25 : 1) : 1;
   const opts = { rng: ctx.rnd ?? Math.random, pace: DMG * foe * tm.mult * (ctx.scale ?? 1) };
   if (ctx.noCrit) opts.crit = false;
+  if (target?.veilT > 0) opts.screens = { phys: true, spec: true }; // Véu de Aurora do G-Max Ressonância (src/combat/poder.js)
   const r = (ctx.g ? resolveHit : officialDamage)(user, target, m, opts);
   const dmg = r.immune ? 0 : r.damage;
   return { dmg, eff: r.eff, crit: r.crit, mult: tm.mult, note: tm.note ?? r.notes[0] ?? null, r };

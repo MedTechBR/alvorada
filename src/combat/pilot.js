@@ -1,5 +1,4 @@
 import { IS_TOUCH } from '../engine/input.js';
-import { MOVES } from '../data/moves.js';
 
 // Complementos do controle do Pokémon (o controle direto em si fica em main.js: treinador ↔ Pokémon):
 // - ações de altura no modo Pokémon: C = voar / pousar, mergulhar ou cavar; X = pular;
@@ -74,10 +73,9 @@ export class Pilot {
   hud(dt) {
     this.hudT = (this.hudT ?? 0) - dt; if (this.hudT > 0) return; this.hudT = 0.05;
     const l = this.g.lead; if (!l) return;
-    const moves = l.mon.moves;
-    const els = document.querySelectorAll('#moves .mv'), tbs = document.querySelectorAll('.tb.move');
+    const els = document.querySelectorAll('#moves .mv:not(.power)'), tbs = document.querySelectorAll('.tb.move');
     for (let i = 0; i < 4; i++) {
-      const mv = MOVES[moves[i]]; if (!mv) continue;
+      const mv = this.c.moveAt(l, i).mv; if (!mv) continue; // em Dynamax, o Max Golpe
       const cd = Math.max(0, l.cds[i]), k = cd / (mv.cd || 1);
       const el = els[i];
       if (el) {
