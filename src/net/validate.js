@@ -1,0 +1,59 @@
+import { SPECIES, expForLevel } from '../data/species.js';
+import { MOVES } from '../data/moves.js';
+import { Mon } from '../data/mon.js';
+
+// Tudo que chega pela rede é suspeito. Aqui se confere e se reconstrói: nada de usar o objeto
+// recebido direto. Os status (HP máx., Ataque…) são RECALCULADOS a partir de espécie, nível e IVs,
+// então mandar "atk: 9999" não adianta.
+
+const NATURES = ['hardy', 'lonely', 'brave', 'adamant', 'naughty', 'bold', 'docile', 'relaxed', 'impish', 'lax', 'timid', 'hasty', 'serious', 'jolly', 'naive', 'modest', 'mild', 'quiet', 'bashful', 'rash', 'calm', 'gentle', 'sassy', 'careful', 'quirky'];
+const STATUS = [null, 'par', 'psn', 'brn', 'slp'];
+const isInt = (v, lo, hi) => Number.isInteger(v) && v >= lo && v <= hi;
+const CTRL = /[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u2028-\u202e\u2066-\u2069]/g;
+
+export function cleanText(s, max = 80) { return String(s ?? '').replace(CTRL, '').replace(/\s+/g, ' ').trim().slice(0, max); }
+export function cleanName(s) { return cleanText(s, 14) || 'Treinador'; }
+export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// Devolve { ok: true, mon } com um Mon novo e limpo, ou { ok: false, why }
+export function validateMon(o) {
+  if (!o || typeof o !== 'object') return { ok: false, why: 'dados vazios' };
+  if (!isInt(o.dex, 1, 2000) || !SPECIES[o.dex]) return { ok: false, why: 'espécie inexistente' };
+  if (!isInt(o.level, 1, 100)) return { ok: false, why: 'nível fora de 1–100' };
+  if (!Array.isArray(o.moves) || o.moves.length < 1 || o.moves.length > 4) return { ok: false, why: 'golpes inválidos' };
+  if (o.moves.some((m) => typeof m !== 'string' || !Object.hasOwn(MOVES, m))) return { ok: false, why: 'golpe inexistente' };
+  if (new Set(o.moves).size !== o.moves.length) return { ok: false, why: 'golpe repetido' };
+  if (o.ivs != null && (!Array.isArray(o.ivs) || o.ivs.length !== 6 || o.ivs.some((v) => !isInt(v, 0, 31)))) return { ok: false, why: 'IVs fora de 0–31' };
+  if (o.nature != null && !NATURES.includes(String(o.nature).toLowerCase())) return { ok: false, why: 'natureza inválida' };
+  if (o.status != null && !STATUS.includes(o.status)) return { ok: false, why: 'estado inválido' };
+  if (o.nick != null && typeof o.nick !== 'string') return { ok: false, why: 'apelido inválido' };
+  const sp = SPECIES[o.dex];
+  const lo = expForLevel(sp.growth, o.level), hi = o.level >= 100 ? lo : expForLevel(sp.growth, o.level + 1) - 1;
+  const xp = Number.isFinite(o.xp) ? Math.max(lo, Math.min(hi, Math.floor(o.xp))) : lo;
+  const uid = typeof o.uid === 'string' && /^[a-z0-9]{4,16}$/i.test(o.uid) ? o.uid : undefined;
+  const mon = new Mon(o.dex, o.level, { ivs: o.ivs ? o.ivs.slice() : [0, 0, 0, 0, 0, 0], nick: o.nick ? cleanText(o.nick, 12) || null : null, xp, moves: o.moves.slice(), status: o.status ?? null, uid });
+  if (o.nature != null) mon.nature = String(o.nature).toLowerCase();
+  if (o.shiny === true) mon.shiny = true;
+  // HP: inteiro entre 0 e o máximo recalculado
+  mon.hp = Number.isInteger(o.hp) ? Math.max(0, Math.min(mon.stats.hp, o.hp)) : mon.stats.hp;
+  return { ok: true, mon };
+}
+
+// O que vai pela rede de um Pokémon (sem nada calculado)
+export function monWire(m) {
+  const o = m.toJSON ? m.toJSON() : { ...m };
+  if (m.nature) o.nature = m.nature;
+  if (m.shiny) o.shiny = true;
+  return o;
+}
+
+// Estado de posição (10–20 vezes por segundo): números finitos e dentro do mapa
+const MAPPX = 200 * 16;
+export function validateState(s) {
+  if (!s || typeof s !== 'object') return null;
+  const num = (v) => Number.isFinite(v) && v >= -64 && v <= MAPPX + 64;
+  if (!num(s.x) || !num(s.y)) return null;
+  const out = { x: s.x, y: s.y, d: ['down', 'up', 'left', 'right'].includes(s.d) ? s.d : 'down', r: !!s.r, seq: isInt(s.seq, 0, 1e9) ? s.seq : 0 };
+  if (s.l && num(s.l.x) && num(s.l.y) && typeof s.l.u === 'string') out.l = { x: s.l.x, y: s.l.y, u: s.l.u.slice(0, 16), a: isInt(s.l.a, 0, 7) ? s.l.a : 2, z: !!s.l.z };
+  return out;
+}
