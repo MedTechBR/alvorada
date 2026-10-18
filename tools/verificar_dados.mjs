@@ -36,8 +36,42 @@ for (const d of dexes) {
     if (e.move) ok(MOVES[e.move] && learnMethod(d, e.move), `${n}: golpe de evolução ${e.move} não existe ou não é aprendido`);
     ok(e.level || e.item || e.friendship || e.move || e.moveType || e.partySpecies, `${n}: evolução sem condição`);
   }
-  if (!s.pmd) avisos.push(`${n} não tem sprite no PMD SpriteCollab`);
 }
+ok(dexes.length === 1025 && dexes.every((d, i) => d === i + 1), `Pokédex Nacional: ${dexes.length} espécies (esperado 1 a 1025)`);
+
+// ---------------------------------------------------------------- formas
+const KINDS_FORMA = ['regional', 'mega', 'primal', 'gmax', 'battle', 'gender', 'alt', 'visual'];
+let nFormas = 0;
+for (const d of dexes) {
+  const base = SPECIES[d];
+  for (const [fid, f] of Object.entries(base.forms)) {
+    nFormas++;
+    const n = `#${d} ${f.name} (${fid})`;
+    ok(f.dex === d && f.form === fid && f.key === `${d}-${fid}` && KINDS_FORMA.includes(f.kind), `${n}: forma mal montada`);
+    ok(f.types?.length >= 1 && f.types.every((t) => TYPE_PT[t]), `${n}: tipos inválidos`);
+    ok(f.base?.length === 6 && f.base.every((v) => v > 0), `${n}: status base`);
+    for (const a of [...f.abilities, f.hidden].filter(Boolean)) ok(ABILITIES[a], `${n}: habilidade ${a} sem dados`);
+    for (const [, id] of f.learn) ok(MOVES[id], `${n}: golpe por nível inválido ${id}`);
+    for (const id of [...f.tm, ...f.tutor]) ok(MOVES[id], `${n}: golpe de MT/ensino inválido ${id}`);
+    for (const e of f.evo) {
+      ok(SPECIES[e.to] && (!e.form || SPECIES[e.to].forms[e.form]), `${n}: evolui para forma inexistente ${e.to}/${e.form}`);
+      if (e.item) ok(ITEMS[e.item], `${n}: item de evolução inexistente ${e.item}`);
+    }
+    if (['mega', 'gmax', 'primal', 'battle'].includes(f.kind)) ok(!f.evo.length, `${n}: forma de batalha não evolui`);
+    if (f.megaStone) ok(ITEMS[f.megaStone]?.mega?.some(([x, y]) => x === d && y === fid) || ITEMS[f.megaStone]?.primal, `${n}: Mega Pedra ${f.megaStone} não aponta para a forma`);
+    if (f.kind === 'mega' && d !== 384) ok(f.megaStone, `${n}: Mega sem Mega Pedra`);
+    if (f.kind === 'gmax') ok(MOVES[f.gmaxMove]?.gmax, `${n}: Gigantamax sem Max Golpe exclusivo`);
+  }
+  for (const e of base.evo) if (e.form) ok(SPECIES[e.to]?.forms[e.form], `#${d}: evolui para forma inexistente ${e.to}/${e.form}`);
+  for (const [g, fid] of Object.entries(base.genderForms ?? {})) ok(base.forms[fid]?.kind === 'gender' && ['m', 'f'].includes(g), `#${d}: forma de gênero ${fid}`);
+}
+for (const [id, it] of Object.entries(ITEMS)) {
+  if (it.mega) for (const [d, f] of it.mega) ok(SPECIES[d]?.forms[f]?.kind === 'mega', `item ${id}: Mega ${d}/${f} inexistente`);
+  if (it.formChange) for (const f of it.formChange.forms) ok(f === null || it.formChange.dex.some((d) => SPECIES[d]?.forms[f]), `item ${id}: forma ${f} inexistente`);
+}
+for (const id of ['megaBracelet', 'dynamaxBand', 'redOrb', 'blueOrb']) ok(ITEMS[id], `item ${id} faltando`);
+console.log(`formas: ${nFormas} (${KINDS_FORMA.map((k) => `${k} ${dexes.reduce((s, d) => s + Object.values(SPECIES[d].forms).filter((f) => f.kind === k).length, 0)}`).join(', ')})`);
+
 for (const tab of [BIOME_ENCOUNTERS, NIGHT_ENCOUNTERS]) for (const [b, rows] of Object.entries(tab)) for (const [d] of rows) ok(SPECIES[d], `encontro ${b}: espécie ${d} não existe`);
 
 // ---------------------------------------------------------------- roteiro (equipes [dex, nível, [golpes]])
@@ -160,6 +194,63 @@ caso('Save antigo migra (IVs, golpes válidos, EVs zerados, não shiny)', [leg.i
 const back = Mon.from(JSON.parse(JSON.stringify(m)));
 caso('toJSON → from preserva tudo', JSON.stringify(back.toJSON()), JSON.stringify(m.toJSON()));
 ok(Object.keys(NATURES).length === 25, '25 naturezas');
+
+// ---------------------------------------------------------------- formas no Mon (save compatível)
+const ra = new Mon(26, 30, { form: 'alola', ivs: IV31, nature: 'hardy' });
+caso('Raichu de Alola: tipos, chave do sprite e forma no save', [ra.types, ra.spriteKey, ra.toJSON().form], [['electric', 'psychic'], '26-alola', 'alola']);
+caso('Forma volta do save', Mon.from(JSON.parse(JSON.stringify(ra))).form, 'alola');
+caso('Save sem forma = forma padrão (e o JSON continua sem o campo)', [Mon.from({ dex: 26, level: 30 }).form, 'form' in new Mon(26, 30).toJSON()], [null, false]);
+caso('Forma inexistente no save cai na padrão', Mon.from({ dex: 26, level: 30, form: 'naoExiste' }).form, null);
+caso('Forma de batalha não fica no save (Mega vira padrão)', Mon.from({ dex: 6, level: 50, form: 'megaX' }).form, null);
+const zx = new Mon(6, 50, { ivs: IV31, nature: 'hardy' }), atk0 = zx.stats.atk;
+zx.setTempForm('megaX');
+caso('Mega Charizard X (forma temporária): tipo e Ataque maiores; sai do save', [zx.types, zx.stats.atk > atk0, zx.toJSON().form ?? null, zx.spriteKey], [['fire', 'dragon'], true, null, '6-megaX']);
+zx.setTempForm(null);
+caso('Volta da Mega', [zx.types, zx.stats.atk], [['fire', 'flying'], atk0]);
+const rat = new Mon(19, 19, { form: 'alola' });
+const evR = evolutionFor(Object.assign(rat, { level: 20 }), 'level', { time: 'night' });
+caso('Rattata de Alola evolui à noite para Raticate de Alola', [evR?.to, evR?.form], [20, 'alola']);
+rat.evolveTo(evR.to, evR.form);
+caso('… e continua de Alola depois de evoluir', [rat.dex, rat.form, rat.types], [20, 'alola', ['dark', 'normal']]);
+caso('Meowth de Galar evolui para Perrserker', evolutionFor(new Mon(52, 28, { form: 'galar' }), 'level', {})?.to, 863);
+caso('Pikachu + Pedra do Trovão fora de Alola = Raichu comum', useItem(new Mon(25, 10), 'thunderStone').events[0]?.form ?? null, null);
+caso('Meowstic fêmea assume a forma de fêmea', [new Mon(678, 30, { gender: 'f' }).form, new Mon(678, 30, { gender: 'm' }).form], ['female', null]);
+const rot = new Mon(479, 30);
+caso('Catálogo Rotom troca a forma (Calor → Lavagem)', [useItem(rot, 'rotomCatalog').ok && rot.form, useItem(rot, 'rotomCatalog').ok && rot.form, rot.types], ['heat', 'wash', ['electric', 'water']]);
+caso('Toxtricity pela natureza', [evolutionFor(new Mon(848, 30, { nature: 'hardy' }), 'level', {})?.form ?? null, evolutionFor(new Mon(848, 30, { nature: 'modest' }), 'level', {})?.form], [null, 'lowKey']);
+
+// ---------------------------------------------------------------- sprites (só no Node: confere os arquivos de assets/pmd)
+if (globalThis.process?.versions?.node) {
+  const fs = await import('node:fs'), path = await import('node:path');
+  const PMD = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'assets', 'pmd');
+  if (fs.existsSync(path.join(PMD, 'index.json'))) {
+    const index = new Set(JSON.parse(fs.readFileSync(path.join(PMD, 'index.json'), 'utf8')));
+    const subst = fs.existsSync(path.join(PMD, 'substitutos.json')) ? JSON.parse(fs.readFileSync(path.join(PMD, 'substitutos.json'), 'utf8')) : {};
+    const tem = (p) => fs.existsSync(path.join(PMD, p, 'frames.json'));
+    let proprio = 0, sub = 0, fProprio = 0, fSub = 0, semNada = [];
+    for (const d of dexes) {
+      const p = String(d).padStart(4, '0');
+      if (tem(p)) proprio++; else if (subst[p] && tem(subst[p].de)) sub++; else semNada.push(SPECIES[d].name);
+      for (const fid of Object.keys(SPECIES[d].forms)) { const q = `${p}-${fid}`; if (tem(q)) fProprio++; else if (subst[q] && tem(subst[q].de)) fSub++; else if (!tem(p) && !subst[p]) semNada.push(SPECIES[d].forms[fid].name); }
+      ok(index.has(d) === (tem(p) || !!subst[p]), `index.json e sprite de #${d} não batem`);
+    }
+    ok(!semNada.length, `sem sprite nem substituto: ${semNada.join(', ')}`);
+    let total = 0, maior = 0, arquivos = 0, quebrados = [];
+    for (const n of fs.readdirSync(PMD)) {
+      const q = path.join(PMD, n);
+      if (!fs.statSync(q).isDirectory()) { total += fs.statSync(q).size; continue; }
+      for (const f of fs.readdirSync(q)) { const sz = fs.statSync(path.join(q, f)).size; total += sz; arquivos++; maior = Math.max(maior, sz); }
+      if (fs.existsSync(path.join(q, 'frames.json'))) {
+        const fr = JSON.parse(fs.readFileSync(path.join(q, 'frames.json'), 'utf8'));
+        for (const a of Object.values(fr.anims)) if (!fs.existsSync(path.join(q, `${a.src}-Anim.png`))) quebrados.push(`${n}/${a.src}`);
+      }
+    }
+    ok(!quebrados.length, `frames.json aponta para folha que não existe: ${quebrados.slice(0, 10).join(', ')}`);
+    ok(maior < 100 * 1024 * 1024, 'arquivo de sprite com 100 MB ou mais');
+    console.log(`sprites: ${proprio} espécies com sprite próprio, ${sub} com substituto; formas: ${fProprio} próprias, ${fSub} com substituto; ` +
+      `${arquivos} arquivos, ${(total / 1048576).toFixed(1)} MB (maior arquivo ${(maior / 1024).toFixed(0)} KB)`);
+  }
+}
 
 // ---------------------------------------------------------------- resumo
 const kinds = {};
