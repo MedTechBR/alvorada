@@ -82,7 +82,7 @@ export class Setores {
           vec4 mvPosition = viewMatrix * wp; gl_Position = projectionMatrix * mvPosition;
           #include <fog_vertex>
         }`,
-      fragmentShader: `uniform sampler2D tira; uniform sampler2D chao; uniform float tempo; uniform vec3 luz; uniform vec3 ceu; uniform vec3 solDir;
+      fragmentShader: `uniform sampler2D tira; uniform sampler2D chao; uniform float temChao; uniform float tempo; uniform vec3 luz; uniform vec3 ceu; uniform vec3 solDir;
         varying vec2 vUv; varying vec2 vW; varying vec3 vVista;
         #include <fog_pars_fragment>
         float h2(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }
@@ -90,7 +90,7 @@ export class Setores {
           float f = mod(floor(tempo / 0.32), 6.0);
           vec2 w = vW / 32.0;
           vec3 c = texture2D(tira, vec2((fract(w.x) + f) / 6.0, fract(w.y))).rgb;
-          vec4 t = texture2D(chao, vUv);
+          vec4 t = texture2D(chao, vUv) * temChao;
           c = mix(c, t.rgb, clamp(t.a * 1.6, 0.0, 1.0));
           // ondinhas: faixas que brilham com o sol (pixeladas em 2 px de mundo)
           vec2 q = floor(vW / 2.0) * 2.0;
@@ -129,16 +129,26 @@ export class Setores {
     for (const [x, y] of L.mudancas()) {
       for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) { const s = this.mapa.get(this.#k(Math.floor((x + i) / CH), Math.floor((y + j) / CH))); if (s) s.sujo = true; }
     }
-    const vis = L.setoresVisiveis(), quer = new Set();
+    // setores que a câmera vê (pela pegada 3D, não pelo 2D)
+    const vw = v.view, quer = new Set();
     let falta = null, fd = Infinity;
     const ax = v.alvo.x / CPX, az = v.alvo.z / CPX;
-    for (const c of vis) {
-      const k = this.#k(c.cx, c.cy); quer.add(k);
-      let s = this.mapa.get(k);
-      const arte = L.arteDoSetor(c.cx, c.cy);
-      if (s && (s.sujo || s.arte !== arte) && arte) { s.tex.image = arte; s.arte = arte; s.tex.needsUpdate = true; if (s.sujo) { s.sujo = false; this.#refazer(s); } }
-      if (!s && arte) { const d = Math.hypot(c.cx + 0.5 - ax, c.cy + 0.5 - az); if (d < fd) { fd = d; falta = c; } }
-      if (s) { s.visto = v.t; s.grupo.visible = true; }
+    if (vw) {
+      const sx0 = Math.max(0, Math.floor(vw.x0 / CPX)), sx1 = Math.min(L.nx - 1, Math.floor(vw.x1 / CPX));
+      const sy0 = Math.max(0, Math.floor(vw.y0 / CPX)), sy1 = Math.min(L.ny - 1, Math.floor(vw.y1 / CPX));
+      for (let sy = sy0; sy <= sy1; sy++) for (let sx = sx0; sx <= sx1; sx++) {
+        const k = this.#k(sx, sy); quer.add(k);
+        const s = this.mapa.get(k), d = Math.hypot(sx + 0.5 - ax, sy + 0.5 - az);
+        const arte = L.arteDoSetor(sx, sy);
+        if (s) {
+          if (arte && s.arte !== arte) { if (s.tex === this.texVazia) s.tex = texDe(arte, true, true); else { s.tex.image = arte; s.tex.needsUpdate = true; } s.arte = arte; s.matAgua.uniforms.chao.value = s.tex; s.matAgua.uniforms.temChao.value = 1; }
+          if (s.sujo) { s.sujo = false; this.#refazer(s); }
+          s.visto = v.t; s.grupo.visible = true;
+          // nível de detalhe: grama só perto, arbustos um pouco mais longe
+          if (s.grama) s.grama.grupo.visible = d < 1.7;
+          if (s.arbustos) s.arbustos.grupo.visible = d < 2.4;
+        } else if (d < fd) { fd = d; falta = { cx: sx, cy: sy }; }
+      }
     }
     // um setor novo por quadro (dois se nada estiver pronto ainda)
     if (falta) this.#montar(falta.cx, falta.cy);
@@ -154,19 +164,20 @@ export class Setores {
   #k(sx, sy) { return sx + sy * 4096; }
 
   #montar(sx, sy) {
-    const arte = this.L.arteDoSetor(sx, sy); if (!arte) return;
-    const tex = texDe(arte, true, true); tex.anisotropy = 4;
+    const arte = this.L.arteDoSetor(sx, sy);
+    const tex = arte ? texDe(arte, true, true) : this.texVazia ??= new THREE.DataTexture(new Uint8Array(4), 1, 1); if (arte) tex.anisotropy = 4;
     const s = { sx, sy, arte, tex, grupo: new THREE.Group(), visto: this.v.t };
     const A = this.v.amb;
     if (A) s.matChao = this.v.curvar(A.materialChao(sx, sy, { lados: THREE.DoubleSide })); // chão pintado da ambientação (não a arte 2D)
     else { s.matChao = comNuvens(new THREE.MeshLambertMaterial({ map: tex, vertexColors: true, alphaTest: 0.5, side: THREE.DoubleSide }), this.v); s.matChao.customProgramCacheKey = () => 'mt-chao'; }
     s.matAgua = this.matAguaBase.clone();
-    Object.assign(s.matAgua.uniforms, this.matAguaBase.uniforms, { chao: { value: tex } });
+    Object.assign(s.matAgua.uniforms, this.matAguaBase.uniforms, { chao: { value: tex }, temChao: { value: arte ? 1 : 0 } });
     this.grupo.add(s.grupo);
     this.mapa.set(this.#k(sx, sy), s);
     this.#refazer(s);
   }
   #refazer(s) {
+    this.nRefaz = (this.nRefaz ?? 0) + 1;
     for (const m of [s.chao, s.agua, s.mato]) if (m) { s.grupo.remove(m); m.geometry.dispose(); }
     s.chao = s.agua = s.mato = null;
     const A = this.v.amb, L = this.L, R = this.v.relevo;
@@ -198,7 +209,7 @@ export class Setores {
     for (const m of [s.chao, s.agua, s.mato, s.paredes]) m?.geometry.dispose();
     this.modelos.liberar(s);
     if (this.v.amb) this.v.amb.liberarSetor(s.matChao, s.grama, s.arbustos); else s.matChao.dispose();
-    s.tex.dispose(); s.matAgua.dispose();
+    if (s.tex !== this.texVazia) s.tex.dispose(); s.matAgua.dispose();
   }
 
   // ---------- alturas da superfície (com paredes) ----------

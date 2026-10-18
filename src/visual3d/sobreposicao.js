@@ -16,7 +16,7 @@ export class Sobreposicao {
     this.rt = RenderTexture.create({ width: 512, height: 512 });
     this.rt.source.scaleMode = 'linear';
     // malha em grade: cada vértice vai para a projeção 3D do seu ponto no chão (com perspectiva e mundo curvo)
-    this.N = 13; this.mRT = new Matrix(); this.mTela = new Matrix();
+    this.N = 9; this.mRT = new Matrix(); this.mTela = new Matrix();
     this.mesh = new MeshPlane({ texture: this.rt, verticesX: this.N, verticesY: this.N });
     app.stage.addChildAt(this.mesh, Math.max(0, app.stage.getChildIndex(g.world)));
     this.temTela = new WeakMap(); // filho de ents -> tem algo que não é sprite (barra, nome, balão)?

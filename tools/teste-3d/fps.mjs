@@ -11,6 +11,7 @@ try {
   if (mobile) await P.raw('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
   await until(() => P.ev('!!(window.game && game.ui && game.ui.state === "play")'), 90000, 300);
   await sleep(3000);
+  if (process.env.Q) { await P.ev(`game.quality.setMode('${process.env.Q}'), 1`); await sleep(2500); }
   await P.raw('Emulation.setCPUThrottlingRate', { rate: +lent });
   // anda em volta da vila e pela Rota 1 (posição mexida direto; a câmera e o mundo seguem)
   await P.ev(`(() => { const g = game, p = g.player, x0 = p.x, y0 = p.y; let t = 0;
@@ -21,7 +22,7 @@ try {
   await sleep(+seg * 1000);
   const r = await P.ev(`(() => { const F = window.__fps, dt = (performance.now() - F.t0) / 1000, q = F.piores.slice(5).sort((a, b) => a - b);
     return { fps: +(F.n / dt).toFixed(1), p50: +q[Math.floor(q.length * 0.5)].toFixed(1), p95: +q[Math.floor(q.length * 0.95)].toFixed(1), pior: +q[q.length - 1].toFixed(1), qualidade: game.quality.level, dpr: devicePixelRatio,
-      hidden: document.hidden, ms3d: window.v3d ? v3d.medir() : null, sobre: window.v3d ? (() => { const f = v3d.sobre.pf; return f ? { rt: +(f.rt / f.n).toFixed(2), tela: +(f.tela / f.n).toFixed(2) } : null; })() : null, draw: window.v3d ? v3d.ultInfo.calls : null, tri: window.v3d ? v3d.ultInfo.tri : null, prog: window.v3d ? v3d.renderer.info.programs.length : null }; })()`);
+      hidden: document.hidden, ms3d: window.v3d ? v3d.medir() : null, sobre: window.v3d ? (() => { const f = v3d.sobre.pf; return f ? { rt: +(f.rt / f.n).toFixed(2), tela: +(f.tela / f.n).toFixed(2) } : null; })() : null, draw: window.v3d ? v3d.ultInfo.calls : null, tri: window.v3d ? v3d.ultInfo.tri : null, prog: window.v3d ? v3d.renderer.info.programs.length : null, refaz: window.v3d ? v3d.setores.nRefaz : null, setores: window.v3d ? v3d.setores.mapa.size : null }; })()`);
   console.log(JSON.stringify({ qs, lentidao: +lent, celular: mobile, ...r }));
   const errs = P.logs.filter((l) => /EXC|rror/.test(l)); if (errs.length) console.log('console:', errs.slice(0, 8).join('\n'));
 } finally { b.kill(); }

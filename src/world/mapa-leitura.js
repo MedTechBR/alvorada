@@ -62,6 +62,8 @@ export class MapaLeitura {
   get ny() { return this.map.CHh; }
   pintarChao(img, ox, oy, x0, y0, w, h) { renderTiles(this.map, img, ox, oy, x0, y0, w, h); }
   cull(view) { this.map.cullChunks(view); }
+  // o 2D deixa de pintar a arte do chão (o 3D tem o próprio terreno); objetos, mato e lógica seguem iguais
+  semArte(on = true) { this.map.semArte = on; }
   mudancas() { const v = this.trocas; this.trocas = []; return v; }
   // água animada do 2D (para o 3D usar a mesma arte)
   get T() { return T; }

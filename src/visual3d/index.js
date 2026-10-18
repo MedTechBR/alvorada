@@ -19,13 +19,14 @@ import { CameraDinamica } from './camera.js';
 // A câmera olha para o norte, inclinada; não gira (as direções dos sprites PMD continuam valendo).
 export const INCLINACAO = 44 * Math.PI / 180; // acima do horizonte (46° a partir da vertical); o mundo curvo mostra o céu no alto
 const FOV = 34;
-const LONGE = 48 * 16; // até onde o chão é montado à frente da câmera (px de mundo)
+const LONGE = 38 * 16; // até onde o chão é montado à frente da câmera (px de mundo)
 
 export class Visual3D {
   constructor(g) {
     this.g = g; this.touch = IS_TOUCH;
     this.L = new MapaLeitura(g.map);
     this.relevo = new Relevo(this.L);
+    if (new URLSearchParams(location.search).get('amb') !== '0') this.L.semArte(true);
     this.versao = this.L.versao;
     const r = this.renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance', stencil: false, alpha: false });
     r.setPixelRatio(this.#dpr());
@@ -122,7 +123,11 @@ export class Visual3D {
     const v = this.pegada(this.focoH, 1.08);
     v.y1 += 48; v.y0 -= 64; // objetos altos ao norte e ao sul da tela
     this.view = v;
-    this.L.cull(v);
+    // o 2D só monta o que está perto (sprites dos objetos, mato, luzes, bichinhos): a área de uma tela do 2D
+    // em volta do foco. O chão 3D distante não precisa da arte 2D (os setores 3D se montam sozinhos).
+    const z = Math.max(1, this.g.zoom || 3), hw = innerWidth / 2 / z + 96, hh = innerHeight / 2 / z + 96, a = this.alvo;
+    this.perto = { x0: Math.max(v.x0, a.x - hw), x1: Math.min(v.x1, a.x + hw), y0: Math.max(v.y0, a.z - hh * 1.4), y1: Math.min(v.y1, a.z + hh) };
+    this.L.cull(this.perto);
   }
   #novoMundo() { this.versao = this.L.versao; this.relevo.limpar(); this.setores.limpar(); }
 
