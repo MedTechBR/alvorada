@@ -73,7 +73,7 @@ const arvores = [];
 function arvore(tx, ty, k = 1) {
   const x = tx * 16 + 8, z = ty * 16 + 8, g = new THREE.Group(); objetos.add(g);
   caixa(6 * k, 22 * k, 6 * k, 0x6a4a2e, x, 0, z, g);
-  const verdes = [0x2f5a24, 0x3a6a2a, 0x2a5020, 0x447a30];
+  const verdes = [0x4a8a32, 0x5a9a38, 0x427e2c, 0x66a43e];
   const R = (i) => hash(tx * 7 + i, ty * 3, 9);
   // copa em blocos arredondados (estilo voxel da referência)
   const blocos = [[0, 30, 0, 30, 20, 28], [-9, 24, 4, 18, 14, 18], [9, 26, 2, 18, 16, 18], [0, 42, -2, 22, 12, 20], [-4, 22, 10, 16, 10, 12]];

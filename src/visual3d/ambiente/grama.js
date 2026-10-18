@@ -147,7 +147,7 @@ export class Grama {
         const n = Math.round((cam === CAMADA.MANGUE ? 3 : 6) * dens);
         for (let i = 0; i < n; i++) tufo(px + hash(x, y, i * 2 + 200) * 16, pz + hash(x, y, i * 2 + 201) * 16, tipo, 0.8 + hash(x, y, i + 300) * 0.5, i + 50);
         // tufos maiores aqui e ali (o campo não é um tapete)
-        if (hash(x, y, 77) < 0.22 * dens + ext) for (let i = 0; i < 5; i++) tufo(px + 4 + hash(x, y, i + 400) * 8, pz + 4 + hash(x, y, i + 410) * 8, 'capim', 0.7 + hash(x, y, i + 420) * 0.4, i + 90);
+        if (hash(x, y, 77) < 0.12 * dens + ext) for (let i = 0; i < 5; i++) tufo(px + 4 + hash(x, y, i + 400) * 8, pz + 4 + hash(x, y, i + 410) * 8, 'capim', 0.7 + hash(x, y, i + 420) * 0.4, i + 90);
       }
       if (borda || ext > 0) {
         const n = Math.round((borda ? 7 : 0) * Math.max(0.5, dens) + ext * 8);
