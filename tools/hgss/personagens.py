@@ -26,7 +26,7 @@ SAIDA = os.path.join(RAIZ, 'assets', 'hgss', 'personagens')
 # Nosso `look` (src/sprites/charart.js PRESETS, src/sprites/npc.js LOOKS e o elenco) -> id do sprite parecido
 LOOKS = {
     'menino': 'frlg_trainer', 'menina': 'frlg_trainer_green',
-    'professor': 'frlg_oak', 'prof': 'frlg_oak', 'mae': 'npc_126_mom', 'mom': 'npc_126_mom',
+    'professor': 'npc_136_prof_oak', 'prof': 'npc_136_prof_oak', 'mae': 'frlg_mom', 'mom': 'frlg_mom',
     'rival': 'frlg_rival', 'treinador': 'npc_023_youngster', 'treinadora': 'npc_002_ace_trainer_f',
     'montanhista': 'npc_046_hiker', 'hiker': 'npc_046_hiker',
     'youngster': 'frlg_youngster', 'bugcatcher': 'frlg_bug_catcher', 'leader': 'frlg_brock',
