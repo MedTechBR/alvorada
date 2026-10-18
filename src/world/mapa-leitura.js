@@ -43,6 +43,7 @@ export class MapaLeitura {
   get h() { return this.map.h; }
   get externoH() { return this.map.outdoorH ?? this.map.h; }
   bloco(x, y) { return this.map.at(x, y); }
+  ocupado(x, y) { return x >= 0 && y >= 0 && x < this.map.w && y < this.map.h && this.map.block[x + y * this.map.w] === 1; }
   get tiles() { return this.map.tiles; }
   catalogo(kind) { return KINDS[kind]; }
   get interiores() { return this.map.interiors; }

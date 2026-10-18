@@ -7,13 +7,14 @@ import { Sobreposicao } from './sobreposicao.js';
 import { Ceu } from './ceu.js';
 import { Pos } from './pos.js';
 import { IS_TOUCH } from '../engine/input.js';
+import { curvaY } from './curva.js';
 
 // Visual 3D (HD-2D, estilo HeartGold/SoulSilver). Só desenha: a lógica do jogo é a mesma do 2D.
 // Liga-se ao jogo com ?visual=3d (main.js). Desenho completo em docs/visual-3d.md.
 //
 // Eixos: x = x do mundo (leste), y = altura, z = y do mundo (sul). 1 unidade = 1 px de mundo (bloco = 16).
 // A câmera olha para o norte, inclinada; não gira (as direções dos sprites PMD continuam valendo).
-export const INCLINACAO = 50 * Math.PI / 180; // acima do horizonte (40° a partir da vertical)
+export const INCLINACAO = 44 * Math.PI / 180; // acima do horizonte (46° a partir da vertical); o mundo curvo mostra o céu no alto
 const FOV = 32;
 const LONGE = 34 * 16; // até onde o chão é montado à frente da câmera (px de mundo)
 
@@ -34,7 +35,7 @@ export class Visual3D {
     this.camera = new THREE.PerspectiveCamera(FOV, innerWidth / innerHeight, 16, 5000);
     this.alvo = new THREE.Vector3();
     this.cima = new THREE.Vector3(0, Math.cos(INCLINACAO), -Math.sin(INCLINACAO)); // "para cima" dos billboards
-    this.u = { tempo: { value: 0 }, luzSprite: { value: new THREE.Color(1, 1, 1) } }; // uniformes compartilhados
+    this.u = { tempo: { value: 0 }, luzSprite: { value: new THREE.Color(1, 1, 1) }, curva: { value: 0.0011 }, alvoZ: { value: 0 } }; // uniformes compartilhados
     this.ceu = new Ceu(this);
     this.setores = new Setores(this);
     this.espelho = new Espelho(this);
@@ -62,7 +63,7 @@ export class Visual3D {
     app.ticker.add(() => this.quadro(), null, -25);
   }
   // distância da câmera: um bloco no foco tem na tela o mesmo tamanho que tem no 2D com esse zoom
-  get distancia() { const z = Math.max(0.6, this.g.zoom || 3); return innerHeight / (2 * z * Math.tan(FOV * Math.PI / 360)) * 1.12; }
+  get distancia() { const z = Math.max(0.6, this.g.zoom || 3); return innerHeight / (2 * z * Math.tan(FOV * Math.PI / 360)) * 0.92; }
   altura(px, py) { return this.relevo.em(px, py); }
 
   #camera() {
@@ -75,6 +76,7 @@ export class Visual3D {
     let sx = 0, sy = 0;
     if (g.fx?.shake > 0) { const k = g.fx.shake * 6; sx = (Math.random() - 0.5) * k; sy = (Math.random() - 0.5) * k; }
     this.alvo.set(fx + sx, this.focoH, fy + sy);
+    this.u.alvoZ.value = this.alvo.z;
     const D = this.distancia;
     this.camera.position.set(this.alvo.x, this.alvo.y + D * Math.sin(INCLINACAO), this.alvo.z + D * Math.cos(INCLINACAO));
     this.camera.lookAt(this.alvo);
@@ -107,13 +109,14 @@ export class Visual3D {
 
   paraTela(x, y, h = 0) {
     const v = this.tmpV ??= new THREE.Vector3();
-    v.set(x, this.altura(x, y) + h, y).project(this.camera);
+    v.set(x, this.altura(x, y) + h + this.curvaY(y), y).project(this.camera);
     return { x: (v.x * 0.5 + 0.5) * innerWidth, y: (-v.y * 0.5 + 0.5) * innerHeight };
   }
+  curvaY(z) { return curvaY(this.u.curva.value, this.alvo.z, z); }
   // projeção de um ponto no plano horizontal de altura h (sem o relevo): para a sobreposição
   paraTelaPlano(x, y, h) {
     const v = this.tmpV ??= new THREE.Vector3();
-    v.set(x, h, y).project(this.camera);
+    v.set(x, h + this.curvaY(y), y).project(this.camera);
     return { x: (v.x * 0.5 + 0.5) * innerWidth, y: (-v.y * 0.5 + 0.5) * innerHeight };
   }
   // px de tela por px de mundo de um billboard em pé no ponto (x, y)

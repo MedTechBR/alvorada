@@ -1,4 +1,4 @@
-import { RenderTexture, PerspectiveMesh, Matrix } from 'pixi.js';
+import { RenderTexture, MeshPlane } from 'pixi.js';
 import { IS_TOUCH } from '../engine/input.js';
 
 // Sobreposição: o Pixi continua desenhando tudo o que o 2D desenha em coordenadas de mundo (golpes, choques no
@@ -15,9 +15,10 @@ export class Sobreposicao {
     this.max = IS_TOUCH ? 1024 : 2048;
     this.rt = RenderTexture.create({ width: 512, height: 512 });
     this.rt.source.scaleMode = 'linear';
-    this.mesh = new PerspectiveMesh({ texture: this.rt, verticesX: 16, verticesY: 16 });
+    // malha em grade: cada vértice vai para a projeção 3D do seu ponto no chão (com perspectiva e mundo curvo)
+    this.N = 18;
+    this.mesh = new MeshPlane({ texture: this.rt, verticesX: this.N, verticesY: this.N });
     app.stage.addChildAt(this.mesh, Math.max(0, app.stage.getChildIndex(g.world)));
-    this.mt = new Matrix();
     this.temTela = new WeakMap(); // filho de ents -> tem algo que não é sprite (barra, nome, balão)?
   }
   // algo dentro que o espelho não desenha (Graphics, Text)
@@ -48,12 +49,15 @@ export class Sobreposicao {
     R.render({ container: stage, target: this.rt, clear: true, clearColor: [0, 0, 0, 0] });
     for (const c of tela) c.visible = true;
     this.mesh.visible = vm;
-    // cantos: o retângulo da textura (só a parte usada) projetado no plano do chão
-    const fu = (ww * k) / this.rt.width, fv = (hh * k) / this.rt.height;
-    const q = (x, y) => v.paraTelaPlano(x, y, h);
-    const a = q(p.x0, p.y0), b = q(p.x1, p.y0), c = q(p.x1, p.y1), d = q(p.x0, p.y1);
-    this.mesh.setCorners(a.x, a.y, b.x, b.y, c.x, c.y, d.x, d.y);
-    this.#uvParcial(fu, fv);
+    // a grade: posição = projeção do ponto do chão; uv = a parte usada da textura
+    const fu = (ww * k) / this.rt.width, fv = (hh * k) / this.rt.height, N = this.N;
+    const geo = this.mesh.geometry, pb = geo.getBuffer('aPosition'), ub = geo.getBuffer('aUV'), P = pb.data, U = ub.data;
+    for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
+      const kk = (j * N + i) * 2, fx = i / (N - 1), fy = j / (N - 1);
+      const t = v.paraTelaPlano(p.x0 + ww * fx, p.y0 + hh * fy, h);
+      P[kk] = t.x; P[kk + 1] = t.y; U[kk] = fx * fu; U[kk + 1] = fy * fv;
+    }
+    pb.update(); ub.update();
     // 2) tela: textura projetada + barras/nomes/balões das entidades + HUD do Pixi
     W.position.set(0, 0); W.scale.set(1);
     const escondidos = [];
@@ -75,12 +79,6 @@ export class Sobreposicao {
     for (const c of [life?.shade, life?.lights, life?.clima?.tint, life?.masmorra?.lm?.sprite, g.mount?.tintOver]) if (c && c.visible) { c.visible = false; out.push(c); }
     void stage;
     return out;
-  }
-  // só a parte usada da textura vai para a malha
-  #uvParcial(fu, fv) {
-    const buf = this.mesh.geometry.getBuffer('aUV'), uvs = buf.data, n = 16;
-    for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) { const k = (j * n + i) * 2; uvs[k] = (i / (n - 1)) * fu; uvs[k + 1] = (j / (n - 1)) * fv; }
-    buf.update();
   }
   // filhos de ents com barra/nome/balão: vão para o ponto projetado, em escala de tela; sprites ficam de fora
   #entidadesNaTela(ents) {

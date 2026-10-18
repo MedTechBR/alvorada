@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { CURVA_GLSL } from './curva.js';
 
 // Espelho: redesenha em 3D os sprites que o jogo monta no Pixi, sem mexer na lógica deles.
 // - game.ents (treinador, Pokémon, NPCs, outros jogadores, montarias, objetos sem modelo): billboards em pé no
@@ -13,11 +14,14 @@ const lin = new Float32Array(256); for (let i = 0; i < 256; i++) lin[i] = Math.p
 
 const VERT = `attribute vec4 aCor; attribute vec3 aBase; attribute float aBranco;
   uniform float uPlano; varying vec2 vUv; varying vec4 vCor; varying float vBranco;
+  ${CURVA_GLSL}
   #include <fog_pars_vertex>
   void main(){ vUv = uv; vCor = aCor; vBranco = aBranco;
-    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+    vec3 cb = curvar(aBase); vec3 pw = position + vec3(0.0, cb.y - aBase.y, 0.0); // o sprite inteiro desce junto com o pé
+    if (uPlano > 0.5) pw = curvar(position);
+    vec4 mvPosition = viewMatrix * vec4(pw, 1.0);
     gl_Position = projectionMatrix * mvPosition;
-    if (uPlano < 0.5) { vec4 b = projectionMatrix * modelViewMatrix * vec4(aBase, 1.0); gl_Position.z = (b.z / b.w - 0.0006) * gl_Position.w; }
+    if (uPlano < 0.5) { vec4 b = projectionMatrix * viewMatrix * vec4(cb, 1.0); gl_Position.z = (b.z / b.w - 0.0006) * gl_Position.w; }
     #include <fog_vertex>
   }`;
 const FRAG = `uniform sampler2D map; uniform vec3 luz; uniform float uCorte; varying vec2 vUv; varying vec4 vCor; varying float vBranco;
@@ -42,6 +46,8 @@ class Lote {
       side: THREE.DoubleSide,
     });
     this.mat.uniforms.map = { value: tex };
+    this.mat.uniforms.uCurva = esp.v.u.curva; this.mat.uniforms.uAlvoZ = esp.v.u.alvoZ;
+    this.mat.map = tex; this.mat.alphaTest = 0.5; // o mapa de sombra copia daqui o recorte pela transparência
     this.mat.uniforms.luz = modo === MODOS.aditivo ? { value: new THREE.Color(1, 1, 1) } : esp.v.u.luzSprite;
     this.geo = new THREE.BufferGeometry();
     this.mesh = new THREE.Mesh(this.geo, this.mat);

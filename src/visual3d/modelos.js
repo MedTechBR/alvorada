@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { SPR } from '../world/art.js';
 import { criarAtlas, AtlasDinamico } from './atlas.js';
 import { comNuvens } from './ceu.js';
+import { curvarMaterial } from './curva.js';
 
 // Modelos low-poly gerados por código, no estilo HD-2D do protótipo (blocos meio voxel, pixel art nas faces),
 // sem copiar modelo nenhum. Por setor, tudo o que é estático vira uma malha só (um draw call):
@@ -154,7 +155,7 @@ export class Modelos {
     gr.addColorStop(0, 'rgba(0,0,0,0.5)'); gr.addColorStop(0.5, 'rgba(0,0,0,0.3)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
     x.fillStyle = gr; x.fillRect(0, 0, 64, 64);
     const bt = new THREE.CanvasTexture(c); bt.colorSpace = THREE.SRGBColorSpace;
-    this.matSombra = new THREE.MeshBasicMaterial({ map: bt, transparent: true, depthWrite: false, color: 0x1a2030 });
+    this.matSombra = curvarMaterial(new THREE.MeshBasicMaterial({ map: bt, transparent: true, depthWrite: false, color: 0x1a2030 }), v);
     this.donos = new Set();
     this.kit = null; // kit de modelos (ramo modelos3d): usarKit(kit) quando entrar
   }

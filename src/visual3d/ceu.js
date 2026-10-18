@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { curvarMaterial } from './curva.js';
 
 // Céu, sol e luz do dia (pela hora do relógio do jogo, game.mundo.hour), névoa de distância e luz dos interiores.
 // Os billboards não usam luzes do three: recebem uma cor só (u.luzSprite) calculada aqui, para casar com o cenário.
@@ -49,7 +50,7 @@ export function comNuvens(m, v, extra) {
         reflectedLight.directDiffuse *= sombraN;`);
     extra?.(sh);
   };
-  return m;
+  return curvarMaterial(m, v);
 }
 
 export class Ceu {

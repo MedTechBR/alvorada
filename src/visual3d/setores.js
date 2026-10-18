@@ -5,6 +5,7 @@ import { TALL_SNOW, TALL_DRY, TALL_REED } from '../world/arte-biomas.js';
 import { PAREDE } from './relevo.js';
 import { Modelos } from './modelos.js';
 import { comNuvens } from './ceu.js';
+import { CURVA_GLSL } from './curva.js';
 
 // Setores do 3D (16x16 blocos, os mesmos do 2D): cada um vira poucas malhas mescladas:
 //   chão com relevo (a arte do 2D como textura) + faces de penhasco e paredes,
@@ -36,12 +37,31 @@ function aguaTira() {
 // atlas do mato alto: 5 tipos (mato, milho, neve, seco, junco), quadro parado de cada, em células de 32x32 (pé no fundo)
 const MATOS = [TALL, CORN, TALL_SNOW, TALL_DRY, TALL_REED];
 function matoAtlas() {
-  const c = document.createElement('canvas'); c.width = 32 * MATOS.length; c.height = 32;
+  const c = document.createElement('canvas'); c.width = 32 * 11; c.height = 32;
   const x = c.getContext('2d'); x.imageSmoothingEnabled = false;
   const tam = [];
   MATOS.forEach((set, i) => { const t = set[0], f = t.frame; x.drawImage(fonte(t), f.x, f.y, f.width, f.height, i * 32 + 16 - Math.floor(f.width / 2), 32 - f.height, f.width, f.height); tam.push([f.width, f.height]); });
+  // capim baixo (2 tipos) e florzinhas (branca, amarela, rosa, azul), desenhados aqui em pixel art
+  let sd = 7; const r = () => ((sd = (sd * 16807) % 2147483647) / 2147483647);
+  const capim = (ci, alt) => {
+    const X = ci * 32, cores = ['#3e7a2c', '#5a9a38', '#7ab848', '#a8d860'];
+    for (let k = 0; k < 9; k++) {
+      const bx = X + 9 + Math.floor(r() * 14), h = alt - 3 + Math.floor(r() * 5), lean = r() < 0.5 ? -1 : 1;
+      for (let y = 0; y < h; y++) { x.fillStyle = cores[Math.min(3, Math.floor((y / h) * 3.2 + r() * 0.6))]; x.fillRect(bx + Math.round(lean * (y / h) * (y / h) * 3), 31 - y, 1, 1); }
+    }
+    tam.push([16, alt + 2]);
+  };
+  capim(5, 9); capim(6, 13);
+  const flor = (ci, cor, miolo) => {
+    const X = ci * 32 + 16;
+    x.fillStyle = '#4a8a34'; x.fillRect(X, 26, 1, 6); x.fillRect(X - 3, 29, 1, 3); x.fillRect(X + 3, 28, 1, 4);
+    for (const [dx, dy] of [[0, 23], [-3, 26], [3, 25]]) { x.fillStyle = cor; x.fillRect(X + dx - 1, dy, 3, 3); x.fillStyle = miolo; x.fillRect(X + dx, dy + 1, 1, 1); }
+    tam.push([10, 10]);
+  };
+  flor(7, '#ffffff', '#f2c94c'); flor(8, '#ffd84a', '#c87a1a'); flor(9, '#ff8ab0', '#ffffff'); flor(10, '#8ab8ff', '#ffffff');
   return { tex: texDe(c, true, false), tam };
 }
+const GRAMA = new Uint8Array(256); for (const t of [TILE.GRASS, TILE.GRASS2, TILE.FLOWERS, TILE.DARK, TILE.GOLD]) GRAMA[t] = 1;
 const MATO_DE = { [TILE.TALL]: 0, [TILE.CORN]: 1, [TILE.TALLSNOW]: 2, [TILE.TALLDRY]: 3, [TILE.REED]: 4 };
 
 export class Setores {
@@ -55,8 +75,9 @@ export class Setores {
     this.matAguaBase = new THREE.ShaderMaterial({
       uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, { chao: { value: null } }]),
       vertexShader: `varying vec2 vUv; varying vec2 vW; varying vec3 vVista;
+        ${CURVA_GLSL}
         #include <fog_pars_vertex>
-        void main(){ vUv = uv; vec4 wp = modelMatrix * vec4(position,1.0); vW = wp.xz; vVista = cameraPosition - wp.xyz;
+        void main(){ vUv = uv; vec4 wp = modelMatrix * vec4(position,1.0); vW = wp.xz; wp.xyz = curvar(wp.xyz); vVista = cameraPosition - wp.xyz;
           vec4 mvPosition = viewMatrix * wp; gl_Position = projectionMatrix * mvPosition;
           #include <fog_vertex>
         }`,
@@ -86,7 +107,7 @@ export class Setores {
         }`,
       fog: true,
     });
-    Object.assign(this.matAguaBase.uniforms, { tira: this.uAgua.tira, ceu: this.uAgua.ceu, tempo: u.tempo, luz: u.luzSprite, solDir: { value: new THREE.Vector3(0, 1, 0) } });
+    Object.assign(this.matAguaBase.uniforms, { uCurva: v.u.curva, uAlvoZ: v.u.alvoZ, tira: this.uAgua.tira, ceu: this.uAgua.ceu, tempo: u.tempo, luz: u.luzSprite, solDir: { value: new THREE.Vector3(0, 1, 0) } });
     // mato alto: tufos em pé, voltados para a câmera, balançando com o vento; quem passa sacode (aBalanço)
     this.mato = matoAtlas();
     this.matMato = comNuvens(new THREE.MeshLambertMaterial({ map: this.mato.tex, vertexColors: true, alphaTest: 0.5, side: THREE.DoubleSide }), v, (sh) => {
@@ -259,7 +280,7 @@ export class Setores {
       linhas.forEach(([dx, fz, esc], q) => {
         const bx = x * 16 + 8 + dx + (q === 1 ? 2 : 0), bz = y * 16 + fz * 16, h = R.em(bx, bz) - 0.5;
         const w = fw * esc, hh = fh * esc, n = pos.length / 3;
-        const u0 = (m * 32 + 16 - fw / 2) / (32 * MATOS.length), u1 = (m * 32 + 16 + fw / 2) / (32 * MATOS.length), v0 = (32 - fh) / 32, v1 = 1;
+        const u0 = (m * 32 + 16 - fw / 2) / (32 * 11), u1 = (m * 32 + 16 + fw / 2) / (32 * 11), v0 = (32 - fh) / 32, v1 = 1;
         // pé no chão; o topo sobe na direção "cima" da câmera (como os billboards)
         pos.push(bx - w / 2, h, bz, bx + w / 2, h, bz, bx - w / 2, h + hh * cy, bz + hh * cz, bx + w / 2, h + hh * cy, bz + hh * cz);
         uv.push(u0, v1, u1, v1, u0, v0, u1, v0);
@@ -270,6 +291,29 @@ export class Setores {
       });
       tiles.set(x + y * L.w, [first, pos.length / 3 - first]);
     }
+    // capim baixo e florzinhas na grama (mais denso na beira das trilhas e da areia): quebra o recorte do 2D
+    const n0 = pos.length / 3;
+    for (let j = 0; j < CH; j++) for (let i = 0; i < CH; i++) {
+      const x = ox + i, y = oy + j; if (x >= L.w || y >= L.h) continue;
+      const t = L.bloco(x, y); if (!GRAMA[t] || L.ocupado(x, y)) continue;
+      let beira = 0; for (let b = -1; b <= 1; b++) for (let a = -1; a <= 1; a++) { const q = L.bloco(x + a, y + b); if (!GRAMA[q] && !MATO_DE[q] && MATO_DE[q] !== 0) beira++; }
+      const hsh = (k) => { let hh = (x * 374761393 + y * 668265263 + k * 1442695041) | 0; hh = (hh ^ (hh >>> 13)) * 1274126177; return ((hh ^ (hh >>> 16)) >>> 0) / 4294967295; };
+      const n = beira ? 3 + Math.floor(hsh(1) * 3) : hsh(2) < 0.45 ? 1 + Math.floor(hsh(3) * 2) : 0;
+      for (let q = 0; q < n; q++) {
+        const f = hsh(10 + q), m = f < 0.07 ? 7 + Math.floor(hsh(20 + q) * 4) : f < 0.55 ? 5 : 6;
+        const [fw, fh] = this.mato.tam[m];
+        const bx = x * 16 + 2 + hsh(30 + q) * 12, bz = y * 16 + 2 + hsh(40 + q) * 13, h = R.em(bx, bz) - 0.3, esc = 0.8 + hsh(50 + q) * 0.5;
+        const w = fw * esc, hh = fh * esc, k = pos.length / 3;
+        const u0 = (m * 32 + 16 - fw / 2) / (32 * 11), u1 = (m * 32 + 16 + fw / 2) / (32 * 11), v0 = (32 - fh) / 32;
+        pos.push(bx - w / 2, h, bz, bx + w / 2, h, bz, bx - w / 2, h + hh * cy, bz + hh * cz, bx + w / 2, h + hh * cy, bz + hh * cz);
+        uv.push(u0, 1, u1, 1, u0, v0, u1, v0);
+        const tom = 0.85 + hsh(60 + q) * 0.3, dk = t === TILE.DARK ? 0.7 : 1;
+        for (let r = 0; r < 4; r++) { cor.push(tom * dk, tom * dk, tom * (m >= 7 ? 1 : 0.9) * dk); fase.push(bx * 0.05 + bz * 0.03); bal.push(0); }
+        topo.push(0, 0, 0.6, 0.6);
+        idx.push(k, k + 1, k + 2, k + 1, k + 3, k + 2);
+      }
+    }
+    void n0;
     if (!idx.length) { s.matoTiles = null; return null; }
     s.matoTiles = tiles;
     const g = new THREE.BufferGeometry();
