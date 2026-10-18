@@ -17,7 +17,7 @@ const mem = (M, id) => (M.s.npcs[id] ??= {});
 
 // tem algo novo para dizer? (ícone "…" sobre a cabeça)
 export function novidadeNpc(M, id, def) {
-  const s = mem(M, id);
+  const s = M.s.npcs[id] ?? {}; // só lê (não cria memória para quem nunca conversou)
   if (def.presente && !s.p && M.cond(def.presente.requer)) return true;
   if (def.diario && s.d !== M.hoje() && M.cond(def.diario.requer)) return true;
   if (def.troca && (!s.t || def.troca.repetivel) && M.cond(def.troca.requer) && !s.tv) return true;
