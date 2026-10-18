@@ -1,4 +1,27 @@
 # ---------------------------------------------------------------- ÁREAS (ids do plano; a última que contém o ponto vence)
 def A(id, name, biome, rect, **kw): R.area(id, name, biome, rect=rect, **kw)
-for a in base['areas']:
-    A(a['id'], a['name'], a['biome'], a['rect'])
+NOMES = {a['id']: (a['name'], a['biome']) for a in base['areas']}
+def AA(id, rect): A(id, NOMES[id][0], NOMES[id][1], rect)
+# fundo: tudo cai numa rota (os ids das áreas grandes cobrem o retângulo todo, sem vazio)
+AA('rota14', [600, 200, 150, 70])
+AA('rota14', [600, 270, 22, 96])
+AA('rota20', [750, 200, 240, 60])
+AA('rota20', [750, 260, 80, 8])
+AA('mar_levante', [1140, 200, 60, 280])
+AA('canion_rio_seco', [606, 262, 224, 106])
+AA('fundo_canion', [680, 300, 115, 42])
+AA('rota20', [830, 262, 30, 40])
+AA('dunas_douradas', [852, 290, 214, 130])
+AA('cratera_estrela', [928, 328, 36, 36])
+AA('chapada_vermelha', [984, 200, 160, 54])
+AA('mangue_siri', [600, 366, 232, 114])
+AA('praia_levante', [832, 420, 268, 60])
+AA('praia_levante', [1066, 296, 74, 184])
+AA('oasis_buriti', [1066, 250, 74, 46])
+AA('cidade_buriti', [994, 250, 96, 48])
+AA('vila_mandacaru', [742, 208, 76, 52])
+AA('vila_siri', [684, 366, 64, 38])
+for a in R.areas: pass
+# tocas de luz (src/data/tocas.js explica) já foram registradas em R.tocas
+
+# ---------------------------------------------------------------- Ninhos de pouso: os 3 do ponto de partida já existem (spots ninho_*)

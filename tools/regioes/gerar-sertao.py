@@ -17,7 +17,7 @@ _i = base['ops'].index(PASSAGENS[0])
 OPS_PASSAGENS = base['ops'][_i:]
 
 exec(open(os.path.join(AQUI, 'sertao-terreno.py')).read())
-for parte in ('sertao-cidades.py', 'sertao-ruinas.py', 'sertao-rotas.py', 'sertao-final.py'):
+for parte in ('sertao-cidades.py', 'sertao-ruinas.py', 'sertao-rotas.py', 'sertao-missoes.py', 'sertao-final.py'):
     p = os.path.join(AQUI, parte)
     if os.path.exists(p): exec(open(p).read())
 
