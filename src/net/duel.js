@@ -7,7 +7,10 @@ import { validateMon, monWire } from './validate.js';
 //   -> cada um escolhe até 3 e manda 'd-team' ao árbitro -> 'd-start' (arena, equipes validadas)
 //   -> contagem 3, 2, 1 -> luta em tempo real no próprio mapa -> 'd-end' -> resultado / revanche.
 // Durante a luta, seus golpes encostando no Pokémon rival viram 'd-claim'; o HP só muda quando o
-// árbitro responde 'd-hit' (src/net/arbiter.js). No PvP não há XP e ninguém perde nada: a equipe do
+// árbitro responde 'd-hit' (src/net/arbiter.js).
+// O árbitro roda em quem ACEITOU o desafio (d.ref), não no anfitrião: no canal do mundo o anfitrião pode ser um
+// estranho que sai a qualquer hora, e um duelo não deve cair porque um terceiro fechou a aba. Se o anfitrião do
+// canal muda no meio da luta, as mensagens param por uns segundos e voltam sozinhas (os ids não mudam). No PvP não há XP e ninguém perde nada: a equipe do
 // duelo é uma cópia curada, e a sua equipe volta como estava no fim.
 
 const newId = () => Math.random().toString(36).slice(2, 10);
@@ -30,16 +33,18 @@ export class Duel {
   }
   handle(type, data, from) {
     const net = this.net, g = this.g;
+    if (typeof data.duel !== 'string' || data.duel.length > 16) return;
     if (type === 'd-req') {
       if (this.busy || net.trade.busy) { net.send('d-ans', { duel: data.duel, ok: false, why: 'ocupado' }, from); return; }
       this.incoming = { duel: String(data.duel), foe: from };
       net.ui.ask(`${net.nameOf(from)} ${data.rematch ? 'quer revanche!' : 'te desafiou para um duelo!'}`, 'Aceitar', 'Recusar', (ok) => {
         if (this.incoming?.duel !== String(data.duel)) return;
         this.incoming = null;
+        if (!ok || !net.on || !net.room?.players.has(from)) { net.send('d-ans', { duel: data.duel, ok: false }, from); return; }
+        // eu sou o árbitro: abro o duelo no meu árbitro antes de responder (a equipe do rival já chega nele)
+        this.d = { id: String(data.duel), foe: from, phase: 'pick', ref: net.selfId };
+        net.toArbiter(net.selfId, 'd-open', { duel: String(data.duel), a: from });
         net.send('d-ans', { duel: data.duel, ok }, from);
-        if (!ok) return;
-        this.d = { id: String(data.duel), foe: from, phase: 'pick' };
-        net.toHost('d-open', { duel: data.duel, a: from });
         this.#pick();
       });
       return;
@@ -48,11 +53,12 @@ export class Duel {
       if (this.pending?.duel !== data.duel || this.pending.foe !== from) return;
       clearTimeout(this.pending.t); this.pending = null;
       if (!data.ok) { net.ui.toast(data.why === 'ocupado' ? `${net.nameOf(from)} está ocupado.` : `${net.nameOf(from)} recusou o duelo.`); return; }
-      this.d = { id: data.duel, foe: from, phase: 'pick' };
+      this.d = { id: data.duel, foe: from, phase: 'pick', ref: from }; // o árbitro é quem aceitou
       this.#pick();
       return;
     }
     if (!this.d || data.duel !== this.d.id) return;
+    if (from !== this.d.ref) return; // resultado de duelo só vale vindo do árbitro deste duelo
     if (type === 'd-bad') { net.ui.toast('Equipe recusada: ' + data.why); this.#pick(); return; }
     if (type === 'd-start') return this.#start(data);
     if (type === 'd-hit') return this.#hit(data);
@@ -64,13 +70,13 @@ export class Duel {
     net.ui.pickTeam(this.g.party, (idxs) => {
       if (!this.d || this.d.phase !== 'pick') return;
       if (!idxs) { this.forfeit(); return; }
-      net.toHost('d-team', { duel: this.d.id, team: idxs.map((i) => monWire(this.g.party[i])) });
+      net.toArbiter(this.d.ref, 'd-team', { duel: this.d.id, team: idxs.map((i) => monWire(this.g.party[i])) });
       net.ui.toast('Equipe enviada. Esperando o rival…');
     });
   }
   forfeit() {
     if (!this.d) return;
-    this.net.toHost('d-forfeit', { duel: this.d.id });
+    this.net.toArbiter(this.d.ref, 'd-forfeit', { duel: this.d.id });
     if (this.d.phase === 'pick') { this.d = null; this.net.ui.closePick?.(); }
   }
 
@@ -131,7 +137,7 @@ export class Duel {
       clamp(l, 6);
       // qualquer Pokémon que entrar em campo no duelo (Tab, ou depois de um desmaio) é de duelo
       if (!l.pvp) l.pvp = true;
-      if (d.announced !== l.mon.uid && l.alive) { d.announced = l.mon.uid; this.net.toHost('d-active', { duel: d.id, uid: l.mon.uid }); }
+      if (d.announced !== l.mon.uid && l.alive) { d.announced = l.mon.uid; this.net.toArbiter(d.ref, 'd-active', { duel: d.id, uid: l.mon.uid }); }
     }
     const r = this.net.remotes.get(d.foe);
     if (r?.follower) clamp(r.follower, 0);
@@ -142,7 +148,7 @@ export class Duel {
     const d = this.d; if (!d || d.phase !== 'fight') return;
     if (user !== this.g.lead || t.remote !== d.foe || !t.alive) return; // só quem ataca pede
     const slot = user.mon.moves.indexOf(id); if (slot < 0) return;
-    this.net.toHost('d-claim', { duel: d.id, slot, tgt: t.mon.uid, dx: +dx.toFixed(3), dy: +dy.toFixed(3) });
+    this.net.toArbiter(d.ref, 'd-claim', { duel: d.id, slot, tgt: t.mon.uid, dx: +dx.toFixed(3), dy: +dy.toFixed(3) });
   }
 
   #ent(uid) {
@@ -242,6 +248,9 @@ export class Duel {
   }
   onPlayerGone(pid) {
     if (this.pending?.foe === pid) { clearTimeout(this.pending.t); this.pending = null; }
-    if (this.d?.foe === pid && this.d.phase === 'pick') { this.net.ui.toast(`${this.net.nameOf(pid)} saiu.`); this.abort(); }
+    const d = this.d; if (d?.foe !== pid) return;
+    if (d.phase === 'pick') { this.net.ui.toast(`${this.net.nameOf(pid)} saiu.`); this.abort(); return; }
+    // o rival era o árbitro e sumiu: não vem mais 'd-end', então o fim é decidido aqui (vitória por W.O.)
+    if (d.ref !== this.net.selfId && d.phase !== 'end') this.#end({ duel: d.id, winner: this.net.selfId, reason: 'caiu' });
   }
 }

@@ -82,6 +82,7 @@ export class Trade {
 
   handle(type, d, from) {
     const net = this.net;
+    if (typeof d.tid !== 'string' || d.tid.length > 16) return; // id de troca sempre curto (ninguém manda lixo gigante)
     if (type === 't-req') {
       if (this.busy || net.duel.busy) { net.send('t-ans', { tid: d.tid, ok: false, why: 'ocupado' }, from); return; }
       net.ui.ask(`${net.nameOf(from)} quer trocar Pokémon com você.`, 'Trocar', 'Agora não', (ok) => {

@@ -90,6 +90,8 @@ export class Minimap {
     const toS = (wx, wy) => { const dx = (wx / T - px) * zoom, dy = (wy / T - py) * zoom; const c = Math.cos(-a), s = Math.sin(-a); return [R + dx * c - dy * s, R + dx * s + dy * c]; };
     ctx.save(); ctx.beginPath(); ctx.arc(R, R, R, 0, 7); ctx.clip();
     for (const w of g.wilds ?? []) { if (!w.alive) continue; const [x, y] = toS(w.x, w.y); ctx.fillStyle = '#ff4a3a'; ctx.beginPath(); ctx.arc(x, y, 2.2 * this.dpr, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a0a0a'; ctx.lineWidth = this.dpr * 0.8; ctx.stroke(); }
+    // outros jogadores online no mesmo lugar (src/net/remotes.js): ponto amarelo de borda escura
+    for (const o of g.net?.remotes?.dots?.() ?? []) { const [x, y] = toS(o.x, o.y); ctx.globalAlpha = o.drop ? 0.45 : 1; ctx.fillStyle = '#ffd23a'; ctx.strokeStyle = '#3a2a00'; ctx.lineWidth = this.dpr; ctx.beginPath(); ctx.arc(x, y, 3 * this.dpr, 0, 7); ctx.fill(); ctx.stroke(); ctx.globalAlpha = 1; }
     if (g.lead?.alive) { const [x, y] = toS(g.lead.x, g.lead.y); ctx.fillStyle = '#4ac8ff'; ctx.beginPath(); ctx.arc(x, y, 2 * this.dpr, 0, 7); ctx.fill(); }
     // portas
     for (const w of this.map.warps) {
