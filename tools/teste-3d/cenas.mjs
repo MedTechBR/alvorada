@@ -3,7 +3,7 @@
 import { launch, open, sleep, until } from './chrome.mjs';
 import { writeFileSync, mkdirSync } from 'node:fs';
 const [qs = 'visual=3d', ...cenas] = process.argv.slice(2);
-const W = +(process.env.W ?? 1280), H = +(process.env.H ?? 720);
+const W = +(process.env.W ?? 1280), H = +(process.env.H ?? 720), CEL = process.env.CEL === '1';
 const out = new URL('../shots/', import.meta.url); mkdirSync(out, { recursive: true });
 const CENAS = {
   interior: `const s = g.map.spots['dentro_casa_jogador']; g.player.x = s.x; g.player.y = s.y + 24; g.cam.x = s.x; g.cam.y = s.y;`,
@@ -13,7 +13,8 @@ const CENAS = {
   batalha: `g.player.x = 300 * 16; g.player.y = 318 * 16; g.cam.x = g.player.x; g.cam.y = g.player.y;
     await g.spawnWild(); await g.spawnWild(); const w = g.wilds.find((q) => q.alive); if (w) { w.x = g.player.x + 70; w.y = g.player.y - 50; w.ai.state = 'aggro'; w.aggroTarget = g.player; }
     g.throwMon(0, g.player.x + 20, g.player.y - 10); await new Promise((r) => setTimeout(r, 1200));
-    for (let i = 0; i < 6; i++) { const L = g.lead; if (L && w) { L.cds = [0, 0, 0, 0]; g.combat.use(L, i % 2, w.x, w.y - 8); } await new Promise((r) => setTimeout(r, 260)); }`,
+    if (w) { w.mon.level = Math.max(w.mon.level, 30); w.mon.stats = null; w.mon.calc?.(); w.mon.hp = w.mon.stats?.hp ?? w.mon.hp; }
+    for (let i = 0; i < 3; i++) { const L = g.lead; if (L && w?.alive) { L.cds = [0, 0, 0, 0]; g.combat.use(L, 1, w.x, w.y - 8); } await new Promise((r) => setTimeout(r, 300)); }`,
   voar: `g.player.x = 297 * 16; g.player.y = 340 * 16; g.unlockMount('voar', { silent: true }); g.mount.fly?.(); await new Promise((r) => setTimeout(r, 2500)); g.player.y -= 40;`,
   correr: `g.player.x = 300 * 16; g.player.y = 318 * 16; g.unlockMount('correr', { silent: true }); await g.mount.call('correr');`,
   nadar: `const L = g.map; let best = null; const p0 = { x: 300, y: 330 }; for (let r = 1; r < 60 && !best; r++) for (let a = 0; a < 40 && !best; a++) { const x = Math.round(p0.x + Math.cos(a / 40 * 6.28) * r), y = Math.round(p0.y + Math.sin(a / 40 * 6.28) * r); if (L.at(x, y) === 4 && L.at(x, y - 3) === 4 && L.at(x + 3, y) === 4) best = { x, y }; }
@@ -34,14 +35,15 @@ const b = await launch();
 try {
   const P = await open(b, `http://127.0.0.1:${process.env.PORT ?? 8750}/index.html?teste=1&${qs}`, 'p');
   await P.raw('Page.enable'); await P.raw('Page.bringToFront'); await P.raw('Emulation.setFocusEmulationEnabled', { enabled: true });
-  await P.raw('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: false });
+  await P.raw('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: CEL ? 2 : 1, mobile: CEL });
+  if (CEL) { await P.raw('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 }); await P.raw('Emulation.setEmitTouchEventsForMouse', { enabled: true, configuration: 'mobile' }); await P.raw('Page.reload', { ignoreCache: false }); await sleep(1500); }
   await until(() => P.ev('!!(window.game && game.ui && game.ui.state === "play")'), 90000, 300);
   await sleep(2500);
   for (const c of cenas) {
     await P.ev(`(async () => { const g = game; ${CENAS[c] ?? ''} return 1; })()`).catch((e) => console.log('cena', c, e.message));
     await sleep(+(process.env.WAIT ?? 1800));
     const shot = await P.raw('Page.captureScreenshot', { format: 'jpeg', quality: 88 });
-    const f = new URL(`cena-${c}.jpg`, out); writeFileSync(f, Buffer.from(shot.result.data, 'base64')); console.log('ok', f.pathname);
+    const f = new URL(`cena-${c}${CEL ? '-cel' : ''}.jpg`, out); writeFileSync(f, Buffer.from(shot.result.data, 'base64')); console.log('ok', f.pathname);
   }
   const errs = P.logs.filter((l) => /EXC|rror/.test(l)); if (errs.length) console.log('console:', [...new Set(errs)].slice(0, 10).join('\n'));
 } finally { b.kill(); }

@@ -49,8 +49,26 @@ const CSS = `
 #hb .bt.trocar { right: 290px; bottom: 214px; padding: 6px 14px; border-radius: 10px; }
 body.hb-on #lead, body.hb-on #foe, body.hb-on #moves, body.hb-on #minimapa, body.hb-on #objective, body.hb-on #zoom, body.hb-on .area { visibility: hidden; }
 body.hb-on:not(.touch) #menu-btn { visibility: hidden; }
-body.touch #hb .pn { top: calc(58px + var(--st, 0px)); } body.touch #hb .vs { top: calc(66px + var(--st, 0px)); }
-@media (max-width: 760px) { #hb .pn { width: 44vw; padding: 5px 9px; gap: 8px; } #hb .rt { width: 40px; height: 40px; } #hb .nm { font-size: 15px; } #hb .vs { font-size: 22px; } }
+
+/* celular: os botões de golpe viram o losango do demo (círculos escuros com o aro da cor do tipo e a recarga),
+   Esquiva/Bola/Trocar ficam em coluna à esquerda do losango; painéis compactos abaixo do botão do menu */
+body.touch.hb-on .tb.move { width: 66px; height: 66px; font-size: 10px; color: #fff; background: radial-gradient(circle at 50% 38%, #3a3f52, #1c1e28 72%);
+  border: 3px solid var(--tc); box-shadow: 0 3px 8px rgba(0,0,0,.45); text-shadow: 0 1px 0 rgba(0,0,0,.6); }
+body.touch.hb-on .tb.move span { font-size: 9px; opacity: .85; margin-top: 26px; }
+body.touch.hb-on .tb.move i { display: none; }
+body.touch.hb-on .tb.move[data-slot="0"] { right: 70px; bottom: 140px; width: 66px; height: 66px; font-size: 10px; }
+body.touch.hb-on .tb.move[data-slot="1"] { right: 140px; bottom: 70px; }
+body.touch.hb-on .tb.move[data-slot="2"] { right: 0; bottom: 70px; }
+body.touch.hb-on .tb.move[data-slot="3"] { right: 70px; bottom: 0; }
+body.touch.hb-on .tb.move .hbcd { position: absolute; left: 0; right: 0; top: 14px; font: 900 20px 'Nunito', system-ui; text-align: center; z-index: 2; pointer-events: none; }
+body.touch.hb-on #t-dodge { right: 214px; bottom: 6px; } body.touch.hb-on #t-ball { right: 214px; bottom: 62px; } body.touch.hb-on #t-swap { right: 214px; bottom: 118px; } body.touch.hb-on #t-act { right: 4px; bottom: 150px; }
+body.touch.hb-on #t-alt { right: 268px; bottom: 6px; } body.touch.hb-on #t-jump { right: 268px; bottom: 62px; } body.touch.hb-on #t-mount { display: none; } body.touch.hb-on #t-power { right: 268px; bottom: 118px; }
+body.touch.hb-on #tbtns .tb.small { width: 46px; height: 46px; }
+body.touch #hb .losango, body.touch #hb .bt { display: none; }
+body.touch #hb .pn { width: 36vw; max-width: 330px; padding: 3px 8px; gap: 6px; border-radius: 9px; } body.touch #hb .rt { width: 30px; height: 30px; border-width: 2px; }
+body.touch #hb .nm { font-size: 12px; } body.touch #hb .lv { font-size: 11px; } body.touch #hb .tg { margin: 1px 0 2px; } body.touch #hb .tg i { font-size: 8px; padding: 0 5px; }
+body.touch #hb .bar { height: 5px; } body.touch #hb .ps { font-size: 9px; margin-top: 0; } body.touch #hb .vs { font-size: 16px; }
+body.touch #hb .pn.eu { left: calc(8px + var(--sl, 0px)); top: calc(6px + var(--st, 0px)); } body.touch #hb .pn.ele { right: calc(64px + var(--sr, 0px)); top: calc(6px + var(--st, 0px)); } body.touch #hb .vs { top: calc(12px + var(--st, 0px)); }
 `;
 
 export class HudBatalha {
@@ -114,6 +132,14 @@ export class HudBatalha {
       this.#set('g' + i, `${mv?.name}|${mv?.type}|${dmax}`, () => { el.style.setProperty('--c', c); el.querySelector('b').textContent = mv?.name ?? id; el.querySelector('small').textContent = (TYPE_PT[mv?.type] ?? '') + (mv?.power ? ' · ' + mv.power : ''); });
       this.#set('c' + i, cd > 0.05 ? cd.toFixed(1) : 'OK', (t) => { el.querySelector('em').textContent = t; el.classList.toggle('pronto', t === 'OK'); });
     });
+    if (IS_TOUCH) {
+      for (const b of document.querySelectorAll('.tb.move')) {
+        const i = +b.dataset.slot, cd = Math.max(0, lead.cds?.[i] ?? 0);
+        let e2 = b.querySelector('.hbcd'); if (!e2) { e2 = document.createElement('em'); e2.className = 'hbcd'; b.appendChild(e2); }
+        const tx = i < lead.mon.moves.length ? (cd > 0.05 ? cd.toFixed(1) : 'OK') : '';
+        if (e2.textContent !== tx) e2.textContent = tx;
+      }
+    }
     for (let i = lead.mon.moves.length; i < 4; i++) this.gps[i].style.visibility = 'hidden';
     for (let i = 0; i < lead.mon.moves.length; i++) this.gps[i].style.visibility = '';
   }
