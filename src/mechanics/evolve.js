@@ -27,7 +27,8 @@ function conditionsOk(mon, e, ctx) {
 }
 
 /**
- * Para qual espécie `mon` evolui agora? trigger: 'level' (subiu de nível) ou 'item' (usou ctx.item).
+ * Para qual espécie `mon` evolui agora? trigger: 'level' (subiu de nível), 'item' (usou ctx.item) ou
+ * 'trade' (foi trocado online; consumeHeld = gasta o item que segurava).
  * ctx: { item, time, weather, partyTypes, fullMoon }. Devolve { to, rule } ou null.
  */
 export function evolutionFor(mon, trigger = 'level', ctx = {}) {
@@ -38,6 +39,10 @@ export function evolutionFor(mon, trigger = 'level', ctx = {}) {
     if (!SPECIES[e.to]) continue;
     if (trigger === 'item') {
       if (!e.item || e.item !== item) continue;
+    } else if (trigger === 'trade') {
+      // troca de verdade (online): evolui como nos jogos; com item segurado quando a regra pede
+      if (!e.trade || (e.item !== 'linkingCord' && mon.item !== e.item)) continue;
+      return { to: e.to, rule: e, consumeHeld: e.item !== 'linkingCord' };
     } else if (e.item) continue;
     if (conditionsOk(mon, e, ctx)) return { to: e.to, rule: e };
   }

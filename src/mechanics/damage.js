@@ -13,6 +13,7 @@ import { SPECIES } from '../data/species.js';
 import { stageMult, CRIT_CHANCE } from './stats.js';
 import { abilityImmunity, abilityOf, typesOf, weightOf, grounded, onContact, statusImmune } from './abilities.js';
 import * as amb from './ambiente.js';
+import { REALTIME_PACE } from './tempo.js';
 
 // arredonda para o inteiro mais próximo, com .5 para baixo (pokeRound dos jogos)
 export const pokeRound = (x) => (x - Math.floor(x) > 0.5 ? Math.ceil(x) : Math.floor(x));
@@ -305,4 +306,13 @@ export function resolveHit(atk, def, mv, opts = {}) {
   if (r.contact?.stat && atk?.stages) for (const [k, v] of Object.entries(r.contact.stat)) atk.stages[k] = Math.max(-6, (atk.stages[k] ?? 0) + v);
   if (def && r.damage > 0) def.timesHit = (def.timesHit ?? 0) + 1;
   return r;
+}
+
+/**
+ * Versão compacta para o tempo real e para o árbitro do PvP (sem efeitos colaterais):
+ * devolve { dmg, eff, crit } como o calcDamage antigo do combate, mais `r` com o resultado completo.
+ */
+export function realtimeDamage(atk, def, mv, { rng = Math.random, pace = REALTIME_PACE, ...opts } = {}) {
+  const r = calcDamage(atk, def, mv, { ...opts, rng, pace });
+  return { dmg: r.immune ? 0 : r.damage, eff: r.eff, crit: r.crit, r };
 }
