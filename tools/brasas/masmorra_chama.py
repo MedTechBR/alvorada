@@ -87,7 +87,7 @@ def andar1():
     ]
     return {'id': 'templo_chama_1', 'name': 'Templo da Chama: Portal de Basalto', 'rows': s.rows(), 'biome': 'vulcao', 'wild': True, 'escuro': 0.3,
             'objects': O, 'decor': [], 'people': [], 'items': [{'x': 20, 'y': 14, 'item': 'hyperPotion'}, {'x': 12, 'y': 5, 'item': 'ultraBall'}],
-            'spots': {'templo1_entrada': [19, 21, 'up']},
+            'spots': {'templo1_entrada': [19, 21, 'up'], 'dentro_templo_chama_1': [19, 21, 'up']},
             'warps': [
                 {'x': 19, 'y': 22, 'dir': 'down', 'to': 'brasas_templo_porta', 'face': 'down', 'label': 'Saída'},
                 {'x': 19, 'y': 3, 'dir': 'up', 'to': ['templo_chama_2', 5, 21], 'face': 'up', 'label': 'Escada'},
@@ -142,7 +142,7 @@ def andar2():
     return {'id': 'templo_chama_2', 'name': 'Templo da Chama: Rio de Lava', 'rows': s.rows(), 'biome': 'vulcao', 'wild': True, 'escuro': 0.35,
             'objects': O, 'decor': [], 'people': [], 'mecanismos': mec, 'buracos': holes,
             'items': [{'x': 14, 'y': 20, 'item': 'superPotion'}, {'x': 28, 'y': 21, 'item': 'fullHeal'}, {'x': 38, 'y': 14, 'item': 'rareCandy', 'hidden': True}],
-            'spots': {'templo2_sensor': [30, 8, 'down'], 'templo2_entrada': [5, 21, 'up']},
+            'spots': {'templo2_sensor': [30, 8, 'down'], 'templo2_entrada': [5, 21, 'up'], 'dentro_templo_chama_2': [5, 21, 'up']},
             'warps': [
                 {'x': 5, 'y': 23, 'dir': 'down', 'to': ['templo_chama_1', 19, 4], 'face': 'down', 'label': 'Escada'},
                 {'x': 37, 'y': 18, 'dir': 'up', 'to': ['templo_chama_3', 4, 27], 'face': 'up', 'label': 'Escada'},
@@ -190,7 +190,7 @@ def andar3():
     return {'id': 'templo_chama_3', 'name': 'Templo da Chama: Forja Antiga', 'rows': s.rows(), 'biome': 'vulcao', 'wild': True, 'escuro': 0.75,
             'objects': O, 'decor': [], 'people': [],
             'items': [{'x': 31, 'y': 26, 'item': 'maxRevive'}, {'x': 5, 'y': 14, 'item': 'charcoal', 'hidden': True}],
-            'spots': {'templo3_sensor': [18, 5, 'down'], 'templo3_camara': [18, 3, 'down'], 'templo3_entrada': [4, 27, 'up']},
+            'spots': {'templo3_sensor': [18, 5, 'down'], 'templo3_camara': [18, 3, 'down'], 'templo3_entrada': [4, 27, 'up'], 'dentro_templo_chama_3': [4, 27, 'up']},
             'warps': [
                 {'x': 4, 'y': 28, 'dir': 'down', 'to': ['templo_chama_2', 37, 19], 'face': 'down', 'label': 'Escada'},
             ]}

@@ -195,18 +195,26 @@ def vila(ctx, C):
     C.obj('lampiao', 986, 656, forcar=True); C.obj('lampiao', 994, 656, forcar=True)
     C.obj('lampiao', 986, 663, forcar=True); C.obj('lampiao', 994, 663, forcar=True)
     C.marca(985, 655, 11, 10)
-    # lampiões ao longo das estradas
+    # lampiões ao longo das estradas (um bloco fora da trilha)
+    def trilha_em_x(x, y0, y1):
+        return [y for y in range(y0, y1) if G[y - Y0, x - X0] in '=B']
     for x in range(968, 1020, 8):
-        C.obj('lampiao', x, 646 if x % 16 == 0 else 649, forcar=False)
+        ys = trilha_em_x(x, 644, 653)
+        if ys:
+            C.obj('lampiao', x, max(ys) + 1)
     for y in range(628, 646, 6):
-        C.obj('lampiao', 987, y); C.obj('lampiao', 991, y)
+        xs = [x for x in range(984, 996) if G[y - Y0, x - X0] in '=B']
+        if xs:
+            C.obj('lampiao', min(xs) - 1, y); C.obj('lampiao', max(xs) + 1, y)
     for y in range(672, 700, 6):
-        C.obj('lampiao', 987, y); C.obj('lampiao', 991, y)
+        xs = [x for x in range(984, 996) if G[y - Y0, x - X0] in '=B']
+        if xs:
+            C.obj('lampiao', min(xs) - 1, y); C.obj('lampiao', max(xs) + 1, y)
     # placas
     C.obj('sign', 986, 626, text='Vila Termas. Águas que curam, vapor que acalma. Cuidado com o vulcão: ele ronca quando está com fome.', forcar=True)
-    C.obj('sign', 991, 626, text='Cais de Vila Termas: Barco das Brasas para Vila Siri, às 9h e às 17h.', forcar=True)
+    C.obj('sign', 992, 626, text='Cais de Vila Termas: Barco das Brasas para Vila Siri, às 9h e às 17h.', forcar=True)
     C.obj('sign', 1022, 650, text='Fontes Termais do Vapor, a leste. Não esquente a cabeça: só os pés.', forcar=True)
-    C.obj('sign', 990, 684, text='Campos de Cinza e Vulcão Tição, ao sul. Para subir a cratera, só com um Pokémon que escale.', forcar=True)
+    C.obj('sign', 993, 684, text='Campos de Cinza e Vulcão Tição, ao sul. Para subir a cratera, só com um Pokémon que escale.', forcar=True)
     C.obj('sign', 964, 650, text='Praia de areia preta a oeste: a Ilha do Basalto fica do outro lado do canal, só nadando.', forcar=True)
     # jardins e bambus
     rr = Sorteio(42)
@@ -257,7 +265,7 @@ def basalto(ctx, C):
     C.obj('jangada', 958, 643, forcar=True)
     C.obj('boia', 958, 638, forcar=True)
     C.obj('barrel', 949, 639, forcar=True); C.obj('crate', 950, 643, forcar=True)
-    C.obj('sign', 948, 641, forcar=True, text='Embarcadouro da Ilha do Basalto. Barco das Brasas, às 15h: Vila Termas e Vila Siri.')
+    C.obj('sign', 948, 643, forcar=True, text='Embarcadouro da Ilha do Basalto. Barco das Brasas, às 15h: Vila Termas e Vila Siri.')
     C.pessoa(id='barqueiro_basalto', name='Marujo Dino', look=OLHA['marujo'], x=955, y=641, dir='right', viagem='barco_brasas_basalto',
              lines=['Aqui é parada. O barco encosta às três da tarde, quem quiser seguir é só falar comigo.'])
     C.pessoa(id='basalto_surfista', name='Surfista Lúcio', look={'preset': 'treinador', 'hairStyle': 'spiky', 'hair': '#e8c060', 'hat': None, 'outfit': 'shirt', 'top': '#4ab0c0', 'legs': 'shorts', 'pants': '#e0782e', 'shoes': '#f2f2f2', 'bagStyle': None},

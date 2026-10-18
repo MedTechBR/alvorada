@@ -6,9 +6,10 @@ from cena import *
 from catalogo import ITENS, RAIZ
 
 CAMINHA = set('.,=P*:Aavo;"')
+SEM_TRILHA = set('.,P*:Aavo;"')
 
 
-def escolhe(C, G, mask, n, seed, sep=4, chao=CAMINHA, evitar=None):
+def escolhe(C, G, mask, n, seed, sep=4, chao=SEM_TRILHA, evitar=None):
     rr = Sorteio(seed)
     ys, xs = np.nonzero(mask)
     if len(xs) == 0:
@@ -174,6 +175,25 @@ def aplicar(ctx):
     itens(ctx, C)
     tocas(ctx, C)
     treinadores(ctx, C)
+    # moradores de fora que ficaram dentro de um objeto: vão para o chão livre mais perto
+    S = solidos(R)
+    for p in R['people']:
+        if p.get('viagem'):
+            continue
+        x, y = int(p['x']), int(p['y'])
+        ch = G[y - Y0, x - X0]
+        if S[y - Y0, x - X0] or ch not in CAMINHA:
+            for rr_ in range(1, 8):
+                ach = None
+                for dy in range(-rr_, rr_ + 1):
+                    for dx in range(-rr_, rr_ + 1):
+                        xx, yy = x + dx, y + dy
+                        if X0 <= xx < X0 + W and Y0 <= yy < Y0 + H and G[yy - Y0, xx - X0] in CAMINHA and not S[yy - Y0, xx - X0]:
+                            ach = (xx, yy); break
+                    if ach: break
+                if ach:
+                    p['x'], p['y'] = ach
+                    break
     # nada de objeto em cima de passagem de mar: limpa qualquer objeto fora do retângulo
     R['objects'] = [o for o in R['objects'] if X0 <= o['x'] < X0 + W and Y0 <= o['y'] < Y0 + H]
 
@@ -304,7 +324,11 @@ def itens(ctx, C):
     # bancos de areia: pérolas e tesouros do naufrágio
     for (x, y, it, h) in [(868, 520, 'pearl', False), (1108, 523, 'bigPearl', False), (962, 556, 'nugget', True), (942, 931, 'bigPearl', True), (878, 905, 'pearl', False),
                           (1088, 940, 'stardust', False), (1000, 905, 'ultraBall', False), (1038, 541, 'superPotion', False), (947, 933, 'rareCandy', True)]:
-        o = {'x': x, 'y': y, 'item': it}
+        pos = snap(C, G, x, y, 4)
+        if pos is None:
+            continue
+        o = {'x': pos[0], 'y': pos[1], 'item': it}
+        C.marca(pos[0], pos[1], 1, 1)
         if h:
             o['hidden'] = True
         R['items'].append(o)

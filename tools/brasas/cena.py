@@ -7,7 +7,7 @@ TAM.update({'lampiao': (1, 1), 'estante': (1, 1), 'barraca': (3, 1), 'fogao': (2
             'counter': (4, 1), 'balltable': (3, 1), 'bed': (1, 2), 'cavalete': (2, 1), 'maquete': (3, 1), 'painel': (3, 1)})
 
 ANDAVEL = set('.,"=PB*:Aaovq;%DEYXVfwtmkSZ+/|')   # chão onde uma pegada pode ficar
-CHAO_OBJ = set('.,=P*:Aavo;EYX"')                   # onde objetos comuns podem ir (sem água, sem lava, sem poça)
+CHAO_OBJ = set('.,P*:Aavo;EYX"')                   # onde objetos comuns podem ir (sem água, sem lava, sem poça)
 
 
 class Cena:
@@ -79,3 +79,28 @@ def preenche(rows, x, y, w, h, ch):
     for j in range(h):
         for i in range(w):
             retoca(rows, x + i, y + j, ch)
+
+
+# ---------------------------------------------------------------- máscara de blocos sólidos pelos objetos (porta de prédio fica livre)
+PORTAS = {'center': 4, 'mart': 3, 'cabin': 2, 'taipa': 2, 'casarao': 5, 'farol': 2}
+
+
+def solidos(R):
+    S = np.zeros((H, W), bool)
+    for o in R['objects']:
+        k = o['kind']
+        if k in ('rug',):
+            continue
+        fw, fh = TAM.get(k, (1, 1))
+        for j in range(fh):
+            for i in range(fw):
+                x, y = o['x'] + i - X0, o['y'] + j - Y0
+                if 0 <= x < W and 0 <= y < H:
+                    S[y, x] = True
+    for o in R['objects']:
+        k = o['kind']
+        d = PORTAS.get(k, 3 if k[:5] == 'house' else None)
+        if d is not None:
+            fw, fh = TAM.get(k, (1, 1))
+            S[o['y'] + fh - 1 - Y0, o['x'] + d - X0] = False
+    return S
