@@ -104,11 +104,37 @@ export class Audio {
       case 'teleport': T(500, t, 0.3, { to: 2000, vol: 0.1, type: 'sine' }); T(700, t + 0.05, 0.25, { to: 2600, vol: 0.06, type: 'sine' }); break;
       case 'munch': for (let i = 0; i < 3; i++) N(t + i * 0.12, 0.06, { freq: 1800, vol: 0.12 }); break;
       case 'step': N(t, 0.04, { freq: 600, vol: 0.04 }); break;
+      // ---- combate ----
+      case 'hit-heavy': N(t, 0.25, { freq: 700, vol: 0.5 }); T(140, t, 0.25, { to: 40, vol: 0.4, type: 'square' }); N(t + 0.02, 0.3, { freq: 200, vol: 0.3, type: 'lowpass' }); break;
+      case 'warn': T(980, t, 0.05, { vol: 0.05, type: 'pulse' }); T(980, t + 0.09, 0.05, { vol: 0.05, type: 'pulse' }); break;
+      case 'whoosh': N(t, 0.22, { freq: 600, to: 2600, vol: 0.18, q: 0.6 }); break;
+      case 'clash': N(t, 0.3, { freq: 2500, vol: 0.35, q: 2 }); T(1800, t, 0.12, { to: 900, vol: 0.12, type: 'square' }); T(2400, t + 0.03, 0.15, { to: 1200, vol: 0.08, type: 'square' }); break;
+      case 'boom': N(t, 0.8, { freq: 500, to: 60, vol: 0.6, type: 'lowpass' }); T(90, t, 0.6, { to: 30, vol: 0.5, type: 'triangle' }); N(t, 0.15, { freq: 3000, vol: 0.25 }); break;
+      case 'struggle': N(t, 0.12, { freq: 1500 + Math.random() * 1500, vol: 0.18, q: 3 }); T(200 + Math.random() * 80, t, 0.1, { vol: 0.1, type: 'square' }); break;
+      case 'beam-fire': N(t, 0.14, { freq: 700 + Math.random() * 300, to: 400, vol: 0.2, type: 'lowpass' }); N(t, 0.1, { freq: 3000, vol: 0.05 }); break;
+      case 'beam-water': N(t, 0.14, { freq: 1200 + Math.random() * 400, vol: 0.16, q: 0.5 }); break;
+      case 'beam-electric': for (let i = 0; i < 2; i++) T(600 + Math.random() * 900, t + i * 0.03, 0.04, { vol: 0.08, type: 'square' }); break;
+      case 'beam-ice': T(1800 + Math.random() * 600, t, 0.08, { vol: 0.05, type: 'triangle' }); N(t, 0.12, { freq: 5000, vol: 0.06 }); break;
+      case 'crack': N(t, 0.1, { freq: 1800, vol: 0.3, q: 1.5 }); T(300, t, 0.08, { to: 120, vol: 0.15, type: 'square' }); break;
+      case 'break': N(t, 0.35, { freq: 900, to: 200, vol: 0.45 }); for (let i = 0; i < 4; i++) N(t + 0.05 + i * 0.05, 0.06, { freq: 2000 + i * 300, vol: 0.12 }); break;
+      case 'dig': N(t, 0.3, { freq: 400, to: 150, vol: 0.3, type: 'lowpass' }); N(t + 0.1, 0.2, { freq: 900, vol: 0.12 }); break;
+      case 'jump': T(300, t, 0.12, { to: 700, vol: 0.1, type: 'pulse' }); break;
+      case 'quake': N(t, 0.9, { freq: 120, vol: 0.55, type: 'lowpass' }); T(45, t, 0.8, { vol: 0.4, type: 'triangle' }); N(t + 0.1, 0.4, { freq: 600, vol: 0.15 }); break;
+      case 'howl': T(320, t, 0.7, { to: 520, vol: 0.14, type: 'pulse' }); T(330, t + 0.02, 0.7, { to: 500, vol: 0.1, type: 'square' }); T(520, t + 0.6, 0.4, { to: 300, vol: 0.12, type: 'pulse' }); break;
+      case 'perfect': [0, 7, 12, 19].forEach((s, i) => T(880 * 2 ** (s / 12), t + i * 0.04, 0.12, { vol: 0.09, type: 'triangle' })); break;
+      case 'thunder': N(t, 1.0, { freq: 300, to: 60, vol: 0.6, type: 'lowpass' }); N(t, 0.2, { freq: 4000, vol: 0.35 }); T(70, t, 0.8, { to: 30, vol: 0.4, type: 'square' }); break;
+      case 'charge': T(200, t, 0.5, { to: 900, vol: 0.08, type: 'triangle' }); T(205, t, 0.5, { to: 910, vol: 0.05, type: 'square' }); break;
+      case 'shield': T(660, t, 0.3, { to: 990, vol: 0.1, type: 'sine' }); T(990, t + 0.05, 0.3, { vol: 0.06, type: 'triangle' }); break;
+      case 'freeze': for (let i = 0; i < 5; i++) T(2000 + i * 400, t + i * 0.03, 0.06, { vol: 0.05, type: 'triangle' }); break;
       case 'exclaim': T(1200, t, 0.08, { vol: 0.1, type: 'pulse' }); T(1600, t + 0.08, 0.1, { vol: 0.1, type: 'pulse' }); break;
       default:
         if (name.startsWith('move-')) {
           const kind = name.slice(5);
-          const base = { fire: 300, water: 500, electric: 900, grass: 600, poison: 250, psychic: 700, flying: 400, rock: 150, ground: 120, bug: 800 }[type] ?? 450;
+          const base = { fire: 300, water: 500, electric: 900, grass: 600, poison: 250, psychic: 700, flying: 400, rock: 150, ground: 120, bug: 800, ice: 1400, dragon: 220, ghost: 330, dark: 260, fairy: 1200, fighting: 200, steel: 1000, normal: 450 }[type] ?? 450;
+          if (kind === 'proj' && type === 'ice') { T(base, t, 0.15, { to: base * 1.5, vol: 0.08, type: 'triangle' }); N(t, 0.15, { freq: 6000, vol: 0.06 }); break; }
+          if (kind === 'proj' && (type === 'ghost' || type === 'dark' || type === 'dragon')) { T(base, t, 0.3, { to: base * 0.5, vol: 0.12, type: 'sawtooth' }); break; }
+          if (kind === 'proj' && type === 'psychic') { T(base, t, 0.3, { to: base * 1.6, vol: 0.08, type: 'sine' }); T(base * 1.5, t, 0.3, { to: base * 2.2, vol: 0.05, type: 'sine' }); break; }
+          if (kind === 'proj' && type === 'fairy') { [0, 4, 7].forEach((s2, i) => T(base * 2 ** (s2 / 12), t + i * 0.04, 0.1, { vol: 0.06, type: 'triangle' })); break; }
           if (kind === 'proj') { if (type === 'electric') { for (let i = 0; i < 4; i++) T(base * (1 + Math.random()), t + i * 0.03, 0.05, { vol: 0.1, type: 'square' }); } else if (type === 'fire') N(t, 0.35, { freq: 900, to: 300, vol: 0.25, type: 'lowpass' }); else T(base, t, 0.22, { to: base * 2, vol: 0.12, type: type === 'water' ? 'sine' : 'triangle' }); }
           else if (kind === 'melee' || kind === 'multi' || kind === 'dash') N(t, 0.15, { freq: 2500, to: 600, vol: 0.18 });
           else if (kind === 'cone') N(t, 0.4, { freq: 600, to: 1800, vol: 0.18, q: 0.4 });

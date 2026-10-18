@@ -117,6 +117,7 @@ class Game {
       if (Math.random() < 0.15) w.ai.state = 'sleep';
       this.entities.push(w); this.wilds.push(w); this.ents.addChild(w.view);
       w.alpha = 0; w.fadeIn = true;
+      this.combat.ai.onSpawn(w); // bandos com alfa
       return;
     }
   }
@@ -128,7 +129,7 @@ class Game {
     if (e.side === 'wild') {
       const lead = this.lead;
       if (lead?.alive && (by === lead || by?.side === 'ally')) this.giveXp(lead.mon, e.mon.xpYield());
-      this.later(0.6, () => this.removeEntity(e));
+      this.later(1.1, () => this.removeEntity(e));
     } else {
       this.toast(`${e.mon.name} desmaiou!`);
       this.later(0.8, () => {
@@ -274,6 +275,7 @@ class Game {
 
   #control(dt) {
     const inp = this.input, p = this.player;
+    if (this.combat.pilot.control(dt)) return; // modo de controle direto do Pokémon (R)
     // treinador
     p.t += dt; p.iframes -= dt; p.stun = (p.stun ?? 0) - dt;
     const run = inp.down('run');
@@ -285,8 +287,8 @@ class Game {
     if (inp.pressed('dodge') && p.roll <= 0) {
       const dx = mag > 0.1 ? mx : ({ down: 0, up: 0, left: -1, right: 1 }[p.dir]), dy = mag > 0.1 ? my : ({ down: 1, up: -1, left: 0, right: 0 }[p.dir]);
       p.kx += dx * 260; p.ky += dy * 260; p.roll = 0.5; p.iframes = 0.3;
-      if (this.lead?.alive) { const l = this.lead; l.kx += dx * 300; l.ky += dy * 300; l.iframes = 0.3; l.play('Hop'); }
-      this.audio.sfx('dodge');
+      if (this.lead?.alive) { const l = this.lead; l.kx += dx * 300; l.ky += dy * 300; l.iframes = 0.36; l.play('Hop'); }
+      this.combat.onDodge(this.lead?.alive ? this.lead : p);
     }
     p.roll -= dt;
     p.x += (p.vx + p.kx) * dt; p.y += (p.vy + p.ky) * dt;
@@ -345,7 +347,7 @@ class Game {
   }
 
   #camera(dt) {
-    const p = this.player, c = this.cam;
+    const p = this.camFocus?.() ?? this.player, c = this.cam;
     c.x += (p.x - c.x) * Math.min(1, dt * 8); c.y += (p.y - c.y) * Math.min(1, dt * 8);
     let sx = 0, sy = 0;
     if (this.fx.shake > 0) { this.fx.shake -= dt; const k = this.fx.shake * 6; sx = (Math.random() - 0.5) * k; sy = (Math.random() - 0.5) * k; }
