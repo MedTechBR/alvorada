@@ -1,11 +1,14 @@
 {
   "name": "Alvorada",
   "comment": "Mapa da região desenhado à mão (assets/maps/LEIAME.md). Escala da planta: 1 unidade = 6 blocos. O esboço do resto da região vem de esboco.json.",
-  "w": 600,
-  "h": 676,
-  "outdoorH": 480,
+  "w": 1200,
+  "h": 2080,
+  "outdoorH": 960,
+  "rect": [0, 0, 600, 480],
+  "faixa": [0, 960, 1200, 320],
   "base": "grass",
   "include": ["esboco.json"],
+  "regioes": ["regioes/nucleo.json", "regioes/geada.json", "regioes/sertao.json", "regioes/jandaia.json", "regioes/austral.json", "regioes/brasas.json"],
   "forestKinds": ["tree", "pine", "tree2", "pine2", "tree"],
   "forestZones": [
     {"x": 0, "y": 150, "w": 70, "h": 70, "kinds": ["pine", "pine2", "tree2"]},
@@ -13,7 +16,7 @@
   ],
   "flowerRows": [0, 1, 2, 3, 4, 6],
   "ops": [
-    {"op": "rect", "t": "void", "x": 0, "y": 480, "w": 600, "h": 196},
+    {"op": "rect", "t": "void", "x": 0, "y": 960, "w": 1200, "h": 1120},
     {"op": "comment", "_": "==== áreas detalhadas à mão (por cima do esboço) ===="},
     {"op": "comment", "_": "---------- Vila Alvorada (praça com relógio de sol, casas, laboratório) ----------"},
     {"op": "rect", "t": "grass", "x": 285, "y": 333, "w": 44, "h": 36},
@@ -26,7 +29,7 @@
     {"op": "rect", "t": "path", "x": 308, "y": 363, "w": 9, "h": 1},
     {"op": "rect", "t": "path", "x": 292, "y": 361, "w": 1, "h": 3},
     {"op": "rect", "t": "path", "x": 292, "y": 363, "w": 14, "h": 1},
-    {"op": "ellipse", "t": "sand", "cx": 323, "cy": 338, "rx": 5.6, "ry": 4.0, "noise": 0.2},
+    {"op": "ellipse", "t": "sand", "cx": 323, "cy": 338, "rx": 5.6, "ry": 4, "noise": 0.2},
     {"op": "ellipse", "t": "water", "cx": 323, "cy": 338, "rx": 4.3, "ry": 2.9, "noise": 0.2},
     {"op": "rect", "t": "flowers", "x": 289, "y": 347, "w": 3, "h": 2},
     {"op": "rect", "t": "flowers", "x": 315, "y": 347, "w": 3, "h": 2},
@@ -674,7 +677,7 @@
       "id": "casa_jogador",
       "name": "Casa do Ravi",
       "x": 4,
-      "y": 492,
+      "y": 972,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -695,7 +698,7 @@
       "id": "casa_jogador_2",
       "name": "Quarto do Ravi",
       "x": 39,
-      "y": 492,
+      "y": 972,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -713,7 +716,7 @@
       "id": "casa_teo",
       "name": "Casa do Téo — Padaria Pão do Sol",
       "x": 74,
-      "y": 492,
+      "y": 972,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -733,7 +736,7 @@
       "id": "laboratorio",
       "name": "Laboratório do Prof. Jatobá",
       "x": 109,
-      "y": 492,
+      "y": 972,
       "rows": [
         "wwwwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwwwww",
@@ -757,7 +760,7 @@
       "id": "radio",
       "name": "Rádio Alvorada",
       "x": 144,
-      "y": 492,
+      "y": 972,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -777,7 +780,7 @@
       "id": "casa_vizinha",
       "name": "Casa da Dona Flor",
       "x": 179,
-      "y": 492,
+      "y": 972,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -797,7 +800,7 @@
       "id": "centro_campina",
       "name": "Centro Pokémon de Campina",
       "x": 214,
-      "y": 492,
+      "y": 972,
       "rows": [
         "wwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwww",
@@ -819,7 +822,7 @@
       "id": "loja_campina",
       "name": "Mercado Pokémon de Campina",
       "x": 249,
-      "y": 492,
+      "y": 972,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -839,7 +842,7 @@
       "id": "casa_quinzinho",
       "name": "Casa do Seu Quinzinho",
       "x": 284,
-      "y": 492,
+      "y": 972,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -858,7 +861,7 @@
       "id": "casa_campina2",
       "name": "Casa do Agricultor",
       "x": 319,
-      "y": 492,
+      "y": 972,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -877,7 +880,7 @@
       "id": "celeiro_tome",
       "name": "Celeiro da Fazenda do Tomé",
       "x": 354,
-      "y": 492,
+      "y": 972,
       "rows": [
         "wwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwww",
@@ -899,7 +902,7 @@
       "id": "centro_sussurro",
       "name": "Centro Pokémon de Vila Sussurro",
       "x": 4,
-      "y": 524,
+      "y": 1004,
       "rows": [
         "wwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwww",
@@ -921,7 +924,7 @@
       "id": "loja_sussurro",
       "name": "Mercado Pokémon de Vila Sussurro",
       "x": 39,
-      "y": 524,
+      "y": 1004,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -941,7 +944,7 @@
       "id": "oficina_juca",
       "name": "Oficina do Seu Juca",
       "x": 74,
-      "y": 524,
+      "y": 1004,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -960,7 +963,7 @@
       "id": "casa_tito",
       "name": "Casa do Tito",
       "x": 109,
-      "y": 524,
+      "y": 1004,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -980,7 +983,7 @@
       "id": "estufa_lia",
       "name": "Estufa-Teia — Ginásio de Vila Sussurro",
       "x": 144,
-      "y": 524,
+      "y": 1004,
       "rows": [
         "wwwwwwwwwwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwwwwwwwwwww",
@@ -1010,7 +1013,7 @@
       "id": "toca_absol",
       "name": "Toca do Absol (Gruta do Musgo)",
       "x": 184,
-      "y": 524,
+      "y": 1004,
       "rows": [
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
@@ -1043,7 +1046,7 @@
       "id": "centro_porto",
       "name": "Centro Pokémon de Porto Espelho",
       "x": 254,
-      "y": 524,
+      "y": 1004,
       "rows": [
         "wwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwww",
@@ -1065,7 +1068,7 @@
       "id": "casa_nestor",
       "name": "Casa do Seu Nestor",
       "x": 289,
-      "y": 524,
+      "y": 1004,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -1084,7 +1087,7 @@
       "id": "galpao_barcos",
       "name": "Galpão de Barcos — Ginásio de Porto Espelho",
       "x": 324,
-      "y": 524,
+      "y": 1004,
       "rows": [
         "wwwwwwwwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwwwwwwwww",
@@ -1110,7 +1113,7 @@
       "id": "centro_coral",
       "name": "Centro Pokémon de Cidade Coral",
       "x": 10,
-      "y": 604,
+      "y": 1084,
       "rows": [
         "wwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwww",
@@ -1132,7 +1135,7 @@
       "id": "loja_coral",
       "name": "Mercado Pokémon de Cidade Coral",
       "x": 49,
-      "y": 604,
+      "y": 1084,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -1153,7 +1156,7 @@
       "id": "casa_coral",
       "name": "Casa da Família Brito",
       "x": 86,
-      "y": 604,
+      "y": 1084,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -1173,7 +1176,7 @@
       "id": "escola_surfe",
       "name": "Escola de Surfe do Kauã",
       "x": 121,
-      "y": 604,
+      "y": 1084,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -1193,7 +1196,7 @@
       "id": "casa_iracema",
       "name": "Casa da Iracema",
       "x": 158,
-      "y": 604,
+      "y": 1084,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -1212,7 +1215,7 @@
       "id": "farol_coral",
       "name": "Farol Coral — Térreo (Ginásio de Cidade Coral)",
       "x": 193,
-      "y": 604,
+      "y": 1084,
       "rows": [
         "wwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwww",
@@ -1236,7 +1239,7 @@
       "id": "farol_coral_2",
       "name": "Farol Coral — Primeiro andar",
       "x": 232,
-      "y": 604,
+      "y": 1084,
       "rows": [
         "wwwwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwwwww",
@@ -1261,7 +1264,7 @@
       "id": "farol_topo",
       "name": "Farol Coral — Lanterna",
       "x": 273,
-      "y": 604,
+      "y": 1084,
       "rows": [
         "wwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwww",
@@ -1284,7 +1287,7 @@
       "id": "centro_lamparina",
       "name": "Centro Pokémon de Vila Lamparina",
       "x": 312,
-      "y": 604,
+      "y": 1084,
       "rows": [
         "wwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwww",
@@ -1306,7 +1309,7 @@
       "id": "loja_lamparina",
       "name": "Mercado Pokémon de Vila Lamparina",
       "x": 351,
-      "y": 604,
+      "y": 1084,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -1327,7 +1330,7 @@
       "id": "casa_lamparina",
       "name": "Casa do Seu Bento",
       "x": 388,
-      "y": 604,
+      "y": 1084,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -1347,7 +1350,7 @@
       "id": "casa_benta",
       "name": "Casa da Vó Benta",
       "x": 423,
-      "y": 604,
+      "y": 1084,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -1367,7 +1370,7 @@
       "id": "casa_solano",
       "name": "Casa abandonada dos Solano",
       "x": 460,
-      "y": 604,
+      "y": 1084,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -1388,7 +1391,7 @@
       "id": "casarao_velas",
       "name": "Casarão das Velas — Ginásio de Vila Lamparina",
       "x": 495,
-      "y": 604,
+      "y": 1084,
       "rows": [
         "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
@@ -1422,7 +1425,7 @@
       "id": "centro_aurora",
       "name": "Centro Pokémon de Cidade Aurora",
       "x": 568,
-      "y": 604,
+      "y": 1084,
       "rows": [
         "wwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwww",
@@ -1444,7 +1447,7 @@
       "id": "loja_aurora",
       "name": "Mercado Pokémon de Cidade Aurora",
       "x": 10,
-      "y": 640,
+      "y": 1120,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -1465,7 +1468,7 @@
       "id": "redacao_farol",
       "name": "Redação do jornal \"O Farol\"",
       "x": 47,
-      "y": 640,
+      "y": 1120,
       "rows": [
         "wwwwwwwwwwwww",
         "wwwwwwwwwwwww",
@@ -1486,7 +1489,7 @@
       "id": "casa_mineiro",
       "name": "Casa do Seu Dito",
       "x": 84,
-      "y": 640,
+      "y": 1120,
       "rows": [
         "wwwwwwwwwww",
         "wwwwwwwwwww",
@@ -1506,7 +1509,7 @@
       "id": "torre_aurora",
       "name": "Torre Aurora — Recepção",
       "x": 119,
-      "y": 640,
+      "y": 1120,
       "rows": [
         "wwwwwwwwwwwwwwwwwwwww",
         "wwwwwwwwwwwwwwwwwwwww",
@@ -1532,7 +1535,7 @@
       "id": "mina_aurora_n1",
       "name": "Mina Aurora — Nível 1",
       "x": 164,
-      "y": 640,
+      "y": 1120,
       "rows": [
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
@@ -1567,7 +1570,7 @@
       "id": "mina_aurora_n2",
       "name": "Mina Aurora — Nível 2",
       "x": 222,
-      "y": 640,
+      "y": 1120,
       "rows": [
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
@@ -1602,7 +1605,7 @@
       "id": "mina_aurora_n3",
       "name": "Mina Aurora — Nível 3",
       "x": 280,
-      "y": 640,
+      "y": 1120,
       "rows": [
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
@@ -1637,7 +1640,7 @@
       "id": "mina_aurora_n4",
       "name": "Mina Aurora — Nível 4",
       "x": 334,
-      "y": 640,
+      "y": 1120,
       "rows": [
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
@@ -1668,11 +1671,11 @@
     }
   ],
   "warps": [
-    {"x": 15, "y": 494, "dir": "up", "to": [48, 495], "face": "left", "label": "escada"},
-    {"x": 49, "y": 494, "dir": "any", "to": [14, 495], "face": "left", "label": "escada"},
-    {"x": 201, "y": 199, "dir": "up", "to": [195, 539], "face": "up", "label": "Toca do Absol"},
-    {"x": 202, "y": 199, "dir": "up", "to": [195, 539], "face": "up", "label": "Toca do Absol"},
-    {"x": 195, "y": 540, "dir": "down", "to": [201, 200], "face": "down"}
+    {"x": 15, "y": 974, "dir": "up", "to": [48, 975], "face": "left", "label": "escada"},
+    {"x": 49, "y": 974, "dir": "any", "to": [14, 975], "face": "left", "label": "escada"},
+    {"x": 201, "y": 199, "dir": "up", "to": [195, 1019], "face": "up", "label": "Toca do Absol"},
+    {"x": 202, "y": 199, "dir": "up", "to": [195, 1019], "face": "up", "label": "Toca do Absol"},
+    {"x": 195, "y": 1020, "dir": "down", "to": [201, 200], "face": "down"}
   ],
   "spots": {
     "inicio": [297, 347, "down"],
@@ -1693,7 +1696,7 @@
     "g1_icaro": [141.5, 391.4, "down"],
     "g1_rui": [115.5, 375.4, "up"],
     "leader_tome": [128.5, 375.2, "down"],
-    "nurse": [220.5, 494.6, "down"],
+    "nurse": [220.5, 974.6, "down"],
     "bosque": [298, 284, "up"],
     "fazenda_tome": [110, 309, "down"],
     "rota2_lamacal": [123, 271, "up"],
@@ -1810,7 +1813,7 @@
     {"x": 108, "y": 250, "item": "potion"},
     {"x": 262, "y": 198, "item": "pokeball"},
     {"x": 118, "y": 391, "item": "potion"},
-    {"x": 210, "y": 536, "item": "pokeball"},
+    {"x": 210, "y": 1016, "item": "pokeball"},
     {"x": 323, "y": 344, "item": "potion"},
     {"x": 453, "y": 364, "item": "superPotion", "cap456": true},
     {"x": 461, "y": 386, "item": "pokeball", "cap456": true, "n": 2},

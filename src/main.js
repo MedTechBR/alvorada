@@ -5,6 +5,7 @@ import { makeTiles, T, TILE } from './world/tiles.js';
 import { GameMap } from './world/map.js';
 import { WorldLife } from './world/life.js';
 import { Mounts } from './world/mounts.js';
+import { Viagem } from './world/viagem.js';
 import { makeTrainerFrames, dir4 } from './sprites/characters.js';
 import { loadPokemonSprites } from './sprites/pmd.js';
 import { PokeEntity } from './entities/pokemon.js';
@@ -45,6 +46,7 @@ class Game {
     // camadas do mundo
     this.world = new PIXI.Container();
     this.map = new GameMap(this.tx);
+    await this.map.carregar(Viagem.mundoInicial()); // continente do jogo salvo (assets/maps/mundos.json)
     this.world.addChild(this.map.buildLayer());
     this.fx = new Fx(this);
     this.world.addChild(this.fx.ground);
@@ -56,6 +58,7 @@ class Game {
     this.#buildObjects();
     window.__boot?.(0.84, 'Acordando os Pokémon…');
     this.mundo = new WorldLife(this); // dia e noite, portas, bichinhos, minimapa
+    this.viagem = new Viagem(this);    // troca de mundo: navios, voo (Voar para…), passagens entre mapas
     // as mecânicas (Bola do Crepúsculo, evolução por hora, encontros) seguem o relógio do jogo, não o do aparelho
     setAmbiente({ hora: () => this.mundo.hour, caverna: () => !!this.map.interiorAt(this.player.x, this.player.y)?.dark });
     // treinador e equipe
@@ -67,6 +70,7 @@ class Game {
     this.ui = new UI(this);        // HUD, menus, diálogo, título e save (src/ui)
     this.story = new Story(this);  // capítulo 1 (src/story)
     window.__boot?.(0.92, 'Preparando a aventura…');
+    import('./data/habitats.js').then((H) => { this.habitats = H; }).catch((e) => console.warn('habitats.js', e)); // 180 KB: depois da abertura
     this.available = await fetch('assets/pmd/index.json').then((r) => r.json()).catch(() => [1, 4, 6, 7, 9, 25, 130, 133]);
     this.spawnT = 0; this.wilds = [];
     this.zoom = 3; this.#resize(); addEventListener('resize', () => this.#resize());
@@ -127,9 +131,10 @@ class Game {
   }
 
   #buildObjects() {
-    // o mapa cria os objetos sob demanda (setores visíveis) e devolve o índice bloco -> objeto
-    this.objSprites = this.map.attach(this);
+    // o mapa cria os objetos sob demanda (setores visíveis); o índice bloco -> objeto é map.cellObj
+    this.map.attach(this);
   }
+  get objSprites() { return this.map.cellObj; } // (troca a cada mundo montado)
 
   // ---------- equipe ----------
   // Envia o Pokémon i para o campo (onde a bola caiu) e passa a controlar ele
@@ -234,6 +239,10 @@ class Game {
   // Tabela de encontros: a da área (ou do bioma). À noite os noturnos aparecem: no bioma, a tabela "noite"
   // substitui a do dia; numa área com tabela própria, os noturnos do bioma entram no nível da área (~45% do peso).
   #encounterTable(own, biome, night, zone, x, y) {
+    // tabelas por área do mundo ampliado (src/data/habitats.js, com dia/noite e formas): valem antes das do mapa
+    const hid = zone?.id ?? (zone?.name ? this.map.areas.find((a) => a.id && a.name === zone.name)?.id : null);
+    const hab = hid && this.habitats?.encontrosDaArea?.(hid, night);
+    if (hab?.length) return hab;
     // fora das áreas desenhadas (bordas do esboço): usa a tabela da área com encontros mais perto (até 24 blocos), ou a
     // da área de mesmo nome; senão o selvagem do lado da Rota 2 ou do Bosque saía com nível de Rota 1
     if (!own && x != null) {
@@ -466,6 +475,7 @@ class Game {
     const t0 = performance.now();
     const inp = this.input; inp.poll();
     if (inp.pressed('perf')) $('perf').hidden = !$('perf').hidden;
+    if (this.viagem?.ocupada) { this.viagem.quadro(rdt); this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // trocando de mundo
     // título, menu e diálogo param o mundo (a câmera e o desenho continuam)
     if (this.ui?.frame(rdt)) { this.net?.update(rdt, true); this.#camera(rdt); this.map.flushDirty(); this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // o online segue mesmo com o menu aberto
     // pausa no impacto: o mundo congela por alguns milissegundos
