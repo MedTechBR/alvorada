@@ -97,7 +97,7 @@ R.ell('cracked', 945, 345, 14, 13, 0.7)
 R.ell('ash', 945, 345, 9, 8, 0.8)
 R.ell('obsidian', 945, 345, 3, 3, 0.4)
 # entrada das Ruínas de Pedra Pintada: fachada de pedra no flanco leste da cratera
-R.stamp(953, 343, [
+R.stamp(953, 347, [
     'HHHHHHHHHHHHH',
     'HHHHHHHHHHHHH',
     'HHHHHHHHHHHHH',
@@ -105,7 +105,7 @@ R.stamp(953, 343, [
     'XXXXXXXXXXXXX',
     'XXXXXXXXXXXXX',
     'XXXXXXXXXXXXX'])
-R.ell('oldstone', 959, 353, 9, 3, 0.5, ['dune', 'sand'])
+R.ell('oldstone', 959, 356, 9, 3, 0.5, ['dune', 'sand'])
 
 # ---------------------------------------------------------------- RAMPA E OÁSIS DO BURITI [1080,250,60,50]
 R.c('oasis_buriti: Oásis do Buriti')
