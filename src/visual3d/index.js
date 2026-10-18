@@ -158,6 +158,10 @@ export class Visual3D {
     const g = this.g, dt = Math.min(0.05, g.app.ticker.deltaMS / 1000);
     this.t += dt; this.u.tempo.value = this.t;
     if (!this.view) this.cull();
+    // qualidade mudou (automática ou nas Opções): resolução, sombras, densidade da grama
+    const q = g.quality?.level;
+    if (q !== this.nivelQ) { const prim = this.nivelQ == null; this.nivelQ = q; if (!prim) { this.#tamanho(); if (this.amb?.nivelar(g.quality)) this.setores.limpar(); } }
+    const inf = this.renderer.info; inf.autoReset = false; this.ultInfo = { calls: inf.render.calls, tri: inf.render.triangles }; inf.reset();
     const T = this.perf ??= { ceu: 0, setores: 0, espelho: 0, cena: 0, sobre: 0, n: 0 }, now = () => performance.now();
     let t0 = now();
     const marca = (k) => { const t = now(); T[k] += t - t0; t0 = t; };

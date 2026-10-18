@@ -10,8 +10,8 @@ const FLORES2D = new Set(FLOWERS.flat().map((t) => t.source));
 // - Sombras do 2D (tx.shadow) e coisas planas (placas no chão): deitadas no chão.
 // - Decoração plana do mapa (flores, vitórias-régias, seixos, tapetes, lava/maré animadas): no chão.
 // Lotes por folha de textura e modo (um draw call cada), refeitos a cada quadro.
-const MODOS = { opaco: 0, transp: 1, aditivo: 2, chao: 3 };
-const ORDEM = [0, 4, 6, 2]; // renderOrder por modo: chão antes dos billboards transparentes
+const MODOS = { opaco: 0, transp: 1, aditivo: 2, chao: 3, silhueta: 4 };
+const ORDEM = [0, 4, 6, 2, 9]; // renderOrder por modo: chão antes dos billboards transparentes
 const lin = new Float32Array(256); for (let i = 0; i < 256; i++) lin[i] = Math.pow(i / 255, 2.2);
 
 const VERT = `attribute vec4 aCor; attribute vec3 aBase; attribute float aBranco;
@@ -26,12 +26,13 @@ const VERT = `attribute vec4 aCor; attribute vec3 aBase; attribute float aBranco
     if (uPlano < 0.5) { vec4 b = projectionMatrix * viewMatrix * vec4(cb, 1.0); gl_Position.z = (b.z / b.w - 0.0006) * gl_Position.w; }
     #include <fog_vertex>
   }`;
-const FRAG = `uniform sampler2D map; uniform vec3 luz; uniform float uCorte; varying vec2 vUv; varying vec4 vCor; varying float vBranco;
+const FRAG = `uniform sampler2D map; uniform vec3 luz; uniform float uCorte; uniform float uSil; varying vec2 vUv; varying vec4 vCor; varying float vBranco;
   #include <fog_pars_fragment>
   void main(){ vec4 t = texture2D(map, vUv);
     if (t.a < uCorte) discard;
     vec3 c = mix(t.rgb * vCor.rgb, vec3(1.0), vBranco) * luz;
     gl_FragColor = vec4(c, t.a * vCor.a);
+    if (uSil > 0.5) gl_FragColor = vec4(0.55, 0.78, 1.0, 0.3 * step(0.5, t.a));
     #include <fog_fragment>
     #include <colorspace_fragment>
   }`;
@@ -41,12 +42,14 @@ class Lote {
     this.tex = tex; this.modo = modo; this.n = 0; this.cap = 0; this.quads = [];
     const plano = modo === MODOS.chao;
     this.mat = new THREE.ShaderMaterial({
-      uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, { uPlano: { value: plano ? 1 : 0 }, uCorte: { value: modo === MODOS.opaco ? 0.5 : 0.02 } }]),
+      uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, { uPlano: { value: plano ? 1 : 0 }, uCorte: { value: modo === MODOS.opaco || modo === MODOS.silhueta ? 0.5 : 0.02 }, uSil: { value: modo === MODOS.silhueta ? 1 : 0 } }]),
       vertexShader: VERT, fragmentShader: FRAG, fog: true,
       transparent: modo !== MODOS.opaco, depthWrite: modo === MODOS.opaco,
       blending: modo === MODOS.aditivo ? THREE.AdditiveBlending : THREE.NormalBlending,
       side: THREE.DoubleSide,
     });
+    // silhueta: só aparece onde algo está NA FRENTE do sprite (atrás de casa, árvore): o jogador nunca some
+    if (modo === MODOS.silhueta) { this.mat.depthFunc = THREE.GreaterDepth; this.mat.fog = false; }
     this.mat.uniforms.map = { value: tex };
     this.mat.uniforms.uCurva = esp.v.u.curva; this.mat.uniforms.uAlvoZ = esp.v.u.alvoZ;
     this.mat.map = tex; this.mat.alphaTest = 0.5; // o mapa de sombra copia daqui o recorte pela transparência
@@ -133,13 +136,14 @@ export class Espelho {
       const gx = c.x, gy = c.y;
       if (vw && (gx < vw.x0 - 64 || gx > vw.x1 + 64 || gy < vw.y0 - 64 || gy > vw.y1 + 160)) continue;
       const plano = c.zIndex < -1e5;            // placas no chão (objects.js: flat)
+      this.sil = c === g.player?.view || (g.lead && c === g.lead.view);
       this.gx = gx; this.gy = gy; this.h = v.altura(gx, gy);
       this.#no(c, 1, 0, 0, 1, 0, 0, 1, plano);
     }
     // decoração plana do mapa (setores visíveis)
     for (const s of v.L.setoresVisiveis()) {
       const d = s.deco; if (!d?.visible && !d) continue;
-      this.gx = null;
+      this.gx = null; this.sil = false;
       for (const sp of d.children) { if (!sp.visible || sp.alpha <= 0.01) continue; if (v.amb && (FLORES2D.has(sp.texture?.source) && sp.f != null || sp.texture === SPR.pebble || sp.texture === SPR.pebble2)) continue; this.#no(sp, 1, 0, 0, 1, 0, 0, 1, true, true); }
     }
     for (const l of this.lotes.values()) l.fechar();
@@ -191,5 +195,6 @@ export class Espelho {
     q.w = n.filters?.length ? 1 : 0;
     q.d = deco || chao ? sumz / 4 : this.gy;
     this.#lote(tex, modo).add(q);
+    if (this.sil && modo === 0) { const q2 = this.#quad(); q2.p.set(q.p); q2.uv.set(q.uv); q2.c.set(q.c); q2.b.set(q.b); q2.w = 0; q2.d = q.d; this.#lote(tex, MODOS.silhueta).add(q2); }
   }
 }

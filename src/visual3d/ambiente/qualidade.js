@@ -21,8 +21,11 @@ export const NIVEIS = {
     particulas: 0.3,
   },
 };
+// média = celular com qualidade alta (o principal escolhe pelo toque): grama e sombra mais leves, pós completo
+NIVEIS.media = { ...NIVEIS.alta, nome: 'media', dpr: 1.5, grama: 0.55, laminas: 4, flores: 0.8, arbustoSeg: 10, sombraTam: 1024, nuvens: 6, particulas: 0.6, raios: 0.8 };
+const TOQUE = typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches;
 // quality: a instância de Quality do jogo (game.quality) ou 'alta'/'baixa'
 export function nivelAmbiente(quality) {
   const low = typeof quality === 'string' ? quality === 'baixa' : !!quality?.low;
-  return NIVEIS[low ? 'baixa' : 'alta'];
+  return NIVEIS[low ? 'baixa' : TOQUE ? 'media' : 'alta'];
 }

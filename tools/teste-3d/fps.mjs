@@ -21,7 +21,7 @@ try {
   await sleep(+seg * 1000);
   const r = await P.ev(`(() => { const F = window.__fps, dt = (performance.now() - F.t0) / 1000, q = F.piores.slice(5).sort((a, b) => a - b);
     return { fps: +(F.n / dt).toFixed(1), p50: +q[Math.floor(q.length * 0.5)].toFixed(1), p95: +q[Math.floor(q.length * 0.95)].toFixed(1), pior: +q[q.length - 1].toFixed(1), qualidade: game.quality.level, dpr: devicePixelRatio,
-      hidden: document.hidden, ms3d: window.v3d ? v3d.medir() : null, sobre: window.v3d ? (() => { const f = v3d.sobre.pf; return f ? { rt: +(f.rt / f.n).toFixed(2), tela: +(f.tela / f.n).toFixed(2) } : null; })() : null, draw: window.v3d ? v3d.renderer.info.render.calls : null, tri: window.v3d ? v3d.renderer.info.render.triangles : null }; })()`);
+      hidden: document.hidden, ms3d: window.v3d ? v3d.medir() : null, sobre: window.v3d ? (() => { const f = v3d.sobre.pf; return f ? { rt: +(f.rt / f.n).toFixed(2), tela: +(f.tela / f.n).toFixed(2) } : null; })() : null, draw: window.v3d ? v3d.ultInfo.calls : null, tri: window.v3d ? v3d.ultInfo.tri : null, prog: window.v3d ? v3d.renderer.info.programs.length : null }; })()`);
   console.log(JSON.stringify({ qs, lentidao: +lent, celular: mobile, ...r }));
   const errs = P.logs.filter((l) => /EXC|rror/.test(l)); if (errs.length) console.log('console:', errs.slice(0, 8).join('\n'));
 } finally { b.kill(); }
