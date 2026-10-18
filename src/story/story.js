@@ -345,6 +345,7 @@ export class Story {
     add(this.npc('nurse'), 38, 'Centro Pokémon', () => this.#nurseTalk());
     out.push(...this.roteiro.interactions());
     out.push(...(g.mundo?.masmorra?.interactions() ?? [])); // alavancas, baús, sinos, tochas e portas das masmorras
+    out.push(...(g.vivo?.interactions() ?? [])); // escadas de mão, escalar com a montaria, descer do telhado (src/world/vivo.js)
     const n = this.spots.get('nurse');
     add({ x: n.x + 22, y: n.y - 6, h: 26 }, 16, 'Usar o PC', () => { g.ui.openPC(); });
     return out;

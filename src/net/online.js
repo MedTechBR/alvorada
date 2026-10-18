@@ -118,7 +118,7 @@ export class Online {
     });
     room.on('message', (type, data, from) => this.#dispatch(type, data, from));
     room.on('status', (text, lvl) => text && this.ui.toast(text, lvl));
-    room.on('join', (id) => { if (id === room.selfId) return; if (!channel) this.ui.toast(`${this.nameOf(id)} entrou na sala.`); this.#sendInfo(id); });
+    room.on('join', (id) => { if (id === room.selfId) return; if (!channel) this.ui.toast(`${this.nameOf(id)} entrou na sala.`); this.#sendInfo(id); this.g.vivo?.novoJogador(id); });
     room.on('leave', (id) => { if (id === room.selfId) return; this.#gone(id, true, !channel); });
     room.on('drop', (id) => { if (!channel) this.ui.toast(`A conexão de ${this.nameOf(id)} caiu. Esperando voltar…`, 'warn'); this.trade.onPlayerGone(id, false); if (!channel) this.arbiter?.onLeave(id); });
     room.on('back', (id) => { if (!channel) this.ui.toast(`${this.nameOf(id)} voltou.`, 'ok'); this.trade.onPlayerBack(id); });
@@ -178,6 +178,7 @@ export class Online {
       case 'st': this.remotes.onState(from, data); return;
       case 'info': r?.setInfo(data); return;
       case 'iq': this.#sendInfo(from); return; // alguém chegou perto e pediu os detalhes
+      case 'cv': this.g.vivo?.receber(data, from); return; // cenário vivo: árvore caída, prédio danificado, gelo… (src/world/vivo.js)
       case 'use': return this.#replayUse(r, data);
       case 'chat': { const text = cleanText(data.text, 80); if (!text || !r) return; bubble(r.view, text); this.ui.chat(this.nameOf(from), text, r.color); return; }
       case 'emo': {
@@ -258,7 +259,8 @@ export class Online {
       this.stT = this.duel.active ? 0.05 : busy ? 0.1 : 0.5;
       const r1 = (v) => Math.round(v * 10) / 10;
       const st = { ts: Math.round(performance.now()), seq: ++this.seq, x: r1(p.x), y: r1(p.y), d: p.dir, r: p.speed > 100 };
-      if (l?.alive) st.l = { x: r1(l.x), y: r1(l.y), u: l.mon.uid, a: l.dir };
+      if (l?.alive) { st.l = { x: r1(l.x), y: r1(l.y), u: l.mon.uid, a: l.dir }; if (l.z > 0.5) st.l.h = Math.round(l.z); if (l.piso > 0) st.l.p = 1; } // altura (no ar ou em cima de algo)
+      if (p.z > 0.5) st.tz = Math.round(p.z); // treinador no telhado
       const mt = this.g.mount?.netState(); if (mt) Object.assign(st, mt); // montaria: tipo, altura do voo, mergulho (e mountDex)
       this.send('st', st);
       this.arbiter?.handle('st', st, this.selfId);

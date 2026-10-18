@@ -482,7 +482,7 @@ class Game {
     this.combat.update(dt);
     this.#updateBalls(dt);
     this.#updateThrowMon(dt);
-    for (const e of this.entities) { if (e.fadeIn) { e.alpha = Math.min(1, e.alpha + dt * 2); if (e.alpha >= 1) e.fadeIn = false; } if (e.dead) e.alpha = Math.max(0, e.alpha - dt * 2); e.update(dt); e.view.zIndex = e.y; }
+    for (const e of this.entities) { if (e.fadeIn) { e.alpha = Math.min(1, e.alpha + dt * 2); if (e.alpha >= 1) e.fadeIn = false; } if (e.dead) e.alpha = Math.max(0, e.alpha - dt * 2); e.update(dt); e.view.zIndex = e.sortY ?? e.y; }
     this.#crowd();
     this.fx.update(dt);
     this.#camera(rdt);
