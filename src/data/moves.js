@@ -17,6 +17,7 @@
 // "todos os adversários" → wave (ou quake se for de Terra/Pedra físico); clima → rain; campo e armadilhas → cloud;
 // estado → self (em si) ou proj de estado; poder alto e PP baixo → cd maior.
 import { GOLPES } from './gen/golpes.js';
+import { RECEITAS } from './gen/receitas.js'; // gerado por tools/alinhar_receitas.mjs a partir de src/combat/anims
 
 // Ajustes finos herdados da versão anterior do jogo (já testados no mapa).
 const ANTIGOS = {
@@ -111,27 +112,17 @@ const ANTIGOS = {
 
 // Golpes famosos corrigidos à mão para ficarem com a cara certa no tempo real.
 const FAMOSOS = {
-  // Lança-Chamas: jato contínuo de fogo (muitas chamas pequenas; o poder é dividido entre elas)
-  flamethrower: { kind: 'proj', stream: true, count: 6, speed: 21, range: 9, cd: 2.4 },
-  // Hidro Bomba: um jato só, grosso, lento de recarregar
-  hydroPump: { kind: 'proj', count: 1, speed: 16, range: 15, cd: 3.4, big: 2.2 },
+  // Lança-Chamas e Hidro Bomba: jatos contínuos (feixes da receita do combate; o dano sai em tiques)
+  flamethrower: { kind: 'proj', stream: true, range: 9, cd: 2.4 },
+  hydroPump: { kind: 'proj', stream: true, range: 12, cd: 3.4, big: 2.2 },
   // Terremoto: tremor forte em volta de quem usa
   earthquake: { kind: 'quake', range: 7.5, cd: 4 },
   // Surfar: uma onda que se espalha em volta
   surf: { kind: 'wave', range: 7, cd: 3.2, surge: true },
   muddyWater: { kind: 'wave', range: 6.5, cd: 3, surge: true },
-  // Investida: corrida curta contra o alvo
-  tackle: { kind: 'dash', range: 4, cd: 1.1 },
-  // Voar: sobe (fica intocável), depois mergulha no alvo
-  fly: { kind: 'dash', range: 9, cd: 4.5, eff: { charge: 0.7, semi: 'fly' } },
-  bounce: { kind: 'dash', range: 8, cd: 4.2, eff: { charge: 0.7, semi: 'fly' } },
-  // Cavar: some no chão e surge debaixo do alvo
-  dig: { kind: 'dash', range: 9, cd: 4.5, eff: { charge: 0.9, semi: 'dig' } },
-  dive: { kind: 'dash', range: 9, cd: 4.5, eff: { charge: 0.9, semi: 'dive' } },
-  phantomForce: { kind: 'dash', range: 9, cd: 4.8, eff: { charge: 0.9, semi: 'vanish' } },
-  // Proteção / Detectar: escudo de 1,2 s (eff.protect)
-  protect: { kind: 'self', cd: 6 },
-  detect: { kind: 'self', cd: 6 },
+  // Proteção / Detectar: escudo de 1,2 s (eff.protect; a receita do combate usa a forma 'shield')
+  protect: { kind: 'shield', cd: 6 },
+  detect: { kind: 'shield', cd: 6 },
   // Trovão cai do céu sobre o alvo; Relâmpago e raios são quase instantâneos
   thunder: { kind: 'rain', range: 13, cd: 3.6 },
   thunderbolt: { kind: 'proj', speed: 30, range: 13 },
@@ -167,6 +158,17 @@ const FAMOSOS = {
   swift: { kind: 'proj', count: 5, speed: 18, range: 13, cd: 1.8 },
 };
 
+// Os pedidos explícitos valem acima das receitas: Investida = investida (dash); Voar sobe e mergulha;
+// Cavar some no chão; Mergulho some na água; Força Fantasma desaparece (executores de altura do combate).
+const FORCADOS = {
+  tackle: { kind: 'dash', range: 4, cd: 1.1 },
+  fly: { kind: 'fly', range: 9, cd: 4.5, eff: { charge: 0.7, semi: 'fly' } },
+  bounce: { kind: 'fly', range: 8, cd: 4.2, eff: { charge: 0.7, semi: 'fly' } },
+  dig: { kind: 'dig', range: 9, cd: 4.5, eff: { charge: 0.9, semi: 'dig' } },
+  dive: { kind: 'dive', range: 9, cd: 4.5, eff: { charge: 0.9, semi: 'dive' } },
+  phantomForce: { kind: 'dig', range: 9, cd: 4.8, eff: { charge: 0.9, semi: 'vanish' } },
+};
+
 const merge = (a, b) => {
   const o = { ...a, ...b };
   if (a?.eff || b?.eff) o.eff = { ...(a?.eff ?? {}), ...(b?.eff ?? {}) };
@@ -175,8 +177,10 @@ const merge = (a, b) => {
 
 export const MOVES = {};
 for (const [id, g] of Object.entries(GOLPES)) {
-  const m = merge(merge(g, ANTIGOS[id]), FAMOSOS[id]);
+  // oficial → ajustes antigos → famosos → receita de animação do combate → pedidos explícitos
+  const m = merge(merge(merge(merge(g, ANTIGOS[id]), FAMOSOS[id]), RECEITAS[id]), FORCADOS[id]);
   m.id = id;
+  if (m.kind === 'proj' && !m.speed) m.speed = m.type === 'electric' ? 26 : 17;
   if (m.acc === null && m.cat !== 'status') m.homing = true;
   m.aimSpread = m.acc == null ? 0 : Math.round((1 - m.acc) * 0.8 * 100) / 100;
   if (!m.eff) delete m.eff;
@@ -186,7 +190,8 @@ for (const [id, g] of Object.entries(GOLPES)) {
 // grafias alternativas usadas no roteiro
 MOVES.watersport = MOVES.waterSport;
 
-export const KINDS = ['proj', 'melee', 'multi', 'cone', 'dash', 'wave', 'quake', 'cloud', 'rain', 'self'];
+// formas que o combate executa (src/combat/combat.js → use)
+export const KINDS = ['proj', 'melee', 'multi', 'cone', 'dash', 'wave', 'quake', 'cloud', 'rain', 'self', 'line', 'bolt', 'surf', 'sky', 'target', 'shield', 'fly', 'dig', 'dive'];
 
 export function moveInfo(id) { return MOVES[id]; }
 

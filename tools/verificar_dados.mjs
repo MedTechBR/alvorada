@@ -65,13 +65,26 @@ for (const [id, m] of Object.entries(MOVES)) {
   ok(['phys', 'spec', 'status'].includes(m.cat), `${n}: categoria`);
   ok(KINDS.includes(m.kind), `${n}: kind "${m.kind}" não executável`);
   ok(m.cd > 0 && m.cd <= 12, `${n}: cd ${m.cd}`);
-  if (m.kind !== 'self') ok(m.range > 0, `${n}: sem alcance`);
+  if (!['self', 'shield'].includes(m.kind)) ok(m.range > 0, `${n}: sem alcance`);
   if (m.kind === 'proj') ok(m.speed > 0, `${n}: projétil sem velocidade`);
   if (m.cat !== 'status') ok(m.power > 0 || m.fixed != null || m.eff?.ohko, `${n}: golpe de dano sem poder`);
   ok(m.acc === null || (m.acc > 0 && m.acc <= 1), `${n}: precisão`);
   ok(m.pp > 0, `${n}: PP`);
   if (m.name === m.en && !/^[A-Z][a-z]+$/.test(m.en)) avisos.push(`${n}: sem nome em português`);
 }
+
+// receitas de animação do combate: a forma de execução precisa existir e combinar com a receita
+try {
+  const { ANIMS, kindOf } = await import('../src/combat/anims/index.js');
+  const { RECEITAS } = await import('../src/data/gen/receitas.js');
+  const FORCADOS = ['tackle', 'fly', 'bounce', 'dig', 'dive', 'phantomForce'];
+  let n = 0;
+  for (const [id, m] of Object.entries(MOVES)) {
+    ok(KINDS.includes(kindOf(id, m)), `golpe ${id}: forma ${kindOf(id, m)} sem executor`);
+    if (RECEITAS[id] && !FORCADOS.includes(id)) { n++; ok(m.kind === RECEITAS[id].kind, `golpe ${id}: kind ${m.kind} ≠ receita ${RECEITAS[id].kind}`); }
+  }
+  console.log(`receitas: ${Object.keys(ANIMS).length} animações, ${n} golpes oficiais alinhados com a receita`);
+} catch (e) { avisos.push('receitas do combate não carregaram: ' + e.message); }
 
 // ---------------------------------------------------------------- itens
 for (const [id, it] of Object.entries(ITEMS)) {

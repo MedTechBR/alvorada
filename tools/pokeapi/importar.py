@@ -481,6 +481,8 @@ def effect(m):
             e['self'] = True
         if cat != 'status':
             e['statChance'] = sc / 100 if sc else 1
+            if 'status' not in e:  # o combate lê eff.chance também para a mudança de status
+                e['chance'] = e['statChance']
     if mt.get('meta_category_id') == '12':
         e['knock'] = 9
     if mt.get('meta_category_id') == '9':

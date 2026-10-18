@@ -1,0 +1,2665 @@
+{
+"comment": "Gerado por tools/gerar-esboco.py (não editar à mão).",
+"scale": 6,
+"ops": [
+{
+"op": "comment",
+"_": "==== esboço gerado por tools/gerar-esboco.py a partir de docs/mapa-alvorada.json (não editar à mão) ===="
+},
+{
+"op": "comment",
+"_": "montanhas ao norte e Monte Zênite"
+},
+{
+"op": "rect",
+"t": "rock",
+"x": 0,
+"y": 0,
+"w": 600,
+"h": 12
+},
+{
+"op": "rect",
+"t": "snow",
+"x": 282,
+"y": 0,
+"w": 48,
+"h": 18
+},
+{
+"op": "ellipse",
+"t": "snow",
+"cx": 42.0,
+"cy": 16.0,
+"rx": 22.0,
+"ry": 18.0,
+"noise": 0.4
+},
+{
+"op": "comment",
+"_": "Planalto dos Ventos: capim ondulante e pedras soltas"
+},
+{
+"op": "blobs",
+"t": "tall",
+"x": 0,
+"y": 12,
+"w": 600,
+"h": 114,
+"scale": 0.11,
+"th": 0.6
+},
+{
+"op": "scatter",
+"t": "flowers",
+"x": 0,
+"y": 12,
+"w": 600,
+"h": 114,
+"p": 0.004
+},
+{
+"op": "comment",
+"_": "Paredão: parede de pedra de oeste a leste (só com Escalar, pelos cipós da Rota 8)"
+},
+{
+"op": "rect",
+"t": "rock",
+"x": 0,
+"y": 132,
+"w": 600,
+"h": 10
+},
+{
+"op": "rect",
+"t": "cliff",
+"x": 0,
+"y": 142,
+"w": 600,
+"h": 2
+},
+{
+"op": "rect",
+"t": "climb",
+"x": 184,
+"y": 132,
+"w": 4,
+"h": 12
+},
+{
+"op": "rect",
+"t": "climb",
+"x": 284,
+"y": 132,
+"w": 2,
+"h": 12
+},
+{
+"op": "set",
+"t": "cavedoor",
+"pts": [
+[
+396,
+143
+],
+[
+397,
+143
+]
+]
+},
+{
+"op": "comment",
+"_": "florestas: Bosque Sussurrante e Mata dos Jequitibás"
+},
+{
+"op": "poly",
+"t": "forest",
+"pts": [
+[
+12,
+156
+],
+[
+312,
+156
+],
+[
+316,
+222
+],
+[
+312,
+276
+],
+[
+186,
+280
+],
+[
+12,
+276
+]
+],
+"noise": 4
+},
+{
+"op": "ellipse",
+"t": "dark",
+"cx": 33.0,
+"cy": 186.0,
+"rx": 21.0,
+"ry": 18.0,
+"noise": 0.35
+},
+{
+"op": "blobs",
+"t": "tall",
+"x": 12,
+"y": 168,
+"w": 42,
+"h": 36,
+"scale": 0.25,
+"th": 0.6,
+"on": [
+"dark"
+]
+},
+{
+"op": "comment",
+"_": "Lago Espelho, Ilha do Véu e Rio Lúmen"
+},
+{
+"op": "ellipse",
+"t": "sand",
+"cx": 480.0,
+"cy": 270.0,
+"rx": 87.0,
+"ry": 57.0,
+"noise": 0.2
+},
+{
+"op": "ellipse",
+"t": "water",
+"cx": 480.0,
+"cy": 270.0,
+"rx": 84.0,
+"ry": 54.0,
+"noise": 0.2
+},
+{
+"op": "ellipse",
+"t": "deep",
+"cx": 486.0,
+"cy": 266.0,
+"rx": 66.0,
+"ry": 40.0,
+"noise": 0.3
+},
+{
+"op": "ellipse",
+"t": "sand",
+"cx": 516.0,
+"cy": 249.0,
+"rx": 14.0,
+"ry": 11.0,
+"noise": 0.3
+},
+{
+"op": "ellipse",
+"t": "grass",
+"cx": 516.0,
+"cy": 249.0,
+"rx": 12.0,
+"ry": 9.0,
+"noise": 0.3
+},
+{
+"op": "path",
+"t": "water",
+"pts": [
+[
+490.0,
+320
+],
+[
+456,
+336
+],
+[
+460,
+372
+],
+[
+454,
+408
+],
+[
+456,
+426
+]
+],
+"width": 10,
+"wobble": 2
+},
+{
+"op": "path",
+"t": "deep",
+"pts": [
+[
+490.0,
+324
+],
+[
+456,
+336
+],
+[
+460,
+372
+],
+[
+454,
+408
+],
+[
+456,
+426
+]
+],
+"width": 4,
+"wobble": 2
+},
+{
+"op": "comment",
+"_": "Brejo das Lamparinas (Rota 5)"
+},
+{
+"op": "rect",
+"t": "dark",
+"x": 336,
+"y": 216,
+"w": 72,
+"h": 60
+},
+{
+"op": "blobs",
+"t": "water",
+"x": 336,
+"y": 216,
+"w": 72,
+"h": 60,
+"scale": 0.12,
+"th": 0.58,
+"on": [
+"dark"
+]
+},
+{
+"op": "blobs",
+"t": "tall",
+"x": 336,
+"y": 216,
+"w": 72,
+"h": 60,
+"scale": 0.2,
+"th": 0.62,
+"on": [
+"dark"
+]
+},
+{
+"op": "path",
+"t": "bridge",
+"pts": [
+[
+336,
+246
+],
+[
+408,
+246
+]
+],
+"width": 2,
+"on": [
+"water",
+"deep"
+]
+},
+{
+"op": "path",
+"t": "dark",
+"pts": [
+[
+336,
+246
+],
+[
+408,
+246
+]
+],
+"width": 2,
+"on": [
+"forest",
+"tall"
+]
+},
+{
+"op": "comment",
+"_": "Costa Coral, Praia dos Corais e Mar do Sul"
+},
+{
+"op": "poly",
+"t": "sand",
+"pts": [
+[
+228,
+396
+],
+[
+288,
+378
+],
+[
+372,
+378
+],
+[
+432,
+372
+],
+[
+516,
+378
+],
+[
+600,
+372
+],
+[
+600,
+420
+],
+[
+228,
+420
+]
+],
+"noise": 2
+},
+{
+"op": "rect",
+"t": "water",
+"x": 0,
+"y": 414,
+"w": 600,
+"h": 66
+},
+{
+"op": "rect",
+"t": "deep",
+"x": 0,
+"y": 426,
+"w": 600,
+"h": 54
+},
+{
+"op": "rect",
+"t": "sand",
+"x": 0,
+"y": 405,
+"w": 234,
+"h": 9
+},
+{
+"op": "rect",
+"t": "water",
+"x": 0,
+"y": 414,
+"w": 228,
+"h": 12
+},
+{
+"op": "ellipse",
+"t": "water",
+"cx": 144,
+"cy": 426,
+"rx": 12,
+"ry": 9
+},
+{
+"op": "ellipse",
+"t": "sand",
+"cx": 144,
+"cy": 426,
+"rx": 8,
+"ry": 6,
+"noise": 0.3
+},
+{
+"op": "ellipse",
+"t": "grass",
+"cx": 144,
+"cy": 426,
+"rx": 4.5,
+"ry": 3,
+"noise": 0.3
+},
+{
+"op": "ellipse",
+"t": "water",
+"cx": 174,
+"cy": 435,
+"rx": 12,
+"ry": 9
+},
+{
+"op": "ellipse",
+"t": "sand",
+"cx": 174,
+"cy": 435,
+"rx": 8,
+"ry": 6,
+"noise": 0.3
+},
+{
+"op": "ellipse",
+"t": "grass",
+"cx": 174,
+"cy": 435,
+"rx": 4.5,
+"ry": 3,
+"noise": 0.3
+},
+{
+"op": "ellipse",
+"t": "water",
+"cx": 198,
+"cy": 423,
+"rx": 12,
+"ry": 9
+},
+{
+"op": "ellipse",
+"t": "sand",
+"cx": 198,
+"cy": 423,
+"rx": 8,
+"ry": 6,
+"noise": 0.3
+},
+{
+"op": "ellipse",
+"t": "grass",
+"cx": 198,
+"cy": 423,
+"rx": 4.5,
+"ry": 3,
+"noise": 0.3
+},
+{
+"op": "ellipse",
+"t": "water",
+"cx": 588.0,
+"cy": 396.0,
+"rx": 20.0,
+"ry": 20.0
+},
+{
+"op": "ellipse",
+"t": "rock",
+"cx": 588.0,
+"cy": 396.0,
+"rx": 12.0,
+"ry": 12.0,
+"noise": 0.3
+},
+{
+"op": "ellipse",
+"t": "sand",
+"cx": 588.0,
+"cy": 402.0,
+"rx": 8.0,
+"ry": 4
+},
+{
+"op": "comment",
+"_": "Ravina do Rochedo (Rota 7) e Ferrovia da Aurora (Rota 6)"
+},
+{
+"op": "rect",
+"t": "path",
+"x": 300,
+"y": 150,
+"w": 156,
+"h": 18
+},
+{
+"op": "rect",
+"t": "grass",
+"x": 360,
+"y": 168,
+"w": 108,
+"h": 48
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+342,
+231
+],
+[
+370,
+210
+],
+[
+468,
+178
+],
+[
+510,
+186
+]
+],
+"width": 3,
+"wobble": 1
+},
+{
+"op": "blobs",
+"t": "tall",
+"x": 360,
+"y": 168,
+"w": 108,
+"h": 48,
+"scale": 0.15,
+"th": 0.6
+},
+{
+"op": "comment",
+"_": "campos abertos do sul: árvores soltas e manchas de mato alto"
+},
+{
+"op": "blobs",
+"t": "tall",
+"x": 0,
+"y": 144,
+"w": 600,
+"h": 252,
+"scale": 0.12,
+"th": 0.66,
+"on": [
+"grass"
+]
+},
+{
+"op": "comment",
+"_": "cidades esboçadas (detalhar nas próximas rodadas)"
+},
+{
+"op": "rect",
+"t": "grass",
+"x": 432,
+"y": 312,
+"w": 42,
+"h": 24,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
+},
+{
+"op": "rect",
+"t": "plaza",
+"x": 446,
+"y": 323,
+"w": 14,
+"h": 6
+},
+{
+"op": "rect",
+"t": "path",
+"x": 432,
+"y": 329,
+"w": 42,
+"h": 2
+},
+{
+"op": "rect",
+"t": "dock",
+"x": 440,
+"y": 302,
+"w": 2,
+"h": 10,
+"on": [
+"water",
+"deep",
+"sand"
+]
+},
+{
+"op": "rect",
+"t": "dock",
+"x": 452,
+"y": 302,
+"w": 2,
+"h": 10,
+"on": [
+"water",
+"deep",
+"sand"
+]
+},
+{
+"op": "rect",
+"t": "dock",
+"x": 464,
+"y": 302,
+"w": 2,
+"h": 10,
+"on": [
+"water",
+"deep",
+"sand"
+]
+},
+{
+"op": "rect",
+"t": "grass",
+"x": 324,
+"y": 408,
+"w": 48,
+"h": 24,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
+},
+{
+"op": "rect",
+"t": "plaza",
+"x": 341,
+"y": 419,
+"w": 14,
+"h": 6
+},
+{
+"op": "rect",
+"t": "path",
+"x": 324,
+"y": 425,
+"w": 48,
+"h": 2
+},
+{
+"op": "rect",
+"t": "grass",
+"x": 324,
+"y": 216,
+"w": 36,
+"h": 30,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
+},
+{
+"op": "rect",
+"t": "plaza",
+"x": 335,
+"y": 230,
+"w": 14,
+"h": 6
+},
+{
+"op": "rect",
+"t": "path",
+"x": 324,
+"y": 236,
+"w": 36,
+"h": 2
+},
+{
+"op": "rect",
+"t": "plaza",
+"x": 480,
+"y": 168,
+"w": 60,
+"h": 36,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
+},
+{
+"op": "rect",
+"t": "plaza",
+"x": 503,
+"y": 185,
+"w": 14,
+"h": 6
+},
+{
+"op": "rect",
+"t": "path",
+"x": 480,
+"y": 191,
+"w": 60,
+"h": 2
+},
+{
+"op": "rect",
+"t": "grass",
+"x": 264,
+"y": 156,
+"w": 42,
+"h": 24,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
+},
+{
+"op": "rect",
+"t": "plaza",
+"x": 278,
+"y": 167,
+"w": 14,
+"h": 6
+},
+{
+"op": "rect",
+"t": "path",
+"x": 264,
+"y": 173,
+"w": 42,
+"h": 2
+},
+{
+"op": "border",
+"t": "rock",
+"x": 262,
+"y": 154,
+"w": 46,
+"h": 28,
+"width": 2,
+"noise": 0
+},
+{
+"op": "rect",
+"t": "path",
+"x": 284,
+"y": 180,
+"w": 3,
+"h": 2
+},
+{
+"op": "rect",
+"t": "path",
+"x": 284,
+"y": 154,
+"w": 3,
+"h": 2
+},
+{
+"op": "rect",
+"t": "grass",
+"x": 132,
+"y": 84,
+"w": 42,
+"h": 30,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
+},
+{
+"op": "rect",
+"t": "plaza",
+"x": 146,
+"y": 98,
+"w": 14,
+"h": 6
+},
+{
+"op": "rect",
+"t": "path",
+"x": 132,
+"y": 104,
+"w": 42,
+"h": 2
+},
+{
+"op": "rect",
+"t": "grass",
+"x": 516,
+"y": 24,
+"w": 42,
+"h": 24,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
+},
+{
+"op": "rect",
+"t": "plaza",
+"x": 530,
+"y": 35,
+"w": 14,
+"h": 6
+},
+{
+"op": "rect",
+"t": "path",
+"x": 516,
+"y": 41,
+"w": 42,
+"h": 2
+},
+{
+"op": "rect",
+"t": "snow",
+"x": 288,
+"y": 0,
+"w": 36,
+"h": 18,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
+},
+{
+"op": "rect",
+"t": "plaza",
+"x": 299,
+"y": 8,
+"w": 14,
+"h": 6
+},
+{
+"op": "rect",
+"t": "path",
+"x": 288,
+"y": 14,
+"w": 36,
+"h": 2
+},
+{
+"op": "comment",
+"_": "rotas esboçadas (conexões da planta)"
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+453,
+324
+],
+[
+436.5,
+345.0
+],
+[
+420,
+366
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+420,
+366
+],
+[
+384.0,
+393.0
+],
+[
+348,
+420
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+348,
+420
+],
+[
+339.0,
+408.0
+],
+[
+330,
+396
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+453,
+324
+],
+[
+412.5,
+285.0
+],
+[
+372,
+246
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+372,
+246
+],
+[
+357.0,
+238.5
+],
+[
+342,
+231
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+510,
+186
+],
+[
+453.0,
+169.5
+],
+[
+396,
+153
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+510,
+186
+],
+[
+444.0,
+172.5
+],
+[
+378,
+159
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+378,
+159
+],
+[
+331.5,
+163.5
+],
+[
+285,
+168
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+285,
+168
+],
+[
+235.5,
+144.0
+],
+[
+186,
+120
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+186,
+120
+],
+[
+243.0,
+93.0
+],
+[
+300,
+66
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+300,
+66
+],
+[
+226.5,
+82.5
+],
+[
+153,
+99
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+153,
+99
+],
+[
+247.5,
+85.5
+],
+[
+342,
+72
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+342,
+72
+],
+[
+439.5,
+54.0
+],
+[
+537,
+36
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+342,
+72
+],
+[
+315.0,
+81.0
+],
+[
+288,
+90
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+288,
+90
+],
+[
+294.0,
+81.0
+],
+[
+300,
+72
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+300,
+72
+],
+[
+297.0,
+54.0
+],
+[
+294,
+36
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+294,
+36
+],
+[
+300.0,
+22.5
+],
+[
+306,
+9
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+300,
+66
+],
+[
+264.0,
+55.5
+],
+[
+228,
+45
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+300,
+72
+],
+[
+298.5,
+76.5
+],
+[
+297,
+81
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "path",
+"pts": [
+[
+300,
+66
+],
+[
+171.0,
+39.0
+],
+[
+42,
+12
+]
+],
+"width": 3,
+"wobble": 3,
+"on": [
+"grass",
+"grass2",
+"tall",
+"forest",
+"dark",
+"sand",
+"path",
+"gold",
+"snow"
+]
+},
+{
+"op": "path",
+"t": "bridge",
+"pts": [
+[
+420,
+339
+],
+[
+480,
+339
+]
+],
+"width": 2,
+"on": [
+"water",
+"deep"
+]
+},
+{
+"op": "comment",
+"_": "Relógio de Pedra e Ruínas dos Vigias"
+},
+{
+"op": "ellipse",
+"t": "plaza",
+"cx": 300,
+"cy": 72,
+"rx": 9,
+"ry": 8
+},
+{
+"op": "rect",
+"t": "plaza",
+"x": 216,
+"y": 36,
+"w": 24,
+"h": 18
+},
+{
+"op": "comment",
+"_": "fim do esboço"
+}
+],
+"objects": [
+{
+"kind": "sign",
+"x": 399,
+"y": 144,
+"text": "MINA AURORA\n(entrada de serviço — fechada por enquanto)"
+},
+{
+"kind": "jequitiba",
+"x": 18,
+"y": 174
+},
+{
+"kind": "jequitiba",
+"x": 25,
+"y": 185
+},
+{
+"kind": "jequitiba",
+"x": 32,
+"y": 196
+},
+{
+"kind": "jequitiba",
+"x": 39,
+"y": 181
+},
+{
+"kind": "jequitiba",
+"x": 46,
+"y": 192
+},
+{
+"kind": "grayrock",
+"x": 508,
+"y": 244
+},
+{
+"kind": "boulder2",
+"x": 520,
+"y": 248
+},
+{
+"kind": "sign",
+"x": 516,
+"y": 255,
+"text": "ILHA DO VÉU\nUm observatório antigo some na neblina."
+},
+{
+"kind": "center",
+"x": 437,
+"y": 320
+},
+{
+"kind": "mart",
+"x": 461,
+"y": 320
+},
+{
+"kind": "sign",
+"x": 452,
+"y": 327,
+"text": "PORTO ESPELHO\nPalafitas, píer comprido, barcos a vela.\n(esboço: cidade em construção)"
+},
+{
+"kind": "lamp",
+"x": 445,
+"y": 325
+},
+{
+"kind": "lamp",
+"x": 460,
+"y": 325
+},
+{
+"kind": "houseA",
+"x": 434,
+"y": 332
+},
+{
+"kind": "houseB",
+"x": 464,
+"y": 332
+},
+{
+"kind": "center",
+"x": 332,
+"y": 416
+},
+{
+"kind": "mart",
+"x": 356,
+"y": 416
+},
+{
+"kind": "sign",
+"x": 347,
+"y": 423,
+"text": "CIDADE CORAL\nCalçadão, coqueiros e o Farol Coral.\n(esboço: cidade em construção)"
+},
+{
+"kind": "lamp",
+"x": 340,
+"y": 421
+},
+{
+"kind": "lamp",
+"x": 355,
+"y": 421
+},
+{
+"kind": "houseA",
+"x": 326,
+"y": 428
+},
+{
+"kind": "houseB",
+"x": 362,
+"y": 428
+},
+{
+"kind": "center",
+"x": 326,
+"y": 227
+},
+{
+"kind": "mart",
+"x": 350,
+"y": 227
+},
+{
+"kind": "sign",
+"x": 341,
+"y": 234,
+"text": "VILA LAMPARINA\nPedra escura e lampiões. O ginásio só abre de noite.\n(esboço: cidade em construção)"
+},
+{
+"kind": "lamp",
+"x": 334,
+"y": 232
+},
+{
+"kind": "lamp",
+"x": 349,
+"y": 232
+},
+{
+"kind": "center",
+"x": 494,
+"y": 182
+},
+{
+"kind": "mart",
+"x": 518,
+"y": 182
+},
+{
+"kind": "sign",
+"x": 509,
+"y": 189,
+"text": "CIDADE AURORA\nA cidade da luzita.\n(esboço: cidade em construção)"
+},
+{
+"kind": "lamp",
+"x": 502,
+"y": 187
+},
+{
+"kind": "lamp",
+"x": 517,
+"y": 187
+},
+{
+"kind": "houseA",
+"x": 482,
+"y": 194
+},
+{
+"kind": "houseB",
+"x": 530,
+"y": 194
+},
+{
+"kind": "center",
+"x": 269,
+"y": 164
+},
+{
+"kind": "mart",
+"x": 293,
+"y": 164
+},
+{
+"kind": "sign",
+"x": 284,
+"y": 171,
+"text": "FORTE ROCHEDO\nFortaleza colonial ao pé do Paredão.\n(esboço: cidade em construção)"
+},
+{
+"kind": "lamp",
+"x": 277,
+"y": 169
+},
+{
+"kind": "lamp",
+"x": 292,
+"y": 169
+},
+{
+"kind": "houseA",
+"x": 266,
+"y": 176
+},
+{
+"kind": "houseB",
+"x": 296,
+"y": 176
+},
+{
+"kind": "center",
+"x": 137,
+"y": 95
+},
+{
+"kind": "mart",
+"x": 161,
+"y": 95
+},
+{
+"kind": "sign",
+"x": 152,
+"y": 102,
+"text": "CIDADE ESCARPA\nCidade mineira em degraus.\n(esboço: cidade em construção)"
+},
+{
+"kind": "lamp",
+"x": 145,
+"y": 100
+},
+{
+"kind": "lamp",
+"x": 160,
+"y": 100
+},
+{
+"kind": "houseA",
+"x": 134,
+"y": 107
+},
+{
+"kind": "houseB",
+"x": 164,
+"y": 107
+},
+{
+"kind": "center",
+"x": 521,
+"y": 32
+},
+{
+"kind": "mart",
+"x": 545,
+"y": 32
+},
+{
+"kind": "sign",
+"x": 536,
+"y": 39,
+"text": "MIRANTE DOS VENTOS\nCasas presas nas falésias.\n(esboço: cidade em construção)"
+},
+{
+"kind": "lamp",
+"x": 529,
+"y": 37
+},
+{
+"kind": "lamp",
+"x": 544,
+"y": 37
+},
+{
+"kind": "houseA",
+"x": 518,
+"y": 44
+},
+{
+"kind": "houseB",
+"x": 548,
+"y": 44
+},
+{
+"kind": "center",
+"x": 290,
+"y": 5
+},
+{
+"kind": "mart",
+"x": 314,
+"y": 5
+},
+{
+"kind": "sign",
+"x": 305,
+"y": 12,
+"text": "LIGA ALVORADA (CIDADELA DO ZÊNITE)\nCidadela do Zênite: Liga Alvorada.\n(esboço: cidade em construção)"
+},
+{
+"kind": "lamp",
+"x": 298,
+"y": 10
+},
+{
+"kind": "lamp",
+"x": 313,
+"y": 10
+},
+{
+"kind": "menhir",
+"x": 306,
+"y": 72
+},
+{
+"kind": "menhir",
+"x": 303,
+"y": 76
+},
+{
+"kind": "menhir",
+"x": 299,
+"y": 78
+},
+{
+"kind": "menhir",
+"x": 294,
+"y": 76
+},
+{
+"kind": "menhir",
+"x": 292,
+"y": 72
+},
+{
+"kind": "menhir",
+"x": 294,
+"y": 67
+},
+{
+"kind": "menhir",
+"x": 299,
+"y": 66
+},
+{
+"kind": "menhir",
+"x": 303,
+"y": 67
+},
+{
+"kind": "column",
+"x": 218,
+"y": 40
+},
+{
+"kind": "column",
+"x": 222,
+"y": 46
+},
+{
+"kind": "column",
+"x": 226,
+"y": 40
+},
+{
+"kind": "column",
+"x": 230,
+"y": 46
+},
+{
+"kind": "column",
+"x": 234,
+"y": 40
+}
+],
+"trees": [
+{
+"x": 0,
+"y": 12,
+"w": 600,
+"h": 114,
+"p": 0.006,
+"kinds": [
+"grayrock",
+"pine",
+"pine2",
+"rock"
+]
+},
+{
+"x": 336,
+"y": 216,
+"w": 72,
+"h": 60,
+"p": 0.015,
+"kinds": [
+"stump",
+"log",
+"autumn"
+],
+"on": [
+"dark"
+]
+},
+{
+"x": 136,
+"y": 420,
+"w": 16,
+"h": 12,
+"p": 0.12,
+"kinds": [
+"palm"
+],
+"on": [
+"sand",
+"grass"
+]
+},
+{
+"x": 166,
+"y": 429,
+"w": 16,
+"h": 12,
+"p": 0.12,
+"kinds": [
+"palm"
+],
+"on": [
+"sand",
+"grass"
+]
+},
+{
+"x": 190,
+"y": 417,
+"w": 16,
+"h": 12,
+"p": 0.12,
+"kinds": [
+"palm"
+],
+"on": [
+"sand",
+"grass"
+]
+},
+{
+"x": 240,
+"y": 372,
+"w": 300,
+"h": 42,
+"p": 0.012,
+"kinds": [
+"palm",
+"palm",
+"boulder"
+],
+"on": [
+"sand"
+]
+},
+{
+"x": 300,
+"y": 150,
+"w": 156,
+"h": 18,
+"p": 0.03,
+"kinds": [
+"boulder",
+"boulder2",
+"rock"
+],
+"on": [
+"path"
+]
+},
+{
+"x": 360,
+"y": 168,
+"w": 108,
+"h": 48,
+"p": 0.01,
+"kinds": [
+"tree2",
+"pine"
+],
+"on": [
+"grass"
+]
+},
+{
+"x": 0,
+"y": 144,
+"w": 600,
+"h": 252,
+"p": 0.006,
+"kinds": [
+"bigtree",
+"tree",
+"tree2",
+"bush"
+],
+"on": [
+"grass"
+]
+}
+],
+"areas": [
+{
+"name": "Planalto dos Ventos",
+"biome": "planalto",
+"rect": [
+0,
+12,
+600,
+108
+],
+"id": "planalto_ventos"
+},
+{
+"name": "Rota Marítima 13",
+"biome": "praia",
+"rect": [
+120,
+420,
+480,
+60
+],
+"id": "rota13"
+},
+{
+"name": "Bosque Sussurrante",
+"biome": "floresta",
+"rect": [
+60,
+168,
+252,
+108
+],
+"id": "bosque_sussurrante"
+},
+{
+"name": "Lago Espelho",
+"biome": "margem",
+"rect": [
+396,
+216,
+168,
+108
+],
+"id": "lago_espelho"
+},
+{
+"name": "Rota 9, Estepe dos Ventos",
+"biome": "campo",
+"rect": [
+168,
+48,
+348,
+48
+],
+"id": "rota9"
+},
+{
+"name": "Rota 4, Rio Lúmen e Restinga",
+"biome": "praia",
+"rect": [
+372,
+324,
+96,
+84
+],
+"id": "rota4"
+},
+{
+"name": "Paredão",
+"biome": "planalto",
+"rect": [
+48,
+132,
+528,
+12
+],
+"id": "paredao"
+},
+{
+"name": "Rota 6, Ferrovia da Aurora",
+"biome": "campo",
+"rect": [
+360,
+168,
+108,
+48
+],
+"id": "rota6"
+},
+{
+"name": "Rota 10, Águas do Véu",
+"biome": "margem",
+"rect": [
+444,
+240,
+84,
+60
+],
+"id": "rota10"
+},
+{
+"name": "Rota 5, Brejo das Lamparinas",
+"biome": "floresta",
+"rect": [
+336,
+216,
+72,
+60
+],
+"id": "rota5"
+},
+{
+"name": "Praia dos Corais",
+"biome": "praia",
+"rect": [
+240,
+384,
+180,
+24
+],
+"id": "praia_corais"
+},
+{
+"name": "Rota 8, Escalada do Paredão",
+"biome": "campo",
+"rect": [
+156,
+96,
+60,
+48
+],
+"id": "rota8"
+},
+{
+"name": "Rota 7, Ravina do Rochedo",
+"biome": "campo",
+"rect": [
+300,
+150,
+156,
+18
+],
+"id": "rota7"
+},
+{
+"name": "Rota 1, Campos de Lúmen",
+"biome": "campo",
+"rect": [
+144,
+330,
+132,
+18
+],
+"id": "rota1"
+},
+{
+"name": "Cidade Aurora",
+"biome": "vila",
+"rect": [
+480,
+168,
+60,
+36
+],
+"id": "cidade_aurora"
+},
+{
+"name": "Rota 3, Margem das Garças",
+"biome": "campo",
+"rect": [
+324,
+330,
+108,
+18
+],
+"id": "rota3"
+},
+{
+"name": "Rota 12, Caminho do Zênite",
+"biome": "planalto",
+"rect": [
+276,
+12,
+36,
+48
+],
+"id": "rota12"
+},
+{
+"name": "Ilhas Coral",
+"biome": "praia",
+"rect": [
+132,
+420,
+72,
+24
+],
+"id": "ilhas_coral"
+},
+{
+"name": "Rota 2, Trilha das Paineiras",
+"biome": "floresta",
+"rect": [
+114,
+264,
+24,
+66
+],
+"id": "rota2"
+},
+{
+"name": "Cidade Campina",
+"biome": "vila",
+"rect": [
+120,
+336,
+42,
+36
+],
+"id": "cidade_campina"
+},
+{
+"name": "Mata dos Jequitibás",
+"biome": "campo",
+"rect": [
+12,
+168,
+42,
+36
+],
+"id": "mata_jequitibas"
+},
+{
+"name": "Cidade Escarpa",
+"biome": "vila",
+"rect": [
+132,
+84,
+42,
+30
+],
+"id": "cidade_escarpa"
+},
+{
+"name": "Cidade Coral",
+"biome": "vila",
+"rect": [
+324,
+408,
+48,
+24
+],
+"id": "cidade_coral"
+},
+{
+"name": "Vila Alvorada",
+"biome": "vila",
+"rect": [
+288,
+336,
+36,
+30
+],
+"id": "vila_alvorada"
+},
+{
+"name": "Vila Sussurro",
+"biome": "vila",
+"rect": [
+144,
+216,
+36,
+30
+],
+"id": "vila_sussurro"
+},
+{
+"name": "Vila Lamparina",
+"biome": "vila",
+"rect": [
+324,
+216,
+36,
+30
+],
+"id": "vila_lamparina"
+},
+{
+"name": "Porto Espelho",
+"biome": "vila",
+"rect": [
+432,
+312,
+42,
+24
+],
+"id": "porto_espelho"
+},
+{
+"name": "Forte Rochedo",
+"biome": "vila",
+"rect": [
+264,
+156,
+42,
+24
+],
+"id": "forte_rochedo"
+},
+{
+"name": "Mirante dos Ventos",
+"biome": "vila",
+"rect": [
+516,
+24,
+42,
+24
+],
+"id": "mirante_ventos"
+},
+{
+"name": "Rota 11, Escadaria dos Vigias",
+"biome": "campo",
+"rect": [
+276,
+72,
+24,
+36
+],
+"id": "rota11"
+},
+{
+"name": "Pico Geada",
+"biome": "campo",
+"rect": [
+24,
+0,
+36,
+24
+],
+"id": "pico_geada"
+},
+{
+"name": "Liga Alvorada (Cidadela do Zênite)",
+"biome": "vila",
+"rect": [
+288,
+0,
+36,
+18
+],
+"id": "liga_zenite"
+},
+{
+"name": "Relógio de Pedra",
+"biome": "planalto",
+"rect": [
+288,
+60,
+24,
+24
+],
+"id": "relogio_pedra"
+},
+{
+"name": "Ilha do Sol Nascente",
+"biome": "campo",
+"rect": [
+576,
+384,
+24,
+24
+],
+"id": "ilha_sol_nascente"
+},
+{
+"name": "Fazenda do Tomé",
+"biome": "campo",
+"rect": [
+96,
+300,
+24,
+18
+],
+"id": "fazenda_tome"
+},
+{
+"name": "Ilha do Véu (Base Crepúsculo)",
+"biome": "praia",
+"rect": [
+504,
+240,
+24,
+18
+],
+"id": "ilha_veu"
+},
+{
+"name": "Mina Aurora",
+"biome": "planalto",
+"rect": [
+384,
+144,
+24,
+18
+],
+"id": "mina_aurora"
+},
+{
+"name": "Ruínas dos Vigias",
+"biome": "campo",
+"rect": [
+216,
+36,
+24,
+18
+],
+"id": "ruinas_vigias"
+},
+{
+"name": "Recife Afundado",
+"biome": "margem",
+"rect": [
+240,
+432,
+24,
+18
+],
+"id": "recife_afundado"
+},
+{
+"name": "Toca do Absol (Gruta do Musgo)",
+"biome": "planalto",
+"rect": [
+192,
+192,
+18,
+18
+],
+"id": "toca_absol"
+},
+{
+"name": "Santuário do Crepúsculo",
+"biome": "margem",
+"rect": [
+480,
+264,
+18,
+18
+],
+"id": "santuario_crepusculo"
+},
+{
+"name": "Lagoa Dourada",
+"biome": "campo",
+"rect": [
+204,
+300,
+18,
+18
+],
+"id": "lagoa_dourada"
+},
+{
+"name": "Fenda Prismática",
+"biome": "campo",
+"rect": [
+288,
+72,
+18,
+18
+],
+"id": "fenda_prismatica"
+},
+{
+"name": "Gruta da Maré",
+"biome": "planalto",
+"rect": [
+252,
+396,
+18,
+12
+],
+"id": "gruta_mare"
+}
+],
+"spots": {
+"porto_espelho": [
+453,
+330,
+"down"
+],
+"cidade_coral": [
+348,
+426,
+"down"
+],
+"vila_lamparina": [
+342,
+237,
+"down"
+],
+"cidade_aurora": [
+510,
+192,
+"down"
+],
+"forte_rochedo": [
+285,
+174,
+"down"
+],
+"cidade_escarpa": [
+153,
+105,
+"down"
+],
+"mirante_ventos": [
+537,
+42,
+"down"
+],
+"liga_zenite": [
+306,
+15,
+"down"
+]
+}
+}

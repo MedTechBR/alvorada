@@ -167,7 +167,7 @@ export function calcDamage(atk, def, mv, opts = {}) {
   power = Math.max(1, apply(power, pm));
 
   // ---- crítico
-  let cs = (mv.critUp ?? 0) + (A.it?.critUp ?? 0) + (A.ab === 'superLuck' ? 1 : 0) + (atk?.critStage ?? A.stages.crit ?? 0);
+  let cs = (mv.critUp ?? 0) + (A.it?.critUp ?? 0) + (A.ab === 'superLuck' ? 1 : 0) + (atk?.critStage ?? A.stages.crit ?? 0) + ((atk?.critBoost ?? 0) > 0 ? 2 : 0);
   let crit = opts.crit ?? rng() < CRIT_CHANCE[Math.min(3, Math.max(0, cs))];
   if (D.ab === 'battleArmor' || D.ab === 'shellArmor') crit = false;
   r.crit = crit;
