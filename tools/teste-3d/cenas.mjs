@@ -30,6 +30,13 @@ const CENAS = {
   objetos: `const want = ['strengthRock', 'chest', 'stoneDoor', 'barsGate', 'lever', 'iceBlock']; const o = g.map.objects.find((q) => want.includes(q.kind));
     if (o) { g.player.x = o.x + 24; g.player.y = o.y + 20; g.cam.x = g.player.x; g.cam.y = g.player.y; }`,
   toca: `const T = g.tocas; const t = T?.list?.find((q) => T.ativa?.(q)) ?? T?.list?.[0]; if (t) { T.ativa = () => true; g.player.x = t.px + 40; g.player.y = t.py + 60; g.cam.x = g.player.x; g.cam.y = g.player.y; }`,
+  // cenário vivo: uma árvore caindo, uma virando toco, uma casa danificada e o Pokémon no telhado
+  vivo: `const V = g.vivo, M = g.map; const perto = (k, x0, y0, r) => M.objects.filter((o) => !o.dead && k(o.kind) && Math.abs(o.tx - x0) < r && Math.abs(o.ty - y0) < r);
+    const casas = perto((k) => /house|casa/i.test(k), 297, 345, 30), arv = perto((k) => /^tree|pine|autumn/.test(k), 297, 345, 30);
+    const c = casas[0]; if (c) { g.player.x = c.x - 40; g.player.y = c.y + 60; g.cam.x = g.player.x; g.cam.y = g.player.y; for (let i = 0; i < 12; i++) V.golpe(c, { type: 'fighting', cat: 'phys', power: 120 }, 3, g.player); }
+    for (const a of arv.slice(0, 2)) V.golpe(a, null, 6, g.player, { explosao: true });
+    g.throwMon(0, g.player.x + 20, g.player.y); await new Promise((r) => setTimeout(r, 1400));
+    if (c && g.lead) { g.lead.x = c.x; g.lead.y = c.y - 10; V.subir?.(g.lead, c, { instantaneo: true }); }`,
 };
 const b = await launch();
 try {

@@ -82,7 +82,12 @@ export class Sobreposicao {
     }
     for (const c of this.comRotulo) {
       if (c.destroyed || !c.parent || !c.visible || c.alpha <= 0.01) continue;
-      if (vw && (c.x < vw.x0 || c.x > vw.x1 || c.y < vw.y0 || c.y > vw.y1 + 64)) continue;
+      if (!c.base3d && vw && (c.x < vw.x0 || c.x > vw.x1 || c.y < vw.y0 || c.y > vw.y1 + 64)) continue;
+      if (c.base3d) { // marcas de dano do prédio (cenário vivo): em pé na frente do prédio
+        const B = c.base3d, sb = v.escalaEm(B.x, B.y + 2), tb = v.paraTela(B.x, B.y + 2, 0), k = 0.85;
+        this.mTela.set(sb * k, 0, 0, sb * k, tb.x - (B.w / 2) * sb * k, tb.y - B.h * sb * k);
+        R.render({ container: c, clear: false, transform: this.mTela }); continue;
+      }
       const s = v.escalaEm(c.x, c.y), t = v.paraTela(c.x, c.y, 0), r = c.rotation ?? 0;
       const sx = c.scale.x * s, sy = c.scale.y * s, co = Math.cos(r), si = Math.sin(r);
       this.mTela.set(sx * co, sx * si, -sy * si, sy * co, t.x, t.y);
