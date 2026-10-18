@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "pokemon-2d", "runtimeExecutable": "python3", "runtimeArgs": ["tools/serve.py", "8700"], "port": 8700 }
+  ]
+}
