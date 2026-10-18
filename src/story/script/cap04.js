@@ -97,7 +97,7 @@ export default {
             ['rival:2', 22, []],
           ],
         },
-        flags: { rival2: true, teoCalcadao: true },
+        flags: { rival2: true, teoCalcadao: true, lutouCalcadao: true },
       },
     },
     {
@@ -118,7 +118,7 @@ export default {
       local: 'cidade_coral',
       gatilho: { tipo: 'apos', cena: ['teo_calcadao', 'teo_calcadao_conversa'] },
       falas: [
-        ['teo', 'Boa batalha. Muito boa. Ele ia ter gostado.', { requer: ['trainers.rival2'] }],
+        ['teo', 'Boa batalha. Muito boa. Ele ia ter gostado.', { requer: ['lutouCalcadao'] }],
         ['narrador', 'Téo olha para a escadaria do Mirante, lá no alto. Ninguém desce.'],
         ['teo', 'Deve ter tido problema na mina. Sempre tem problema na mina. Fala que tá tudo bem e manda dinheiro. E manda luzita de presente. A gente tem luzita em casa até no banheiro.'],
       ],

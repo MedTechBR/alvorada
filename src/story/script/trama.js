@@ -82,7 +82,7 @@ export default {
           id: 'rival2', nome: 'Rival Téo', dinheiro: 1800, perder: 'continua',
           equipe: [[396, 19, ['wingAttack', 'quickAttack', 'doubleTeam']], [58, 19, ['ember', 'bite', 'roar']], [133, 20, ['quickAttack', 'bite', 'sandAttack']], ['rival:2', 22, []]],
         },
-        flags: { rival2: true, teoCalcadao: true },
+        flags: { rival2: true },
       },
     },
     {
