@@ -13,7 +13,10 @@
 //                              Rejeita com Error('not-found') se não há sala com esse código.
 //   t.on('error', fn)          erro de rede sem recuperação.
 //   t.on('signal', fn(state))  estado da sinalização: 'ok' | 'lost' (só informativo).
+//   t.on('id-lost', fn)        anfitrião: a sinalização caiu e, ao voltar, o código já era de outro
+//                              (alguém assumiu o canal). Quem recebe deixa de ser anfitrião.
 //   t.destroy()                fecha tudo.
+// connect(code, { timeout }) aceita um prazo menor (o canal do mundo não espera 15 s por um anfitrião morto).
 //
 // Contrato de um link (ponto a ponto, confiável e ordenado, mensagens = objetos JSON):
 //   link.send(obj)  link.close()  link.open (bool)
@@ -71,11 +74,11 @@ export class PeerTransport extends Emitter {
     return new Promise((resolve, reject) => {
       const peer = id ? new Peer(id, { debug: 0 }) : new Peer({ debug: 0 });
       const to = setTimeout(() => { reject(new Error('timeout')); try { peer.destroy(); } catch {} }, 15000);
-      peer.on('open', () => { clearTimeout(to); resolve(peer); });
+      peer.on('open', () => { clearTimeout(to); peer.everOpen = true; this.emit('signal', 'ok'); resolve(peer); });
       peer.on('error', (err) => {
         clearTimeout(to);
         const type = err?.type;
-        if (type === 'unavailable-id') reject(new Error('taken'));
+        if (type === 'unavailable-id') { if (peer.everOpen) this.emit('id-lost'); reject(new Error('taken')); }
         else if (type === 'peer-unavailable') this.emit('peer-unavailable');
         else if (!peer.open) reject(new Error(type || 'network'));
         else if (type === 'network' || type === 'server-error' || type === 'socket-error' || type === 'socket-closed') this.emit('signal', 'lost');
@@ -91,19 +94,19 @@ export class PeerTransport extends Emitter {
       if (conn.open) ok(); else conn.on('open', ok);
     });
   }
-  async connect(code) {
+  async connect(code, { timeout = 15000 } = {}) {
     if (!this.peer || this.peer.destroyed) this.peer = await this.#makePeer(null);
     return new Promise((resolve, reject) => {
       const conn = this.peer.connect(PEER_PREFIX + code, { reliable: true, serialization: 'raw' });
       let done = false;
       const fail = (why) => { if (done) return; done = true; clearTimeout(to); off(); try { conn.close(); } catch {} reject(new Error(why)); };
       const off = this.on('peer-unavailable', () => fail('not-found'));
-      const to = setTimeout(() => fail('not-found'), 15000);
+      const to = setTimeout(() => fail('not-found'), timeout);
       conn.on('open', () => { if (done) return; done = true; clearTimeout(to); off(); resolve(new PeerLink(conn)); });
       conn.on('error', () => fail('network'));
     });
   }
-  destroy() { try { this.peer?.destroy(); } catch {} this.peer = null; }
+  destroy() { this.dead = true; try { this.peer?.destroy(); } catch {} this.peer = null; }
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -147,11 +150,11 @@ export class LocalTransport extends Emitter {
     if (busy) throw new Error('taken');
     this.code = code;
   }
-  async connect(code) {
+  async connect(code, { timeout = 2500 } = {}) {
     const linkId = Math.random().toString(36).slice(2, 12);
     const host = await new Promise((res, rej) => {
       const k = 'ack:' + linkId;
-      const to = setTimeout(() => { this.waiting.delete(k); rej(new Error('not-found')); }, 2500);
+      const to = setTimeout(() => { this.waiting.delete(k); rej(new Error('not-found')); }, Math.min(timeout, 2500));
       this.waiting.set(k, (m) => { clearTimeout(to); this.waiting.delete(k); res(m.from); });
       this._post({ k: 'syn', code, link: linkId });
     });
@@ -160,6 +163,7 @@ export class LocalTransport extends Emitter {
     return link;
   }
   destroy() {
+    if (this.dead) return; this.dead = true;
     for (const l of this.links.values()) l.close();
     this.links.clear(); this.code = null;
     removeEventListener('pagehide', this._bye);
