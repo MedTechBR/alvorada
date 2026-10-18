@@ -22,6 +22,8 @@ const COLORS = {
   [TILE.SALT]: '#eceef2', [TILE.SALTMIRROR]: '#bcdcf4', [TILE.REDROCK]: '#b85a3c', [TILE.DRYRIVER]: '#b8a080', [TILE.SHALLOW]: '#6ab4b0', [TILE.REED]: '#5a9a5a',
 };
 const ROOF = { houseA: '#9a5a3a', houseB: '#c84a3c', houseC: '#6a8a5a', houseBlue: '#3a6ad8', lab: '#8a94a4', center: '#e8483a', mart: '#3a7ae8', barn: '#b8402e', treeCenter: '#277a38', treeHouse: '#277a38', greenhouse: '#bfe8d0', radioStation: '#d8902a', portico: '#c84a3c', stands: '#5a6a8a' };
+// cor de cada bloco em [r, g, b] (também para o mapa de outro continente, src/world/viagem.js)
+export const CORES = Object.fromEntries(Object.entries(COLORS).map(([k, v]) => [k, [parseInt(v.slice(1, 3), 16), parseInt(v.slice(3, 5), 16), parseInt(v.slice(5, 7), 16)]]));
 const MB = 128; // blocos da imagem base do minimapa (128x128 blocos do mapa)
 const DIR_ANGLE = { up: 0, right: Math.PI / 2, down: Math.PI, left: -Math.PI / 2 };
 

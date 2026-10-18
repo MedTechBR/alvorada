@@ -1,5 +1,7 @@
 import { T } from './tiles.js';
-import { MAP_ID } from './map.js';
+import { prepararMundo, montarParte } from './build.js';
+import { CORES } from './minimap.js';
+import { MAP_ID, listaAreas } from './map.js';
 import { MUNDOS, mundoInfo, dadosDoMundo } from './mundos.js';
 import { IS_TOUCH } from '../engine/input.js';
 
@@ -173,6 +175,29 @@ export class Viagem {
   }
   #cond(req) { const f = this.f; return [req].flat().every((k) => { const [a, b] = String(k).split('='); const v = a.split('.').reduce((o, x) => o?.[x], f); return b === undefined ? !!v : String(v) === b; }); }
 
+  // ---------------------------------------------------------------- mapa de outro continente (menu)
+  // mundos que aparecem nas abas: o atual e os que o jogador já visitou
+  mundosVisitados() { return MUNDOS.filter((w) => w.id === this.g.map.id || this.f.viagens?.[w.id] || this.g.mundo?.visitados?.[w.id]?.size); }
+  // { W, H, CW, vis, areas, img }: monta só as regiões com setores visitados, longe do mapa do jogo
+  async fonteMapa(id) {
+    const g = this.g, vis = g.mundo?.visitados?.[id] ?? new Set();
+    const c = (this.fontes ??= {})[id]; if (c && c.n === vis.size) return c.d;
+    const R = await dadosDoMundo(id), W = R.w, H = R.outdoorH, CW = Math.ceil(W / 16);
+    const S = prepararMundo(R);
+    const visto = (r) => { for (const k of vis) { const x = (k % CW) * 16, y = Math.floor(k / CW) * 16; if (x + 16 > r[0] && x < r[0] + r[2] && y + 16 > r[1] && y < r[1] + r[3]) return true; } return false; };
+    for (const P of R.partes) if (!P.rect || visto(P.rect)) montarParte(S, P);
+    const img = document.createElement('canvas'); img.width = W; img.height = H;
+    const x = img.getContext('2d'), im = x.createImageData(W, H), d = im.data;
+    for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {
+      const o = (j * W + i) * 4, on = vis.has((i >> 4) + (j >> 4) * CW), cc = on ? CORES[S.tiles[i + j * W]] ?? [120, 200, 96] : [233, 223, 196];
+      d[o] = cc[0]; d[o + 1] = cc[1]; d[o + 2] = cc[2]; d[o + 3] = 255;
+    }
+    x.putImageData(im, 0, 0);
+    const out = { nome: R.nome, W, H, CW, vis, areas: listaAreas(R.areas), img };
+    this.fontes[id] = { n: vis.size, d: out };
+    return out;
+  }
+
   // ---------------------------------------------------------------- voo (Ninhos de pouso)
   // ninhos do mapa atual: { id, nome, tx, ty }
   ninhos(R = this.g.map.R, m = this.g.map) {
@@ -230,8 +255,10 @@ export class Viagem {
       card.querySelectorAll('[data-i]').forEach((b) => { b.onclick = (e) => { e.stopPropagation(); if (sel === +b.dataset.i) fechar({ w: abas[aba].id, n: listas[abas[aba].id][sel] }); else { sel = +b.dataset.i; draw(); } }; });
       const cv = card.querySelector('.voo-cv');
       if (w.id === g.map.id && cv) {
-        try { g.mundo.minimap.renderRegionMap(cv, { fog: true, labels: false, player: true }); } catch (e) { console.warn(e); }
-        if (n) { const W = g.map.w, H = g.map.outdoorH, s = Math.min(cv.width / W, cv.height / H), ox = (cv.width - W * s) / 2, oy = (cv.height - H * s) / 2, x = cv.getContext('2d'); x.fillStyle = '#ffd23f'; x.strokeStyle = '#1d2340'; x.lineWidth = 2; x.beginPath(); x.arc(ox + n.tx * s, oy + n.ty * s, 6, 0, 7); x.fill(); x.stroke(); }
+        // o continente inteiro (como nos jogos clássicos), os ninhos visitados e o escolhido maior
+        try { g.mundo.minimap.renderRegionMap(cv, { fog: false, labels: false, player: true }); } catch (e) { console.warn(e); }
+        const W = g.map.w, H = g.map.outdoorH, s = Math.min(cv.width / W, cv.height / H), ox = (cv.width - W * s) / 2, oy = (cv.height - H * s) / 2, x = cv.getContext('2d');
+        for (const q of L) { const on = q === n; x.fillStyle = on ? '#ffd23f' : '#ffffff'; x.strokeStyle = '#1d2340'; x.lineWidth = on ? 2.5 : 1.5; x.beginPath(); x.arc(ox + q.tx * s, oy + q.ty * s, on ? 7 : 4, 0, 7); x.fill(); x.stroke(); }
       }
     };
     const tecla = (e) => {

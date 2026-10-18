@@ -24,7 +24,7 @@ export const MAP_ID = (new URLSearchParams(location.search).get('mapa') ?? new U
 // Lista para a interface (menu do mapa): um nome por área, com o centro em blocos (x, y)
 export let AREAS = [];
 REGION = await lerPrincipal(MAP_ID).catch(() => ({}));
-const listaAreas = (all) => {
+export const listaAreas = (all) => {
   const by = new Map();
   for (const a of all) {
     if (a.name === 'Alvorada') continue;
@@ -214,6 +214,14 @@ export class GameMap {
     const a = this.areaAt(px, py), t = this.at(Math.floor(px / T), Math.floor(py / T));
     if (t === TILE.SAND && a?.biome !== 'vila') return 'praia';
     return a?.biome ?? 'campo';
+  }
+  // Região de construção (arquivo de região) e continente num ponto em pixels: { mundo, id, nome, formaRegional }.
+  // formaRegional ('alola', 'hisui'… ou null) é o que as evoluções por região comparam (ctx.region).
+  regionAt(px, py) {
+    const R = this.R; if (!R) return null;
+    const sala = this.interiorAt(px, py), x = px / T, y = py / T;
+    const P = sala ? R.partes[sala.parte ?? 0] : R.partes.find((p) => p.rect && x >= p.rect[0] && y >= p.rect[1] && x < p.rect[0] + p.rect[2] && y < p.rect[1] + p.rect[3]) ?? R.partes[0];
+    return { mundo: this.id, id: P?.id ?? null, nome: P?.nome ?? this.nome, formaRegional: P?.formaRegional ?? R.formaRegional ?? null };
   }
   areaName(px, py) { const r = this.interiorAt(px, py); if (r) return r.name; return this.areaAt(px, py)?.name ?? 'Alvorada'; }
   isIndoor(px, py) { return !!this.interiorAt(px, py); }
