@@ -113,7 +113,8 @@ export class Hud {
     const p = g.player, d = Math.hypot(o.target.x - p.x, o.target.y - p.y);
     if (d < 40) { m.visible = false; return; }
     const z = g.world.scale.x, W = innerWidth, H = innerHeight;
-    let x = g.world.x + o.target.x * z, y = g.world.y + (o.target.y - 26) * z;
+    const tp = g.worldToScreen ? g.worldToScreen(o.target.x, o.target.y, 26) : { x: g.world.x + o.target.x * z, y: g.world.y + (o.target.y - 26) * z };
+    let x = tp.x, y = tp.y;
     const padL = 34, padR = 34, padT = IS_TOUCH ? 90 : 120, padB = IS_TOUCH ? 140 : 90;
     let edge = false, ang = 0;
     if (x < padL || x > W - padR || y < padT || y > H - padB) {
@@ -240,9 +241,12 @@ export class Hud {
     if (!b || b.done) { this.#set('foe', '', () => { el.hidden = true; }); return; }
     const balls = b.team.map((m, i) => (m.fainted ? 'k' : i < b.next ? 'o' : 'r')).join('');
     const act = b.active.filter((e) => e.alive).map((e) => `${e.mon.uid}:${e.mon.spriteKey}:${Math.round(e.mon.hp / e.mon.stats.hp * 100)}:${e.mon.status ?? ''}`).join('|');
-    this.#set('foe', `${b.def.name}#${balls}#${act}`, () => {
+    const fa = b.arena?.cfg.fases?.[b.arena.fase]; // arena de ginásio: nome da fase atual
+    const fase = fa ? `${b.arena.fase + 1}/${b.arena.cfg.fases.length} · ${fa.nome}` : '';
+    this.#set('foe', `${b.def.name}#${balls}#${act}#${fase}`, () => {
       el.hidden = false;
       el.innerHTML = `<div class="fo-top"><b>${esc(b.def.name)}</b><span class="fo-balls">${[...balls].map((c) => `<i class="${c === 'k' ? 'ko' : c === 'o' ? 'out' : ''}"></i>`).join('')}</span></div>` +
+        (fase ? `<div class="fo-fase${fa.final ? ' final' : ''}">${esc(fase)}</div>` : '') +
         b.active.filter((e) => e.alive).map((e) => {
           const k = e.mon.hp / e.mon.stats.hp, st = e.mon.status ? STATUS[e.mon.status] : null;
           return `<div class="fo-mon"><div class="fo-l"><i class="fo-pic" data-dex="${e.mon.spriteKey ?? e.mon.dex}"></i><span>${esc(e.mon.name)}</span>${st ? `<em style="background:${st[1]}">${st[0]}</em>` : ''}<small>Nv. ${e.mon.level}</small></div><div class="bar hp"><i class="${hpCls(k)}" style="width:${k * 100}%"></i></div></div>`;

@@ -66,7 +66,8 @@ export class PokeEntity {
   face(dx, dy) { if (Math.abs(dx) + Math.abs(dy) < 1e-3) return; this.angle = Math.atan2(dy, dx); this.dir = dir8(dx, dy); }
 
   think(dt) { return this.g.combat.ai.think(this, dt); }
-  speed(k = 1) { return (38 + this.stat('spe') * 0.42) * k * (this.mon.status === 'par' ? 0.6 : 1); }
+  // arenaVel: terreno da arena de ginásio (teia, chão alagado), calculado pela arena a cada quadro
+  speed(k = 1) { return (38 + this.stat('spe') * 0.42) * k * (this.mon.status === 'par' ? 0.6 : 1) * (this.arenaVel ?? 1); }
   provoke(by) { this.g.combat.ai.provoke(this, by); }
   wake() { this.g.combat.ai.wake(this); }
 

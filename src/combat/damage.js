@@ -25,16 +25,18 @@ export function computeDamage(user, target, mv, ctx = {}) {
 }
 
 // Relevo: água fortalece golpes de Água (e Elétrico em quem está molhado), mato alto fortalece Planta,
-// fogo perde força em quem está na água.
+// fogo perde força em quem está na água. Na arena de ginásio, chão alagado também conta como água.
 export function terrainMod(user, target, mv, g) {
   if (!g?.map) return { mult: 1, note: null };
   const at = (e) => g.map.at(Math.floor(e.x / T), Math.floor(e.y / T));
-  const wet = (e) => { const t = at(e); return t === TILE.WATER || t === TILE.DEEP || e.alt?.mode === 'dive'; };
+  const wet = (e) => { const t = at(e); return t === TILE.WATER || t === TILE.DEEP || e.alt?.mode === 'dive' || !!g.arenaGinasio?.molhado(e.x, e.y); };
   let mult = 1, note = null;
   if (mv.type === 'water' && (wet(user) || nearWater(g, user))) { mult *= 1.5; note = 'água'; }
   if (mv.type === 'grass' && at(user) === TILE.TALL) { mult *= 1.3; note = 'mato'; }
   if (mv.type === 'electric' && wet(target)) { mult *= 1.4; note = 'molhado'; }
   if (mv.type === 'fire' && wet(target)) { mult *= 0.5; note = 'apagou'; }
+  // arena de ginásio (src/combat/arena-ginasio.js): carga do gerador, golpe no ritmo do berimbau
+  const A = g.arenaGinasio; if (A && user && target) mult *= A.modDano(user, target, mv);
   return { mult, note };
 }
 export function nearWater(g, e, r = 1) {

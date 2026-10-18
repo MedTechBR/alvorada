@@ -4,3 +4,4 @@ tools/shots/
 dados-brutos/
 __pycache__/
 tools/conta-de-teste.json
+tools/godot/

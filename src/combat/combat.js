@@ -192,6 +192,7 @@ export class Combat {
       if (user.cds[slot] > 0 || user.lock > 0 || user.stun > 0 || user.charging) return false;
       user.cds[slot] = mv.cd * (user.side === 'wild' ? 1.2 : 1);
     }
+    this.g.arenaGinasio?.aoUsar(user, id, mv); // arena de ginásio: golpe no ritmo do berimbau
     if (mv.max) this.onMax?.(user, id, mv, ax, ay); // Max Golpe: recarga única, clima, campo e estágios (src/combat/poder.js)
     if (user.mon.status === 'par' && Math.random() < 0.15) { this.g.fx.number(user.x, user.y - 24, 'Paralisado!', '#fff27a'); user.lock = 0.5; return true; }
     let dx = ax - user.x, dy = ay - user.y; const d = Math.hypot(dx, dy) || 1; dx /= d; dy /= d;
@@ -354,7 +355,7 @@ export class Combat {
         return;
       }
     }
-    if (this.arena.blockAt(p.x, p.gy, p.mv)) { p.dead = true; this.#impact(p.A, p.mv.type, p.x, p.y, 0, 0.8 * p.big, p.gy); this.ai.noise(p.x, p.gy, 70, p.user); }
+    if (this.arena.blockAt(p.x, p.gy, p.mv, p)) { p.dead = true; this.#impact(p.A, p.mv.type, p.x, p.y, 0, 0.8 * p.big, p.gy); this.ai.noise(p.x, p.gy, 70, p.user); }
   }
   // impacto da receita do golpe (ou o do tipo) + o resto que fica no chão
   #impact(A, type, x, y, dir, P, gy) {
@@ -981,7 +982,7 @@ export class Combat {
       if (!u.dashing) continue;
       if (dsh.t <= 0) { u.dashing = null; if (dsh.A?.recharge) { u.stun = Math.max(u.stun, dsh.A.recharge); g.fx.number(u.x, u.y - (u.topH ?? 20) - 12, 'Recarregando...', '#ffd0a0'); } if (dsh.dive) g.fx.emit(u.x, u.y, { tex: 'dust', n: 8, speed: 50, life: 0.5, scale: 0.7, end: 1.6, add: false, alpha: 0.7 }); }
       if (dsh.mv?.type === 'fire') g.scorchTile(u.x, u.y);
-      else this.arena.trample(u.x, u.y, dsh.mv);
+      else this.arena.trample(u.x, u.y, dsh.mv, u);
     }
     for (const p of this.projectiles) if (!p.dead) this.#updateProjectile(p, dt);
     for (const p of this.projectiles) if (p.dead && p.head) { this.#freeHead(p.head); p.head = null; }

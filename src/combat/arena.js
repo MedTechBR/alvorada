@@ -3,6 +3,8 @@ import { T, TILE } from '../world/tiles.js';
 // Destruição da arena: crateras e terra revirada, mato cortado ou queimado (o fogo se espalha
 // pelo mato alto), arbustos e pedras que quebram em detritos, árvores que tremem e soltam folhas.
 // Usa só a interface pública do mapa (at, setTile, removeObject) e os objetos do jogo.
+// Na luta de ginásio, a arena dinâmica (g.arenaGinasio, src/combat/arena-ginasio.js) vê os mesmos golpes primeiro:
+// coberturas, milho e sombras falsas seguram projéteis; fogo queima teia; alavancas e geradores respondem.
 
 const GRASSY = new Set([TILE.GRASS, TILE.GRASS2, TILE.FLOWERS]);
 
@@ -14,7 +16,8 @@ export class Arena {
   solidAt(x, y) { if (this.objAt(x, y)) return true; const t = this.g.map.at(Math.floor(x / T), Math.floor(y / T)); return t === TILE.CLIFF; }
 
   // projétil chegando no ponto: bate em objeto (devolve true) ou mexe no mato
-  blockAt(x, y, mv) {
+  blockAt(x, y, mv, p = null) {
+    if (this.g.arenaGinasio?.bloqueia(x, y, mv, p)) return true;
     const o = this.objAt(x, y);
     if (o) { this.hitObject(o, mv, 1); return true; }
     if (mv && this.g.map.tallAt(x, y)) {
@@ -86,10 +89,11 @@ export class Arena {
     if (this.g.map.tallAt(x, y)) this.fx.emit(x, y, { tex: 'clip', n: 3, speed: 60, life: 0.6, grav: 100, vz: 40, add: false });
     for (const [k, f] of this.fires) if (Math.hypot(f.tx * T + 8 - x, f.ty * T + 8 - y) < 18 && Math.random() < 0.5) this.fires.delete(k);
   }
-  trample(x, y, mv) { if (this.g.map.tallAt(x, y) && Math.random() < 0.5) this.cut(x, y); const o = this.objAt(x, y); if (o) this.hitObject(o, mv, 1.2); }
+  trample(x, y, mv, u = null) { this.g.arenaGinasio?.pisoteio(x, y, mv, u); if (this.g.map.tallAt(x, y) && Math.random() < 0.5) this.cut(x, y); const o = this.objAt(x, y); if (o) this.hitObject(o, mv, 1.2); }
 
   // golpe batendo no chão (sem acertar ninguém ou no alvo): mato, terra, fogo, gelo
   impact(x, y, mv, P = 1, swing = false) {
+    this.g.arenaGinasio?.impacto(x, y, mv, P);
     const o = this.objAt(x, y);
     if (o) { this.hitObject(o, mv, P); return; }
     if (!mv) return;
@@ -108,6 +112,7 @@ export class Arena {
   // explosão/queda: área com raio r (px)
   blast(x, y, r, mv) {
     const fx = this.fx;
+    const A = this.g.arenaGinasio; if (A) for (let i = 0; i < 5; i++) A.impacto(x + (i ? Math.cos(i * 1.57) * r * 0.6 : 0), y + (i ? Math.sin(i * 1.57) * r * 0.6 : 0), mv, 1.4);
     if (r >= 10) fx.decal('crater', x, y, { scale: Math.min(1.6, r / 18), life: 40 });
     const t0x = Math.floor((x - r) / T), t1x = Math.floor((x + r) / T), t0y = Math.floor((y - r) / T), t1y = Math.floor((y + r) / T);
     for (let ty = t0y; ty <= t1y; ty++) for (let tx = t0x; tx <= t1x; tx++) {

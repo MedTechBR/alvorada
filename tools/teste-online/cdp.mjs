@@ -9,10 +9,10 @@ export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export async function launch(port = 9333) {
   const dir = mkdtempSync(join(process.env.SCRATCH ?? tmpdir(), 'chr-'));
-  const p = spawn(CHROME, [`--remote-debugging-port=${port}`, `--user-data-dir=${dir}`, '--headless=new', '--no-first-run', '--no-default-browser-check',
+  const p = spawn(CHROME, [`--remote-debugging-port=${port}`, '--remote-debugging-address=127.0.0.1', `--user-data-dir=${dir}`, '--headless=new', '--no-first-run', '--no-default-browser-check',
     '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--disable-background-timer-throttling', '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows',
     '--window-size=1200,800', 'about:blank'], { stdio: 'ignore' });
-  for (let i = 0; i < 50; i++) { try { await fetch(`http://127.0.0.1:${port}/json/version`); break; } catch { await sleep(200); } }
+  for (let i = 0; i < 150; i++) { try { await fetch(`http://127.0.0.1:${port}/json/version`); break; } catch { await sleep(200); } }
   return { port, proc: p, kill: () => p.kill('SIGKILL') };
 }
 
