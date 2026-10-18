@@ -78,6 +78,8 @@ export class Clima {
     this.#particles(dt);
     this.#fog(dt);
     this.#mirage(dt);
+    this.#steam(dt);
+    this.#puffs(dt);
     this.#heat(K.calor);
     this.#sound(c, room);
   }
@@ -109,7 +111,7 @@ export class Clima {
     const W = view.x1 - view.x0, H = view.y1 - view.y0, area = (W * H) / (400 * 300);
     const want = {
       flake: Math.round(110 * K.neve * area * q * (1 + this.gust * 0.6)), ash: Math.round(60 * K.cinzas * area * q), ember: Math.round(26 * K.brasas * area * q),
-      sand: Math.round(150 * (this.stormK ?? 0) * area * q + 18 * K.poeira * area * q), dust: Math.round(26 * (K.poeira + K.brilhos * 0.3) * area * q), drop: K.gotas > 0.05 ? 1 : 0,
+      sand: Math.round(150 * (this.stormK ?? 0) * area * q + 18 * K.poeira * area * q), dust: Math.round(14 * (K.poeira + K.brilhos * 0.5) * area * q), drop: K.gotas > 0.05 ? 1 : 0,
     };
     const have = {}; for (const s of this.parts) have[s.kind] = (have[s.kind] ?? 0) + 1;
     for (const [kind, n] of Object.entries(want)) for (let i = have[kind] ?? 0; i < n; i++) this.#spawn(kind, view, true);
@@ -161,6 +163,27 @@ export class Clima {
     const p = g.player; if (Math.hypot(x - p.x, y - p.y) < 160) g.audio?.sfx?.('gota');
   }
 
+  // ---------- vapor: fonte termal e fumarolas soltam fumaça branca ----------
+  #steam(dt) {
+    this.steamT = (this.steamT ?? 0) - dt; if (this.steamT > 0) return; this.steamT = this.low ? 0.5 : 0.25;
+    const m = this.g.map, src = [];
+    for (const c of m.visible) {
+      for (const o of c.objs) if (!o.dead && KINDS[o.kind]?.steam) src.push([o.x, o.y - 8]);
+      if (c.springs === undefined) { c.springs = []; for (let ty = c.cy * 16; ty < c.cy * 16 + 16; ty++) for (let tx = c.cx * 16; tx < c.cx * 16 + 16; tx++) if (m.at(tx, ty) === TILE.HOTSPRING) c.springs.push([tx * T + 8, ty * T + 8]); }
+      if (c.springs.length) for (let i = 0; i < 2; i++) src.push(c.springs[Math.floor(Math.random() * c.springs.length)]);
+    }
+    this.puffs ??= [];
+    for (const [x, y] of src) {
+      if (this.puffs.length > (this.low ? 14 : 36)) break;
+      const s = new PIXI.Sprite(SPR.puff); s.anchor.set(0.5); s.x = x + (Math.random() - 0.5) * 8; s.y = y; s.vx = 3 + Math.random() * 3; s.vy = -10 - Math.random() * 6; s.age = 0; s.life = 2.2 + Math.random();
+      this.layer.addChild(s); this.puffs.push(s);
+    }
+  }
+  #puffs(dt) {
+    for (const s of this.puffs ?? []) { s.age += dt; s.x += s.vx * dt; s.y += s.vy * dt; const k = s.age / s.life; s.scale.set(0.6 + k * 1.6); s.alpha = 0.55 * (1 - k); }
+    if (this.puffs?.some((s) => s.age >= s.life)) { for (const s of this.puffs) if (s.age >= s.life) s.destroy(); this.puffs = this.puffs.filter((s) => !s.destroyed); }
+  }
+
   // ---------- névoa baixa (mangue): manchas grandes e claras andando devagar ----------
   #fog(dt) {
     const K = this.k, view = this.g.map.view, n = Math.round(K.nevoa * (this.low ? 6 : 12));
@@ -171,7 +194,7 @@ export class Clima {
       if (s.wx > view.x1 + 60) { s.wx = view.x0 - 60; s.wy = view.y0 + Math.random() * (view.y1 - view.y0); }
       if (s.wy < view.y0 - 60 || s.wy > view.y1 + 60) s.wy = view.y0 + Math.random() * (view.y1 - view.y0);
       s.x = s.wx; s.y = s.wy + Math.sin(this.t * 0.3 + s.ph) * 8; s.scale.set(s.sc, s.sc * 0.45);
-      s.alpha = Math.min(1, K.nevoa) * (0.2 + Math.sin(this.t * 0.25 + s.ph) * 0.07);
+      s.alpha = Math.min(1, K.nevoa) * (0.34 + Math.sin(this.t * 0.25 + s.ph) * 0.1);
     }
   }
 

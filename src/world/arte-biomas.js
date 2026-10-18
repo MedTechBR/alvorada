@@ -1,5 +1,5 @@
 import { TILE, WALLS } from './tiles.js';
-import { canvas, texOf, outline, SPR } from './art.js';
+import { canvas, texOf, outline, SPR, TALL } from './art.js';
 
 // Arte dos biomas novos (gelo, vulcão, deserto e sertão, praia tropical e mangue, templos e cavernas), toda
 // desenhada por código no estilo do resto (cores vivas, contorno escuro suave, blocos de 16 px).
@@ -112,11 +112,22 @@ F.cracked = fam('cracked', 2, {
 F.mangmud = fam('mangmud', 2, {
   rim: [48, 38, 28], hi: [120, 100, 76],
   px(x, y) {
-    const n = fbm(x / 7, y / 7, 61);
-    if (n > 0.66) { const k = (n - 0.66) * 4; if (k < 0.25) return [62, 50, 40]; return hash(x, y, 62) > 0.9 ? [176, 204, 214] : mix([88, 118, 128], [104, 138, 148], fbm(x / 3, y / 3, 63)); }
-    const c = mix([72, 58, 44], [96, 78, 58], clamp01(fbm(x / 4, y / 4, 64)));
-    if (hash(Math.floor(x / 3), Math.floor(y / 3), 65) > 0.985) return [34, 26, 20];
+    const n = fbm(x / 13, y / 13, 61);
+    if (n > 0.64) { if (n < 0.665) return [64, 52, 38]; return hash(x, y, 62) > 0.96 ? [190, 214, 222] : mix([84, 112, 112], [106, 136, 134], fbm(x / 4, y / 4, 63)); }
+    let c = mix([92, 74, 52], [118, 94, 64], clamp01(fbm(x / 5, y / 5, 64)));
+    if (n > 0.6) c = mul(c, 0.82);
+    if (hash(Math.floor(x / 4), Math.floor(y / 4), 65) > 0.988 && (x & 3) === 1 && (y & 3) === 1) return [40, 30, 22];
     return c;
+  },
+});
+F.obsidian = fam('obsidian', 2, {
+  rim: [12, 10, 18], hi: [70, 56, 104],
+  px(x, y) {
+    const v = vor(x, y, 8, 221), base = mix([26, 22, 36], [42, 34, 60], v.id);
+    if (v.edge < 0.8) return [12, 10, 18];
+    if (v.cx > 0.05 && v.cy > 0.05 && v.d < 3.2 && v.d > 1.7) return [92, 74, 136];
+    if (hash(x, y, 222) > 0.994) return [210, 180, 255];
+    return base;
   },
 });
 F.wetsand = fam('wetsand', 1, {
@@ -148,10 +159,10 @@ F.ice = fam('ice', 1, {
 F.quicksand = fam('quicksand', 1, {
   rim: [136, 100, 58],
   px(x, y) {
-    const cx = Math.floor(x / 16) * 16 + 8, cy = Math.floor(y / 16) * 16 + 8, d = Math.hypot(x - cx, (y - cy) * 1.2);
-    let c = mix([182, 142, 88], [198, 158, 100], clamp01(fbm(x / 5, y / 5, 101)));
-    if (Math.sin(d * 1.1 - fbm(x / 6, y / 6, 102) * 3) > 0.7) c = mul(c, 0.84);
-    if (d < 2) c = [140, 104, 62];
+    const v = vor(x, y, 22, 103), d = v.d * (1 + (fbm(x / 6, y / 6, 102) - 0.5) * 0.5);
+    let c = mix([176, 136, 84], [196, 156, 98], clamp01(fbm(x / 5, y / 5, 101)));
+    if (Math.sin(d * 0.9) > 0.72) c = mul(c, 0.86); else if (Math.sin(d * 0.9) < -0.85) c = mix(c, [214, 180, 122], 0.5);
+    if (v.d < 2.2) c = [128, 94, 56];
     return c;
   },
 });
@@ -185,13 +196,16 @@ F.hotspring = fam('hotspring', 0, {
 F.reef = fam('reef', 0, {
   shore: [[0.42, [200, 240, 236, 150]]], clear: true,
   px(x, y) {
-    const n = fbm(x / 4.5, y / 4.5, 141);
-    if (n > 0.6) {
-      const k = hash(Math.floor(x / 6), Math.floor(y / 6), 142), cs = [[255, 116, 148], [255, 150, 76], [176, 112, 226], [255, 214, 96], [96, 220, 170]][Math.floor(k * 5)];
-      return n > 0.7 ? [...mix(cs, [255, 255, 255], 0.3), 255] : [...mul(cs, 0.75), 255];
+    const v = vor(x, y, 7, 141), r = 1.4 + v.id * 2.2, cl = fbm(x / 16, y / 16, 144);
+    if (v.id > 0.55 && cl > 0.42 && v.d < r) {
+      const cs = [[236, 112, 138], [240, 146, 84], [160, 112, 204], [232, 200, 104], [92, 196, 160]][Math.floor(hash(Math.round(v.id * 999), 0, 142) * 5)];
+      const lit = v.cy > 0.08 && v.cx > -0.05; // luz de cima à esquerda
+      if (v.d > r - 0.9) return [...mul(cs, 0.62), 255];
+      return [...(lit ? mix(cs, [255, 255, 255], 0.35) : cs), 255];
     }
-    if (n < 0.25 && hash(x, y, 143) > 0.7) return [220, 210, 170, 140]; // areia clara no fundo
-    return [96, 214, 214, 70];
+    const n = fbm(x / 9, y / 9, 143);
+    if (cl > 0.42 && v.id > 0.3 && v.d < 3) return [70, 150, 150, 120]; // sombra do coral
+    return n > 0.55 ? [222, 214, 168, 120] : [120, 226, 218, 90];
   },
 });
 
@@ -209,13 +223,6 @@ FLOOR[TILE.LAVAFLOOR] = (x, y) => {
   const hot = v.id > 0.45;
   if (v.edge < 0.8) return hot ? [255, 132, 44] : [34, 26, 28];
   if (v.edge < 1.7) return hot ? [160, 52, 28] : mul(base, 0.8);
-  return base;
-};
-FLOOR[TILE.OBSIDIAN] = (x, y) => {
-  const v = vor(x, y, 8, 221), base = mix([26, 22, 36], [40, 32, 56], v.id);
-  if (v.edge < 0.8) return [10, 8, 16];
-  if (v.cx > 0.05 && v.cy > 0.05 && v.d < 3.2 && v.d > 1.6) return [96, 78, 140];
-  if (hash(x, y, 222) > 0.994) return [210, 180, 255];
   return base;
 };
 FLOOR[TILE.TEMPLEFLOOR] = (x, y) => {
@@ -294,7 +301,7 @@ WALL[TILE.CANYON] = { top: [196, 136, 90], edge: [150, 92, 58], faces: [0, 1].ma
   if (y >= 14) c = mul(c, 0.72);
   return c;
 })) };
-WALL[TILE.TEMPLEWALL] = { top: [84, 68, 58], edge: [150, 126, 96], faces: [0, 1].map((v) => faceFrom((x, y) => {
+WALL[TILE.TEMPLEWALL] = { top: [60, 50, 46], edge: [150, 126, 96], faces: [0, 1].map((v) => faceFrom((x, y) => {
   // blocos grandes com uma faixa de glifos entalhados no meio
   if (y >= 5 && y <= 9) {
     const g = (x + v * 8) % 8, gy = y - 5;
@@ -321,17 +328,18 @@ WALL[TILE.CRYSTALWALL] = { top: [34, 26, 50], edge: [90, 72, 126], faces: [0, 1]
 
 // raízes de mangue (sólido): lama escura com raízes em arco por cima
 function rootsPx(x, y) {
-  let c = mix([56, 48, 38], [70, 60, 46], fbm(x / 5, y / 5, 351));
-  if (fbm(x / 6, y / 6, 352) > 0.62) c = [64, 92, 100];
+  const tx = Math.floor(x / 16), ty = Math.floor(y / 16), lx = x - tx * 16, ly = y - ty * 16;
+  let c = fbm(x / 6, y / 6, 352) > 0.5 ? mix([52, 74, 70], [64, 90, 86], fbm(x / 3, y / 3, 351)) : mix([58, 48, 36], [74, 60, 44], fbm(x / 4, y / 4, 351));
+  let shade = false;
   for (let k = 0; k < 3; k++) {
-    const ph = hash(Math.floor(x / 12), k, 353) * 12, a = Math.sin((x + ph) * 0.42 + k * 2.1) * 4 + 6 + k * 4;
-    const dy = Math.abs(((y % 16) + 16) % 16 - a);
-    if (dy < 1.1) return dy < 0.5 ? [150, 112, 74] : [112, 80, 52];
-    if (dy < 1.8) c = mul(c, 0.7);
+    const cx = 3 + hash(tx, ty, 353 + k) * 10, w = 7 + hash(tx, ty, 360 + k) * 7, h = 8 + hash(tx, ty, 370 + k) * 7, base = 15 - (k & 1);
+    const u = (lx - cx) / (w / 2); if (Math.abs(u) > 1) continue;
+    const yy = base - h * (1 - u * u), d = Math.abs(ly - yy);
+    if (d < 1.3) return d < 0.5 && u < 0.3 ? [168, 128, 84] : d < 0.9 ? [126, 90, 58] : [84, 58, 38];
+    if (d < 1.8 && ly > yy) shade = true;
   }
-  return c;
+  return shade ? mul(c, 0.7) : c;
 }
-
 // desenha um bloco duro novo; devolve false se não é dele
 export function drawBiomeHard(t, at, tx, ty, put) {
   const gx0 = tx * 16, gy0 = ty * 16;
@@ -346,7 +354,7 @@ export function drawBiomeHard(t, at, tx, ty, put) {
       // topo: rocha escura com borda clara onde termina
       const N = !same(at(0, -1)) && !WALLS.has(at(0, -1)), Wl = !same(at(-1, 0)), E = !same(at(1, 0));
       for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
-        let c = mul(W.top, 0.9 + hash(gx0 + x >> 1, gy0 + y >> 1, 360) * 0.2);
+        let c = mul(W.top, 0.86 + fbm((gx0 + x) / 5, (gy0 + y) / 5, 361) * 0.24 + (hash(gx0 + x >> 1, gy0 + y >> 1, 360) > 0.93 ? 0.12 : 0));
         if ((N && y < 2) || (Wl && x < 2) || (E && x > 13)) c = (N && y === 0) || (Wl && x === 0) || (E && x === 15) ? mul(W.edge, 0.7) : W.edge;
         put(x, y, c[0], c[1], c[2]);
       }
@@ -428,14 +436,14 @@ export function drawBiomeHard(t, at, tx, ty, put) {
 // "rank" e família que cada bloco duro novo empresta aos vizinhos macios (o compositor mistura as bordas)
 export const BLEED = {
   [TILE.ICEWALL]: ['snow', 3], [TILE.ICEFLOOR]: ['snow', 3], [TILE.LAVAWALL]: ['basalt', 2], [TILE.LAVAFLOOR]: ['basalt', 2],
-  [TILE.OBSIDIAN]: ['basalt', 2], [TILE.CANYON]: ['dune', 3], [TILE.ROOTS]: ['mangmud', 2], [TILE.CRYSTALWALL]: ['basalt', 2],
+  [TILE.CANYON]: ['dune', 3], [TILE.ROOTS]: ['mangmud', 2], [TILE.CRYSTALWALL]: ['basalt', 2],
   [TILE.CRYSTALFLOOR]: ['basalt', 2], [TILE.DARKCAVE]: ['basalt', 2], [TILE.RAIL]: ['basalt', 2],
 };
 // bloco macio → família
 export const SOFT = {
   [TILE.SNOWFIELD]: 'snow', [TILE.TALLSNOW]: 'snow', [TILE.DEEPSNOW]: 'deepsnow', [TILE.ASH]: 'ash', [TILE.DUNE]: 'dune', [TILE.CAATINGA]: 'caatinga', [TILE.TALLDRY]: 'caatinga',
   [TILE.BASALT]: 'basalt', [TILE.CRACKED]: 'cracked', [TILE.MANGMUD]: 'mangmud', [TILE.WETSAND]: 'wetsand', [TILE.TIDE]: 'tide', [TILE.ICE]: 'ice', [TILE.QUICKSAND]: 'quicksand',
-  [TILE.LAVA]: 'lava', [TILE.FROZEN]: 'frozen', [TILE.HOTSPRING]: 'hotspring', [TILE.REEF]: 'reef',
+  [TILE.OBSIDIAN]: 'obsidian', [TILE.LAVA]: 'lava', [TILE.FROZEN]: 'frozen', [TILE.HOTSPRING]: 'hotspring', [TILE.REEF]: 'reef',
 };
 
 // ---------------------------------------------------------------- quadros animados por cima dos blocos
@@ -472,7 +480,7 @@ const TIDE_F = frames(4, 16, 16, (x, i) => {
 // tipo de bloco → { frames, blend, alpha, fps, interior (só se os 4 vizinhos forem do mesmo tipo) }
 export const ANIM = {
   [TILE.LAVA]: { frames: LAVA_F, blend: 'add', alpha: 0.9, fps: 5, interior: true },
-  [TILE.QUICKSAND]: { frames: SINK_F, alpha: 1, fps: 6 },
+  [TILE.QUICKSAND]: { frames: SINK_F, alpha: 1, fps: 6, chance: 0.35 },
   [TILE.HOTSPRING]: { frames: BUBBLE_F, alpha: 0.9, fps: 6, chance: 0.45 },
   [TILE.TIDE]: { frames: TIDE_F, alpha: 1, fps: 3, tide: true },
   ...Object.fromEntries(Object.entries(CUR_F).map(([k, f]) => [k, { frames: f, alpha: 0.85, fps: 10 }])),
@@ -771,3 +779,13 @@ SPR.glowCyan = texOf(canvas(64, 64, (x) => radial(x, 32, 32, 32, '140,255,250', 
 SPR.glowPink = texOf(canvas(64, 64, (x) => radial(x, 32, 32, 32, '255,150,240', 0.9)));
 SPR.glowLava = texOf(canvas(64, 64, (x) => radial(x, 32, 32, 32, '255,120,40', 0.9)));
 for (const k of ['glowCyan', 'glowPink', 'glowLava']) SPR[k].source.scaleMode = 'linear';
+
+// mato alto dos biomas: o mesmo desenho do mato, repintado (com geada; capim seco do sertão)
+function recolor(tex, f) {
+  const src = tex.source.resource, c = canvas(src.width, src.height, (x) => x.drawImage(src, 0, 0));
+  const x = c.getContext('2d'), im = x.getImageData(0, 0, c.width, c.height), d = im.data;
+  for (let i = 0; i < d.length; i += 4) { if (d[i + 3] < 10) continue; const l = (d[i] * 0.3 + d[i + 1] * 0.59 + d[i + 2] * 0.11) / 255, [r, g, b] = f(l, i / 4 % c.width, (i / 4 / c.width) | 0); d[i] = r; d[i + 1] = g; d[i + 2] = b; }
+  x.putImageData(im, 0, 0); return texOf(c);
+}
+export const TALL_SNOW = TALL.map((t) => recolor(t, (l, x, y) => (l < 0.2 ? [58, 92, 104] : y < 7 && l > 0.45 ? [250, 252, 255] : l > 0.55 ? [214, 232, 244] : mix([84, 132, 128], [150, 196, 196], l * 1.4))));
+export const TALL_DRY = TALL.map((t) => recolor(t, (l) => (l < 0.2 ? [92, 64, 30] : l > 0.6 ? [246, 222, 140] : mix([170, 128, 56], [226, 190, 104], l * 1.3))));

@@ -24,7 +24,7 @@ for (const [t, name] of Object.entries(SOFT)) { RANK[t] = FAM[name].rank; FAMT[t
 for (const [t, [name, r]] of Object.entries(BLEED)) { RANK[t] = r; FAMT[t] = FAM[name].id; }
 for (const t of [TILE.BRIDGE, TILE.BRIDGEV, TILE.DOCK]) FAMT[t] = NEUTRAL;
 for (const t of [TILE.CUR_E, TILE.CUR_W, TILE.CUR_N, TILE.CUR_S]) RANK[t] = 0;
-for (const t of [TILE.ICEWALL, TILE.ICEFLOOR, TILE.LAVAWALL, TILE.LAVAFLOOR, TILE.OBSIDIAN, TILE.CANYON, TILE.ROOTS, TILE.TEMPLEFLOOR, TILE.MOSAIC, TILE.OLDSTONE,
+for (const t of [TILE.ICEWALL, TILE.ICEFLOOR, TILE.LAVAWALL, TILE.LAVAFLOOR, TILE.CANYON, TILE.ROOTS, TILE.TEMPLEFLOOR, TILE.MOSAIC, TILE.OLDSTONE,
   TILE.TEMPLEWALL, TILE.STAIRUP, TILE.STAIRDOWN, TILE.HOLE, TILE.CRACK, TILE.DARKCAVE, TILE.CRYSTALFLOOR, TILE.CRYSTALWALL, TILE.RAIL]) HARD[t] = 1;
 
 const KS = new Int32Array(4), WS = new Float32Array(4);
@@ -89,7 +89,13 @@ export function renderTiles(map, img, ox, oy, tx0, ty0, tw, th) {
       }
       if (fa) {
         const Fm = FAMS[fa]; let c = Fm.px(gx, gy);
-        if (L >= 3) { const fL = L === 4 ? f4 : f3; if (fL < 0.555) c = Fm.rim; else if (fL < 0.61) c = Fm.hi ?? c; else if (L === 3 && f4 > 0.4) c = [c[0] * 0.86, c[1] * 0.88, c[2] * 0.94]; }
+        if (L === 4) {
+          // monte de neve: lado de cima claro, lado de baixo com sombra azulada (gradiente do campo na vertical)
+          const gyF = ((r01 >= 4) - (r00 >= 4)) * (1 - fu) + ((r11 >= 4) - (r10 >= 4)) * fu;
+          if (f4 < 0.56) c = gyF < -0.2 ? Fm.rim : [228, 236, 248];
+          else if (gyF < -0.2 && f4 < 0.8) c = [c[0] * 0.9, c[1] * 0.93, c[2] * 0.98];
+          else if (gyF > 0.2 && f4 < 0.68) c = Fm.hi;
+        } else if (L === 3) { if (f3 < 0.555) c = Fm.rim; else if (f3 < 0.61) c = Fm.hi ?? c; else if (f4 > 0.38) { const gyF = ((r01 >= 4) - (r00 >= 4)) * (1 - fu) + ((r11 >= 4) - (r10 >= 4)) * fu; if (gyF < 0) c = [c[0] * 0.84, c[1] * 0.87, c[2] * 0.95]; } }
         else if (L === 2) { if (f3 > 0.41) c = [c[0] * 0.84, c[1] * 0.84, c[2] * 0.84]; else if (f2 < 0.55 && f1 < 0.99) c = Fm.rim; }
         else if (L === 1) { if (f2 > 0.43 || f3 > 0.43) c = [c[0] * 0.88, c[1] * 0.88, c[2] * 0.88]; else if (f1 < 0.555) c = Fm.foam ? (Fm.foam === true ? [244, 250, 255] : Fm.foam) : Fm.rim; else if (f1 < 0.63) c = [c[0] * 0.88, c[1] * 0.88, c[2] * 0.88]; }
         else if (Fm.shore) { for (const [lim, col] of Fm.shore) if (f1 > lim) { c = col; break; } }

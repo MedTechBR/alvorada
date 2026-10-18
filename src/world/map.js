@@ -4,7 +4,7 @@ import { WATER_FRAMES, FLOWERS, LILY, TALL, CORN, SPR } from './art.js';
 import { KINDS, DECOR } from './objects.js';
 import { buildRegion } from './build.js';
 import { renderTiles } from './ground.js';
-import { ANIM } from './arte-biomas.js';
+import { ANIM, TALL_SNOW, TALL_DRY } from './arte-biomas.js';
 
 // Mapa da região de Alvorada, desenhado à mão em assets/maps/alvorada.json.
 // - Camadas: água animada < chão em pedaços (cache) < decoração plana < entidades/objetos/mato alto com y-sort.
@@ -242,12 +242,10 @@ export class GameMap {
   #near(x, y, t) { for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) if (this.at(x + i, y + j) === t) return true; return false; }
   #nearLand(x, y) { for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) { const t = this.at(x + i, y + j); if (t !== TILE.WATER && t !== TILE.DEEP) return true; } return false; }
   #addTall(c, tx, ty, t = TILE.TALL) {
-    const set = t === TILE.CORN ? CORN : TALL;
+    const set = t === TILE.CORN ? CORN : t === TILE.TALLSNOW ? TALL_SNOW : t === TILE.TALLDRY ? TALL_DRY : TALL;
     const s = new PIXI.Sprite(set[0]); s.anchor.set(0.5, 1); s.frames = set;
     s.x = tx * T + 8; s.y = ty * T + 17; s.zIndex = ty * T + 15;
-    if (t === TILE.TALLSNOW) s.tint = 0xcfe6ff;      // mato com geada
-    else if (t === TILE.TALLDRY) s.tint = 0xf0c870;  // capim seco do sertão
-    else if (t === TILE.TALL && this.#near(tx, ty, TILE.MANGMUD)) s.tint = 0x9ac08a; // mato do mangue
+    if (t === TILE.TALL && this.#near(tx, ty, TILE.MANGMUD)) s.tint = 0x9ac08a; // mato do mangue
     else if (t === TILE.TALL && this.#near(tx, ty, TILE.DARK)) s.tint = 0xbcd8b4; // mato do bosque, mais escuro
     else if (t === TILE.TALL && this.#near(tx, ty, TILE.GOLD)) s.tint = 0xffe08a; // capim dourado dos Campos de Lúmen
     s.k = tx + ty * this.w; s.sway = 0;

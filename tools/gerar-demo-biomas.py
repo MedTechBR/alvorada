@@ -97,7 +97,7 @@ for y in range(36, 42):
         if y + noise(x, y, 9) * 2 < 40: g[y][x] = '.'
 rect(22, 40, 22, 34, 'h', on=['z'])
 blobs(22, 40, 22, 34, 'K', 0.0, 10, ['h'])
-blobs(22, 44, 22, 30, 'j', 0.45, 11, ['K'])
+blobs(22, 44, 22, 30, 'j', 0.25, 11, ['K'])
 for (cx, cy) in [(6, 50), (14, 60), (8, 66)]: ell(cx, cy, 2.2, 1.6, 'Q', 0.15, cx)
 rect(12, 44, 2, 12, 'C'); rect(18, 44, 2, 12, 'C')   # cânion: corredor entre paredões
 path([(16, 40), (16, 58)], ':', 2)
@@ -132,7 +132,10 @@ for y in range(62, 67):
         if g[y][x] == '~' and x < 112: g[y][x] = '→'
 # mangue
 rect(84, 56, 14, 18, 'p', on=[':', '.'])
-blobs(84, 56, 14, 18, 'R', 0.35, 16, ['p'])
+for y in range(54, 74):
+    for x in range(80, 100):
+        if g[y][x] == 'p' and (y + noise(x, y, 18) * 2.5 < 57.5 or x + noise(x, y, 19) * 2.5 > 96.5): g[y][x] = ':'
+blobs(84, 56, 14, 18, 'R', 0.55, 16, ['p'])
 blobs(84, 56, 14, 18, '"', 0.4, 17, ['p'])
 obj('coqueiro', 120, 45); items.append({'x': 121, 'y': 46, 'item': 'pearl'})
 for (x, y) in [(90, 40), (98, 44), (94, 50)]: obj('coqueiro', x, y)
