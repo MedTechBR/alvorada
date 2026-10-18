@@ -56,8 +56,12 @@ export class MundoMissoes {
     }
   }
   #bob() {
-    const k = Math.sin(this.t * 5) * 1.2;
-    for (const n of this.#pessoas()) if (n._mqView && !n._mqView.destroyed) n._mqView.y = -(n.h ?? 30) - 6 + k;
+    const k = Math.sin(this.t * 5) * 1.2, hud = this.g.ui?.hud, alvo = hud?.bubble?.visible ? hud.promptTarget : null;
+    for (const n of this.#pessoas()) {
+      if (!n._mqView || n._mqView.destroyed) continue;
+      const sob = alvo && Math.abs(alvo.x - n.x) < 2 && Math.abs(alvo.y - n.y) < 2 ? 11 : 0; // sobe acima do balão "A · Falar"
+      n._mqView.y = -(n.h ?? 30) - 6 - sob + k;
+    }
   }
 
   // ---------------- itens de missão (etapa "achar") ----------------
