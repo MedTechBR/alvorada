@@ -14,7 +14,7 @@ import * as THREE from 'three';
 // Esticão vertical: a câmera a 55° encurta o que é vertical para 0,57 e o chão para 0,82. Com as alturas
 // multiplicadas por 1,4, as proporções na tela ficam as do desenho 2D (um cubo parece cubo, uma porta tem o
 // tamanho do treinador). Os modelos são escritos em "px do 2D"; o topo devolvido já vem esticado.
-export const EY = 1.4;
+export const EY = 1.0; // era 1,4 com a câmera a 55°; com a câmera baixa de exploração (30°) as alturas ficam reais
 
 const LIN = new Map();
 // '#rrggbb' ou 0xrrggbb (sRGB) -> [r, g, b] linear (o que o three espera em cores por vértice)

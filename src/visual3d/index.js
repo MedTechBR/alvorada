@@ -18,8 +18,8 @@ import { CameraDinamica } from './camera.js';
 // Eixos: x = x do mundo (leste), y = altura, z = y do mundo (sul). 1 unidade = 1 px de mundo (bloco = 16).
 // A câmera olha para o norte, inclinada; não gira (as direções dos sprites PMD continuam valendo).
 export const INCLINACAO = 44 * Math.PI / 180; // acima do horizonte (46° a partir da vertical); o mundo curvo mostra o céu no alto
-const FOV = 32;
-const LONGE = 34 * 16; // até onde o chão é montado à frente da câmera (px de mundo)
+const FOV = 34;
+const LONGE = 48 * 16; // até onde o chão é montado à frente da câmera (px de mundo)
 
 export class Visual3D {
   constructor(g) {
@@ -35,12 +35,12 @@ export class Visual3D {
     const host = document.getElementById('game'); host.insertBefore(r.domElement, host.firstChild);
     r.domElement.style.pointerEvents = 'none';
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(FOV, innerWidth / innerHeight, 16, 5000);
+    this.camera = new THREE.PerspectiveCamera(FOV, innerWidth / innerHeight, 16, 12000);
     this.alvo = new THREE.Vector3();
     this.cima = new THREE.Vector3(0, Math.cos(INCLINACAO), -Math.sin(INCLINACAO)); // "para cima" dos billboards (segue a câmera)
     this.direita = new THREE.Vector3(1, 0, 0);
     this.dinamica = new CameraDinamica(this);
-    this.u = { tempo: { value: 0 }, luzSprite: { value: new THREE.Color(1, 1, 1) }, curva: { value: 0.0011 }, alvoZ: { value: 0 } }; // uniformes compartilhados
+    this.u = { tempo: { value: 0 }, luzSprite: { value: new THREE.Color(1, 1, 1) }, curva: { value: 0.0007 }, alvoZ: { value: 0 } }; // uniformes compartilhados
     // ambientação HD-2D (src/visual3d/ambiente): terreno pintado, grama, arbustos, céu, luz, pós, partículas.
     // ?amb=0 volta à luz/pós antigos (ceu.js, pos.js) para comparar.
     if (new URLSearchParams(location.search).get('amb') !== '0') {

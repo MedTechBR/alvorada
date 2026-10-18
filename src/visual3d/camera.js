@@ -14,7 +14,7 @@ const CHAVE = 'alvorada.camera3d';
 export class CameraDinamica {
   constructor(v) {
     this.v = v;
-    this.x = null; this.z = null; this.dist = 1; this.incl = 44; this.giro = 0; this.rolo = 0;
+    this.x = null; this.z = null; this.dist = 1; this.incl = 30; this.giro = 0; this.rolo = 0;
     this.olhar = { x: 0, z: 0 }; this.parado = 0; this.batalhaK = 0;
     this.imp = 0; this.impGiro = 0;
     this.cenaAtual = null;
@@ -35,7 +35,7 @@ export class CameraDinamica {
     const foco = pk ?? p;
     const room = p ? g.map.interiorAt(p.x, p.y) : null;
     const m = g.mount;
-    let alvoX = c.x, alvoZ = c.y, dist = 1, incl = 44, giro = 0;
+    let alvoX = c.x, alvoZ = c.y, dist = 1, incl = this.cinema ? 19 : 34, giro = 0; // explorar: baixa, com céu e montanhas
     // olhar à frente (velocidade suavizada)
     const vx = foco?.vx ?? 0, vy = foco?.vy ?? 0, vel = Math.hypot(vx, vy);
     const ah = this.cinema && !room ? 0.32 : 0;
@@ -52,12 +52,12 @@ export class CameraDinamica {
       alvoX += (cx - alvoX) * 0.4 * this.batalhaK; alvoZ += (cz - alvoZ) * 0.4 * this.batalhaK;
       const quer = Math.max(1, ext / (innerHeight / Math.max(1, g.zoom)) * 0.9);
       dist *= 1 + (Math.min(1.6, quer) - 1 + 0.12) * this.batalhaK;
-      incl += 6 * this.batalhaK;
+      incl += 22 * this.batalhaK; // em batalha sobe: os golpes e as alturas ficam legíveis
     }
     // montaria
     if (m?.active) {
       const corre = Math.hypot(m.vx ?? 0, m.vy ?? 0);
-      if (m.flying) { incl += 10 * Math.min(1, (m.z ?? 0) / 40); }
+      if (m.flying) { incl += 22 * Math.min(1, (m.z ?? 0) / 40); }
       else if (m.under) { dist *= 0.86; incl += 4; }
       else if (this.cinema && corre > 90) { dist *= 1.07; incl -= 3; }
     }

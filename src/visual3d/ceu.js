@@ -89,7 +89,7 @@ export class Ceu {
     A.atores(at);
     // sol vindo um pouco do sul: a frente das casas e das árvores (o que a câmera vê) fica iluminada, como no HGSS
     if (A.ceu.nivel) A.ceu.nivel.solNorte = -0.32;
-    A.update(dt, { hora: room ? 12 : h, foco: v.alvo, raio, interior: !!room, nevoa: [D * 1.1, D * 3.4], zoom: g.zoom });
+    A.update(dt, { hora: room ? 12 : h, foco: v.alvo, raio, interior: !!room, nevoa: [D * 1.5, D * 5.5], zoom: g.zoom });
     // noite legível: luar azulado que ainda mostra o chão e os sprites (HGSS); exposição um pouco menor de dia
     const nt = room ? 0 : (g.mundo?.nightness ?? 0);
     if (nt > 0) { A.ceu.hemi.intensity = Math.max(A.ceu.hemi.intensity, 1.25 * nt); A.ceu.hemi.color.lerp(this.luar ??= new THREE.Color(0x8aa8ff), nt * 0.6); }
