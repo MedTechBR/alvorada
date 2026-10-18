@@ -697,6 +697,7 @@ export class Mounts {
       let want = stop ? 0 : run ? C.run : C.walk;
       if (climb) want = stop ? 0 : C.climb;
       if (this.under) want *= 0.85;
+      if (!C.water && !this.flying) want *= g.mundo?.masmorra?.mountK(p) ?? 1; // neve funda, areia movediça (masmorra.js)
       const tvx = mag > 0.1 ? mx * want : 0, tvy = mag > 0.1 ? my * want : 0;
       const acc = Math.min(1, dt * (mag > 0.1 ? C.acc : C.acc * 1.4));
       this.vx += (tvx - this.vx) * acc; this.vy += (tvy - this.vy) * acc;

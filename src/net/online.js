@@ -68,7 +68,7 @@ export class Online {
   // ---------- mundo ----------
   // Chamado pelo main.js depois do título (com a conta já escolhida)
   autoStart() {
-    if (Q.get('online') === '0' || (Q.has('teste') && !Q.has('online'))) return;
+    if (Q.get('online') === '0' || ((Q.has('teste') || Q.has('mapa')) && !Q.has('online'))) return; // outro mapa (?mapa=demo-biomas) não entra no mundo online
     if (Q.has('teste')) this.setName(LOCALHOST && Q.get('nome') ? Q.get('nome') : 'Teste' + (PROF ? ' ' + PROF : ''));
     this.autoOn = true;
     if (this.worldOn && !this.on) this.world.start();

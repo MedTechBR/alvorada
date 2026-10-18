@@ -582,7 +582,12 @@ export class Combat {
       if (A.hit) { if (['blunt', 'fist', 'tackle', 'chop', 'kick'].includes(style)) this.g.fx.shock(hx, hy + 6, 0xffffff, 10 * P, 0.22); A.hit(this.vfx, hx, hy, Math.atan2(dy, dx), P, t.y); }
       else this.vfx.meleeHit(style, mv.type, hx, hy, Math.atan2(dy, dx), P);
     }
-    if (!any) this.arena.impact(user.x + dx * reach * 0.8, user.y + dy * reach * 0.8, mv, 0.7, true);
+    if (!any) {
+      // o golpe para no primeiro objeto do caminho (parede rachada, tocha, pedra) em vez de passar por cima dele
+      let ix = user.x + dx * reach * 0.8, iy = user.y + dy * reach * 0.8;
+      for (let k = 6; k < reach * 0.8; k += 5) if (this.arena.objAt(user.x + dx * k, user.y + dy * k)) { ix = user.x + dx * k; iy = user.y + dy * k; break; }
+      this.arena.impact(ix, iy, mv, 0.7, true);
+    }
   }
   #meleeClash(a, b) {
     const g = this.g, x = (a.x + b.x) / 2, y = (this.centerY(a) + this.centerY(b)) / 2;

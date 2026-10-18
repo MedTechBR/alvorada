@@ -1,3 +1,5 @@
+import { BIOME_TRACK } from '../world/clima.js';
+import { MAP_ID } from '../world/map.js';
 import * as PIXI from 'pixi.js';
 import { IS_TOUCH } from '../engine/input.js';
 import { Mon } from '../data/mon.js';
@@ -338,6 +340,7 @@ export class Story {
     }
     add(this.npc('nurse'), 38, 'Centro Pokémon', () => this.#nurseTalk());
     out.push(...this.roteiro.interactions());
+    out.push(...(g.mundo?.masmorra?.interactions() ?? [])); // alavancas, baús, sinos, tochas e portas das masmorras
     const n = this.spots.get('nurse');
     add({ x: n.x + 22, y: n.y - 6, h: 26 }, 16, 'Usar o PC', () => { g.ui.openPC(); });
     return out;
@@ -352,8 +355,9 @@ export class Story {
       if (n.visible) { const dx = p.x - n.x, dy = p.y - n.y, d = Math.hypot(dx, dy), m = n.r + (p.r ?? 5); if (d > 0.01 && d < m) { p.x = n.x + dx / d * m; p.y = n.y + dy / d * m; } }
     }
     this.battle?.update(dt);
-    this.roteiro.update(dt);
-    g.missoes?.update(dt);
+    const demo = MAP_ID !== 'alvorada'; // mapa de teste (?mapa=demo-biomas): sem cenas do roteiro nem missões
+    if (!demo) { this.roteiro.update(dt); g.missoes?.update(dt); }
+    else for (const n of [...this.npcs.values(), ...this.roteiro.atores.values(), ...(this.roteiro.atoresPk ?? [])]) if (n.visible) n.visible = false;
     this.#music(dt);
     if ((this.objT -= dt) <= 0) { this.objT = 0.3; this.refreshObjective(); }
     if (this.busy) { g.ui.hud.setPrompt(null); return; }
@@ -363,6 +367,7 @@ export class Story {
     if (!this.battle) for (const it of this.interactions()) { const d = Math.hypot(it.o.x - p.x, it.o.y - p.y); if (d < it.r && d < bd) { bd = d; best = it; } }
     g.ui.hud.setPrompt(best ? { x: best.o.x, y: best.o.y, h: best.o.h } : null, best?.label);
     if (best && g.input.pressed('act')) { g.input.taps.delete('act'); this.#cut(best.fn); return; }
+    if (demo) return;
 
     // sem Pokémon não sai da vila
     const v = this.spots.get('village');
@@ -411,7 +416,8 @@ export class Story {
     if (this.battle) return;
     const p = g.player, c = this.spots.get('campina'), v = this.spots.get('village');
     const town = (v && Math.hypot(p.x - v.x, p.y - v.y) < v.r + 2 * T) || (c && Math.hypot(p.x - c.x, p.y - c.y) < c.r + 4 * T) || g.map.biome?.(p.x, p.y) === 'vila';
-    const want = town ? 'town' : g.map.biome?.(p.x, p.y) === 'floresta' ? 'forest' : 'route';
+    const bio = g.map.biome?.(p.x, p.y);
+    const want = town ? 'town' : bio === 'floresta' ? 'forest' : BIOME_TRACK[bio] ?? 'route'; // biomas novos: src/world/clima.js
     if (this.music !== want) { this.music = want; g.audio?.music?.(want); }
   }
 

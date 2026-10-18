@@ -17,10 +17,17 @@ import { gerarInteriores } from './interiores.js';
 
 const MAPS = new URL('../../assets/maps/', import.meta.url);
 export const MUNDOS = await fetch(new URL('mundos.json', MAPS)).then((r) => r.json()).catch(() => [{ id: 'alvorada', arquivo: 'alvorada.json', nome: 'Alvorada' }]);
-export const mundoInfo = (id) => MUNDOS.find((m) => m.id === id) ?? null;
+// Mundo da lista, ou (só para testes, ?mapa=<nome>) qualquer outro arquivo da pasta: assets/maps/<nome>.json
+export const mundoInfo = (id) => MUNDOS.find((m) => m.id === id) ?? (/^[a-z0-9-]{1,40}$/.test(id ?? '') ? { id, arquivo: id + '.json', nome: id, teste: true } : null);
 
 const GAP = 20;        // vazio entre salas (a câmera não pode mostrar a sala vizinha)
-const cache = new Map();
+const cache = new Map(), brutos = new Map();
+// Só o arquivo principal do mundo, como está no disco (para quem lê campos dele na carga dos módulos)
+export function lerPrincipal(id) {
+  const M = mundoInfo(id); if (!M) return Promise.reject(new Error(`mundo desconhecido: ${id}`));
+  if (!brutos.has(id)) brutos.set(id, ler(new URL(M.arquivo, MAPS)).catch((e) => { brutos.delete(id); throw e; }));
+  return brutos.get(id);
+}
 // Dados montados de um mundo (promessa guardada: a segunda chamada não baixa de novo)
 export function dadosDoMundo(id) {
   if (!cache.has(id)) cache.set(id, montar(id).catch((e) => { cache.delete(id); throw e; }));
@@ -40,7 +47,7 @@ async function montar(id) {
   const M = mundoInfo(id);
   if (!M) throw new Error(`mundo desconhecido: ${id}`);
   const base = new URL(M.arquivo, MAPS);
-  const J = await ler(base);
+  const J = structuredClone(await lerPrincipal(id));
   const incs = await Promise.all((J.include ?? []).map((f) => ler(new URL(f, base))));
   const regs = (await Promise.all((J.regioes ?? []).map((f) => ler(new URL(f, base)).then((d) => ({ ...d, _arquivo: f })).catch((e) => { console.warn(e.message); return null; })))).filter(Boolean);
 
@@ -51,6 +58,7 @@ async function montar(id) {
     partes: [], objects: [], decor: [], interiors: [], areas: [], spots: {}, radius: { ...(J.radius ?? {}) }, warps: [], items: [],
     people: [...(J.people ?? [])], pets: [...(J.pets ?? [])], signs: [...(J.signs ?? [])], noTrees: [...(J.noTrees ?? [])],
     viagens: [...(J.viagens ?? [])], ninhos: [...(J.ninhos ?? [])], regioes: [], avisos: [],
+    mecanismos: [...(J.mecanismos ?? [])], buracos: [...(J.buracos ?? [])], enigmas: J.enigmas, teste: J.teste ?? (M.teste ? {} : undefined), formaRegional: J.formaRegional ?? null,
   };
   // ---- o próprio arquivo do mundo, com os "include" desenhados antes (mesma ordem de sempre: o núcleo não muda) ----
   let ops = J.ops ?? [], trees = J.trees ?? [], objects = J.objects ?? [], decor = J.decor ?? [], areas = J.areas ?? [], items = J.items ?? [], warps = J.warps ?? [], spots = J.spots ?? {};
@@ -64,7 +72,7 @@ async function montar(id) {
   }
   const rectBase = J.rect ?? null, faixaBase = J.faixa ?? [0, OH, W, H - OH];
   R.partes.push({ id: J.regiao?.id ?? 'base', nome: R.nome, rect: rectBase, faixa: faixaBase, ops, trees, seq: true, lazy: !rectBase, i: 0 });
-  if (rectBase) R.regioes.push({ id: J.regiao?.id ?? 'base', nome: J.regiao?.nome ?? R.nome, rect: rectBase, faixa: faixaBase });
+  if (rectBase) R.regioes.push({ id: J.regiao?.id ?? 'nucleo', nome: J.regiao?.nome ?? R.nome, rect: rectBase, faixa: faixaBase, formaRegional: J.formaRegional ?? null });
   const comParte = (list, p) => list.map((o) => ({ ...o, parte: p }));
   R.objects.push(...comParte(objects, 0)); R.decor.push(...decor); R.areas.push(...areas); R.items.push(...items);
   R.warps.push(...warps); Object.assign(R.spots, spots);
@@ -77,8 +85,8 @@ async function montar(id) {
     const pi = R.partes.length, faixa = hd.faixa ?? null;
     // região dentro do retângulo do arquivo principal (ex.: acréscimos ao núcleo) é montada já; as outras, sob demanda
     const sobre = rectBase && hd.rect[0] < rectBase[0] + rectBase[2] && hd.rect[0] + hd.rect[2] > rectBase[0] && hd.rect[1] < rectBase[1] + rectBase[3] && hd.rect[1] + hd.rect[3] > rectBase[1];
-    R.partes.push({ id: hd.id, nome: hd.nome ?? hd.id, rect: hd.rect, faixa, ops: F.ops ?? [], trees: F.trees ?? [], seed: 100000 + (hashTxt(hd.id) % 50000) * 64, lazy: hd.montar === 'sempre' ? false : !sobre, i: pi, arquivo: F._arquivo });
-    if (!sobre) R.regioes.push({ id: hd.id, nome: hd.nome ?? hd.id, rect: hd.rect, faixa });
+    R.partes.push({ id: hd.id, nome: hd.nome ?? hd.id, rect: hd.rect, faixa, formaRegional: hd.formaRegional ?? null, ops: F.ops ?? [], trees: F.trees ?? [], seed: 100000 + (hashTxt(hd.id) % 50000) * 64, lazy: hd.montar === 'sempre' ? false : !sobre, i: pi, arquivo: F._arquivo });
+    if (!sobre) R.regioes.push({ id: hd.id, nome: hd.nome ?? hd.id, rect: hd.rect, faixa, formaRegional: hd.formaRegional ?? null });
     const fora = (x, y, o) => { if (!dentro(hd.rect, x, y)) R.avisos.push(`${F._arquivo}: ${o} fora do retângulo da região (${x}, ${y})`); };
     for (const o of F.objects ?? []) { fora(o.x, o.y, `objeto ${o.kind}`); R.objects.push({ ...o, parte: pi }); }
     for (const d of F.decor ?? []) R.decor.push(d);
@@ -87,7 +95,7 @@ async function montar(id) {
     for (const w of F.warps ?? []) R.warps.push(w);
     for (const [k, v] of Object.entries(F.spots ?? {})) { if (R.spots[k]) R.avisos.push(`${F._arquivo}: ponto "${k}" já existe em outro arquivo`); R.spots[k] = v; }
     Object.assign(R.radius, F.radius ?? {});
-    for (const k of ['people', 'pets', 'noTrees', 'signs', 'viagens', 'ninhos', 'forestZones']) if (F[k]) R[k].push(...F[k]);
+    for (const k of ['people', 'pets', 'noTrees', 'signs', 'viagens', 'ninhos', 'forestZones', 'mecanismos', 'buracos']) if (F[k]) R[k].push(...F[k]);
     for (const r of F.interiors ?? []) {
       const s = { ...r, parte: pi, ...tamanho(r) };
       if (r.x != null && r.y != null && faixa) { s.x = faixa[0] + r.x; s.y = faixa[1] + r.y; s.relativa = true; } else if (r.x == null || r.y == null) { delete s.x; delete s.y; }

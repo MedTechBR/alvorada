@@ -29,3 +29,12 @@ quebráveis, placas, caixa de correio, postes, vasos, caixotes, ponte e píer, e
 arquibancada do ginásio, pórtico, moinho, fardos de feno, trigo, banco, poço, relógio de sol, piso e paredes dos
 interiores, móveis, gruta, Poké Bola no chão, borboletas, pássaros, peixe, vaga-lume, brilhos e luzes. O
 compositor de bordas (autotile) do chão está em `src/world/ground.js`.
+
+## Biomas (src/world/arte-biomas.js, src/world/clima.js)
+
+Também desenhados por código para este projeto, sem arte de terceiros: chão de neve, gelo, lava, cinzas, basalto,
+obsidiana, dunas, areia movediça, chão rachado, caatinga, sal, rocha vermelha, mangue, recife, mosaico, pisos e paredes
+de templo e cavernas, trilhos; pinheiro nevado, cactos, mandacaru, xique-xique, coqueiro, palmeira, mangue, árvores da
+selva, umbu, araucária, bambu; estátua, tochas, braseiro, altar, baú, sino, mural; iglu, cabana, casa de taipa; partículas
+de neve, cinza, areia, chuva e névoa; quadros animados de lava, correnteza, maré e bolhas. As músicas novas (neve,
+vulcão, deserto, mangue, caverna e templo) e os sons ambientes também são gerados na hora (src/audio/audio.js).

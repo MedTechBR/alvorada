@@ -1,10 +1,11 @@
 import * as PIXI from 'pixi.js';
-import { T, TILE, SOLID, SWIMMABLE, MOUNT_PASS } from './tiles.js';
+import { T, TILE, SOLID, SWIMMABLE, MOUNT_PASS, TALLS } from './tiles.js';
 import { WATER_FRAMES, FLOWERS, LILY, TALL, CORN, SPR } from './art.js';
 import { KINDS, DECOR } from './objects.js';
 import { prepararMundo, montarParte, passosParte } from './build.js';
-import { renderTiles } from './ground.js';
-import { dadosDoMundo } from './mundos.js';
+import { renderTiles, prewarm } from './ground.js';
+import { ANIM, TALL_SNOW, TALL_DRY, TALL_REED } from './arte-biomas.js';
+import { dadosDoMundo, lerPrincipal, mundoInfo } from './mundos.js';
 
 // Mapa de um mundo (continente), desenhado à mão em assets/maps/ (mundos.json, alvorada.json + um arquivo por região).
 // - Só um mundo fica montado por vez: map.carregar('ocaso') descarta o atual e monta o outro no mesmo objeto
@@ -15,10 +16,14 @@ import { dadosDoMundo } from './mundos.js';
 // - As regiões de fora do núcleo também são montadas sob demanda: quando a câmera chega perto (em fatias, sem
 //   engasgo) ou, na hora, quando alguém consulta um bloco delas.
 // - Colisão por bloco (sólida por construção) + pegadas dos objetos.
-// Dados do mundo atual (lista de áreas para o menu do mapa etc.). São trocados a cada map.carregar().
+// Dados do mundo atual. Antes da primeira montagem é o arquivo principal como está no disco (enigmas.js lê os
+// campos dele na carga do módulo); depois, os dados montados do mundo (trocados a cada map.carregar()).
 export let REGION = null;
+// ?mapa=<nome> (ou ?mundo=<id>) abre outro arquivo/mundo da pasta em modo de teste (ex.: demo-biomas); o padrão é Alvorada
+export const MAP_ID = (new URLSearchParams(location.search).get('mapa') ?? new URLSearchParams(location.search).get('mundo') ?? '').replace(/[^a-z0-9-]/g, '').slice(0, 40) || 'alvorada';
 // Lista para a interface (menu do mapa): um nome por área, com o centro em blocos (x, y)
 export let AREAS = [];
+REGION = await lerPrincipal(MAP_ID).catch(() => ({}));
 const listaAreas = (all) => {
   const by = new Map();
   for (const a of all) {
@@ -29,6 +34,9 @@ const listaAreas = (all) => {
   return [...by.values()];
 };
 const CH = 16, CPX = CH * T; // setor: 16x16 blocos = 256 px
+// chão dos biomas onde um selvagem pode aparecer mesmo sem mato alto (cavernas, neve, deserto...)
+const WILD_GROUND = new Set([TILE.CAVE, TILE.SNOWFIELD, TILE.ASH, TILE.BASALT, TILE.DUNE, TILE.CAATINGA, TILE.CRACKED, TILE.WETSAND, TILE.MANGMUD, TILE.ICEFLOOR, TILE.LAVAFLOOR,
+  TILE.DARKCAVE, TILE.CRYSTALFLOOR, TILE.OLDSTONE, TILE.TEMPLEFLOOR, TILE.SNOW, TILE.RAIL, TILE.SALT, TILE.REDROCK, TILE.DRYRIVER, TILE.SHALLOW]);
 const hash = (x, y, s = 0) => { let h = (x * 374761393 + y * 668265263 + s * 1442695041) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; };
 const PERTO = 48 * T; // região a menos disso da tela começa a ser montada (em fatias)
 const agora = () => performance.now();
@@ -55,7 +63,7 @@ export class GameMap {
     this.decorDefs = S.decor; this.peopleDefs = S.people; this.petDefs = S.pets;
     this.outdoorH = R.outdoorH ?? this.h; this.areas = R.areas; AREAS = listaAreas(R.areas);
     this.signs = R.signs ?? []; this.items = R.items ?? []; this.regioes = R.regioes ?? [];
-    this.interiors = R.interiors.map((r) => ({ ...r }));
+    this.interiors = R.interiors.map((r) => ({ ...r })); this.region = R;
     this.#links();
     this.CW = Math.ceil(this.w / CH); this.CHh = Math.ceil(this.h / CH);
     this.chunks = [];
@@ -68,7 +76,7 @@ export class GameMap {
     this.secPend = new Uint8Array(this.CW * this.CHh); this.nPend = 0; this.construindo = null;
     for (const P of R.partes) if (!P.pronta) { this.nPend++; for (const r of [P.rect, P.faixa]) if (r) this.#marcarSetores(r, P.i + 1); }
     this.dirtyTiles = []; this.visible = new Set(); this.pending = null;
-    if (this.passable.size === 0 && this.mounts.size) this.setMount([...this.mounts][0], true);
+    prewarm(this); // texturas dos biomas assadas nas folgas (ground.js)
     this.tempoCarga = Math.round(agora() - t0);
     return this;
   }
@@ -159,7 +167,7 @@ export class GameMap {
     for (const r of this.interiors) for (const [k, v] of Object.entries(r.spots ?? {})) this.spots[k] = { x: (r.x + v[0]) * T + 8, y: (r.y + v[1]) * T + 8, tx: r.x + Math.floor(v[0]), ty: r.y + Math.floor(v[1]), dir: v[2] ?? 'down' };
     // passagens extras: para um bloco ([x, y]), para um ponto ("nome") ou para outro mundo (mundo: 'ocaso')
     for (const w of this.R.warps ?? []) {
-      const base = { x: w.x, y: w.y, dir: w.dir ?? 'any', face: w.face ?? 'down', label: w.label, gerado: w.gerado };
+      const base = { x: w.x, y: w.y, dir: w.dir ?? 'any', face: w.face ?? 'down', label: w.label, gerado: w.gerado, requer: w.requer, msg: w.msg };
       if (w.mundo && w.mundo !== this.id) { this.warps.push({ ...base, mundo: w.mundo, destino: w.to, pergunta: w.pergunta }); continue; }
       const s = typeof w.to === 'string' ? this.spots[w.to] : null;
       if (typeof w.to === 'string' && !s) { console.warn('mapa: passagem para ponto que não existe', w.to); continue; }
@@ -214,11 +222,12 @@ export class GameMap {
   solidAt(px, py, swim = false) {
     const x = Math.floor(px / T), y = Math.floor(py / T);
     const t = this.at(x, y);
+    if (t === TILE.TIDE) { if (this.block[x + y * this.w] === 1) return true; return swim ? !this.tideHigh : this.tideHigh && !this.passable.has(TILE.WATER); } // maré alta vira água
     if (swim) return !SWIMMABLE.has(t) || this.block[x + y * this.w] === 1;
     if (this.block[x + y * this.w] === 1) return true;
     return SOLID.has(t) && !this.passable.has(t);
   }
-  tallAt(px, py) { return this.at(Math.floor(px / T), Math.floor(py / T)) === TILE.TALL; }
+  tallAt(px, py) { return TALLS.has(this.at(Math.floor(px / T), Math.floor(py / T))); }
   // Empurra um círculo para fora dos blocos sólidos
   resolve(p, r, swim = false) {
     const x0 = Math.floor((p.x - r) / T), x1 = Math.floor((p.x + r) / T), y0 = Math.floor((p.y - r) / T), y1 = Math.floor((p.y + r) / T);
@@ -243,8 +252,8 @@ export class GameMap {
       const t = this.at(x, y); if (this.block[x + y * this.w] || SOLID.has(t)) continue;
       const wx = x * T + 8, wy = y * T + 10;
       if (this.biome(wx, wy) === 'vila') continue;
-      if (t === TILE.TALL) return { x: wx, y: wy, tall: true };
-      if (!fallback && (t === TILE.DARK || t === TILE.SAND || (t === TILE.GRASS && Math.random() < 0.15))) fallback = { x: wx, y: wy };
+      if (TALLS.has(t)) return { x: wx, y: wy, tall: true };
+      if (!fallback && (t === TILE.DARK || t === TILE.SAND || (t === TILE.GRASS && Math.random() < 0.15) || (WILD_GROUND.has(t) && Math.random() < 0.3))) fallback = { x: wx, y: wy };
     }
     return fallback;
   }
@@ -297,7 +306,7 @@ export class GameMap {
     c.sprite = new PIXI.Sprite(c.tex); c.sprite.x = c.x; c.sprite.y = c.y; c.sprite.visible = false;
     this.groundLayer.addChild(c.sprite);
     // decoração plana: flores animadas, vitórias-régias, seixos, tapetes...
-    c.deco = new PIXI.Container(); c.deco.visible = false; c.flowers = []; c.waves = [];
+    c.deco = new PIXI.Container(); c.deco.visible = false; c.flowers = []; c.waves = []; c.anims = [];
     for (let ty = oy; ty < Math.min(oy + CH, this.h); ty++) for (let tx = ox; tx < Math.min(ox + CH, this.w); tx++) {
       const t = this.at(tx, ty), h = hash(tx, ty, 31);
       if (t === TILE.FLOWERS) {
@@ -311,6 +320,13 @@ export class GameMap {
         const s = new PIXI.Sprite(SPR.foam); s.x = tx * T; s.y0 = ty * T - 3; s.y = s.y0; s.ph = tx * 0.35; c.deco.addChild(s); c.waves.push(s);
       } else if ((t === TILE.GRASS || t === TILE.GRASS2) && h < 0.005 && !this.block[tx + ty * this.w]) {
         const s = new PIXI.Sprite(SPR[h < 0.0025 ? 'pebble' : 'pebble2']); s.x = tx * T; s.y = ty * T; c.deco.addChild(s);
+      } else if (ANIM[t]) {
+        // blocos animados dos biomas (lava, areia movediça, correnteza, fonte termal, maré): arte-biomas.js
+        const A = ANIM[t];
+        if (A.interior && !(this.at(tx - 1, ty) === t && this.at(tx + 1, ty) === t && this.at(tx, ty - 1) === t && this.at(tx, ty + 1) === t)) continue;
+        if (A.chance && h > A.chance) continue;
+        const s = new PIXI.Sprite(A.frames[0]); s.x = tx * T; s.y = ty * T; s.A = A; s.ph = Math.floor(hash(tx, ty, 9) * A.frames.length); s.alpha = A.alpha; if (A.blend) s.blendMode = A.blend;
+        s.tk = tx + ty * this.w; c.deco.addChild(s); c.anims.push(s);
       } else if (t === TILE.DARK && h < 0.03 && !this.block[tx + ty * this.w]) {
         const s = new PIXI.Sprite(SPR[h < 0.015 ? 'mush' : 'mush2']); s.x = tx * T; s.y = ty * T; c.deco.addChild(s);
       }
@@ -319,7 +335,7 @@ export class GameMap {
     this.decorLayer.addChild(c.deco);
     // mato alto (y-sort): esconde a parte de baixo de quem está dentro
     c.tall = new Map();
-    for (let ty = oy; ty < Math.min(oy + CH, this.h); ty++) for (let tx = ox; tx < Math.min(ox + CH, this.w); tx++) { const t = this.at(tx, ty); if (t === TILE.TALL || t === TILE.CORN) this.#addTall(c, tx, ty, t); }
+    for (let ty = oy; ty < Math.min(oy + CH, this.h); ty++) for (let tx = ox; tx < Math.min(ox + CH, this.w); tx++) { const t = this.at(tx, ty); if (TALLS.has(t) || t === TILE.CORN) this.#addTall(c, tx, ty, t); }
     // objetos
     for (const o of c.objs) if (!o.dead && !o.sprite) o.sprite = this.#makeSprite(o);
     c.built = true;
@@ -327,10 +343,11 @@ export class GameMap {
   #near(x, y, t) { for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) if (this.at(x + i, y + j) === t) return true; return false; }
   #nearLand(x, y) { for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) { const t = this.at(x + i, y + j); if (t !== TILE.WATER && t !== TILE.DEEP) return true; } return false; }
   #addTall(c, tx, ty, t = TILE.TALL) {
-    const set = t === TILE.CORN ? CORN : TALL;
+    const set = t === TILE.CORN ? CORN : t === TILE.TALLSNOW ? TALL_SNOW : t === TILE.TALLDRY ? TALL_DRY : t === TILE.REED ? TALL_REED : TALL;
     const s = new PIXI.Sprite(set[0]); s.anchor.set(0.5, 1); s.frames = set;
     s.x = tx * T + 8; s.y = ty * T + 17; s.zIndex = ty * T + 15;
-    if (t === TILE.TALL && this.#near(tx, ty, TILE.DARK)) s.tint = 0xbcd8b4; // mato do bosque, mais escuro
+    if (t === TILE.TALL && this.#near(tx, ty, TILE.MANGMUD)) s.tint = 0x9ac08a; // mato do mangue
+    else if (t === TILE.TALL && this.#near(tx, ty, TILE.DARK)) s.tint = 0xbcd8b4; // mato do bosque, mais escuro
     else if (t === TILE.TALL && this.#near(tx, ty, TILE.GOLD)) s.tint = 0xffe08a; // capim dourado dos Campos de Lúmen
     s.k = tx + ty * this.w; s.sway = 0;
     c.tall.set(s.k, s);
@@ -343,7 +360,8 @@ export class GameMap {
     const s = new PIXI.Sprite(tex);
     s.anchor.set(0.5, 1);
     s.x = o.x; s.y = o.y + (K.oy ?? 0);
-    s.zIndex = o.y - 1 + (o.z ?? 0);
+    s.zIndex = K.flat ? -1e6 + o.y : o.y - 1 + (o.z ?? 0); // placas no chão ficam por baixo de todo mundo
+    this.spriteHook?.(o, s); // a masmorra ajusta o desenho (portão aberto, baú aberto, alavanca puxada)
     return s;
   }
   #showChunk(c, on) {
@@ -405,6 +423,8 @@ export class GameMap {
     if (this.water && this.water.texture !== WATER_FRAMES[wf]) this.water.texture = WATER_FRAMES[wf];
     const ff = Math.floor(this.time / 0.25);
     if (ff !== this.lastFF) { this.lastFF = ff; for (const c of this.visible) for (const s of c.flowers) s.texture = FLOWERS[s.f][(ff + s.ph) % 4]; }
+    const af = Math.floor(this.time * 10);
+    if (af !== this.lastAF) { this.lastAF = af; for (const c of this.visible) for (const s of c.anims) { const A = s.A, f = (Math.floor(this.time * A.fps) + s.ph) % A.frames.length; s.texture = A.frames[f]; if (A.tide) s.alpha = this.tide ?? 0; } }
     for (const c of this.visible) for (const s of c.waves) { const k = Math.sin(this.time * 1.4 + s.ph); s.y = s.y0 + k * 3; s.alpha = 0.35 + 0.55 * (k * 0.5 + 0.5); }
     for (const c of this.visible) for (const s of c.tall.values()) {
       if (s.sway > 0) { s.sway = Math.max(0, s.sway - dt); const k = Math.sin(s.sway * 26) * s.sway * 2.2; s.texture = s.frames[k > 0.25 ? 1 : k < -0.25 ? 2 : 0]; s.skew.x = k * 0.18; }
@@ -425,10 +445,12 @@ export class GameMap {
     this.tiles[k] = t;
     const c = this.chunks[Math.floor(x / CH) + Math.floor(y / CH) * this.CW];
     if (c.built) {
-      if (old === TILE.TALL || old === TILE.CORN) { const s = c.tall.get(k); if (s) { this.ents?.removeChild(s); s.destroy(); c.tall.delete(k); } }
-      if (t === TILE.TALL || t === TILE.CORN) this.#addTall(c, x, y, t);
+      if (TALLS.has(old) || old === TILE.CORN) { const s = c.tall.get(k); if (s) { this.ents?.removeChild(s); s.destroy(); c.tall.delete(k); } }
+      if (TALLS.has(t) || t === TILE.CORN) this.#addTall(c, x, y, t);
+      // animação do bloco (ex.: ponte de pedra cobrindo a lava): some com o bloco antigo
+      if (ANIM[old]) for (const s of c.anims.filter((q) => q.tk === k)) { c.anims.splice(c.anims.indexOf(s), 1); s.destroy(); }
     }
-    this.dirtyTiles.push([x, y]);
+    this.dirtyTiles.push([x, y]); this.dirtyV = (this.dirtyV ?? 0) + 1;
   }
   flushDirty() {
     if (!this.dirtyTiles.length) return;
@@ -459,7 +481,7 @@ export class GameMap {
     for (let j = 0; j < o.fh; j++) for (let i = 0; i < o.fw; i++) {
       const x = nt + i, y = ntY + j, k = x + y * W;
       if (o.cells.includes(k)) continue;
-      if (this.block[k] || SOLID.has(this.at(x, y)) || this.at(x, y) === TILE.TALL) return false;
+      if (this.block[k] || SOLID.has(this.at(x, y)) || TALLS.has(this.at(x, y)) || (this.at(x, y) === TILE.TIDE && this.tideHigh)) return false;
     }
     for (const k of o.cells) { this.block[k] = 0; this.cellObj.delete(k); }
     const oc = this.chunks[Math.floor((o.tx + Math.floor(o.fw / 2)) / CH) + Math.floor((o.ty + o.fh - 1) / CH) * this.CW];

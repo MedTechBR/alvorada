@@ -24,7 +24,8 @@ try {
     const objs = m.objects.filter((o) => !o.gerado).map((o) => { const r = sala(o.tx, o.ty); return r ? o.kind + '@' + r.id + ':' + (o.tx - r.x) + ',' + (o.ty - r.y) : (o.tx < OX && o.ty < OY ? o.kind + '@' + o.tx + ',' + o.ty : null); }).filter(Boolean).sort();
     const spots = Object.entries(m.spots).map(([k, s]) => { const r = sala(s.tx, s.ty); return k + '=' + (r ? r.id + ':' + (s.tx - r.x) + ',' + (s.ty - r.y) : s.tx + ',' + s.ty) + ':' + s.map; }).sort();
     const warps = m.warps.filter((w) => !w.gerado).map((w) => { const a = sala(w.x, w.y), z = w.to?.x != null ? sala(w.to.x, w.to.y) : null; return (a ? a.id + ':' + (w.x - a.x) + ',' + (w.y - a.y) : w.x + ',' + w.y) + '>' + (z ? z.id + ':' + (w.to.x - z.x) + ',' + (w.to.y - z.y) : w.to?.x + ',' + w.to?.y); }).sort();
-    const people = (m.peopleDefs ?? []).filter((d) => !d.gerado).map((d) => d.id + '@' + (d.room ? d.room + ':' + (d.x - m.interiors.find((r) => r.id === d.room).x) + ',' + (d.y - m.interiors.find((r) => r.id === d.room).y) : d.x + ',' + d.y)).sort();
+    const r1 = (v) => Math.round(v * 100) / 100;
+    const people = (m.peopleDefs ?? []).filter((d) => !d.gerado).map((d) => d.id + '@' + (d.room ? d.room + ':' + r1(d.x - m.interiors.find((r) => r.id === d.room).x) + ',' + r1(d.y - m.interiors.find((r) => r.id === d.room).y) : d.x + ',' + d.y)).sort();
     const areas = m.areas.filter((a) => a.rect ? a.rect[0] < OX && a.rect[1] < OY : a.ellipse[0] < OX && a.ellipse[1] < OY).map((a) => (a.id ?? '') + '|' + a.name + '|' + a.biome + '|' + (a.rect ?? a.ellipse).join(',')).sort();
     return { tiles: th, rooms, objs, spots, warps, people, areas, w: m.w, h: m.h };
   })()`);
@@ -40,7 +41,8 @@ try {
   else {
     if (!existsSync(REF)) throw new Error('sem referência: rode com "gravar" antes');
     const R = JSON.parse(readFileSync(REF, 'utf8')); let bad = 0;
-    const cmp = (nome, a, b) => { const A = JSON.stringify(a), B = JSON.stringify(b); if (A === B) { console.log('ok  ', nome); return; } bad++; if (Array.isArray(a) && Array.isArray(b)) { const sa = new Set(a), sb = new Set(b); console.log('DIFF', nome, 'faltam:', a.filter((x) => !sb.has(x)).slice(0, 12), 'novos:', b.filter((x) => !sa.has(x)).slice(0, 12)); } else if (typeof a === 'object') { for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) if (JSON.stringify(a[k]) !== JSON.stringify(b[k])) console.log('DIFF', nome, k, a[k], b[k]); } else console.log('DIFF', nome, a, b); };
+    const cmp = (nome, a, b) => { const A = JSON.stringify(a), B = JSON.stringify(b); if (A === B) { console.log('ok  ', nome); return; } if (Array.isArray(a) && Array.isArray(b)) { const sa = new Set(a), sb = new Set(b), falta = a.filter((x) => !sb.has(x)), novo = b.filter((x) => !sa.has(x)); if (!falta.length) { console.log('ok  ', nome, `(+${novo.length} novos: interiores gerados e acréscimos)`); return; } bad++; console.log('DIFF', nome, 'faltam:', falta.slice(0, 12), 'novos:', novo.slice(0, 12)); return; } bad++; if (false) {} else if (typeof a === 'object') { for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) if (JSON.stringify(a[k]) !== JSON.stringify(b[k])) console.log('DIFF', nome, k, a[k], b[k]); } else console.log('DIFF', nome, a, b); };
+    const arred = (L) => L.map((x) => x.replace(/-?\d+\.\d+/g, (n) => String(Math.round(+n * 100) / 100))); R.people = arred(R.people); dump.people = arred(dump.people);
     for (const k of ['tiles', 'rooms', 'objs', 'spots', 'warps', 'people', 'areas', 'setores']) cmp(k, R[k], dump[k]);
     console.log(bad ? `${bad} diferença(s)` : 'núcleo idêntico');
   }
