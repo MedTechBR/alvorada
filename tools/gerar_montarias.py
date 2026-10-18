@@ -130,6 +130,7 @@ AJUSTE = {
     130: {'lift': 30, 'back': -6},   # Gyarados: no alto do pescoço, atrás da cabeça
     851: {'lift': -6, 'back': 15},   # Centiskorch: no corpo deitado, atrás da parte erguida
     286: {'back': 6}, 620: {'back': 5},  # Breloom e Mienshao: a cauda puxava o assento para longe
+    899: {'back': 5},                # Wyrdeer: o assento caía em cima dos chifres
 }
 
 # ---------------------------------------------------------------- medida do sprite

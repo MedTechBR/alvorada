@@ -191,7 +191,7 @@ export const MONTARIAS = {
   892: {"m":["escalar"],"est":"costas","lift":5,"back":9,"topo":20}, // Urshifu
   896: {"m":["correr"],"est":"lombo","lift":2,"back":1,"topo":23}, // Glastrier
   897: {"m":["correr"],"est":"lombo","lift":3,"back":3,"topo":17}, // Spectrier
-  899: {"m":["correr"],"est":"lombo","lift":2,"back":2,"topo":11}, // Wyrdeer
+  899: {"m":["correr"],"est":"lombo","lift":2,"back":5,"topo":11}, // Wyrdeer
   900: {"m":["escalar"],"est":"costas","lift":2,"back":6,"topo":15}, // Kleavor
   901: {"m":["correr"],"est":"lombo","lift":1,"back":-5,"topo":14}, // Ursaluna
   902: {"m":["nadar","mergulhar"],"est":"lombo","lift":3,"back":-1,"topo":23}, // Basculegion
