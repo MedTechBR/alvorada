@@ -29,9 +29,9 @@ ob(p1, 'brokenColumn', 8, 13); ob(p1, 'brokenColumn', 22, 15); ob(p1, 'brokenCol
 ob(p1, 'statue', 5, 7, 'Uma estátua de um felino de quatro patas, com chifres de pedra. A placa, quase apagada, diz TERRAKION.')
 ob(p1, 'pot', 7, 14); ob(p1, 'pot', 23, 14); ob(p1, 'pot', 19, 6); ob(p1, 'pot', 11, 6)
 # sinos na ordem do sol: leste (1), meio-dia (2), oeste (3); o portão da escada só abre com os três em ordem
-ob(p1, 'bell', 25, 6, id='p1_sino_leste', grupo='sol', ordem=1, abre=['p1_porta'], nome='Sino do nascente', text=None)
-ob(p1, 'bell', 14, 7, id='p1_sino_meio', grupo='sol', ordem=2, abre=['p1_porta'], nome='Sino do meio-dia')
-ob(p1, 'bell', 4, 6, id='p1_sino_oeste', grupo='sol', ordem=3, abre=['p1_porta'], nome='Sino do poente')
+ob(p1, 'bell', 25, 6, id='p1_sino_leste', grupo='ruinas_sinos', ordem=1, abre=['p1_porta'], nome='Sino do nascente', text=None)
+ob(p1, 'bell', 14, 7, id='p1_sino_meio', grupo='ruinas_sinos', ordem=2, abre=['p1_porta'], nome='Sino do meio-dia')
+ob(p1, 'bell', 4, 6, id='p1_sino_oeste', grupo='ruinas_sinos', ordem=3, abre=['p1_porta'], nome='Sino do poente')
 ob(p1, 'stoneDoor', 15, 4, id='p1_porta', aberto=False, msg='Uma porta de pedra com um disco entalhado. Não se mexe. Falta algo que a faça ouvir o sol.')
 ob(p1, 'crackedWall', 4, 13, chao='templefloor', msg='Uma rachadura grande na parede. O que está atrás parece oco.')
 ob(p1, 'chest', 2, 12, item='aerodactylite', n=1)
@@ -84,7 +84,7 @@ g.carve(13, 4, 13, 4)                                              # vão do por
 g.carve(10, 1, 16, 3, 'Y'); g.put(13, 1, 'E')                       # santuário
 p3 = ruina('ruinas_pintada_3', 'Ruínas de Pedra Pintada: Câmara do Sol', g, escuro=0.88)
 for i, (x, y) in enumerate([(7, 7), (19, 7), (7, 12), (19, 12)]):
-    ob(p3, 'brazier', x, y, grupo='sol', abre=['p3_porta'], apaga=26, msg='Um braseiro de pedra, apagado. Falta fogo. Um Pokémon de Fogo resolve.')
+    ob(p3, 'brazier', x, y, grupo='ruinas_fogo', abre=['p3_porta'], apaga=26, msg='Um braseiro de pedra, apagado. Falta fogo. Um Pokémon de Fogo resolve.')
 ob(p3, 'stoneDoor', 13, 4, id='p3_porta', aberto=False, msg='A porta do santuário tem um disco de sol entalhado. Quatro braseiros ao redor da câmara estão apagados.')
 ob(p3, 'altar', 12, 2, pede=None, text='O ALTAR DO SOL: um disco de ouro polido, cheio de riscos de unha. Quem passou por aqui deixou presentes, e levou a luz.')
 ob(p3, 'chest', 10, 2, item='nugget', n=3)
