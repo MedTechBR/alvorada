@@ -41,8 +41,9 @@ export function useItem(mon, id, ctx = {}) {
     if (!dex.includes(mon.dex) || !forms.length) return no('Não teve efeito.');
     const i = forms.indexOf(mon.form ?? null);
     const next = forms[(i + 1) % forms.length] ?? null;
+    const antes = mon.name;
     if (!mon.setForm(next)) return no('Não teve efeito.');
-    return { ok: true, consumed: false, msg: `${mon.name} mudou de forma: ${mon.sp.formName ?? 'forma padrão'}!`, events: [{ type: 'form', form: next }] };
+    return { ok: true, consumed: false, msg: `${antes} mudou de forma: ${mon.sp.formName ?? 'forma padrão'}!`, events: [{ type: 'form', form: next }] };
   }
   // frutas da mochila usadas direto (Oran, Sitrus, Pecha…)
   if (it.cat === 'berry' && it.berry && !it.evs) {
