@@ -8,6 +8,9 @@ import { dexMark } from '../ui/menu.js';
 // Os Pokémon do treinador usam o lado 'foe': inimigos do seu lado ('ally'), mas não entram na lista
 // de selvagens (não dá para capturar, não somem por distância, não brigam com os selvagens).
 // Um por vez, ou dois de uma vez quando o treinador tem `double: true`.
+// Opções (motor de roteiro): semBola = o Pokémon já está no mapa (chefe selvagem, sem treinador);
+// alfa = vira Pokémon Alfa (maior, olhos vermelhos, mais forte); interromperApos = n: a luta para depois de
+// n desmaios do lado do treinador e termina com 'interrompida' (cena que invade a batalha).
 export class TrainerBattle {
   constructor(story, npc, def, opts = {}) {
     this.s = story; this.g = story.g; this.npc = npc; this.def = def; this.opts = opts;
@@ -39,6 +42,7 @@ export class TrainerBattle {
     if (this.done || this.next >= this.team.length) return false;
     const g = this.g, mon = this.team[this.next++], k = this.next;
     this.pending++;
+    if (this.opts.semBola) { g.later(delay, () => this.#appear(mon, { x: this.npc.x, y: this.npc.y })); return true; }
     const to = this.#spot(k);
     g.later(delay, () => {
       if (this.done) { this.pending--; return; }
@@ -66,6 +70,7 @@ export class TrainerBattle {
     this.pending--;
     if (this.done) return;
     e.trainer = this;
+    if (this.opts.alfa) { g.combat.ai.makeAlpha?.(e); g.fx.shock?.(e.x, e.y, 0xff3a2a, 40, 0.5); g.audio?.sfx?.('howl'); }
     e.ai.state = 'aggro'; e.ai.t = 10; e.aggroTarget = g.lead?.alive ? g.lead : g.player;
     e.face(g.player.x - e.x, g.player.y - e.y);
     g.entities.push(e); g.ents.addChild(e.view);
@@ -73,7 +78,7 @@ export class TrainerBattle {
     e.lock = 0.6; // um respiro antes de atacar
     this.active.push(e);
     dexMark(g, mon.dex, 1);
-    g.toast(`${this.def.name} enviou ${mon.name}!`);
+    g.toast(this.opts.semBola ? `${this.def.name} ataca!` : `${this.def.name} enviou ${mon.name}!`);
   }
 
   update(dt) {
@@ -102,6 +107,8 @@ export class TrainerBattle {
     if (g.lead?.alive) g.giveXp(g.lead.mon, e.mon.xpYield(true));
     g.later(0.6, () => g.removeEntity(e));
     this.active = this.active.filter((x) => x !== e);
+    this.fainted = (this.fainted ?? 0) + 1;
+    if (this.opts.interromperApos && this.fainted >= this.opts.interromperApos && this.next < this.team.length) { g.later(0.9, () => this.finish('interrompida')); return true; }
     if (this.next < this.team.length) { g.later(0.9, () => { if (!this.done) { g.toast(`${this.def.name}: Volta! Vai, próximo!`); this.sendNext(); } }); }
     else if (!this.active.length && !this.pending) g.later(0.9, () => this.finish('win'));
     return true;

@@ -11,6 +11,7 @@ import { Spots } from './spots.js';
 import { Npc } from './npc.js';
 import { TrainerBattle } from './battle.js';
 import { makeStarterTable, makeBallTexture } from '../sprites/npc.js';
+import { Roteiro } from './roteiro.js';
 
 // História principal (capítulo 1, portado do 3D): personagens, escolha do inicial, treinadores que
 // avistam o jogador e desafiam, Cidade Campina, ginásio do Líder Tomé, insígnia e objetivo no HUD.
@@ -38,6 +39,7 @@ export class Story {
     add('nurse', NAMES.nurse, 'nurse', 'nurse');
     this.trainers = [...ROUTE_TRAINERS, ...GYM_TRAINERS, LEADER1].map((d) => this.npcs.get(d.id));
     this.#starterTable();
+    this.roteiro = new Roteiro(this); // capítulos 2 em diante (src/story/script), depois de flags.ch1Done
   }
   npc(id) { return this.npcs.get(id); }
   get flags() { return this.g.flags; }
@@ -128,6 +130,10 @@ export class Story {
     if (npc) { npc.faceTo(g.player.x, g.player.y); g.player.dir = this.#dirTo(g.player, npc); }
     return g.ui.say(lines, { name: npc?.name ?? '', ...opts });
   }
+  dirTo(a, b) { return this.#dirTo(a, b); }
+  // usados pelo motor de roteiro (roteiro.js)
+  cut(fn) { return this.#cut(fn); }
+  fight(npc, def, opts) { return this.#fight(npc, def, opts); }
   #dirTo(a, b) { const dx = b.x - a.x, dy = b.y - a.y; return Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up'; }
   #teleport(x, y, dir) {
     const g = this.g, p = g.player;
@@ -278,7 +284,8 @@ export class Story {
     await g.ui.say(PROF.phone(this.pname), { name: `${NAMES.prof} · chamada` });
     f.ch1Done = true; f.chapter = 2;
     g.ui.banner(CHAPTER.oneDone.toUpperCase(), '#ffe27a');
-    g.toast(CHAPTER.two + ': em breve!');
+    await sleep(1400);
+    g.ui.save('capítulo'); // o capítulo 2 começa sozinho (roteiro.js)
   }
 
   // ---------- Cidade Campina ----------
@@ -303,10 +310,10 @@ export class Story {
   // Equipe toda desmaiada. Devolve true quando a história cuida (o main.js não manda para casa).
   onBlackout() {
     const b = this.battle;
-    if (!b) return false;
+    if (!b) return this.roteiro.blackout();
     b.finish('lose');
     if (b.opts.noBlackout) { this.#heal(true); this.g.sendOut(0); return true; }
-    return false;
+    return this.roteiro.blackout(); // a partir do capítulo 2: volta ao último Centro Pokémon
   }
   restoreMusic() { this.music = null; this.musicT = 0; }
 
@@ -314,16 +321,20 @@ export class Story {
   interactions() {
     const g = this.g, f = this.flags, out = [];
     const add = (o, r, label, fn) => { if (o && (o.visible ?? true)) out.push({ o, r, label, fn }); };
-    add(this.npc('mom'), 24, 'Falar', () => this.momTalk());
-    add(this.npc('prof'), 26, 'Falar', () => this.profTalk());
+    // o roteiro (capítulo 2+) responde primeiro quando tem cena com "falar" para o personagem
+    const R = (quem, fn) => async () => { if (!(await this.roteiro.falar(quem))) return fn(); };
+    add(this.npc('mom'), 24, 'Falar', R('mae', () => this.momTalk()));
+    add(this.npc('prof'), 26, 'Falar', R('prof', () => this.profTalk()));
     const rival = this.npc('rival');
     if (!f.rivalGone) add(rival, 24, 'Falar', () => this.#talk(rival, f.starter ? RIVAL.idle : RIVAL.before(this.pname)));
     if (!f.starter) for (const b of this.balls) add({ x: this.table.x + b.x, y: this.table.y + 2, h: 26, visible: b.visible }, 12, `Ver ${SPECIES[b.dex].name}`, () => this.pickStarter(b.dex));
     for (const t of this.trainers) {
       const done = beaten(f, t.def.id);
-      add(t, 26, done ? 'Falar' : t.def.badge ? 'Desafiar' : 'Batalhar', () => (done ? this.#afterTalk(t) : this.#challenge(t)));
+      const quem = t.def.id === 'leader_tome' ? 'tome' : t.def.id;
+      add(t, 26, done ? 'Falar' : t.def.badge ? 'Desafiar' : 'Batalhar', done ? R(quem, () => this.#afterTalk(t)) : () => this.#challenge(t));
     }
     add(this.npc('nurse'), 28, 'Centro Pokémon', () => this.#nurseTalk());
+    out.push(...this.roteiro.interactions());
     const n = this.spots.get('nurse');
     add({ x: n.x + 22, y: n.y - 6, h: 26 }, 16, 'Usar o PC', () => { g.ui.openPC(); });
     return out;
@@ -338,6 +349,7 @@ export class Story {
       if (n.visible) { const dx = p.x - n.x, dy = p.y - n.y, d = Math.hypot(dx, dy), m = n.r + (p.r ?? 5); if (d > 0.01 && d < m) { p.x = n.x + dx / d * m; p.y = n.y + dy / d * m; } }
     }
     this.battle?.update(dt);
+    this.roteiro.update(dt);
     this.#music(dt);
     if ((this.objT -= dt) <= 0) { this.objT = 0.3; this.refreshObjective(); }
     if (this.busy) { g.ui.hud.setPrompt(null); return; }
@@ -362,6 +374,9 @@ export class Story {
     // chegou a Campina
     const c = this.spots.get('campina');
     if (!this.battle && f.starter && !f.campina && c && Math.hypot(p.x - c.x, p.y - c.y) < c.r) { this.#cut(() => this.#arriveCampina()); return; }
+
+    // capítulos do roteiro: gatilhos de lugar, zona, flag e treinadores
+    if (!this.battle && this.roteiro.tick()) return;
 
     // treinadores avistam o jogador: "!", vêm até ele e desafiam
     if (!this.battle && g.party.some((m) => !m.fainted)) {
@@ -391,7 +406,7 @@ export class Story {
     const g = this.g;
     if (this.battle) return;
     const p = g.player, c = this.spots.get('campina'), v = this.spots.get('village');
-    const town = (v && Math.hypot(p.x - v.x, p.y - v.y) < v.r + 2 * T) || (c && Math.hypot(p.x - c.x, p.y - c.y) < c.r + 4 * T);
+    const town = (v && Math.hypot(p.x - v.x, p.y - v.y) < v.r + 2 * T) || (c && Math.hypot(p.x - c.x, p.y - c.y) < c.r + 4 * T) || g.map.biome?.(p.x, p.y) === 'vila';
     const want = town ? 'town' : 'route';
     if (this.music !== want) { this.music = want; g.audio?.music?.(want); }
   }

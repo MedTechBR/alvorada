@@ -184,7 +184,9 @@ class Game {
       const sp = this.map.randomSpawn(p.x, p.y); if (!sp) return; // de preferência no mato alto
       const { x, y } = sp;
       const biome = this.map.biome(x, y); if (biome === 'vila') continue;
-      const table = (BIOME_ENCOUNTERS[biome] ?? BIOME_ENCOUNTERS.campo).filter((e) => this.available.includes(e[0]) && SPECIES[e[0]]);
+      // tabela da área (assets/maps: "encounters" na área ou no interior) ou a do bioma
+      const own = (this.map.interiorAt(x, y) ?? this.map.areaAt(x, y))?.encounters;
+      const table = (own ?? BIOME_ENCOUNTERS[biome] ?? BIOME_ENCOUNTERS.campo).filter((e) => this.available.includes(e[0]) && SPECIES[e[0]]);
       const pool = table.length ? table : this.available.filter((d) => SPECIES[d] && d !== 130).map((d) => [d, 3, 8, 1]);
       let r = Math.random() * pool.reduce((s, e) => s + e[3], 0); const entry = pool.find((e) => (r -= e[3]) < 0) ?? pool[0];
       const [dex, lo, hi] = entry;

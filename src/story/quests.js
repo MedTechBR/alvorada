@@ -29,5 +29,7 @@ export function currentObjective(story) {
     return { id: 'leader1', title: 'Ginásio de Campina', text: 'Desafie o Líder Tomé no fundo da quadra', target: npc(LEADER1.id) ?? S('leader_tome') };
   }
   if (!f.ch1Done) return { id: 'ch1end', title: 'O primeiro alvorecer', text: 'Atenda a chamada do Prof. Jatobá', target: null };
-  return { id: 'ch2', title: 'Capítulo 2 (em breve)', text: 'Siga ao norte até o Bosque Sussurrante', sub: 'Insígnias: ' + (f.badges ?? []).length + '/8', target: S('bosque') };
+  const r = story.roteiro?.objective(); // capítulos 2+ (roteiro.js)
+  if (r) return r;
+  return { id: 'ch2', title: 'Capítulo 2', text: 'Siga ao norte até o Bosque Sussurrante', sub: 'Insígnias: ' + (f.badges ?? []).length + '/8', target: S('bosque') };
 }
