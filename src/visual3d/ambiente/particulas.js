@@ -6,8 +6,8 @@ import { U, iniciarComum } from './comum.js';
 // Cada tipo é uma malha instanciada (1 draw call). As partículas vivem numa caixa presa ao mundo em volta do foco
 // da câmera e dão a volta nas bordas (somem suavemente), então andar pelo mapa nunca as deixa para trás.
 const TIPOS = {
-  folhas:   { n: 110, forma: 0, aditivo: false, tam: [2.2, 3.6], vel: [14, -10, 4], flut: 9, cores: [0xd98a3a, 0xc8b04a, 0x8aa83a, 0xe0a050], dia: 1 },
-  petalas:  { n: 140, forma: 1, aditivo: false, tam: [1.8, 2.8], vel: [16, -7, 3], flut: 12, cores: [0xffa6c4, 0xff8ab0, 0xffc8da], dia: 1 },
+  folhas:   { n: 110, forma: 0, aditivo: false, tam: [3, 5], vel: [14, -10, 4], flut: 9, cores: [0xd98a3a, 0xc8b04a, 0x8aa83a, 0xe0a050], dia: 1 },
+  petalas:  { n: 140, forma: 1, aditivo: false, tam: [2.6, 4.2], vel: [16, -7, 3], flut: 12, cores: [0xffa6c4, 0xff8ab0, 0xffc8da], dia: 1 },
   polen:    { n: 260, forma: 2, aditivo: true, tam: [0.9, 1.6], vel: [3, 1.2, 1], flut: 5, cores: [0xfff0b0, 0xffe080], dia: 1, brilho: 1.4 },
   poeira:   { n: 80, forma: 3, aditivo: true, tam: [3, 7], vel: [4, 1.5, 1], flut: 7, cores: [0xffd27a, 0xffb85a], dia: 1, brilho: 0.55 },
   vagalumes:{ n: 70, forma: 4, aditivo: true, tam: [1.6, 2.6], vel: [2, 0.5, 2], flut: 14, cores: [0xd8ff7a, 0xfff08a], dia: 0, brilho: 2.4 },

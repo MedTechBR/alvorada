@@ -7,7 +7,7 @@ import { fbm, hash } from '../src/visual3d/ambiente/ruido.js';
 // cercas vivas com frutinhas, árvores, casinha, poste) com modelos provisórios simples onde o kit ainda não tem.
 // O mapa é um mapa de blocos de verdade (TILE.*), lido pela mesma interface do jogo (bloco(x, y)).
 const P = new URLSearchParams(location.search);
-const Q = P.get('q') ?? 'alta', HORA0 = +(P.get('hora') ?? 8.3), CAM = P.get('cam') ?? 'ref', PARAR = P.has('parar');
+const Q = P.get('q') ?? 'alta', HORA0 = +(P.get('hora') ?? 7.8), CAM = P.get('cam') ?? 'ref', PARAR = P.has('parar');
 
 // ---------- mapa ----------
 const W = 80, H = 100;
@@ -18,7 +18,7 @@ const ond = (a, s, k = 1) => (fbm(a * 0.13, s, 3, 5) - 0.5) * 4 * k;
 // trilha principal, de leste a oeste, larga
 for (let x = 0; x < W; x++) { const c = 62.5 + ond(x, 1) + (x < 34 ? (34 - x) * 0.12 : 0), lg = 2.6 + ond(x, 2, 0.3) + (x < 34 ? (34 - x) * 0.14 : 0); for (let y = Math.round(c - lg / 2); y <= Math.round(c + lg / 2); y++) pinta(x, y, TILE.PATH); }
 // largo à esquerda descendo até perto da câmera
-for (let y = 62; y < H; y++) { const c = 31 + ond(y, 3) - (y - 62) * 0.12, lg = 6 + ond(y, 4, 0.4); for (let x = Math.round(c - lg / 2); x <= Math.round(c + lg / 2); x++) pinta(x, y, TILE.PATH); }
+for (let y = 62; y < H; y++) { const c = 32 + ond(y, 3) - (y - 62) * 0.1, lg = 10 + ond(y, 4, 0.6) + (y - 62) * 0.35; for (let x = Math.round(c - lg / 2); x <= Math.round(c + lg / 2); x++) pinta(x, y, TILE.PATH); }
 // trilha para o norte, entre as árvores
 for (let y = 30; y < 63; y++) { const c = 40 + ond(y, 5, 0.7), lg = 2.2; for (let x = Math.round(c - lg / 2); x <= Math.round(c + lg / 2); x++) pinta(x, y, TILE.PATH); }
 // trilha da frente, à direita (diante da cerca viva)
@@ -52,7 +52,7 @@ const foco = new THREE.Vector3(40 * 16 + 8, 0, 64 * 16);
 function porCamera() {
   if (CAM === 'jogo') { const inc = 50 * Math.PI / 180, D = 520; camera.position.set(foco.x, foco.y + D * Math.sin(inc), foco.z + D * Math.cos(inc)); }
   else { camera.position.set(foco.x, 118, foco.z + 455); }
-  camera.lookAt(foco); camera.updateMatrixWorld();
+  camera.lookAt(foco.x, foco.y + +(P.get('olhar') ?? (CAM === 'jogo' ? 0 : 34)), foco.z); camera.updateMatrixWorld();
 }
 porCamera();
 const altura = () => 0;
@@ -73,7 +73,7 @@ const arvores = [];
 function arvore(tx, ty, k = 1) {
   const x = tx * 16 + 8, z = ty * 16 + 8, g = new THREE.Group(); objetos.add(g);
   caixa(6 * k, 22 * k, 6 * k, 0x6a4a2e, x, 0, z, g);
-  const verdes = [0x2f5a24, 0x3a6a2a, 0x2a5020, 0x447a30];
+  const verdes = [0x4a8a32, 0x5a9a38, 0x427e2c, 0x66a43e];
   const R = (i) => hash(tx * 7 + i, ty * 3, 9);
   // copa em blocos arredondados (estilo voxel da referência)
   const blocos = [[0, 30, 0, 30, 20, 28], [-9, 24, 4, 18, 14, 18], [9, 26, 2, 18, 16, 18], [0, 42, -2, 22, 12, 20], [-4, 22, 10, 16, 10, 12]];
@@ -84,6 +84,8 @@ function arvore(tx, ty, k = 1) {
 // fundo de árvores dos dois lados da trilha do norte
 for (let i = 0; i < 26; i++) { const lado = i % 2 ? 1 : -1, ty = 34 + (i >> 1) * 1.6 + hash(i, 2, 1) * 1.5, tx = 40 + lado * (4 + hash(i, 3, 1) * 9); arvore(Math.round(tx), Math.round(ty), 1 + hash(i, 4, 1) * 0.4); }
 for (const [tx, ty, k] of [[27, 54, 1.3], [12, 60, 1.4], [8, 54, 1.2], [56, 50, 1.25], [64, 54, 1.1], [72, 58, 1.35], [76, 50, 1.2], [20, 46, 1.2], [30, 44, 1.3], [52, 42, 1.3], [62, 40, 1.4]]) arvore(tx, ty, k);
+// mata ao fundo (linha de árvores até as colinas)
+for (let i = 0; i < 60; i++) { const tx = 2 + Math.round(hash(i, 21, 5) * 76), ty = 6 + Math.round(hash(i, 22, 5) * 26); if (Math.abs(tx - 40) > 3) arvore(tx, ty, 1.1 + hash(i, 23, 5) * 0.5); }
 // casinha (telhado verde de duas águas, à esquerda)
 {
   const x = 19 * 16, z = 52 * 16, w = 92, d = 64, h = 38;
@@ -97,7 +99,7 @@ for (const [tx, ty, k] of [[27, 54, 1.3], [12, 60, 1.4], [8, 54, 1.2], [56, 50, 
 }
 // poste de luz e um quiosque à direita
 caixa(3, 40, 3, 0x3a3a40, 51 * 16, 0, 60 * 16);
-const lamp = caixa(7, 8, 7, 0xfff2c0, 51 * 16, 40, 60 * 16); lamp.material = new THREE.MeshBasicMaterial({ color: 0xfff4c8 });
+const lamp = caixa(7, 8, 7, 0xfff2c0, 51 * 16, 40, 60 * 16); lamp.material = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xfff0b8).multiplyScalar(5) });
 { const x = 61 * 16, z = 57 * 16; caixa(56, 34, 30, 0xd6dee4, x, 0, z); caixa(64, 4, 38, 0x4a8ac0, x, 34, z); caixa(40, 18, 2, 0x5a7890, x, 8, z + 16); ocupa(59, 56, 63, 58); }
 // Charizard (billboard do sprite PMD, como o espelho do jogo faz)
 {
@@ -113,7 +115,7 @@ const lista = [];
 // cercas vivas (duas fileiras com frutinhas) e arbustos grandes no primeiro plano
 lista.push(...Arbustos.fileira(43 * 16, 66 * 16 - 2, 79 * 16, 66 * 16 - 2, { r: 9.5, frutas: 6 }));
 lista.push(...Arbustos.fileira(43 * 16, 71 * 16 + 4, 79 * 16, 71 * 16 + 4, { r: 10, frutas: 6 }));
-for (const [x, z, r] of [[26, 80, 30], [31, 81.5, 26], [22, 78, 22], [52, 80, 30], [58, 79.5, 28], [46, 81, 22], [64, 78, 24], [36, 74.5, 10]]) lista.push({ x: x * 16, z: z * 16, r, alt: 0.9, frutas: r > 20 ? 0 : 2 });
+for (const [x, z, r] of [[27, 80.5, 34], [32, 82, 30], [23, 78, 26], [53, 80.5, 34], [59, 79.5, 30], [47, 81.5, 24], [65, 78, 26], [36, 74.5, 10]]) lista.push({ x: x * 16, z: z * 16, r, alt: 0.9, frutas: r > 20 ? 0 : 2 });
 for (const a of arvores) lista.push(...Arbustos.folhagemArvore((a.tx + a.fw / 2) * 16, (a.ty + 1) * 16, a.fw * 9, { n: 4 }));
 for (let i = 0; i < 18; i++) lista.push({ x: (10 + hash(i, 7, 7) * 60) * 16, z: (38 + hash(i, 8, 7) * 22) * 16, r: 7 + hash(i, 9, 7) * 6, frutas: hash(i, 10, 7) < 0.3 ? 3 : 0 });
 const arb = amb.arbustos.lote(lista); scene.add(arb.grupo);

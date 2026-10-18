@@ -14,9 +14,9 @@ const DIA = [
   [0, C(0x050a1c), C(0x14203e), C(0x8aa0e0), 0.22, C(0x30447a), C(0x0c1222), 0.55, C(0x4a5a88), C(0x161e38), 0, 1],
   [4.6, C(0x0a1230), C(0x2a2c52), C(0x9a90d0), 0.26, C(0x3a4678), C(0x161826), 0.6, C(0x5a5a8a), C(0x1e2040), 0, 0.85],
   [6.0, C(0x5a78b8), C(0xf0a07a), C(0xff9a58), 1.0, C(0xb8b0d0), C(0x5a4a40), 0.75, C(0xffc0a0), C(0x8a6a8a), 0.7, 0.1],
-  [7.4, C(0x86b8e6), C(0xffd6a0), C(0xffc47a), 2.4, C(0xb6cce8), C(0x6a6a3a), 0.9, C(0xfff0d8), C(0xc0a0a0), 1.0, 0],
-  [9.5, C(0x8cc4ee), C(0xf6e6c4), C(0xffe0aa), 2.9, C(0xa8c4ea), C(0x6a7438), 0.95, C(0xffffff), C(0xb8c0d4), 0.75, 0],
-  [14.5, C(0x7fbcec), C(0xeee8d2), C(0xfff0d0), 3.0, C(0xa8c8ee), C(0x6a7438), 0.95, C(0xffffff), C(0xb0bcd4), 0.55, 0],
+  [7.4, C(0x86b8e6), C(0xffd6a0), C(0xffc47a), 2.4, C(0xb6cce8), C(0x6a6a3a), 0.9, C(0xfff6e4), C(0xd4ccd4), 1.0, 0],
+  [9.5, C(0x8cc4ee), C(0xf6e6c4), C(0xffe0aa), 2.6, C(0xa8c4ea), C(0x6a7438), 0.95, C(0xffffff), C(0xcdd4e2), 0.5, 0],
+  [14.5, C(0x7fbcec), C(0xeee8d2), C(0xfff0d0), 2.4, C(0xa8c8ee), C(0x6a7438), 0.9, C(0xffffff), C(0xb0bcd4), 0.3, 0],
   [16.6, C(0x8ec0e8), C(0xffd89a), C(0xffbe6a), 2.7, C(0xb0c0e0), C(0x6e6834), 0.9, C(0xfff0d0), C(0xc8a0a0), 1.0, 0],
   [18.1, C(0x5a6ca8), C(0xff9c5a), C(0xff7a3a), 1.5, C(0xb09ac0), C(0x5a4030), 0.75, C(0xffb080), C(0x8a5a7a), 0.9, 0.05],
   [19.3, C(0x1e2450), C(0x7a4a6a), C(0xc07ac0), 0.45, C(0x50507a), C(0x1a1626), 0.6, C(0x8a6a90), C(0x2e2848), 0.15, 0.6],
@@ -34,12 +34,12 @@ const FRAG_CEU = /* glsl */`
     vec3 d = normalize(vDir);
     float y = d.y;
     // gradiente: horizonte quente e largo, zênite mais fundo; abaixo do horizonte, névoa
-    float k = pow(smoothstep(-0.02, 0.62, y), 0.62);
+    float k = pow(smoothstep(-0.006, 0.05, y), 0.7);
     vec3 c = mix(horizonte, zenite, k);
     float s = max(dot(d, solDir), 0.0);
     c += solCor * (pow(s, 6.0) * 0.32 + pow(s, 48.0) * 0.6) * brilhoSol;            // halo largo do sol
     c += solCor * smoothstep(0.9993, 0.99965, s) * 3.0 * brilhoSol;                   // disco
-    c = mix(c, horizonte * 1.02, (1.0 - smoothstep(-0.12, 0.05, y)) * 0.85);          // faixa de névoa no horizonte
+    c = mix(c, horizonte * 1.02, (1.0 - smoothstep(-0.06, 0.004, y)) * 0.85);          // faixa de névoa no horizonte
     if (estrelas > 0.0 && y > 0.0) {
       vec3 q = d * 260.0; vec3 i = floor(q); float r = h13(i);
       float st = step(0.985, r) * smoothstep(0.45, 0.0, length(fract(q) - 0.5)) * (0.6 + 0.4 * sin(tempo * (2.0 + r * 5.0) + r * 40.0));
@@ -94,17 +94,18 @@ const FRAG_MONTE = /* glsl */`
     // topo mais escuro e definido, pé some na névoa (perspectiva aérea)
     vec3 c = mix(corPe, corTopo, smoothstep(0.0, 1.0, vUv.y));
     c *= 0.86 + vLuz * 0.28;
-    c = mix(c, horizonte, nevoa + (1.0 - nevoa) * (1.0 - smoothstep(0.0, 0.55, vUv.y)) * 0.65);
+    c = mix(c, horizonte, nevoa + (1.0 - nevoa) * (1.0 - smoothstep(0.0, 0.5, vUv.y)) * 0.38);
     gl_FragColor = vec4(c, 1.0);
     #include <colorspace_fragment>
   }`;
 
 // faixa de montanha: perfil por ruído; uv.y = 0 no pé, 1 no cume local
-function geoMontanha(seed, largura, altura, rugos, arvores) {
+function geoMontanha(seed, largura, altura, rugos, arvores, picos = 1) {
   const N = 220, pos = [], uv = [], luz = [], idx = [];
   const perfil = (k) => {
     let h = fbm(k * rugos, seed * 0.37, 5, seed) * 1.25 - 0.18;
-    h = Math.max(0.08, h);
+    h = Math.max(0.06, h);
+    h = Math.pow(h, picos) * 1.2; // picos > 1: cumes destacados e vales largos
     if (arvores) { const a = k * 900; h += (Math.abs(Math.sin(a)) ** 0.5 * 0.05 + Math.abs(Math.sin(a * 0.37 + 1)) ** 0.6 * 0.035) * (hash(Math.floor(a / 3.14), 0, seed) > 0.25 ? 1 : 0.3); }
     return h * altura;
   };
@@ -149,13 +150,13 @@ export class CeuHD {
     const camadas = nivel.montanhas ?? 3;
     this.montes = [];
     const defs = [
-      { dist: 5200, larg: 22000, alt: 1150, rug: 3.2, topo: C(0x6f86a6), pe: C(0xb4c4d6), nevoa: 0.5, arv: false, par: 0.97 },
-      { dist: 3900, larg: 15000, alt: 620, rug: 4.5, topo: C(0x5d7e78), pe: C(0x9fb4a8), nevoa: 0.3, arv: false, par: 0.93 },
-      { dist: 2700, larg: 10000, alt: 300, rug: 6, topo: C(0x4e7a3c), pe: C(0x8aa860), nevoa: 0.14, arv: true, par: 0.86 },
+      { dist: 6000, larg: 26000, alt: 1500, rug: 6, picos: 2.4, topo: C(0x5a6e92), pe: C(0x98aac4), nevoa: 0.18, arv: false, par: 0.97 },
+      { dist: 4200, larg: 16000, alt: 380, rug: 5, picos: 1.4, topo: C(0x5e9a46), pe: C(0x9cc07a), nevoa: 0.12, arv: false, par: 0.93 },
+      { dist: 2800, larg: 10000, alt: 170, rug: 7, topo: C(0x4f8a3a), pe: C(0x8cb064), nevoa: 0.1, arv: true, par: 0.86 },
     ].slice(3 - camadas);
     for (const [i, d] of defs.entries()) {
       const u = { corTopo: { value: d.topo.clone() }, corPe: { value: d.pe.clone() }, horizonte: this.uCeu.horizonte, solCor: this.uCeu.solCor, nevoa: { value: d.nevoa }, solLado: { value: 0 } };
-      const m = new THREE.Mesh(geoMontanha(11 + i * 7, d.larg, d.alt, d.rug, d.arv), new THREE.ShaderMaterial({
+      const m = new THREE.Mesh(geoMontanha(11 + i * 7, d.larg, d.alt, d.rug, d.arv, d.picos ?? 1), new THREE.ShaderMaterial({
         uniforms: u, vertexShader: `attribute float aLuz; varying vec2 vUv; varying float vLuz; void main(){ vUv = uv; vLuz = aLuz; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
         fragmentShader: FRAG_MONTE, depthWrite: false, fog: false }));
       m.frustumCulled = false; m.renderOrder = -90 + i; m.userData = { ...d, base: { topo: d.topo.clone(), pe: d.pe.clone() } };
@@ -170,8 +171,8 @@ export class CeuHD {
     for (let i = 0; i < nN; i++) {
       const u = { tN: { value: this.texN[i % 3] }, corLuz: this.uNuv.corLuz, corSombra: this.uNuv.corSombra, horizonte: this.uCeu.horizonte, opac: { value: 1 }, nevoa: { value: 0 } };
       const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 0.5), new THREE.ShaderMaterial({ uniforms: u, vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`, fragmentShader: FRAG_NUVEM, transparent: true, depthWrite: false, fog: false }));
-      const dist = 3000 + R() * 2600, larg = 900 + R() * 1300;
-      m.userData = { x: (R() - 0.5) * 9000, dist, larg, alt: 260 + R() * 900 + (dist - 3000) * 0.25, vel: 4 + R() * 6 };
+      const dist = 3200 + R() * 2600, larg = 1100 + R() * 1500;
+      m.userData = { x: (R() - 0.5) * 9000, dist, larg, alt: 260 + R() * 420 + (dist - 3000) * 0.08, vel: 4 + R() * 6 };
       u.nevoa.value = Math.min(0.55, (dist - 3000) / 5200);
       m.frustumCulled = false; m.renderOrder = -80; m.scale.set(larg, larg, 1);
       this.grupo.add(m); this.nuvens.push(m);

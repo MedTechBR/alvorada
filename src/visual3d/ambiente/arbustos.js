@@ -69,7 +69,7 @@ function matArbusto() {
         float f = texture2D(tRuido, q).b, f2 = texture2D(tRuido, q * 3.1 + 0.37).r;
         float folha = smoothstep(0.3, 0.7, f * 0.5 + f2 * 0.5);
         float luzC = smoothstep(-0.7, 0.9, vNorA.y);
-        diffuseColor.rgb *= mix(0.5, 1.08, luzC) * mix(0.7, 1.18, folha);
+        diffuseColor.rgb *= mix(0.6, 1.15, luzC) * mix(0.72, 1.22, folha);
         diffuseColor.rgb *= mix(vec3(1.0), tomMancha(vMundoA.xz), 0.5);`)
       .replace('#include <lights_fragment_end>', `#include <lights_fragment_end>
         reflectedLight.directDiffuse *= sombraNuvem(vMundoA.xz);

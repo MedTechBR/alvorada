@@ -18,7 +18,7 @@ const RAIOS = `uniform sampler2D t; uniform vec2 sol; uniform float limiar; unif
   void main(){
     vec2 d = (sol - vUv); float L = length(d * aspecto); d *= 0.92 / 28.0;
     vec2 uv = vUv; float peso = 1.0, soma = 0.0; vec3 c = vec3(0.0);
-    for (int i = 0; i < 28; i++) { vec3 s = texture2D(t, uv).rgb; c += max(s - limiar, 0.0) * peso; soma += peso; peso *= 0.955; uv += d; }
+    for (int i = 0; i < 28; i++) { vec3 s = texture2D(t, uv).rgb; float l = dot(s, vec3(0.2126, 0.7152, 0.0722)); c += smoothstep(limiar, limiar + 0.5, l) * peso; soma += peso; peso *= 0.955; uv += d; }
     gl_FragColor = vec4(c / soma, 1.0); }`;
 const FINAL = `uniform sampler2D tCena, tD1, tD2, tD3, tD4, tR;
   uniform float tempo, tilt, foco, faixa, bloomK, limiar, raios, raiosR, vinheta, sat, exposicao, simples, contraste, quente, oliva, frio;
@@ -38,11 +38,13 @@ const FINAL = `uniform sampler2D tCena, tD1, tD2, tD3, tD4, tR;
       vec3 bl = b2 * 0.3 + b3 * 0.4 + texture2D(tD4, uv).rgb * 0.45;
       c += max(bl - limiar, 0.0) * bloomK;
       // raios: desfoque radial + feixes que saem do sol
-      c += texture2D(tR, uv).rgb * raiosR * corRaio * 0.35;
+      // raios em "tela" (clareiam sem sujar os escuros de laranja)
+      vec3 ra = clamp(texture2D(tR, uv).r * raiosR * 0.45 * corRaio, 0.0, 0.8);
+      c = c + ra * (1.0 - min(c, vec3(1.0))) * 0.9 + ra * 0.1;
       vec2 q = (uv - sol) * aspecto; float r = length(q); float ang = atan(q.y, q.x);
       float feixes = pow(max(0.0, sin(ang * 9.0 + tempo * 0.05)), 5.0) * 0.6 + pow(max(0.0, sin(ang * 23.0 - tempo * 0.08 + 1.3)), 9.0) * 0.5 + pow(max(0.0, sin(ang * 5.0 + 2.1)), 4.0) * 0.35;
-      c += corRaio * feixes * raios * smoothstep(1.4, 0.05, r) * smoothstep(0.0, 0.12, r) * 0.3;
-      c += corRaio * raios * 0.06 * smoothstep(1.0, 0.0, r);
+      vec3 fx = corRaio * (feixes * smoothstep(1.6, 0.05, r) * smoothstep(0.0, 0.1, r) * 0.9 + 0.09 * smoothstep(1.0, 0.0, r)) * raios;
+      c = c + fx * (1.0 - min(c, vec3(1.0)));
     }
     c *= tinta * exposicao;
     // gradação HD-2D (antes da curva): verdes puxados para oliva/amarelo, sombras frias, claros dourados
@@ -58,9 +60,9 @@ const FINAL = `uniform sampler2D tCena, tD1, tD2, tD3, tD4, tR;
     c = clamp((c * (2.51 * c + 0.03)) / (c * (2.43 * c + 0.59) + 0.14), 0.0, 1.0);
     float lum = dot(c, vec3(0.299, 0.587, 0.114));
     c = mix(vec3(lum), c, sat);
-    c = mix(vec3(0.5), c, contraste) ;
+    c = 0.18 * pow(max(c, 0.0) / 0.18, vec3(contraste)); // contraste com pivô no cinza médio (não esmaga os escuros)
     vec2 v = (uv - 0.5) * vec2(1.0, 0.9);
-    c *= mix(vec3(1.0), vec3(0.42, 0.3, 0.22), vinheta * smoothstep(0.32, 0.85, length(v)));
+    c *= mix(vec3(1.0), vec3(0.56, 0.5, 0.44), vinheta * smoothstep(0.35, 0.9, length(v)));
     gl_FragColor = vec4(max(c, 0.0), 1.0);
     #include <colorspace_fragment>
   }`;
@@ -84,7 +86,7 @@ export class PosHD {
     this.mFinal = sm({
       tCena: { value: null }, tD1: { value: null }, tD2: { value: null }, tD3: { value: null }, tD4: { value: null }, tR: { value: null }, tempo,
       tilt: { value: 1 }, foco: { value: 0.5 }, faixa: { value: 0.1 }, bloomK: { value: 0.6 }, limiar: { value: 0.8 }, raios: { value: 0.3 }, raiosR: { value: 1.2 },
-      vinheta: { value: 0.4 }, sat: { value: 1.1 }, exposicao: { value: 1.12 }, contraste: { value: 1.04 }, quente: { value: 0.45 }, oliva: { value: 0.18 }, frio: { value: 0.4 },
+      vinheta: { value: 0.4 }, sat: { value: 1.1 }, exposicao: { value: 1.25 }, contraste: { value: 1.04 }, quente: { value: 0.7 }, oliva: { value: 0.26 }, frio: { value: 0.4 },
       tinta: { value: new THREE.Color(1, 1, 1) }, corRaio: { value: new THREE.Color(1, 0.86, 0.6) }, sol: { value: new THREE.Vector2(0.85, 1.05) },
       aspecto: { value: new THREE.Vector2(1, 1) }, simples: { value: 0 },
     }, FINAL);
@@ -109,7 +111,7 @@ export class PosHD {
       const sx = this.sol3.x * 0.5 + 0.5, sy = this.sol3.y * 0.5 + 0.5;
       // atrás da câmera: os raios saem do alto (longe)
       const atras = this.sol3.z > 1;
-      u.sol.value.set(atras ? 1 - sx : sx, atras ? 1.4 : Math.max(sy, -0.3));
+      u.sol.value.set(Math.min(1.25, Math.max(-0.25, atras ? 1 - sx : sx)), atras ? 1.3 : Math.min(1.3, Math.max(sy, -0.3)));
       this.mRaios.uniforms.sol.value.copy(u.sol.value);
     }
     if (paleta) {
@@ -132,7 +134,7 @@ export class PosHD {
     let src = this.rt;
     for (const d of this.d) { this.mDown.uniforms.t.value = src.texture; this.mDown.uniforms.px.value.set(0.5 / src.width, 0.5 / src.height); this.#passe(this.mDown, d); src = d; }
     u.tD1.value = this.d[0].texture; u.tD2.value = this.d[1].texture; u.tD3.value = this.d[2].texture; u.tD4.value = this.d[3].texture;
-    if (u.raiosR.value > 0.01) { const m = this.mRaios.uniforms; m.t.value = this.d[1].texture; m.limiar.value = u.limiar.value * 0.85; this.#passe(this.mRaios, this.rR); }
+    if (u.raiosR.value > 0.01) { const m = this.mRaios.uniforms; m.t.value = this.d[1].texture; m.limiar.value = 0.55 + u.limiar.value * 0.35; this.#passe(this.mRaios, this.rR); }
     u.tR.value = this.rR.texture;
     this.#passe(this.mFinal, null);
   }
