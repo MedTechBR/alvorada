@@ -1,0 +1,60 @@
+{
+  "regiao": {"id": "brasas", "nome": "Arquipélago das Brasas", "mundo": "alvorada", "rect": [800, 480, 400, 480], "faixa": [0, 1920, 1200, 160]},
+  "comment": "Região Arquipélago das Brasas. Ponto de partida gerado por tools/gerar-regioes.mjs (contorno, chão por bioma, passagens da seção 5). Manual: docs/construir-regiao.md.",
+  "ops": [
+    {"op": "rect", "t": "deep", "x": 800, "y": 480, "w": 400, "h": 480},
+    {"op": "comment", "_": "rota19: Rota Marítima 19 (mar)"},
+    {"op": "comment", "_": "mar_brasas: Mar das Brasas (mar)"},
+    {"op": "comment", "_": "vulcao_ticao: Vulcão Tição (vulcao)"},
+    {"op": "ellipse", "t": "sand", "cx": 1065, "cy": 825, "rx": 78, "ry": 58, "noise": 0.8},
+    {"op": "ellipse", "t": "basalt", "cx": 1065, "cy": 825, "rx": 75, "ry": 55, "noise": 0.6},
+    {"op": "comment", "_": "campos_cinza: Campos de Cinza (vulcao)"},
+    {"op": "ellipse", "t": "sand", "cx": 1015, "cy": 735, "rx": 88, "ry": 38, "noise": 0.8},
+    {"op": "ellipse", "t": "basalt", "cx": 1015, "cy": 735, "rx": 85, "ry": 35, "noise": 0.6},
+    {"op": "comment", "_": "ilha_basalto: Ilha do Basalto (praia)"},
+    {"op": "ellipse", "t": "sand", "cx": 900, "cy": 640, "rx": 63, "ry": 43, "noise": 0.8},
+    {"op": "ellipse", "t": "sand", "cx": 900, "cy": 640, "rx": 60, "ry": 40, "noise": 0.6},
+    {"op": "comment", "_": "fontes_termais: Fontes Termais do Vapor (termal)"},
+    {"op": "ellipse", "t": "sand", "cx": 1065, "cy": 665, "rx": 48, "ry": 38, "noise": 0.8},
+    {"op": "ellipse", "t": "grass", "cx": 1065, "cy": 665, "rx": 45, "ry": 35, "noise": 0.6},
+    {"op": "blobs", "t": "tall", "x": 1020, "y": 630, "w": 90, "h": 70, "scale": 0.12, "th": 0.62, "on": ["grass"]},
+    {"op": "comment", "_": "cratera_ticao: Cratera do Tição (vulcao)"},
+    {"op": "ellipse", "t": "sand", "cx": 1065, "cy": 820, "rx": 28, "ry": 23, "noise": 0.8},
+    {"op": "ellipse", "t": "basalt", "cx": 1065, "cy": 820, "rx": 25, "ry": 20, "noise": 0.6},
+    {"op": "comment", "_": "ilhota_fumegante: Ilhota Fumegante (termal)"},
+    {"op": "ellipse", "t": "sand", "cx": 1170, "cy": 920, "rx": 23, "ry": 23, "noise": 0.8},
+    {"op": "ellipse", "t": "grass", "cx": 1170, "cy": 920, "rx": 20, "ry": 20, "noise": 0.6},
+    {"op": "blobs", "t": "tall", "x": 1150, "y": 900, "w": 40, "h": 40, "scale": 0.12, "th": 0.62, "on": ["grass"]},
+    {"op": "comment", "_": "vila_termas: Vila Termas (vila)"},
+    {"op": "ellipse", "t": "sand", "cx": 990, "cy": 660, "rx": 33, "ry": 23, "noise": 0.8},
+    {"op": "ellipse", "t": "grass", "cx": 990, "cy": 660, "rx": 30, "ry": 20, "noise": 0.6},
+    {"op": "rect", "t": "plaza", "x": 986, "y": 657, "w": 8, "h": 6},
+    {"op": "comment", "_": "passagem p_r2_r5: Rota Marítima 19 (Praia do Levante -> Brasas)"},
+    {"op": "rect", "t": "deep", "x": 800, "y": 480, "w": 400, "h": 5},
+    {"op": "comment", "_": "passagem p_r4_r5: Mar entre Recife e Brasas"},
+    {"op": "rect", "t": "deep", "x": 800, "y": 480, "w": 5, "h": 480}
+  ],
+  "areas": [
+    {"id": "rota19", "name": "Rota Marítima 19", "biome": "mar", "rect": [800, 480, 400, 100]},
+    {"id": "ilha_basalto", "name": "Ilha do Basalto", "biome": "praia", "rect": [840, 600, 120, 80]},
+    {"id": "vila_termas", "name": "Vila Termas", "biome": "vila", "rect": [960, 640, 60, 40]},
+    {"id": "fontes_termais", "name": "Fontes Termais do Vapor", "biome": "termal", "rect": [1020, 630, 90, 70]},
+    {"id": "campos_cinza", "name": "Campos de Cinza", "biome": "vulcao", "rect": [930, 700, 170, 70]},
+    {"id": "vulcao_ticao", "name": "Vulcão Tição", "biome": "vulcao", "rect": [990, 770, 150, 110]},
+    {"id": "cratera_ticao", "name": "Cratera do Tição", "biome": "vulcao", "rect": [1040, 800, 50, 40]},
+    {"id": "mar_brasas", "name": "Mar das Brasas", "biome": "mar", "rect": [800, 880, 400, 80]},
+    {"id": "ilhota_fumegante", "name": "Ilhota Fumegante", "biome": "termal", "rect": [1150, 900, 40, 40]}
+  ],
+  "spots": {
+    "ninho_vila_termas": [990, 660, "down"]
+  },
+  "ninhos": [
+    {"id": "vila_termas", "nome": "Vila Termas", "spot": "ninho_vila_termas"}
+  ],
+  "objects": [],
+  "interiors": [],
+  "people": [],
+  "warps": [],
+  "items": [],
+  "viagens": []
+}

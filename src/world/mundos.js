@@ -71,7 +71,7 @@ async function montar(id) {
     for (const k of ['people', 'pets', 'noTrees', 'signs']) if (I[k]) R[k].push(...I[k]);
   }
   const rectBase = J.rect ?? null, faixaBase = J.faixa ?? [0, OH, W, H - OH];
-  R.partes.push({ id: J.regiao?.id ?? 'base', nome: R.nome, rect: rectBase, faixa: faixaBase, ops, trees, seq: true, lazy: !rectBase, i: 0 });
+  R.partes.push({ id: J.regiao?.id ?? 'base', nome: R.nome, rect: rectBase, faixa: faixaBase, ops, trees, seq: true, lazy: false, i: 0 }); // o arquivo principal é montado sempre
   if (rectBase) R.regioes.push({ id: J.regiao?.id ?? 'nucleo', nome: J.regiao?.nome ?? R.nome, rect: rectBase, faixa: faixaBase, formaRegional: J.formaRegional ?? null });
   const comParte = (list, p) => list.map((o) => ({ ...o, parte: p }));
   R.objects.push(...comParte(objects, 0)); R.decor.push(...decor); R.areas.push(...areas); R.items.push(...items);
