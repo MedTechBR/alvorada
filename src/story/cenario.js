@@ -6,7 +6,7 @@ import { house, hall, px, ell, poly, text, window1, woodDoor, glassDoor } from '
 // por código no mesmo estilo de src/world/buildings.js, registrados no catálogo do mapa (objects.js) na carga
 // do módulo, antes de o mapa ser montado. Usados em assets/maps/alvorada.json pelo nome (kind).
 
-const B = (name, tex, fw, fh, door, extra = {}) => { SPR['bld_' + name] = tex.tex ?? tex; KINDS[name] = { tex: 'bld_' + name, fw, fh, oy: 3, door, lights: tex.lights, smoke: tex.smoke ?? null, ...extra }; };
+const B = (name, tex, fw, fh, door, extra = {}) => { SPR['bld_' + name] = tex.tex ?? tex; KINDS[name] = { tex: 'bld_' + name, fw, fh, oy: 3, door, lights: tex.lights, smoke: tex.smoke ?? null, estilo: tex.estilo ?? null, ...extra }; };
 const O = (name, tex, fw, fh, extra = {}) => { SPR['obj_' + name] = tex; KINDS[name] = { tex: 'obj_' + name, fw, fh, oy: extra.oy ?? 0, ...extra }; };
 const D = (name, tex) => { SPR['dec_' + name] = tex; DECOR[name] = 'dec_' + name; };
 const art = (w, h, f, col) => texOf(outline(canvas(w, h, f), col));

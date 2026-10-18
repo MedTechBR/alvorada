@@ -113,7 +113,8 @@ export class Hud {
     const p = g.player, d = Math.hypot(o.target.x - p.x, o.target.y - p.y);
     if (d < 40) { m.visible = false; return; }
     const z = g.world.scale.x, W = innerWidth, H = innerHeight;
-    let x = g.world.x + o.target.x * z, y = g.world.y + (o.target.y - 26) * z;
+    const tp = g.worldToScreen ? g.worldToScreen(o.target.x, o.target.y, 26) : { x: g.world.x + o.target.x * z, y: g.world.y + (o.target.y - 26) * z };
+    let x = tp.x, y = tp.y;
     const padL = 34, padR = 34, padT = IS_TOUCH ? 90 : 120, padB = IS_TOUCH ? 140 : 90;
     let edge = false, ang = 0;
     if (x < padL || x > W - padR || y < padT || y > H - padB) {
