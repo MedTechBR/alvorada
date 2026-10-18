@@ -46,10 +46,13 @@ export function dexCounts(g) {
   return { seen, caught, total: ALVORADA_DEX.length };
 }
 let HABITAT = null, PREVO = null;
-function habitat(dex) {
+function habitat(dex, g) {
   if (!HABITAT) {
     HABITAT = {};
-    for (const [tbl, night] of [[BIOME_ENCOUNTERS, false], [NIGHT_ENCOUNTERS ?? {}, true]]) {
+    // áreas com tabela própria (assets/maps: Rota 2, Bosque, Toca do Absol, Rota 3, Lago Espelho…) e os biomas
+    const own = {};
+    for (const a of [...(g?.map?.areas ?? []), ...(g?.map?.interiors ?? [])]) if (a.encounters?.length && a.name) own[a.name] = a.encounters;
+    for (const [tbl, night] of [[own, false], [BIOME_ENCOUNTERS, false], [NIGHT_ENCOUNTERS ?? {}, true]]) {
       for (const [b, list] of Object.entries(tbl)) for (const [d, lo, hi] of list) {
         const e = ((HABITAT[d] ??= {})[b] ??= { day: false, night: false, lo, hi });
         e[night ? 'night' : 'day'] = true; e.lo = Math.min(e.lo, lo); e.hi = Math.max(e.hi, hi);
@@ -451,7 +454,7 @@ export class GameMenu {
         <div class="gm-soft">Ainda não encontrado. Explore a região para registrar este Pokémon.</div></div></div>`;
       return;
     }
-    const hab = habitat(n);
+    const hab = habitat(n, g);
     const habTxt = Object.entries(hab).map(([b, e]) => `<li><b>${esc(BIOME_PT[b] ?? b)}</b> <span class="gm-soft">${e.day && e.night ? 'dia e noite' : e.night ? 'só à noite' : 'de dia'} · Nv. ${e.lo}–${e.hi}</span></li>`).join('');
     const pv = prevo(n), ev = sp.evolve && SPECIES[sp.evolve.to];
     const evo = [pv ? `Evolui de ${esc(SPECIES[pv.from].name)} no Nv. ${pv.level}.` : '', ev ? `Evolui para ${(g.flags.dex?.[sp.evolve.to] ?? 0) ? esc(ev.name) : '???'} no Nv. ${sp.evolve.level}.` : ''].filter(Boolean).join(' ');

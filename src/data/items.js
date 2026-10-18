@@ -306,11 +306,16 @@ export const itemName = (key) => ITEM_INFO[key]?.name ?? itemInfo(key)?.name ?? 
 // Usa um item da mochila num Pokémon da equipe. Gasta da mochila se der certo. Devolve { ok, text, events }.
 // A lógica fica em src/mechanics/items.js (via mon.use); evolução vem em events ({ type: 'evolve', to }) e,
 // se o jogo tiver g.evolve(mon, to), já é disparada.
+const it_cat = (key) => itemInfo(key)?.cat;
 export function useItemOn(g, key, m, ctx = {}) {
   if (!ITEM_INFO[key] || !(g.bag?.[key] > 0)) return { ok: false, text: 'Você não tem esse item.', events: [] };
   const r = m.use(itemId(key), { entity: g.lead?.mon === m ? g.lead : null, ...ctx });
   if (r.ok && r.consumed) g.bag[key]--;
-  for (const e of r.events ?? []) if (e.type === 'evolve' && typeof g.evolve === 'function') g.evolve(m, e.to);
+  // Doce Raro / Doce de Exp.: golpes novos passam pela tela de "aprender" (g.teach); evolução pela cena (fila da interface)
+  for (const e of r.events ?? []) {
+    if (e.type === 'learn' && it_cat(key) !== 'tm' && typeof g.teach === 'function') g.teach(m, e.move);
+    if (e.type === 'evolve' && typeof g.evolve === 'function') { if (g.ui?.queue) g.ui.queue(() => g.evolve(m, e.to)); else g.evolve(m, e.to); }
+  }
   const text = typeof r.msg === 'string' ? r.msg : r.ok ? 'Funcionou!' : 'Isso não pode ser usado agora.';
   return { ok: r.ok, text, events: r.events ?? [] };
 }
