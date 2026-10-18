@@ -74,13 +74,15 @@ export class Sobreposicao {
     pf.rt += t1 - t0; pf.tela += performance.now() - t1; pf.n++;
   }
   #rotulos(R, ents) {
-    const v = this.v, reavaliar = (v.t * 2 | 0) !== this.ultimo; this.ultimo = v.t * 2 | 0;
-    const vw = v.view;
-    for (const c of ents.children) {
-      if (!c.visible || c.alpha <= 0.01) continue;
-      let tem = this.temTela.get(c);
-      if (tem === undefined || reavaliar) { tem = this.#desenhoDeTela(c); this.temTela.set(c, tem); }
-      if (!tem || (vw && (c.x < vw.x0 || c.x > vw.x1 || c.y < vw.y0 || c.y > vw.y1 + 64))) continue;
+    const v = this.v, vw = v.view;
+    // quem tem rótulo (barra, nome, balão, "!") é reavaliado 2x por segundo; no resto dos quadros só essa lista
+    if ((v.t * 2 | 0) !== this.ultimo || !this.comRotulo) {
+      this.ultimo = v.t * 2 | 0;
+      this.comRotulo = ents.children.filter((c) => this.#desenhoDeTela(c));
+    }
+    for (const c of this.comRotulo) {
+      if (c.destroyed || !c.parent || !c.visible || c.alpha <= 0.01) continue;
+      if (vw && (c.x < vw.x0 || c.x > vw.x1 || c.y < vw.y0 || c.y > vw.y1 + 64)) continue;
       const s = v.escalaEm(c.x, c.y), t = v.paraTela(c.x, c.y, 0), r = c.rotation ?? 0;
       const sx = c.scale.x * s, sy = c.scale.y * s, co = Math.cos(r), si = Math.sin(r);
       this.mTela.set(sx * co, sx * si, -sy * si, sy * co, t.x, t.y);
