@@ -1051,6 +1051,7 @@ export class GameMenu {
       extra: () => (mundos.length > 1 ? mundos.map((w) => `<button class="gm-tab ${w.id === mundo ? 'on' : ''}" data-w="${w.id}">${esc(w.curto ?? w.nome)}</button>`).join('') : '') + `<span class="gm-chip">${esc(here || F.nome || 'Região Alvorada')}</span>`,
       foot: mundos.length > 1 ? '<b>↑↓</b> ver área · <b>←→</b> continente · <b>Esc</b> voltar' : '<b>↑↓</b> ver área · <b>Esc</b> voltar',
       draw: (body) => {
+        const areas = (F.areas ?? []).filter((a) => a.name === here || seen(a)); // (o mapa de outro mundo chega depois)
         body.innerHTML = `<div class="gm-box gm-mapbox"><canvas class="gm-mapcv"></canvas></div>
           <div class="gm-box gm-areas"><div class="gm-scroll gm-arealist">${areas.map((a) => `<div class="nav gm-row" data-k="${esc(a.name)}"><span class="gm-cur">▶</span><span>${esc(a.name)}${a.name === here ? ' <span class="gm-tag">Você</span>' : ''}</span></div>`).join('') || `<div class="gm-empty">${F.carregando ? 'Abrindo o mapa…' : 'Explore para descobrir a região.'}</div>`}</div>
           <div class="gm-legend"><span><i class="lg-you"></i>Você</span><span><i class="lg-obj"></i>Objetivo</span><span><i class="lg-quest"></i>Missão</span><span><i class="lg-house"></i>Construções</span></div></div>`;
