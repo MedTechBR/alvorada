@@ -115,7 +115,10 @@ export class MountRig {
   setKind(kind, dex = null) {
     const C0 = kind ? mountConfig(kind, dex) : null, key = kind ? kind + ':' + C0.dex : null;
     if (key === this.key) return this.ready ?? Promise.resolve();
-    this.kind = kind; this.key = key; this.set = null; this.C = C0;
+    // trocou só a espécie (escolha no menu, montado): o desenho antigo fica até o novo carregar
+    const keep = kind && this.kind === kind && this.set;
+    this.kind = kind; this.key = key;
+    if (!keep) { this.set = null; this.C = C0; }
     if (!kind) { this.#hide(); this.ready = Promise.resolve(); return this.ready; }
     this.ready = loadPokemonSprites(C0.dex).then((set) => {
       if (this.key !== key) return;

@@ -308,3 +308,16 @@
   .gm-head { flex-wrap: wrap; }
   .gm-title { font-size: 16px; padding: 6px 16px; }
 }
+
+/* Montarias (src/ui/menu.js #mounts): um modo por linha, com a montaria escolhida e a velocidade */
+.gm-mounts { flex-direction: column; gap: 8px; }
+.gm-mtlist { flex: 1; min-height: 0; padding: 8px; }
+.gm-mtrow { gap: 10px; }
+.gm-mtrow.off { opacity: .6; }
+.gm-mtrow.on .gm-mtmain b { color: #1d6b3a; }
+.gm-mtmain { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+.gm-mtmain span { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gm-mtspd { flex: none; width: 70px; height: 8px; border-radius: 99px; background: #dfe6f5; border: 1.5px solid #36426b; overflow: hidden; }
+.gm-mtspd i { display: block; height: 100%; background: linear-gradient(90deg, #4fc36b, #ffd23f); }
+.gm-mthint { padding: 0 6px; font-size: 13px; }
+@media (max-width: 520px) { .gm-mtspd { width: 44px; } .gm-mtrow .gm-chip { display: none; } }

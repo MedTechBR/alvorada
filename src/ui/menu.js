@@ -16,6 +16,8 @@ import { NATURES } from '../data/natures.js';
 import { abilityInfo } from '../data/abilities.js';
 import { serialize, writeSave } from '../save.js';
 import { drawLook, FW, FH } from './looks.js';
+import { MOUNTS, MOUNT_KINDS, mountModes, mountConfig } from '../world/mounts.js';
+import { MONTARIAS } from '../data/montarias.js';
 
 // Menu do jogo no estilo clássico (portado do 3D): lista vertical com cursor de seta,
 // caixas claras de borda arredondada dupla. Navega com mouse, teclado (setas/Enter/Esc), controle e toque.
@@ -111,6 +113,7 @@ const ICON = {
   bag: '<svg viewBox="0 0 24 24"><path d="M8 7V5.5a4 4 0 0 1 8 0V7" fill="none" stroke="#6b4423" stroke-width="1.8"/><rect x="4" y="7" width="16" height="14" rx="4" fill="#f0a73c" stroke="#6b4423" stroke-width="1.5"/><rect x="8" y="12" width="8" height="5" rx="1.5" fill="#ffd27a" stroke="#6b4423" stroke-width="1.2"/></svg>',
   map: '<svg viewBox="0 0 24 24"><path d="M3 5l6-2 6 2 6-2v16l-6 2-6-2-6 2z" fill="#9fd67a" stroke="#2d5d34" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 3v16M15 5v16" stroke="#2d5d34" stroke-width="1.2"/><circle cx="12" cy="10" r="2" fill="#e5383b"/></svg>',
   card: '<svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2.5" fill="#5aa6ff" stroke="#1d3f7a" stroke-width="1.4"/><circle cx="8" cy="11" r="2.4" fill="#fff"/><path d="M4.5 16.5c.8-2 2-3 3.5-3s2.7 1 3.5 3" fill="#fff"/><rect x="13" y="9" width="6.5" height="1.6" rx=".8" fill="#fff"/><rect x="13" y="12.5" width="5" height="1.6" rx=".8" fill="#fff"/></svg>',
+  mounts: '<svg viewBox="0 0 24 24"><path d="M3 15c0-4 3-7 7-7h3c3 0 5 2 6 4l2 1v3h-3l-1-1H6l-1 2H3z" fill="#c98a4b" stroke="#5a3418" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 8c0-2 1-3.5 3-3.5S15 6 15 8" fill="#e5383b" stroke="#7a1418" stroke-width="1.3"/><circle cx="18" cy="12" r="1" fill="#1d2340"/><path d="M6 17v3M16 17v3" stroke="#5a3418" stroke-width="1.6" stroke-linecap="round"/></svg>',
   online: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="#7fd6ff" stroke="#1d3f7a" stroke-width="1.4"/><path d="M2.5 12h19M12 2.5c3 3 3 16 0 19M12 2.5c-3 3-3 16 0 19" fill="none" stroke="#1d3f7a" stroke-width="1.3"/></svg>',
   options: '<svg viewBox="0 0 24 24"><path d="M12 2.5l1.6 2.3 2.7-.6.6 2.7 2.3 1.6-1.2 2.5 1.2 2.5-2.3 1.6-.6 2.7-2.7-.6L12 21.5l-1.6-2.3-2.7.6-.6-2.7-2.3-1.6L6 13 4.8 10.5l2.3-1.6.6-2.7 2.7.6z" fill="#9aa4bf" stroke="#3a4363" stroke-width="1.3" stroke-linejoin="round"/><circle cx="12" cy="12" r="3.2" fill="#fff" stroke="#3a4363" stroke-width="1.3"/></svg>',
   save: '<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2" fill="#7a5cd6" stroke="#36246e" stroke-width="1.4"/><rect x="7" y="3" width="10" height="6" fill="#fff" stroke="#36246e" stroke-width="1.2"/><rect x="7" y="13" width="10" height="8" rx="1" fill="#e9e3ff"/></svg>',
@@ -159,6 +162,7 @@ function moveEffect(mv) {
 const MAIN_ITEMS = [
   ['dex', 'Pokédex', 'Os Pokémon que você já viu e capturou na região.'],
   ['party', 'Pokémon', 'Sua equipe: resumo, ordem e itens.'],
+  ['mounts', 'Montarias', 'Quem leva você em cada modo (X): correr, nadar, escalar, voar e mergulhar.'],
   ['bag', 'Mochila', 'Poké Bolas, remédios e frutas.'],
   ['map', 'Mapa', 'O mapa da região Alvorada.'],
   ['card', 'Treinador', 'Seu cartão de treinador e as insígnias.'],
@@ -431,7 +435,7 @@ export class GameMenu {
     if (id === 'party' && !g.party.length) return this.#msg('Você ainda não tem Pokémon. Fale com o Prof. Jatobá!');
     if (id === 'online') { if (this.ui.g.net?.ui) this.ui.openOnline(); else this.#msg('O modo online não está disponível nesta versão.'); return; }
     ({ dex: () => this.#dex(), party: () => this.#party(), bag: () => this.#bag(), map: () => this.#map(), card: () => this.#card(),
-      options: () => this.#options(), save: () => this.#save() })[id]?.();
+      options: () => this.#options(), save: () => this.#save(), mounts: () => this.#mounts() })[id]?.();
   }
   #trainerName() { return this.g.flags.playerName ?? 'Ravi'; }
 
@@ -520,13 +524,14 @@ export class GameMenu {
     }
     const m = g.party[i];
     const canSend = i !== g.leadIdx && !m.fainted && !this.ui.story?.busy;
-    const opts = ['Resumo', ...(canSend ? ['Enviar ao campo'] : []), 'Mudar ordem', 'Usar item', 'Item equipado', 'Cancelar'];
+    const opts = ['Resumo', ...(canSend ? ['Enviar ao campo'] : []), 'Mudar ordem', 'Usar item', 'Item equipado', ...(mountModes(m.dex).length ? ['Usar como montaria'] : []), 'Cancelar'];
     const c = await this.#choose(esc(m.name), opts);
     const pick = opts[c];
     if (pick === 'Resumo') this.#summary(i);
     else if (pick === 'Enviar ao campo') { await g.sendOut(i); g.toast?.(`Vai, ${m.name}!`); this.ui.partyChanged(); this.refresh(); }
     else if (pick === 'Mudar ordem') { L.swap = i; this.refresh(); }
     else if (pick === 'Item equipado') await this.#heldMenu(m);
+    else if (pick === 'Usar como montaria') await this.#useAsMount(m);
     else if (pick === 'Usar item') {
       const keys = Object.keys(ITEM_INFO).filter((k) => usableOnMon(k) && g.bag[k] > 0);
       if (!keys.length) { await this.#msg('Você não tem itens para usar num Pokémon.'); return; }
@@ -584,6 +589,85 @@ export class GameMenu {
     await this.#msg(`${m.name} aprendeu ${mv.name}!`);
   }
 
+  // ---------- Montarias (src/world/mounts.js): quem leva o treinador em cada modo ----------
+  // A padrão de cada modo vem da história; qualquer Pokémon do jogador (equipe ou PC) que carregue gente pode tomar o lugar.
+  #mountInfo(m) {
+    const ks = mountModes(m.dex), mt = this.g.mount;
+    if (!ks.length) return '<span class="gm-soft">Não carrega o treinador</span>';
+    const on = ks.filter((k) => mt?.chosen(k).mon === m);
+    return ks.map((k) => (on.includes(k) ? `<b>${MOUNTS[k].label}</b>` : MOUNTS[k].label)).join(' · ') + (on.length ? ' <span class="gm-soft">(em uso)</span>' : '');
+  }
+  // barra de velocidade (corrida) relativa ao mais rápido possível do modo
+  #mountSpeed(kind, dex) {
+    const c = mountConfig(kind, dex), top = { correr: 232, nadar: 174, escalar: 183, voar: 246, mergulhar: 165 }[kind];
+    return `<span class="gm-mtspd" title="Velocidade"><i style="width:${Math.min(100, Math.round(c.run / top * 100))}%"></i></span>`;
+  }
+  #mounts() {
+    const g = this.g, mt = g.mount;
+    const L = this.#screen({
+      title: 'Montarias', cls: 'gm-mounts',
+      foot: '<b>↑↓</b> mover · <b>Enter</b> trocar a montaria · <b>Esc</b> voltar',
+      draw: (body) => {
+        body.innerHTML = `<div class="gm-box gm-scroll gm-mtlist">${MOUNT_KINDS.map((k) => {
+          const c = mt?.chosen(k) ?? { dex: MOUNTS[k].dex, mon: null }, open = mt?.has(k), n = mt?.options(k).length ?? 0;
+          const who = c.mon ? `${esc(c.mon.name)} <span class="gm-soft">Nv. ${c.mon.level}</span>` : `${esc(MOUNTS[k].name)} <span class="gm-soft">padrão</span>`;
+          return `<div class="nav gm-row gm-mtrow ${open ? '' : 'off'}" data-k="${k}"><span class="gm-cur">▶</span>${slot(c.dex, 'mini', !open)}
+            <div class="gm-mtmain"><b>${MOUNTS[k].label}</b><span>${open ? who : 'Bloqueado: libera com a história'}</span></div>
+            ${open ? this.#mountSpeed(k, c.dex) : ''}<span class="gm-chip">${n} ${n === 1 ? 'opção' : 'opções'}</span></div>`;
+        }).join('')}</div>
+        <div class="gm-soft gm-mthint">Aperte X no mapa: o terreno escolhe o modo e vem a montaria escolhida aqui. Pokémon grandes que carregam gente, da equipe ou do PC, podem tomar o lugar da montaria padrão.</div>`;
+        body.querySelectorAll('.nav').forEach((n) => { n._act = () => this.#mountPick(n.dataset.k); });
+        fillPortraits(body);
+      },
+    });
+    this.#push(L);
+  }
+  // escolhe quem leva o treinador num modo
+  #mountPick(kind) {
+    const g = this.g, mt = g.mount, D = MOUNTS[kind];
+    const L = this.#screen({
+      title: `Montaria · ${D.label}`, cls: 'gm-mounts',
+      extra: () => (mt?.has(kind) ? '' : '<span class="gm-chip hot">Modo ainda bloqueado</span>'),
+      foot: '<b>↑↓</b> mover · <b>Enter</b> escolher · <b>Esc</b> voltar',
+      draw: (body) => {
+        const opts = mt?.options(kind) ?? [], cur = mt?.chosen(kind).mon ?? null;
+        const row = (dex, i, name, sub, on) => `<div class="nav gm-row gm-mtrow ${on ? 'on' : ''}" data-i="${i}"><span class="gm-cur">▶</span>${slot(dex, 'mini')}
+          <div class="gm-mtmain"><b>${name}</b><span>${sub}</span></div>${this.#mountSpeed(kind, dex)}${on ? '<span class="gm-chip hot">Em uso</span>' : ''}</div>`;
+        const ex = Object.entries(MONTARIAS).filter(([, e]) => e.m.includes(kind)).map(([d]) => SPECIES[d]?.name).filter(Boolean);
+        body.innerHTML = `<div class="gm-box gm-scroll gm-mtlist">${row(D.dex, -1, esc(D.name), 'Montaria padrão da história', !cur)}
+          ${opts.map((o, i) => row(o.mon.dex, i, esc(o.mon.name), `Nv. ${o.mon.level} · ${o.where}${o.mon.fainted ? ' · sem forças' : ''}`, o.mon === cur)).join('')}</div>
+          <div class="gm-soft gm-mthint">${opts.length ? '' : 'Nenhum Pokémon seu serve para este modo ainda. '}Servem para ${D.label.toLowerCase()}: ${esc(ex.slice(0, 14).join(', '))}${ex.length > 14 ? ` e mais ${ex.length - 14}` : ''}.</div>`;
+        body.querySelectorAll('.nav').forEach((n) => {
+          const i = +n.dataset.i;
+          n._act = async () => {
+            const m = i < 0 ? null : opts[i].mon;
+            mt?.choose(kind, m);
+            g.audio?.sfx?.('blip');
+            this.#pop(); this.refresh();
+            await this.#msg(m ? `${m.name} agora leva você para ${D.label.toLowerCase()}.` : `${D.name} volta a ser a montaria para ${D.label.toLowerCase()}.`);
+          };
+        });
+        fillPortraits(body);
+      },
+    });
+    this.#push(L);
+  }
+  // "Usar como montaria" (equipe, PC): escolhe o modo quando a espécie serve para mais de um
+  async #useAsMount(m) {
+    const g = this.g, mt = g.mount, ks = mountModes(m.dex);
+    if (!mt || !ks.length) return;
+    let k = ks[0];
+    if (ks.length > 1) {
+      const c = await this.#choose(`${esc(m.name)} pode levar você para…`, [...ks.map((x) => `${MOUNTS[x].label}${mt.chosen(x).mon === m ? ' <span class="gm-soft">(já em uso)</span>' : ''}`), 'Cancelar']);
+      if (c < 0 || c >= ks.length) return;
+      k = ks[c];
+    }
+    mt.choose(k, m);
+    g.audio?.sfx?.('blip');
+    this.refresh();
+    await this.#msg(`${m.name} agora leva você para ${MOUNTS[k].label.toLowerCase()}.${mt.has(k) ? '' : ' Esse modo ainda vai ser liberado na história.'}${m.fainted ? ' Enquanto estiver sem forças, a montaria padrão vem no lugar.' : ''}`);
+  }
+
   // ---------- Caixa do PC (aberta no Centro Pokémon) ----------
   openPC() {
     if (!this.isOpen) { this.el.hidden = false; this.layers = []; this.padPrev = this.#padNow(); this.deaf = performance.now() + 180; }
@@ -608,7 +692,9 @@ export class GameMenu {
     if (where === 'p') {
       const m = g.party[i];
       if (g.party.filter((x) => !x.fainted).length <= 1 && !m.fainted) { await this.#msg('Você precisa ficar com pelo menos um Pokémon em condições de lutar!'); return; }
-      const c = await this.#choose(esc(m.name), ['Guardar na caixa', 'Cancelar']);
+      const ride = mountModes(m.dex).length ? ['Usar como montaria'] : [];
+      const c = await this.#choose(esc(m.name), ['Guardar na caixa', ...ride, 'Cancelar']);
+      if (c === 1 && ride.length) { await this.#useAsMount(m); this.refresh(); return; }
       if (c !== 0) return;
       const cur = g.party[g.leadIdx];
       g.party.splice(i, 1); g.box.push(m);
@@ -617,7 +703,9 @@ export class GameMenu {
     } else {
       const m = g.box[i];
       if (g.party.length >= 6) { await this.#msg('Sua equipe está cheia. Guarde um Pokémon antes.'); return; }
-      const c = await this.#choose(esc(m.name), ['Levar na equipe', 'Cancelar']);
+      const ride = mountModes(m.dex).length ? ['Usar como montaria'] : [];
+      const c = await this.#choose(esc(m.name), ['Levar na equipe', ...ride, 'Cancelar']);
+      if (c === 1 && ride.length) { await this.#useAsMount(m); this.refresh(); return; }
       if (c !== 0) return;
       g.box.splice(i, 1); g.party.push(m);
     }
@@ -812,6 +900,7 @@ export class GameMenu {
             ['XP total', m.xp.toLocaleString('pt-BR')],
             ['Para o Nv. ' + (m.level + 1), m.level >= 100 ? '—' : (m.xpToNext() - m.xp).toLocaleString('pt-BR') + ' XP'],
             ['Evolução', ev ? `${esc(ev.name)} no Nv. ${sp.evolve.level}` : '—'],
+            ['Montaria', this.#mountInfo(m)],
             ['Próximo golpe', next ? `${esc(MOVES[next[1]]?.name ?? next[1])} no Nv. ${next[0]}` : '—'],
           ];
           right = `<div class="gm-box gm-sumright"><table class="gm-tbl">${rows.map(([a, b]) => `<tr><th>${a}</th><td>${b}</td></tr>`).join('')}</table>
