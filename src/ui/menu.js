@@ -639,7 +639,7 @@ export class GameMenu {
           const c = mt?.chosen(k) ?? { dex: MOUNTS[k].dex, mon: null }, open = mt?.has(k), n = mt?.options(k).length ?? 0;
           const who = c.mon ? `${esc(c.mon.name)} <span class="gm-soft">Nv. ${c.mon.level}</span>` : `${esc(MOUNTS[k].name)} <span class="gm-soft">padrão</span>`;
           return `<div class="nav gm-row gm-mtrow ${open ? '' : 'off'}" data-k="${k}"><span class="gm-cur">▶</span>${slot(c.dex, 'mini', !open)}
-            <div class="gm-mtmain"><b>${MOUNTS[k].label}</b><span>${open ? who : 'Bloqueado: libera com a história'}</span></div>
+            <div class="gm-mtmain"><b>${MOUNTS[k].label}</b><span>${open ? who : `Bloqueado: capture um Pokémon que saiba ${MOUNTS[k].label.toLowerCase()}`}</span></div>
             ${open ? this.#mountSpeed(k, c.dex) : ''}<span class="gm-chip">${n} ${n === 1 ? 'opção' : 'opções'}</span></div>`;
         }).join('')}</div>
         <div class="gm-soft gm-mthint">Aperte X no mapa: o terreno escolhe o modo e vem a montaria escolhida aqui. Pokémon grandes que carregam gente, da equipe ou do PC, podem tomar o lugar da montaria padrão.</div>`;
@@ -661,7 +661,7 @@ export class GameMenu {
         const row = (dex, i, name, sub, on) => `<div class="nav gm-row gm-mtrow ${on ? 'on' : ''}" data-i="${i}"><span class="gm-cur">▶</span>${slot(dex, 'mini')}
           <div class="gm-mtmain"><b>${name}</b><span>${sub}</span></div>${this.#mountSpeed(kind, dex)}${on ? '<span class="gm-chip hot">Em uso</span>' : ''}</div>`;
         const ex = Object.entries(MONTARIAS).filter(([, e]) => e.m.includes(kind)).map(([d]) => speciesOfKey(d)?.name).filter(Boolean);
-        body.innerHTML = `<div class="gm-box gm-scroll gm-mtlist">${row(D.dex, -1, esc(D.name), 'Montaria padrão da história', !cur)}
+        body.innerHTML = `<div class="gm-box gm-scroll gm-mtlist">${mt?.padrao?.(kind) ? row(D.dex, -1, esc(D.name), 'Montaria padrão da história', !cur) : ''}
           ${opts.map((o, i) => row(o.cfg.dex ?? o.mon.dex, i, esc(o.mon.name), `Nv. ${o.mon.level} · ${o.where}${o.mon.fainted ? ' · sem forças' : ''}`, o.mon === cur)).join('')}</div>
           <div class="gm-soft gm-mthint">${opts.length ? '' : 'Nenhum Pokémon seu serve para este modo ainda. '}Servem para ${D.label.toLowerCase()}: ${esc(ex.slice(0, 14).join(', '))}${ex.length > 14 ? ` e mais ${ex.length - 14}` : ''}.</div>`;
         body.querySelectorAll('.nav').forEach((n) => {

@@ -1,43 +1,29 @@
-// Capítulo 2: Sussurros no bosque
-// Fazenda do Tomé (Mudbray) → Rota 2 (lamaçal) → Bosque Sussurrante → Toca do Absol → Vila Sussurro → Ginásio da Lia.
-// Jogável pelo motor src/story/roteiro.js. Níveis do capítulo: selvagens 10–16, treinadores 12–16, Lia 16–19.
+// Jornada de Vila Sussurro: "Sussurros no bosque" (era o capítulo 2).
+// Fazenda do Tomé → Rota 2 (lamaçal) → Bosque Sussurrante → Toca do Absol → Vila Sussurro → Ginásio da Lia.
+// Mundo aberto: começa ao entrar no bosque, em qualquer ordem; a Mudbray já vem do professor.
+// Jogável pelo motor src/story/roteiro.js. Níveis do lugar (escada por distância): selvagens 15–23, treinadores 16–18, Ariados Alfa 20, Lia 18–21 (~21).
 
 export default {
   id: 'cap02',
+  jornada: 'sussurro',
   titulo: 'Sussurros no bosque',
   sol: '6h19',
   cenas: [
     {
-      id: 'titulo',
-      local: 'cidade_campina',
-      gatilho: { tipo: 'inicio', requer: ['ch1Done'] },
-      falas: [['narrador', 'Capítulo 2: Sussurros no bosque']],
-      depois: { flags: { chapter: 2 } },
-    },
-    {
-      id: 'radio',
-      local: 'cidade_campina',
-      gatilho: { tipo: 'apos', cena: 'titulo' },
-      falas: [
-        ['radio', 'Bom dia, Alvorada! O sol de hoje nasceu às seis e dezenove. Seu Zé já está fazendo abaixo-assinado para o sol.'],
-        ['radio', 'E um recado pessoal: {jogador}, sua mãe mandou dizer que está com saudade e que você esqueceu a escova de dentes. Beijo!'],
-      ],
-      depois: { objetivo: { texto: 'Vá à Fazenda do Tomé, ao norte de Cidade Campina', alvo: 'fazenda_tome' } },
-    },
-    {
+      // a Paçoca nasceu nesta fazenda (o professor entrega a Mudbray no começo do jogo); visita de Campina
       id: 'fazenda',
       local: 'fazenda_tome',
-      gatilho: { tipo: 'entrar', alvo: 'fazenda_tome', semFlag: ['ganhouMudbray'] },
+      jornada: 'campina',
+      gatilho: { tipo: 'entrar', alvo: 'fazenda_tome', semFlag: ['visitouFazenda'] },
       falas: [
-        ['lili', 'Você é o {jogador}? O papai disse que você ganhou dele! Ninguém ganha do papai! Bom, o Téo ganhou. Mas o Téo não conta, ele é barulhento.'],
+        ['lili', 'Você é o {jogador}? O papai disse que você ganhou dele! Ninguém ganha do papai! Bom, o Téo ganhou. Mas o Téo não conta, ele é barulhento.', { requer: ['badges.campina'] }],
+        ['lili', 'Você é o {jogador}? O papai falou de você! Disse que você ainda vai desafiar ele. Ele tá treinando até a vaca.', { semFlag: ['badges.campina'] }],
         ['tome', 'Essa é a Lili, minha filha. Ela é quem manda nos Mudbray aqui da fazenda. Eu só pago a ração.'],
-        ['tome', 'A Rota 2 tem um lamaçal que engole bota, roda e orgulho. Só Mudbray atravessa aquilo sem afundar.'],
-        ['lili', 'Esta aqui é a Paçoca. Ela é teimosa, mas corre mais que o vento. E ela gosta de você, olha a orelha dela!'],
-        ['tome', 'Leve a Paçoca e este Apito de Montaria. Assopre quando precisar dela e ela vem.'],
-        ['narrador', '{jogador} recebeu o Apito de Montaria! Agora pode montar no Mudbray para CORRER, atravessar lama funda e saltar cercas baixas.'],
-        ['lili', 'Traz ela de volta inteira! E quando quiser apostar corrida, eu tô aqui. Eu sempre ganho.'],
+        ['lili', 'E essa aí com você é a Paçoca! Ela nasceu aqui, sabia? Fui eu que escolhi ela pro professor. Ela é teimosa, mas corre mais que o vento.'],
+        ['tome', 'A Rota 2 tem um lamaçal que engole bota, roda e orgulho. Com a Paçoca você passa por cima. Quem planta paciência colhe vitória.'],
+        ['lili', 'Toma, leite da fazenda. Pra você e pra ela. E quando quiser apostar corrida, eu tô aqui. Eu sempre ganho.'],
       ],
-      depois: { montaria: 'mudbray', itens: [['apito_montaria', 1]], flags: { 'mounts.correr': true, ganhouMudbray: true }, objetivo: { texto: 'Atravesse o lamaçal da Rota 2 até o Bosque Sussurrante', alvo: 'clareira_sul' } },
+      depois: { itens: [['moomooMilk', 3]], flags: { visitouFazenda: true, ganhouMudbray: true } },
     },
     {
       id: 'lamacal',
@@ -51,14 +37,14 @@ export default {
       local: 'rota2',
       gatilho: { tipo: 'avistar', alvo: 'r2_marcia' },
       falas: [['treinador', 'Picnic interrompido! Só porque você chegou no meu sanduíche, vai ter que batalhar!']],
-      depois: { batalha: { id: 'r2_marcia', nome: 'Picnicker Márcia', dinheiro: 360, equipe: [[819, 12, ['tackle', 'tailWhip', 'bite']], [546, 13, ['absorb', 'fairyWind']]] } },
+      depois: { batalha: { id: 'r2_marcia', nome: 'Picnicker Márcia', dinheiro: 360, equipe: [[819, 15, ['tackle', 'tailWhip', 'bite']], [546, 16, ['absorb', 'fairyWind']]] } },
     },
     {
       id: 'treinador_rota2b',
       local: 'rota2',
       gatilho: { tipo: 'avistar', alvo: 'r2_otavio' },
       falas: [['treinador', 'Estou estudando os Pikipek das paineiras. Eles bicam o tronco no ritmo de samba. Quer ver o meu bicar você?']],
-      depois: { batalha: { id: 'r2_otavio', nome: 'Observador Otávio', dinheiro: 380, equipe: [[731, 13, ['peck', 'growl', 'echoedVoice']], [290, 13, ['scratch', 'harden', 'absorb']]] } },
+      depois: { batalha: { id: 'r2_otavio', nome: 'Observador Otávio', dinheiro: 380, equipe: [[731, 16, ['peck', 'growl', 'echoedVoice']], [290, 16, ['scratch', 'harden', 'absorb']]] } },
     },
     {
       id: 'agrimensores',
@@ -118,7 +104,7 @@ export default {
       ],
       depois: {
         // nível 14 + o bônus de Alfa (+3 níveis, 50% mais HP) = luta de chefe por volta do nível 17
-        batalha: { id: 'alfa_ariados', nome: 'Ariados Alfa', alfa: true, perder: 'repete', equipe: [[168, 14, ['poisonSting', 'nightShade', 'stringShot', 'bugBite']]] },
+        batalha: { id: 'alfa_ariados', nome: 'Ariados Alfa', alfa: true, perder: 'repete', equipe: [[168, 20, ['poisonSting', 'nightShade', 'stringShot', 'bugBite']]] },
         flags: { seguiuAbsol: true },
       },
     },
@@ -137,15 +123,18 @@ export default {
     {
       id: 'sussurro_chegada',
       local: 'vila_sussurro',
-      gatilho: { tipo: 'entrar', alvo: 'vila_sussurro', requer: ['tocaLuzita'], semFlag: ['sussurro'] },
+      gatilho: { tipo: 'entrar', alvo: 'vila_sussurro', semFlag: ['sussurro'] },
       falas: [
         ['narrador', 'Vila Sussurro: casas entre as raízes dos jequitibás, passarelas de corda, lanternas de vaga-lume penduradas nos galhos.'],
         ['lia', 'Ei, ei, cuidado! Não pisa! Tem um Wurmple atravessando a passarela. Ele está nisso desde ontem.'],
         ['lia', 'Ah, oi! Você é treinador? Eu sou a Lia, líder do ginásio. Também sou pesquisadora, bióloga, babá de lagarta e, hoje, guarda de trânsito.'],
-        ['jogador', 'Ouvi uns sujeitos de capa roxa dizendo que vão roubar sua pedra hoje à noite.'],
-        ['lia', 'Hoje?! Na estufa?! Com os casulos dormindo?! Ah, eles vão ver. Você me ajuda? Eu tenho Pokémon inseto. Você tem cara de quem não tem medo de escuro.'],
+        ['lia', 'Uau, {insignias_ext} insígnias! Então você não veio só pra ver lagarta.', { requer: ['insignias>=2'] }],
+        ['jogador', 'Ouvi uns sujeitos de capa roxa dizendo que vão roubar sua pedra hoje à noite.', { requer: ['ouviuRecrutas'] }],
+        ['lia', 'Hoje?! Na estufa?! Com os casulos dormindo?! Ah, eles vão ver. Você me ajuda? Eu tenho Pokémon inseto. Você tem cara de quem não tem medo de escuro.', { requer: ['ouviuRecrutas'] }],
+        ['lia', 'Olha, tô meio nervosa. Ontem dois sujeitos de capa roxa ficaram rondando a minha estufa. Perguntaram da "pedra da Lia". Pedra! Como se eu fosse uma pedreira!', { semFlag: ['ouviuRecrutas'] }],
+        ['lia', 'Aposto que voltam hoje à noite. Você me ajuda? Eu tenho Pokémon inseto. Você tem cara de quem não tem medo de escuro.', { semFlag: ['ouviuRecrutas'] }],
       ],
-      depois: { flags: { sussurro: true }, objetivo: { texto: 'Espere a noite e proteja a estufa da Lia (fale com ela para esperar)', alvo: 'estufa_lia' } },
+      depois: { flags: { sussurro: true, ouviuRecrutas: true }, objetivo: { texto: 'Espere a noite e proteja a estufa da Lia (fale com ela para esperar)', alvo: 'estufa_lia' } },
     },
     {
       id: 'lia_noite',
@@ -181,7 +170,7 @@ export default {
         ['recruta', 'Então vem pegar!'],
       ],
       depois: {
-        batalha: { id: 'c2_recruta', nome: 'Recruta Crepúsculo', dinheiro: 500, equipe: [[41, 15, ['leechLife', 'supersonic', 'astonish']], [198, 15, ['peck', 'astonish', 'pursuit']]] },
+        batalha: { id: 'c2_recruta', nome: 'Recruta Crepúsculo', dinheiro: 500, equipe: [[41, 17, ['leechLife', 'supersonic', 'astonish']], [198, 17, ['peck', 'astonish', 'pursuit']]] },
       },
     },
     {
@@ -191,7 +180,7 @@ export default {
       falas: [
         ['recruta2', 'Deixa comigo! Houndour, morde a canela dele! Com carinho, que ele é criança!'],
       ],
-      depois: { batalha: { id: 'c2_recruta2', nome: 'Recruta Crepúsculo', dinheiro: 500, equipe: [[228, 15, ['ember', 'leer', 'bite']], [92, 16, ['lick', 'hypnosis']]] } },
+      depois: { batalha: { id: 'c2_recruta2', nome: 'Recruta Crepúsculo', dinheiro: 500, equipe: [[228, 17, ['ember', 'leer', 'bite']], [92, 18, ['lick', 'hypnosis']]] } },
     },
     {
       id: 'estufa_fim',
@@ -220,14 +209,14 @@ export default {
       local: 'estufa_lia',
       gatilho: { tipo: 'avistar', alvo: 'g2_nando' },
       falas: [['aprendiz', 'Pisou no fio prateado? Não? Então ainda dá pra me enfrentar! Fio dourado é seguro, fio prateado é encrenca.']],
-      depois: { batalha: { id: 'g2_nando', nome: 'Caçador Nando', dinheiro: 520, equipe: [[664, 14, ['tackle', 'stringShot', 'struggleBug']], [401, 15, ['growl', 'bide', 'furyCutter']]] } },
+      depois: { batalha: { id: 'g2_nando', nome: 'Caçador Nando', dinheiro: 520, equipe: [[664, 16, ['tackle', 'stringShot', 'struggleBug']], [401, 17, ['growl', 'bide', 'furyCutter']]] } },
     },
     {
       id: 'aprendiz_lia2',
       local: 'estufa_lia',
       gatilho: { tipo: 'avistar', alvo: 'g2_bel' },
       falas: [['aprendiz', 'Os casulos apontam para a próxima folha. Eu não devia ter falado isso. Agora vou ter que te vencer pra compensar!']],
-      depois: { batalha: { id: 'g2_bel', nome: 'Caçadora Bel', dinheiro: 560, equipe: [[595, 15, ['stringShot', 'absorb', 'thunderShock']], [415, 16, ['gust', 'bugBite', 'sweetScent']]] } },
+      depois: { batalha: { id: 'g2_bel', nome: 'Caçadora Bel', dinheiro: 560, equipe: [[595, 17, ['stringShot', 'absorb', 'thunderShock']], [415, 18, ['gust', 'bugBite', 'sweetScent']]] } },
     },
     {
       id: 'lia_desafio',
@@ -241,10 +230,10 @@ export default {
         batalha: {
           id: 'leader_lia', nome: 'Líder Lia', dinheiro: 1800,
           equipe: [
-            [415, 16, ['bugBite', 'gust', 'sweetScent']],
-            [167, 17, ['stringShot', 'poisonSting', 'absorb', 'nightShade']],
-            [48, 17, ['confusion', 'poisonPowder', 'supersonic']],
-            [123, 19, ['quickAttack', 'furyCutter', 'leer', 'wingAttack']],
+            [415, 18, ['bugBite', 'gust', 'sweetScent']],
+            [167, 19, ['stringShot', 'poisonSting', 'absorb', 'nightShade']],
+            [48, 19, ['confusion', 'poisonPowder', 'supersonic']],
+            [123, 21, ['quickAttack', 'furyCutter', 'leer', 'wingAttack']],
           ],
         },
       },
@@ -270,7 +259,8 @@ export default {
         ['lia', 'Você foi rápido como um Yanma! A Insígnia Casulo é sua. Ela lembra que toda mudança começa quietinha, por dentro.'],
         ['narrador', '{jogador} recebeu a Insígnia Casulo!'],
         ['lia', 'E esta MT: Picada. Pega o Pokémon desprevenido e ainda come a fruta dele. Grosseiro, mas eficiente.'],
-        ['lia', 'Sobre aqueles cristais da gruta… O bosque está doente perto deles. As árvores com raiz em cima dos veios estão secando.'],
+        ['lia', 'Sobre aqueles cristais da gruta… O bosque está doente perto deles. As árvores com raiz em cima dos veios estão secando.', { requer: ['tocaLuzita'] }],
+        ['lia', 'E uma coisa que eu não conto pra qualquer um: tem cristal brilhando debaixo do bosque. As árvores com raiz em cima dos veios estão secando.', { semFlag: ['tocaLuzita'] }],
         ['lia', 'A Aurora diz que a luzita é limpa. Mas o bosque não concorda. E eu confio mais no bosque.'],
       ],
       depois: { insignia: 'sussurro', mt: 'bugBite', flags: { 'badges.sussurro': true } },
@@ -281,13 +271,14 @@ export default {
       gatilho: { tipo: 'apos', cena: 'lia_vencida' },
       falas: [
         ['pokedex', 'Bzzz…'],
-        ['bia', '{jogador}! É a Bia! O Professor está no banho, então sou eu mesma. Analisei o registro do cristal da gruta.'],
-        ['bia', 'A luz dele não é igual à de nenhuma pedra que eu conheço. Ela não brilha, ela… vaza. Como se viesse de outro lugar.'],
+        ['bia', '{jogador}! É a Bia! O Professor está no banho, então sou eu mesma. Analisei o registro do cristal da gruta.', { requer: ['tocaLuzita'] }],
+        ['bia', 'A luz dele não é igual à de nenhuma pedra que eu conheço. Ela não brilha, ela… vaza. Como se viesse de outro lugar.', { requer: ['tocaLuzita'] }],
+        ['bia', '{jogador}! É a Bia! O Professor está no banho, então sou eu mesma. A Lia ligou contando da sua vitória. E dos cristais debaixo do bosque.', { semFlag: ['tocaLuzita'] }],
+        ['bia', 'Ela disse que tem uma gruta de musgo no norte do bosque onde a luz deles pulsa. Se um Absol branco aparecer pra você, segue ele. Sério.', { semFlag: ['tocaLuzita'] }],
         ['bia', 'Contei pro Professor e ele ficou branco. Disse "deve ser nada" e foi tomar banho. Já faz uma hora e meia. Ele nunca toma banho de uma hora e meia.'],
-        ['bia', 'Enfim! A ponte do leste da vila foi consertada. Dá pra ir pro Porto Espelho. Volta aqui na vila primeiro, que sua mãe fez bolo.'],
-        ['narrador', 'Fim do Capítulo 2'],
+        ['bia', 'Enfim! O resto do bosque é com você. E sua mãe mandou dizer que tem bolo em casa. Sempre tem bolo em casa.'],
       ],
-      depois: { flags: { ch2Done: true, chapter: 3 }, objetivo: { texto: 'Volte à Vila Alvorada e siga a leste, pela Rota 3', alvo: 'saida_vila_leste' }, fimCapitulo: true },
+      depois: { fimJornada: true },
     },
   ],
 };

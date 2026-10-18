@@ -1,39 +1,26 @@
-// Capítulo 5: A noite que não acaba
+// Jornada de Vila Lamparina: "A noite que não acaba" (era o capítulo 5).
 // Rota 5 (Brejo das Lamparinas) → Vila Lamparina → Casa da Vó Benta → Cemitério das Velas (Véspera) → Casarão das Velas (ginásio, de noite).
-// Jogável pelo motor src/story/roteiro.js. Níveis: selvagens 27–33, treinadores 28–31, Dona Zélia 30–33.
+// Mundo aberto: começa no brejo ou ao chegar à vila, em qualquer ordem; as falas mudam conforme o que o jogador já viu
+// (a Véspera em Porto Espelho, a gruta do bosque, o bolo da Mãe).
+// Jogável pelo motor src/story/roteiro.js. Níveis do lugar (escada por distância): selvagens 13–19, treinadores 14–18, Dona Zélia 17–20 (~20).
 // Quebra-cabeça do casarão (portas dos quadros e espelhos com o raio de luar): src/story/enigmas.js.
 // O brejo: canal fundo no meio; atravessa de Lapras ou pelas tábuas de luz que só aparecem com a Lente Prisma.
 
 export default {
   id: 'cap05',
+  jornada: 'lamparina',
   titulo: 'A noite que não acaba',
   sol: '6h55',
   cenas: [
-    {
-      id: 'titulo',
-      local: 'rota5',
-      gatilho: { tipo: 'inicio', requer: ['ch4Done'] },
-      falas: [['narrador', 'Capítulo 5: A noite que não acaba']],
-      depois: { flags: { chapter: 5 }, objetivo: { texto: 'Vá a Vila Lamparina pelo Brejo das Lamparinas', alvo: 'brejo_entrada', sub: 'A escadaria do Mirante leva de volta à Vila Alvorada' } },
-    },
-    {
-      id: 'radio',
-      local: 'rota5',
-      gatilho: { tipo: 'apos', cena: 'titulo' },
-      falas: [
-        ['radio', 'Bom dia, Alvorada. Seis e cinquenta e cinco. Quase sete.'],
-        ['radio', 'Hoje eu não vou fazer piada. A escola de Campina mudou o horário da aula. Os Starly da praça já não cantam de manhã: cantam quando dá.'],
-        ['radio', '{jogador}, se você passar em Lamparina, dá um beijo na sua avó por mim. E diz que eu ligo no domingo.'],
-      ],
-    },
     {
       id: 'brejo',
       local: 'rota5',
       gatilho: { tipo: 'pisar', alvo: 'brejo_entrada', semFlag: ['viuBrejo'] },
       falas: [
         ['narrador', 'O Brejo das Lamparinas. Neblina baixa, árvores secas, passarelas de tábua que acabam no meio do nada.'],
-        ['narrador', 'Com a Lente Prisma, você vê: onde as passarelas acabam, rastros de luz desenham tábuas que não estão lá. Mas dá para pisar nelas.'],
-        ['narrador', 'E onde nem a luz chega, ainda dá para chamar o Lapras.'],
+        ['narrador', 'Com a Lente Prisma, você vê: onde as passarelas acabam, rastros de luz desenham tábuas que não estão lá. Mas dá para pisar nelas.', { requer: ['item.lente_prisma'] }],
+        ['narrador', 'Onde as passarelas acabam, só água escura. Quem sabe um Pokémon que nade? Dizem também que há tábuas que só aparecem para quem enxerga luz que ninguém vê.', { semFlag: ['item.lente_prisma'] }],
+        ['narrador', 'E onde nem a luz chega, ainda dá para chamar uma montaria que nade.', { requer: ['item.lente_prisma'] }],
       ],
       depois: { flags: { viuBrejo: true }, objetivo: { texto: 'Atravesse o brejo até Vila Lamparina', alvo: 'vila_lamparina' } },
     },
@@ -42,14 +29,14 @@ export default {
       local: 'rota5',
       gatilho: { tipo: 'avistar', alvo: 'r5_ofelia', hora: 'noite' },
       falas: [['treinador', 'Os espíritos do brejo me disseram que você vinha. Também me disseram que você ia perder. Eles mentem muito.']],
-      depois: { batalha: { id: 'r5_ofelia', nome: 'Médium Ofélia', dinheiro: 1100, equipe: [[92, 28, ['lick', 'hypnosis', 'curse']], [200, 29, ['astonish', 'confuseRay', 'psybeam']], [93, 30, ['shadowPunch', 'hypnosis', 'lick']]] } },
+      depois: { batalha: { id: 'r5_ofelia', nome: 'Médium Ofélia', dinheiro: 1100, equipe: [[92, 14, ['lick', 'hypnosis', 'curse']], [200, 15, ['astonish', 'confuseRay', 'psybeam']], [92, 16, ['shadowPunch', 'hypnosis', 'lick']]] } },
     },
     {
       id: 'sapo_rota5',
       local: 'rota5',
       gatilho: { tipo: 'avistar', alvo: 'r5_guto' },
       falas: [['treinador', 'Shhh! Tô ouvindo os Tympole. Eles cantam em três vozes. Agora você estragou o coro. Batalha!']],
-      depois: { batalha: { id: 'r5_guto', nome: 'Pescador Guto', dinheiro: 1100, equipe: [[536, 28, ['bubbleBeam', 'supersonic', 'round']], [453, 29, ['poisonSting', 'feintAttack', 'revenge']], [618, 29, ['mudShot', 'thunderShock', 'bide']]] } },
+      depois: { batalha: { id: 'r5_guto', nome: 'Pescador Guto', dinheiro: 1100, equipe: [[535, 14, ['bubbleBeam', 'supersonic', 'round']], [453, 15, ['poisonSting', 'feintAttack', 'revenge']], [618, 15, ['mudShot', 'thunderShock', 'bide']]] } },
     },
     {
       id: 'lamparina_chegada',
@@ -69,8 +56,9 @@ export default {
         ['benta', 'Meu neto! Olha o tamanho disso! Na última vez você cabia dentro de uma panela. Vem cá, me dá um abraço.'],
         ['benta', 'Coronel, olha quem chegou! O Coronel é surdo, não adianta. Mas ele pisca quando gosta.'],
         ['benta', 'Senta. Tem bolo de fubá. Sempre tem bolo de fubá. É a lei desta casa.'],
-        ['jogador', 'Vó, o que foi a Noite Longa?'],
-        ['benta', '…Sua mãe que contou? Ela nunca gostou de falar disso.'],
+        ['jogador', 'Vó, o que foi a Noite Longa?', { requer: ['bolo3'] }],
+        ['benta', '…Sua mãe que contou? Ela nunca gostou de falar disso.', { requer: ['bolo3'] }],
+        ['benta', 'Sabe por que a sua mãe nunca gosta de vir pra cá? Por causa da Noite Longa. Ela nunca te contou, né? Imaginei.', { semFlag: ['bolo3'] }],
         ['benta', 'Faz dezesseis anos. Uma noite começou como qualquer outra. Aí o sol não veio. Seis horas, nada. Meio-dia, nada. Escuro como dentro de um bolso.'],
         ['benta', 'Os bichos ficaram de olho vermelho. Os Pokémon da vila, os mansos, de olho vermelho. O Coronel bicou a minha mão, e ele nunca tinha bicado ninguém.'],
         ['benta', 'Trinta horas, meu filho. Trinta horas de noite. A gente acendeu todos os lampiões da vila e ficou junto, na praça, cantando pra não ter medo.'],
@@ -112,6 +100,8 @@ export default {
         ['narrador', 'Velas acesas em cada túmulo. No fundo do cemitério, o Absol está parado ao lado do laguinho redondo. Ele olha para você e caminha até a água.'],
         ['narrador', 'Sentada na beira do lago, de costas, a mulher de casaco violeta olha o reflexo da lua.'],
         ['vespera', 'Ele trouxe você até mim. Interessante. Ele nunca traz ninguém.'],
+        ['vespera', 'Você não me conhece. Eu sou a Véspera. Você vai ouvir esse nome por aí, e quase nunca vai ser com carinho.', { semFlag: ['trainers.c3_ebano'] }],
+        ['vespera', 'Nos vemos de novo, {jogador}. Sem o Ébano e sem o galpão da Marina dessa vez.', { requer: ['trainers.c3_ebano'] }],
         ['vespera', 'Não vou lutar com você hoje, {jogador}. Não estou com meus recrutas e não estou com vontade. Senta, se quiser.'],
       ],
       escolhas: [
@@ -124,10 +114,13 @@ export default {
       local: 'cemiterio_velas',
       gatilho: { tipo: 'apos', cena: 'absol_cemiterio' },
       falas: [
-        ['jogador', 'Por que você está roubando os fragmentos?'],
+        ['jogador', 'Por que você está roubando os fragmentos?', { requer: ['trainers.c3_ebano'] }],
+        ['jogador', 'Você é da tal Equipe Crepúsculo? A que anda atrás dos fragmentos?', { semFlag: ['trainers.c3_ebano'] }],
         ['vespera', 'Pergunta errada. Pergunte por que o sol nasce cada dia mais tarde.'],
         ['vespera', 'Não fomos nós que roubamos o sol, menino. Pergunte à sua Aurora de onde vem a luz dela.'],
-        ['vespera', 'Pergunte ao seu chaveiro por que ele está morno. Pergunte ao Ariados da gruta por que os olhos dele ficaram vermelhos.'],
+        ['vespera', 'Pergunte ao seu chaveiro por que ele está morno.', { requer: ['viuAurora'] }],
+        ['vespera', 'Pergunte ao Ariados da gruta por que os olhos dele ficaram vermelhos.', { requer: ['tocaLuzita'] }],
+        ['vespera', 'Pergunte aos Pokémon de olhos vermelhos por que eles ficaram assim.', { semFlag: ['tocaLuzita'] }],
         ['jogador', 'Você estava lá na Noite Longa. Você e o Professor.'],
         ['narrador', 'Véspera fica em silêncio por um tempo. O Absol encosta o focinho na mão dela, e ela tira a mão depressa.'],
         ['vespera', 'Sua avó tem boa memória. Eu já fui alguém que acreditava em consertar as coisas por dentro. Hoje eu só acredito em parar.'],
@@ -161,14 +154,14 @@ export default {
       local: 'casarao_velas',
       gatilho: { tipo: 'avistar', alvo: 'g5_odete', hora: 'noite' },
       falas: [['aprendiz', 'Tem alguém atrás de você. Brincadeira. Ou não. Batalha!']],
-      depois: { batalha: { id: 'g5_odete', nome: 'Médium Odete', dinheiro: 1160, equipe: [[92, 29, ['lick', 'hypnosis', 'nightShade']], [353, 30, ['shadowSneak', 'screech', 'willOWisp']]] } },
+      depois: { batalha: { id: 'g5_odete', nome: 'Médium Odete', dinheiro: 1160, equipe: [[92, 16, ['lick', 'hypnosis', 'nightShade']], [353, 17, ['shadowSneak', 'screech', 'willOWisp']]] } },
     },
     {
       id: 'aprendiz_zelia2',
       local: 'casarao_velas',
       gatilho: { tipo: 'avistar', alvo: 'g5_ciro', hora: 'noite' },
       falas: [['aprendiz', 'Meu Greavard enterrou o osso dele em algum lugar desta casa em 1994. A gente procura até hoje. Me ajuda depois da batalha?']],
-      depois: { batalha: { id: 'g5_ciro', nome: 'Médium Ciro', dinheiro: 1200, equipe: [[971, 30, ['bite', 'lick', 'roar']], [355, 31, ['nightShade', 'disable', 'confuseRay']]] } },
+      depois: { batalha: { id: 'g5_ciro', nome: 'Médium Ciro', dinheiro: 1200, equipe: [[971, 17, ['bite', 'lick', 'roar']], [355, 18, ['nightShade', 'disable', 'confuseRay']]] } },
     },
     {
       id: 'zelia_desafio',
@@ -176,7 +169,9 @@ export default {
       gatilho: { tipo: 'falar', alvo: 'zelia', requer: ['candelabrosAcesos', 'trainers.g5_odete', 'trainers.g5_ciro'], semFlag: ['badges.lamparina'] },
       falas: [
         ['zelia', 'Os três candelabros acesos! Faz anos que não vejo a sala assim. Você tem jeito com luz, querido.'],
-        ['zelia', 'Sou amiga da sua avó desde que a gente tinha dentes de leite. Ela me contou que você perguntou da Noite Longa.'],
+        ['zelia', 'Sou amiga da sua avó desde que a gente tinha dentes de leite. Ela me contou que você perguntou da Noite Longa.', { requer: ['ouviuNoiteLonga', 'bolo3'] }],
+        ['zelia', 'Sou amiga da sua avó desde que a gente tinha dentes de leite. Ela me contou que te falou da Noite Longa.', { requer: ['ouviuNoiteLonga'], semFlag: ['bolo3'] }],
+        ['zelia', 'Sou amiga da Benta, sabia? A sua avó. Desde que a gente tinha dentes de leite. Vai visitar ela, que ela tem história pra te contar.', { semFlag: ['ouviuNoiteLonga'] }],
         ['zelia', 'Na Noite Longa, os fantasmas foram os únicos que não ficaram de olho vermelho. Sabe por quê? Porque eles já moram no escuro. Escuro não assusta quem conhece.'],
         ['zelia', 'Agora vamos ver se você conhece! Buuu!'],
       ],
@@ -184,11 +179,11 @@ export default {
         batalha: {
           id: 'leader_zelia', nome: 'Dona Zélia', dinheiro: 3300,
           equipe: [
-            [353, 30, ['shadowSneak', 'nightShade', 'willOWisp']],
-            [425, 31, ['ominousWind', 'gust', 'astonish']],
-            [708, 31, ['hex', 'leechSeed', 'astonish']],
-            [607, 31, ['ember', 'hex', 'confuseRay']],
-            [608, 33, ['hex', 'flameBurst', 'willOWisp', 'confuseRay']],
+            [353, 17, ['shadowSneak', 'nightShade', 'willOWisp']],
+            [425, 18, ['ominousWind', 'gust', 'astonish']],
+            [708, 18, ['hex', 'leechSeed', 'astonish']],
+            [607, 18, ['ember', 'hex', 'confuseRay']],
+            [608, 20, ['hex', 'flameBurst', 'willOWisp', 'confuseRay']],
           ],
         },
       },
@@ -229,13 +224,15 @@ export default {
       gatilho: { tipo: 'apos', cena: 'zelia_vencida' },
       falas: [
         ['pokedex', 'Bzzz…'],
-        ['pipa', 'Alô? {jogador}? Aqui é a Pipa, do jornal "O Farol". A Bia me passou seu número, desculpa!'],
-        ['pipa', 'Eu estou investigando a Companhia Aurora. Tem coisa errada naquela mina, e ninguém deixa jornalista entrar.'],
-        ['pipa', 'Mas eles deixam entrar estudante em visita guiada. E você é o menino que recuperou um fragmento. Eles vão adorar tirar foto com você.'],
-        ['pipa', 'Me encontra em Cidade Aurora? Pela Rota 6, seguindo a ferrovia. Eu pago o lanche.'],
-        ['narrador', 'Fim do Capítulo 5'],
+        ['pipa', 'Alô? {jogador}? Aqui é a Pipa, do jornal "O Farol". A Bia me passou seu número, desculpa!', { semFlag: ['pipaLigou', 'aurora'] }],
+        ['pipa', 'Eu estou investigando a Companhia Aurora. Tem coisa errada naquela mina, e ninguém deixa jornalista entrar.', { semFlag: ['pipaLigou', 'aurora'] }],
+        ['pipa', 'Mas eles deixam entrar estudante em visita guiada. E um treinador que venceu a Dona Zélia? Eles vão adorar tirar foto com você.', { semFlag: ['pipaLigou', 'aurora'] }],
+        ['pipa', 'Me encontra em Cidade Aurora? É só seguir a ferrovia, pela Rota 6, a leste daqui. Eu pago o lanche.', { semFlag: ['pipaLigou', 'aurora'] }],
+        ['pipa', 'Alô, {jogador}? É a Pipa! Ganhou da Dona Zélia? Ela é a pessoa mais assustadora e mais doce da região. Parabéns!', { requer: ['pipaLigou'], semFlag: ['aurora'] }],
+        ['pipa', 'A Rota 6 sai do leste de Lamparina, seguindo a ferrovia. Tô te esperando em Cidade Aurora!', { requer: ['pipaLigou'], semFlag: ['aurora'] }],
+        ['pipa', 'Alô, {jogador}? É a Pipa! Ganhou da Dona Zélia? Ela é a pessoa mais assustadora e mais doce da região. Parabéns!', { requer: ['aurora'] }],
       ],
-      depois: { flags: { ch5Done: true, chapter: 6 }, objetivo: 'Siga a ferrovia até Cidade Aurora e encontre a Pipa', fimCapitulo: true },
+      depois: { flags: { pipaLigou: true }, fimJornada: true },
     },
   ],
 };

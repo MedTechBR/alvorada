@@ -1,38 +1,25 @@
-// Capítulo 4: Faísca na Costa Coral
-// Rota 4 (Rio Lúmen de Lapras, Restinga) → Cidade Coral (inauguração da Aurora) → Téo → Farol Coral (ginásio) → Praia dos Corais.
-// Jogável pelo motor src/story/roteiro.js. Níveis: selvagens 22–28, treinadores 23–26, Téo 25–28, Jonas 25–29, Ébano 27–28.
+// Jornada de Cidade Coral: "Faísca na Costa Coral" (era o capítulo 4).
+// Escadaria do Mirante (a pé, da Vila Alvorada) ou Rota 4 (Rio Lúmen de Lapras, Restinga) → Cidade Coral (inauguração
+// da Aurora) → Téo no calçadão → Farol Coral (ginásio) → Praia dos Corais.
+// Mundo aberto: começa ao chegar à costa, em qualquer ordem. A revanche do Téo no calçadão só acontece se ele estiver
+// devendo uma (marco de 2 insígnias, trama.js); senão ele só conversa.
+// Jogável pelo motor src/story/roteiro.js. Níveis do lugar (o ginásio mais perto de casa): selvagens 5–18, treinadores 6–16, Jonas 7–11 (~11), Ébano 13–14.
 // Quebra-cabeça do farol (circuitos, portões de raio e os três geradores): src/story/enigmas.js.
 
 const FAROL = { farol_coral: 'escada_f1', farol_coral_2: 'escada_f2', farol_topo: 'jonas' };
 
 export default {
   id: 'cap04',
+  jornada: 'coral',
   titulo: 'Faísca na Costa Coral',
   sol: '6h40',
   cenas: [
-    {
-      id: 'titulo',
-      local: 'rota4',
-      gatilho: { tipo: 'inicio', requer: ['ch3Done'] },
-      falas: [['narrador', 'Capítulo 4: Faísca na Costa Coral']],
-      depois: { flags: { chapter: 4 }, objetivo: { texto: 'Desça o Rio Lúmen de Lapras até Cidade Coral', alvo: 'rio_lumen_inicio', sub: 'Na margem, de frente para a água, X chama o Lapras' } },
-    },
-    {
-      id: 'radio',
-      local: 'rota4',
-      gatilho: { tipo: 'apos', cena: 'titulo' },
-      falas: [
-        ['radio', 'Bom dia, Alvorada! Seis e quarenta. Seis e quarenta, gente. O galo do Seu Zé desistiu de cantar e agora só suspira.'],
-        ['radio', 'Hoje tem festa em Cidade Coral: o Farol ganha holofotes novos da Companhia Aurora. O próprio Augusto Solano vai fazer discurso!'],
-        ['radio', 'E atenção: a escadaria do Mirante, que desce da Vila Alvorada para a praia, segue fechada para obra. Quem quiser a festa, que desça o rio!'],
-      ],
-    },
     {
       id: 'rio',
       local: 'rota4',
       gatilho: { tipo: 'pisar', alvo: 'rio_lumen_inicio', semFlag: ['desceuRio'] },
       falas: [
-        ['narrador', 'O Rio Lúmen se alarga entre manguezais. Os Buizel apostam corrida com o Lapras e perdem de propósito, só para rir.'],
+        ['narrador', 'O Rio Lúmen se alarga entre manguezais. Os Buizel apostam corrida com você e perdem de propósito, só para rir.'],
         ['narrador', 'Mais adiante, o rio encontra as dunas e o mar. Dá para sentir o cheiro de sal.'],
       ],
       depois: { flags: { desceuRio: true }, objetivo: { texto: 'Siga o rio até a foz e atravesse a Restinga até Cidade Coral', alvo: 'cidade_coral' } },
@@ -46,7 +33,7 @@ export default {
         ['kaua', 'Bora uma batalha de boa? Se eu perder, te dou aula grátis. Se eu ganhar, te dou aula grátis também, porque eu sou gente boa.'],
         ['kaua', 'Encosta o Lapras aqui no banco de areia, desce e manda o teu Pokémon. Na água é covardia!'],
       ],
-      depois: { batalha: { id: 'r4_kaua', nome: 'Surfista Kauã', dinheiro: 900, equipe: [[278, 23, ['waterGun', 'wingAttack', 'quickAttack']], [418, 24, ['aquaJet', 'swift', 'quickAttack']], [279, 25, ['waterGun', 'wingAttack', 'protect']]] } },
+      depois: { batalha: { id: 'r4_kaua', nome: 'Surfista Kauã', dinheiro: 900, equipe: [[278, 14, ['waterGun', 'wingAttack', 'quickAttack']], [418, 15, ['aquaJet', 'swift', 'quickAttack']], [279, 16, ['waterGun', 'wingAttack', 'protect']]] } },
     },
     {
       id: 'kaua_perdeu',
@@ -60,7 +47,7 @@ export default {
       local: 'rota4',
       gatilho: { tipo: 'avistar', alvo: 'r4_sandra' },
       falas: [['treinador', 'A areia aqui esconde Sandile! Esconde Trapinch! Esconde até o meu chinelo, que eu perdi ontem!']],
-      depois: { batalha: { id: 'r4_sandra', nome: 'Turista Sandra', dinheiro: 920, equipe: [[551, 24, ['bite', 'sandTomb', 'leer']], [328, 24, ['bite', 'sandAttack', 'bulldoze']], [449, 25, ['bite', 'sandTomb', 'yawn']]] } },
+      depois: { batalha: { id: 'r4_sandra', nome: 'Turista Sandra', dinheiro: 920, equipe: [[551, 10, ['bite', 'sandTomb', 'leer']], [328, 10, ['bite', 'sandAttack', 'bulldoze']], [449, 11, ['bite', 'sandTomb', 'yawn']]] } },
     },
     {
       id: 'coral_chegada',
@@ -91,34 +78,48 @@ export default {
       depois: { flags: { discursoSolano: true, sq_farol: 'disponivel' }, objetivo: { texto: 'Dê uma volta pelo calçadão', alvo: 'calcadao' } },
     },
     {
+      // revanche do marco de 2 insígnias (trama.js), aqui no calçadão, se o Téo ainda estiver devendo
       id: 'teo_calcadao',
       local: 'cidade_coral',
-      gatilho: { tipo: 'pisar', alvo: 'calcadao', requer: ['discursoSolano'], semFlag: ['rival2'] },
+      gatilho: { tipo: 'pisar', alvo: 'calcadao', requer: ['discursoSolano', 'insignias>=2'], semFlag: ['rival2'] },
       falas: [
         ['teo', '{jogador}! Aqui! Você viu o Solano? Meu pai trabalha pra ele, sabia? Lá na Mina Aurora. Chefe de turma!'],
         ['teo', 'Ganhei do Jonas hoje de manhã. A Insígnia Faísca já é minha. Meu pai prometeu que vinha ver a próxima batalha.'],
-        ['teo', 'Ele deve estar chegando. Ele disse que vinha. Então vamos batalhar agora, que aí ele vê!'],
+        ['teo', 'Você tem {insignias_ext} insígnias? Eu também. Ele deve estar chegando. Ele disse que vinha. Então vamos batalhar agora, que aí ele vê!'],
       ],
       depois: {
         batalha: {
-          id: 'rival2', nome: 'Rival Téo', dinheiro: 2400,
+          id: 'rival2', nome: 'Rival Téo', dinheiro: 1800, perder: 'continua',
           equipe: [
-            [397, 25, ['wingAttack', 'quickAttack', 'doubleTeam']],
-            [58, 25, ['ember', 'bite', 'roar']],
-            [133, 26, ['quickAttack', 'bite', 'sandAttack']],
-            ['rival:2', 28, []],
+            [397, 14, ['wingAttack', 'quickAttack', 'doubleTeam']],
+            [58, 14, ['ember', 'bite', 'roar']],
+            [133, 15, ['quickAttack', 'bite', 'sandAttack']],
+            ['rival:2', 17, []],
           ],
         },
-        flags: { rival2: true },
+        flags: { rival2: true, teoCalcadao: true, lutouCalcadao: true },
       },
+    },
+    {
+      // sem revanche pendente: o Téo só conversa (esperando o pai que não vem)
+      id: 'teo_calcadao_conversa',
+      local: 'cidade_coral',
+      gatilho: { tipo: 'pisar', alvo: 'calcadao', requer: ['discursoSolano'], semFlag: ['teoCalcadao'] },
+      falas: [
+        ['teo', '{jogador}! Aqui! Você viu o Solano? Meu pai trabalha pra ele, sabia? Lá na Mina Aurora. Chefe de turma!'],
+        ['teo', 'Ganhei do Jonas hoje de manhã. A Insígnia Faísca já é minha. Meu pai prometeu que vinha ver a festa comigo.'],
+        ['teo', 'Ele deve estar chegando. Ele disse que vinha. A gente batalha outro dia, quando você tiver mais insígnia. Hoje eu tô esperando ele.', { semFlag: ['rival2'] }],
+        ['teo', 'Ele deve estar chegando. Ele disse que vinha. Nossa revanche já foi, né? Então hoje eu só espero.', { requer: ['rival2'] }],
+      ],
+      depois: { flags: { teoCalcadao: true } },
     },
     {
       id: 'teo_pier',
       local: 'cidade_coral',
-      gatilho: { tipo: 'apos', cena: 'teo_calcadao' },
+      gatilho: { tipo: 'apos', cena: ['teo_calcadao', 'teo_calcadao_conversa'] },
       falas: [
-        ['teo', 'Boa batalha. Muito boa. Ele ia ter gostado.'],
-        ['narrador', 'Téo olha para a escadaria fechada do Mirante, lá no alto. Ninguém vem.'],
+        ['teo', 'Boa batalha. Muito boa. Ele ia ter gostado.', { requer: ['lutouCalcadao'] }],
+        ['narrador', 'Téo olha para a escadaria do Mirante, lá no alto. Ninguém desce.'],
         ['teo', 'Deve ter tido problema na mina. Sempre tem problema na mina. Fala que tá tudo bem e manda dinheiro. E manda luzita de presente. A gente tem luzita em casa até no banheiro.'],
       ],
       escolhas: [
@@ -166,14 +167,14 @@ export default {
       local: 'farol_coral',
       gatilho: { tipo: 'avistar', alvo: 'g4_saulo' },
       falas: [['aprendiz', 'Cuidado com o portão de raio do andar de cima! Ele abre e fecha a cada dois segundos. Eu já levei três choques hoje. Meu cabelo nunca mais abaixou.']],
-      depois: { batalha: { id: 'g4_saulo', nome: 'Técnico Saulo', dinheiro: 960, equipe: [[81, 24, ['thunderShock', 'sonicBoom', 'supersonic']], [100, 25, ['spark', 'rollout', 'screech']]] } },
+      depois: { batalha: { id: 'g4_saulo', nome: 'Técnico Saulo', dinheiro: 960, equipe: [[81, 6, ['thunderShock', 'sonicBoom', 'supersonic']], [100, 7, ['spark', 'rollout', 'screech']]] } },
     },
     {
       id: 'aprendiz_jonas2',
       local: 'farol_coral_2',
       gatilho: { tipo: 'avistar', alvo: 'g4_duda' },
       falas: [['aprendiz', 'Último andar antes do Jonas! Ninguém passa sem carga total!']],
-      depois: { batalha: { id: 'g4_duda', nome: 'Técnica Duda', dinheiro: 1000, equipe: [[309, 25, ['spark', 'howl', 'quickAttack']], [694, 26, ['thunderShock', 'quickAttack', 'parabolicCharge']]] } },
+      depois: { batalha: { id: 'g4_duda', nome: 'Técnica Duda', dinheiro: 1000, equipe: [[309, 7, ['spark', 'howl', 'quickAttack']], [694, 8, ['thunderShock', 'quickAttack', 'parabolicCharge']]] } },
     },
     {
       id: 'jonas_desafio',
@@ -188,11 +189,11 @@ export default {
         batalha: {
           id: 'leader_jonas', nome: 'Líder Jonas', dinheiro: 2900,
           equipe: [
-            [81, 25, ['thunderShock', 'sonicBoom', 'thunderWave']],
-            [180, 26, ['thunderShock', 'cottonSpore', 'takeDown']],
-            [417, 26, ['spark', 'quickAttack', 'sweetKiss']],
-            [404, 27, ['spark', 'bite', 'leer']],
-            [171, 29, ['spark', 'waterGun', 'confuseRay', 'bubbleBeam']],
+            [81, 7, ['thunderShock', 'sonicBoom', 'thunderWave']],
+            [179, 8, ['thunderShock', 'cottonSpore', 'takeDown']],
+            [417, 8, ['spark', 'quickAttack', 'sweetKiss']],
+            [403, 9, ['spark', 'bite', 'leer']],
+            [170, 11, ['spark', 'waterGun', 'confuseRay', 'bubbleBeam']],
           ],
         },
       },
@@ -242,7 +243,7 @@ export default {
         ['jonas', '{jogador}! Eles estão na casa de máquinas! O meu fragmento fica lá!'],
         ['recruta', 'Ih, o moleque de novo. Esse moleque é praga.'],
       ],
-      depois: { batalha: { id: 'c4_recruta', nome: 'Recruta Crepúsculo', dinheiro: 1000, equipe: [[261, 26, ['bite', 'howl', 'sandAttack']], [434, 26, ['poisonGas', 'feintAttack', 'screech']], [41, 26, ['bite', 'supersonic', 'wingAttack']]] } },
+      depois: { batalha: { id: 'c4_recruta', nome: 'Recruta Crepúsculo', dinheiro: 1000, equipe: [[261, 12, ['bite', 'howl', 'sandAttack']], [434, 12, ['poisonGas', 'feintAttack', 'screech']], [41, 12, ['bite', 'supersonic', 'wingAttack']]] } },
     },
     {
       id: 'praia_ebano',
@@ -254,7 +255,7 @@ export default {
         ['jogador', 'Por que vocês estão roubando os fragmentos?'],
         ['ebano', 'Porque se a gente não pegar, outro pega. E esse outro tem mais dinheiro que a gente e menos vergonha. Agora chega de papo.'],
       ],
-      depois: { batalha: { id: 'c4_ebano', nome: 'Admin Ébano', dinheiro: 2200, equipe: [[198, 27, ['wingAttack', 'pursuit', 'haze']], [228, 27, ['ember', 'bite', 'smog']], [302, 28, ['shadowSneak', 'feintAttack', 'furySwipes', 'detect']]] } },
+      depois: { batalha: { id: 'c4_ebano', nome: 'Admin Ébano', dinheiro: 2200, equipe: [[198, 13, ['wingAttack', 'pursuit', 'haze']], [228, 13, ['ember', 'bite', 'smog']], [302, 14, ['shadowSneak', 'feintAttack', 'furySwipes', 'detect']]] } },
     },
     {
       id: 'praia_recupera',
@@ -268,7 +269,7 @@ export default {
         ['jonas', 'Toma isto. É a Lente Prisma. Eu fiz pra estudar a luzita. Com ela dá pra ver rastros de luz que o olho não vê.'],
         ['jonas', 'Eu olhei a luz do farol com ela ontem. Sabe o que eu vi? A luz não vai pro mar. Ela vai pro norte. Pro Paredão.'],
         ['narrador', '{jogador} recebeu a Lente Prisma!'],
-        ['jonas', 'Ah, e a obra da escadaria do Mirante acabou hoje. Pela escada você chega na Vila Alvorada num pulo.'],
+        ['jonas', 'E se for subir pra Vila Alvorada, vai pela escadaria do Mirante. Botaram poste de luzita em cada degrau. Claro que botaram.'],
       ],
       depois: { flags: { defendeuPraia: true, fragmentoCoral: 'jonas' }, itens: [['lente_prisma', 1], ['isca_luz', 3]] },
     },
@@ -279,11 +280,11 @@ export default {
       falas: [
         ['pokedex', 'Bzzz…'],
         ['bia', '{jogador}! Você é famoso! A Pipa do "O Farol" ligou aqui perguntando quem é o menino que recuperou um fragmento.'],
-        ['bia', 'O Professor quer que você vá para Vila Lamparina, ao norte, depois do Brejo das Lamparinas. A Dona Zélia guarda o quinto fragmento. E sua avó mora lá!'],
-        ['bia', 'Ah, o ginásio de lá só abre de noite. A Dona Zélia diz que fantasma não trabalha de dia. Sindicato.'],
-        ['narrador', 'Fim do Capítulo 4'],
+        ['bia', 'O Professor ficou olhando a Lente Prisma no jornal da tarde. Disse que com ela dá pra ver as tábuas de luz do Brejo das Lamparinas. Sua avó mora do outro lado!', { semFlag: ['badges.lamparina'] }],
+        ['bia', 'Ah, o ginásio de Lamparina só abre de noite. A Dona Zélia diz que fantasma não trabalha de dia. Sindicato.', { semFlag: ['badges.lamparina'] }],
+        ['bia', 'O Professor ficou olhando a Lente Prisma no jornal da tarde e não disse nada. Ele anda assim. Quieto demais.', { requer: ['badges.lamparina'] }],
       ],
-      depois: { flags: { ch4Done: true, chapter: 5 }, objetivo: 'Vá a Vila Lamparina pelo Brejo das Lamparinas', fimCapitulo: true },
+      depois: { fimJornada: true },
     },
 
     // ---------------- missão secundária: O farol pisca errado (sq_farol) ----------------

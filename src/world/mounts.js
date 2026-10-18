@@ -14,7 +14,10 @@ import { dir4 } from '../sprites/characters.js';
 //   escalar    Sneasler (903)     contra o paredão com trepadeira; sobe por ele
 //   voar       Corviknight (823)  segure X; voa por cima de tudo (sombra no chão, câmera afasta) e pousa em lugar livre
 //   mergulhar  Mantine (226)      X sobre um redemoinho (água funda marcada); mostra o fundo
-// Desbloqueio: flags.mounts.<tipo> (ou game.unlockMount('mudbray' | 'correr' ...)); com ?teste=1 todas ficam liberadas.
+// Desbloqueio por CAPACIDADE (mundo aberto): um modo fica liberado assim que o jogador tem, na equipe ou no PC, qualquer
+// Pokémon que sirva para ele (src/data/montarias.js), ou quando ganha a montaria da história daquele modo
+// (flags.mounts.<tipo>, game.unlockMount('mudbray' | 'correr' ...): Mudbray do professor, Lapras da Marina, Mantine do
+// Seu Nestor). Com ?teste=1 todas ficam liberadas.
 // Essas 5 são as padrão. Liberado o modo, qualquer Pokémon do jogador (equipe ou PC) que carregue gente serve no lugar
 // (src/data/montarias.js, gerado por tools/gerar_montarias.py): escolha no menu Montarias ou em "Usar como montaria",
 // gravada em flags.montaria.<tipo> = uid. Cada espécie usa o próprio sprite e a escala real, com pose e velocidade próprias.
@@ -334,8 +337,22 @@ export class Mounts {
   // ---------- desbloqueio ----------
   has(kind) {
     kind = mountKind(kind); if (!kind) return false;
+    return this.padrao(kind) || this.#capaz().has(kind);
+  }
+  // o jogador tem a montaria da história deste modo (presente: Mudbray, Lapras, Mantine…)
+  padrao(kind) {
+    kind = mountKind(kind); if (!kind) return false;
     const f = this.g.flags ?? {};
     return this.teste || !!(f.mounts?.[kind] || f['mounts.' + kind]);
+  }
+  // modos que algum Pokémon do jogador (equipe ou PC) sabe fazer; refeito a cada meio segundo ou quando o número muda
+  #capaz() {
+    const g = this.g, n = (g.party?.length ?? 0) + (g.box?.length ?? 0), t = performance.now();
+    if (this.capSet && this.capN === n && t - this.capT < 500) return this.capSet;
+    const set = new Set();
+    for (const mon of [...(g.party ?? []), ...(g.box ?? [])]) for (const k of mountModes(mon)) set.add(k);
+    this.capSet = set; this.capN = n; this.capT = t;
+    return set;
   }
   unlocked() { return MOUNT_KINDS.filter((k) => this.has(k)); }
   // game.unlockMount('mudbray' | 'correr' | ...): grava a flag e mostra o aviso
@@ -350,7 +367,9 @@ export class Mounts {
     return true;
   }
   async announce(kind) {
-    const C = MOUNTS[kind]; if (!C) return;
+    const C0 = MOUNTS[kind]; if (!C0) return;
+    // liberado por um Pokémon do jogador: o aviso mostra ele (não a montaria padrão)
+    const pk = this.pick(kind), C = pk?.mon ? { name: pk.mon.name, dex: mountKey(pk.mon), label: C0.label } : C0;
     const el = document.createElement('div'); el.className = 'mt-unlock';
     // no celular o X é o botão de sela: mostra o ícone dele no lugar da tecla
     const key = IS_TOUCH ? `<kbd class="sela">${ICON}</kbd>` : '<kbd>X</kbd>';
@@ -785,14 +804,20 @@ export class Mounts {
   chosen(kind) {
     const uid = this.g.flags?.montaria?.[kind];
     const mon = uid ? this.#owned().find((o) => o.mon.uid === uid)?.mon : null;
-    return mon && canMount(mon, kind) ? { mon, dex: mountKey(mon) } : { mon: null, dex: MOUNTS[kind].dex };
+    if (mon && canMount(mon, kind)) return { mon, dex: mountKey(mon) };
+    // sem a montaria da história deste modo: vai o Pokémon do jogador que serve (o mais rápido de pé)
+    if (!this.padrao(kind)) { const o = this.options(kind), b = o.find((x) => !x.mon.fainted && x.mon.hp > 0) ?? o[0]; if (b) return { mon: b.mon, dex: mountKey(b.mon) }; }
+    return { mon: null, dex: MOUNTS[kind].dex };
   }
-  // o que vai de fato: o escolhido, se estiver de pé; senão a padrão (avisa uma vez)
+  // o que vai de fato: o escolhido, se estiver de pé; senão a padrão ou outro Pokémon do jogador (avisa uma vez)
   pick(kind) {
     const c = this.chosen(kind);
     if (c.mon && (c.mon.fainted || c.mon.hp <= 0)) {
-      if (this.warnKO !== c.mon.uid) { this.warnKO = c.mon.uid; this.g.toast?.(`${c.mon.name} está sem forças; ${MOUNTS[kind].name} veio no lugar.`); }
-      return { mon: null, dex: MOUNTS[kind].dex };
+      const outro = this.padrao(kind) ? null : this.options(kind).find((x) => !x.mon.fainted && x.mon.hp > 0)?.mon;
+      if (!this.padrao(kind) && !outro) return c; // só ele serve: vai assim mesmo
+      const nome = outro?.name ?? MOUNTS[kind].name;
+      if (this.warnKO !== c.mon.uid) { this.warnKO = c.mon.uid; this.g.toast?.(`${c.mon.name} está sem forças; ${nome} veio no lugar.`); }
+      return outro ? { mon: outro, dex: mountKey(outro) } : { mon: null, dex: MOUNTS[kind].dex };
     }
     return c;
   }

@@ -1,32 +1,14 @@
-// Capítulo 3: O espelho partido
-// Vila Alvorada → Rota 3 (Margem das Garças) → Porto Espelho → Galpão de Barcos (ginásio) → assalto da Crepúsculo → Lapras.
-// Jogável pelo motor src/story/roteiro.js. Níveis do capítulo: selvagens 16–23, treinadores 17–21, Ébano 21–23, Marina 21–24.
+// Jornada de Porto Espelho: "O espelho partido" (era o capítulo 3).
+// Rota 3 (Margem das Garças) → Porto Espelho → Galpão de Barcos (ginásio) → assalto da Crepúsculo → Lapras.
+// Mundo aberto: começa na ponte da Rota 3 ou ao chegar ao porto, em qualquer ordem (o bolo da Mãe foi para a trama).
+// Jogável pelo motor src/story/roteiro.js. Níveis do lugar (escada por distância): selvagens 5–9 na Rota 3 e 19–23 no lago, treinadores 6–12, Ébano 12–14, Marina 12–15 (~15).
 
 export default {
   id: 'cap03',
+  jornada: 'espelho',
   titulo: 'O espelho partido',
   sol: '6h28',
   cenas: [
-    {
-      id: 'titulo',
-      local: 'vila_alvorada',
-      gatilho: { tipo: 'inicio', requer: ['ch2Done'] },
-      falas: [['narrador', 'Capítulo 3: O espelho partido']],
-      depois: { flags: { chapter: 3 } },
-    },
-    {
-      id: 'mae_bolo',
-      local: 'casa_jogador',
-      gatilho: { tipo: 'falar', alvo: 'mae', semFlag: ['bolo3'] },
-      falas: [
-        ['mae', 'Olha quem voltou! E com duas insígnias! Senta, que o bolo de laranja ainda está quente.'],
-        ['mae', 'Hoje na rádio eu disse seis e vinte e oito. Seis e vinte e oito! Meus ouvintes estão chegando atrasados no trabalho e pondo a culpa em mim.'],
-        ['mae', 'O Professor passou aqui ontem. Estava esquisito. Perguntou se eu lembrava da Noite Longa, lá em Lamparina, quando você era pequeno.'],
-        ['jogador', 'Noite Longa?'],
-        ['mae', 'Uma noite que durou mais de um dia. A sua avó conta melhor que eu. Eu só lembro do frio e de você chorando. Bom, não importa. Come o bolo.'],
-      ],
-      depois: { flags: { bolo3: true }, itens: [['bolo_laranja', 1]] },
-    },
     {
       id: 'ponte',
       local: 'rota3',
@@ -43,14 +25,14 @@ export default {
       local: 'rota3',
       gatilho: { tipo: 'avistar', alvo: 'r3_seu_bigode' },
       falas: [['treinador', 'Quarenta anos pescando aqui e nunca vi o lago tão quieto. Até o Magikarp anda triste. Vamos batalhar pra animar!']],
-      depois: { batalha: { id: 'r3_seu_bigode', nome: 'Pescador Bigode', dinheiro: 640, equipe: [[129, 17, ['splash', 'tackle']], [129, 17, ['splash', 'tackle']], [339, 19, ['mudSlap', 'waterGun', 'watersport']]] } },
+      depois: { batalha: { id: 'r3_seu_bigode', nome: 'Pescador Bigode', dinheiro: 640, equipe: [[129, 6, ['splash', 'tackle']], [129, 6, ['splash', 'tackle']], [339, 8, ['mudSlap', 'waterGun', 'watersport']]] } },
     },
     {
       id: 'nadadora_rota3',
       local: 'rota3',
       gatilho: { tipo: 'avistar', alvo: 'r3_carol' },
       falas: [['treinador', 'Sabe por que o lago se chama Espelho? Olha pra água. Olhou? Pronto, batalha!']],
-      depois: { batalha: { id: 'r3_carol', nome: 'Garota da Praia Carol', dinheiro: 660, equipe: [[283, 18, ['bubble', 'quickAttack', 'sweetScent']], [580, 19, ['waterGun', 'wingAttack', 'defog']]] } },
+      depois: { batalha: { id: 'r3_carol', nome: 'Garota da Praia Carol', dinheiro: 660, equipe: [[283, 7, ['bubble', 'quickAttack', 'sweetScent']], [580, 8, ['waterGun', 'wingAttack', 'defog']]] } },
     },
     {
       id: 'porto_chegada',
@@ -77,6 +59,21 @@ export default {
       depois: { flags: { conheceuNestor: true } },
     },
     {
+      // montaria Mergulhar: a velha Mantine do Seu Nestor (para treinador com a Gota e quatro insígnias)
+      id: 'nestor_mantine',
+      local: 'casa_nestor',
+      gatilho: { tipo: 'falar', alvo: 'nestor', requer: ['badges.espelho', 'insignias>=4'], semFlag: ['mounts.mergulhar'] },
+      falas: [
+        ['nestor', 'A Marina não para de falar de você. {insignias_ext} insígnias! No meu tempo, quem tinha quatro já era chamado de doutor.'],
+        ['nestor', 'Lembra da Mantine que eu falei? A Maré. Ela voltou pro lago faz uns dias. Fica rodando em volta do píer, olhando pra água funda.'],
+        ['nestor', 'Eu já não mergulho, menino. Os ouvidos não deixam. Mas ela precisa de alguém que desça com ela.'],
+        ['narrador', 'Uma Mantine sobe à superfície perto da janela, bate as asas na água e espirra o Seu Nestor inteiro.'],
+        ['nestor', 'Viu? Ela gostou de você. Leva a Maré. Onde a água gira escura, ela desce até o fundo.'],
+        ['narrador', 'Agora a Mantine pode levar {jogador} para MERGULHAR nos redemoinhos escuros!'],
+      ],
+      depois: { montaria: 'mantine', flags: { 'mounts.mergulhar': true } },
+    },
+    {
       id: 'galpao_entrada',
       local: 'galpao_barcos',
       gatilho: { tipo: 'entrar', alvo: 'galpao_barcos', semFlag: ['galpaoDentro'] },
@@ -92,14 +89,14 @@ export default {
       local: 'galpao_barcos',
       gatilho: { tipo: 'avistar', alvo: 'g3_zeca' },
       falas: [['aprendiz', 'Peixe que nada contra a corrente fica forte! Peixe que nada a favor chega antes. Eu sou dos dois!']],
-      depois: { batalha: { id: 'g3_zeca', nome: 'Pescador Zeca', dinheiro: 700, equipe: [[129, 19, ['splash', 'tackle', 'flail']], [339, 20, ['mudSlap', 'waterGun', 'amnesia']]] } },
+      depois: { batalha: { id: 'g3_zeca', nome: 'Pescador Zeca', dinheiro: 700, equipe: [[129, 10, ['splash', 'tackle', 'flail']], [339, 11, ['mudSlap', 'waterGun', 'amnesia']]] } },
     },
     {
       id: 'aprendiz_marina2',
       local: 'galpao_barcos',
       gatilho: { tipo: 'avistar', alvo: 'g3_taina' },
       falas: [['aprendiz', 'Quer chegar na Marina? Primeiro aprende a ficar molhado!']],
-      depois: { batalha: { id: 'g3_taina', nome: 'Nadadora Tainá', dinheiro: 740, equipe: [[278, 20, ['waterGun', 'wingAttack', 'supersonic']], [183, 21, ['bubble', 'rollout', 'defenseCurl']]] } },
+      depois: { batalha: { id: 'g3_taina', nome: 'Nadadora Tainá', dinheiro: 740, equipe: [[278, 11, ['waterGun', 'wingAttack', 'supersonic']], [183, 12, ['bubble', 'rollout', 'defenseCurl']]] } },
     },
     {
       id: 'marina_desafio',
@@ -115,10 +112,10 @@ export default {
           id: 'leader_marina', nome: 'Líder Marina', dinheiro: 2200, perder: 'centro',
           interrompe: 'assalto', // depois do segundo Pokémon dela, a cena "assalto" interrompe a luta
           equipe: [
-            [54, 21, ['waterGun', 'confusion', 'scratch']],
-            [418, 22, ['aquaJet', 'quickAttack', 'waterGun']],
-            [79, 22, ['waterGun', 'confusion', 'yawn']],
-            [550, 24, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
+            [54, 12, ['waterGun', 'confusion', 'scratch']],
+            [418, 13, ['aquaJet', 'quickAttack', 'waterGun']],
+            [79, 13, ['waterGun', 'confusion', 'yawn']],
+            [550, 15, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
           ],
         },
       },
@@ -131,17 +128,19 @@ export default {
         ['narrador', 'BUM! A porta do galpão abre de uma vez. A luz de fora entra junto com uma dúzia de capas roxas.'],
         ['ebano', 'Ninguém se mexe. Ninguém se machuca. Eu não grito. Eu falo com ênfase.'],
         ['marina', 'Quem você pensa que é pra entrar no MEU ginásio no meio da MINHA batalha?!'],
-        ['narrador', 'Por entre os recrutas, entra uma mulher de casaco violeta. Cabelo preto com uma mecha branca. Um broche de estrela no peito. Passos sem pressa.'],
+        ['narrador', 'Por entre os recrutas, entra uma mulher de casaco violeta. Cabelo preto com uma mecha branca. Um broche de estrela no peito. Passos sem pressa.', { semFlag: ['falouVespera1'] }],
+        ['narrador', 'Por entre os recrutas, entra a mulher de casaco violeta do cemitério de Lamparina. A mesma mecha branca, o mesmo broche de estrela.', { requer: ['falouVespera1'] }],
         ['vespera', 'Desculpe a interrupção, Marina. Sei o que essa batalha significa. Também já fui jovem e já tive um ginásio para vencer.'],
         ['vespera', 'Mas a sua pedra não pode ficar aqui. Não com o que vem por aí.'],
         ['marina', 'O fragmento da Gota está com a minha família há duzentos anos!'],
         ['vespera', 'E está seguro há duzentos anos. Hoje não está mais. Eu sinto muito, de verdade.'],
         ['narrador', 'Véspera abre o cofre embaixo do leme da Marina sem tocar nele. Um Zorua sai de dentro com o fragmento na boca.'],
-        ['vespera', 'E você deve ser o {jogador}. O Jatobá falou de você? Não, imagino que não. Ele não fala de muita coisa.'],
+        ['vespera', 'E você deve ser o {jogador}. O Jatobá falou de você? Não, imagino que não. Ele não fala de muita coisa.', { semFlag: ['falouVespera1'] }],
+        ['vespera', 'De novo você, {jogador}. Eu disse que hoje não ia lutar. Hoje é outro dia.', { requer: ['falouVespera1'] }],
         ['vespera', 'Você está do lado certo pelas razões erradas, menino. Um dia vai entender. Ébano, segure-o.'],
       ],
       depois: {
-        batalha: { id: 'c3_ebano', nome: 'Admin Ébano', dinheiro: 1500, perder: 'continua', equipe: [[41, 21, ['bite', 'supersonic', 'wingAttack']], [228, 22, ['ember', 'bite', 'roar']], [302, 23, ['furySwipes', 'astonish', 'detect']]] },
+        batalha: { id: 'c3_ebano', nome: 'Admin Ébano', dinheiro: 1500, perder: 'continua', equipe: [[41, 12, ['bite', 'supersonic', 'wingAttack']], [228, 13, ['ember', 'bite', 'roar']], [302, 14, ['furySwipes', 'astonish', 'detect']]] },
       },
     },
     {
@@ -166,8 +165,8 @@ export default {
         batalha: {
           id: 'leader_marina_pier', nome: 'Líder Marina', dinheiro: 2200,
           equipe: [
-            [79, 22, ['waterGun', 'confusion', 'yawn']],
-            [550, 24, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
+            [79, 13, ['waterGun', 'confusion', 'yawn']],
+            [550, 15, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
           ],
         },
       },
@@ -202,6 +201,7 @@ export default {
         ['radio', 'Interrompemos a programação com uma notícia de Cidade Campina.'],
         ['radio', 'Na madrugada de hoje, o fragmento histórico guardado pelo Líder Tomé foi levado por pessoas de capa roxa. Ninguém se feriu. A Lili diz que um dos Mudbray mordeu um deles.'],
         ['radio', 'Atenção, ouvintes: a Equipe Crepúsculo já levou dois fragmentos. Se você vir alguém de capa roxa…'],
+        ['radio', 'O de Cidade Coral, pelo menos, continua com o Jonas. Graças a um treinador teimoso que eu conheço.', { requer: ['defendeuPraia'] }],
         ['radio', '…e eu sei que você está me ouvindo, {jogador}: não se meta em encrenca. Mas se se meter, ganha.'],
       ],
     },
@@ -215,10 +215,10 @@ export default {
         ['jogador', 'Ela disse que o senhor não fala de muita coisa.'],
         ['prof', '…'],
         ['prof', 'A Véspera e eu trabalhamos juntos, há muito tempo. Ela era a pessoa mais inteligente que eu já conheci. Depois as coisas mudaram.'],
-        ['prof', 'Escute: o próximo ginásio fica em Cidade Coral, descendo o Rio Lúmen. Leve o Lapras pelo rio. E fique longe dela, por favor.'],
-        ['narrador', 'Fim do Capítulo 3'],
+        ['prof', 'Escute: com o Lapras você vai aonde a água vai. O Rio Lúmen desce até a costa, e o Brejo das Lamparinas tem canais fundos que levam a Lamparina.'],
+        ['prof', 'Vá aonde quiser. Só fique longe dela, por favor.'],
       ],
-      depois: { flags: { ch3Done: true, chapter: 4 }, objetivo: 'Desça o Rio Lúmen até Cidade Coral', fimCapitulo: true },
+      depois: { fimJornada: true },
     },
   ],
 };
