@@ -21,6 +21,12 @@ export class Colocador {
     this.M.ocupa(x, y, fw, fh);
     const o = { kind, x, y, ...extra }; this.objects.push(o); return o;
   }
+  // põe o objeto no lugar livre mais perto de (x, y)
+  poeProx(kind, x, y, extra = {}, raio = 10) {
+    const [fw, fh] = FP[kind] ?? [1, 1];
+    for (let r = 0; r <= raio; r++) for (let j = -r; j <= r; j++) for (let i = -r; i <= r; i++) if (Math.max(Math.abs(i), Math.abs(j)) === r && this.M.livre(x + i, y + j, fw, fh)) return this.poe(kind, x + i, y + j, extra);
+    this.avisos.push(`${kind} perto de (${x}, ${y}) não achou lugar`); return null;
+  }
   // reserva pegada (caminhos, portas) sem objeto
   reserva(x, y, w, h) { this.M.ocupa(x, y, w, h); }
   // prédio: reserva a pegada e a frente da porta

@@ -8,6 +8,7 @@ import { RECT, terreno, detalhes } from './jandaia-terreno.mjs';
 import { Colocador } from './jandaia-util.mjs';
 import { vila, salasVila } from './jandaia-vila.mjs';
 import { templo } from './jandaia-templo.mjs';
+import { mundo, COCOS } from './jandaia-mundo.mjs';
 
 const M = new Mapa('jandaia', RECT);
 terreno(M); detalhes(M);
@@ -36,7 +37,8 @@ J.ninhos = [{ id: 'vila_jandaia', nome: 'Vila Jandaia', spot: 'ninho_vila_jandai
 J.viagens = [{ id: 'balsa_coral', nome: 'A balsa', fala: ['Volta para a Costa Coral?'], destinos: [{ nome: 'Cidade Coral', destino: 'cais_coral', preco: 300, cena: 'A balsa balança devagar até a Costa Coral…' }] }];
 J.people = [{ id: 'barqueiro_jandaia', name: 'Barqueiro', look: { preset: 'montanhista', top: '#2a4a7a', pants: '#3a3a5a', hair: '#5a3a2a' }, x: 93, y: 566, dir: 'down', viagem: 'balsa_coral', lines: ['A balsa leva de volta para Cidade Coral.'] }];
 
-vila(M, C, J); salasVila(J); templo(J);
+vila(M, C, J); salasVila(J); templo(J); mundo(M, C, J);
+console.log('COCOS', JSON.stringify(COCOS));
 J.objects = C.objects;
 if (C.avisos.length) console.log('AVISOS:\n  ' + C.avisos.join('\n  '));
 const saida = join(raiz, 'assets/maps/regioes/jandaia.json');

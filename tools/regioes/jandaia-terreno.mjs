@@ -100,8 +100,8 @@ export function detalhes(M) {
   trilha([[165, 778], [182, 764], [200, 756], [210, 760]]);                               // cachoeira
   trilha([[165, 778], [172, 800], [184, 828], [196, 852], [202, 880]]);                   // portão sul → praia do Cipó
   trilha([[96, 770], [92, 790], [95, 810], [108, 826], [120, 830]], 2);                   // trilha estreita ao sudoeste
-  trilha([[236, 795], [240, 820], [248, 846]], 2);                                        // trilha estreita ao sudeste
-  trilha([[153, 745], [120, 745], [88, 742], [70, 740]], 2);                              // trilha estreita ao mirante noroeste
+  trilha([[236, 795], [236, 820], [231, 844]], 2);                                        // trilha estreita ao sudeste
+  trilha([[153, 745], [132, 741], [113, 735]], 2);                              // trilha estreita ao mirante noroeste
   M.comment('cachoeira_veu_verde: clareira, poço, queda d’água e o rio até o mar');
   M.ellipse('grass', 210, 750, 25, 20, 0.5, ['forest', 'dark', 'path', 'tall']);
   M.ellipse('flowers', 210, 752, 22, 16, 1.2, ['grass']);

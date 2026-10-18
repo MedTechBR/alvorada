@@ -24,7 +24,7 @@ export function vila(M, C, J) {
   M.path('path', [[95, 770], [96, 775], [104, 772]], 3, 0.5);
 
   // ---------------- placas ----------------
-  const P = (x, y, t) => C.poe('sign', x, y, placa(t));
+  const P = (x, y, t) => C.poeProx('sign', x, y, placa(t), 6);
   P(92, 580, 'PÍER DA BALSA\nBalsa para Cidade Coral: 9h, 14h e 19h.\nO barqueiro cobra ₽300 e conta histórias de graça.');
   P(88, 596, 'VILA JANDAIA\n"Aqui o dia é comprido e a rede é curta."');
   P(60, 597, 'CENTRO POKÉMON\nTelhado de palha, rede para quem cansou e uma enfermeira que nunca cansa.');
@@ -35,7 +35,7 @@ export function vila(M, C, J) {
   P(131, 614, 'COLINA DO ALTAR\nSó sobe quem os quatro Capitães já reconheceram. (Dizem. Ninguém nunca perguntou ao morro.)');
   P(88, 764, 'ACAMPAMENTO DOS PESQUISADORES\nDra. Ybi, arqueóloga. Favor não mexer nas tabuletas.');
   P(121, 761, 'TEMPLO DAS RAÍZES\nAs raízes crescem e recuam. Não é a placa que está torta.');
-  P(155, 702, 'SELVA GRANDE\nParedão de cipó: só se sobe com um Pokémon que escale.');
+  P(148, 714, 'SELVA GRANDE\nParedão de cipó: só se sobe com um Pokémon que escale.');
   P(203, 745, 'CACHOEIRA DO VÉU VERDE\nA água cai tão devagar que parece cortina.');
   P(204, 872, 'PRAIA DO CIPÓ\nCuidado: o cipó puxa para cima. A maré, para baixo.');
 
