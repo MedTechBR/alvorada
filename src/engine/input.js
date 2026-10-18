@@ -5,7 +5,7 @@ const KEYS = {
   KeyW: 'up', ArrowUp: 'up', KeyS: 'down', ArrowDown: 'down', KeyA: 'left', ArrowLeft: 'left', KeyD: 'right', ArrowRight: 'right',
   ShiftLeft: 'run', ShiftRight: 'run', Space: 'dodge', KeyE: 'act', Enter: 'act', KeyQ: 'ball', Tab: 'swap', KeyF: 'feed',
   Digit1: 'm0', Digit2: 'm1', Digit3: 'm2', Digit4: 'm3', Escape: 'menu', KeyM: 'menu', F3: 'perf',
-  KeyB: 'catch', KeyR: 'recall', Equal: 'zoomIn', NumpadAdd: 'zoomIn', Minus: 'zoomOut', NumpadSubtract: 'zoomOut',
+  KeyB: 'catch', KeyR: 'recall', KeyC: 'alt', KeyX: 'jump', Equal: 'zoomIn', NumpadAdd: 'zoomIn', Minus: 'zoomOut', NumpadSubtract: 'zoomOut',
 };
 
 export class Input {
@@ -83,7 +83,7 @@ export class Input {
       const lx = dz(pad.axes[0]), ly = dz(pad.axes[1]), rx = dz(pad.axes[2]), ry = dz(pad.axes[3]);
       if (lx || ly) { this.move.x = lx; this.move.y = ly; this.usingPad = true; }
       if (Math.hypot(rx, ry) > 0.3) { this.aimStick = { x: rx, y: ry }; this.usingPad = true; }
-      const map = { 7: 'm0', 5: 'm1', 6: 'm2', 4: 'm3', 0: 'dodge', 2: 'ball', 3: 'act', 1: 'swap', 9: 'menu', 10: 'run' };
+      const map = { 7: 'm0', 5: 'm1', 6: 'm2', 4: 'm3', 0: 'dodge', 2: 'ball', 3: 'act', 1: 'swap', 9: 'menu', 10: 'run', 11: 'alt', 8: 'jump' };
       this.padPrev ??= {};
       for (const [i, a] of Object.entries(map)) {
         const p = pad.buttons[i]?.pressed;

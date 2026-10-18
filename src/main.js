@@ -189,6 +189,7 @@ class Game {
       this.entities.push(w); this.wilds.push(w); this.ents.addChild(w.view);
       w.alpha = 0; w.fadeIn = true;
       if (sp.tall) this.map.rustle(x, y, 0.8);
+      this.combat.ai.onSpawn(w); // bandos com alfa
       return;
     }
   }
@@ -202,7 +203,7 @@ class Game {
     if (e.side === 'wild') {
       const lead = this.lead;
       if (lead?.alive && (by === lead || by?.side === 'ally')) this.giveXp(lead.mon, e.mon.xpYield());
-      this.later(0.6, () => this.removeEntity(e));
+      this.later(1.1, () => this.removeEntity(e));
     } else {
       this.toast(`${e.mon.name} desmaiou!`);
       this.later(0.8, () => {
@@ -379,6 +380,7 @@ class Game {
     if (!pk && inp.pressed('dodge') && p.roll <= 0) {
       const dx = mag > 0.1 ? mx : ({ down: 0, up: 0, left: -1, right: 1 }[p.dir]), dy = mag > 0.1 ? my : ({ down: 1, up: -1, left: 0, right: 0 }[p.dir]);
       p.kx += dx * 260; p.ky += dy * 260; p.roll = 0.5; p.iframes = 0.3; this.audio.sfx('dodge');
+      this.combat.onDodge(p, true);
     }
     p.roll -= dt;
     p.x += (p.vx + p.kx) * dt; p.y += (p.vy + p.ky) * dt;
@@ -408,6 +410,7 @@ class Game {
       if (inp.pressed('dodge') && (l.dodgeCd ?? 0) <= 0) {
         const dx = mag > 0.1 ? mx : Math.cos(l.angle), dy = mag > 0.1 ? my : Math.sin(l.angle);
         l.kx += dx * 320; l.ky += dy * 320; l.iframes = 0.32; l.dodgeCd = 0.7; l.play('Hop'); l.vz = 80; this.audio.sfx('dodge');
+        this.combat.onDodge(l, true); // rastro e esquiva perfeita
         for (let k = 0; k < 5; k++) this.fx.emit(l.x, l.y - 6, { color: 0xffffff, n: 1, speed: 20, size: 4, life: 0.25 });
       }
       l.dodgeCd = (l.dodgeCd ?? 0) - dt;
@@ -418,6 +421,7 @@ class Game {
       if (inp.pressed('ball') || inp.pressed('m0')) { const a = this.#aimPoint(); this.throwMon(this.leadIdx, a.x, a.y); }
       if (inp.pressed('m2')) this.swap();
     }
+    this.combat.pilot.control(dt, pk); // voar/mergulhar/cavar (C), pular (X), água para Pokémon de Água
     if (inp.pressed('catch') || (!pk && inp.pressed('m1'))) { const a = this.#aimPoint(); this.throwBall(a.x, a.y); }
     if (inp.pressed('swap')) this.swap();
   }

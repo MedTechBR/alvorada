@@ -95,3 +95,28 @@ Interface e história (ramo `interface`):
   Mapa completo para o menu: `game.mundo.renderRegionMap(canvas, { fog: true })` (setores visitados).
 - **Teste:** no console, `await import('/tools/mundo-teste.js')` dá `vista(nome, bx, by, zoom, hora)` e `mapaInteiro()`,
   que salvam imagens em `tools/shots/`.
+## Combate (ramo `combate`)
+
+No modo Pokémon (Q joga a bola e você controla o Pokémon): **C** voa/pousa (voadores), mergulha (Pokémon de Água perto
+da água) ou cava (os demais); **X** pula; **Espaço** esquiva com invencibilidade e rastro. No celular aparecem os botões ⇅ e ⤒.
+
+- **Animação por golpe** (`src/combat/anims/`): uma receita por golpe, em fases (carga → saída → viagem → impacto → resto
+  no chão), montada com os blocos de `anims/kit.js`. Arquivos por tipo (`fire.js`, `water.js`…). Golpes que ainda não
+  existem em `src/data/moves.js` entram com dados mínimos da receita (os oficiais, quando chegarem, têm prioridade).
+  Formas: `proj`, `melee`, `multi`, `dash`, `cone`, `wave`, `quake`, `cloud`, `rain` e as novas `bolt` (raio direto),
+  `sky` (raio do céu), `surf` (onda), `target` (efeito no alvo), `line` (pedras em linha), `shield` (escudo), além de
+  feixes contínuos (`beam` na receita: Lança-Chamas, Hidro Bomba, Raio de Gelo, Raio Solar, Hiper-Raio…).
+- **Efeitos** (`src/engine/fx.js` + `fxtex.js`): atlas único desenhado por código (chamas, gotas, folhas, pedras,
+  estilhaços, fumaça, marcas no chão e uma fonte pixel com acentos), partículas em `ParticleContainer` com pool,
+  anéis de choque, raios, luzes aditivas, clarão de tela, tremor e pausa no impacto.
+- **Choques:** projéteis de força parecida travam e disputam no ar antes de explodir; feixes que se encontram entram em
+  disputa (apertar o golpe empurra); corpo a corpo e investidas frente a frente se repelem.
+- **Leitura do perigo:** o selvagem telegrafa (faixa, leque ou círculo no chão; vermelho = dano, amarelo = só efeito)
+  e pisca antes de soltar o golpe. Esquiva perfeita (perto do acerto) dá câmera lenta curta.
+- **IA** (`src/combat/ai.js`): temperamentos, bandos com alfa (maior, olhos vermelhos, chama o bando), acordar com
+  barulho, esquiva de projéteis, circular o alvo, no máximo 2 preparando golpe contra o mesmo alvo, rivais que brigam.
+- **Arena** (`src/combat/arena.js`): crateras, terra revirada, mato cortado, fogo que se espalha pelo mato alto e deixa
+  chão queimado, arbustos e pedras que quebram em detritos, árvores que tremem e soltam folhas.
+- **Dano:** ponto único em `src/combat/damage.js` (`computeDamage`; `calcDamage` em combat.js é a versão pura do PvP).
+  Relevo: Água mais forte na água, Planta no mato alto, Elétrico em alvo molhado, Fogo fraco em alvo na água.
+- **Testes:** `combat.showNames = true` mostra o nome do golpe ao usar.
