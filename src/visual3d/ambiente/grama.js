@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { TILE } from '../../world/tiles.js';
-import { hash } from './ruido.js';
+import { hash, fbm } from './ruido.js';
 import { U, iniciarComum, GLSL_BASE, GLSL_NUVEM, GLSL_VENTO, GLSL_MANCHA } from './comum.js';
 import { camadaDoBloco } from './terreno.js';
 import { CAMADA } from './texturas.js';
@@ -97,7 +97,7 @@ function material(flor) {
       .replace('#include <map_fragment>', flor
         ? `diffuseColor.rgb = vParte > 0.5 ? vCorG : vec3(0.16, 0.26, 0.07);`
         : `vec3 tom = tomMancha(vPeG);
-           vec3 c = mix(vCorG * vec3(0.5, 0.6, 0.4), vCorG * vec3(0.86, 0.92, 0.78), smoothstep(0.0, 0.5, vAltG));
+           vec3 c = mix(vCorG * vec3(0.6, 0.68, 0.42), vCorG * vec3(0.88, 0.94, 0.78), smoothstep(0.0, 0.5, vAltG));
            c = mix(c, vCorG * vec3(1.18, 1.14, 0.92), smoothstep(0.6, 1.0, vAltG));
            diffuseColor.rgb = c * tom;`)
       .replace('#include <lights_fragment_end>', `#include <lights_fragment_end>
@@ -123,41 +123,52 @@ export class Grama {
     const N = this.nivel, dens = N.grama ?? 1, densF = N.flores ?? 1, alt = o.altura ?? (() => 0), ocupado = o.ocupado ?? (() => false);
     const G = [], F = [];
     const tipoDe = (t, cam) => t === TILE.TALLSNOW ? 'neve' : t === TILE.TALLDRY ? 'seco' : t === TILE.REED ? 'junco' : cam === CAMADA.MANGUE ? 'mangue' : cam === CAMADA.GRAMA_ESC ? 'escuro' : 'campo';
-    const tufo = (x, z, tipo, k = 1, s = 0) => {
+    // borda tremida igual à do terreno (aproximada): o tufo só nasce se o ponto deslocado cair num bloco de grama.
+    // Assim o capim avança e recua na trilha em vez de parar numa linha reta no limite dos blocos.
+    const B = N.borda ?? 12;
+    const ehGrama = (t) => ALTO.has(t) || GRAMADO.has(camadaDoBloco(t));
+    const dentro = (x, z) => {
+      const dx = (fbm(x / 86, z / 86, 2, 1) - 0.5) * B * 3.2 + (fbm(x / 31, z / 31, 1, 4) - 0.5) * B * 1.4;
+      const dz = (fbm(x / 86, z / 86, 2, 2) - 0.5) * B * 3.2 + (fbm(x / 31, z / 31, 1, 5) - 0.5) * B * 1.4;
+      return ehGrama(L.bloco(Math.floor((x + dx) / 16), Math.floor((z + dz) / 16)));
+    };
+    const tufo = (x, z, tipo, k = 1, s = 0, livre = false) => {
+      if (!livre && !dentro(x, z)) return;
       const T = TIPOS[tipo], r = hash(x * 7 | 0, z * 7 | 0, s);
       const hh = (T.alt[0] + (T.alt[1] - T.alt[0]) * r) * k;
       const cor = T.cor, v = 0.86 + hash(x | 0, z | 0, s + 1) * 0.28;
       G.push(x, alt(x, z) - 0.3, z, hh, hash(x | 0, z | 0, s + 2) * 6.283, T.larg * (0.85 + r * 0.3), 0, hash(z | 0, x | 0, s + 3), cor[0] * v, cor[1] * v, cor[2] * (0.9 + r * 0.2));
     };
+    const viz8 = [[0, -1], [1, 0], [0, 1], [-1, 0], [1, 1], [-1, 1], [1, -1], [-1, -1]];
     for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) {
       if (ocupado(x, y)) continue;
       const t = L.bloco(x, y), cam = camadaDoBloco(t), px = x * 16, pz = y * 16;
       const alto = ALTO.has(t);
-      if (!alto && !GRAMADO.has(cam) && !(t === TILE.TALLSNOW || t === TILE.TALLDRY)) continue;
-      // capim na borda com trilha, praça, areia, água e muro
-      let borda = 0;
-      const viz = [[0, -1], [1, 0], [0, 1], [-1, 0]];
-      for (let i = 0; i < 4; i++) { const c2 = camadaDoBloco(L.bloco(x + viz[i][0], y + viz[i][1])); if (PEDE_BORDA.has(c2)) borda |= 1 << i; }
+      const grama = alto || GRAMADO.has(cam);
+      // bloco que não é grama mas encosta nela: recebe os tufos que a borda tremida empurra para cá
+      let vizGrama = 0, vizBorda = 0, tViz = TILE.GRASS;
+      for (const [dx, dy] of viz8) { const t2 = L.bloco(x + dx, y + dy); if (ehGrama(t2)) { vizGrama++; if (!ALTO.has(t2)) tViz = t2; } else if (PEDE_BORDA.has(camadaDoBloco(t2))) vizBorda++; }
+      if (!grama) {
+        if (!vizGrama || !PEDE_BORDA.has(cam)) continue;
+        const tipo = tipoDe(tViz, camadaDoBloco(tViz)), n = Math.round(12 * Math.max(0.4, dens));
+        for (let i = 0; i < n; i++) tufo(px + hash(x, y, i + 600) * 16, pz + hash(x, y, i + 610) * 16, i % 2 ? tipo : (tipo === 'campo' ? 'capim' : tipo), 0.7 + hash(x, y, i + 620) * 0.5, i + 160);
+        continue;
+      }
       const ext = o.extra?.(x, y) ?? 0;
       const tipo = tipoDe(t, cam);
       if (alto) {
         const n = Math.round((t === TILE.CORN ? 0 : 16) * Math.max(0.35, dens));
-        for (let i = 0; i < n; i++) tufo(px + hash(x, y, i * 2 + 100) * 16, pz + hash(x, y, i * 2 + 101) * 16, t === TILE.TALL ? 'alto' : tipo, 1, i);
+        for (let i = 0; i < n; i++) tufo(px + hash(x, y, i * 2 + 100) * 16, pz + hash(x, y, i * 2 + 101) * 16, t === TILE.TALL ? 'alto' : tipo, 1, i, !vizBorda);
       } else {
         const n = Math.round((cam === CAMADA.MANGUE ? 3 : 6) * dens);
-        for (let i = 0; i < n; i++) tufo(px + hash(x, y, i * 2 + 200) * 16, pz + hash(x, y, i * 2 + 201) * 16, tipo, 0.8 + hash(x, y, i + 300) * 0.5, i + 50);
+        for (let i = 0; i < n; i++) tufo(px + hash(x, y, i * 2 + 200) * 16, pz + hash(x, y, i * 2 + 201) * 16, tipo, 0.8 + hash(x, y, i + 300) * 0.5, i + 50, !vizBorda);
         // tufos maiores aqui e ali (o campo não é um tapete)
-        if (hash(x, y, 77) < 0.12 * dens + ext) for (let i = 0; i < 5; i++) tufo(px + 4 + hash(x, y, i + 400) * 8, pz + 4 + hash(x, y, i + 410) * 8, 'capim', 0.7 + hash(x, y, i + 420) * 0.4, i + 90);
+        if (hash(x, y, 77) < 0.12 * dens + ext) for (let i = 0; i < 5; i++) tufo(px + 4 + hash(x, y, i + 400) * 8, pz + 4 + hash(x, y, i + 410) * 8, 'capim', 0.7 + hash(x, y, i + 420) * 0.4, i + 90, !vizBorda);
       }
-      if (borda || ext > 0) {
-        const n = Math.round((borda ? 7 : 0) * Math.max(0.5, dens) + ext * 8);
-        for (let i = 0; i < n; i++) {
-          let bx = px + hash(x, y, i + 500) * 16, bz = pz + hash(x, y, i + 510) * 16;
-          // puxa para o lado da borda
-          if (borda & 1) bz = pz + hash(x, y, i + 520) * 4; else if (borda & 4) bz = pz + 12 + hash(x, y, i + 520) * 4;
-          if (borda & 8) bx = px + hash(x, y, i + 530) * 4; else if (borda & 2) bx = px + 12 + hash(x, y, i + 530) * 4;
-          tufo(bx, bz, tipo === 'campo' ? 'capim' : tipo, 0.8 + hash(x, y, i + 540) * 0.45, i + 130);
-        }
+      // capim mais alto e fechado perto da trilha, praça, areia, água e muro (e de cercas: o.extra)
+      if (vizBorda || ext > 0) {
+        const n = Math.round((vizBorda ? 8 : 0) * Math.max(0.5, dens) + ext * 8);
+        for (let i = 0; i < n; i++) tufo(px + hash(x, y, i + 500) * 16, pz + hash(x, y, i + 510) * 16, tipo === 'campo' ? 'capim' : tipo, 0.8 + hash(x, y, i + 540) * 0.45, i + 130);
       }
       // flores
       const nf = t === TILE.FLOWERS ? Math.round(10 * densF) : hash(x, y, 900) < 0.16 * densF ? 1 + (hash(x, y, 901) * 3 | 0) : 0;

@@ -7,7 +7,7 @@ import { fbm, hash } from '../src/visual3d/ambiente/ruido.js';
 // cercas vivas com frutinhas, árvores, casinha, poste) com modelos provisórios simples onde o kit ainda não tem.
 // O mapa é um mapa de blocos de verdade (TILE.*), lido pela mesma interface do jogo (bloco(x, y)).
 const P = new URLSearchParams(location.search);
-const Q = P.get('q') ?? 'alta', HORA0 = +(P.get('hora') ?? 8.3), CAM = P.get('cam') ?? 'ref', PARAR = P.has('parar');
+const Q = P.get('q') ?? 'alta', HORA0 = +(P.get('hora') ?? 7.8), CAM = P.get('cam') ?? 'ref', PARAR = P.has('parar');
 
 // ---------- mapa ----------
 const W = 80, H = 100;
@@ -18,7 +18,7 @@ const ond = (a, s, k = 1) => (fbm(a * 0.13, s, 3, 5) - 0.5) * 4 * k;
 // trilha principal, de leste a oeste, larga
 for (let x = 0; x < W; x++) { const c = 62.5 + ond(x, 1) + (x < 34 ? (34 - x) * 0.12 : 0), lg = 2.6 + ond(x, 2, 0.3) + (x < 34 ? (34 - x) * 0.14 : 0); for (let y = Math.round(c - lg / 2); y <= Math.round(c + lg / 2); y++) pinta(x, y, TILE.PATH); }
 // largo à esquerda descendo até perto da câmera
-for (let y = 62; y < H; y++) { const c = 31 + ond(y, 3) - (y - 62) * 0.12, lg = 6 + ond(y, 4, 0.4); for (let x = Math.round(c - lg / 2); x <= Math.round(c + lg / 2); x++) pinta(x, y, TILE.PATH); }
+for (let y = 62; y < H; y++) { const c = 32 + ond(y, 3) - (y - 62) * 0.1, lg = 10 + ond(y, 4, 0.6) + (y - 62) * 0.35; for (let x = Math.round(c - lg / 2); x <= Math.round(c + lg / 2); x++) pinta(x, y, TILE.PATH); }
 // trilha para o norte, entre as árvores
 for (let y = 30; y < 63; y++) { const c = 40 + ond(y, 5, 0.7), lg = 2.2; for (let x = Math.round(c - lg / 2); x <= Math.round(c + lg / 2); x++) pinta(x, y, TILE.PATH); }
 // trilha da frente, à direita (diante da cerca viva)
@@ -113,7 +113,7 @@ const lista = [];
 // cercas vivas (duas fileiras com frutinhas) e arbustos grandes no primeiro plano
 lista.push(...Arbustos.fileira(43 * 16, 66 * 16 - 2, 79 * 16, 66 * 16 - 2, { r: 9.5, frutas: 6 }));
 lista.push(...Arbustos.fileira(43 * 16, 71 * 16 + 4, 79 * 16, 71 * 16 + 4, { r: 10, frutas: 6 }));
-for (const [x, z, r] of [[26, 80, 30], [31, 81.5, 26], [22, 78, 22], [52, 80, 30], [58, 79.5, 28], [46, 81, 22], [64, 78, 24], [36, 74.5, 10]]) lista.push({ x: x * 16, z: z * 16, r, alt: 0.9, frutas: r > 20 ? 0 : 2 });
+for (const [x, z, r] of [[27, 80.5, 34], [32, 82, 30], [23, 78, 26], [53, 80.5, 34], [59, 79.5, 30], [47, 81.5, 24], [65, 78, 26], [36, 74.5, 10]]) lista.push({ x: x * 16, z: z * 16, r, alt: 0.9, frutas: r > 20 ? 0 : 2 });
 for (const a of arvores) lista.push(...Arbustos.folhagemArvore((a.tx + a.fw / 2) * 16, (a.ty + 1) * 16, a.fw * 9, { n: 4 }));
 for (let i = 0; i < 18; i++) lista.push({ x: (10 + hash(i, 7, 7) * 60) * 16, z: (38 + hash(i, 8, 7) * 22) * 16, r: 7 + hash(i, 9, 7) * 6, frutas: hash(i, 10, 7) < 0.3 ? 3 : 0 });
 const arb = amb.arbustos.lote(lista); scene.add(arb.grupo);

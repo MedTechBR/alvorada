@@ -43,7 +43,7 @@ const FINAL = `uniform sampler2D tCena, tD1, tD2, tD3, tD4, tR;
       c = c + ra * (1.0 - min(c, vec3(1.0))) * 0.9 + ra * 0.1;
       vec2 q = (uv - sol) * aspecto; float r = length(q); float ang = atan(q.y, q.x);
       float feixes = pow(max(0.0, sin(ang * 9.0 + tempo * 0.05)), 5.0) * 0.6 + pow(max(0.0, sin(ang * 23.0 - tempo * 0.08 + 1.3)), 9.0) * 0.5 + pow(max(0.0, sin(ang * 5.0 + 2.1)), 4.0) * 0.35;
-      vec3 fx = corRaio * (feixes * smoothstep(1.4, 0.05, r) * smoothstep(0.0, 0.12, r) * 0.3 + 0.05 * smoothstep(1.0, 0.0, r)) * raios;
+      vec3 fx = corRaio * (feixes * smoothstep(1.5, 0.05, r) * smoothstep(0.0, 0.1, r) * 0.55 + 0.07 * smoothstep(1.0, 0.0, r)) * raios;
       c = c + fx * (1.0 - min(c, vec3(1.0)));
     }
     c *= tinta * exposicao;
@@ -62,7 +62,7 @@ const FINAL = `uniform sampler2D tCena, tD1, tD2, tD3, tD4, tR;
     c = mix(vec3(lum), c, sat);
     c = 0.18 * pow(max(c, 0.0) / 0.18, vec3(contraste)); // contraste com pivô no cinza médio (não esmaga os escuros)
     vec2 v = (uv - 0.5) * vec2(1.0, 0.9);
-    c *= mix(vec3(1.0), vec3(0.42, 0.3, 0.22), vinheta * smoothstep(0.32, 0.85, length(v)));
+    c *= mix(vec3(1.0), vec3(0.56, 0.5, 0.44), vinheta * smoothstep(0.35, 0.9, length(v)));
     gl_FragColor = vec4(max(c, 0.0), 1.0);
     #include <colorspace_fragment>
   }`;
@@ -86,7 +86,7 @@ export class PosHD {
     this.mFinal = sm({
       tCena: { value: null }, tD1: { value: null }, tD2: { value: null }, tD3: { value: null }, tD4: { value: null }, tR: { value: null }, tempo,
       tilt: { value: 1 }, foco: { value: 0.5 }, faixa: { value: 0.1 }, bloomK: { value: 0.6 }, limiar: { value: 0.8 }, raios: { value: 0.3 }, raiosR: { value: 1.2 },
-      vinheta: { value: 0.4 }, sat: { value: 1.1 }, exposicao: { value: 1.12 }, contraste: { value: 1.04 }, quente: { value: 0.45 }, oliva: { value: 0.18 }, frio: { value: 0.4 },
+      vinheta: { value: 0.4 }, sat: { value: 1.1 }, exposicao: { value: 1.25 }, contraste: { value: 1.04 }, quente: { value: 0.45 }, oliva: { value: 0.26 }, frio: { value: 0.4 },
       tinta: { value: new THREE.Color(1, 1, 1) }, corRaio: { value: new THREE.Color(1, 0.86, 0.6) }, sol: { value: new THREE.Vector2(0.85, 1.05) },
       aspecto: { value: new THREE.Vector2(1, 1) }, simples: { value: 0 },
     }, FINAL);
@@ -111,7 +111,7 @@ export class PosHD {
       const sx = this.sol3.x * 0.5 + 0.5, sy = this.sol3.y * 0.5 + 0.5;
       // atrás da câmera: os raios saem do alto (longe)
       const atras = this.sol3.z > 1;
-      u.sol.value.set(atras ? 1 - sx : sx, atras ? 1.4 : Math.max(sy, -0.3));
+      u.sol.value.set(Math.min(1.25, Math.max(-0.25, atras ? 1 - sx : sx)), atras ? 1.3 : Math.min(1.3, Math.max(sy, -0.3)));
       this.mRaios.uniforms.sol.value.copy(u.sol.value);
     }
     if (paleta) {

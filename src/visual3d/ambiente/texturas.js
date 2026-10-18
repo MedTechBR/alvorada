@@ -110,7 +110,7 @@ export function pintarCamada(i, x, y) {
   switch (i) {
     case CAMADA.GRAMA: return grama(x, y, rgb(0x8db43e), rgb(0xb4cc56), rgb(0x5e8e2c), rgb(0xe0e488));
     case CAMADA.GRAMA_ESC: return grama(x, y, rgb(0x6c9a34), rgb(0x8db44a), rgb(0x44702a), rgb(0xb8cc70), 5);
-    case CAMADA.TERRA: return terra(x, y, rgb(0xeadcbc), rgb(0xf8efd8), rgb(0xd2bc96), rgb(0xe0d6c4));
+    case CAMADA.TERRA: return terra(x, y, rgb(0xf0dcb4), rgb(0xfcf0d6), rgb(0xd8bc8e), rgb(0xe6d6bc));
     case CAMADA.AREIA: return areia(x, y, rgb(0xead6a0), rgb(0xfaf0cc), rgb(0xcfb47c));
     case CAMADA.NEVE: return neve(x, y);
     case CAMADA.ROCHA: return rocha(x, y, rgb(0x8c8678), rgb(0xb4ad9c), rgb(0x55504a));

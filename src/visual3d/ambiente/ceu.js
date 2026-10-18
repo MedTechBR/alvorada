@@ -34,12 +34,12 @@ const FRAG_CEU = /* glsl */`
     vec3 d = normalize(vDir);
     float y = d.y;
     // gradiente: horizonte quente e largo, zênite mais fundo; abaixo do horizonte, névoa
-    float k = pow(smoothstep(-0.015, 0.2, y), 0.75);
+    float k = pow(smoothstep(-0.006, 0.05, y), 0.7);
     vec3 c = mix(horizonte, zenite, k);
     float s = max(dot(d, solDir), 0.0);
     c += solCor * (pow(s, 6.0) * 0.32 + pow(s, 48.0) * 0.6) * brilhoSol;            // halo largo do sol
     c += solCor * smoothstep(0.9993, 0.99965, s) * 3.0 * brilhoSol;                   // disco
-    c = mix(c, horizonte * 1.02, (1.0 - smoothstep(-0.08, 0.025, y)) * 0.85);          // faixa de névoa no horizonte
+    c = mix(c, horizonte * 1.02, (1.0 - smoothstep(-0.06, 0.004, y)) * 0.85);          // faixa de névoa no horizonte
     if (estrelas > 0.0 && y > 0.0) {
       vec3 q = d * 260.0; vec3 i = floor(q); float r = h13(i);
       float st = step(0.985, r) * smoothstep(0.45, 0.0, length(fract(q) - 0.5)) * (0.6 + 0.4 * sin(tempo * (2.0 + r * 5.0) + r * 40.0));
@@ -94,7 +94,7 @@ const FRAG_MONTE = /* glsl */`
     // topo mais escuro e definido, pé some na névoa (perspectiva aérea)
     vec3 c = mix(corPe, corTopo, smoothstep(0.0, 1.0, vUv.y));
     c *= 0.86 + vLuz * 0.28;
-    c = mix(c, horizonte, nevoa + (1.0 - nevoa) * (1.0 - smoothstep(0.0, 0.55, vUv.y)) * 0.65);
+    c = mix(c, horizonte, nevoa + (1.0 - nevoa) * (1.0 - smoothstep(0.0, 0.5, vUv.y)) * 0.38);
     gl_FragColor = vec4(c, 1.0);
     #include <colorspace_fragment>
   }`;
@@ -149,8 +149,8 @@ export class CeuHD {
     const camadas = nivel.montanhas ?? 3;
     this.montes = [];
     const defs = [
-      { dist: 6000, larg: 26000, alt: 900, rug: 3.6, topo: C(0x6a7f9e), pe: C(0xaebdd2), nevoa: 0.35, arv: false, par: 0.97 },
-      { dist: 4200, larg: 16000, alt: 330, rug: 5, topo: C(0x5c8a50), pe: C(0x9cb88a), nevoa: 0.22, arv: false, par: 0.93 },
+      { dist: 6000, larg: 26000, alt: 520, rug: 2.6, topo: C(0x5a6e92), pe: C(0x98aac4), nevoa: 0.18, arv: false, par: 0.97 },
+      { dist: 4200, larg: 16000, alt: 330, rug: 4, topo: C(0x5e9a46), pe: C(0x9cc07a), nevoa: 0.12, arv: false, par: 0.93 },
       { dist: 2800, larg: 10000, alt: 170, rug: 7, topo: C(0x4f8a3a), pe: C(0x8cb064), nevoa: 0.1, arv: true, par: 0.86 },
     ].slice(3 - camadas);
     for (const [i, d] of defs.entries()) {
@@ -170,8 +170,8 @@ export class CeuHD {
     for (let i = 0; i < nN; i++) {
       const u = { tN: { value: this.texN[i % 3] }, corLuz: this.uNuv.corLuz, corSombra: this.uNuv.corSombra, horizonte: this.uCeu.horizonte, opac: { value: 1 }, nevoa: { value: 0 } };
       const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 0.5), new THREE.ShaderMaterial({ uniforms: u, vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`, fragmentShader: FRAG_NUVEM, transparent: true, depthWrite: false, fog: false }));
-      const dist = 3000 + R() * 2600, larg = 900 + R() * 1300;
-      m.userData = { x: (R() - 0.5) * 9000, dist, larg, alt: 380 + R() * 700 + (dist - 3000) * 0.12, vel: 4 + R() * 6 };
+      const dist = 3200 + R() * 2600, larg = 1100 + R() * 1500;
+      m.userData = { x: (R() - 0.5) * 9000, dist, larg, alt: 120 + R() * 380 + (dist - 3000) * 0.08, vel: 4 + R() * 6 };
       u.nevoa.value = Math.min(0.55, (dist - 3000) / 5200);
       m.frustumCulled = false; m.renderOrder = -80; m.scale.set(larg, larg, 1);
       this.grupo.add(m); this.nuvens.push(m);
