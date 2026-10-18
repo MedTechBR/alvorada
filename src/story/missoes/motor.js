@@ -387,7 +387,7 @@ export class Missoes {
   // { dex, nivel, golpes, item, apelido, shiny, bola, ot, amizade }
   criarPokemon(p) {
     const dex = especie(p.dex), nivel = p.nivel ?? 5;
-    const mon = new Mon(dex, nivel, { moves: p.golpes ? golpes(p.golpes, dex, nivel) : undefined, item: p.item ?? null, nick: p.apelido ?? null, shiny: !!p.shiny, ball: p.bola ?? 'pokeBall', friendship: p.amizade });
+    const mon = new Mon(dex, nivel, { moves: p.golpes ? golpes(p.golpes, dex, nivel) : undefined, form: p.forma, item: p.item ?? null, nick: p.apelido ?? null, shiny: !!p.shiny, ball: p.bola ?? 'pokeBall', friendship: p.amizade });
     if (p.ot) mon.ot = p.ot;
     return mon;
   }
