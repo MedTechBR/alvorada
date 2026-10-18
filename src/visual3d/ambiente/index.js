@@ -72,7 +72,7 @@ export class Ambiente {
     const foco = o.foco ?? this.camera.position;
     const P = this.ceu.update(dt, { hora: o.hora, camera: this.camera, foco, raio: o.raio, interior: o.interior, nevoa: o.nevoa });
     this.luzP.copy(this.ceu.hemi.color).multiplyScalar(this.ceu.hemi.intensity * 0.55).add(new THREE.Color().copy(this.ceu.sol.color).multiplyScalar(this.ceu.sol.intensity * 0.25));
-    this.particulas.update({ foco, noite: P.noite, luz: this.luzP, sol: Math.min(1, P.iSol / 2.4), interior: o.interior, escala: o.zoom ?? 1 });
+    this.particulas.update({ foco, noite: P.noite, luz: this.luzP, sol: Math.min(1, P.iSol / 2.4), interior: o.interior, escala: o.zoom ?? 1, mostrar: o.mostrar });
     this.pos.ajustar(P, this.camera, this.ceu.dirSol);
     if (o.foco) {
       // foco do tilt-shift: a altura na tela do ponto focado

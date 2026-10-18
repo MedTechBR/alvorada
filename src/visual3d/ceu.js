@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { curvarMaterial } from './curva.js';
+import { U as UAMB } from './ambiente/comum.js';
 
 // Céu, sol e luz do dia (pela hora do relógio do jogo, game.mundo.hour), névoa de distância e luz dos interiores.
 // Os billboards não usam luzes do three: recebem uma cor só (u.luzSprite) calculada aqui, para casar com o cenário.
@@ -57,7 +58,12 @@ export class Ceu {
   constructor(v) {
     this.v = v;
     this.noite = 0; this.noiteK = 0;
-    if (v.amb) { v.u.tNuvem = { value: texNuvens() }; v.u.forcaNuvem = { value: 0 }; return; } // a ambientação cuida do céu, da luz e das sombras
+    if (v.amb) {
+      v.u.tNuvem = { value: texNuvens() }; v.u.forcaNuvem = { value: 0 };
+      // manchas do chão menos amarelas (verde mais fundo, como na referência)
+      UAMB.uClaro.value.setRGB(1.04, 1.06, 0.9); UAMB.uEscuro.value.setRGB(0.66, 0.8, 0.7); UAMB.uSeco.value.setRGB(1.1, 1.02, 0.78);
+      return; // a ambientação cuida do céu, da luz e das sombras
+    }
     const s = v.scene;
     this.fundo = new THREE.Color(0xbfe2f6);
     s.background = this.fundo;
@@ -89,7 +95,15 @@ export class Ceu {
     A.atores(at);
     // sol vindo um pouco do sul: a frente das casas e das árvores (o que a câmera vê) fica iluminada, como no HGSS
     if (A.ceu.nivel) A.ceu.nivel.solNorte = -0.32;
-    A.update(dt, { hora: room ? 12 : h, foco: v.alvo, raio, interior: !!room, nevoa: [D * 1.5, D * 5.5], zoom: g.zoom });
+    A.update(dt, { hora: room ? 12 : h, foco: v.alvo, raio, interior: !!room, nevoa: [D * 1.5, D * 5.5], zoom: Math.min(1.3, (g.zoom || 3) / 3), mostrar: this.#particulasDoBioma(room) });
+    // paleta mais perto da referência: verdes fundos e oliva, menos neon, mais contraste, bloom contido;
+    // em batalha o tilt-shift quase some (a ação fica nítida)
+    const P = A.pos.u, bat = v.dinamica?.batalhaK ?? 0;
+    if (P.sat) P.sat.value = 0.9; if (P.oliva) P.oliva.value = 0.04; if (P.contraste) P.contraste.value = 1.14;
+    if (P.quente) P.quente.value = 0.22; if (P.frio) P.frio.value = 0.6;
+    if (P.exposicao && !room) P.exposicao.value = Math.min(P.exposicao.value, 0.9 + (g.mundo?.nightness ?? 0) * 0.25);
+    if (P.bloomK) P.bloomK.value *= 0.55;
+    if (P.tilt) P.tilt.value *= 1 - 0.75 * bat;
     // noite legível: luar azulado que ainda mostra o chão e os sprites (HGSS); exposição um pouco menor de dia
     const nt = room ? 0 : (g.mundo?.nightness ?? 0);
     if (nt > 0) { A.ceu.hemi.intensity = Math.max(A.ceu.hemi.intensity, 1.25 * nt); A.ceu.hemi.color.lerp(this.luar ??= new THREE.Color(0x8aa8ff), nt * 0.6); }
@@ -105,6 +119,18 @@ export class Ceu {
     this.#escuro();
     this.fundo = this.fundo ?? new THREE.Color(0xbfe2f6);
     if (A.ceu.uCeu?.horizonte) this.fundo.copy(A.ceu.uCeu.horizonte.value);
+  }
+  // partículas de ambiente por bioma (sem pétalas na neve nem no vulcão)
+  #particulasDoBioma(room) {
+    if (room) return null;
+    const g = this.v.g, p = g.player; if (!p) return null;
+    const b = g.map.biome(p.x, p.y);
+    if (/neve|gelo|pico/.test(b)) return { petalas: false, folhas: false, polen: false, poeira: false };
+    if (/vulcao|cratera|abismo/.test(b)) return { petalas: false, folhas: false, polen: false };
+    if (/deserto|sertao|salar|canion/.test(b)) return { petalas: false, folhas: false };
+    if (/praia|mar|recife/.test(b)) return { petalas: false };
+    if (/caverna|mina|cristal|templo|ruina/.test(b)) return { petalas: false, folhas: false, polen: false };
+    return null;
   }
   // salas e biomas escuros (masmorra.darkZone): escuro de verdade com luz em volta do jogador, do Pokémon de
   // Fogo/Elétrico, das tochas acesas e das pedras que brilham (a mesma regra do 2D)

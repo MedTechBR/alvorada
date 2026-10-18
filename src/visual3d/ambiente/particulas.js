@@ -41,6 +41,10 @@ const VERT = /* glsl */`
     if (forma > 3.5) vA *= 0.35 + 0.65 * pow(0.5 + 0.5 * sin(tempo * (1.5 + s.z * 2.0) + s.x * 50.0), 3.0);
     vQ = position.xy; vCor = aCorP;
     vec4 mv = viewMatrix * vec4(p, 1.0);
+    // perto da câmera: tamanho limitado na tela e some (nada de bolas borradas no primeiro plano)
+    float dist = -mv.z;
+    tam = min(tam, dist * 0.010);
+    vA *= smoothstep(140.0, 300.0, dist);
     mv.xy += q * tam;
     gl_Position = projectionMatrix * mv;
   }`;
@@ -102,7 +106,7 @@ export class Particulas {
     for (const [nome, t] of Object.entries(this.tipos)) {
       let vis = t.T.dia ? 1 - noite * 0.85 : Math.max(0, noite * 1.2 - 0.2);
       if (nome === 'poeira' || nome === 'polen') vis *= o.sol ?? 1;
-      if (o.interior) vis = nome === 'poeira' ? 0.4 : 0;
+      if (o.interior) vis = 0;
       if (o.mostrar && o.mostrar[nome] === false) vis = 0;
       t.uni.visivel.value = vis; t.uni.escalaN.value = o.escala ?? 1;
       t.me.visible = vis > 0.01;
