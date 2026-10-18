@@ -168,18 +168,18 @@ def andar3():
     s.ell(18, 2.5, 6, 1.7, 'l'); s.ell(18, 2.5, 2.2, 0.9, 'o')
     O = [
         # sinos nas quatro direções do salão sul (leste, sul, oeste, norte)
-        {'kind': 'bell', 'x': 24, 'y': 24, 'grupo': 'sinos', 'ordem': 1, 'abre': ['porta_sinos'], 'msg': 'Os sinos ecoaram juntos e a porta de pedra subiu!'},
-        {'kind': 'bell', 'x': 17, 'y': 27, 'grupo': 'sinos', 'ordem': 2, 'abre': ['porta_sinos']},
-        {'kind': 'bell', 'x': 9, 'y': 24, 'grupo': 'sinos', 'ordem': 3, 'abre': ['porta_sinos']},
-        {'kind': 'bell', 'x': 17, 'y': 21, 'grupo': 'sinos', 'ordem': 4, 'abre': ['porta_sinos']},
+        {'kind': 'bell', 'x': 24, 'y': 24, 'grupo': 'sinos', 'ordem': 1, 'abre': ['porta_sinos_a', 'porta_sinos_b'], 'msg': 'Os sinos ecoaram juntos e a porta de pedra subiu!'},
+        {'kind': 'bell', 'x': 17, 'y': 27, 'grupo': 'sinos', 'ordem': 2, 'abre': ['porta_sinos_a', 'porta_sinos_b']},
+        {'kind': 'bell', 'x': 9, 'y': 24, 'grupo': 'sinos', 'ordem': 3, 'abre': ['porta_sinos_a', 'porta_sinos_b']},
+        {'kind': 'bell', 'x': 17, 'y': 21, 'grupo': 'sinos', 'ordem': 4, 'abre': ['porta_sinos_a', 'porta_sinos_b']},
         {'kind': 'mural', 'x': 14, 'y': 20, 'text': 'No teto, as brasas pintadas contam: "Nasce no leste, esquenta no sul, arde no oeste, descansa no norte." Quatro sinos esperam em cruz.'},
-        {'kind': 'stoneDoor', 'x': 17, 'y': 19, 'id': 'porta_sinos'}, {'kind': 'stoneDoor', 'x': 18, 'y': 19, 'id': 'porta_sinos'},
+        {'kind': 'stoneDoor', 'x': 17, 'y': 19, 'id': 'porta_sinos_a'}, {'kind': 'stoneDoor', 'x': 18, 'y': 19, 'id': 'porta_sinos_b'},
         # braseiros: acender os quatro em 40 s
-        {'kind': 'brazier', 'x': 6, 'y': 10, 'grupo': 'forja', 'apaga': 40, 'abre': ['porta_forja'], 'msg': 'As quatro brasas acesas! A porta da câmara se abre.'},
-        {'kind': 'brazier', 'x': 29, 'y': 10, 'grupo': 'forja', 'apaga': 40, 'abre': ['porta_forja']},
-        {'kind': 'brazier', 'x': 6, 'y': 15, 'grupo': 'forja', 'apaga': 40, 'abre': ['porta_forja']},
-        {'kind': 'brazier', 'x': 29, 'y': 15, 'grupo': 'forja', 'apaga': 40, 'abre': ['porta_forja']},
-        {'kind': 'stoneDoor', 'x': 17, 'y': 8, 'id': 'porta_forja'}, {'kind': 'stoneDoor', 'x': 18, 'y': 8, 'id': 'porta_forja'},
+        {'kind': 'brazier', 'x': 6, 'y': 10, 'grupo': 'forja', 'apaga': 40, 'abre': ['porta_forja_a', 'porta_forja_b'], 'msg': 'As quatro brasas acesas! A porta da câmara se abre.'},
+        {'kind': 'brazier', 'x': 29, 'y': 10, 'grupo': 'forja', 'apaga': 40, 'abre': ['porta_forja_a', 'porta_forja_b']},
+        {'kind': 'brazier', 'x': 6, 'y': 15, 'grupo': 'forja', 'apaga': 40, 'abre': ['porta_forja_a', 'porta_forja_b']},
+        {'kind': 'brazier', 'x': 29, 'y': 15, 'grupo': 'forja', 'apaga': 40, 'abre': ['porta_forja_a', 'porta_forja_b']},
+        {'kind': 'stoneDoor', 'x': 17, 'y': 8, 'id': 'porta_forja_a'}, {'kind': 'stoneDoor', 'x': 18, 'y': 8, 'id': 'porta_forja_b'},
         {'kind': 'statue', 'x': 10, 'y': 21, 'text': 'Um ferreiro de pedra martela uma lâmina de fogo que nunca esfria.'},
         {'kind': 'statue', 'x': 24, 'y': 21, 'text': 'Outro ferreiro de pedra, com o mesmo martelo e uma coroa de chamas.'},
         {'kind': 'altar', 'x': 12, 'y': 12, 'text': 'Um altar de ferro com uma cavidade em forma de brasa. A forja ainda está quente, muito depois do último ferreiro.'},
