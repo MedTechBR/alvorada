@@ -1,8 +1,14 @@
 # Pokémon Alvorada 2D: história completa
 
 Projeto pessoal de fã, sem fins comerciais. Este documento é a "bíblia" do jogo 2D: premissa, mistério,
-personagens, os 12 capítulos, o mapa da região, os ginásios, a Liga, as missões secundárias e as regras
-que os arquivos de diálogo (`src/story/script/cap01.js` … `cap12.js`) seguem.
+personagens, as jornadas (antes, 12 capítulos), o mapa da região, os ginásios, a Liga, as missões secundárias e as
+regras que os arquivos de diálogo (`src/story/script/cap01.js` … `cap12.js` e `trama.js`) seguem.
+
+> **Mundo aberto (outubro de 2026).** Não há mais capítulos em ordem. O jogador explora livremente e enfrenta os
+> ginásios em qualquer ordem, desde que consiga vencer. Cada cidade tem a sua **jornada** (o arco local, que começa
+> quando ele chega lá) e a **trama principal** avança por marcos de número de insígnias e lugares-chave. Os capítulos
+> abaixo continuam valendo como o conteúdo de cada arco (cenas, enigmas, ginásios, missões); o que mudou são os
+> gatilhos. Estrutura nova na seção 4 e em `docs/jornadas.md`.
 
 Base: o roteiro do 3D (`pokemon-3d/docs/historia.md`) e o capítulo 1 já jogável lá. Tudo o que existia foi
 mantido (Prof. Jatobá, Téo, Tomé, Dra. Véspera, Equipe Crepúsculo, Absol, Fragmentos do Alvorecer, os 8 líderes
@@ -196,7 +202,11 @@ crepúsculo que engoliu o sol.
 
 ## 3. Montarias
 
-As montarias destravam a região aos poucos. Cada uma é chamada com o **Apito de Montaria** (item-chave do cap. 2).
+**Mundo aberto: liberação por capacidade.** Um modo de montaria fica liberado assim que o jogador tem, na equipe ou
+no PC, qualquer Pokémon que sirva para ele (`src/data/montarias.js`). As cinco montarias da história viram presentes
+e encontros: a Mudbray "Paçoca" o professor dá logo depois do inicial (com o **Apito de Montaria**); o Lapras vem da
+Marina; a Mantine, do Seu Nestor (Gota + 4 insígnias) ou da Praia dos Corais; Sneasler (Rota 7) e Corviknight
+(Rota 6) se capturam. A tabela abaixo é a ordem do roteiro antigo (referência do conteúdo dos capítulos 7 a 10).
 No mapa, obstáculos marcados mostram o que falta: lama funda, água, paredes com rachaduras e trepadeiras, penhascos
 com ninhos e redemoinhos escuros na água.
 
@@ -214,7 +224,39 @@ o vence, para ele lembrar de voltar ("hum, aquela parede com trepadeira...").
 
 ---
 
-## 4. Estrutura em 12 capítulos
+## 4. Estrutura em jornadas (mundo aberto)
+
+Detalhes e interface em `docs/jornadas.md`. Resumo:
+
+| Jornada | Cidade | Conteúdo (capítulo antigo) | Começa | Ginásio (ás) |
+|---|---|---|---|---|
+| O primeiro alvorecer | Vila Alvorada | cap. 1, até os presentes do professor (agora com a Mudbray) | começo do jogo | — |
+| Colheita em Campina | Cidade Campina | cap. 1, Rota 1 e ginásio; visita à Fazenda do Tomé | ao chegar | Tomé ~16 |
+| Sussurros no bosque | Vila Sussurro | cap. 2 | ao entrar no bosque | Lia ~21 |
+| O espelho partido | Porto Espelho | cap. 3 (sem o bolo da Mãe, que foi para a trama) | ponte da Rota 3 ou o porto | Marina ~15 |
+| Faísca na Costa Coral | Cidade Coral | cap. 4 | o rio ou a cidade (a pé pela escadaria do Mirante) | Jonas ~11 |
+| A noite que não acaba | Vila Lamparina | cap. 5 | o brejo ou a vila | Dona Zélia ~20 |
+| O preço da luz | Cidade Aurora | cap. 6 (mina com andares cada vez mais fortes, até 38) | as torres da Rota 6 ou a cidade | — |
+| O sol atrasado (trama) | toda a região | rádios, chamadas, Téo, Pipa (`trama.js`) | primeiro marco | — |
+
+**Marcos da trama** (qualquer ginásio conta): 1 insígnia, o professor liga (o Absol, a capa roxa); 2, rádio das 6h28,
+bolo da Mãe e revanche do Téo; 3, rádio das 6h40; 4, rádio das 6h55, a Pipa liga e 2ª revanche do Téo; 5, rádio das
+7h12; 6, rádio das 7h31 (o Arquivo do Forte) e 3ª revanche do Téo; 8, a Liga abre (o único requisito). Lugares-chave
+(Crepúsculo encontrada, verdade da Mina Aurora) mudam as falas.
+
+**Escada pela distância real** (dificuldade por lugar, `docs/mundo-expandido.md` seção 8): Jonas 11, Marina 15,
+Tomé 16, Zélia 20, Lia 21, Brás 25, Celeste 41, Graça 43, Liga 55 a 66. As placas dos ginásios mostram a força.
+
+**Falas que dependiam da ordem** agora mudam conforme o que o jogador já fez: Véspera se apresenta no cemitério se
+o jogador ainda não a viu em Porto Espelho (e vice-versa); a Vó Benta conta a Noite Longa sem a pergunta se a Mãe
+ainda não falou dela; a Lia não exige a gruta do Absol para pedir ajuda; a Pipa e o Lúcio citam a Praia dos Corais
+só se o jogador a defendeu; as chamadas de fim de jornada não mandam mais para "o próximo ginásio".
+
+**Rival Téo (mundo aberto):** lab (nv. 5) · 2 insígnias, na próxima cidade (em Coral, no calçadão), ás 17 · 4
+insígnias, ás 23 · 6 insígnias, ás 30, com raiva se já souber da mina. A tabela "Batalhas com o rival" mais abaixo é
+a do roteiro antigo, para os capítulos 8 a 12.
+
+### Os 12 capítulos do roteiro original (conteúdo dos arcos)
 
 Níveis de referência: a curva dos selvagens sobe ~3 níveis por capítulo. O ás de cada líder fica 2 níveis acima.
 

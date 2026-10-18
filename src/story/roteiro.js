@@ -17,6 +17,8 @@ import { dexMark } from '../ui/menu.js';
 import './cenario.js'; // prédios e objetos dos capítulos 4 a 6 (registra no catálogo antes de o mapa ser montado)
 import { Enigmas } from './enigmas.js';
 import { LOJAS, estoque } from '../world/lojas.js';
+import TRAMA from './script/trama.js';
+import { Jornadas, jornadaDoScript, migrarSave, porExtenso } from './jornadas.js';
 
 // Mercados dos capítulos 4 a 6 no esquema de lojas do jogo (src/world/lojas.js): estoque que cresce com as insígnias
 Object.assign(LOJAS, {
@@ -25,25 +27,31 @@ Object.assign(LOJAS, {
   vendedor_aurora: { nome: 'Megaloja Aurora', extra: [[0, ['quickBall', 'timerBall', 'repeatBall']], [3, ['maxRevive']]] },
 });
 
-// Motor de roteiro: executa os capítulos escritos em dados (src/story/script/capNN.js, formato na seção 8 de
-// docs/historia-completa.md). O capítulo 1 continua no story.js; quando ele termina (flags.ch1Done), este motor
-// assume a partir do capítulo 2.
+// Motor de roteiro: executa as cenas escritas em dados (src/story/script/capNN.js e trama.js, formato na seção 8 de
+// docs/historia-completa.md). Mundo aberto (docs/jornadas.md): não há capítulos em ordem. Cada arquivo de cenas é
+// uma JORNADA (a de uma cidade, ou a trama principal); todas as cenas valem desde o primeiro Pokémon e só dependem
+// das próprias condições (flags, insígnias, lugar, hora). A abertura em Vila Alvorada e Cidade Campina seguem no
+// story.js; as jornadas (início, fim, objetivo do painel e a lista do diário) ficam em jornadas.js.
 //
-// - Gatilhos: inicio, apos, entrar (lugar ou interior, com hora), pisar (zona), falar, avistar (treinador),
-//   vencer, perder, interromper, flag. Todos aceitam requer/semFlag. Cenas com repete: true podem tocar de novo.
+// - Gatilhos: inicio, apos (cena ou lista de cenas), entrar (lugar, interior ou lista deles, com hora), pisar
+//   (zona), falar, avistar (treinador), vencer, perder, interromper, flag. Todos aceitam requer/semFlag.
+//   Cenas com repete: true podem tocar de novo. Flags especiais: 'insignias>=2', 'insignias<4' (número de insígnias).
 // - Cena: falas (com escolhas), depois: batalha, flags, itens, dinheiro, insígnia, MT, montaria, hora, objetivo,
-//   fimCapitulo. Campo extra `antes: { flags }` (aplicado no começo da cena).
+//   fimJornada. Campo extra `antes: { flags }` (aplicado no começo da cena). Uma fala pode ter condição própria:
+//   [quem, texto, { requer, semFlag }] (o diálogo se adapta ao que o jogador já fez, em qualquer ordem).
+// - Jornada da cena: a do arquivo (campo `jornada`), ou `jornada: '<id>'` na cena; `solta: true` = não mexe em
+//   jornada (treinadores de rota, missões secundárias). Uma cena de lugar ou com objetivo começa a jornada dela.
 // - Uma cena com batalha só conta como feita se a batalha for vencida (ou se perder: 'continua'); perdendo,
 //   o jogador volta ao último Centro Pokémon e pode tentar de novo.
 // - Quem aparece no mapa: src/story/elenco.js. Lugares: interior (id da sala), área (id em assets/maps) ou ponto
 //   nomeado com raio. Zonas de "pisar": pontos nomeados <alvo> e <alvo>__<qualquer coisa> (vários acessos).
-// Para jogar um capítulo novo: escreva o capNN.js, ponha o elenco e os pontos no mapa e inclua o id em JOGAVEIS.
+// Para jogar uma cidade nova: escreva o capNN.js (com `jornada`), ponha o elenco e os pontos no mapa, inclua o id
+// em JOGAVEIS e a jornada em jornadas.js.
 export const JOGAVEIS = ['cap02', 'cap03', 'cap04', 'cap05', 'cap06'];
 
 const T = 16;
 const DIRV = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const numCap = (c) => +c.id.slice(3);
 const MONTARIA = { mudbray: 'correr', lapras: 'nadar', sneasler: 'escalar', corviknight: 'voar', mantine: 'mergulhar' };
 // Pokémon do Téo que luta ao seu lado nas batalhas em dupla (Mina Aurora): lado próprio, inimigo dos selvagens e dos
 // Pokémon de treinador, aliado do seu time (não acerta você nem o seu Pokémon)
@@ -55,7 +63,10 @@ const ROTA_ABSOL = [[151, 238], [157, 234], [163, 229], [173, 222], [175, 213], 
 export class Roteiro {
   constructor(story) {
     this.s = story; this.g = story.g;
-    this.caps = CAPITULOS.filter((c) => JOGAVEIS.includes(c.id));
+    // a trama vem primeiro na lista: nas buscas (de trás para a frente) as cenas das cidades ganham a vez
+    this.caps = [TRAMA, ...CAPITULOS.filter((c) => JOGAVEIS.includes(c.id))];
+    this.jornadas = new Jornadas(this); // também em game.jornadas (diário: lista() e acompanhar(id))
+    this.g.jornadas = this.jornadas;
     this.atores = new Map(); this.ativas = new Set(); this.dentro = new Set();
     this.rodando = null; this.tickT = 0;
     setDisponiveis(this.g.available);  // (de novo antes de cada batalha: o main.js lê a lista depois)
@@ -67,8 +78,10 @@ export class Roteiro {
   }
   flag(expr) { return this.#flag(expr); }
   get f() { return this.g.flags; }
-  get ativo() { return !!this.f.ch1Done; }
-  get cap() { return this.caps.find((c) => numCap(c) === this.f.chapter) ?? null; }
+  // as cenas valem depois que o professor entrega o primeiro Pokémon e os presentes
+  get ativo() { return !!this.f.balls; }
+  // jornada de uma cena: a da própria cena, a do arquivo ou a padrão do arquivo (cap02 → sussurro…)
+  jornadaDe(c, s) { return s?.solta ? null : (s?.jornada ?? c.jornada ?? jornadaDoScript(c.id)); }
 
   // ---------------- elenco no mapa ----------------
   #criar(e) {
@@ -88,7 +101,7 @@ export class Roteiro {
   }
   #visivel(e) {
     const f = this.f;
-    if (!e.sempre && (!this.ativo || (f.chapter ?? 1) < (e.cap ?? 2))) return false; // sempre: também antes do capítulo 2
+    if (!e.sempre && !this.ativo) return false; // sempre: também antes do primeiro Pokémon
     if (e.mostrar && !this.#cond(e.mostrar)) return false;
     if (e.cena) return e.cena.some((id) => this.ativas.has(id));
     return true;
@@ -150,10 +163,14 @@ export class Roteiro {
   // ---------------- flags ----------------
   #flag(expr) {
     const f = this.f;
+    // número de insígnias (qualquer ginásio): 'insignias>=2', 'insignias<4', 'insignias==3'
+    const m = /^insignias\s*(>=|<=|==|>|<)\s*(\d+)$/.exec(String(expr));
+    if (m) { const n = (f.badges ?? []).length, v = +m[2]; return { '>=': n >= v, '<=': n <= v, '==': n === v, '>': n > v, '<': n < v }[m[1]]; }
     let [k, val] = String(expr).split('=');
     let v;
     if (k.startsWith('badges.')) v = (f.badges ?? []).includes(k.slice(7));
     else if (k.startsWith('trainers.')) v = f.trainers?.[k.slice(9)];
+    else if (k.startsWith('item.')) v = (this.g.bag?.[k.slice(5)] ?? 0) > 0; // item na mochila (ex.: item.lente_prisma)
     else v = k.split('.').reduce((o, p) => (o == null ? undefined : o[p]), f);
     return val !== undefined ? String(v) === val : !!v;
   }
@@ -172,14 +189,12 @@ export class Roteiro {
   #marcar(c, s) { (this.f.roteiro ??= {})[c.id + '.' + s.id] = true; }
 
   // cenas que podem tocar agora para um tipo de gatilho
+  // (mundo aberto: nenhuma ordem entre os arquivos; cada cena só depende das próprias condições)
   *#candidatas(tipo, filtro = () => true) {
-    const ch = this.f.chapter ?? 1;
     for (const c of [...this.caps].reverse()) {
-      if (numCap(c) > ch) continue;
       for (const s of c.cenas) {
         const gt = s.gatilho; if (!gt || gt.tipo !== tipo) continue;
         if (!s.repete && this.#feita(c, s)) continue;
-        if (tipo === 'inicio' && numCap(c) !== ch) continue;
         if (!this.#cond(gt) || !this.#hora(gt) || !filtro(gt, s, c)) continue;
         yield [c, s];
       }
@@ -188,6 +203,7 @@ export class Roteiro {
 
   // ---------------- lugares ----------------
   #noLugar(alvo) {
+    if (Array.isArray(alvo)) return alvo.some((a) => this.#noLugar(a));
     const g = this.g, p = g.player, m = g.map;
     const sala = m.interiorAt(p.x, p.y);
     if (m.interiors.some((r) => r.id === alvo)) return sala?.id === alvo;
@@ -210,6 +226,7 @@ export class Roteiro {
   // ---------------- laço ----------------
   update(dt) {
     const g = this.g, p = g.player;
+    if (this.migrou !== this.f) { this.migrou = this.f; migrarSave(this.f); } // save do tempo dos capítulos → jornadas
     if (this.ativo && this.montou !== this.f) { this.montou = this.f; this.#aplicarMontarias(); } // também depois de carregar um save
     if ((this.tickT -= dt) <= 0) { this.tickT = 0.25; this.#refresh(); }
     for (const n of this.atores.values()) {
@@ -237,6 +254,13 @@ export class Roteiro {
     const novas = [...agora].filter((z) => !this.dentro.has(z));
     this.dentro = agora;
     const lugaresAntes = this.lugares ?? new Set();
+    // jornada de cidade: começa quando o jogador chega a um lugar dela (4 vezes por segundo basta)
+    const agoraMs = performance.now();
+    if (agoraMs - (this.chegadaT ?? 0) > 250) {
+      this.chegadaT = agoraMs;
+      const jid = this.jornadas.aChegar((l) => this.#noLugar(l));
+      if (jid) { this.s.cut(() => this.jornadas.iniciar(jid)); return true; }
+    }
     let c, s;
     [c, s] = this.#primeira('inicio') ?? this.#primeira('flag', (gt) => this.#flag(gt.valor !== undefined ? gt.alvo + '=' + gt.valor : gt.alvo)) ?? [];
     if (!s) [c, s] = this.#primeira('pisar', (gt) => novas.includes(gt.alvo)) ?? [];
@@ -316,6 +340,7 @@ export class Roteiro {
     const f = this.f, h = this.g.mundo?.hour ?? 9;
     return {
       jogador: f.playerName ?? 'Ravi', inicial: SPECIES[f.starter]?.name ?? 'seu Pokémon', rival_inicial: SPECIES[f.rivalStarter]?.name ?? 'o Pokémon dele',
+      insignias: String((f.badges ?? []).length), insignias_ext: porExtenso((f.badges ?? []).length),
       hora: `${Math.floor(h)}h${String(Math.floor((h % 1) * 60)).padStart(2, '0')}`,
     };
   }
@@ -323,16 +348,15 @@ export class Roteiro {
   async #falas(falas = [], escolhas = null) {
     const g = this.g, V = this.#vars();
     const grupos = [];
-    for (const [quem, txt] of falas) { const last = grupos.at(-1); if (last && last.quem === quem) last.linhas.push(txt); else grupos.push({ quem, linhas: [txt] }); }
+    for (const [quem, txt, se] of falas) {
+      if (se && !this.#cond(se)) continue; // fala que depende do que o jogador já fez
+      const last = grupos.at(-1); if (last && last.quem === quem) last.linhas.push(txt); else grupos.push({ quem, linhas: [txt] });
+    }
     let res = null;
     for (let i = 0; i < grupos.length; i++) {
       const { quem, linhas } = grupos[i];
-      // cartão de capítulo e fim de capítulo
-      if (quem === 'narrador' && linhas.length === 1) {
-        const m = /^Capítulo (\d+): (.+)$/.exec(linhas[0]);
-        if (m) { await g.ui.chapterCard(`Capítulo ${m[1]} — ${m[2]}`); continue; }
-        if (/^Fim do Capítulo/.test(linhas[0])) { g.audio?.sfx?.('levelup'); g.ui.banner(linhas[0].toUpperCase(), '#ffe27a'); await sleep(900); continue; }
-      }
+      // cartão de jornada escrito como fala do narrador ("Jornada: Nome")
+      if (quem === 'narrador' && linhas.length === 1 && /^Jornada: /.test(linhas[0])) { await g.ui.chapterCard(linhas[0]); continue; }
       // falas genéricas de treinador ('treinador', 'aprendiz') saem com o nome de quem está na cena
       const generico = quem === 'treinador' || quem === 'aprendiz';
       const n = generico ? (this.atorCena?.visible ? this.atorCena : null) : quem !== 'narrador' && quem !== 'jogador' ? this.#porQuem(quem) : null;
@@ -357,6 +381,9 @@ export class Roteiro {
     const gt = s.gatilho ?? {}, bid = s.depois?.batalha?.id;
     this.atorCena = (gt.tipo === 'avistar' && this.atores.get(gt.alvo)) || (bid && this.atores.get(bid)) || atorAntes;
     try {
+      // cena de lugar (ou que dá objetivo) começa a jornada dela: cartão "Jornada: <nome>"
+      const jid = this.jornadaDe(c, s);
+      if (jid && !s.repete && (['entrar', 'pisar', 'flag', 'inicio'].includes(gt.tipo) || s.depois?.objetivo)) await this.jornadas.iniciar(jid);
       await this.#entrar(s);
       if (s.antes) this.#aplicarFlags(s.antes.flags);
       const r = await this.#falas(s.falas, s.escolhas);
@@ -371,7 +398,7 @@ export class Roteiro {
       if (ok && !s.repete) this.#marcar(c, s);
       this.ativas.delete(s.id);
       if (s.id === 'absol_trilha' && ok) this.absol.guiar = true;
-      if (ok) for (const [c2, s2] of [...this.#candidatas('apos', (gt) => gt.cena === s.id)].filter(([cc]) => cc === c)) await this.tocar(c2, s2);
+      if (ok) for (const [c2, s2] of [...this.#candidatas('apos', (gt) => [].concat(gt.cena).includes(s.id))].filter(([cc]) => cc === c)) await this.tocar(c2, s2);
       return ok;
     } finally {
       this.ativas.delete(s.id);
@@ -411,13 +438,11 @@ export class Roteiro {
     if (d.montaria) this.#montaria(d.montaria);
     if (d.pokemon) this.#presente(d.pokemon);
     if (d.hora != null) await new Promise((r) => g.mundo.fadeOut(0.5, () => { g.mundo.setHour(d.hora); g.toast(`O tempo passa… agora são ${this.#vars().hora}.`); g.mundo.fadeIn(0.8, r); }));
-    if (d.objetivo) { f.objetivo = typeof d.objetivo === 'string' ? { texto: d.objetivo } : { ...d.objetivo }; this.s.refreshObjective(); }
-    if (d.fimCapitulo) {
-      const n = numCap(c);
-      f[`ch${n}Done`] = true; f.chapter = Math.max(f.chapter ?? 1, n + 1);
-      if (!this.caps.some((x) => numCap(x) === n + 1)) { f.objetivo = { ...(f.objetivo ?? {}), titulo: c.titulo, sub: `Fim do Capítulo ${n}. O ${n + 1} chega em breve!` }; g.toast(`Capítulo ${n + 1}: em breve!`); }
-    }
-    if (d.insignia || d.fimCapitulo || d.montaria) g.ui.save?.('história');
+    // objetivo do painel: vai para a jornada da cena (ou a de objetivo.jornada)
+    const jid = d.objetivo?.jornada ?? this.jornadaDe(c, s);
+    if (d.objetivo && jid) { this.jornadas.definirObjetivo(jid, typeof d.objetivo === 'string' ? { texto: d.objetivo } : { ...d.objetivo }); this.s.refreshObjective(); }
+    if ((d.fimJornada || d.fimCapitulo) && jid) await this.jornadas.concluir(jid);
+    if (d.insignia || d.fimJornada || d.montaria) g.ui.save?.('história');
     if (venceu) for (const [c2, s2] of [...this.#candidatas('vencer', (gt) => gt.alvo === venceu)]) await this.tocar(c2, s2);
     return true;
   }
@@ -571,11 +596,19 @@ export class Roteiro {
   }
 
   // ---------------- objetivo do HUD ----------------
-  objective() {
-    const f = this.f, o = f.objetivo;
+  // A jornada acompanhada (jornadas.acompanhada) dá o título e o objetivo; sem nenhuma em andamento, o painel
+  // sugere o ginásio mais fraco que falta. proprios: { idDaJornada: () => objetivo } para as jornadas que o story.js
+  // conduz (Cidade Campina).
+  objective(proprios = {}) {
     if (!this.ativo) return null;
-    const titulo = o?.titulo ?? this.cap?.titulo ?? 'Alvorada';
-    if (!o) return { id: 'roteiro', title: titulo, text: 'Explore a região', target: null };
+    const f = this.f, J = this.jornadas, j = J.acompanhada();
+    if (!j) return this.#sugestao();
+    if (proprios[j.id]) { const o = proprios[j.id](); if (o) return { ...o, title: j.nome }; }
+    const e = J.etapaAtual(j);
+    let o = J.objetivoDe(j.id) ?? j.padrao ?? (e ? { texto: e.texto, alvo: e.alvo } : null);
+    if (!o) return this.#sugestao();
+    // trama sem destino certo (marcos de insígnias): a seta vai para o ginásio sugerido
+    if (j.tipo === 'trama' && !o.alvo) { const gs = J.sugerido(); if (gs) o = { ...o, alvo: gs.alvo, sub: o.sub ?? `Sugestão: ginásio de ${gs.cidade} (equipes de nível ~${gs.nivel})` }; }
     let target = this.#alvo(o.alvo), sub = o.sub;
     if (o.treinadores) {
       const falta = o.treinadores.filter((t) => !f.trainers?.[t]);
@@ -585,7 +618,13 @@ export class Roteiro {
     // porSala: { idDaSala: ponto } guia por dentro de prédios de vários andares (farol, mina), onde a saída engana
     const aqui = this.#mapaDe(this.g.player.x, this.g.player.y);
     if (o.porSala?.[aqui]) target = this.#alvo(o.porSala[aqui]) ?? target;
-    return { id: 'roteiro:' + (o.texto ?? ''), title: titulo, text: o.texto, sub, target };
+    return { id: 'roteiro:' + j.id + ':' + (o.texto ?? ''), title: j.nome, text: o.texto, sub, target };
+  }
+  // nada em andamento: explorar à vontade, com o ginásio sugerido (o mais fraco que falta) e a força dele
+  #sugestao() {
+    const nB = (this.f.badges ?? []).length, gs = this.jornadas.sugerido();
+    if (!gs) return { id: 'livre', title: 'Alvorada', text: 'Explore a região à vontade', sub: `Insígnias: ${nB}/8`, target: null };
+    return { id: 'livre:' + gs.id, title: 'Mundo livre', text: `Explore à vontade. Sugestão: ginásio de ${gs.cidade}`, sub: `${gs.lider} · equipes de nível ~${gs.nivel} · insígnias ${nB}/8`, target: this.#alvo(gs.alvo) };
   }
   #alvo(nome) {
     if (!nome) return null;
