@@ -9,6 +9,13 @@ import { registrarMT, nomeItem } from './itens.js';
 import { badgeInfo } from './names.js';
 import { loadPokemonSprites, frameOf, dir8 } from '../sprites/pmd.js';
 import { speciesScale } from '../sprites/scale.js';
+import { Mon } from '../data/mon.js';
+import { ITEMS, itemId } from '../data/items.js';
+import { PokeEntity } from '../entities/pokemon.js';
+import { FOES } from '../combat/combat.js';
+import { dexMark } from '../ui/menu.js';
+import './cenario.js'; // prédios e objetos dos capítulos 4 a 6 (registra no catálogo antes de o mapa ser montado)
+import { Enigmas } from './enigmas.js';
 
 // Motor de roteiro: executa os capítulos escritos em dados (src/story/script/capNN.js, formato na seção 8 de
 // docs/historia-completa.md). O capítulo 1 continua no story.js; quando ele termina (flags.ch1Done), este motor
@@ -23,13 +30,17 @@ import { speciesScale } from '../sprites/scale.js';
 // - Quem aparece no mapa: src/story/elenco.js. Lugares: interior (id da sala), área (id em assets/maps) ou ponto
 //   nomeado com raio. Zonas de "pisar": pontos nomeados <alvo> e <alvo>__<qualquer coisa> (vários acessos).
 // Para jogar um capítulo novo: escreva o capNN.js, ponha o elenco e os pontos no mapa e inclua o id em JOGAVEIS.
-export const JOGAVEIS = ['cap02', 'cap03'];
+export const JOGAVEIS = ['cap02', 'cap03', 'cap04', 'cap05', 'cap06'];
 
 const T = 16;
 const DIRV = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const numCap = (c) => +c.id.slice(3);
 const MONTARIA = { mudbray: 'correr', lapras: 'nadar', sneasler: 'escalar', corviknight: 'voar', mantine: 'mergulhar' };
+// Pokémon do Téo que luta ao seu lado nas batalhas em dupla (Mina Aurora): lado próprio, inimigo dos selvagens e dos
+// Pokémon de treinador, aliado do seu time (não acerta você nem o seu Pokémon)
+FOES.aliado = ['wild', 'foe', 'rival'];
+for (const k of ['wild', 'foe', 'rival']) if (FOES[k] && !FOES[k].includes('aliado')) FOES[k].push('aliado');
 // trilha do Absol até a Toca (blocos): da borda da Vila Sussurro, pela saída norte, até a boca da gruta
 const ROTA_ABSOL = [[151, 238], [157, 234], [163, 229], [173, 222], [175, 213], [180, 207], [190, 204], [201.5, 201.5]];
 
@@ -42,7 +53,11 @@ export class Roteiro {
     setDisponiveis(this.g.available);  // (de novo antes de cada batalha: o main.js lê a lista depois)
     for (const e of ELENCO) if (!e.pokemon) this.#criar(e);
     this.absol = new AtorPokemon(this.g, 359);
+    // Pokémon que atuam parados num ponto (ex.: o Absol no laguinho do cemitério)
+    this.atoresPk = ELENCO.filter((e) => e.pokemon && e.spot).map((e) => { const a = new AtorPokemon(this.g, e.pokemon); a.e = e; return a; });
+    this.enigmas = new Enigmas(this); // quebra-cabeças dos ginásios e da mina (enigmas.js)
   }
+  flag(expr) { return this.#flag(expr); }
   get f() { return this.g.flags; }
   get ativo() { return !!this.f.ch1Done; }
   get cap() { return this.caps.find((c) => numCap(c) === this.f.chapter) ?? null; }
@@ -65,7 +80,7 @@ export class Roteiro {
   }
   #visivel(e) {
     const f = this.f;
-    if (!this.ativo || (f.chapter ?? 1) < (e.cap ?? 2)) return false;
+    if (!e.sempre && (!this.ativo || (f.chapter ?? 1) < (e.cap ?? 2))) return false; // sempre: também antes do capítulo 2
     if (e.mostrar && !this.#cond(e.mostrar)) return false;
     if (e.cena) return e.cena.some((id) => this.ativas.has(id));
     return true;
@@ -74,6 +89,11 @@ export class Roteiro {
     for (const n of this.atores.values()) {
       const v = this.#visivel(n.e);
       if (v !== n.visible) { n.visible = v; if (!v && n.e.cena) this.g.fx?.burst?.(n.x, n.y - 10, 0x9a7ac8, 0.6); }
+    }
+    for (const a of this.atoresPk ?? []) {
+      const v = this.#visivel(a.e), s = this.g.map.spots?.[a.e.spot];
+      if (v && !a.visible && s) { a.place(s.x, s.y); a.dir = dir8(...({ down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] }[s.dir] ?? [0, 1])); }
+      if (v !== a.visible) a.visible = v;
     }
   }
   ator(id) { return this.atores.get(id); }
@@ -152,7 +172,7 @@ export class Roteiro {
         const gt = s.gatilho; if (!gt || gt.tipo !== tipo) continue;
         if (!s.repete && this.#feita(c, s)) continue;
         if (tipo === 'inicio' && numCap(c) !== ch) continue;
-        if (!this.#cond(gt) || !filtro(gt, s, c)) continue;
+        if (!this.#cond(gt) || !this.#hora(gt) || !filtro(gt, s, c)) continue;
         yield [c, s];
       }
     }
@@ -191,6 +211,10 @@ export class Roteiro {
       if (d > 0.01 && d < mm) { p.x = n.x + dx / d * mm; p.y = n.y + dy / d * mm; }
     }
     this.#absol(dt);
+    for (const a of this.atoresPk) a.update(dt);
+    this.#seguir(dt);
+    this.#aliado(dt);
+    this.enigmas.update(dt);
     const sala = g.map.interiorAt(p.x, p.y);
     if (sala?.id?.startsWith('centro_')) this.f.ultimoCentro = sala.id;
   }
@@ -252,10 +276,12 @@ export class Roteiro {
   }
   interactions() {
     const out = [];
+    out.push(...this.enigmas.interactions()); // os quebra-cabeças valem mesmo antes do capítulo (o mapa é um só)
     if (!this.ativo) return out;
     for (const n of this.atores.values()) {
       if (!n.visible || n.e.cena) continue;
       const e = n.e, vencido = this.f.trainers?.[e.id];
+      if (e.loja) { out.push({ o: n, r: 30, label: 'Comprar', fn: () => this.#loja(n) }); continue; }
       if (e.visao && !vencido) { out.push({ o: n, r: 26, label: 'Batalhar', fn: () => this.#desafiar(n) }); continue; }
       out.push({ o: n, r: 26, label: 'Falar', fn: async () => {
         if (e.visao) return this.#dizer(n, e.apos ?? ['Boa batalha!']);
@@ -267,7 +293,7 @@ export class Roteiro {
   }
   async #desafiar(n) {
     const c = this.#primeira('avistar', (gt) => gt.alvo === n.e.id);
-    if (c) await this.tocar(c[0], c[1]); else await this.#dizer(n, n.e.apos ?? ['…']);
+    if (c) await this.tocar(c[0], c[1]); else await this.#dizer(n, n.e.espera ?? n.e.apos ?? ['…']); // espera: falas quando a luta ainda não pode acontecer (ex.: só de noite)
   }
   async #dizer(n, linhas, umaPorVez = false) {
     const g = this.g;
@@ -372,6 +398,7 @@ export class Roteiro {
     }
     if (d.mt) { const k = registrarMT(d.mt); g.bag[k] = Math.max(1, g.bag[k] ?? 0); g.toast(`Recebeu a ${nomeItem(k)}!`); }
     if (d.montaria) this.#montaria(d.montaria);
+    if (d.pokemon) this.#presente(d.pokemon);
     if (d.hora != null) await new Promise((r) => g.mundo.fadeOut(0.5, () => { g.mundo.setHour(d.hora); g.toast(`O tempo passa… agora são ${this.#vars().hora}.`); g.mundo.fadeIn(0.8, r); }));
     if (d.objetivo) { f.objetivo = typeof d.objetivo === 'string' ? { texto: d.objetivo } : { ...d.objetivo }; this.s.refreshObjective(); }
     if (d.fimCapitulo) {
@@ -403,7 +430,10 @@ export class Roteiro {
       const pos = sp ?? this.#livre(p.x + fx * 4 * T, p.y + fy * 4 * T);
       falso = npc = { x: pos.x, y: pos.y, faceTo() {}, throwPose() {}, goHome() {}, h: 20 };
     }
-    const r = await this.s.fight(npc, def, { team, noBlackout: b.perder === 'continua', semBola: !!falso, alfa: !!b.alfa, interromperApos: b.interrompe ? 2 : 0, noFlee: !!b.alfa });
+    if (b.dupla) await this.#chamarAliado(b);
+    let r;
+    try { r = await this.s.fight(npc, def, { team, noBlackout: b.perder === 'continua', semBola: !!falso, alfa: !!b.alfa, interromperApos: b.interrompe ? 2 : 0, noFlee: !!b.alfa }); }
+    finally { this.#dispensarAliado(); }
     if (r === 'win') {
       (f.trainers ??= {})[b.id] = true;
       if (b.dinheiro) { g.money += b.dinheiro; g.toast(`Você venceu ${def.name}! Recebeu ₽${b.dinheiro}.`); }
@@ -418,6 +448,86 @@ export class Roteiro {
       if (Math.hypot(sp.x - p.x, sp.y - p.y) < 9 * T) return { x: sp.x, y: sp.y };
     }
     void s; return null;
+  }
+
+  // ---------------- loja (vendedores dos Mercados: elenco com "loja") ----------------
+  async #loja(n) {
+    const g = this.g, lista = n.e.loja;
+    n.faceTo(g.player.x, g.player.y);
+    await g.ui.say([n.e.ola ?? 'Bem-vindo! O que vai levar hoje?'], { name: n.name });
+    for (;;) {
+      const precos = lista.map((k) => ITEMS[itemId(k)]?.price ?? 0);
+      const r = await g.ui.say([`Você tem ₽${g.money}. O que vai levar?`], { name: n.name, choices: [...lista.map((k, i) => `${nomeItem(k)} — ₽${precos[i]}`), 'Nada, obrigado'] });
+      if (r == null || r >= lista.length) break;
+      const k = lista[r], pr = precos[r];
+      const q = await g.ui.say([`${nomeItem(k)}: quantos?`], { name: n.name, choices: ['1', '5', '10', 'Voltar'] });
+      if (q == null || q > 2) continue;
+      const qt = [1, 5, 10][q], total = pr * qt;
+      if (g.money < total) { await g.ui.say(['Hmm… o dinheiro não dá. Quem sabe uma quantidade menor?'], { name: n.name }); continue; }
+      g.money -= total; g.bag[k] = (g.bag[k] ?? 0) + qt; g.audio?.sfx?.('pickup');
+      g.toast(`Comprou ${qt}× ${nomeItem(k)} por ₽${total}.`);
+      g.hudMoves?.(); g.ui.partyChanged?.();
+    }
+    await g.ui.say([n.e.tchau ?? 'Volte sempre!'], { name: n.name });
+  }
+
+  // ---------------- Pokémon de presente ----------------
+  #presente([dex, nivel, apelido]) {
+    const g = this.g, mon = new Mon(dex, nivel ?? 10);
+    if (apelido) mon.nickname = apelido;
+    if (g.party.length < 6) g.party.push(mon); else g.box.push(mon);
+    dexMark(g, dex, 2);
+    g.audio?.sfx?.('caught');
+    g.toast(`${mon.name} entrou para a ${g.party.includes(mon) ? 'equipe' : 'caixa do PC'}!`);
+    g.ui.partyChanged?.();
+  }
+
+  // ---------------- personagens que acompanham o jogador (elenco com "segue") ----------------
+  #seguir(dt) {
+    const g = this.g, p = g.player;
+    for (const n of this.atores.values()) {
+      if (!n.visible || !n.e.segue || this.rodando === 'mexendo') continue;
+      const longe = Math.hypot(n.x - p.x, n.y - p.y);
+      if (this.#mapaDe(n.x, n.y) !== this.#mapaDe(p.x, p.y) || longe > 14 * T) {
+        if (g.mundo?.warping) continue;
+        const [fx, fy] = DIRV[p.dir] ?? [0, 1], l = this.#livre(p.x - fx * 20, p.y - fy * 20);
+        n.place(l.x, l.y); continue;
+      }
+      if (longe > 44 && !n.walk) { const a = Math.atan2(n.y - p.y, n.x - p.x); n.walkTo(p.x + Math.cos(a) * 24, p.y + Math.sin(a) * 24, Math.min(110, 50 + longe)); }
+    }
+  }
+
+  // ---------------- aliado nas batalhas em dupla (Pokémon do Téo) ----------------
+  async #chamarAliado(b) {
+    const g = this.g, f = this.f, p = g.player;
+    const [dex, nivel] = b.aliado ?? [(f.rivalStarter ?? 7) + 1, Math.max(10, (b.equipe?.[0]?.[1] ?? 20) - 1)];
+    const mon = new Mon(dex, nivel);
+    const teo = this.#porQuem('teo');
+    const at = this.#livre((teo?.x ?? p.x) + 16, (teo?.y ?? p.y) + 4);
+    const e = new PokeEntity(g, mon, 'aliado', at.x, at.y);
+    await e.ready;
+    e.ai.state = 'aggro'; e.ai.t = 10;
+    g.entities.push(e); g.ents.addChild(e.view);
+    g.fx?.burst?.(e.x, e.y - 8, 0xffffff, 1); g.audio?.sfx?.('pop');
+    this.aliado = e;
+    g.toast(`Téo: Vai, ${mon.name}! A gente luta junto!`);
+  }
+  #dispensarAliado() {
+    const e = this.aliado; if (!e) return;
+    this.aliado = null;
+    this.g.fx?.burst?.(e.x, e.y - 8, 0xff5a5a, 0.8);
+    e.dead = true; this.g.removeEntity?.(e);
+  }
+  #aliado(dt) {
+    const e = this.aliado, b = this.s.battle;
+    if (!e) return;
+    e.iframes = Math.max(e.iframes, 0.5); // o Pokémon do Téo não desmaia: ele só ajuda
+    const alvos = (b?.active ?? []).filter((x) => x.alive && !x.dead);
+    if (!alvos.length || e.busy || e.stun > 0 || e.lock > 0) { e.vx = e.vy = 0; return; }
+    let alvo = alvos[0], bd = 1e9; for (const x of alvos) { const d = Math.hypot(x.x - e.x, x.y - e.y); if (d < bd) { bd = d; alvo = x; } }
+    e.aggroTarget = alvo; e.ai.state = 'aggro'; e.ai.t = 10;
+    const v = e.think(dt); e.vx = v.vx; e.vy = v.vy;
+    if (Math.hypot(v.vx, v.vy) > 1) e.face(v.vx, v.vy);
   }
 
   // ---------------- montarias ----------------
@@ -460,6 +570,9 @@ export class Roteiro {
       sub = `${o.rotulo ?? 'Treinadores'}: ${o.treinadores.length - falta.length}/${o.treinadores.length}`;
       if (falta.length) target = this.#alvo(falta[0]) ?? target;
     }
+    // porSala: { idDaSala: ponto } guia por dentro de prédios de vários andares (farol, mina), onde a saída engana
+    const aqui = this.#mapaDe(this.g.player.x, this.g.player.y);
+    if (o.porSala?.[aqui]) target = this.#alvo(o.porSala[aqui]) ?? target;
     return { id: 'roteiro:' + (o.texto ?? ''), title: titulo, text: o.texto, sub, target };
   }
   #alvo(nome) {

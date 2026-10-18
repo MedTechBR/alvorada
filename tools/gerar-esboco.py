@@ -18,7 +18,7 @@ def op(**k): ops.append(k)
 def note(t): op(op='comment', _=t)
 
 # lugares detalhados à mão (o esboço só põe o terreno de base embaixo deles)
-DETALHADOS = {'vila_alvorada', 'cidade_campina', 'fazenda_tome', 'rota1', 'rota2', 'vila_sussurro', 'lagoa_dourada', 'toca_absol', 'porto_espelho'}
+DETALHADOS = {'vila_alvorada', 'cidade_campina', 'fazenda_tome', 'rota1', 'rota2', 'vila_sussurro', 'lagoa_dourada', 'toca_absol', 'porto_espelho', 'cidade_coral', 'vila_lamparina', 'cidade_aurora'}
 
 note('==== esboço gerado por tools/gerar-esboco.py a partir de docs/mapa-alvorada.json (não editar à mão) ====')
 note('montanhas ao norte e Monte Zênite')

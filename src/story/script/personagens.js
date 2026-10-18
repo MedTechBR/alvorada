@@ -74,6 +74,9 @@ export const PERSONAGENS = {
   solano: { nome: 'Augusto Solano', papel: 'vilao' },
   lucio: { nome: 'Gerente Lúcio', papel: 'vilao' },
   vigilante: { nome: 'Vigilante Aurora', papel: 'vilao' },
+  operario: { nome: 'Operário da Aurora', papel: 'morador' },
+  mineiro_bairro: { nome: 'Seu Dito', papel: 'morador' },
+  neide: { nome: 'Dona Neide', papel: 'morador' },
   agrimensor: { nome: 'Agrimensor da Aurora', papel: 'morador' },
 
   // Pokémon que "falam" (o motor pode mostrar só o grito e um balão)

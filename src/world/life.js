@@ -4,6 +4,7 @@ import { SPR, LEAVES, VARAL } from './art.js';
 import { KINDS } from './objects.js';
 import { Minimap } from './minimap.js';
 import { People } from './people.js';
+import { itemName } from '../data/items.js';
 
 // Vida do mundo: relógio de dia e noite (tingimento suave + luzes de janela), portas e escadas com fade,
 // bichinhos (borboletas, pássaros, peixes, folhas caindo, vaga-lumes), itens brilhando, árvores de frutas,
@@ -175,7 +176,7 @@ export class WorldLife {
       if (Math.hypot(s.x - p.x, s.y - 4 - p.y) < 10) {
         this.taken.add(s.key);
         const item = s.it.item; g.bag[item] = (g.bag[item] ?? 0) + (s.it.n ?? 1);
-        g.toast(`Você encontrou ${ITEM_PT[item] ?? item}!`); g.audio?.sfx?.('levelup');
+        g.toast(`Você encontrou ${ITEM_PT[item] ?? ((s.it.n ?? 1) > 1 ? (s.it.n + '× ') : '') + (itemName(item) || item)}!`); g.audio?.sfx?.('levelup');
         g.fx?.emit(s.x, s.y - 6, { color: 0xfff27a, n: 10, speed: 40, size: 3, life: 0.5, vz: 40 });
         g.hudMoves?.();
       }

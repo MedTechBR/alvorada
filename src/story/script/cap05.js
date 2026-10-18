@@ -1,5 +1,8 @@
 // Capítulo 5: A noite que não acaba
 // Rota 5 (Brejo das Lamparinas) → Vila Lamparina → Casa da Vó Benta → Cemitério das Velas (Véspera) → Casarão das Velas (ginásio, de noite).
+// Jogável pelo motor src/story/roteiro.js. Níveis: selvagens 27–33, treinadores 28–31, Dona Zélia 30–33.
+// Quebra-cabeça do casarão (portas dos quadros e espelhos com o raio de luar): src/story/enigmas.js.
+// O brejo: canal fundo no meio; atravessa de Lapras ou pelas tábuas de luz que só aparecem com a Lente Prisma.
 
 export default {
   id: 'cap05',
@@ -11,7 +14,7 @@ export default {
       local: 'rota5',
       gatilho: { tipo: 'inicio', requer: ['ch4Done'] },
       falas: [['narrador', 'Capítulo 5: A noite que não acaba']],
-      depois: { flags: { chapter: 5 } },
+      depois: { flags: { chapter: 5 }, objetivo: { texto: 'Vá a Vila Lamparina pelo Brejo das Lamparinas', alvo: 'brejo_entrada', sub: 'A escadaria do Mirante leva de volta à Vila Alvorada' } },
     },
     {
       id: 'radio',
@@ -28,24 +31,25 @@ export default {
       local: 'rota5',
       gatilho: { tipo: 'pisar', alvo: 'brejo_entrada', semFlag: ['viuBrejo'] },
       falas: [
-        ['narrador', 'O Brejo das Lamparinas. Neblina baixa, árvores secas, pontes de tábua que acabam no meio do nada.'],
-        ['narrador', 'Com a Lente Prisma, você vê: onde as pontes acabam, rastros de luz desenham tábuas que não estão lá. Mas dá para pisar nelas.'],
+        ['narrador', 'O Brejo das Lamparinas. Neblina baixa, árvores secas, passarelas de tábua que acabam no meio do nada.'],
+        ['narrador', 'Com a Lente Prisma, você vê: onde as passarelas acabam, rastros de luz desenham tábuas que não estão lá. Mas dá para pisar nelas.'],
+        ['narrador', 'E onde nem a luz chega, ainda dá para chamar o Lapras.'],
       ],
-      depois: { flags: { viuBrejo: true } },
+      depois: { flags: { viuBrejo: true }, objetivo: { texto: 'Atravesse o brejo até Vila Lamparina', alvo: 'vila_lamparina' } },
     },
     {
       id: 'medium_rota5',
       local: 'rota5',
       gatilho: { tipo: 'avistar', alvo: 'r5_ofelia', hora: 'noite' },
       falas: [['treinador', 'Os espíritos do brejo me disseram que você vinha. Também me disseram que você ia perder. Eles mentem muito.']],
-      depois: { batalha: { id: 'r5_ofelia', nome: 'Médium Ofélia', dinheiro: 1000, equipe: [[92, 24, ['lick', 'hypnosis', 'curse']], [200, 25, ['astonish', 'confuseRay', 'psybeam']]] } },
+      depois: { batalha: { id: 'r5_ofelia', nome: 'Médium Ofélia', dinheiro: 1100, equipe: [[92, 28, ['lick', 'hypnosis', 'curse']], [200, 29, ['astonish', 'confuseRay', 'psybeam']], [93, 30, ['shadowPunch', 'hypnosis', 'lick']]] } },
     },
     {
       id: 'sapo_rota5',
       local: 'rota5',
       gatilho: { tipo: 'avistar', alvo: 'r5_guto' },
       falas: [['treinador', 'Shhh! Tô ouvindo os Tympole. Eles cantam em três vozes. Agora você estragou o coro. Batalha!']],
-      depois: { batalha: { id: 'r5_guto', nome: 'Pescador Guto', dinheiro: 1000, equipe: [[535, 24, ['bubbleBeam', 'supersonic', 'round']], [453, 25, ['poisonSting', 'feintAttack', 'revenge']]] } },
+      depois: { batalha: { id: 'r5_guto', nome: 'Pescador Guto', dinheiro: 1100, equipe: [[536, 28, ['bubbleBeam', 'supersonic', 'round']], [453, 29, ['poisonSting', 'feintAttack', 'revenge']], [618, 29, ['mudShot', 'thunderShock', 'bide']]] } },
     },
     {
       id: 'lamparina_chegada',
@@ -53,9 +57,9 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'vila_lamparina', semFlag: ['lamparina'] },
       falas: [
         ['narrador', 'Vila Lamparina. Casas de pedra escura, lampiões a óleo acesos em cada porta, gatos dormindo nos muros.'],
-        ['narrador', 'Não há um único poste de luzita. Na entrada, uma placa pintada à mão: "Aqui a luz é nossa."'],
+        ['narrador', 'Não há um único poste de luzita. Na praça, uma placa pintada à mão: "Aqui a luz é nossa."'],
       ],
-      depois: { flags: { lamparina: true }, objetivo: 'Visite a Vó Benta' },
+      depois: { flags: { lamparina: true }, objetivo: { texto: 'Visite a Vó Benta', alvo: 'benta' } },
     },
     {
       id: 'benta',
@@ -73,8 +77,21 @@ export default {
         ['benta', 'Tinha dois moços pesquisando uma gruta lá no Paredão, um rapaz barbudo e uma moça de cabelo preto. Diziam que a culpa era de uma pedra.'],
         ['benta', 'Quando o sol finalmente nasceu, a moça chorava. O rapaz não falava. E nunca mais vi os dois juntos.'],
         ['benta', 'Pouco tempo depois, abriram a mina lá em cima. E desde então, todo ano, o sol nasce um pouquinho mais tarde. A gente aqui percebe. A gente acende lampião.'],
+        ['benta', 'Fica aqui hoje. Descansa. De noite a vila fica bonita, e o Casarão da Zélia abre.'],
       ],
-      depois: { flags: { ouviuNoiteLonga: true, sq_bolo: 'disponivel' }, objetivo: 'Explore Vila Lamparina até a noite' },
+      depois: { flags: { ouviuNoiteLonga: true }, itens: [['superPotion', 3]], objetivo: { texto: 'De noite, vá ao Cemitério das Velas, ao norte da vila', alvo: 'cemiterio_velas', sub: 'A Vó Benta deixa você descansar até a noite' } },
+    },
+    {
+      id: 'benta_descansar',
+      local: 'casa_benta',
+      gatilho: { tipo: 'falar', alvo: 'benta', requer: ['ouviuNoiteLonga'] },
+      repete: true,
+      falas: [['benta', 'Quer tirar um cochilo, meu filho? O sofá é seu. E o Coronel vigia.']],
+      escolhas: [
+        { texto: 'Dormir até a noite.', falas: [['benta', 'Dorme, dorme. Eu te acordo quando os lampiões acenderem.']], depois: { hora: 19.5 } },
+        { texto: 'Me conta mais da vila.', falas: [['benta', 'O Lázaro, coveiro, é o homem mais engraçado de Lamparina. Ninguém ri, mas ele é. E a Zélia… a Zélia é minha amiga desde que a gente tinha dentes de leite.'], ['benta', 'Se você for ao cemitério de noite, leva o coração aberto. Às vezes quem está lá não está morto. Só está triste.']] },
+        { texto: 'Hoje não, vó.', falas: [['benta', 'Então come mais bolo antes de ir.']] },
+      ],
     },
     {
       id: 'lazaro',
@@ -85,16 +102,6 @@ export default {
         ['lazaro', 'Boa tarde! Seu Lázaro, coveiro, às ordens. Morro de rir do meu trabalho. Os meus clientes nunca reclamam!'],
         ['lazaro', 'Ha! Essa é boa. Ninguém ri dela. Os vivos são um público difícil.'],
         ['lazaro', 'Lá no cemitério tem um túmulo que recebe flor fresca toda semana. Do menino Tiago Solano. Alguém de terno branco vem de madrugada, deixa a flor e vai embora sem olhar pra ninguém.'],
-      ],
-    },
-    {
-      id: 'tumulo_tiago',
-      local: 'cemiterio_velas',
-      gatilho: { tipo: 'falar', alvo: 'tumulo_tiago' },
-      repete: true,
-      falas: [
-        ['narrador', 'Uma lápide pequena, de pedra clara. "Tiago Solano. Seis anos. Que a luz te encontre."'],
-        ['narrador', 'Ao lado, um lírio branco, fresco. E uma lanterna de luzita, apagada.'],
       ],
     },
     {
@@ -127,14 +134,15 @@ export default {
         ['vespera', 'Boa sorte com a Zélia. Ela é a pessoa mais corajosa desta região. Não diga a ela que eu disse isso.'],
         ['narrador', 'Quando você pisca, ela não está mais lá. Só o Absol, olhando a água. Depois, nem ele.'],
       ],
-      depois: { flags: { falouVespera1: true }, objetivo: 'O Casarão das Velas abriu. Desafie a Dona Zélia' },
+      depois: { flags: { falouVespera1: true }, objetivo: { texto: 'O Casarão das Velas abriu. Desafie a Dona Zélia', alvo: 'casarao_velas', sub: 'O casarão só abre de noite' } },
     },
     {
       id: 'casarao_fechado',
       local: 'casarao_velas',
-      gatilho: { tipo: 'pisar', alvo: 'porta_casarao', hora: 'dia' },
+      gatilho: { tipo: 'entrar', alvo: 'casarao_velas', hora: 'dia' },
       repete: true,
-      falas: [['narrador', 'Uma placa na porta: "Atendimento das 18h às 6h. Fantasma também tem direito a descanso."']],
+      falas: [['narrador', 'A porta pesada não abre. Uma plaquinha: "Atendimento das 18h às 6h. Fantasma também tem direito a descanso."']],
+      depois: { arena: 'porta_casarao_velas' },
     },
     {
       id: 'casarao_entrada',
@@ -143,23 +151,24 @@ export default {
       falas: [
         ['narrador', 'Escuro total. Só a vela que alguém deixou na sua mão ilumina um pequeno círculo à sua volta.'],
         ['zelia', '(uma voz de algum lugar) Bem-vindo, querido. Sou a Dona Zélia. Minha casa é meio bagunçada. Os quadros andam. Não leve a mal.'],
-        ['zelia', 'Pela claraboia entra a luz da lua. Gire os espelhos e faça a luz acender os três candelabros. E se uma sala mudar de lugar, procure o quadro da Benta sorrindo. Ela sempre sorri pra quem está no caminho certo.'],
+        ['zelia', 'Três portas no saguão. Procure o quadro da Benta sorrindo: ela sempre sorri pra quem está no caminho certo.'],
+        ['zelia', 'Depois, no salão, a luz da lua entra pela claraboia. Gire os espelhos e faça a luz acender os três candelabros. Aí a gente conversa.'],
       ],
-      depois: { flags: { casaraoDentro: true }, objetivo: 'Acenda os três candelabros do Casarão' },
+      depois: { flags: { casaraoDentro: true }, objetivo: { texto: 'Ache a porta certa e acenda os três candelabros', alvo: 'casarao_luar', treinadores: ['g5_odete', 'g5_ciro'], rotulo: 'Médiuns' } },
     },
     {
       id: 'aprendiz_zelia1',
       local: 'casarao_velas',
       gatilho: { tipo: 'avistar', alvo: 'g5_odete', hora: 'noite' },
       falas: [['aprendiz', 'Tem alguém atrás de você. Brincadeira. Ou não. Batalha!']],
-      depois: { batalha: { id: 'g5_odete', nome: 'Médium Odete', dinheiro: 1040, equipe: [[92, 25, ['lick', 'hypnosis', 'nightShade']], [353, 26, ['shadowSneak', 'screech', 'willOWisp']]] } },
+      depois: { batalha: { id: 'g5_odete', nome: 'Médium Odete', dinheiro: 1160, equipe: [[92, 29, ['lick', 'hypnosis', 'nightShade']], [353, 30, ['shadowSneak', 'screech', 'willOWisp']]] } },
     },
     {
       id: 'aprendiz_zelia2',
       local: 'casarao_velas',
       gatilho: { tipo: 'avistar', alvo: 'g5_ciro', hora: 'noite' },
       falas: [['aprendiz', 'Meu Greavard enterrou o osso dele em algum lugar desta casa em 1994. A gente procura até hoje. Me ajuda depois da batalha?']],
-      depois: { batalha: { id: 'g5_ciro', nome: 'Médium Ciro', dinheiro: 1080, equipe: [[971, 26, ['bite', 'lick', 'roar']], [355, 27, ['nightShade', 'disable', 'confuseRay']]] } },
+      depois: { batalha: { id: 'g5_ciro', nome: 'Médium Ciro', dinheiro: 1200, equipe: [[971, 30, ['bite', 'lick', 'roar']], [355, 31, ['nightShade', 'disable', 'confuseRay']]] } },
     },
     {
       id: 'zelia_desafio',
@@ -173,16 +182,23 @@ export default {
       ],
       depois: {
         batalha: {
-          id: 'leader_zelia', nome: 'Dona Zélia', dinheiro: 3000,
+          id: 'leader_zelia', nome: 'Dona Zélia', dinheiro: 3300,
           equipe: [
-            [353, 27, ['shadowSneak', 'nightShade', 'willOWisp']],
-            [425, 28, ['ominousWind', 'gust', 'astonish']],
-            [708, 28, ['hex', 'leechSeed', 'astonish']],
-            [607, 28, ['ember', 'hex', 'confuseRay']],
-            [608, 30, ['hex', 'flameBurst', 'willOWisp', 'confuseRay']],
+            [353, 30, ['shadowSneak', 'nightShade', 'willOWisp']],
+            [425, 31, ['ominousWind', 'gust', 'astonish']],
+            [708, 31, ['hex', 'leechSeed', 'astonish']],
+            [607, 31, ['ember', 'hex', 'confuseRay']],
+            [608, 33, ['hex', 'flameBurst', 'willOWisp', 'confuseRay']],
           ],
         },
       },
+    },
+    {
+      id: 'zelia_espera',
+      local: 'casarao_velas',
+      gatilho: { tipo: 'falar', alvo: 'zelia', semFlag: ['badges.lamparina'] },
+      repete: true,
+      falas: [['zelia', 'Ainda tem vela apagada e médium querendo brincar, querido. Primeiro os candelabros e os meus meninos. Depois, eu.']],
     },
     {
       id: 'zelia_perdeu_jogador',
