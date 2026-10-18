@@ -3,7 +3,7 @@ R.c('=== Sertão do Levante: fundo, mar e bordas ===')
 R.rect('caatinga', 600, 200, 600, 280)
 # solo: manchas de terra rachada e capim seco por todo o fundo, para a caatinga não ficar lisa
 R.blobs('cracked', 600, 200, 600, 270, 0.07, 0.66, ['caatinga'])
-R.blobs('talldry', 600, 205, 550, 255, 0.09, 0.70, ['caatinga'])
+R.blobs('talldry', 600, 205, 550, 255, 0.08, 0.60, ['caatinga'])
 
 # --- mar a leste (Mar do Levante) com costa irregular e enseadas
 R.rect('deep', 1150, 200, 50, 280)
