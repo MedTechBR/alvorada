@@ -453,7 +453,7 @@ export class Roteiro {
     if (!g.party.some((m) => !m.fainted)) { g.toast('Seus Pokémon não têm condições de lutar. Cure a equipe primeiro!'); return 'flee'; }
     setDisponiveis(g.available);
     const team = montarEquipe(b.equipe, f.rivalStarter);
-    const def = { id: b.id, name: nomeBatalha(b.nome, b.equipe), money: 0, team: b.equipe, double: !!b.double };
+    const def = { id: b.id, name: nomeBatalha(b.nome, b.equipe), money: 0, team: b.equipe, double: !!b.double, dynamax: !!b.dynamax }; // dynamax: ginásio onde vale o Dynamax (src/combat/poder.js)
     let npc = this.atores.get(b.id);
     if (!npc?.visible) npc = [...this.atores.values()].find((n) => n.visible && n.e.batalha === b.id);
     if (!npc?.visible) {

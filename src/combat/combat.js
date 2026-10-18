@@ -57,6 +57,13 @@ export class Combat {
     this.sfxT = {};
   }
   move(id) { return MOVES[id]; }
+  // Golpe do espaço `slot`: o do Pokémon ou, em Dynamax, o Max Golpe no lugar dele (user.maxMoves, src/combat/poder.js)
+  moveAt(user, slot) {
+    const ov = user?.maxMoves?.[slot];
+    if (ov) return ov;
+    const id = user?.mon?.moves?.[slot];
+    return { id, mv: MOVES[id] };
+  }
   range(mv) { return (mv.range ?? 6) * M; }
   inRange(user, mv, d, id) {
     const k = kindOf(id, mv);
@@ -107,7 +114,7 @@ export class Combat {
 
   // ---------- telegrafia (selvagens avisam antes de atacar) ----------
   windup(user, slot, target) {
-    const id = user.mon.moves[slot], mv = MOVES[id];
+    const { id, mv } = this.moveAt(user, slot);
     if (!mv || user.cds[slot] > 0 || user.lock > 0 || user.stun > 0 || user.charging || !user.alive) return false;
     user.cds[slot] = mv.cd * 1.2;
     const kind = kindOf(id, mv);
@@ -136,7 +143,7 @@ export class Combat {
     if (c.t >= c.W) {
       e.charging = null; e.lock = 0;
       const d = Math.max(30, Math.hypot(c.tx - e.x, c.ty - e.y));
-      this.use(e, c.slot, e.x + Math.cos(c.ang) * d, e.y + Math.sin(c.ang) * d, { forced: true, charged: true, moveId: c.moveId });
+      this.use(e, c.slot, e.x + Math.cos(c.ang) * d, e.y + Math.sin(c.ang) * d, { forced: true, charged: true, moveId: c.moveId, mv: c.moveId ? null : c.mv });
     }
   }
   #drawTelegraph(G, e) {
@@ -174,7 +181,8 @@ export class Combat {
   // ---------- usar golpe ----------
   // Usa o golpe do espaço `slot` mirando no ponto (ax, ay)
   use(user, slot, ax, ay, opts = {}) {
-    const id = opts.moveId ?? user.mon.moves[slot], mv = MOVES[id];
+    const at = opts.moveId ? { id: opts.moveId, mv: MOVES[opts.moveId] } : opts.mv ? { id: opts.mv.id, mv: opts.mv } : this.moveAt(user, slot);
+    const id = at.id, mv = at.mv;
     if (!mv || !user.alive) return false;
     // disputa de feixes: apertar golpe = empurrar
     const myBeam = this.beams.find((b) => b.user === user && b.struggle);
@@ -185,6 +193,7 @@ export class Combat {
       user.cds[slot] = mv.cd * (user.side === 'wild' ? 1.2 : 1);
     }
     this.g.arenaGinasio?.aoUsar(user, id, mv); // arena de ginásio: golpe no ritmo do berimbau
+    if (mv.max) this.onMax?.(user, id, mv, ax, ay); // Max Golpe: recarga única, clima, campo e estágios (src/combat/poder.js)
     if (user.mon.status === 'par' && Math.random() < 0.15) { this.g.fx.number(user.x, user.y - 24, 'Paralisado!', '#fff27a'); user.lock = 0.5; return true; }
     let dx = ax - user.x, dy = ay - user.y; const d = Math.hypot(dx, dy) || 1; dx /= d; dy /= d;
     user.face(dx, dy);
@@ -797,7 +806,7 @@ export class Combat {
     const g = this.g;
     if (!info.force) {
       if (this.alt.dodges(t, mv, info, user)) { this.#missText(t, 'Errou!'); return 'miss'; }
-      if (t.shieldT > 0) { this.#missText(t, 'Protegido!'); this.g.fx.emit(t.x, this.centerY(t), { tex: 'spark', color: t.shield.color, n: 8, speed: 90, life: 0.2, stretch: 0.01 }); this.sfx('shield', null, 0.1); return 'miss'; }
+      if (t.shieldT > 0 && !mv.maxFx?.bypassProtect) { this.#missText(t, 'Protegido!'); this.g.fx.emit(t.x, this.centerY(t), { tex: 'spark', color: t.shield.color, n: 8, speed: 90, life: 0.2, stretch: 0.01 }); this.sfx('shield', null, 0.1); return 'miss'; }
       if (t.iframes > 0) { if (t.side === 'ally' || t.isTrainer) this.#missText(t, 'Esquivou!'); return 'miss'; }
     }
     if (t.isTrainer) { t.knock(dx * 220, dy * 220); g.fx.kick(0.2, 0.04); this.vfx.impact(mv.type, t.x, t.y - 10, 0, 0.6, t.y); return 'hit'; }
@@ -809,6 +818,7 @@ export class Combat {
     if (info.src !== 'beam' && Math.random() > (mv.cat === 'status' ? (mv.acc ?? 1) : 1) * Math.min(1, accM)) { this.#missText(t, 'Errou!'); return 'miss'; }
     if (mv.cat === 'status') { this.#status(user, t, mv); return 'hit'; }
     const r = computeDamage(user, t, mv, { g, scale: info.scale ?? 1, noCrit: info.src === 'beam' && !info.force });
+    if (mv.maxFx) this.onMaxHit?.(user, t, mv, r); // efeitos dos Max Golpes e G-Max Golpes no alvo
     this.hurt(t, r.dmg, user, { eff: r.eff, crit: r.crit, mv, dx, dy, knock: info.knock ?? 1, quiet: info.quiet, note: r.note, src: info.src });
     // Orbe da Vida, Pele Áspera, Capacete Rochoso (recuo), Sino Concha (cura), Rocha do Rei (hesitar): src/mechanics
     if (r.r?.recoil) this.hurt(user, r.r.recoil, null, { silent: true });

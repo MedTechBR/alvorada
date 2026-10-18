@@ -65,6 +65,8 @@ export class ArenaGinasio {
     this.G1 = new PIXI.Graphics(); g.combat.layer.addChild(this.G1);
     // avisos por cima de tudo, inclusive da sombra das salas escuras e do mapa de luz: perigo sempre legível
     this.topo = new PIXI.Container(); this.GA = new PIXI.Graphics(); this.topo.addChild(this.GA); g.app.stage.addChild(this.topo);
+    // Mega/Dynamax (src/combat/poder.js): a arena escolhe a hora; o Dynamax vale para os dois lados neste ginásio
+    if (cfg.poder) { b.poder = { usado: true }; if (cfg.poder.tipo === 'dynamax') b.def.dynamax = true; }
     this.pecas = []; this.porId = new Map();
     for (const def of cfg.pecas ?? []) {
       const K = PECAS[def.tipo]; if (!K) { console.warn('peça desconhecida', def.tipo); continue; }
@@ -377,7 +379,6 @@ export class ArenaGinasio {
   // Mega Evolução / Dynamax do ás (ramo mega: game.poder). Sem o módulo, nada acontece.
   async #poder(e) {
     const g = this.g, P = this.cfg.poder; if (!P || !g.poder) return;
-    this.b.poder = { usado: true }; // a IA do poder.js não dispara sozinha: a arena escolhe a hora
     const quando = P.quando ?? 'entrada';
     const vai = async () => {
       if (!e.alive || this.done) return;

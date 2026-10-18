@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import { T, TILE, SOLID, SWIMMABLE } from './tiles.js';
 import { frameOf, loadPokemonSprites, portraitOf } from '../sprites/pmd.js';
 import { speciesScale } from '../sprites/scale.js';
-import { SPECIES } from '../data/species.js';
+import { SPECIES, speciesOfKey, parseKey } from '../data/species.js';
 import { MONTARIAS } from '../data/montarias.js';
 import { IS_TOUCH } from '../engine/input.js';
 import { dir4 } from '../sprites/characters.js';
@@ -51,7 +51,7 @@ const lerp = (a, b, k) => a + (b - a) * k;
 
 // escala da montaria: a mesma regra dos Pokémon (altura real comprimida); sem dados da espécie, usa a altura da tabela
 function mountScale(dex, set, h = 1, minPx = 30) {
-  if (SPECIES[dex]?.height) {
+  if (speciesOfKey(dex)?.height) {
     // montaria precisa ter porte para carregar o treinador (32 px): no mínimo ~30 px de altura (34 nas da tabela)
     const top = set?.top || 24, min = Math.round((minPx / top) * 4) / 4;
     return Math.max(speciesScale(dex, set), min);
@@ -65,17 +65,24 @@ function mountScale(dex, set, h = 1, minPx = 30) {
 // As 5 da história (MOUNTS) são o padrão de cada modo; um Pokémon do jogador (equipe ou PC) pode tomar o lugar
 // (flags.montaria.<modo> = uid do Pokémon). Velocidade: base de Velocidade da espécie e porte (altura e peso).
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-export const mountModes = (dex) => MOUNT_KINDS.filter((k) => MOUNTS[k].dex === +dex || MONTARIAS[dex]?.m.includes(k));
+// Chave da montaria: as 20 de forma ("59-hisui", a mesma de Mon.spriteKey) valem quando estão na tabela; senão, o dex.
+// Aceita o dex, a chave com forma ou o próprio Mon.
+export function mountKey(k) {
+  if (k && typeof k === 'object') k = k.spriteKey ?? k.dex;
+  if (typeof k === 'string' && !/^\d+$/.test(k)) return MONTARIAS[k] ? k : parseKey(k).dex;
+  return +k;
+}
+export const mountModes = (dex) => { const k = mountKey(dex), d = parseKey(k).dex; return MOUNT_KINDS.filter((m) => MOUNTS[m].dex === d || MONTARIAS[k]?.m.includes(m)); };
 export const canMount = (dex, kind) => mountModes(dex).includes(kind);
 const CFG = new Map();
 // configuração da montaria (velocidades e pose) para o modo e a espécie; a padrão do modo usa os valores feitos à mão
 export function mountConfig(kind, dex = null) {
   const base = MOUNTS[kind]; if (!base) return null;
-  dex = +(dex ?? base.dex);
-  if (dex === base.dex || !MONTARIAS[dex]?.m.includes(kind) || !SPECIES[dex]) return base;
+  dex = mountKey(dex ?? base.dex);
+  if (dex === base.dex || !MONTARIAS[dex]?.m.includes(kind) || !speciesOfKey(dex)) return base;
   const key = kind + ':' + dex;
   if (CFG.has(key)) return CFG.get(key);
-  const P = MONTARIAS[dex], sp = SPECIES[dex], spe = sp.base[5], h = sp.height, w = Math.max(10, sp.weight);
+  const P = MONTARIAS[dex], sp = speciesOfKey(dex), spe = sp.base[5], h = sp.height, w = Math.max(10, sp.weight);
   const heavy = Math.log(w); // 110 kg ~ 4,7; 900 kg ~ 6,8
   let walk, run, acc, climb;
   if (kind === 'voar') { walk = clamp(108 + spe * 0.45, 125, 172); run = walk * 1.43; acc = clamp(1.8 + spe / 80, 2, 3.6); }
@@ -343,7 +350,7 @@ export class Mounts {
     const g = this.g, n = (g.party?.length ?? 0) + (g.box?.length ?? 0), t = performance.now();
     if (this.capSet && this.capN === n && t - this.capT < 500) return this.capSet;
     const set = new Set();
-    for (const mon of [...(g.party ?? []), ...(g.box ?? [])]) for (const k of mountModes(mon.dex)) set.add(k);
+    for (const mon of [...(g.party ?? []), ...(g.box ?? [])]) for (const k of mountModes(mon)) set.add(k);
     this.capSet = set; this.capN = n; this.capT = t;
     return set;
   }
@@ -362,7 +369,7 @@ export class Mounts {
   async announce(kind) {
     const C0 = MOUNTS[kind]; if (!C0) return;
     // liberado por um Pokémon do jogador: o aviso mostra ele (não a montaria padrão)
-    const pk = this.pick(kind), C = pk?.mon ? { name: pk.mon.name, dex: pk.mon.dex, label: C0.label } : C0;
+    const pk = this.pick(kind), C = pk?.mon ? { name: pk.mon.name, dex: mountKey(pk.mon), label: C0.label } : C0;
     const el = document.createElement('div'); el.className = 'mt-unlock';
     // no celular o X é o botão de sela: mostra o ícone dele no lugar da tecla
     const key = IS_TOUCH ? `<kbd class="sela">${ICON}</kbd>` : '<kbd>X</kbd>';
@@ -789,17 +796,17 @@ export class Mounts {
   #owned() { const g = this.g; return [...(g.party ?? []).map((mon) => ({ mon, where: 'Equipe' })), ...(g.box ?? []).map((mon) => ({ mon, where: 'PC' }))]; }
   // Pokémon do jogador que servem para o modo (os mais rápidos primeiro)
   options(kind) {
-    return this.#owned().filter((o) => canMount(o.mon.dex, kind))
-      .map((o) => ({ ...o, cfg: mountConfig(kind, o.mon.dex) }))
+    return this.#owned().filter((o) => canMount(o.mon, kind))
+      .map((o) => ({ ...o, cfg: mountConfig(kind, mountKey(o.mon)) }))
       .sort((a, b) => b.cfg.run - a.cfg.run);
   }
   // o que foi escolhido para o modo: { mon, dex } (mon null = a padrão da história)
   chosen(kind) {
     const uid = this.g.flags?.montaria?.[kind];
     const mon = uid ? this.#owned().find((o) => o.mon.uid === uid)?.mon : null;
-    if (mon && canMount(mon.dex, kind)) return { mon, dex: mon.dex };
+    if (mon && canMount(mon, kind)) return { mon, dex: mountKey(mon) };
     // sem a montaria da história deste modo: vai o Pokémon do jogador que serve (o mais rápido de pé)
-    if (!this.padrao(kind)) { const o = this.options(kind), b = o.find((x) => !x.mon.fainted && x.mon.hp > 0) ?? o[0]; if (b) return { mon: b.mon, dex: b.mon.dex }; }
+    if (!this.padrao(kind)) { const o = this.options(kind), b = o.find((x) => !x.mon.fainted && x.mon.hp > 0) ?? o[0]; if (b) return { mon: b.mon, dex: mountKey(b.mon) }; }
     return { mon: null, dex: MOUNTS[kind].dex };
   }
   // o que vai de fato: o escolhido, se estiver de pé; senão a padrão ou outro Pokémon do jogador (avisa uma vez)
@@ -810,13 +817,13 @@ export class Mounts {
       if (!this.padrao(kind) && !outro) return c; // só ele serve: vai assim mesmo
       const nome = outro?.name ?? MOUNTS[kind].name;
       if (this.warnKO !== c.mon.uid) { this.warnKO = c.mon.uid; this.g.toast?.(`${c.mon.name} está sem forças; ${nome} veio no lugar.`); }
-      return outro ? { mon: outro, dex: outro.dex } : { mon: null, dex: MOUNTS[kind].dex };
+      return outro ? { mon: outro, dex: mountKey(outro) } : { mon: null, dex: MOUNTS[kind].dex };
     }
     return c;
   }
   // grava a escolha (mon null = volta para a padrão); montado nesse modo, troca na hora
   choose(kind, mon = null) {
-    if (!MOUNTS[kind] || (mon && !canMount(mon.dex, kind))) return false;
+    if (!MOUNTS[kind] || (mon && !canMount(mon, kind))) return false;
     const g = this.g; g.flags ??= {};
     const cur = { ...(g.flags.montaria ?? {}) };
     if (mon) cur[kind] = mon.uid; else delete cur[kind];

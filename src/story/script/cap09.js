@@ -215,7 +215,7 @@ export default {
       ],
       depois: {
         batalha: {
-          id: 'leader_celeste', nome: 'Líder Celeste', dinheiro: 4400,
+          id: 'leader_celeste', nome: 'Líder Celeste', dinheiro: 4400, dynamax: true, // ginásio de Dynamax: o Braviary dela cresce no fim
           equipe: [
             [277, 40, ['aerialAce', 'quickAttack', 'endeavor']],
             [227, 41, ['steelWing', 'airCutter', 'spikes']],
