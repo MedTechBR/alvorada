@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
-import { T, TILE, SOLID, SWIMMABLE } from './tiles.js';
-import { WATER_FRAMES, FLOWERS, LILY, TALL, SPR } from './art.js';
+import { T, TILE, SOLID, SWIMMABLE, MOUNT_PASS } from './tiles.js';
+import { WATER_FRAMES, FLOWERS, LILY, TALL, CORN, SPR } from './art.js';
 import { KINDS, DECOR } from './objects.js';
 import { buildRegion } from './build.js';
 import { renderTiles } from './ground.js';
@@ -10,7 +10,15 @@ import { renderTiles } from './ground.js';
 // - O mapa é grande: os pedaços (setores de 16x16 blocos) são montados sob demanda perto da câmera e
 //   descartados quando ficam longe, e os objetos só entram na cena quando o setor deles está visível.
 // - Colisão por bloco (sólida por construção) + pegadas dos objetos.
-export const REGION = await fetch(new URL('../../assets/maps/alvorada.json', import.meta.url)).then((r) => r.json());
+const MAPS = new URL('../../assets/maps/', import.meta.url);
+export const REGION = await fetch(new URL('alvorada.json', MAPS)).then((r) => r.json());
+// "include": outros arquivos de mapa desenhados antes (ex.: o esboço da região gerado por tools/gerar-esboco.py)
+for (const inc of REGION.include ?? []) {
+  const J = await fetch(new URL(inc, MAPS)).then((r) => r.json());
+  REGION.ops = [...(J.ops ?? []), ...(REGION.ops ?? [])];
+  for (const k of ['objects', 'decor', 'trees', 'areas', 'items', 'warps']) if (J[k]) REGION[k] = k === 'areas' ? [...J[k], ...(REGION[k] ?? [])] : [...(REGION[k] ?? []), ...J[k]];
+  REGION.spots = { ...(J.spots ?? {}), ...(REGION.spots ?? {}) };
+}
 export const AREAS = REGION.areas;
 const CH = 16, CPX = CH * T; // setor: 16x16 blocos = 256 px
 const hash = (x, y, s = 0) => { let h = (x * 374761393 + y * 668265263 + s * 1442695041) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; };
@@ -37,13 +45,15 @@ export class GameMap {
     this.cellObj = new Map();
     for (const o of this.objects) for (const k of o.cells) this.cellObj.set(k, o);
     this.dirtyTiles = []; this.visible = new Set(); this.time = 0; this.frameK = 0;
+    this.mounts = new Set(); this.passable = new Set();
   }
 
   // portas, tapetes de saída e escadas: tudo vira uma lista de "warps"
   #links() {
     const S = REGION.spots ?? {};
     this.spots = {};
-    for (const [k, v] of Object.entries(S)) this.spots[k] = { x: v[0] * T + 8, y: v[1] * T + 8, tx: v[0], ty: v[1], dir: v[2] ?? 'down' };
+    const R = REGION.radius ?? {};
+    for (const [k, v] of Object.entries(S)) { this.spots[k] = { x: v[0] * T + 8, y: v[1] * T + 8, tx: Math.floor(v[0]), ty: Math.floor(v[1]), dir: v[2] ?? 'down' }; if (R[k]) this.spots[k].r = R[k] * T; }
     this.warps = [];
     const byId = Object.fromEntries(this.interiors.map((r) => [r.id, r]));
     for (const o of this.objects) {
@@ -58,7 +68,11 @@ export class GameMap {
       this.spots['dentro_' + r.id] = { x: r.entry.x * T + 8, y: r.entry.y * T + 8, tx: r.entry.x, ty: r.entry.y, dir: 'up' };
     }
     for (const w of REGION.warps ?? []) this.warps.push({ x: w.x, y: w.y, dir: w.dir ?? 'any', to: { x: w.to[0], y: w.to[1] }, face: w.face ?? 'down', label: w.label });
-    for (const r of this.interiors) for (const [k, v] of Object.entries(r.spots ?? {})) this.spots[k] = { x: (r.x + v[0]) * T + 8, y: (r.y + v[1]) * T + 8, tx: r.x + v[0], ty: r.y + v[1], dir: v[2] ?? 'down' };
+    for (const r of this.interiors) for (const [k, v] of Object.entries(r.spots ?? {})) this.spots[k] = { x: (r.x + v[0]) * T + 8, y: (r.y + v[1]) * T + 8, tx: r.x + Math.floor(v[0]), ty: r.y + Math.floor(v[1]), dir: v[2] ?? 'down' };
+    // armadilhas (ex.: fios prateados da Estufa-Teia levam de volta à entrada)
+    for (const r of this.interiors) if (r.trap) r.rows.forEach((row, j) => [...row].forEach((ch, i) => { if (ch === r.trap.tile) this.warps.push({ x: r.x + i, y: r.y + j, dir: 'any', to: { x: r.x + r.trap.to[0], y: r.y + r.trap.to[1] }, face: 'up', trap: true }); }));
+    // cada ponto diz em que interior está (map: id) ou fica fora (map: 'mundo')
+    for (const s of Object.values(this.spots)) { const r = this.interiors.find((q) => s.tx >= q.x && s.ty >= q.y && s.tx < q.x + q.w && s.ty < q.y + q.h); s.map = r ? r.id : 'mundo'; }
     this.warpAt = new Map(this.warps.map((w) => [w.x + w.y * this.w, w]));
     this.spawn = this.spots.inicio ?? { x: this.w * 8, y: this.h * 8 };
   }
@@ -92,7 +106,8 @@ export class GameMap {
     const x = Math.floor(px / T), y = Math.floor(py / T);
     const t = this.at(x, y);
     if (swim) return !SWIMMABLE.has(t) || this.block[x + y * this.w] === 1;
-    return SOLID.has(t) || this.block[x + y * this.w] === 1;
+    if (this.block[x + y * this.w] === 1) return true;
+    return SOLID.has(t) && !this.passable.has(t);
   }
   tallAt(px, py) { return this.at(Math.floor(px / T), Math.floor(py / T)) === TILE.TALL; }
   // Empurra um círculo para fora dos blocos sólidos
@@ -171,17 +186,19 @@ export class GameMap {
     this.decorLayer.addChild(c.deco);
     // mato alto (y-sort): esconde a parte de baixo de quem está dentro
     c.tall = new Map();
-    for (let ty = oy; ty < Math.min(oy + CH, this.h); ty++) for (let tx = ox; tx < Math.min(ox + CH, this.w); tx++) if (this.at(tx, ty) === TILE.TALL) this.#addTall(c, tx, ty);
+    for (let ty = oy; ty < Math.min(oy + CH, this.h); ty++) for (let tx = ox; tx < Math.min(ox + CH, this.w); tx++) { const t = this.at(tx, ty); if (t === TILE.TALL || t === TILE.CORN) this.#addTall(c, tx, ty, t); }
     // objetos
     for (const o of c.objs) if (!o.dead && !o.sprite) o.sprite = this.#makeSprite(o);
     c.built = true;
   }
   #near(x, y, t) { for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) if (this.at(x + i, y + j) === t) return true; return false; }
   #nearLand(x, y) { for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) { const t = this.at(x + i, y + j); if (t !== TILE.WATER && t !== TILE.DEEP) return true; } return false; }
-  #addTall(c, tx, ty) {
-    const s = new PIXI.Sprite(TALL[0]); s.anchor.set(0.5, 1);
+  #addTall(c, tx, ty, t = TILE.TALL) {
+    const set = t === TILE.CORN ? CORN : TALL;
+    const s = new PIXI.Sprite(set[0]); s.anchor.set(0.5, 1); s.frames = set;
     s.x = tx * T + 8; s.y = ty * T + 17; s.zIndex = ty * T + 15;
-    if (this.#near(tx, ty, TILE.DARK)) s.tint = 0xbcd8b4; // mato do bosque, mais escuro
+    if (t === TILE.TALL && this.#near(tx, ty, TILE.DARK)) s.tint = 0xbcd8b4; // mato do bosque, mais escuro
+    else if (t === TILE.TALL && this.#near(tx, ty, TILE.GOLD)) s.tint = 0xffe08a; // capim dourado dos Campos de Lúmen
     s.k = tx + ty * this.w; s.sway = 0;
     c.tall.set(s.k, s);
     if (c.shown) this.ents.addChild(s);
@@ -248,7 +265,7 @@ export class GameMap {
     if (ff !== this.lastFF) { this.lastFF = ff; for (const c of this.visible) for (const s of c.flowers) s.texture = FLOWERS[s.f][(ff + s.ph) % 4]; }
     for (const c of this.visible) for (const s of c.waves) { const k = Math.sin(this.time * 1.4 + s.ph); s.y = s.y0 + k * 3; s.alpha = 0.35 + 0.55 * (k * 0.5 + 0.5); }
     for (const c of this.visible) for (const s of c.tall.values()) {
-      if (s.sway > 0) { s.sway = Math.max(0, s.sway - dt); const k = Math.sin(s.sway * 26) * s.sway * 2.2; s.texture = TALL[k > 0.25 ? 1 : k < -0.25 ? 2 : 0]; s.skew.x = k * 0.18; }
+      if (s.sway > 0) { s.sway = Math.max(0, s.sway - dt); const k = Math.sin(s.sway * 26) * s.sway * 2.2; s.texture = s.frames[k > 0.25 ? 1 : k < -0.25 ? 2 : 0]; s.skew.x = k * 0.18; }
     }
   }
   // alguém passou pelo mato: balança o tufo
@@ -266,8 +283,8 @@ export class GameMap {
     this.tiles[k] = t;
     const c = this.chunks[Math.floor(x / CH) + Math.floor(y / CH) * this.CW];
     if (c.built) {
-      if (old === TILE.TALL) { const s = c.tall.get(k); if (s) { this.ents?.removeChild(s); s.destroy(); c.tall.delete(k); } }
-      if (t === TILE.TALL) this.#addTall(c, x, y);
+      if (old === TILE.TALL || old === TILE.CORN) { const s = c.tall.get(k); if (s) { this.ents?.removeChild(s); s.destroy(); c.tall.delete(k); } }
+      if (t === TILE.TALL || t === TILE.CORN) this.#addTall(c, x, y, t);
     }
     this.dirtyTiles.push([x, y]);
   }
@@ -288,6 +305,28 @@ export class GameMap {
       c.tex.source.update();
     }
     this.dirtyTiles.length = 0;
+  }
+  // Montarias: map.setMount('correr' | 'nadar' | 'escalar', true) libera lama, água ou paredão com trepadeira
+  setMount(name, on = true) {
+    if (on) this.mounts.add(name); else this.mounts.delete(name);
+    this.passable = new Set(Object.entries(MOUNT_PASS).filter(([k]) => this.mounts.has(k)).flatMap(([, v]) => v));
+  }
+  // Move um objeto (fardo empurrado) dx,dy blocos, se o destino estiver livre
+  moveObject(o, dx, dy) {
+    const W = this.w, nt = o.tx + dx, ntY = o.ty + dy;
+    for (let j = 0; j < o.fh; j++) for (let i = 0; i < o.fw; i++) {
+      const x = nt + i, y = ntY + j, k = x + y * W;
+      if (o.cells.includes(k)) continue;
+      if (this.block[k] || SOLID.has(this.at(x, y)) || this.at(x, y) === TILE.TALL) return false;
+    }
+    for (const k of o.cells) { this.block[k] = 0; this.cellObj.delete(k); }
+    const oc = this.chunks[Math.floor((o.tx + Math.floor(o.fw / 2)) / CH) + Math.floor((o.ty + o.fh - 1) / CH) * this.CW];
+    o.tx = nt; o.ty = ntY; o.x += dx * T; o.y += dy * T;
+    o.cells = []; for (let j = 0; j < o.fh; j++) for (let i = 0; i < o.fw; i++) { const k = nt + i + (ntY + j) * W; this.block[k] = 1; this.cellObj.set(k, o); o.cells.push(k); }
+    const nc = this.chunks[Math.floor((o.tx + Math.floor(o.fw / 2)) / CH) + Math.floor((o.ty + o.fh - 1) / CH) * this.CW];
+    if (nc !== oc) { oc.objs.splice(oc.objs.indexOf(o), 1); nc.objs.push(o); }
+    if (o.sprite) o.sprite.zIndex = o.y - 1;
+    return true;
   }
   removeObject(o) { for (const k of o.cells) { this.block[k] = 0; this.cellObj.delete(k); } o.dead = true; }
 }

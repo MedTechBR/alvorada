@@ -9,6 +9,7 @@ const tree = (tex, extra = {}) => ({ tex, fw: 2, fh: 1, oy: 4, ...extra });
 export const KINDS = {
   tree: tree('tree'), tree2: tree('tree2'), pine: tree('pine'), pine2: tree('pine2'), autumn: tree('autumn'), pineT: tree('pineT'),
   bigtree: tree('bigtree', { oy: 2 }), bigautumn: tree('bigautumn', { oy: 2 }),
+  ipe: tree('ipe', { oy: 2 }), paineira: tree('paineira', { oy: 2 }), jequitiba: { tex: 'jequitiba', fw: 3, fh: 1, oy: 4 },
   oran: tree('oran', { oy: 2, berry: 'oran' }), pecha: tree('pecha', { oy: 2, berry: 'pecha' }),
   palm: { tex: 'palmBig', fw: 1, fh: 1, oy: 2 }, palmSmall: { tex: 'palm', fw: 1, fh: 1, oy: 1 },
   roundbush: { tex: 'roundbush', fw: 3, fh: 1, oy: 2 }, cone: { tex: 'cone', fw: 2, fh: 1, oy: 2 },
@@ -25,12 +26,14 @@ export const KINDS = {
   // prédios desenhados por código (src/world/buildings.js); os do Tuxemon ficam como 'tux*'
   ...BUILDINGS,
   tuxHouse: { tex: 'houseA', fw: 5, fh: 3, oy: 0, door: 3 }, tuxCenter: { tex: 'center', fw: 5, fh: 3, oy: 0, door: 2 },
-  haybale: { tex: 'haybale', fw: 1, fh: 1, oy: 0, breakable: true, hp: 1 }, windmill: { tex: 'windmill', fw: 3, fh: 2, oy: 0 },
+  haybale: { tex: 'haybale', fw: 1, fh: 1, oy: 0, breakable: true, hp: 1 }, bale: { tex: 'haybale', fw: 1, fh: 1, oy: 0, push: true },
+  gate: { tex: 'gate', fw: 2, fh: 1, oy: 1 }, menhir: { tex: 'menhir', fw: 1, fh: 1, oy: 1 }, column: { tex: 'column', fw: 1, fh: 1, oy: 1 }, windmill: { tex: 'windmill', fw: 3, fh: 2, oy: 0 },
   bench: { tex: 'bench', fw: 2, fh: 1, oy: 0 }, well: { tex: 'well', fw: 2, fh: 1, oy: 0 },
   sundial: { tex: 'sundial', fw: 2, fh: 1, oy: 0 },
   portico: { tex: 'portico', fw: 4, fh: 1, oy: 0, solidCells: [[0, 0], [3, 0]] },
   stands: { tex: 'stands', fw: 6, fh: 2, oy: 0 },
   // interior
+  radio: { tex: 'radio', fw: 1, fh: 1, oy: 0 }, luzita: { tex: 'luzita', fw: 1, fh: 1, oy: 0, lights: [[7, 8, 0.8]], tint: 0x9afff4 },
   bed: { tex: 'bed', fw: 1, fh: 2, oy: 0 }, table: { tex: 'table', fw: 2, fh: 1, oy: 0 }, tv: { tex: 'tv', fw: 1, fh: 1, oy: 0 },
   shelf: { tex: 'shelf', fw: 1, fh: 1, oy: 0 }, plant: { tex: 'plant', fw: 1, fh: 1, oy: 0 }, pc: { tex: 'pc', fw: 1, fh: 1, oy: 0 },
   machine: { tex: 'machine', fw: 2, fh: 1, oy: 0 }, counter: { tex: 'counter', fw: 4, fh: 1, oy: 0 }, balltable: { tex: 'balltable', fw: 3, fh: 1, oy: 0 },

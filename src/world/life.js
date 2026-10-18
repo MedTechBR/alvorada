@@ -44,7 +44,8 @@ export class WorldLife {
   }
 
   // ---------- quadro ----------
-  update(dt) {
+  // paused = menu/diálogo/título abertos: só animação (água, céu, bichinhos), sem interação
+  update(dt, paused = false) {
     const g = this.g, p = g.player, map = this.map;
     this.#runTweens(Math.min(dt, 0.05));
     const dh = dt * 24 / this.daySeconds; this.hour = (this.hour + dh) % 24; this.totalHours += dh;
@@ -58,11 +59,15 @@ export class WorldLife {
     this.fade.width = innerWidth; this.fade.height = innerHeight;
     this.lights.position.copyFrom(g.world.position); this.lights.scale.copyFrom(g.world.scale);
     this.#updateLights(dt, room);
-    this.#rustle(dt);
     this.#critters(dt, room);
-    this.#items(dt);
-    this.#warps(dt);
-    this.#interact();
+    if (!paused) {
+      this.#rustle(dt);
+      this.#items(dt);
+      this.#warps(dt);
+      this.#interact();
+      this.#gates(dt);
+      this.#push(dt);
+    }
     // setores visitados (mapa da região)
     if (!room) { const cx = Math.floor(p.x / T / 16), cy = Math.floor(p.y / T / 16); if (cx + cy * 64 !== this.lastSector) { this.lastSector = cx + cy * 64; for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) this.visited.add(cx + i + (cy + j) * 64); } }
     this.minimap.update(dt);
@@ -79,7 +84,7 @@ export class WorldLife {
       let n = 0;
       const use = (x, y, tex, s, a) => { let sp = this.lightPool[n]; if (!sp) { sp = new PIXI.Sprite(); sp.anchor.set(0.5); this.lightPool.push(sp); this.lights.addChild(sp); } sp.visible = true; sp.texture = tex; sp.x = x; sp.y = y; sp.scale.set(s); sp.baseA = a; n++; };
       if (room?.dark) use(this.g.player.x, this.g.player.y - 10, SPR.glow, 2.6, 0.55);
-      else for (const c of this.map.visible) for (const o of c.objs) {
+      for (const c of this.map.visible) for (const o of c.objs) {
         const K = KINDS[o.kind]; if (!K.lights || o.dead) continue;
         const sp = o.sprite; if (!sp) continue;
         const left = sp.x - sp.width / 2, top = sp.y - sp.height;
@@ -172,6 +177,35 @@ export class WorldLife {
     }
   }
 
+  // ---------- ginásio de Campina: porteiras abrem quando o aprendiz é vencido; fardos empurráveis ----------
+  #gates(dt) {
+    this.gateT = (this.gateT ?? 0) - dt; if (this.gateT > 0) return; this.gateT = 0.5;
+    const tr = this.g.flags?.trainers ?? {};
+    for (const o of this.map.objects) {
+      if (!o.opens || o.dead || !tr[o.opens]) continue;
+      this.map.removeObject(o);
+      const s = o.sprite;
+      if (s) this.#tween(0.6, (k) => { s.alpha = 1 - k; s.y = o.y + 1 - k * 6; }, () => { s.parent?.removeChild(s); s.destroy(); o.sprite = null; });
+      this.g.toast?.('Uma porteira do milharal se abriu!'); this.g.audio?.sfx?.('pop');
+    }
+  }
+  #push(dt) {
+    const g = this.g, p = g.player, mv = g.input?.move ?? { x: 0, y: 0 };
+    const d = Math.abs(mv.x) > 0.5 ? [Math.sign(mv.x), 0] : Math.abs(mv.y) > 0.5 ? [0, Math.sign(mv.y)] : null;
+    if (!d || this.warping) { this.pushT = 0; return; }
+    const ax = Math.floor((p.x + d[0] * 10) / T), ay = Math.floor((p.y - 3 + d[1] * 10) / T);
+    const o = this.map.cellObj.get(ax + ay * this.map.w);
+    if (!o || o.dead || !KINDS[o.kind]?.push) { this.pushT = 0; return; }
+    this.pushT = (this.pushT ?? 0) + dt;
+    if (this.pushT < 0.3) return;
+    this.pushT = 0;
+    const x0 = o.sprite?.x, y0 = o.sprite?.y;
+    if (this.map.moveObject(o, d[0], d[1])) {
+      g.audio?.sfx?.('dodge');
+      const s = o.sprite; if (s) this.#tween(0.2, (k) => { s.x = x0 + d[0] * T * k; s.y = y0 + d[1] * T * k; });
+    }
+  }
+
   // ---------- interação: placas e árvores de frutas (tecla E / botão A) ----------
   #interact() {
     const g = this.g, inp = g.input, p = g.player;
@@ -223,7 +257,7 @@ export class WorldLife {
     return { el, open: false, x: 0, y: 0 };
   }
   showSign(text, x, y) {
-    if (this.g.ui?.say) { this.g.ui.say(text); return; }
+    if (this.g.ui?.say) { this.g.ui.say(text.split('\n'), { name: 'Placa' }); return; }
     const b = this.signBox; b.el.textContent = text; b.el.style.display = 'block'; b.open = true; b.x = x ?? this.g.player.x; b.y = y ?? this.g.player.y;
     clearTimeout(b.t); b.t = setTimeout(() => this.closeSign(), 6000);
   }

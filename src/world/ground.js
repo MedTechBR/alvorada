@@ -9,10 +9,12 @@ import { GROUND } from './art.js';
 const RANK = new Int8Array(32).fill(3);
 for (const t of [TILE.WATER, TILE.DEEP, TILE.BRIDGE, TILE.BRIDGEV]) RANK[t] = 0;
 RANK[TILE.SAND] = 1;
-for (const t of [TILE.PATH, TILE.PLAZA, TILE.STAIRS, TILE.COURT]) RANK[t] = 2;
+for (const t of [TILE.PATH, TILE.PLAZA, TILE.STAIRS, TILE.COURT, TILE.CORN, TILE.MUD]) RANK[t] = 2;
+RANK[TILE.DOCK] = 0;
 const HARD = new Uint8Array(32);
-for (const t of [TILE.CLIFF, TILE.STAIRS, TILE.BRIDGE, TILE.BRIDGEV, TILE.PLAZA, TILE.FLOOR, TILE.WALL, TILE.TILEFLOOR, TILE.VOID, TILE.COURT, TILE.MAT, TILE.CAVE, TILE.ROCK, TILE.CAVEDOOR]) HARD[t] = 1;
+for (const t of [TILE.CLIFF, TILE.STAIRS, TILE.BRIDGE, TILE.BRIDGEV, TILE.PLAZA, TILE.FLOOR, TILE.WALL, TILE.TILEFLOOR, TILE.VOID, TILE.COURT, TILE.MAT, TILE.CAVE, TILE.ROCK, TILE.CAVEDOOR, TILE.MUD, TILE.CLIMB, TILE.WEBG, TILE.WEBS, TILE.SNOW, TILE.DOCK]) HARD[t] = 1;
 const DARKT = new Uint8Array(32); DARKT[TILE.DARK] = 1; DARKT[TILE.FOREST] = 1;
+const GOLDT = new Uint8Array(32); GOLDT[TILE.GOLD] = 1;
 
 function hash(x, y, s = 0) { let h = (x * 374761393 + y * 668265263 + s * 1442695041) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; }
 // ruído suave e repetível (64x64) para tornar as bordas orgânicas
@@ -32,9 +34,9 @@ export function renderTiles(map, img, ox, oy, tx0, ty0, tw, th) {
   const d = img.data, IW = img.width;
   const at = (x, y) => map.at(x, y);
   // grade de "rank" com 1 bloco de margem
-  const GW = tw + 2, GH = th + 2, R = new Int8Array(GW * GH), D = new Uint8Array(GW * GH), DP = new Uint8Array(GW * GH);
+  const GW = tw + 2, GH = th + 2, R = new Int8Array(GW * GH), D = new Uint8Array(GW * GH), DP = new Uint8Array(GW * GH), GD = new Uint8Array(GW * GH);
   for (let j = 0; j < GH; j++) for (let i = 0; i < GW; i++) {
-    const t = at(tx0 + i - 1, ty0 + j - 1); R[j * GW + i] = RANK[t] ?? 3; D[j * GW + i] = DARKT[t];
+    const t = at(tx0 + i - 1, ty0 + j - 1); R[j * GW + i] = RANK[t] ?? 3; D[j * GW + i] = DARKT[t]; GD[j * GW + i] = GOLDT[t];
     // fundo do lago/mar: média 5x5 para o degradê ficar redondo
     let n = 0; for (let b = -2; b <= 2; b++) for (let a = -2; a <= 2; a++) if (at(tx0 + i - 1 + a, ty0 + j - 1 + b) === TILE.DEEP) n++; DP[j * GW + i] = n * 10;
   }
@@ -43,9 +45,10 @@ export function renderTiles(map, img, ox, oy, tx0, ty0, tw, th) {
     const t = at(tx, ty), bx = (tx - ox) * 16, by = (ty - oy) * 16;
     if (HARD[t]) { hardTile(map, t, tx, ty, (x, y, r, g, b, a) => put(bx + x, by + y, r, g, b, a)); continue; }
     const v = Math.floor(hash(tx, ty, 7) * 4);
-    const gr = GROUND.grass[v], dk = GROUND.dark[v], sd = GROUND.sand[v], pt = GROUND.path[v];
-    const southCliff = at(tx, ty + 1) === TILE.CLIFF;
-    const rimTex = southCliff ? GROUND.rim[at(tx - 1, ty + 1) !== TILE.CLIFF ? 0 : at(tx + 1, ty + 1) !== TILE.CLIFF ? 2 : 1] : null;
+    const gr = GROUND.grass[v], dk = GROUND.dark[v], gd = GROUND.gold[v], sd = GROUND.sand[v], pt = GROUND.path[v];
+    const isC = (t) => t === TILE.CLIFF || t === TILE.CLIMB;
+    const southCliff = isC(at(tx, ty + 1));
+    const rimTex = southCliff ? GROUND.rim[!isC(at(tx - 1, ty + 1)) ? 0 : !isC(at(tx + 1, ty + 1)) ? 2 : 1] : null;
     for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
       const gx = tx * 16 + x, gy = ty * 16 + y;
       const u = (gx + 0.5) / 16 - 0.5, w = (gy + 0.5) / 16 - 0.5;
@@ -61,7 +64,8 @@ export function renderTiles(map, img, ox, oy, tx0, ty0, tw, th) {
       let tex, kr = 1, ov = null, alpha = 255;
       if (f3 >= 0.5) {
         const fd = D[k00] * w00 + D[k10] * w10 + D[k01] * w01 + D[k11] * w11 + n * 0.8;
-        tex = fd > 0.5 ? dk : gr;
+        const fg = GD[k00] * w00 + GD[k10] * w10 + GD[k01] * w01 + GD[k11] * w11 + n * 0.8;
+        tex = fd > 0.5 ? dk : fg > 0.5 ? gd : gr;
         if (f3 < 0.555) kr = 0.56; else if (f3 < 0.61) kr = 1.16;
       } else if (f2 >= 0.5) {
         tex = pt;
@@ -92,10 +96,10 @@ function hardTile(map, t, tx, ty, put) {
   const blit = (s, f) => { for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) { const p = (y * 16 + x) * 4; const c = f ? f(x, y, s, p) : null; if (c) put(x, y, c[0], c[1], c[2], c[3] ?? 255); else put(x, y, s[p], s[p + 1], s[p + 2], s[p + 3]); } };
   switch (t) {
     case TILE.CLIFF: {
-      const W = at(-1, 0) !== TILE.CLIFF, E = at(1, 0) !== TILE.CLIFF;
+      const isC = (t) => t === TILE.CLIFF || t === TILE.CLIMB, W = !isC(at(-1, 0)), E = !isC(at(1, 0));
       const c = GROUND.cliff, s = W && E ? null : W ? c[0] : E ? c[2] : c[1];
       // penhasco de dois blocos: a linha de cima é só rocha (repete a faixa de rocha da face)
-      const upper = at(0, 1) === TILE.CLIFF || at(0, 1) === TILE.CAVEDOOR;
+      const upper = at(0, 1) === TILE.CLIFF || at(0, 1) === TILE.CAVEDOOR || at(0, 1) === TILE.CLIMB;
       const src = (x, y) => { const tex = s ?? (x < 8 ? c[0] : c[2]); const sy = upper ? 1 + (y % 9) : y; return [tex, (sy * 16 + x) * 4]; };
       blit(c[1], (x, y) => { const [q, p] = src(x, y); return q[p + 3] < 10 ? [96, 78, 70, 255] : [q[p], q[p + 1], q[p + 2], 255]; });
       // a borda de cima de uma face que continua para baixo é rocha, não grama
@@ -119,6 +123,17 @@ function hardTile(map, t, tx, ty, put) {
     case TILE.CAVE: blit(GROUND.cave[(tx * 7 + ty * 3) % 3]); return;
     case TILE.ROCK: blit(at(0, 1) === TILE.ROCK || at(0, 1) === TILE.VOID ? GROUND.rocktop : GROUND.rockface); return;
     case TILE.CAVEDOOR: blit(GROUND.cavedoor); return;
+    case TILE.MUD: blit(GROUND.mud[(tx + ty * 3) & 1]); return;
+    case TILE.WEBG: blit(GROUND.webg); return;
+    case TILE.WEBS: blit(GROUND.webs); return;
+    case TILE.SNOW: blit(GROUND.snow[(tx * 5 + ty) & 1]); return;
+    case TILE.DOCK: blit(GROUND.bridgeV); return;
+    case TILE.CLIMB: {
+      // paredão com trepadeira: face de penhasco (rocha) com cipós por cima
+      const c = GROUND.cliff[1], v = GROUND.climbVine, upper = at(0, 1) === TILE.CLIMB || at(0, 1) === TILE.CLIFF;
+      blit(c, (x, y) => { const sy = upper ? 1 + (y % 9) : y, p = (sy * 16 + x) * 4, q = (y * 16 + x) * 4; if (v[q + 3] > 0) return [v[q], v[q + 1], v[q + 2], 255]; return c[p + 3] < 10 ? [96, 78, 70, 255] : [c[p], c[p + 1], c[p + 2], 255]; });
+      return;
+    }
     default: blit(GROUND.void);
   }
 }

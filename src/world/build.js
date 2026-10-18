@@ -133,6 +133,10 @@ export function buildRegion(J) {
     if (K.berry) o.berry = K.berry;
     return true;
   };
+  // árvores soltas não nascem em cima dos pontos da história
+  const nearSpot = new Set();
+  for (const [x0, y0, w0, h0] of J.noTrees ?? []) for (let y = y0; y < y0 + h0; y++) for (let x = x0; x < x0 + w0; x++) nearSpot.add(x + y * W);
+  for (const v of Object.values(J.spots ?? {})) for (let j = -2; j <= 1; j++) for (let i = -2; i <= 2; i++) nearSpot.add(Math.floor(v[0]) + i + (Math.floor(v[1]) + j) * W);
   const placed = [];
   for (const o of objects) if (occupy(o)) placed.push(o);
 
@@ -143,6 +147,7 @@ export function buildRegion(J) {
       if (hash(x, y, s) >= o.p || !onOk(o.on ?? ['grass', 'grass2', 'dark'], x, y)) continue;
       const kind = kinds[Math.floor(hash(x, y, s + 1) * kinds.length)], K = KINDS[kind];
       if (!free(x - 1, y - 1, K.fw + 2, K.fh + 1)) continue;
+      let bad = false; for (let i = 0; i < K.fw && !bad; i++) if (nearSpot.has(x + i + y * W) || nearSpot.has(x + i + (y - 1) * W)) bad = true; if (bad) continue;
       const t = { kind, x, y }; if (occupy(t)) placed.push(t);
     }
   }

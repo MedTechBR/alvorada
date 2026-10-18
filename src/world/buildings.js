@@ -55,10 +55,10 @@ function house({ w = 112, h = 96, roof = ['#c84a3c', '#a83a30', '#e87a5c'], wall
     px(x, roof[2], 17, rt + 4, w - 34, 3); px(x, roof[2], 18, rt + 2, w - 36, 2);
     px(x, roof[1], 2, rb - 3, w - 4, 3); px(x, '#3a2420', 2, rb, w - 4, 1);
     // porta e janelas
-    const dw = 20, dh = 30, dx = Math.round(cx - dw / 2), dy = base - dh;
+    const dw = 20, dh = 30, dx = Math.round(Math.floor(w / 32) * 16 + 8 - dw / 2), dy = base - dh;
     if (door === 'wood') woodDoor(x, dx, dy, dw, dh); else glassDoor(x, dx, dy, dw, dh);
     px(x, '#c84a3c', dx - 2, base - 1, dw + 4, 2);
-    for (const wx of [20, w - 36]) { window1(x, wx, y0 + 9, 16, 14); lights.push([wx + 8, y0 + 16]); }
+    for (const wx of [Math.min(20, dx - 24), Math.max(w - 36, dx + dw + 6)]) { window1(x, wx, y0 + 9, 16, 14); lights.push([wx + 8, y0 + 16]); }
     px(x, '#5ab45a', 18, y0 + 26, 20, 3); px(x, '#ff7aa8', 21, y0 + 25, 2, 2); px(x, '#ffd84a', 27, y0 + 25, 2, 2); px(x, '#ff7aa8', 33, y0 + 25, 2, 2);
   });
   return { tex: texOf(outline(c)), lights };
@@ -109,4 +109,84 @@ mk('mart', hall({ w: 112, h: 104, roof: ['#3a7ae8', '#2a58b8', '#7aaaf8'], wall:
   sign: (x, w, y0, rt, rb, dx, dy) => { px(x, '#2a58b8', w / 2 - 14, rt + 6, 28, 11); px(x, '#ffffff', w / 2 - 13, rt + 7, 26, 9); text(x, 'MART', w / 2 - 8, rt + 9, '#2a58b8'); } }), 7, 3, 3);
 mk('lab', hall({ w: 176, h: 112, roof: ['#8a94a4', '#6a7484', '#b4bccc'], wall: ['#f0f4f8', '#cfd6de', '#ffffff'], band: '#4ab0a0', wins: [14, 36, 58, 104, 126, 148], skylight: true,
   sign: (x, w, y0, rt, rb, dx, dy) => { px(x, '#2a7a70', w / 2 - 9, dy - 10, 18, 8); text(x, 'LAB', w / 2 - 6, dy - 9, '#ffffff'); } }), 11, 3, 5);
+
+// celeiro da Fazenda do Tomé
+function barn() {
+  const lights = [];
+  const c = canvas(112, 100, (x) => {
+    const base = 97, y0 = 52;
+    ell(x, 56, base, 52, 3, 'rgba(0,0,0,.22)');
+    px(x, '#b8402e', 8, y0, 96, base - y0); for (let i = 10; i < 104; i += 6) px(x, '#9a3426', i, y0, 1, base - y0);
+    px(x, '#f4ead2', 8, y0, 96, 3); px(x, '#f4ead2', 8, base - 4, 96, 2);
+    poly(x, '#7a4a32', [[2, y0 + 2], [56, 6], [110, y0 + 2]]); poly(x, '#9a6040', [[10, y0], [56, 12], [102, y0]]);
+    for (let y = 18; y < y0; y += 6) { const k = (y - 12) / (y0 - 12); px(x, '#7a4a32', Math.round(56 - 46 * k), y, Math.round(92 * k), 1); }
+    px(x, '#f4ead2', 48, 26, 16, 14); px(x, '#3a2a1a', 50, 28, 12, 10); px(x, '#f4ead2', 55, 28, 2, 10);
+    // portão grande
+    px(x, '#4e301c', 38, base - 36, 36, 36); px(x, '#8a5a34', 40, base - 34, 15, 33); px(x, '#8a5a34', 57, base - 34, 15, 33);
+    x.strokeStyle = '#f4ead2'; x.lineWidth = 2; x.beginPath(); x.moveTo(40, base - 34); x.lineTo(55, base - 1); x.moveTo(55, base - 34); x.lineTo(40, base - 1); x.moveTo(57, base - 34); x.lineTo(72, base - 1); x.moveTo(72, base - 34); x.lineTo(57, base - 1); x.stroke();
+    window1(x, 16, y0 + 12, 14, 12, '#f4ead2'); window1(x, 82, y0 + 12, 14, 12, '#f4ead2'); lights.push([23, y0 + 18], [89, y0 + 18]);
+  });
+  return { tex: texOf(outline(c)), lights };
+}
+// jequitibá com porta no tronco: Centro Pokémon de Vila Sussurro e casas nas árvores
+function treeBuilding(kind) {
+  const lights = [];
+  const c = canvas(112, 128, (x) => {
+    const base = 125;
+    ell(x, 56, base, 46, 4, 'rgba(0,0,0,.25)');
+    // tronco e raízes
+    px(x, '#5a3a22', 34, 50, 44, base - 50); px(x, '#7a5236', 38, 50, 10, base - 50); px(x, '#3e2616', 70, 56, 4, base - 60);
+    for (const [a, w] of [[22, 16], [74, 18], [14, 10], [90, 10]]) { px(x, '#5a3a22', a, base - 12, w, 12); px(x, '#7a5236', a + 2, base - 12, 3, 10); }
+    // copa
+    const g = ['#1a5a2c', '#277a38', '#3aa04a', '#7ad86a'];
+    [[56, 30, 34], [22, 40, 18], [90, 40, 18], [30, 16, 18], [82, 16, 18]].forEach(([a, b, r]) => ell(x, a, b, r, r * 0.8, g[0]));
+    [[56, 28, 28], [26, 38, 13], [86, 38, 13], [34, 16, 13], [78, 16, 13]].forEach(([a, b, r]) => ell(x, a, b, r, r * 0.8, g[1]));
+    [[46, 18, 12], [70, 14, 9], [26, 30, 6]].forEach(([a, b, r]) => ell(x, a, b, r, r * 0.8, g[2]));
+    // porta em arco no tronco
+    const dx = 46, dw = 20, dh = 30, dy = base - dh;
+    px(x, '#2e1c10', dx - 2, dy - 2, dw + 4, dh + 2); x.fillStyle = '#2e1c10'; x.beginPath(); x.arc(dx + dw / 2, dy, dw / 2 + 2, Math.PI, 0); x.fill();
+    if (kind === 'center') { glassDoor(x, dx, dy, dw, dh); }
+    else { woodDoor(x, dx, dy, dw, dh); }
+    x.fillStyle = kind === 'center' ? '#7ac0e8' : '#8a5a34'; x.beginPath(); x.arc(dx + dw / 2, dy, dw / 2, Math.PI, 0); x.fill();
+    // lanternas de vaga-lume e janela redonda
+    ell(x, 56, 66, 8, 8, '#3e2616'); ell(x, 56, 66, 6, 6, '#ffe39a'); lights.push([56, 66]);
+    px(x, '#3e2616', 30, 74, 1, 10); ell(x, 30, 86, 3, 4, '#ffe08a'); px(x, '#3e2616', 82, 74, 1, 10); ell(x, 82, 86, 3, 4, '#ffe08a'); lights.push([30, 86], [82, 86]);
+    if (kind === 'center') { px(x, '#ffffff', 40, 40, 32, 14); ball(x, 50, 47, 5); text(x, 'PC', 58, 45, '#e8483a'); }
+    else { px(x, '#8a5a34', 24, 44, 64, 3); px(x, '#c08a56', 26, 36, 6, 8); px(x, '#c08a56', 80, 36, 6, 8); }
+  });
+  return { tex: texOf(outline(c)), lights };
+}
+// estufa de vidro (Laboratório anexo e ginásio da Lia, a Estufa-Teia)
+function greenhouse(w = 128, h = 100) {
+  const lights = [];
+  const c = canvas(w, h, (x) => {
+    const base = h - 3, y0 = 40;
+    ell(x, w / 2, base, w * 0.46, 3, 'rgba(0,0,0,.22)');
+    px(x, '#2f7a3a', 6, y0, w - 12, base - y0); px(x, '#bfe8d0', 8, y0 + 2, w - 16, base - y0 - 8);
+    for (let i = 8; i < w - 8; i += 12) px(x, '#2f7a3a', i, y0, 2, base - y0);
+    px(x, '#2f7a3a', 6, y0 + 22, w - 12, 2);
+    // folhagem lá dentro
+    for (let i = 14; i < w - 14; i += 16) { ell(x, i, base - 14, 7, 6, '#3aa04a'); ell(x, i + 4, base - 18, 4, 3, '#7ad86a'); }
+    // telhado curvo de vidro
+    x.fillStyle = '#2f7a3a'; x.beginPath(); x.ellipse(w / 2, y0 + 2, w / 2 - 4, 36, 0, Math.PI, 0); x.fill();
+    x.fillStyle = '#d8f4e4'; x.beginPath(); x.ellipse(w / 2, y0 + 2, w / 2 - 8, 32, 0, Math.PI, 0); x.fill();
+    for (let i = 1; i < 6; i++) { x.strokeStyle = '#2f7a3a'; x.lineWidth = 2; x.beginPath(); x.moveTo(w / 2, y0 - 30); x.lineTo(8 + i * (w - 16) / 6, y0 + 2); x.stroke(); }
+    px(x, '#ffffff', 26, y0 - 18, 10, 3);
+    // teia no vidro
+    x.strokeStyle = 'rgba(255,255,255,.8)'; x.lineWidth = 1; x.beginPath(); for (let a = 0; a < 6; a++) { x.moveTo(w - 30, y0 - 10); x.lineTo(w - 30 + Math.cos(a) * 12, y0 - 10 + Math.sin(a) * 12); } x.stroke();
+    const dw = 24, dh = 30, dx = 72 - dw / 2; glassDoor(x, dx, base - dh, dw, dh);
+    lights.push([24, y0 + 12], [w - 24, y0 + 12]);
+  });
+  return { tex: texOf(outline(c)), lights };
+}
+// Rádio Alvorada: casinha com antena de bambu
+function radio() {
+  const r = house({ w: 96, roof: ['#d8902a', '#b0701a', '#f2b85a'], wall: ['#f4ead2', '#dccfb0', '#fffaf0'], chimney: false });
+  return r;
+}
+mk('barn', barn(), 7, 3, 3);
+mk('treeCenter', treeBuilding('center'), 7, 3, 3);
+mk('treeHouse', treeBuilding('house'), 7, 3, 3);
+mk('greenhouse', greenhouse(), 8, 3, 4);
+mk('radioStation', radio(), 6, 3, 3);
 export const BUILDINGS = B;

@@ -10,8 +10,9 @@ const COLORS = {
   [TILE.WATER]: '#5aa8e8', [TILE.DEEP]: '#3a78c8', [TILE.CLIFF]: '#9a7a62', [TILE.VOID]: '#14161c', [TILE.STAIRS]: '#d0c0a4', [TILE.BRIDGE]: '#b8824e',
   [TILE.BRIDGEV]: '#b8824e', [TILE.PLAZA]: '#dcd4c6', [TILE.FLOOR]: '#c7925c', [TILE.WALL]: '#6a5040', [TILE.FOREST]: '#2c6c3a', [TILE.COURT]: '#d8b48a',
   [TILE.DARK]: '#4f8c4a', [TILE.TILEFLOOR]: '#e2e8ec', [TILE.MAT]: '#c84a3c', [TILE.CAVE]: '#7a6658', [TILE.ROCK]: '#3e3238', [TILE.CAVEDOOR]: '#1a1214',
+  [TILE.GOLD]: '#b8c860', [TILE.MUD]: '#6a4a32', [TILE.CORN]: '#8aa83a', [TILE.CLIMB]: '#4e7a3a', [TILE.WEBG]: '#c8a83a', [TILE.WEBS]: '#9aa4ac', [TILE.SNOW]: '#eef4fa', [TILE.DOCK]: '#b8824e',
 };
-const ROOF = { houseA: '#a0603a', houseB: '#b8483a', houseC: '#8a8a96', houseBlue: '#3a6ad8', lab: '#e8eef2', center: '#e8483a', mart: '#3aa850', portico: '#c84a3c', stands: '#5a6a8a' };
+const ROOF = { houseA: '#9a5a3a', houseB: '#c84a3c', houseC: '#6a8a5a', houseBlue: '#3a6ad8', lab: '#8a94a4', center: '#e8483a', mart: '#3a7ae8', barn: '#b8402e', treeCenter: '#277a38', treeHouse: '#277a38', greenhouse: '#bfe8d0', radioStation: '#d8902a', portico: '#c84a3c', stands: '#5a6a8a' };
 const DIR_ANGLE = { up: 0, right: Math.PI / 2, down: Math.PI, left: -Math.PI / 2 };
 
 export class Minimap {
@@ -111,8 +112,9 @@ export class Minimap {
     }
     if (labels) {
       ctx.font = `800 ${Math.max(9, 5 * s)}px system-ui`; ctx.textAlign = 'center'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.fillStyle = '#2a2018';
-      for (const a of m.areas ?? []) {
-        if (a.name === 'Alvorada') continue;
+      const seen = new Set();
+      for (const a of [...(m.areas ?? [])].reverse()) {
+        if (a.name === 'Alvorada' || seen.has(a.name)) continue; seen.add(a.name);
         const [cx, cy] = a.rect ? [a.rect[0] + a.rect[2] / 2, a.rect[1] + a.rect[3] / 2] : [a.ellipse[0], a.ellipse[1]];
         if (fog && !this.life.visited.has(Math.floor(cx / 16) + Math.floor(cy / 16) * 64)) continue;
         ctx.strokeText(a.name, ox + cx * s, oy + cy * s); ctx.fillText(a.name, ox + cx * s, oy + cy * s);

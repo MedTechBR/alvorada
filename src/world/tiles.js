@@ -6,14 +6,18 @@ export const T = 16;
 export const TILE = {
   GRASS: 0, GRASS2: 1, TALL: 2, PATH: 3, WATER: 4, SAND: 5, FLOWERS: 6, DEEP: 7, CLIFF: 8,
   VOID: 9, STAIRS: 10, BRIDGE: 11, PLAZA: 12, FLOOR: 13, WALL: 14, FOREST: 15, COURT: 16, DARK: 17, TILEFLOOR: 18, MAT: 19, BRIDGEV: 20, CAVE: 21, ROCK: 22, CAVEDOOR: 23,
+  GOLD: 24, MUD: 25, CORN: 26, CLIMB: 27, WEBG: 28, WEBS: 29, SNOW: 30, DOCK: 31,
 };
-export const SOLID = new Set([TILE.WATER, TILE.DEEP, TILE.CLIFF, TILE.VOID, TILE.WALL, TILE.FOREST, TILE.ROCK]);
+export const SOLID = new Set([TILE.WATER, TILE.DEEP, TILE.CLIFF, TILE.VOID, TILE.WALL, TILE.FOREST, TILE.ROCK, TILE.MUD, TILE.CORN, TILE.CLIMB]);
+// Barreiras que as montarias vencem (map.setMount): lama funda (Correr), água (Nadar), paredão com trepadeira (Escalar)
+export const MOUNT_PASS = { correr: [TILE.MUD], nadar: [TILE.WATER, TILE.DEEP], escalar: [TILE.CLIMB] };
 export const SWIMMABLE = new Set([TILE.WATER, TILE.DEEP]);
 // Caracteres do formato de mapa em texto (assets/maps/alvorada.json, campo "rows" dos carimbos)
 export const CHARS = {
   '.': TILE.GRASS, ',': TILE.GRASS2, '"': TILE.TALL, '=': TILE.PATH, '~': TILE.WATER, ':': TILE.SAND, '*': TILE.FLOWERS, 'W': TILE.DEEP,
   '#': TILE.CLIFF, '_': TILE.VOID, '^': TILE.STAIRS, 'B': TILE.BRIDGE, 'b': TILE.BRIDGEV, 'P': TILE.PLAZA, 'f': TILE.FLOOR, 'w': TILE.WALL,
   'F': TILE.FOREST, 'c': TILE.COURT, 'd': TILE.DARK, 't': TILE.TILEFLOOR, 'm': TILE.MAT, 'k': TILE.CAVE, 'r': TILE.ROCK, 'O': TILE.CAVEDOOR,
+  'g': TILE.GOLD, 'L': TILE.MUD, 'M': TILE.CORN, 'V': TILE.CLIMB, 'y': TILE.WEBG, 'x': TILE.WEBS, 's': TILE.SNOW, 'D': TILE.DOCK,
 };
 export const NAMES = Object.fromEntries(Object.entries(TILE).map(([k, v]) => [k.toLowerCase(), v]));
 

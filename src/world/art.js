@@ -58,6 +58,7 @@ export const GROUND = {
   dark: [pix(NAT, 8, 0), pix(NAT, 9, 0), pix(NAT, 8, 1), pix(NAT, 9, 1)].map((p) => adjust(p, (r, g, b) => [r * 0.82 + 6, g * 0.86, b * 0.62])),
   sand: [pix(NAT, 32, 0), pix(NAT, 33, 0), pix(NAT, 32, 1), pix(NAT, 33, 1)].map((p) => adjust(p, lighten(0.18))),
   path: [pix(OUT, 16, 3), pix(OUT, 17, 3), pix(OUT, 21, 3), pix(OUT, 21, 5)].map((p) => adjust(p, (r, g, b) => [r * 1.12 + 22, g * 1.08 + 14, b * 0.95 + 4])),
+  gold: [pix(NAT, 16, 0), pix(NAT, 17, 0), pix(NAT, 16, 1), pix(NAT, 17, 1)].map((p) => adjust(p, (r, g, b) => [r * 1.4 + 128, g * 0.95 + 22, b * 0.6 + 42])),
   cliff: [pix(NAT, 18, 2), pix(NAT, 19, 2), pix(NAT, 20, 2)],
   rim: [pix(NAT, 18, 1), pix(NAT, 19, 1), pix(NAT, 20, 1)],
 };
@@ -108,6 +109,23 @@ GROUND.rockface = rgba((x) => {
   px(x, '#4e3c34', 0, 15, 16, 1);
 });
 GROUND.cavedoor = rgba((x) => { px(x, '#8a7262', 0, 0, 16, 16); px(x, '#1a1214', 2, 3, 12, 13); px(x, '#1a1214', 4, 1, 8, 2); px(x, '#2e2226', 3, 4, 2, 12); });
+GROUND.mud = [0, 1].map((v) => rgba((x) => {
+  px(x, '#6a4a32', 0, 0, 16, 16); const r = rng(70 + v);
+  for (let i = 0; i < 6; i++) { const X = Math.floor(r() * 13), Y = Math.floor(r() * 14); px(x, '#54382a', X, Y, 4, 2); px(x, '#8a6448', X + 1, Y, 2, 1); }
+  for (let i = 0; i < 3; i++) px(x, 'rgba(160,200,230,0.55)', Math.floor(r() * 12), Math.floor(r() * 14), 3, 1);
+}));
+GROUND.climbVine = rgba((x) => {
+  for (let i = 0; i < 3; i++) { const X = 2 + i * 5; for (let y = 0; y < 16; y++) px(x, (y + i) % 3 ? '#2f8a3a' : '#4cc25a', X + (Math.floor(y / 4) % 2), y, 1, 1); px(x, '#4cc25a', X - 1, (i * 5 + 3) % 16, 3, 2); }
+});
+GROUND.webg = rgba((x) => {
+  px(x, '#1e3a2a', 0, 0, 16, 16); px(x, '#f2c94c', 0, 7, 16, 2); px(x, '#f2c94c', 7, 0, 2, 16); px(x, '#c89a2a', 0, 0, 1, 1);
+  x.strokeStyle = 'rgba(242,201,76,0.6)'; x.beginPath(); x.moveTo(0, 0); x.lineTo(16, 16); x.moveTo(16, 0); x.lineTo(0, 16); x.stroke();
+});
+GROUND.webs = rgba((x) => {
+  px(x, '#1e3a2a', 0, 0, 16, 16); px(x, '#c8d4dc', 0, 7, 16, 1); px(x, '#c8d4dc', 7, 0, 1, 16);
+  x.strokeStyle = 'rgba(200,212,220,0.45)'; x.beginPath(); x.moveTo(0, 0); x.lineTo(16, 16); x.moveTo(16, 0); x.lineTo(0, 16); x.stroke();
+});
+GROUND.snow = [0, 1].map((v) => rgba((x) => { px(x, '#eef4fa', 0, 0, 16, 16); const r = rng(90 + v); for (let i = 0; i < 6; i++) px(x, '#d4e0ec', Math.floor(r() * 15), Math.floor(r() * 15), 2, 1); px(x, '#ffffff', Math.floor(r() * 14), Math.floor(r() * 14), 1, 1); }));
 GROUND.mat = rgba((x) => { px(x, '#c84a3c', 1, 3, 14, 10); px(x, '#e8705c', 2, 4, 12, 1); px(x, '#a43a30', 1, 12, 14, 1); });
 
 // ---------------- água animada ----------------
@@ -167,13 +185,26 @@ function tallGrass(lean) {
 const TALL0 = outline(tallGrass(0), [22, 64, 34]), TALL1 = outline(tallGrass(1.5), [22, 64, 34]), TALL2 = outline(tallGrass(-1.5), [22, 64, 34]);
 export const TALL = [texOf(TALL0), texOf(TALL1), texOf(TALL2)];
 
+// milharal (labirinto do ginásio de Campina): pé de milho alto, sólido
+function corn(lean) {
+  return canvas(16, 30, (x) => {
+    for (const [cx, h, dk] of [[4, 26, 1], [11, 28, 0], [8, 22, 1]]) {
+      const top = 30 - h, k = lean;
+      px(x, dk ? '#4e8a2a' : '#6aa83a', cx + Math.round(k * 0.5), top + 4, 2, h - 4); px(x, '#3a6e22', cx + 1 + Math.round(k * 0.5), top + 6, 1, h - 6);
+      for (let j = 0; j < 3; j++) { const ly = top + 8 + j * 6, d = j % 2 ? -1 : 1; px(x, '#7cc24a', cx + d * 2 + Math.round(k), ly, 4 * d > 0 ? 4 : 3, 1); px(x, '#5a9a32', cx + d * 4 + Math.round(k), ly + 1, 2, 1); }
+      px(x, '#f2d24c', cx - 1 + Math.round(k), top + 9, 3, 6); px(x, '#c8a02a', cx - 1 + Math.round(k), top + 14, 3, 1); px(x, '#e8e0a0', cx + Math.round(k), top, 1, 4);
+    }
+  });
+}
+export const CORN = [texOf(outline(corn(0), [40, 56, 24])), texOf(outline(corn(1.2), [40, 56, 24])), texOf(outline(corn(-1.2), [40, 56, 24]))];
+
 // árvore grande (48x64) e árvore frutífera — em proporção com Pokémon de até 48 px
-function bigTree(fruit, autumn) {
+function bigTree(fruit, autumn, pal) {
   const c = canvas(48, 66, (x) => {
     ell(x, 24, 61, 17, 4, 'rgba(0,0,0,0.22)');
     px(x, '#6b4428', 20, 40, 9, 22); px(x, '#8a5a34', 21, 40, 3, 22); px(x, '#4e301c', 27, 42, 2, 20);
     px(x, '#6b4428', 16, 58, 4, 3); px(x, '#6b4428', 29, 58, 4, 3);
-    const g = autumn ? ['#a8541c', '#d8802a', '#f2b048', '#ffd77a'] : ['#1f6e34', '#2f9a45', '#4cc25a', '#8be37a'];
+    const g = pal ?? (autumn ? ['#a8541c', '#d8802a', '#f2b048', '#ffd77a'] : ['#1f6e34', '#2f9a45', '#4cc25a', '#8be37a']);
     [[24, 24, 19], [11, 32, 11], [37, 32, 11], [16, 15, 11], [32, 15, 11], [24, 9, 10]].forEach(([a, b, r]) => blob(x, a, b, r, g[0]));
     [[24, 22, 16], [13, 29, 8], [35, 29, 8], [17, 14, 9], [31, 14, 9], [24, 9, 8]].forEach(([a, b, r]) => blob(x, a, b, r, g[1]));
     [[20, 16, 8], [30, 12, 6], [14, 24, 5], [25, 8, 5]].forEach(([a, b, r]) => blob(x, a, b, r, g[2]));
@@ -185,6 +216,19 @@ function bigTree(fruit, autumn) {
 }
 SPR.bigtree = texOf(bigTree(null));
 SPR.bigautumn = texOf(bigTree(null, true));
+SPR.ipe = texOf(bigTree(null, false, ['#b88a10', '#e8b818', '#ffd83a', '#fff09a']));
+SPR.paineira = texOf(bigTree(null, false, ['#b84a7a', '#e070a0', '#ff9ac4', '#ffd0e4']));
+// jequitibá gigante (64x96): tronco largo com raízes, copa enorme
+SPR.jequitiba = texOf(outline(canvas(72, 100, (x) => {
+  ell(x, 36, 95, 30, 5, 'rgba(0,0,0,.25)');
+  px(x, '#5a3a22', 26, 52, 20, 44); px(x, '#7a5236', 28, 52, 6, 44); px(x, '#3e2616', 42, 54, 3, 40);
+  for (const [a, w] of [[18, 10], [44, 12], [12, 6], [54, 7]]) { px(x, '#5a3a22', a, 88, w, 8); px(x, '#7a5236', a + 1, 88, 2, 6); }
+  const g = ['#1a5a2c', '#277a38', '#3aa04a', '#7ad86a'];
+  [[36, 34, 30], [14, 44, 15], [58, 44, 15], [20, 22, 16], [52, 22, 16], [36, 12, 15]].forEach(([a, b, r]) => blob(x, a, b, r, g[0]));
+  [[36, 32, 25], [17, 41, 11], [55, 41, 11], [22, 21, 12], [50, 21, 12], [36, 12, 12]].forEach(([a, b, r]) => blob(x, a, b, r, g[1]));
+  [[30, 22, 12], [46, 16, 9], [18, 34, 7], [36, 8, 7]].forEach(([a, b, r]) => blob(x, a, b, r, g[2]));
+  [[26, 16, 4], [42, 10, 3], [15, 30, 3]].forEach(([a, b, r]) => blob(x, a, b, r, g[3]));
+})));
 SPR.oran = texOf(bigTree(['#3a6ee8', '#bcd4ff']));
 SPR.pecha = texOf(bigTree(['#ff7aa8', '#ffe0ec']));
 SPR.berryless = SPR.bigtree;
@@ -241,6 +285,22 @@ SPR.haybale = texOf(outline(canvas(16, 16, (x) => {
   ell(x, 8, 14, 7, 2, 'rgba(0,0,0,.2)');
   px(x, '#d8a838', 1, 3, 14, 11); px(x, '#f2cc5a', 1, 3, 14, 3); px(x, '#b88a28', 1, 12, 14, 2);
   for (let i = 0; i < 5; i++) px(x, '#c0922e', 2 + i * 3, 6, 1, 6); px(x, '#8a5a34', 1, 8, 14, 1);
+})));
+SPR.gate = texOf(outline(canvas(32, 20, (x) => {
+  px(x, '#6b4428', 0, 2, 4, 18); px(x, '#6b4428', 28, 2, 4, 18); px(x, '#8a5a34', 1, 2, 1, 18); px(x, '#8a5a34', 29, 2, 1, 18);
+  for (const y of [5, 10, 15]) { px(x, '#c08a56', 4, y, 24, 3); px(x, '#d9a46c', 4, y, 24, 1); }
+  x.strokeStyle = '#a8744a'; x.lineWidth = 2; x.beginPath(); x.moveTo(5, 17); x.lineTo(27, 5); x.stroke();
+  px(x, '#f2c94c', 14, 0, 4, 4);
+})));
+SPR.menhir = texOf(outline(canvas(18, 40, (x) => {
+  ell(x, 9, 37, 8, 2.5, 'rgba(0,0,0,.22)');
+  x.fillStyle = '#8a8a96'; x.beginPath(); x.moveTo(3, 38); x.lineTo(2, 10); x.lineTo(7, 2); x.lineTo(13, 3); x.lineTo(16, 12); x.lineTo(15, 38); x.fill();
+  px(x, '#a8a8b4', 4, 8, 3, 28); px(x, '#6a6a76', 13, 12, 2, 26); px(x, '#5ab45a', 3, 30, 4, 3); px(x, '#c8b04a', 8, 16, 2, 2); px(x, '#c8b04a', 8, 22, 2, 2);
+})));
+SPR.column = texOf(outline(canvas(16, 34, (x) => {
+  ell(x, 8, 31, 7, 2, 'rgba(0,0,0,.2)');
+  px(x, '#d8d0c0', 3, 6, 10, 26); px(x, '#f2ece0', 4, 6, 2, 26); px(x, '#a8a090', 11, 6, 2, 26);
+  px(x, '#c8c0b0', 1, 2, 14, 4); px(x, '#c8c0b0', 1, 30, 14, 3); px(x, '#5ab45a', 2, 0, 5, 3);
 })));
 SPR.wheat = texOf(canvas(16, 16, (x) => {
   for (let r = 0; r < 2; r++) for (let i = 0; i < 4; i++) {
@@ -316,6 +376,12 @@ SPR.pc = furn(16, 26, (x) => { px(x, '#9aa4b0', 0, 4, 16, 22); px(x, '#3a4a5a', 
 SPR.machine = furn(32, 30, (x) => { px(x, '#c4ccd6', 0, 4, 32, 26); px(x, '#e2e8ee', 1, 5, 30, 3); px(x, '#3a4a5a', 3, 10, 12, 8); px(x, '#7ae8b0', 4, 11, 4, 2); for (let i = 0; i < 4; i++) blob(x, 20 + (i % 2) * 6, 12 + Math.floor(i / 2) * 6, 2, ['#e8584a', '#f2c94c', '#4c9ae8', '#5ab45a'][i]); });
 SPR.counter = furn(64, 22, (x) => { px(x, '#e8eef2', 0, 0, 64, 22); px(x, '#ffffff', 0, 0, 64, 4); px(x, '#e8584a', 0, 8, 64, 3); px(x, '#b8c2cc', 0, 20, 64, 2); });
 SPR.balltable = furn(40, 22, (x) => { px(x, '#a8744a', 0, 6, 40, 10); px(x, '#c7925c', 1, 7, 38, 2); px(x, '#6b4428', 2, 16, 3, 6); px(x, '#6b4428', 35, 16, 3, 6); for (let i = 0; i < 3; i++) { blob(x, 8 + i * 12, 5, 4, '#f4f4f4'); x.fillStyle = '#e5383b'; x.beginPath(); x.arc(8 + i * 12, 5, 4, Math.PI, 0); x.fill(); px(x, '#2a2a2a', 4 + i * 12, 5, 8, 1); } });
+SPR.radio = furn(16, 18, (x) => { px(x, '#8a5a34', 0, 4, 16, 14); px(x, '#c7925c', 1, 5, 14, 2); blob(x, 5, 11, 3.5, '#3a3030'); px(x, '#f2c94c', 10, 9, 4, 2); px(x, '#f2c94c', 10, 13, 4, 1); px(x, '#5a5a62', 12, 0, 1, 5); });
+SPR.luzita = texOf(outline(canvas(14, 16, (x) => {
+  x.fillStyle = '#5ae8e0'; x.beginPath(); x.moveTo(7, 0); x.lineTo(11, 8); x.lineTo(7, 15); x.lineTo(3, 8); x.fill();
+  x.fillStyle = '#3ab0c8'; x.beginPath(); x.moveTo(11, 8); x.lineTo(7, 15); x.lineTo(7, 4); x.fill();
+  px(x, '#d8fffa', 6, 3, 1, 5); x.fillStyle = '#4ad0d8'; x.beginPath(); x.moveTo(2, 9); x.lineTo(4, 15); x.lineTo(0, 15); x.fill();
+}), [20, 60, 70]));
 SPR.rug = texOf(canvas(32, 16, (x) => { px(x, '#c84a3c', 0, 0, 32, 16); px(x, '#e8a03a', 2, 2, 28, 12); px(x, '#c84a3c', 4, 4, 24, 8); }));
 SPR.window = texOf(canvas(16, 10, (x) => { px(x, '#8a5a34', 0, 0, 16, 10); px(x, '#9ad4ff', 1, 1, 14, 8); px(x, '#d8f0ff', 2, 2, 5, 3); px(x, '#8a5a34', 7, 1, 2, 8); }));
 
