@@ -49,6 +49,11 @@ export class Sobreposicao {
     for (const c of climas) c.visible = false;
     this.mRT.set(k, 0, 0, k, -p.x0 * k, -p.y0 * k);
     R.render({ container: W, target: this.rt, clear: true, clearColor: [0, 0, 0, 0], transform: this.mRT });
+    // desenhos em coordenadas de mundo que moram fora do mundo do Pixi: perigos da arena de ginásio dentro de
+    // ents (Graphics na origem) e a camada de cima da arena (que copia a câmera 2D)
+    for (const c of ents.children) if (c.renderPipeId === 'graphics' && !c.x && !c.y && c.visible) R.render({ container: c, target: this.rt, clear: false, transform: this.mRT });
+    const topo = g.arenaGinasio?.topo;
+    if (topo && !topo.destroyed && topo.visible) { const ga = topo.children[0]; if (ga) R.render({ container: ga, target: this.rt, clear: false, transform: this.mRT }); }
     if (root) root.visible = vr; ents.visible = ve;
     for (const c of climas) c.visible = true;
     // a grade: posição = projeção do ponto do chão; uv = a parte usada da textura
@@ -64,6 +69,7 @@ export class Sobreposicao {
     // 2) tela: textura projetada + HUD do Pixi (o mundo fica de fora: ele já está na textura)
     const vw = W.visible; W.visible = false;
     const escTela = this.#esconderTela(stage);
+    const topo = g.arenaGinasio?.topo; if (topo && !topo.destroyed && topo.visible) { topo.visible = false; escTela.push(topo); }
     R.render({ container: stage });
     for (const c of escTela) c.visible = true;
     W.visible = vw;
@@ -78,7 +84,7 @@ export class Sobreposicao {
     // quem tem rótulo (barra, nome, balão, "!") é reavaliado 2x por segundo; no resto dos quadros só essa lista
     if ((v.t * 2 | 0) !== this.ultimo || !this.comRotulo) {
       this.ultimo = v.t * 2 | 0;
-      this.comRotulo = ents.children.filter((c) => this.#desenhoDeTela(c));
+      this.comRotulo = ents.children.filter((c) => !(c.renderPipeId === 'graphics' && !c.x && !c.y) && this.#desenhoDeTela(c));
     }
     for (const c of this.comRotulo) {
       if (c.destroyed || !c.parent || !c.visible || c.alpha <= 0.01) continue;
