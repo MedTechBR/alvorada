@@ -337,8 +337,9 @@ export class Poder {
     if (b.poder.usado) return;
     const alvo = g.lead?.alive ? g.lead : null;
     for (const e of b.active) {
-      if (!e.alive || e.poderBusy || e.lock > 0.3) continue;
+      if (!e.alive || e.poderBusy) continue;
       e.campoT = (e.campoT ?? 0) + dt;
+      if (e.charging || e.dashing) continue;
       if (!alvo || Math.hypot(alvo.x - e.x, alvo.y - e.y) > 200) continue;
       const last = b.next >= b.team.length; // o último (o "ás"): Dynamax e Mega na hora em que ele entra
       const mega = megaFormFor(e.mon);

@@ -239,7 +239,7 @@ export class Hud {
     const el = this.trainerEl;
     if (!b || b.done) { this.#set('foe', '', () => { el.hidden = true; }); return; }
     const balls = b.team.map((m, i) => (m.fainted ? 'k' : i < b.next ? 'o' : 'r')).join('');
-    const act = b.active.filter((e) => e.alive).map((e) => `${e.mon.uid}:${Math.round(e.mon.hp / e.mon.stats.hp * 100)}:${e.mon.status ?? ''}`).join('|');
+    const act = b.active.filter((e) => e.alive).map((e) => `${e.mon.uid}:${e.mon.spriteKey}:${Math.round(e.mon.hp / e.mon.stats.hp * 100)}:${e.mon.status ?? ''}`).join('|');
     this.#set('foe', `${b.def.name}#${balls}#${act}`, () => {
       el.hidden = false;
       el.innerHTML = `<div class="fo-top"><b>${esc(b.def.name)}</b><span class="fo-balls">${[...balls].map((c) => `<i class="${c === 'k' ? 'ko' : c === 'o' ? 'out' : ''}"></i>`).join('')}</span></div>` +
