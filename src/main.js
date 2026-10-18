@@ -3,7 +3,7 @@ import { Input, IS_TOUCH } from './engine/input.js';
 import { Fx } from './engine/fx.js';
 import { makeTiles, T, TILE } from './world/tiles.js';
 import { GameMap } from './world/map.js';
-import { makeTrainerFrames, dir4 } from './sprites/trainer.js';
+import { makeTrainerFrames, dir4 } from './sprites/characters.js';
 import { loadPokemonSprites } from './sprites/pmd.js';
 import { PokeEntity } from './entities/pokemon.js';
 import { Combat } from './combat/combat.js';
@@ -308,7 +308,7 @@ class Game {
     p.speed = Math.hypot(p.vx, p.vy);
     if (p.speed > 10) p.dir = dir4(p.vx, p.vy);
     const step = p.speed > 10 ? Math.floor(p.t * (run ? 11 : 7.5)) % 4 : 0;
-    p.body.texture = p.frames[p.dir][step];
+    p.body.texture = (run && p.speed > 90 ? p.frames.run : p.frames.walk ?? p.frames)[p.dir][step];
     p.body.alpha = p.iframes > 0 && Math.sin(p.t * 40) > 0 ? 0.5 : 1;
     p.view.x = Math.round(p.x); p.view.y = Math.round(p.y); p.view.zIndex = p.y;
     if (this.map.tallAt(p.x, p.y) && p.speed > 20 && Math.random() < dt * 4) this.fx.emit(p.x, p.y - 2, { color: 0x5aa84e, n: 2, speed: 25, size: 3, life: 0.35, add: false, grav: 120, vz: 40 });
