@@ -30,11 +30,13 @@ const XP_SHARE = 0.5; // parte da XP que vai para quem ficou na equipe
 const ALPHA_DROPS = [['greatBall', 2, 30], ['superPotion', 2, 25], ['stardust', 1, 14], ['pearl', 1, 14], ['bigMushroom', 1, 6], ['rareCandy', 1, 7], ['nugget', 1, 4]];
 
 const $ = (id) => document.getElementById(id);
+// ?visual=3d: o mundo é desenhado em 3D (src/visual3d); a lógica é a mesma. ?visual=2d força o 2D.
+const VISUAL_3D = new URLSearchParams(location.search).get('visual') === '3d';
 
 class Game {
   async init() {
     this.app = new PIXI.Application();
-    await this.app.init({ resizeTo: window, background: 0x1b2a1e, antialias: false, roundPixels: true, resolution: 1, preference: 'webgl', powerPreference: 'high-performance' });
+    await this.app.init({ resizeTo: window, background: 0x1b2a1e, backgroundAlpha: VISUAL_3D ? 0 : 1, antialias: false, roundPixels: true, resolution: 1, preference: 'webgl', powerPreference: 'high-performance' });
     $('game').appendChild(this.app.canvas);
     window.__boot?.(0.74, 'Desenhando o mundo…');
     PIXI.TextureSource.defaultOptions.scaleMode = 'nearest';
@@ -76,6 +78,11 @@ class Game {
     this.net = new Online(this); // modo online (src/net): salas, outros jogadores, troca e PvP
     this.app.ticker.maxFPS = 0;
     this.app.ticker.add((tk) => this.frame(Math.min(0.05, tk.deltaMS / 1000)));
+    if (VISUAL_3D) {
+      window.__boot?.(0.95, 'Montando o mundo em 3D…');
+      try { const { Visual3D } = await import('./visual3d/index.js'); this.v3d = new Visual3D(this); this.v3d.instalar(); }
+      catch (e) { console.error('[3D] não deu para ligar o visual 3D; seguindo em 2D', e); this.v3d = null; this.app.renderer.background.alpha = 1; }
+    }
     window.game = this;
     // tela de título (conta + personagem); depois o primeiro Pokémon sai da bola e a história começa
     // ?teste=1: entra direto com equipe de teste e sem gravar (para testes; não aparece para o jogador)
@@ -507,6 +514,7 @@ class Game {
     return { x: lead.x + fd[0] * 120, y: lead.y + fd[1] * 120 };
   }
   screenToWorld(sx, sy) { return { x: (sx - this.world.x) / this.zoom, y: (sy - this.world.y) / this.zoom }; }
+  worldToScreen(x, y, h = 0) { return { x: this.world.x + x * this.zoom, y: this.world.y + (y - h) * this.zoom }; }
 
   #control(dt) {
     const inp = this.input, p = this.player;
@@ -622,7 +630,7 @@ class Game {
     this.world.x = Math.round(innerWidth / 2 - (c.x + sx) * z);
     this.world.y = Math.round(innerHeight / 2 - (c.y + sy) * z);
     const hw = innerWidth / 2 / z + 40, hh = innerHeight / 2 / z + 40;
-    this.map.cullChunks({ x0: c.x - hw, x1: c.x + hw, y0: c.y - hh, y1: c.y + hh });
+    if (this.v3d) this.v3d.cull(); else this.map.cullChunks({ x0: c.x - hw, x1: c.x + hw, y0: c.y - hh, y1: c.y + hh });
     const area = this.map.areaName(p.x, p.y);
     if (area !== this.area) { this.area = area; this.missoes?.evento('area', { nome: area }); const el = $('area'); el.textContent = area; el.classList.add('on'); clearTimeout(this.areaT); this.areaT = setTimeout(() => el.classList.remove('on'), 2500); }
   }
