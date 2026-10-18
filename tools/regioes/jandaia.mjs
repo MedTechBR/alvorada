@@ -9,6 +9,7 @@ import { Colocador } from './jandaia-util.mjs';
 import { vila, salasVila } from './jandaia-vila.mjs';
 import { templo } from './jandaia-templo.mjs';
 import { mundo, COCOS } from './jandaia-mundo.mjs';
+import { treinadores } from './jandaia-treinadores.mjs';
 
 const M = new Mapa('jandaia', RECT);
 terreno(M); detalhes(M);
@@ -39,6 +40,7 @@ J.people = [{ id: 'barqueiro_jandaia', name: 'Barqueiro', look: { preset: 'monta
 
 vila(M, C, J); salasVila(J); templo(J); mundo(M, C, J);
 console.log('COCOS', JSON.stringify(COCOS));
+console.log('treinadores', JSON.stringify(treinadores(M, J)));
 J.objects = C.objects;
 if (C.avisos.length) console.log('AVISOS:\n  ' + C.avisos.join('\n  '));
 const saida = join(raiz, 'assets/maps/regioes/jandaia.json');

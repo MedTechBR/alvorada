@@ -93,7 +93,7 @@ export function templo(J) {
       { kind: 'barsGate', x: 14, y: 11, id: 'gradeS1' }, { kind: 'barsGate', x: 15, y: 11, id: 'gradeS2', msg: 'As grades de raiz se abriram em volta do altar!' },
       { kind: 'altar', x: 14, y: 8, id: 'altar_bulu', pede: null, text: 'O altar tem uma depressão do tamanho de uma semente. Lá no fundo, uma luz espera.' },
       { kind: 'chest', x: 17, y: 8, item: 'tabuleta_raiz_3', itemNome: 'Tabuleta de Raiz (3)', id: 'bauTab3' },
-      { kind: 'luzita', x: 3, y: 4 }, { kind: 'luzita', x: 26, y: 12 }, { kind: 'crystalPink', x: 14, y: 4 }, { kind: 'chest', x: 26, y: 4, item: 'tm_leafStorm', itemNome: 'MT Tempestade de Folhas', id: 'bauMT' },
+      { kind: 'luzita', x: 3, y: 4 }, { kind: 'luzita', x: 26, y: 12 }, { kind: 'crystalPink', x: 14, y: 4 }, { kind: 'chest', x: 26, y: 4, item: 'rareCandy', n: 2, id: 'bauMT' },
       { kind: 'sign', x: 3, y: 12, text: 'Quatro raízes apagadas. Quando acordarem, a Semente também.' },
     ],
     decor: [], spots: { tapu_bulu: [14, 9, 'down'], dentro_templo_raizes_3: [3, 4, 'down'] },
