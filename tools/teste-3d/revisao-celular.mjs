@@ -32,7 +32,10 @@ try {
   await sleep(2500); await foto('3-inicio');
   await passo('historia', async () => {
     await P.ev('(motor(), 1)');
-    const ok = await until(() => P.ev('game.party.length > 0'), 120000, 1000);
+    // a história pede para ir ao laboratório: leva o jogador até a porta de dentro (o resto a cena faz)
+    await sleep(3000);
+    await P.ev(`(() => { const s = Object.keys(game.map.spots).find((k) => k.startsWith('dentro_lab')); const p = game.map.spots[s]; if (p) { game.player.x = p.x; game.player.y = p.y; game.cam.x = p.x; game.cam.y = p.y; } return s; })()`);
+    const ok = await until(() => P.ev('game.party.length > 0'), 150000, 1000);
     await sleep(1500); await foto('4-inicial');
     return 'equipe ' + (await P.ev('game.party.map((m) => m.name).join(",")')) + (ok ? '' : ' (sem inicial)');
   });

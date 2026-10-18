@@ -8,12 +8,12 @@ const out = new URL('../shots/', import.meta.url); mkdirSync(out, { recursive: t
 const CENAS = {
   interior: `const s = g.map.spots['dentro_casa_jogador']; g.player.x = s.x; g.player.y = s.y + 24; g.cam.x = s.x; g.cam.y = s.y;`,
   centro: `const s = g.map.spots['dentro_centro_campina'] ?? Object.entries(g.map.spots).find(([k]) => k.startsWith('dentro_centro'))[1]; g.player.x = s.x; g.player.y = s.y; g.cam.x = s.x; g.cam.y = s.y;`,
-  noite: `g.mundo.setHour(21.5); g.player.x = 297 * 16; g.player.y = 340 * 16;`,
+  noite: `g.mundo.setHour(21.5); const s = g.map.spots.inicio; g.player.x = s.x + 20; g.player.y = s.y + 30; g.cam.x = g.player.x; g.cam.y = g.player.y;`,
   tarde: `g.mundo.setHour(17.4); g.player.x = 297 * 16; g.player.y = 347 * 16;`,
   batalha: `g.player.x = 318 * 16; g.player.y = 292 * 16; g.cam.x = g.player.x; g.cam.y = g.player.y;
     await g.spawnWild(); await g.spawnWild(); const w = g.wilds.find((q) => q.alive); if (w) { w.x = g.player.x + 70; w.y = g.player.y - 50; w.ai.state = 'aggro'; w.aggroTarget = g.player; }
-    g.throwMon(0, g.player.x + 20, g.player.y - 10); await new Promise((r) => setTimeout(r, 1200));
-    if (w) { w.mon.level = Math.max(w.mon.level, 30); w.mon.stats = null; w.mon.calc?.(); w.mon.hp = w.mon.stats?.hp ?? w.mon.hp; }
+    g.throwMon(0, g.player.x + 20, g.player.y - 10); await new Promise((r) => setTimeout(r, 1200)); if (w) { w.x = g.player.x + 60; w.y = g.player.y - 50; w.hpShow = 9; }
+    if (w) { w.busy = false; w.lock = 99; w.mon.level = Math.max(w.mon.level, 30); w.mon.stats = null; w.mon.calc?.(); w.mon.hp = w.mon.stats?.hp ?? w.mon.hp; }
     for (let i = 0; i < 3; i++) { const L = g.lead; if (L && w?.alive) { L.cds = [0, 0, 0, 0]; g.combat.use(L, 0, w.x, w.y - 8); } await new Promise((r) => setTimeout(r, 300)); }`,
   voar: `g.player.x = 297 * 16; g.player.y = 340 * 16; g.unlockMount('voar', { silent: true }); g.mount.fly?.(); await new Promise((r) => setTimeout(r, 2500)); g.player.y -= 40;`,
   correr: `g.player.x = 318 * 16; g.player.y = 292 * 16; g.unlockMount('correr', { silent: true }); await g.mount.call('correr');`,
