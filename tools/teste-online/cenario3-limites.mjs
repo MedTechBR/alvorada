@@ -10,7 +10,9 @@ try {
   const names = { a: 'Ana', b: '<img src=x onerror=alert(1)>', c: 'Caio' };
   for (const k of ['a', 'b', 'c']) { P[k] = await open(b, `${base}&perfil=${k}&nome=${encodeURIComponent(names[k])}`, k); await sleep(2500); }
   for (const p of Object.values(P)) { await until(() => p.ev('!!window.game?.net'), 30000); await p.ev(`(window.__pump ??= setInterval(() => { if (document.hidden) game.frame(1 / 30); }, 33), 1)`); }
-  await sleep(6000);
+  const t0 = Date.now();
+  await until(async () => (await Promise.all(Object.values(P).map((p) => p.ev('game.net.on')))).every(Boolean), 60000, 500);
+  log('tempo até todos entrarem:', ((Date.now() - t0) / 1000).toFixed(1) + 's', 'erro de c:', await P.c.ev('game.net.world.lastError ?? null'));
   log('CANAL CHEIO (máx 2):', { a: await st(P.a), b: await st(P.b), c: await st(P.c) });
   log('NOME malicioso visto pelos outros:', await P.a.ev(`game.net.room.roster.map(p => p.name)`), '| img no DOM?', await P.a.ev(`(game.net.ui.toggleMenu(), !!document.querySelector('#net-menu img'))`));
   await P.a.ev('(game.net.ui.closeMenu(), 1)');
