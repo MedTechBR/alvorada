@@ -25,6 +25,7 @@ import { BIOMAS_PADRAO, BIOMAS_NOITE } from './data/habitats-biomas.js'; // biom
 import { ITEM_INFO, itemInfo, itemName } from './data/items.js';
 import { rollShakes } from './mechanics/capture.js';
 import { setAmbiente, isNight as nightNow } from './mechanics/ambiente.js';
+import { formaRegionalEm } from './data/regioes.js';
 
 const XP_SHARE = 0.5; // parte da XP que vai para quem ficou na equipe
 const ALPHA_DROPS = [['greatBall', 2, 30], ['superPotion', 2, 25], ['stardust', 1, 14], ['pearl', 1, 14], ['bigMushroom', 1, 6], ['rareCandy', 1, 7], ['nugget', 1, 4]];
@@ -57,7 +58,8 @@ class Game {
     window.__boot?.(0.84, 'Acordando os Pokémon…');
     this.mundo = new WorldLife(this); // dia e noite, portas, bichinhos, minimapa
     // as mecânicas (Bola do Crepúsculo, evolução por hora, encontros) seguem o relógio do jogo, não o do aparelho
-    setAmbiente({ hora: () => this.mundo.hour, caverna: () => !!this.map.interiorAt(this.player.x, this.player.y)?.dark });
+    setAmbiente({ hora: () => this.mundo.hour, caverna: () => !!this.map.interiorAt(this.player.x, this.player.y)?.dark,
+      regiao: () => formaRegionalEm(this.map, this.player.x, this.player.y, MAP_ID) }); // evoluções regionais (src/data/regioes.js)
     // treinador e equipe
     this.player = this.#makeTrainer(this.map.spawn.x, this.map.spawn.y);
     this.mount = new Mounts(this); // montarias do treinador (X): src/world/mounts.js
