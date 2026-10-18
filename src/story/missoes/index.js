@@ -8,11 +8,12 @@ import * as espelho from './regiao-espelho.js';
 import * as sul from './regiao-sul.js';
 import * as geada from './regiao-geada.js';
 import * as brasas from './regiao-brasas.js';
+import * as sertao from './regiao-sertao.js';
 
 // Todas as missões secundárias, por região. Para uma região nova: crie regiao-<nome>.js exportando
 // MISSOES (lista), NPCS (objeto por id do NPC) e ITENS (itens de missão), e acrescente uma linha aqui.
 // Formato completo, com exemplos de cada tipo de etapa: docs/missoes.md.
-export const REGIOES = [alvorada, campina, sussurro, espelho, sul, geada, brasas];
+export const REGIOES = [alvorada, campina, sussurro, espelho, sul, geada, brasas, sertao];
 
 export const MISSOES = REGIOES.flatMap((r) => r.MISSOES ?? []);
 export const NPCS = {};
