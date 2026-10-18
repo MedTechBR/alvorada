@@ -30,10 +30,11 @@ export const DIFICULDADE = {
   d: (nivel) => clamp((nivel - 10) / 34, 0, 1),
   aviso: (d) => 1.3 - 0.4 * d,      // × tempo de aviso de cada perigo
   dano: (d) => 0.75 + 0.5 * d,      // × fração dos PS que o perigo tira
-  ritmo: (d) => 1.25 - 0.45 * d,    // × intervalo entre perigos
+  ritmo: (d) => 1.1 - 0.35 * d,     // × intervalo entre perigos
+  vigor: (d) => 1.7 + 0.3 * d,      // × PS máximos dos Pokémon do líder (a luta dura o bastante para a arena acontecer)
   reacao: (d) => 0.55 - 0.35 * d,   // s até a IA reagir a um aviso
   esperteza: (d) => 0.4 + 0.5 * d,  // chance de a IA usar a arena (peças, cobertura, fase)
-  lider: (d) => 11 - 4 * d,         // s entre um perigo acionado pelo líder e o próximo
+  lider: (d) => 9 - 3 * d,         // s entre um perigo acionado pelo líder e o próximo
 };
 
 export function arenaPara(b) {
@@ -56,6 +57,9 @@ export class ArenaGinasio {
     const d = this.d = DIFICULDADE.d(this.nivel);
     this.K = { aviso: DIFICULDADE.aviso(d), dano: DIFICULDADE.dano(d), ritmo: DIFICULDADE.ritmo(d) };
     this.reacao = DIFICULDADE.reacao(d); this.esperteza = DIFICULDADE.esperteza(d);
+    // Pokémon de líder aguentam mais (como chefe): sem isso a luta acabava em 30 s e a arena mal mudava de fase
+    const vg = cfg.vigor ?? DIFICULDADE.vigor(d);
+    for (const m of b.team) if (!m.vigorK) { m.vigorK = vg; m.calc(); m.hp = m.stats.hp; }
     this.t = 0; this.done = false; this.fase = -1; this.cenaT = 0; this.liderT = DIFICULDADE.lider(d) * 0.8;
     this.avisos = []; this.tiles = new Map(); this.blocks = new Map(); this.gfxs = []; this.ajudantes = [];
     this.ouvintes = []; this.lutT = 0; this.cache = [];

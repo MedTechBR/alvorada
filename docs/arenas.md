@@ -36,10 +36,11 @@ uma linha e opcionais (`g.arenaGinasio?.…`):
 |---|---|---|---|
 | × tempo de aviso | 1,30 | 1,17 | 0,90 |
 | × dano (fração dos PS máximos) | 0,75 | 0,91 | 1,25 |
-| × intervalo entre perigos | 1,25 | 1,11 | 0,80 |
+| × intervalo entre perigos | 1,10 | 0,99 | 0,75 |
+| × PS máximos dos Pokémon do líder | 1,70 | 1,80 | 2,00 |
 | reação da IA ao aviso | 0,55 s | 0,44 s | 0,20 s |
 | chance de a IA usar a arena | 40% | 56% | 90% |
-| líder aciona um perigo a cada | 11 s | 9,7 s | 7 s |
+| líder aciona um perigo a cada | 9 s | 8 s | 6 s |
 
 O dano dos perigos é **fração dos PS máximos** de quem apanha (6% a 12% na base), com o quadro de tipos (super efetivo
 ×1,25, resistido ×0,75, imune 0): justo em qualquer nível, e o perigo do tipo do líder costuma resistir no Pokémon dele.
