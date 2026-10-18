@@ -36,4 +36,4 @@ def itens_validos():
     return ids
 
 
-ITENS = itens_validos()
+ITENS = itens_validos() | {'tm%03d' % n for n in range(1, 230)} | {'chave_pequena', 'chave_mestra'}

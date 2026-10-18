@@ -47,6 +47,14 @@ def aplicar(ctx):
     R['spots']['brasas_cratera_borda'] = [1048, 807, 'down']
     ninho_moltres_pedras(ctx)
     R['interiors'] += [andar1(), andar2(), andar3()]
+    from catalogo import ITENS
+    for r in R['interiors']:
+        for o in r.get('objects', []):
+            if o.get('item') and o['item'] not in ITENS:
+                print('AVISO: item desconhecido no baú', r['id'], o['item'])
+        for it in r.get('items', []):
+            if it['item'] not in ITENS:
+                print('AVISO: item desconhecido no chão', r['id'], it['item'])
 
 
 # ---------------------------------------------------------------- Andar 1: Portal de Basalto
@@ -129,7 +137,7 @@ def andar2():
         {'kind': 'crackedRock', 'x': 12, 'y': 17, 'id': 'rocha_chave', 'chao': 'E', 'msg': 'A rocha cedeu e mostrou um nicho de pedra.'},
         bau(13, 19, 'chave_pequena', id='bau_chave'),
         {'kind': 'lockedDoor', 'x': 37, 'y': 10, 'id': 'porta_tesouro', 'chave': 'chave_pequena', 'gasta': True, 'msgTrancado': 'Trancada. A fechadura tem a forma de uma chama.'},
-        bau(36, 6, 'charizarditeX', id='bau_charizard'), bau(38, 6, 'fireStone', id='bau_pedra2'), bau(35, 8, 'tm_blastBurn', id='bau_mt'),
+        bau(36, 6, 'charizarditeX', id='bau_charizard'), bau(38, 6, 'fireStone', id='bau_pedra2'), bau(35, 8, 'tm153', id='bau_mt'),
         {'kind': 'torch', 'x': 34, 'y': 4, 'acesa': True}, {'kind': 'torch', 'x': 40, 'y': 4, 'acesa': True},
         {'kind': 'brazier', 'x': 4, 'y': 21, 'acesa': True},
         {'kind': 'mural', 'x': 3, 'y': 21, 'text': 'Mural: uma comporta e três braseiros. "O rio obedece a quem puxa a alavanca; ou a quem tem pressa e coragem."'},
