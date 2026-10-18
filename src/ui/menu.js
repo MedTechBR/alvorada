@@ -1198,6 +1198,7 @@ export class GameMenu {
       { k: 'vibrate', label: 'Vibrar ao acertar e ser atingido', type: 'bool', on: 'Ligado', off: 'Desligado' },
       { k: 'quality', label: 'Qualidade gráfica', type: 'choice', values: ['auto', 'alta', 'baixa'], show: (v) => QUALITY_PT[v] + (v === 'auto' && this.g.quality ? ` (${this.g.quality.level})` : '') },
       { k: 'fps', label: 'Mostrar FPS (F3)', type: 'bool', on: 'Sim', off: 'Não' },
+      { k: 'visual', label: 'Visual (vale ao reabrir)', type: 'choice', values: ['3d', '2d'], show: (v) => (v === '2d' ? '2D clássico' : '3D') },
       ...(this.g.v3d ? [{ k: 'camCinema', label: 'Movimentos de câmera (3D)', type: 'bool', on: 'Ligados', off: 'Só seguir' }] : []),
     ];
     const set = (r, v) => {

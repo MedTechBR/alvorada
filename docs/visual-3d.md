@@ -1,5 +1,11 @@
 # Visual 3D (HD-2D, estilo HeartGold/SoulSilver)
 
+> **Estado atual (padrão):** o 3D é o visual padrão do jogo; `?visual=2d` ou a opção "Visual" (Opções) volta ao 2D.
+> Estilo pixel de HGSS/FireRed em 3D (arte de 16 px nearest em toda superfície, câmera ~45°), personagens das
+> folhas FireRed/HeartGold (`personagens.js`, assets do ramo `assets-hgss`), HUD de batalha do demo
+> (`src/ui/hud-batalha.js`). Sprites de batalha dos Pokémon entram sozinhos quando `assets/hgss/pokemon/indice.json`
+> existir (`?pk=pmd` mantém os PMD). As seções abaixo contam como se chegou aqui.
+
 Refaz só a forma de desenhar. A lógica (mapa, colisão, combate, montarias, online, história) continua a mesma,
 com as mesmas coordenadas em pixels de mundo (bloco de 16 px). Ativação: `?visual=3d` (o 2D segue padrão até o 3D
 ficar igual ou melhor em tudo; depois o padrão vira 3D e `?visual=2d` fica de reserva).

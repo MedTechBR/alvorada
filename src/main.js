@@ -34,8 +34,9 @@ const XP_SHARE = 0.5; // parte da XP que vai para quem ficou na equipe
 const ALPHA_DROPS = [['greatBall', 2, 30], ['superPotion', 2, 25], ['stardust', 1, 14], ['pearl', 1, 14], ['bigMushroom', 1, 6], ['rareCandy', 1, 7], ['nugget', 1, 4]];
 
 const $ = (id) => document.getElementById(id);
-// ?visual=3d: o mundo é desenhado em 3D (src/visual3d); a lógica é a mesma. ?visual=2d força o 2D.
-const VISUAL_3D = new URLSearchParams(location.search).get('visual') === '3d';
+// Visual 3D (src/visual3d, estilo HGSS/FireRed em 3D) é o padrão; ?visual=2d (ou a opção "Visual" = 2D) volta ao 2D.
+// Sem WebGL ou se o 3D falhar ao ligar, o jogo segue em 2D sozinho.
+const VISUAL_3D = (() => { const q = new URLSearchParams(location.search).get('visual'); if (q) return q !== '2d'; try { return localStorage.getItem('alvorada.visual') !== '2d'; } catch { return true; } })();
 
 class Game {
   async init() {
