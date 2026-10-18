@@ -13,6 +13,9 @@ import { SPECIES, BIOME_ENCOUNTERS } from './data/species.js';
 import { MOVES } from './data/moves.js';
 import { TYPE_PT } from './data/types.js';
 import { Audio } from './audio/audio.js';
+import { Online } from './net/online.js';
+import { UI } from './ui/ui.js';
+import { Story } from './story/story.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -41,20 +44,27 @@ class Game {
     this.mundo = new WorldLife(this); // dia e noite, portas, bichinhos, minimapa
     // treinador e equipe
     this.player = this.#makeTrainer(this.map.spawn.x, this.map.spawn.y);
-    this.party = [new Mon(4, 8), new Mon(7, 7), new Mon(1, 7)];
-    this.box = []; this.bag = { pokeball: 10, potion: 5 };
+    this.party = []; this.box = []; this.bag = { pokeball: 0, potion: 0 }; this.money = 0; this.flags = {};
     this.leadIdx = 0; this.entities = [];
-    await this.#sendOut(0);
+    this.ui = new UI(this);        // HUD, menus, diálogo, título e save (src/ui)
+    this.story = new Story(this);  // capítulo 1 (src/story)
     this.available = await fetch('assets/pmd/index.json').then((r) => r.json()).catch(() => [1, 4, 6, 7, 9, 25, 130, 133]);
     this.spawnT = 0; this.wilds = [];
     this.zoom = 3; this.#resize(); addEventListener('resize', () => this.#resize());
     this.cam = { x: this.player.x, y: this.player.y };
     $('loading').remove();
     this.hudInit();
+    this.net = new Online(this); // modo online (src/net): salas, outros jogadores, troca e PvP
     this.app.ticker.maxFPS = 0;
     this.app.ticker.add((tk) => this.frame(Math.min(0.05, tk.deltaMS / 1000)));
     window.game = this;
+    // tela de título (conta + personagem); depois o primeiro Pokémon sai da bola e a história começa
+    const start = await this.ui.title();
+    if (this.party.length) await this.#sendOut(this.leadIdx);
+    this.hudInit();
+    this.story.begin(start === 'new');
   }
+  sendOut(i) { return this.#sendOut(i); }
 
   #resize() {
     // escala inteira para o pixel art ficar nítido: ~15 a 20 blocos de altura na tela
@@ -91,6 +101,7 @@ class Game {
     this.fx.burst(e.x, e.y - 8, 0xffffff, 1); e.vz = 90;
     this.hudLead(); this.hudMoves();
   }
+  sendOut(i) { return this.#sendOut(i); } // público para o online (equipe do duelo, troca)
   swap() {
     const n = this.party.length;
     for (let k = 1; k <= n; k++) { const i = (this.leadIdx + k) % n; if (!this.party[i].fainted) { if (i !== this.leadIdx) { this.#sendOut(i); this.toast(`Vai, ${this.party[i].name}!`); } return; } }
@@ -120,6 +131,8 @@ class Game {
 
   onFaint(e, by) {
     if (e.dead) return;
+    if (this.net?.onFaint(e, by)) return; // duelo online: quem decide o desmaio é o árbitro
+    if (e.side === 'foe' && this.story?.onFoeFaint(e, by)) return; // Pokémon de treinador (batalha no mapa)
     e.dead = true; e.play('Hurt');
     this.fx.burst(e.x, e.y - 8, 0xffffff, 1.2);
     if (e.side === 'wild') {
@@ -151,14 +164,16 @@ class Game {
     const e = this.lead; if (!e || e.mon !== mon) { mon.evolveTo(to); return; }
     for (let i = 0; i < 6; i++) this.later(i * 0.12, () => { e.flash = 0.08; this.fx.ring(e.x, e.y - 8, 0xffffff, 10 + i * 3, 0.3); });
     this.later(0.8, async () => {
-      mon.evolveTo(to); const set = await loadPokemonSprites(to); e.set = set; e.r = Math.max(5, Math.min(18, set.size * 0.22));
+      mon.evolveTo(to); const set = await loadPokemonSprites(to); e.setSprites(set);
       this.fx.burst(e.x, e.y - 10, 0xffffff, 2); this.toast(`${old} evoluiu para ${mon.name}!`); this.audio.sfx('caught'); this.hudLead();
     });
   }
   blackout() {
-    this.toast('Sua equipe desmaiou! Você voltou para a vila.');
+    if (this.story?.onBlackout()) return; // batalha que não manda para casa (ex.: rival no laboratório)
+    this.toast('Sua equipe desmaiou! Você voltou para casa.');
     this.party.forEach((m) => m.heal());
-    this.player.x = this.map.spawn.x; this.player.y = this.map.spawn.y;
+    const home = this.story?.spots.get('home') ?? this.map.spawn;
+    this.player.x = home.x; this.player.y = home.y;
     this.#sendOut(0);
   }
 
@@ -236,12 +251,15 @@ class Game {
     const t0 = performance.now();
     const inp = this.input; inp.poll();
     if (inp.pressed('perf')) $('perf').hidden = !$('perf').hidden;
+    // título, menu e diálogo param o mundo (a câmera e o desenho continuam)
+    if (this.ui?.frame(rdt)) { this.#camera(rdt); this.map.flushDirty(); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; }
     // pausa no impacto: o mundo congela por alguns milissegundos
     let dt = rdt;
     if (this.fx.hitStop > 0) { this.fx.hitStop -= rdt; dt = rdt * 0.08; }
     this.time += dt;
     for (const tm of this.timers.slice()) if (tm.t <= this.time) { this.timers.splice(this.timers.indexOf(tm), 1); tm.fn(); }
     this.#control(dt, rdt);
+    this.net?.update(dt); // online: manda sua posição, mostra os outros, cuida do duelo
     this.#updateWild(dt);
     this.combat.update(dt);
     this.#updateBalls(dt);
@@ -263,7 +281,7 @@ class Game {
     if (!IS_TOUCH && !inp.usingPad && inp.mouse.inside) return this.screenToWorld(inp.mouse.x, inp.mouse.y);
     // mira automática: selvagem mais próximo à frente (ou o mais próximo)
     const p = this.player; let best = null, bd = 230;
-    for (const w of this.wilds) { if (!w.alive) continue; const d = Math.hypot(w.x - lead.x, w.y - lead.y); if (d < bd) { bd = d; best = w; } }
+    for (const w of this.entities) { if (!w.alive || w.side === 'ally') continue; const d = Math.hypot(w.x - lead.x, w.y - lead.y); if (d < bd) { bd = d; best = w; } }
     if (best) return { x: best.x, y: best.y - 6 };
     const fd = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] }[p.dir];
     return { x: lead.x + fd[0] * 120, y: lead.y + fd[1] * 120 };
@@ -356,32 +374,12 @@ class Game {
     if (area !== this.area) { this.area = area; const el = $('area'); el.textContent = area; el.classList.add('on'); clearTimeout(this.areaT); this.areaT = setTimeout(() => el.classList.remove('on'), 2500); }
   }
 
-  // ---------- HUD ----------
-  hudInit() { this.hudLead(); this.hudMoves(); }
-  hudLead() {
-    const m = this.party[this.leadIdx]; if (!m) return;
-    const k = m.hp / m.stats.hp;
-    $('lead').innerHTML = `<div class="nm"><span>${m.name}</span><span>Nv. ${m.level}</span></div>
-      <div class="bar"><i class="${k < 0.2 ? 'low' : k < 0.5 ? 'mid' : ''}" style="width:${k * 100}%"></i></div>
-      <div class="party">${this.party.map((p, i) => `<b class="${p.fainted ? 'ko' : ''} ${i === this.leadIdx ? 'cur' : ''}"></b>`).join('')}</div>`;
-  }
-  hudMoves() {
-    const m = this.party[this.leadIdx]; if (!m) return;
-    const keys = IS_TOUCH ? ['', '', '', ''] : ['1 / clique', '2 / dir.', '3', '4'];
-    $('moves').innerHTML = IS_TOUCH ? '' : m.moves.map((id, i) => { const mv = MOVES[id]; return `<div class="mv" data-i="${i}"><b>${mv?.name ?? id}</b><small>${TYPE_PT[mv?.type] ?? ''} · ${mv?.power ?? '—'}</small><kbd>${keys[i]}</kbd><div class="cd" style="transform:scaleX(0)"></div></div>`; }).join('');
-    for (const b of document.querySelectorAll('.tb.move')) { const mv = MOVES[m.moves[+b.dataset.slot]]; b.textContent = mv?.name ?? ''; b.style.visibility = mv ? 'visible' : 'hidden'; }
-  }
-  hudUpdate(dt) {
-    this.hudT = (this.hudT ?? 0) - dt; if (this.hudT > 0) return; this.hudT = 0.1;
-    this.hudLead();
-    const l = this.lead; if (!l) return;
-    document.querySelectorAll('#moves .mv').forEach((el, i) => { const mv = MOVES[l.mon.moves[i]]; const k = mv ? l.cds[i] / (mv.cd || 1) : 0; el.querySelector('.cd').style.transform = `scaleX(${Math.max(0, k)})`; });
-  }
-  toast(text) {
-    const el = document.createElement('div'); el.textContent = text; $('toasts').prepend(el);
-    setTimeout(() => el.remove(), 3200);
-    while ($('toasts').children.length > 4) $('toasts').lastChild.remove();
-  }
+  // ---------- HUD (src/ui/hud.js) ----------
+  hudInit() { this.ui?.hud.lead(); this.ui?.hud.moves(); }
+  hudLead() { this.ui?.hud.lead(); }
+  hudMoves() { this.ui?.hud.moves(); }
+  hudUpdate(dt) { this.ui?.hud.update(dt); }
+  toast(text) { this.ui?.toast(text); }
   #perf(dt, ms) {
     const P = (this.perfD ??= { n: 0, t: 0, ms: 0 }); P.n++; P.t += dt; P.ms += ms;
     if (P.t >= 0.5) { if (!$('perf').hidden) $('perf').textContent = `${Math.round(P.n / P.t)} FPS · lógica ${(P.ms / P.n).toFixed(2)} ms · ${this.entities.length} Pokémon · zoom ${this.zoom}x`; P.n = 0; P.t = 0; P.ms = 0; }

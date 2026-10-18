@@ -9,6 +9,27 @@ const DMG = 0.55;        // ritmo do tempo real (o dano dos jogos por turno é a
 const hex = (c) => (typeof c === 'string' ? parseInt(c.replace('#', ''), 16) : c ?? 0xffffff);
 const typeColor = (t) => hex(TYPE_COLOR?.[t] ?? 0xffffff);
 
+// Quem pode acertar quem. Lados do online (src/net/*): 'rival' = Pokémon de outro jogador num
+// duelo PvP (inimigo do seu); 'peer' = Pokémon de outro jogador passeando (ninguém acerta nem é acertado).
+// Quem pode acertar quem. ally = você e sua equipe; wild = selvagens; foe = Pokémon de treinador (história);
+// rival = Pokémon do outro jogador num duelo online; peer = do outro jogador passeando (ninguém acerta).
+export const FOES = { ally: ['wild', 'foe', 'rival'], wild: ['ally'], foe: ['ally'], rival: ['ally'], peer: [] };
+
+// Fórmula de dano (pura). Usada aqui e pelo árbitro do PvP online (src/net/arbiter.js), para os dois
+// lados de um duelo calcularem igual. user/t: qualquer objeto com .mon e .stat(k).
+export function calcDamage(user, t, mv, rnd = Math.random) {
+  const L = user.mon.level, phys = mv.cat === 'phys';
+  const A = phys ? user.stat('atk') : user.stat('spa'), D = phys ? t.stat('def') : t.stat('spd');
+  const crit = rnd() < 1 / 16;
+  let dmg = Math.floor(Math.floor((Math.floor((2 * L) / 5 + 2) * (mv.power ?? 40) * A) / D) / 50) + 2;
+  const eff = effectiveness(mv.type, t.mon.types);
+  if (user.mon.types.includes(mv.type)) dmg *= 1.5;
+  dmg *= eff * (crit ? 1.5 : 1) * (0.85 + rnd() * 0.15) * DMG;
+  if (phys && user.mon.status === 'brn') dmg *= 0.5;
+  dmg = eff === 0 ? 0 : Math.max(1, Math.round(dmg));
+  return { dmg, eff, crit };
+}
+
 export class Combat {
   constructor(g) { this.g = g; this.projectiles = []; this.zones = []; this.layer = new PIXI.Container(); this.layer.blendMode = 'add'; }
   move(id) { return MOVES[id]; }
@@ -20,7 +41,11 @@ export class Combat {
     if (mv.kind === 'wave' || mv.kind === 'quake') return d < this.range(mv) * 0.9;
     return d < this.range(mv) * 0.95;
   }
-  enemiesOf(e) { return this.g.entities.filter((o) => o.alive && o !== e && (e.side === 'wild' ? o.side !== 'wild' : o.side === 'wild')); }
+  enemiesOf(e) {
+    const f = FOES[e.side];
+    if (!f) return this.g.entities.filter((o) => o.alive && o !== e && (e.side === 'wild' ? o.side !== 'wild' : o.side === 'wild'));
+    return this.g.entities.filter((o) => o.alive && o !== e && f.includes(o.side));
+  }
 
   // Usa o golpe do espaço `slot` mirando no ponto (ax, ay)
   use(user, slot, ax, ay) {
@@ -63,6 +88,7 @@ export class Combat {
       case 'self': fire(() => this.#self(user, mv, color), 0.1); break;
       default: fire(() => this.#projectile(user, mv, id, dx, dy, color), 0.1);
     }
+    this.onUse?.(user, slot, ax, ay); // gancho do online: avisa os outros jogadores (src/net/online.js)
     return true;
   }
 
@@ -129,16 +155,11 @@ export class Combat {
     if (!t.alive || t.iframes > 0) return;
     const g = this.g;
     if (t.isTrainer) { t.knock(dx * 220, dy * 220); g.fx.kick(0.25, 0.05); g.fx.burst(t.x, t.y - 10, typeColor(mv.type), 0.7); return; }
+    // Gancho do PvP online: golpe entre Pokémon de duelo não tira HP aqui; vira um pedido ao
+    // árbitro (src/net/duel.js), que devolve o dano oficial para os dois jogadores.
+    if ((t.pvp || user.pvp) && this.onPvpHit) { this.onPvpHit(user, t, mv, id, dx, dy); return; }
     if (mv.cat === 'status') { this.#status(user, t, mv); return; }
-    const L = user.mon.level, phys = mv.cat === 'phys';
-    const A = phys ? user.stat('atk') : user.stat('spa'), D = phys ? t.stat('def') : t.stat('spd');
-    const crit = Math.random() < 1 / 16;
-    let dmg = Math.floor(Math.floor((Math.floor((2 * L) / 5 + 2) * (mv.power ?? 40) * A) / D) / 50) + 2;
-    const eff = effectiveness(mv.type, t.mon.types);
-    if (user.mon.types.includes(mv.type)) dmg *= 1.5;
-    dmg *= eff * (crit ? 1.5 : 1) * (0.85 + Math.random() * 0.15) * DMG;
-    if (phys && user.mon.status === 'brn') dmg *= 0.5;
-    dmg = eff === 0 ? 0 : Math.max(1, Math.round(dmg));
+    const { dmg, eff, crit } = calcDamage(user, t, mv);
     this.hurt(t, dmg, user, { eff, crit, mv, dx, dy });
     // efeitos secundários
     const e = mv.eff ?? {};
@@ -148,20 +169,21 @@ export class Combat {
     if (e.recoil) this.hurt(user, Math.max(1, Math.round(dmg * e.recoil)), null, { silent: true });
   }
 
-  hurt(t, dmg, by, { eff = 1, crit = false, mv = null, dx = 0, dy = 0, silent = false } = {}) {
+  hurt(t, dmg, by, { eff = 1, crit = false, mv = null, dx = 0, dy = 0, silent = false, auth = false } = {}) {
     const g = this.g;
+    if (t.pvp && !auth) return; // duelo online: só o árbitro tira HP (veneno e queimadura inclusos)
     t.mon.hp = Math.max(0, t.mon.hp - dmg);
     t.hpShow = 3; t.flash = 0.12;
     if (!silent) {
       const power = Math.min(2.2, 0.6 + (mv?.power ?? 40) / 80) * (eff > 1 ? 1.3 : 1);
       t.kx += dx * 160 * power; t.ky += dy * 160 * power; t.vz = 70 * power;
       t.play('Hurt'); t.lock = Math.max(t.lock, 0.18);
-      g.fx.burst(t.x, t.y - t.set.size * 0.28, mv ? typeColor(mv.type) : 0xffffff, power * 0.8);
+      g.fx.burst(t.x, t.y - (t.h ?? 20) * 0.55, mv ? typeColor(mv.type) : 0xffffff, power * 0.8);
       g.fx.kick(eff > 1 || crit ? 0.32 : 0.14, eff > 1 || crit ? 0.07 : 0.035);
-      g.fx.number(t.x, t.y - t.set.size * 0.5 - 6, String(dmg), eff > 1 ? '#ffb347' : eff < 1 ? '#c8c8c8' : '#ffffff', eff > 1 || crit);
-      if (eff > 1) g.fx.number(t.x, t.y - t.set.size * 0.5 - 20, 'Super efetivo!', '#ffd84a');
-      else if (eff > 0 && eff < 1) g.fx.number(t.x, t.y - t.set.size * 0.5 - 20, 'Pouco efetivo', '#bbbbbb');
-      if (crit) g.fx.number(t.x, t.y - t.set.size * 0.5 - 32, 'Crítico!', '#ff7a5a');
+      g.fx.number(t.x, t.y - (t.h ?? 20) - 6, String(dmg), eff > 1 ? '#ffb347' : eff < 1 ? '#c8c8c8' : '#ffffff', eff > 1 || crit);
+      if (eff > 1) g.fx.number(t.x, t.y - (t.h ?? 20) - 20, 'Super efetivo!', '#ffd84a');
+      else if (eff > 0 && eff < 1) g.fx.number(t.x, t.y - (t.h ?? 20) - 20, 'Pouco efetivo', '#bbbbbb');
+      if (crit) g.fx.number(t.x, t.y - (t.h ?? 20) - 32, 'Crítico!', '#ff7a5a');
       g.audio?.sfx?.(eff > 1 ? 'hit-super' : eff < 1 ? 'hit-weak' : 'hit');
     }
     if (by && t.side === 'wild') t.provoke(by.side === 'ally' ? by : t.aggroTarget);
