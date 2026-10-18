@@ -31,8 +31,6 @@ const lista = quem === 'todos' ? ORDEM : quem === 'existentes' ? ORDEM.slice(0, 
 async function caso(b, nome, rodada) {
   const C = CASOS[nome]; if (!C) throw new Error('caso desconhecido ' + nome);
   const p = await open(b, URL, nome);
-  await p.raw('Page.enable'); await p.raw('Page.bringToFront'); // aba na frente: sem isso o requestAnimationFrame para (bola, animações)
-  await p.raw('Emulation.setFocusEmulationEnabled', { enabled: true });
   if (CEL) {
     await p.raw('Emulation.setDeviceMetricsOverride', { width: 412, height: 860, deviceScaleFactor: 2, mobile: true });
     await p.raw('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
@@ -53,6 +51,11 @@ async function caso(b, nome, rodada) {
     G.flags.badges ??= [];
     ${C.noite ? 'G.mundo.setHour(22);' : 'G.mundo.setHour(11);'}
     window.__arenaUltima = null; window.__fotos = [];
+    // aba sem interface: o requestAnimationFrame quase não roda, então as animações presas ao ticker (arremesso da bola)
+    // passam a andar junto com os quadros do motor
+    const tk = G.app.ticker, extra = new Set(), add0 = tk.add.bind(tk), rem0 = tk.remove.bind(tk);
+    tk.add = (fn, ctx, pr) => { extra.add(fn); return tk; }; tk.remove = (fn, ...a) => (extra.delete(fn) ? tk : rem0(fn, ...a));
+    const fr0 = G.frame.bind(G); G.frame = (dt) => { fr0(dt); tk.deltaMS = dt * 1000; for (const f of [...extra]) f(tk); };
     window.__foto = (n) => { G.app.renderer.render(G.app.stage); G.app.canvas.toBlob((bl) => fetch('/__shot?n=' + n, { method: 'POST', body: bl }), 'image/jpeg', 0.82); window.__fotos.push(n); };
     motor(true);
   })()`);
@@ -97,11 +100,11 @@ async function caso(b, nome, rodada) {
     const fr = G.frame.bind(G); G.frame = (dt) => { const t = performance.now(); fr(dt); const d = performance.now() - t; const P = window.__perf; P.n++; P.ms += d; P.max = Math.max(P.max, d); };
   })()`);
   let fps = null;
-  if (CEL) { // tempo real (sem o motor acelerar): mede os quadros
-    await sleep(3000);
-    await p.ev(`(() => { const G = window.game; window.__dts = []; G.app.ticker.add((tk) => window.__dts.push(tk.deltaMS)); window.__perf = { n: 0, ms: 0, max: 0 }; })()`);
+  if (CEL) { // celular simulado (CPU 4× mais lenta): custo da lógica e do desenho de um quadro no meio da luta
+    await sleep(4000);
+    await p.ev(`(() => { window.__perf = { n: 0, ms: 0, max: 0 }; window.__rend = []; window.__rendT = setInterval(() => { const G = window.game, t = performance.now(); G.app.renderer.render(G.app.stage); window.__rend.push(performance.now() - t); }, 400); })()`);
     await sleep(15000);
-    fps = await p.ev(`(() => { const d = window.__dts.slice(5); d.sort((a, b) => a - b); const m = d.reduce((a, b) => a + b, 0) / d.length; return { fps: +(1000 / m).toFixed(1), p95ms: +d[Math.floor(d.length * 0.95)].toFixed(1), logicaMs: +(window.__perf.ms / window.__perf.n).toFixed(2), logicaMax: +window.__perf.max.toFixed(1), particulas: window.game.fx.count, qualidade: window.game.quality.level }; })()`);
+    fps = await p.ev(`(() => { clearInterval(window.__rendT); const d = window.__rend.sort((a, b) => a - b), m = d.reduce((a, b) => a + b, 0) / d.length, l = window.__perf.ms / window.__perf.n; return { logicaMs: +l.toFixed(2), desenhoMs: +m.toFixed(1), desenhoP95: +d[Math.floor(d.length * 0.95)].toFixed(1), quadroEstimadoFps: +(1000 / (l + m)).toFixed(0), particulas: window.game.fx.count, qualidade: window.game.quality.level }; })()`);
   }
   const fim = await until(() => p.ev('!!window.__arenaUltima'), CEL ? 600000 : 900000, 1000);
   const r = await p.ev(`(() => { const s = window.__arenaUltima, G = window.game; return s && { ...s, porPerigo: s.porPerigo, minAviso: s.minAviso === Infinity ? null : +s.minAviso.toFixed(2), bot: window.bot.stats, perf: { logicaMs: +(window.__perf.ms / window.__perf.n).toFixed(2), logicaMax: +window.__perf.max.toFixed(1) }, fotos: window.__fotos, equipeViva: G.party.filter((m) => !m.fainted).length }; })()`);
