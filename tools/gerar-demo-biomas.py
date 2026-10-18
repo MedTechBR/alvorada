@@ -228,7 +228,7 @@ r1 = room('templo_1', 'Templo de Ará', 2, 78, T1, biome='templo', abaixo='templ
         {'kind': 'barsGate', 'x': 16, 'y': 7, 'id': 'gradeNorte', 'aberto': True},
         {'kind': 'lockedDoor', 'x': 28, 'y': 7, 'id': 'portaLeste', 'chave': 'chave_pequena', 'chaveNome': 'Chave Pequena'},
         # sala oeste: duas tochas do outro lado do fosso; acesas, sobe a ponte
-        {'kind': 'torch', 'x': 2, 'y': 2, 'grupo': 'oeste', 'abre': ['ponteOeste'], 'msg': 'As duas tochas arderam e uma ponte de pedra subiu do fosso!'},
+        {'kind': 'torch', 'x': 2, 'y': 2, 'grupo': 'oeste', 'abre': ['ponteOeste']},
         {'kind': 'torch', 'x': 8, 'y': 2, 'grupo': 'oeste', 'abre': ['ponteOeste']},
         # sala norte: o baú com a chave fica depois da faixa de chão rachado
         {'kind': 'chest', 'x': 17, 'y': 2, 'item': 'chave_pequena', 'itemNome': 'Chave Pequena', 'id': 'bauChave'},

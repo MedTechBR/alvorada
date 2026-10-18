@@ -130,6 +130,11 @@ F.obsidian = fam('obsidian', 2, {
     return base;
   },
 });
+// chão de pedra (sem bloco próprio: é o que os pisos de templo emprestam às bordas de lava, água e areia)
+F.stone = fam('stone', 2, {
+  rim: [96, 88, 76], hi: [196, 188, 170],
+  px(x, y) { const v = vor(x, y, 6, 231); return v.edge < 0.8 ? [110, 102, 90] : mix([150, 142, 126], [176, 168, 150], v.id); },
+});
 F.wetsand = fam('wetsand', 1, {
   rim: [150, 126, 86], foam: true,
   px(x, y) {
@@ -395,11 +400,12 @@ export function drawBiomeHard(t, at, tx, ty, put) {
     for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
       let c = fn(gx0 + x, gy0 + y);
       // trincas em zigue-zague saindo do centro
-      for (let k = 0; k < 4; k++) {
-        const a = s0 * 6 + k * 1.6, dx = x - 8, dy = y - 8, along = dx * Math.cos(a) + dy * Math.sin(a), off = -dx * Math.sin(a) + dy * Math.cos(a);
-        if (along > 0 && along < 8 - k && Math.abs(off - Math.sin(along * 1.3 + k) * 1.2) < 0.6) c = [40, 30, 28];
+      for (let k = 0; k < 3; k++) {
+        const a = s0 * 6 + k * 2.1, dx = x - 8, dy = y - 8, along = dx * Math.cos(a) + dy * Math.sin(a), off = -dx * Math.sin(a) + dy * Math.cos(a);
+        const wob = Math.sin(along * 1.3 + k) * 1.2;
+        if (along > 0 && along < 7 - k) { if (Math.abs(off - wob) < 0.5) c = mul(c, 0.42); else if (Math.abs(off - wob - 1) < 0.5) c = mix(c, [255, 255, 255], 0.25); }
       }
-      if (Math.hypot(x - 8, y - 8) < 1.5) c = [24, 18, 18];
+      if (Math.hypot(x - 8, y - 8) < 1.2) c = mul(c, 0.35);
       const k2 = shade(y, x); put(x, y, c[0] * k2, c[1] * k2, c[2] * k2);
     }
     return true;
@@ -438,6 +444,8 @@ export const BLEED = {
   [TILE.ICEWALL]: ['snow', 3], [TILE.ICEFLOOR]: ['snow', 3], [TILE.LAVAWALL]: ['basalt', 2], [TILE.LAVAFLOOR]: ['basalt', 2],
   [TILE.CANYON]: ['dune', 3], [TILE.ROOTS]: ['mangmud', 2], [TILE.CRYSTALWALL]: ['basalt', 2],
   [TILE.CRYSTALFLOOR]: ['basalt', 2], [TILE.DARKCAVE]: ['basalt', 2], [TILE.RAIL]: ['basalt', 2],
+  [TILE.TEMPLEFLOOR]: ['stone', 2], [TILE.MOSAIC]: ['stone', 2], [TILE.OLDSTONE]: ['stone', 2], [TILE.TEMPLEWALL]: ['stone', 2],
+  [TILE.STAIRUP]: ['stone', 2], [TILE.STAIRDOWN]: ['stone', 2], [TILE.HOLE]: ['stone', 2], [TILE.CRACK]: ['stone', 2],
 };
 // bloco macio → família
 export const SOFT = {

@@ -169,7 +169,7 @@ export class Masmorra {
     if (t === TILE.HOLE && this.#inside(p, tx, ty, 4)) { this.#fall(tx, ty, null, this.#below(tx, ty)); return; }
     // rachadura: correndo ou montado cede na hora; andando, cede depois que você sai
     if (t === TILE.CRACK) {
-      if (this.crackOn?.[0] !== tx || this.crackOn?.[1] !== ty) { this.crackOn = [tx, ty]; g.audio?.sfx?.('crack'); g.fx?.emit(tx * T + 8, ty * T + 8, { tex: 'dust', n: 3, speed: 15, life: 0.5, scale: 0.5, add: false, alpha: 0.6 }); }
+      if (this.crackOn?.[0] !== tx || this.crackOn?.[1] !== ty) { if (this.crackOn && m.at(...this.crackOn) === TILE.CRACK) this.#collapse(...this.crackOn); this.crackOn = [tx, ty]; g.audio?.sfx?.('crack'); g.fx?.emit(tx * T + 8, ty * T + 8, { tex: 'dust', n: 3, speed: 15, life: 0.5, scale: 0.5, add: false, alpha: 0.6 }); }
       if (g.input?.down('run') && Math.hypot(p.vx, p.vy) > 95) { this.#collapse(tx, ty); this.#fall(tx, ty, 'O chão cedeu!', this.#below(tx, ty)); return; }
     } else if (this.crackOn) { const [cx, cy] = this.crackOn; this.crackOn = null; if (m.at(cx, cy) === TILE.CRACK) this.#collapse(cx, cy); }
     // fonte termal: ficar um pouco dentro cura a equipe (uma vez por hora do jogo)

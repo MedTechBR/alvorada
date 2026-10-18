@@ -643,8 +643,7 @@
      "grupo": "oeste",
      "abre": [
       "ponteOeste"
-     ],
-     "msg": "As duas tochas arderam e uma ponte de pedra subiu do fosso!"
+     ]
     },
     {
      "kind": "torch",
