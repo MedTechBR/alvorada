@@ -53,6 +53,8 @@ body:not(.mode-pokemon) #t-power { display: none; }
 #poder-timer { position: absolute; left: 50%; top: calc(var(--g, 12px) + var(--st, 0px) + 6px); transform: translateX(-50%); pointer-events: none; z-index: 5;
   background: rgba(40,6,14,.82); color: #fff; border: 2px solid #ff5a6a; border-radius: 12px; padding: 3px 12px 5px; font: 900 13px Nunito, system-ui, sans-serif; text-align: center; min-width: 120px; }
 #poder-timer[hidden] { display: none; }
+body:has(#net-duel:not([hidden])) #poder-timer { top: calc(var(--g, 12px) + var(--st, 0px) + 74px); }
+body:has(#reide:not([hidden])) #poder-timer { top: calc(var(--g, 12px) + var(--st, 0px) + 66px); }
 #poder-timer i { display: block; height: 5px; border-radius: 3px; background: linear-gradient(90deg, #ff3a5a, #ffb0c0); margin-top: 3px; transform-origin: left; }
 `;
 const ICON_MEGA = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="#fff" stroke-width="2.2"/><path d="M8 17c0-6 8-4 8-10M8 7c0 6 8 4 8 10" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>';
