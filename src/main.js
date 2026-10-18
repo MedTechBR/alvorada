@@ -29,6 +29,7 @@ import { ITEM_INFO, itemInfo, itemName } from './data/items.js';
 import { rollShakes } from './mechanics/capture.js';
 import { setAmbiente, isNight as nightNow } from './mechanics/ambiente.js';
 import { formaRegionalEm } from './data/regioes.js';
+const WILD_MAX = 4; // selvagens vivos ao mesmo tempo perto do jogador
 
 const XP_SHARE = 0.5; // parte da XP que vai para quem ficou na equipe
 const ALPHA_DROPS = [['greatBall', 2, 30], ['superPotion', 2, 25], ['stardust', 1, 14], ['pearl', 1, 14], ['bigMushroom', 1, 6], ['rareCandy', 1, 7], ['nugget', 1, 4]];
@@ -231,6 +232,7 @@ class Game {
       const sp = this.map.randomSpawn(p.x, p.y); if (!sp) return; // de preferência no mato alto
       const { x, y } = sp;
       const biome = this.map.biome(x, y); if (biome === 'vila') continue;
+      if (this.wilds.some((w) => w.alive && Math.hypot(w.x - x, w.y - y) < 6 * 16)) continue; // longe dos outros selvagens
       // tabela da área (assets/maps: "encounters" na área ou no interior) ou a do bioma
       const room = this.map.interiorAt(x, y), zone = room ?? this.map.areaAt(x, y), own = zone?.encounters;
       const table = this.#encounterTable(own, biome, !room && nightNow(), zone, room ? null : x, room ? null : y).filter((e) => this.available.includes(e[0]) && SPECIES[e[0]]);
@@ -619,7 +621,8 @@ class Game {
   #updateWild(dt) {
     this.spawnT -= dt;
     const p = this.player;
-    if (this.spawnT <= 0 && this.wilds.filter((w) => w.alive).length < 10) { this.spawnT = 1.2; this.spawnWild(); }
+    // poucos selvagens por vez e espaçados: cheio demais ficava impossível de jogar (WILD_MAX vivos, um novo a cada ~5 s)
+    if (this.spawnT <= 0 && this.wilds.filter((w) => w.alive).length < WILD_MAX) { this.spawnT = 4 + Math.random() * 3; this.spawnWild(); }
     for (const w of this.wilds) {
       if (!w.alive || w.busy) { w.vx = w.vy = 0; continue; }
       if (w.stun > 0 || w.lock > 0) { w.vx = w.vy = 0; continue; }

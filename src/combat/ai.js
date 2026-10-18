@@ -68,10 +68,10 @@ export class WildAI {
   // ---------- bandos com alfa ----------
   async onSpawn(w) {
     const g = this.g;
-    if (w.ai.state === 'sleep' || Math.random() > ALPHA_ODDS || (g.wilds?.filter((o) => o.alive).length ?? 0) > 8) return;
+    if (w.ai.state === 'sleep' || Math.random() > ALPHA_ODDS || (g.wilds?.filter((o) => o.alive).length ?? 0) > 2) return; // bando só com a área vazia
     const pack = { id: ++this.packs, alpha: w, members: new Set([w]), called: false };
     w.pack = pack; this.makeAlpha(w);
-    const n = 2 + (Math.random() < 0.4 ? 1 : 0);
+    const n = 1 + (Math.random() < 0.3 ? 1 : 0); // bando pequeno: alfa + 1 ou 2
     for (let i = 0; i < n; i++) {
       const a = Math.random() * Math.PI * 2, x = w.x + Math.cos(a) * 22, y = w.y + Math.sin(a) * 18;
       if (g.map.solidAt(x, y)) continue;
