@@ -19,6 +19,8 @@ window.motor = (on = true) => {
       G.frame(1 / 60);
       if (i % 20 === 0) window.passoLuta?.();
       const d = G.ui?.dialog?.d;
+      // telas que esperam o jogador (aprender golpe, evolução): Enter aceita
+      if (!d && i % 30 === 0 && document.querySelector('.gm-learn, .evo, .evolucao')?.offsetParent) tecla('Enter');
       if (!d) continue;
       const k = d.name + '|' + d.lines?.[d.i];
       if (k !== ultimo) { ultimo = k; window.falas.push(`${d.name ? d.name + ': ' : ''}${d.lines?.[d.i] ?? ''}`); }
