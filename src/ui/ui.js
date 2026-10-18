@@ -183,4 +183,12 @@ function registerServiceWorker() {
   if (!('serviceWorker' in navigator) || !/^https?:$/.test(location.protocol)) return;
   if (new URLSearchParams(location.search).has('nosw')) return;
   navigator.serviceWorker.register('sw.js').catch(() => {});
+  // primeira visita: o service worker ainda não via as requisições; manda a lista do que já foi carregado
+  // (código, mapa, sprites em uso) para ele guardar e o jogo abrir offline na próxima vez
+  const send = () => navigator.serviceWorker.ready.then((reg) => {
+    const urls = [...new Set(performance.getEntriesByType('resource').map((r) => r.name.split('#')[0]))];
+    reg.active?.postMessage({ type: 'guardar', urls: [location.href.split('?')[0], ...urls] });
+  }).catch(() => {});
+  setTimeout(send, 8000);
+  setTimeout(send, 60000);
 }

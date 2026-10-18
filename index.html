@@ -61,7 +61,35 @@
     <button>Jogar assim mesmo</button>
   </div>
 
-  <div id="loading"><div class="ld-ball"></div><span>Carregando…</span></div>
+  <div id="loading">
+    <div class="ld-logo"><small>Pokémon</small><b>Alvorada</b></div>
+    <div class="ld-ball"></div>
+    <div class="ld-bar"><i></i></div>
+    <span class="ld-txt">Carregando o jogo…</span>
+  </div>
+  <script>
+    // Barra de carregamento real: 1ª parte conta os arquivos baixados (o total da última visita fica guardado);
+    // 2ª parte vem do main.js (window.__boot(fração, texto)) enquanto o mundo é montado.
+    (function () {
+      var el = document.getElementById('loading'), bar = el.querySelector('.ld-bar i'), txt = el.querySelector('.ld-txt');
+      var expected = 150, n = 0, shown = 0, target = 0.02, stage = 0;
+      try { expected = +localStorage.getItem('alvorada.boot.n') || 150; } catch (e) {}
+      function paint() { shown += (target - shown) * 0.2; bar.style.transform = 'scaleX(' + shown.toFixed(3) + ')'; if (el.isConnected) requestAnimationFrame(paint); }
+      requestAnimationFrame(paint);
+      try {
+        new PerformanceObserver(function (l) {
+          n += l.getEntries().length;
+          if (!stage) target = Math.max(target, Math.min(0.7, 0.7 * n / expected));
+        }).observe({ type: 'resource', buffered: true });
+      } catch (e) {}
+      window.__boot = function (k, label) { stage = 1; target = Math.max(target, k); if (label) txt.textContent = label; };
+      window.__bootDone = function () {
+        try { localStorage.setItem('alvorada.boot.n', String(performance.getEntriesByType('resource').length)); } catch (e) {}
+        target = 1; el.classList.add('done'); setTimeout(function () { el.remove(); }, 450);
+      };
+      window.addEventListener('error', function (e) { if (el.isConnected && !stage) txt.textContent = 'Algo deu errado ao carregar. Recarregue a página.'; });
+    })();
+  </script>
   <script type="module" src="src/main.js"></script>
 </body>
 </html>

@@ -26,6 +26,7 @@ class Game {
     this.app = new PIXI.Application();
     await this.app.init({ resizeTo: window, background: 0x1b2a1e, antialias: false, roundPixels: true, resolution: 1, preference: 'webgl', powerPreference: 'high-performance' });
     $('game').appendChild(this.app.canvas);
+    window.__boot?.(0.74, 'Desenhando o mundo…');
     PIXI.TextureSource.defaultOptions.scaleMode = 'nearest';
     this.tx = makeTiles();
     this.input = new Input(this.app.canvas);
@@ -43,6 +44,7 @@ class Game {
     this.world.addChild(this.combat.layer, this.fx.layer);
     this.app.stage.addChild(this.world);
     this.#buildObjects();
+    window.__boot?.(0.84, 'Acordando os Pokémon…');
     this.mundo = new WorldLife(this); // dia e noite, portas, bichinhos, minimapa
     // treinador e equipe
     this.player = this.#makeTrainer(this.map.spawn.x, this.map.spawn.y);
@@ -52,11 +54,12 @@ class Game {
     this.quality = new Quality(this); // qualidade gráfica automática (src/engine/quality.js)
     this.ui = new UI(this);        // HUD, menus, diálogo, título e save (src/ui)
     this.story = new Story(this);  // capítulo 1 (src/story)
+    window.__boot?.(0.92, 'Preparando a aventura…');
     this.available = await fetch('assets/pmd/index.json').then((r) => r.json()).catch(() => [1, 4, 6, 7, 9, 25, 130, 133]);
     this.spawnT = 0; this.wilds = [];
     this.zoom = 3; this.#resize(); addEventListener('resize', () => this.#resize());
     this.cam = { x: this.player.x, y: this.player.y };
-    $('loading').remove();
+    if (window.__bootDone) window.__bootDone(); else $('loading')?.remove();
     this.hudInit();
     this.net = new Online(this); // modo online (src/net): salas, outros jogadores, troca e PvP
     this.app.ticker.maxFPS = 0;
@@ -73,6 +76,7 @@ class Game {
       if (this.ui) this.ui.title = async () => { this.ui.state = 'play'; return 'test'; }; // sem conta: nada é gravado
     }
     const start = await this.ui.title();
+    for (const m of this.party) loadPokemonSprites(m.dex).catch(() => {}); // já baixa a equipe enquanto a história começa
     this.mode = 'trainer';
     this.leadIdx = Math.max(0, this.party.findIndex((m) => !m.fainted));
     this.hudInit();
