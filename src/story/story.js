@@ -272,7 +272,7 @@ export class Story {
   async #chapterEnd() {
     const g = this.g, f = this.flags;
     await sleep(500);
-    g.audio?.sfx?.('exclaim'); navigator.vibrate?.([60, 80, 60]);
+    g.audio?.sfx?.('exclaim'); g.ui.buzz?.(60);
     g.toast('Seu Pokédex está vibrando… é uma chamada!');
     await sleep(700);
     await g.ui.say(PROF.phone(this.pname), { name: `${NAMES.prof} · chamada` });

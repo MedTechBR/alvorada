@@ -860,7 +860,7 @@ export class GameMenu {
       if (r.type === 'slider') v = Math.max(0, Math.min(10, v));
       o[r.k] = v; saveOpts(); applyOpts(this.g);
       if (r.k === 'sfx' || r.k === 'music') this.g.audio?.sfx?.('blip');
-      if (r.k === 'vibrate' && v) navigator.vibrate?.(20);
+      if (r.k === 'vibrate' && v) this.ui.buzz?.(20);
       this.refresh();
     };
     const adjust = (el, d) => {
