@@ -317,7 +317,7 @@ export class Poder {
   }
   // entrou em campo: Reversão Primitiva sozinha (Groudon e Kyogre com o Orbe)
   #entrou(e) {
-    if (!e.mon || e.side === 'peer' || e.remote) return;
+    if (!e.mon || e.side === 'peer' || e.remote || e.pvp || this.g.net?.duel?.active) return; // no duelo, quem muda forma é o árbitro
     if (e.mon.tempForm && isMegaKind(e.mon)) { e.shownKey = e.mon.spriteKey; return; } // voltou a campo já Mega: o sprite já é o da forma
     const pf = primalFormFor(e.mon);
     if (pf) setTimeout(() => this.mega(e, pf, { primal: true }), 350);
@@ -572,7 +572,7 @@ export class Poder {
   aplicarRede(e, k, form) {
     if (!e) return;
     if (k === 'mega') this.mega(e, form ?? megaFormFor(e.mon));
-    else if (k === 'dmax') this.dynamax(e);
+    else if (k === 'dmax') this.dynamax(e, { dur: DMAX_S + 2 }); // o fim vem do árbitro ('fim'); o tempo local é só reserva
     else if (k === 'fim') this.endDynamax(e);
   }
   // cor do tipo para quem desenhar golpes (HUD)

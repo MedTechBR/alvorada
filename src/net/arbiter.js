@@ -1,6 +1,7 @@
 import { MOVES } from '../data/moves.js';
 import { calcDamage } from '../combat/combat.js';
 import { validateMon, monWire } from './validate.js';
+import { megaFormFor, canDynamax, gmaxFormFor, maxMoveFor, DMAX_S, DMAX_HP } from '../mechanics/poder.js';
 
 // Árbitro dos duelos PvP. Roda no ANFITRIÃO da sala (o centro da estrela, por onde tudo passa).
 // Cada jogador simula os próprios golpes na tela dele; quando um golpe dele encosta no Pokémon do
@@ -60,6 +61,7 @@ export class Arbiter {
     if (type === 'd-active') return this.#active(d, data, from);
     if (type === 'd-claim') return this.#claim(d, data, from);
     if (type === 'd-forfeit') return this.#end(d, this.#foe(d, from), 'desistiu');
+    if (type === 'd-poder') return this.#poder(d, data, from);
   }
   // jogador saiu ou caiu no meio do duelo: o outro vence por W.O.
   onLeave(pid) { const d = this.duelOf(pid); if (d) this.#end(d, this.#foe(d, pid), 'caiu'); }
@@ -68,7 +70,7 @@ export class Arbiter {
     const a = String(data.a ?? ''), id = String(data.duel ?? '');
     if (!a || !id || a === from || this.duels.has(id)) return;
     for (const pid of [a, from]) { const old = this.duelOf(pid); if (old) this.#end(old, this.#foe(old, pid), 'cancelado'); }
-    const d = { id, a, b: from, phase: 'pick', teams: {}, active: {}, st: {}, t0: performance.now() };
+    const d = { id, a, b: from, phase: 'pick', teams: {}, active: {}, st: {}, t0: performance.now(), dmax: data.dmax === true, poder: {} };
     this.duels.set(id, d);
     d.pickTimer = setTimeout(() => { if (d.phase === 'pick') this.#end(d, null, 'tempo'); }, 90000);
   }
@@ -97,22 +99,50 @@ export class Arbiter {
     d.phase = 'fight'; d.fightAt = performance.now() + 3000;
     d.active[d.a] = d.teams[d.a][0].uid; d.active[d.b] = d.teams[d.b][0].uid;
     this.#both(d, 'd-start', {
-      duel: d.id, a: d.a, b: d.b, arena: d.arena, count: 3,
+      duel: d.id, a: d.a, b: d.b, arena: d.arena, count: 3, dmax: d.dmax,
       starts: { [d.a]: { x: Math.round(cx - ux * k), y: Math.round(cy - uy * k) }, [d.b]: { x: Math.round(cx + ux * k), y: Math.round(cy + uy * k) } },
       teams: { [d.a]: d.teams[d.a].map(monWire), [d.b]: d.teams[d.b].map(monWire) },
     });
   }
   #active(d, data, from) {
     const m = d.teams[from]?.find((x) => x.uid === data.uid);
-    if (m && m.hp > 0) d.active[from] = m.uid;
+    if (!m || m.hp <= 0) return;
+    const old = d.active[from];
+    if (old && old !== m.uid) this.#fimDmax(d, old); // trocou: o Dynamax acaba
+    d.active[from] = m.uid;
   }
+  // Mega (uma vez por duelo, com a pedra certa segurada) e Dynamax (só com a regra ligada): o árbitro muda o Mon dele
+  // (status, tipos, PS ×2, Max Golpes) e avisa os dois
+  #poder(d, data, from) {
+    if (d.phase !== 'fight' || performance.now() < d.fightAt || d.poder[from]) return;
+    const uid = d.active[from], m = this.#mon(d, uid)?.m; if (!m || m.hp <= 0 || data.uid !== uid) return;
+    if (data.k === 'mega') {
+      const form = megaFormFor(m); if (!form) return;
+      m.setTempForm(form); d.poder[from] = true;
+      this.#both(d, 'd-poder', { duel: d.id, uid, k: 'mega', form });
+    } else if (data.k === 'dmax') {
+      if (!d.dmax || !canDynamax(m)) return;
+      const gf = gmaxFormFor(m); if (gf) m.setTempForm(gf);
+      m.setDynamax(DMAX_HP); d.poder[from] = true;
+      d.st[uid].dmaxUntil = performance.now() + (DMAX_S + 1.4) * 1000; // + a animação de crescer
+      this.#both(d, 'd-poder', { duel: d.id, uid, k: 'dmax' });
+    }
+  }
+  #fimDmax(d, uid) {
+    const st = d.st[uid], m = this.#mon(d, uid)?.m; if (!st?.dmaxUntil || !m) return;
+    st.dmaxUntil = 0;
+    m.setDynamax(0); if (m.formKind === 'gmax') m.setTempForm(null);
+    this.#both(d, 'd-poder', { duel: d.id, uid, k: 'fim' });
+  }
+  // golpe do espaço `slot` (em Dynamax, o Max Golpe)
+  #moveOf(m, slot) { return m.dmaxK ? maxMoveFor(m, slot) : { id: m.moves[slot], mv: MOVES[m.moves[slot]] }; }
   #use(d, data, from) {
     if (d.phase !== 'fight') return;
     const now = performance.now();
     if (now < d.fightAt - 400) return;
     const uid = d.active[from], m = this.#mon(d, uid)?.m; if (!m || m.hp <= 0) return;
     const slot = data.s; if (!Number.isInteger(slot) || slot < 0 || slot > 3) return;
-    const id = m.moves[slot], mv = MOVES[id]; if (!mv) return;
+    const { mv } = this.#moveOf(m, slot) ?? {}; if (!mv) return;
     const st = d.st[uid];
     const last = st.last[slot] ?? -1e9;
     if (now - last < (mv.cd ?? 1) * 1000 * 0.7 - 80) { st.strikes = (st.strikes ?? 0) + 1; return; } // rápido demais: ignora
@@ -129,7 +159,7 @@ export class Arbiter {
     const A = this.#mon(d, auid)?.m, Tm = this.#mon(d, tuid)?.m;
     if (!A || !Tm || A.hp <= 0 || Tm.hp <= 0) return;
     const slot = data.slot; if (!Number.isInteger(slot) || slot < 0 || slot > 3) return;
-    const id = A.moves[slot], mv0 = MOVES[id]; if (!mv0) return;
+    const { id, mv: mv0 } = this.#moveOf(A, slot) ?? {}; if (!mv0) return;
     const b = d.st[auid].budget[slot];
     if (!b || b.left <= 0 || now > b.until) return;     // sem uso válido antes
     const pa = this.pos.get(from), pt = this.pos.get(foe);
@@ -156,6 +186,7 @@ export class Arbiter {
     }
     out.hp = Tm.hp; out.st = Tm.status; out.ahp = A.hp;
     out.faint = Tm.hp <= 0; out.afaint = A.hp <= 0;
+    if (out.faint) { tst.dmaxUntil = 0; Tm.clearBattleForm(); } // desmaio desfaz Mega e Dynamax (os clientes fazem o mesmo)
     this.#both(d, 'd-hit', out);
     this.#checkEnd(d);
   }
@@ -169,6 +200,7 @@ export class Arbiter {
   #tick(dt) {
     for (const d of this.duels.values()) {
       if (d.phase !== 'fight' || performance.now() < d.fightAt) continue;
+      for (const uid of Object.keys(d.st)) if (d.st[uid].dmaxUntil && performance.now() > d.st[uid].dmaxUntil) this.#fimDmax(d, uid);
       for (const pid of [d.a, d.b]) {
         const uid = d.active[pid], m = this.#mon(d, uid)?.m;
         if (!m || m.hp <= 0 || (m.status !== 'brn' && m.status !== 'psn')) continue;

@@ -105,6 +105,7 @@ export class Tocas {
       return;
     }
     if (!g.party.some((m) => !m.fainted)) { g.toast('Seus Pokémon não têm condições de lutar.'); return; }
+    if (g.net?.reide?.convite?.(t)) return; // online: já há um reide aberto nesta toca, entra nele
     const boss = t.boss ??= this.#sorteio(t);
     const sp = boss.mon.sp, nome = boss.gmax ? `${sp.name} Gigantamax` : sp.name;
     const r = await g.ui.say([`Toca de Luz ${'★'.repeat(boss.estrelas)}${'☆'.repeat(5 - boss.estrelas)}. Um ${nome} (Nv. ${boss.mon.level}) se agita na luz vermelha.`, 'Entrar no reide?'], { choices: ['Entrar', 'Agora não'] });
@@ -186,7 +187,8 @@ export class Tocas {
     const g = this.g, t = R.t, b = R.boss;
     if (R.done) { this.#hud(); return; }
     R.timer -= dt;
-    if (R.timer <= 0) { this.#fim(false, 'tempo'); return; }
+    const conv = R.online && !R.online.host; // convidado: o fim vem do anfitrião
+    if (R.timer <= 0 && !conv) { this.#fim(false, 'tempo'); return; }
     g.spawnT = Math.max(g.spawnT, 2);
     // ninguém sai da arena
     const clamp = (e, m = 0) => { const dx = e.x - t.px, dy = e.y - t.py, l = Math.hypot(dx, dy); if (l > ARENA - m) { e.x = t.px + dx / l * (ARENA - m); e.y = t.py + dy / l * (ARENA - m); } };
@@ -219,7 +221,7 @@ export class Tocas {
     }
     // barreira: sobe ao passar de 60% e 30% dos PS
     const k = b.mon.hp / b.mon.stats.hp;
-    if (R.shieldAt.length && k <= R.shieldAt[0] && !R.shields) {
+    if (!conv && R.shieldAt.length && k <= R.shieldAt[0] && !R.shields) {
       R.shieldAt.shift();
       R.shields = Math.min(6, 2 + R.info.estrelas);
       g.fx.number(b.x, b.y - (b.topH ?? 40) - 24, 'Barreira de energia!', 0x9ef0ff, true, 'banner');
@@ -251,7 +253,9 @@ export class Tocas {
   #desmaio(e, by) {
     const R = this.reide, g = this.g;
     if (e === R.boss) {
-      e.mon.hp = 1; e.busy = true; e.lock = 99; e.charging = null; e.dashing = null;
+      e.mon.hp = 1; e.charging = null; e.dashing = null;
+      if (R.online && !R.online.host) return true; // convidado: quem decide o fim é o anfitrião (src/net/reide.js)
+      e.busy = true; e.lock = 99;
       this.#fim(true);
       void by;
       return true;
@@ -261,6 +265,7 @@ export class Tocas {
     e.dead = true; e.play('Hurt'); g.fx.burst(e.x, e.y - 8, 0xffffff, 1.2); g.audio?.sfx?.('faint');
     g.poder?.limpar?.(e);
     R.kos++;
+    if (R.online && !R.online.host) g.net?.reide?.ko?.();
     g.toast(`${e.mon.name} desmaiou! (${R.kos}/${MAX_KO})`);
     if (aliado) { R.allies = R.allies.filter((a) => a !== e); g.later(1.1, () => g.removeEntity(e)); }
     if (R.kos >= MAX_KO) { g.later(0.8, () => this.#fim(false, 'kos')); return true; }
@@ -278,6 +283,30 @@ export class Tocas {
     }
     return true;
   }
+
+  // ---------- online (src/net/reide.js) ----------
+  // anfitrião: dano de um convidado (passa pela barreira como os outros)
+  danoRemoto(dmg, max, quem) {
+    const R = this.reide; if (!R?.boss || R.done || !R.boss.alive) return;
+    const b = R.boss, by = { side: 'ally', remoto: quem };
+    const d = this.#escudo(b, dmg, by, { mv: { max } });
+    if (d > 0) { this.g.combat.hurt(b, d, null, { silent: true }); this.g.fx.number(b.x + (Math.random() - 0.5) * 20, b.y - (b.topH ?? 40) * 0.6, String(d), 0xffd0e0); }
+  }
+  koRemoto(quem) {
+    const R = this.reide; if (!R || R.done) return;
+    R.kos++; this.g.toast(`O Pokémon de ${quem} desmaiou! (${R.kos}/${MAX_KO})`);
+    if (R.kos >= MAX_KO) this.#fim(false, 'kos');
+  }
+  // convidado: estado vindo do anfitrião
+  sincronizar(s) {
+    const R = this.reide; if (!R?.boss || R.done || !s) return;
+    const m = R.boss.mon;
+    if (Number.isFinite(s.hp)) m.hp = Math.max(1, Math.min(m.stats.hp, Math.round(s.hp * m.stats.hp / Math.max(1, s.max || m.stats.hp))));
+    if (Number.isFinite(s.sh)) R.shields = s.sh | 0;
+    if (Number.isFinite(s.t)) R.timer = s.t;
+    if (Number.isFinite(s.kos)) R.kos = s.kos | 0;
+  }
+  fimRemoto(win, motivo) { const R = this.reide; if (!R || R.done) return; if (win && R.boss) { R.boss.mon.hp = 1; R.boss.busy = true; R.boss.lock = 99; } this.#fim(win, motivo); }
 
   // ---------- fim ----------
   async #fim(win, motivo = '') {
