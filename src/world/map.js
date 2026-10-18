@@ -245,6 +245,7 @@ export class GameMap {
   tallAt(px, py) { return TALLS.has(this.at(Math.floor(px / T), Math.floor(py / T))); }
   // Empurra um círculo para fora dos blocos sólidos
   resolve(p, r, swim = false) {
+    if ((p.pouso || p.saltando) && this.g?.vivo?.resolvePouso(p, r)) return; // em cima de algo ou saltando (src/world/vivo.js)
     const x0 = Math.floor((p.x - r) / T), x1 = Math.floor((p.x + r) / T), y0 = Math.floor((p.y - r) / T), y1 = Math.floor((p.y + r) / T);
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
       if (!this.solidAt(x * T + 1, y * T + 1, swim)) continue;
@@ -311,7 +312,7 @@ export class GameMap {
   }
   #rowsChunk(c, r0, r1) {
     const ox = c.cx * CH, oy = c.cy * CH, th = Math.min(r1, this.h - oy) - r0;
-    if (th > 0) renderTiles(this, c.img, ox, oy, ox, oy + r0, Math.min(CH, this.w - ox), th);
+    if (th > 0 && !this.semArte) renderTiles(this, c.img, ox, oy, ox, oy + r0, Math.min(CH, this.w - ox), th); // semArte: o visual 3D pinta o chão sozinho
     c.row = r1;
   }
   #finishChunk(c) {
@@ -479,6 +480,7 @@ export class GameMap {
   }
   flushDirty() {
     if (!this.dirtyTiles.length) return;
+    if (this.semArte) { this.dirtyTiles.length = 0; return; }
     const touched = new Map();
     for (const [x, y] of this.dirtyTiles) for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) {
       const tx = x + i, ty = y + j; if (tx < 0 || ty < 0 || tx >= this.w || ty >= this.h) continue;

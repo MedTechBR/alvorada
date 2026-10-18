@@ -93,6 +93,7 @@ export class WildAI {
     const g = this.g, ai = e.ai, pl = g.player;
     ai.t -= dt; ai.dodgeCd = (ai.dodgeCd ?? 0) - dt; ai.react = (ai.react ?? 0) - dt;
     if (e.charging || e.wakeT > 0) { e.wakeT -= dt; return Z; }
+    const alto = g.vivo?.pensar(e, dt); if (alto) return alto; // em cima de telhado/copa/rocha: fica, luta de cima ou salta no alvo (src/world/vivo.js)
     const dP = Math.hypot(pl.x - e.x, pl.y - e.y);
     if (ai.state === 'sleep') {
       if (dP < 18 && pl.speed > 60) this.wake(e);
@@ -131,7 +132,7 @@ export class WildAI {
   #roam(e, dt, dP) {
     const g = this.g, ai = e.ai, lead = g.lead, pl = g.player;
     // percebe quem chega perto
-    const sight = SIGHT[e.temper] * (e.isAlpha ? 1.3 : 1);
+    const sight = SIGHT[e.temper] * (e.isAlpha ? 1.3 : 1) * (e.pouso ? 1.6 : 1); // lá do alto enxerga mais longe
     if (sight > 0 && ai.react <= 0) {
       const tgt = lead?.alive && !this.c.alt.hidden(lead) ? lead : pl;
       const d = Math.hypot(tgt.x - e.x, tgt.y - e.y);

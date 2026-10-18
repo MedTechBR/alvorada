@@ -443,6 +443,7 @@ export class Mounts {
   // ---------- entrada (X) ----------
   #input(dt, pk) {
     const inp = this.g.input;
+    if (this.g.player?.pouso || this.g.player?.saltando) { this.holdT = null; return; } // no telhado: desce primeiro (E)
     if (inp.pressed('mountFly')) { this.fly(); return; }
     const down = inp.down('jump') || inp.down('mount');
     if (pk) { this.holdT = null; return; }

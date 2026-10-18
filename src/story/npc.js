@@ -19,7 +19,7 @@ function framesFor(look) {
 export class Npc {
   constructor(g, { id, name, look, x, y, dir = 'down' }) {
     this.g = g; this.id = id; this.name = name;
-    this.x = x; this.y = y; this.dir = dir; this.home = { x, y, dir };
+    this.x = x; this.y = y; this.dir = dir; this.home = { x, y, dir }; this.look = look;
     this.frames = framesFor(look);
     this.r = 6; this.h = (this.frames.fh ?? 30) + (look === 'leader' ? 4 : 0); this.t = 0; this.walk = null; this.speed = 0;
     this.view = new PIXI.Container();

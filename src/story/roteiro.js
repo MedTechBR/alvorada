@@ -216,9 +216,16 @@ export class Roteiro {
   }
   #naZona(alvo, rPadrao = 3) {
     const p = this.g.player, S = this.g.map.spots ?? {};
-    for (const [k, s] of Object.entries(S)) {
-      if (k !== alvo && !k.startsWith(alvo + '__')) continue;
-      if (s.map !== this.#mapaDe(p.x, p.y)) continue;
+    // desempenho: os pontos de cada alvo ficam guardados (varrer todos os pontos a cada chamada pesava ~10% da CPU);
+    // a lista é refeita quando o objeto de pontos muda ou a cada 2 s (pontos novos de interiores gerados)
+    const agora = performance.now();
+    if (this.zonaS !== S || agora - (this.zonaT ?? 0) > 2000) { this.zonaS = S; this.zonaT = agora; this.zonaC = new Map(); }
+    let lista = this.zonaC.get(alvo);
+    if (!lista) { lista = Object.entries(S).filter(([k]) => k === alvo || k.startsWith(alvo + '__')); this.zonaC.set(alvo, lista); }
+    if (!lista.length) return null;
+    const aqui = this.#mapaDe(p.x, p.y);
+    for (const [k, s] of lista) {
+      if (s.map !== aqui) continue;
       if (Math.hypot(s.x - p.x, s.y - p.y) < (s.r ?? rPadrao * T)) return k;
     }
     return null;
