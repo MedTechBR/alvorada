@@ -3,7 +3,7 @@ import { T, TILE, SOLID, SWIMMABLE, MOUNT_PASS, TALLS } from './tiles.js';
 import { WATER_FRAMES, FLOWERS, LILY, TALL, CORN, SPR } from './art.js';
 import { KINDS, DECOR } from './objects.js';
 import { buildRegion } from './build.js';
-import { renderTiles } from './ground.js';
+import { renderTiles, prewarm } from './ground.js';
 import { ANIM, TALL_SNOW, TALL_DRY } from './arte-biomas.js';
 
 // Mapa da região de Alvorada, desenhado à mão em assets/maps/alvorada.json.
@@ -62,6 +62,7 @@ export class GameMap {
     for (const o of this.objects) for (const k of o.cells) this.cellObj.set(k, o);
     this.dirtyTiles = []; this.visible = new Set(); this.time = 0; this.frameK = 0;
     this.mounts = new Set(); this.passable = new Set();
+    prewarm(this); // texturas dos biomas assadas nas folgas (ground.js)
   }
 
   // portas, tapetes de saída e escadas: tudo vira uma lista de "warps"

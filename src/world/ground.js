@@ -1,6 +1,6 @@
 import { TILE } from './tiles.js';
 import { GROUND } from './art.js';
-import { FAM, SOFT, BLEED, drawBiomeHard } from './arte-biomas.js';
+import { FAM, SOFT, BLEED, drawBiomeHard, famBuf, warmTile } from './arte-biomas.js';
 
 // Compositor do chão: monta, pixel a pixel, os pedaços do mapa com bordas orgânicas (autotile por campo).
 // Cada camada (areia, terra, grama) tem um "campo" interpolado entre os centros dos blocos; o contorno
@@ -88,7 +88,7 @@ export function renderTiles(map, img, ox, oy, tx0, ty0, tw, th) {
         if (tot > fb) { fb = tot; fa = id; }
       }
       if (fa) {
-        const Fm = FAMS[fa]; let c = Fm.px(gx, gy);
+        const Fm = FAMS[fa], fb = Fm.buf ?? famBuf(Fm), q = (((gy & 255) << 8) + (gx & 255)) * 4; let c = [fb[q], fb[q + 1], fb[q + 2], fb[q + 3]];
         if (L === 4) {
           // monte de neve: lado de cima claro, lado de baixo com sombra azulada (gradiente do campo na vertical)
           const gyF = ((r01 >= 4) - (r00 >= 4)) * (1 - fu) + ((r11 >= 4) - (r10 >= 4)) * fu;
@@ -177,4 +177,14 @@ function hardTile(map, t, tx, ty, put) {
     }
     default: if (!drawBiomeHard(t, at, tx, ty, put)) blit(GROUND.void);
   }
+}
+
+// Assa aos poucos (um por vez, nas folgas) as texturas dos biomas que o mapa usa, para o primeiro setor
+// de cada bioma não engasgar o jogo
+export function prewarm(map) {
+  const seen = new Set(); for (let i = 0; i < map.tiles.length; i += 7) seen.add(map.tiles[i]);
+  const list = [...new Set([...seen].map((t) => FAMS[FAMT[t]]).filter((f) => f && !f.buf))].map((f) => () => famBuf(f));
+  for (const t of seen) list.push(() => warmTile(t));
+  const step = () => { const f = list.shift(); if (!f) return; f(); if (window.requestIdleCallback) requestIdleCallback(step, { timeout: 500 }); else setTimeout(step, 60); };
+  setTimeout(step, 1500);
 }

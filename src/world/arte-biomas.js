@@ -10,84 +10,103 @@ import { canvas, texOf, outline, SPR, TALL } from './art.js';
 // - ANIM: quadros animados por cima de certos blocos (lava, areia movediça, correnteza, fonte termal, maré).
 // - objetos do cenário: SPR.* (catálogo em objects.js).
 
-// ---------------------------------------------------------------- ruído
+// ---------------------------------------------------------------- ruído (periódico em 256 px)
+// Todo o ruído repete a cada 256 px: cada família é desenhada uma vez numa tela 256x256 (assada sob demanda)
+// e o compositor só lê dela. Assim montar um setor custa o mesmo que um setor de grama.
+const P = 256, TAU = Math.PI * 2, W = (k) => (TAU * k) / P;
+const mod = (a, n) => ((a % n) + n) % n;
 function hash(x, y, s = 0) { let h = (x * 374761393 + y * 668265263 + s * 1442695041) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; }
-function vn(x, y, s = 0) {
-  const xi = Math.floor(x), yi = Math.floor(y), fx = x - xi, fy = y - yi, u = fx * fx * (3 - 2 * fx), v = fy * fy * (3 - 2 * fy);
-  const a = hash(xi, yi, s), b = hash(xi + 1, yi, s), c = hash(xi, yi + 1, s), d = hash(xi + 1, yi + 1, s);
-  return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+const hp = (x, y, s) => hash(x & 255, y & 255, s);                                    // um valor por pixel
+const CELL = new Map();
+const cellOf = (c) => { let r = CELL.get(c); if (!r) { const n = Math.max(1, Math.round(P / c)); r = [P / n, n]; CELL.set(c, r); } return r; };
+const hc = (x, y, c, s) => { const [cc, n] = cellOf(c); return hash(mod(Math.floor(x / cc), n), mod(Math.floor(y / cc), n), s); }; // um valor por célula
+function vnc(x, y, c, s = 0) {
+  const [cc, n] = cellOf(c), X = x / cc, Y = y / cc, xi = Math.floor(X), yi = Math.floor(Y), fx = X - xi, fy = Y - yi, u = fx * fx * (3 - 2 * fx), v = fy * fy * (3 - 2 * fy);
+  const x0 = mod(xi, n), y0 = mod(yi, n), x1 = mod(xi + 1, n), y1 = mod(yi + 1, n);
+  const a = hash(x0, y0, s), b = hash(x1, y0, s), cq = hash(x0, y1, s), d = hash(x1, y1, s);
+  return a + (b - a) * u + (cq - a) * v + (a - b - cq + d) * u * v;
 }
-const fbm = (x, y, s) => vn(x, y, s) * 0.62 + vn(x * 2.1, y * 2.1, s + 7) * 0.38;
-// células de Voronoi (rachaduras, placas, pedras): devolve distância ao centro, distância à borda e id da célula
-function vor(x, y, cell, s = 0) {
-  const X = x / cell, Y = y / cell, xi = Math.floor(X), yi = Math.floor(Y);
+const fbm = (x, y, c, s) => vnc(x, y, c, s) * 0.62 + vnc(x, y, c / 2, s + 7) * 0.38;
+// células de Voronoi (rachaduras, placas, pedras): distância ao centro, distância à borda, id e vetor até o centro
+const VOR = { d: 0, edge: 0, id: 0, cx: 0, cy: 0 };
+function vor(x, y, c, s = 0) {
+  const [cc, n] = cellOf(c), X = x / cc, Y = y / cc, xi = Math.floor(X), yi = Math.floor(Y);
   let d1 = 9, d2 = 9, id = 0, cx = 0, cy = 0;
   for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) {
-    const gx = xi + i, gy = yi + j, px = gx + 0.15 + hash(gx, gy, s) * 0.7, py = gy + 0.15 + hash(gx, gy, s + 3) * 0.7;
+    const gx = xi + i, gy = yi + j, hx = mod(gx, n), hy = mod(gy, n), px = gx + 0.15 + hash(hx, hy, s) * 0.7, py = gy + 0.15 + hash(hx, hy, s + 3) * 0.7;
     const d = Math.hypot(px - X, py - Y);
-    if (d < d1) { d2 = d1; d1 = d; id = hash(gx, gy, s + 5); cx = px - X; cy = py - Y; } else if (d < d2) d2 = d;
+    if (d < d1) { d2 = d1; d1 = d; id = hash(hx, hy, s + 5); cx = px - X; cy = py - Y; } else if (d < d2) d2 = d;
   }
-  return { d: d1 * cell, edge: (d2 - d1) * cell, id, cx, cy };
+  VOR.d = d1 * cc; VOR.edge = (d2 - d1) * cc; VOR.id = id; VOR.cx = cx; VOR.cy = cy;
+  return VOR;
 }
 const mix = (a, b, k) => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k];
 const mul = (c, k) => [c[0] * k, c[1] * k, c[2] * k];
 const clamp01 = (k) => (k < 0 ? 0 : k > 1 ? 1 : k);
+// assa uma função de cor (x, y) → [r, g, b, a?] numa tela 256x256
+export function bake(fn) {
+  const o = new Uint8ClampedArray(P * P * 4);
+  for (let y = 0; y < P; y++) for (let x = 0; x < P; x++) { const c = fn(x, y), k = (y * P + x) * 4; o[k] = c[0]; o[k + 1] = c[1]; o[k + 2] = c[2]; o[k + 3] = c[3] ?? 255; }
+  return o;
+}
 
 // ---------------------------------------------------------------- famílias do compositor
 // rank: 0 = líquido (água, lava), 1 = areia, 2 = terra/trilha, 3 = grama, 4 = acima da grama (neve funda).
 // rim = cor do contorno de fora; shore = faixas da beira (só líquidos: [limiar de f1, cor]); foam = espuma na beira d'água.
+// buf: a tela assada (ground.js chama famBuf na primeira vez que a família aparece).
 export const FAM = {};
 let famN = 10;
-function fam(name, rank, o) { const id = famN++; FAM[name] = { id, rank, ...o }; return id; }
+function fam(name, rank, o) { const id = famN++; FAM[name] = { id, rank, name, ...o }; return id; }
+export function famBuf(f) { return (f.buf ??= bake(f.px)); }
 const F = {};
 F.snow = fam('snow', 3, {
   rim: [148, 168, 198], hi: [255, 255, 255],
   px(x, y) {
-    const n = fbm(x / 7, y / 7, 1), c = mix([212, 224, 240], [246, 250, 255], clamp01(n * 1.5 - 0.2));
-    const h = hash(x, y, 4); if (h > 0.992) return [255, 255, 255]; if (h > 0.975) return mul(c, 0.9);
+    const n = fbm(x, y, 7, 1), c = mix([212, 224, 240], [246, 250, 255], clamp01(n * 1.5 - 0.2));
+    const h = hp(x, y, 4); if (h > 0.992) return [255, 255, 255]; if (h > 0.975) return mul(c, 0.9);
     return c;
   },
 });
 F.deepsnow = fam('deepsnow', 4, {
   rim: [132, 152, 188], hi: [255, 255, 255],
   px(x, y) {
-    const w = Math.sin(x * 0.22 + fbm(x / 9, y / 9, 2) * 5 + y * 0.05) * 0.5 + 0.5;
-    let c = mix([226, 236, 250], [252, 254, 255], clamp01(fbm(x / 6, y / 6, 3) * 1.3));
+    const w = Math.sin(x * W(9) + fbm(x, y, 9, 2) * 5 + y * W(2)) * 0.5 + 0.5;
+    let c = mix([226, 236, 250], [252, 254, 255], clamp01(fbm(x, y, 6, 3) * 1.3));
     if (w > 0.82) c = mix(c, [196, 212, 236], (w - 0.82) * 3.5);
-    if (hash(x, y, 9) > 0.993) return [255, 255, 255];
+    if (hp(x, y, 9) > 0.993) return [255, 255, 255];
     return c;
   },
 });
 F.ash = fam('ash', 3, {
   rim: [64, 58, 62], hi: [172, 166, 166],
   px(x, y) {
-    const c = mix([112, 106, 110], [150, 144, 144], clamp01(fbm(x / 6, y / 6, 11)));
-    const h = hash(x, y, 12); if (h > 0.997) return [255, 148, 64]; if (h > 0.94) return mul(c, 0.78); if (h < 0.03) return mul(c, 1.12);
+    const c = mix([112, 106, 110], [150, 144, 144], clamp01(fbm(x, y, 6, 11)));
+    const h = hp(x, y, 12); if (h > 0.997) return [255, 148, 64]; if (h > 0.94) return mul(c, 0.78); if (h < 0.03) return mul(c, 1.12);
     return c;
   },
 });
 F.dune = fam('dune', 3, {
   rim: [184, 132, 76], hi: [252, 226, 166],
   px(x, y) {
-    const r = Math.sin((y + fbm(x / 14, y / 14, 21) * 9 + x * 0.18) * 0.85);
-    let c = mix([228, 186, 116], [244, 208, 142], clamp01(fbm(x / 8, y / 8, 22)));
+    const r = Math.sin(y * W(35) + x * W(6) + fbm(x, y, 14, 21) * 7.5);
+    let c = mix([228, 186, 116], [244, 208, 142], clamp01(fbm(x, y, 8, 22)));
     if (r > 0.55) c = mix(c, [204, 154, 90], (r - 0.55) * 1.6); else if (r < -0.75) c = mix(c, [252, 226, 170], 0.6);
-    if (hash(x, y, 23) > 0.995) return [255, 240, 200];
+    if (hp(x, y, 23) > 0.995) return [255, 240, 200];
     return c;
   },
 });
 F.caatinga = fam('caatinga', 3, {
   rim: [112, 74, 48], hi: [206, 156, 110],
   px(x, y) {
-    let c = mix([166, 112, 76], [190, 134, 92], clamp01(fbm(x / 6, y / 6, 31)));
-    const v = vor(x, y, 11, 32); if (v.edge < 0.7 && hash(Math.floor(x / 11), Math.floor(y / 11), 33) > 0.5) c = mul(c, 0.78);
+    let c = mix([166, 112, 76], [190, 134, 92], clamp01(fbm(x, y, 6, 31)));
+    const v = vor(x, y, 11, 32); if (v.edge < 0.7 && (v.id * 7) % 1 > 0.5) c = mul(c, 0.78);
     // tufos de capim seco
-    const cx = Math.floor(x / 7), cy = Math.floor(y / 7), hs = hash(cx, cy, 34);
+    const hs = hc(x, y, 8, 34);
     if (hs > 0.72) {
-      const lx = x - cx * 7, ly = y - cy * 7;
+      const lx = x & 7, ly = y & 7;
       if (ly >= 2 && ly <= 5 && (lx === 2 && ly >= 3 || lx === 3 || lx === 4 && ly >= 3 || (lx === 1 || lx === 5) && ly === 5)) return ly < 3 ? [222, 204, 120] : hs > 0.86 ? [168, 150, 70] : [196, 178, 96];
     }
-    if (hash(x, y, 35) > 0.993) return [222, 206, 186];
+    if (hp(x, y, 35) > 0.993) return [222, 206, 186];
     return c;
   },
 });
@@ -97,13 +116,13 @@ F.basalt = fam('basalt', 2, {
     const v = vor(x, y, 9, 41), base = mix([64, 56, 60], [86, 76, 80], v.id);
     if (v.edge < 0.9) return [40, 34, 38];
     if (v.edge < 1.9 && v.cy > 0) return mul(base, 1.16); // brilho na borda de cima da placa
-    return hash(x, y, 42) > 0.97 ? mul(base, 0.85) : base;
+    return hp(x, y, 42) > 0.97 ? mul(base, 0.85) : base;
   },
 });
 F.cracked = fam('cracked', 2, {
   rim: [140, 92, 56], hi: [232, 186, 132],
   px(x, y) {
-    const v = vor(x + fbm(x / 5, y / 5, 51) * 3, y, 7.5, 52), base = mix([200, 144, 92], [218, 164, 108], v.id * 0.8 + fbm(x / 4, y / 4, 53) * 0.2);
+    const n = fbm(x, y, 4, 53), v = vor(x + fbm(x, y, 5, 51) * 3, y, 7.5, 52), base = mix([200, 144, 92], [218, 164, 108], v.id * 0.8 + n * 0.2);
     if (v.edge < 0.75) return [122, 78, 48];
     if (v.edge < 1.5) return mul(base, 1.08);
     return base;
@@ -112,11 +131,11 @@ F.cracked = fam('cracked', 2, {
 F.mangmud = fam('mangmud', 2, {
   rim: [48, 38, 28], hi: [120, 100, 76],
   px(x, y) {
-    const n = fbm(x / 13, y / 13, 61);
-    if (n > 0.64) { if (n < 0.665) return [64, 52, 38]; return hash(x, y, 62) > 0.96 ? [190, 214, 222] : mix([84, 112, 112], [106, 136, 134], fbm(x / 4, y / 4, 63)); }
-    let c = mix([92, 74, 52], [118, 94, 64], clamp01(fbm(x / 5, y / 5, 64)));
+    const n = fbm(x, y, 13, 61);
+    if (n > 0.64) { if (n < 0.665) return [64, 52, 38]; return hp(x, y, 62) > 0.96 ? [190, 214, 222] : mix([84, 112, 112], [106, 136, 134], fbm(x, y, 4, 63)); }
+    let c = mix([92, 74, 52], [118, 94, 64], clamp01(fbm(x, y, 5, 64)));
     if (n > 0.6) c = mul(c, 0.82);
-    if (hash(Math.floor(x / 4), Math.floor(y / 4), 65) > 0.988 && (x & 3) === 1 && (y & 3) === 1) return [40, 30, 22];
+    if (hc(x, y, 4, 65) > 0.988 && (x & 3) === 1 && (y & 3) === 1) return [40, 30, 22];
     return c;
   },
 });
@@ -126,7 +145,7 @@ F.obsidian = fam('obsidian', 2, {
     const v = vor(x, y, 8, 221), base = mix([26, 22, 36], [42, 34, 60], v.id);
     if (v.edge < 0.8) return [12, 10, 18];
     if (v.cx > 0.05 && v.cy > 0.05 && v.d < 3.2 && v.d > 1.7) return [92, 74, 136];
-    if (hash(x, y, 222) > 0.994) return [210, 180, 255];
+    if (hp(x, y, 222) > 0.994) return [210, 180, 255];
     return base;
   },
 });
@@ -138,25 +157,25 @@ F.stone = fam('stone', 2, {
 F.wetsand = fam('wetsand', 1, {
   rim: [150, 126, 86], foam: true,
   px(x, y) {
-    let c = mix([184, 160, 114], [204, 180, 132], clamp01(fbm(x / 6, y / 6, 71)));
-    const s = Math.sin(y * 0.9 + fbm(x / 12, y / 12, 72) * 7); if (s > 0.9) c = mix(c, [226, 212, 176], 0.6);
-    if (hash(x, y, 73) > 0.996) return [252, 236, 226];
+    let c = mix([184, 160, 114], [204, 180, 132], clamp01(fbm(x, y, 6, 71)));
+    const s = Math.sin(y * W(37) + fbm(x, y, 12, 72) * 7); if (s > 0.9) c = mix(c, [226, 212, 176], 0.6);
+    if (hp(x, y, 73) > 0.996) return [252, 236, 226];
     return c;
   },
 });
 F.tide = fam('tide', 1, {
   rim: [140, 118, 82], foam: true,
   px(x, y) {
-    let c = mix([168, 148, 108], [186, 166, 122], clamp01(fbm(x / 6, y / 6, 81)));
-    const s = Math.sin(x * 0.7 + Math.sin(y * 0.4) * 2); if (s > 0.8) c = mul(c, 0.9);
+    let c = mix([168, 148, 108], [186, 166, 122], clamp01(fbm(x, y, 6, 81)));
+    const s = Math.sin(x * W(29) + Math.sin(y * W(16)) * 2); if (s > 0.8) c = mul(c, 0.9);
     return c;
   },
 });
 F.ice = fam('ice', 1, {
   rim: [112, 164, 204], foam: [236, 248, 255],
   px(x, y) {
-    let c = mix([160, 214, 238], [196, 234, 250], clamp01(fbm(x / 10, y / 10, 91)));
-    const st = ((x + y + Math.floor(fbm(x / 9, y / 9, 92) * 8)) % 19 + 19) % 19; if (st < 1) c = [236, 250, 255]; else if (st < 2) c = mix(c, [236, 250, 255], 0.5);
+    let c = mix([160, 214, 238], [196, 234, 250], clamp01(fbm(x, y, 10, 91)));
+    const st = (x + y + Math.floor(fbm(x, y, 9, 92) * 8)) & 15; if (st < 1) c = [236, 250, 255]; else if (st < 2) c = mix(c, [236, 250, 255], 0.5);
     const v = vor(x, y, 13, 93); if (v.edge < 0.6 && v.id > 0.55) c = [124, 182, 216];
     return c;
   },
@@ -164,8 +183,8 @@ F.ice = fam('ice', 1, {
 F.quicksand = fam('quicksand', 1, {
   rim: [136, 100, 58],
   px(x, y) {
-    const v = vor(x, y, 22, 103), d = v.d * (1 + (fbm(x / 6, y / 6, 102) - 0.5) * 0.5);
-    let c = mix([176, 136, 84], [196, 156, 98], clamp01(fbm(x / 5, y / 5, 101)));
+    const w = fbm(x, y, 6, 102), v = vor(x, y, 22, 103), d = v.d * (1 + (w - 0.5) * 0.5);
+    let c = mix([176, 136, 84], [196, 156, 98], clamp01(fbm(x, y, 5, 101)));
     if (Math.sin(d * 0.9) > 0.72) c = mul(c, 0.86); else if (Math.sin(d * 0.9) < -0.85) c = mix(c, [214, 180, 122], 0.5);
     if (v.d < 2.2) c = [128, 94, 56];
     return c;
@@ -174,7 +193,7 @@ F.quicksand = fam('quicksand', 1, {
 F.lava = fam('lava', 0, {
   shore: [[0.42, [40, 22, 22]], [0.36, [96, 28, 18]], [0.31, [170, 48, 20]]],
   px(x, y) {
-    const n = fbm(x / 8, y / 8, 111) * 0.7 + vn(x / 3, y / 3, 112) * 0.3;
+    const n = fbm(x, y, 8, 111) * 0.7 + vnc(x, y, 3, 112) * 0.3;
     if (n < 0.3) return mix([108, 26, 16], [150, 36, 18], n / 0.3);
     if (n > 0.6 && n < 0.66) return [255, 214, 92];
     if (n > 0.66) return [255, 168, 52];
@@ -184,31 +203,30 @@ F.lava = fam('lava', 0, {
 F.frozen = fam('frozen', 0, {
   shore: [[0.42, [228, 244, 252]], [0.35, [170, 212, 238]]],
   px(x, y) {
-    let c = mix([92, 146, 204], [128, 182, 228], clamp01(fbm(x / 9, y / 9, 121)));
+    let c = mix([92, 146, 204], [128, 182, 228], clamp01(fbm(x, y, 9, 121)));
     const v = vor(x, y, 12, 122); if (v.edge < 0.6) return [214, 236, 250];
     if (v.d < 1.4 && v.id > 0.7) return [196, 226, 246]; // bolhas presas no gelo
-    if (((x - y) % 23 + 23) % 23 < 1) c = mix(c, [220, 240, 252], 0.6);
+    if (((x - y) & 31) < 1) c = mix(c, [220, 240, 252], 0.6);
     return c;
   },
 });
 F.hotspring = fam('hotspring', 0, {
   shore: [[0.42, [226, 214, 186]], [0.36, [196, 182, 148]], [0.32, [150, 206, 200]]],
   px(x, y) {
-    const n = fbm(x / 6 + Math.sin(y / 5), y / 6, 131);
+    const n = fbm(x + Math.sin(y * W(8)) * 6, y, 6, 131);
     return n > 0.62 ? [176, 236, 230] : mix([96, 196, 200], [132, 218, 216], n);
   },
 });
 F.reef = fam('reef', 0, {
   shore: [[0.42, [200, 240, 236, 150]]], clear: true,
   px(x, y) {
-    const v = vor(x, y, 7, 141), r = 1.4 + v.id * 2.2, cl = fbm(x / 16, y / 16, 144);
+    const cl = fbm(x, y, 16, 144), n = fbm(x, y, 9, 143), v = vor(x, y, 7, 141), r = 1.4 + v.id * 2.2;
     if (v.id > 0.62 && cl > 0.5 && v.d < r) {
       const cs = [[236, 112, 138], [240, 146, 84], [160, 112, 204], [232, 200, 104], [92, 196, 160]][Math.floor(hash(Math.round(v.id * 999), 0, 142) * 5)];
       const lit = v.cy > 0.08 && v.cx > -0.05; // luz de cima à esquerda
       if (v.d > r - 0.9) return [...mul(cs, 0.62), 255];
       return [...(lit ? mix(cs, [255, 255, 255], 0.35) : cs), 255];
     }
-    const n = fbm(x / 9, y / 9, 143);
     if (cl > 0.5 && v.id > 0.4 && v.d < 3) return [70, 150, 150, 110]; // sombra do coral
     return n > 0.55 ? [222, 214, 168, 120] : [120, 226, 218, 90];
   },
@@ -218,52 +236,52 @@ F.reef = fam('reef', 0, {
 // cada função de piso devolve a cor do pixel global (gx, gy); as paredes usam face (pixel local) e topo
 const FLOOR = {};
 FLOOR[TILE.ICEFLOOR] = (x, y) => {
-  let c = mix([172, 196, 220], [204, 224, 242], clamp01(fbm(x / 7, y / 7, 201)));
+  let c = mix([172, 196, 220], [204, 224, 242], clamp01(fbm(x, y, 7, 201)));
   const v = vor(x, y, 10, 202); if (v.edge < 0.7) c = [148, 174, 204];
-  if (hash(x, y, 203) > 0.992) return [255, 255, 255];
+  if (hp(x, y, 203) > 0.992) return [255, 255, 255];
   return c;
 };
 FLOOR[TILE.LAVAFLOOR] = (x, y) => {
-  const v = vor(x, y, 10, 211), base = mix([54, 42, 44], [74, 58, 58], v.id * 0.6 + fbm(x / 4, y / 4, 212) * 0.4);
+  const n = fbm(x, y, 4, 212), v = vor(x, y, 10, 211), base = mix([54, 42, 44], [74, 58, 58], v.id * 0.6 + n * 0.4);
   const hot = v.id > 0.45;
   if (v.edge < 0.8) return hot ? [255, 132, 44] : [34, 26, 28];
   if (v.edge < 1.7) return hot ? [160, 52, 28] : mul(base, 0.8);
   return base;
 };
 FLOOR[TILE.TEMPLEFLOOR] = (x, y) => {
-  const row = Math.floor(y / 8), ox = (row % 2) * 4, lx = ((x + ox) % 8 + 8) % 8, ly = ((y % 8) + 8) % 8, sid = hash(Math.floor((x + ox) / 8), row, 231);
+  const row = Math.floor(y / 8), ox = (row % 2) * 4, lx = (x + ox) & 7, ly = y & 7, sid = hash(mod(Math.floor((x + ox) / 8), 32), mod(row, 32), 231);
   let c = mix([206, 184, 138], [226, 206, 160], sid);
   if (lx === 7 || ly === 7) return [146, 124, 88];
   if (lx === 0 || ly === 0) c = mix(c, [244, 230, 194], 0.6); else if (lx === 6 || ly === 6) c = mul(c, 0.86);
-  if (sid > 0.88 && fbm(x / 3, y / 3, 232) > 0.62) c = mix(c, [120, 150, 84], 0.65); // musgo
-  if (sid < 0.08 && Math.abs(lx - ly) < 1) c = mul(c, 0.7);                         // trinca
+  if (sid > 0.88 && fbm(x, y, 3, 232) > 0.62) c = mix(c, [120, 150, 84], 0.65); // musgo
+  if (sid < 0.08 && Math.abs(lx - ly) < 1) c = mul(c, 0.7);                       // trinca
   return c;
 };
 const MOS = [[188, 92, 60], [52, 138, 140], [230, 190, 92], [236, 222, 196]];
 FLOOR[TILE.MOSAIC] = (x, y) => {
-  const lx = ((x % 16) + 16) % 16, ly = ((y % 16) + 16) % 16;
+  const lx = x & 15, ly = y & 15;
   if (lx % 4 === 3 || ly % 4 === 3) return [96, 74, 62];
   const tx = Math.floor(lx / 4), ty = Math.floor(ly / 4), d = Math.abs(tx - 1.5) + Math.abs(ty - 1.5);
   let c = d < 1.1 ? MOS[0] : d < 2.1 ? MOS[1] : d < 2.9 ? MOS[3] : MOS[2];
-  c = mul(c, 0.92 + hash(Math.floor(x / 4), Math.floor(y / 4), 241) * 0.16);
+  c = mul(c, 0.92 + hc(x, y, 4, 241) * 0.16);
   if (lx % 4 === 0 && ly % 4 === 0) c = mix(c, [255, 255, 255], 0.3);
   return c;
 };
 FLOOR[TILE.OLDSTONE] = (x, y) => {
-  const v = vor(x, y, 5.5, 251), base = mix([136, 134, 120], [170, 166, 148], v.id);
-  if (v.edge < 0.8) return fbm(x / 5, y / 5, 252) > 0.55 ? [88, 120, 66] : [84, 80, 72];
+  const n = fbm(x, y, 5, 252), v = vor(x, y, 5.5, 251), base = mix([136, 134, 120], [170, 166, 148], v.id);
+  if (v.edge < 0.8) return n > 0.55 ? [88, 120, 66] : [84, 80, 72];
   return mul(base, 1.1 - (v.d / 5.5) * 0.35);
 };
 FLOOR[TILE.DARKCAVE] = (x, y) => {
-  const c = mix([46, 40, 46], [60, 52, 58], clamp01(fbm(x / 6, y / 6, 261)));
-  const h = hash(Math.floor(x / 2), Math.floor(y / 2), 262); if (h > 0.97) return [78, 70, 76]; if (h < 0.02) return [30, 26, 30];
+  const c = mix([46, 40, 46], [60, 52, 58], clamp01(fbm(x, y, 6, 261)));
+  const h = hc(x, y, 2, 262); if (h > 0.97) return [78, 70, 76]; if (h < 0.02) return [30, 26, 30];
   return c;
 };
 FLOOR[TILE.CRYSTALFLOOR] = (x, y) => {
-  let c = mix([50, 42, 72], [66, 54, 92], clamp01(fbm(x / 6, y / 6, 271)));
-  const cx = Math.floor(x / 8), cy = Math.floor(y / 8), h = hash(cx, cy, 272);
+  const c = mix([50, 42, 72], [66, 54, 92], clamp01(fbm(x, y, 6, 271)));
+  const h = hc(x, y, 8, 272);
   if (h > 0.7) {
-    const lx = x - cx * 8 - 4, ly = y - cy * 8 - 4, d = Math.abs(lx) * 1.6 + Math.abs(ly);
+    const lx = (x & 7) - 4, ly = (y & 7) - 4, d = Math.abs(lx) * 1.6 + Math.abs(ly);
     const col = h > 0.85 ? [120, 244, 236] : [236, 128, 232];
     if (d < 3.2) return lx < 0 && ly < 0 ? mix(col, [255, 255, 255], 0.55) : lx > 0 ? mul(col, 0.7) : col;
     if (d < 4.2) return mul(c, 0.7);
@@ -273,8 +291,10 @@ FLOOR[TILE.CRYSTALFLOOR] = (x, y) => {
 FLOOR[TILE.RAIL] = (x, y) => FLOOR[TILE.DARKCAVE](x, y);
 export const FLOORS = new Set(Object.keys(FLOOR).map(Number).concat([TILE.CRACK, TILE.HOLE, TILE.STAIRUP, TILE.STAIRDOWN]));
 // chão das cavernas antigas (k) também conta como piso para a rachadura/buraco herdar o desenho
-const CAVE_PX = (x, y) => { const c = mix([102, 84, 72], [120, 100, 86], clamp01(fbm(x / 6, y / 6, 281))); return hash(Math.floor(x / 2), Math.floor(y / 2), 282) > 0.96 ? mul(c, 0.8) : c; };
-
+const CAVE_PX = (x, y) => { const c = mix([102, 84, 72], [120, 100, 86], clamp01(fbm(x, y, 6, 281))); return hc(x, y, 2, 282) > 0.96 ? mul(c, 0.8) : c; };
+// pisos assados (mesma ideia das famílias): leitura rápida por pixel global
+const FLOORBUF = new Map();
+const floorBuf = (key, fn) => { let b = FLOORBUF.get(key); if (!b) { b = bake(fn); FLOORBUF.set(key, b); } return b; };
 // paredes: texturas de face (2 variantes 16x16) e cor de topo
 function rgba(draw) { const c = canvas(16, 16, draw); return c.getContext('2d').getImageData(0, 0, 16, 16).data; }
 const px = (x, c, X, Y, w = 1, h = 1) => { x.fillStyle = c; x.fillRect(X, Y, w, h); };
@@ -321,7 +341,7 @@ WALL[TILE.TEMPLEWALL] = { top: [60, 50, 46], edge: [150, 126, 96], faces: [0, 1]
   return c;
 })) };
 WALL[TILE.CRYSTALWALL] = { top: [34, 26, 50], edge: [90, 72, 126], faces: [0, 1].map((v) => faceFrom((x, y) => {
-  let c = mix([66, 54, 92], [84, 70, 114], fbm(x / 4 + v * 5, y / 4, 340));
+  let c = mix([66, 54, 92], [84, 70, 114], fbm(x + v * 20, y, 4, 340));
   // cachos de cristal saindo da rocha
   for (const [cx, cy, h, col] of v ? [[4, 9, 7, [120, 244, 236]], [11, 11, 5, [236, 128, 232]]] : [[10, 8, 8, [236, 128, 232]], [3, 12, 4, [120, 244, 236]]]) {
     const dx = x - cx, dy = cy - y;
@@ -333,8 +353,8 @@ WALL[TILE.CRYSTALWALL] = { top: [34, 26, 50], edge: [90, 72, 126], faces: [0, 1]
 
 // raízes de mangue (sólido): lama escura com raízes em arco por cima
 function rootsPx(x, y) {
-  const tx = Math.floor(x / 16), ty = Math.floor(y / 16), lx = x - tx * 16, ly = y - ty * 16;
-  let c = fbm(x / 6, y / 6, 352) > 0.5 ? mix([52, 74, 70], [64, 90, 86], fbm(x / 3, y / 3, 351)) : mix([58, 48, 36], [74, 60, 44], fbm(x / 4, y / 4, 351));
+  const tx = Math.floor(x / 16) & 15, ty = Math.floor(y / 16) & 15, lx = x & 15, ly = y & 15;
+  let c = fbm(x, y, 6, 352) > 0.5 ? mix([52, 74, 70], [64, 90, 86], fbm(x, y, 3, 351)) : mix([58, 48, 36], [74, 60, 44], fbm(x, y, 4, 351));
   let shade = false;
   for (let k = 0; k < 3; k++) {
     const cx = 3 + hash(tx, ty, 353 + k) * 10, w = 7 + hash(tx, ty, 360 + k) * 7, h = 8 + hash(tx, ty, 370 + k) * 7, base = 15 - (k & 1);
@@ -346,6 +366,17 @@ function rootsPx(x, y) {
   return shade ? mul(c, 0.7) : c;
 }
 // desenha um bloco duro novo; devolve false se não é dele
+const samp = (key, fn) => { const b = floorBuf(key, fn); return (x, y) => { const q = (((y & 255) << 8) + (x & 255)) * 4; return [b[q], b[q + 1], b[q + 2]]; }; };
+const SAMP = {};
+const floorOf = (t) => (SAMP[t] ??= t === TILE.CAVE ? samp('cave', CAVE_PX) : FLOOR[t] ? samp(t, FLOOR[t]) : null);
+const topBuf = (t) => floorBuf('top' + t, (X, Y) => mul(WALL[t].top, 0.86 + fbm(X, Y, 5, 361) * 0.24 + (hc(X, Y, 2, 360) > 0.93 ? 0.12 : 0)));
+// assa de antemão o que um bloco duro usa (ground.js chama nas folgas); devolve false se não há o que assar
+export function warmTile(t) {
+  if (WALL[t]) { if (FLOORBUF.has('top' + t)) return false; topBuf(t); return true; }
+  if (t === TILE.ROOTS) { if (SAMP.roots) return false; SAMP.roots = samp('roots', rootsPx); return true; }
+  if (FLOOR[t] && !FLOORBUF.has(t)) { floorOf(t); return true; }
+  return false;
+}
 export function drawBiomeHard(t, at, tx, ty, put) {
   const gx0 = tx * 16, gy0 = ty * 16;
   const W = WALL[t];
@@ -359,26 +390,27 @@ export function drawBiomeHard(t, at, tx, ty, put) {
       // topo: rocha escura com borda clara onde termina
       const N = !same(at(0, -1)) && !WALLS.has(at(0, -1)), Wl = !same(at(-1, 0)), E = !same(at(1, 0));
       for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
-        let c = mul(W.top, 0.86 + fbm((gx0 + x) / 5, (gy0 + y) / 5, 361) * 0.24 + (hash(gx0 + x >> 1, gy0 + y >> 1, 360) > 0.93 ? 0.12 : 0));
+        const tb = topBuf(t), q = ((((gy0 + y) & 255) << 8) + ((gx0 + x) & 255)) * 4;
+        let c = [tb[q], tb[q + 1], tb[q + 2]];
         if ((N && y < 2) || (Wl && x < 2) || (E && x > 13)) c = (N && y === 0) || (Wl && x === 0) || (E && x === 15) ? mul(W.edge, 0.7) : W.edge;
         put(x, y, c[0], c[1], c[2]);
       }
     }
     return true;
   }
-  if (t === TILE.ROOTS) { for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) { const c = rootsPx(gx0 + x, gy0 + y); put(x, y, c[0], c[1], c[2]); } return true; }
+  if (t === TILE.ROOTS) { const rs = SAMP.roots ??= samp('roots', rootsPx); for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) { const c = rs(gx0 + x, gy0 + y); put(x, y, c[0], c[1], c[2]); } return true; }
   // pisos: sombra embaixo de parede (a face fica "em pé" sobre o chão)
   const shade = (y, x) => { let k = 1; if (WALLS.has(at(0, -1))) k *= [0.55, 0.68, 0.8, 0.9][y] ?? 1; if (WALLS.has(at(-1, 0)) && x === 0) k *= 0.82; if (WALLS.has(at(1, 0)) && x === 15) k *= 0.82; return k; };
   // rachadura, buraco e escadas herdam o piso dos vizinhos
-  const baseOf = () => { for (const d of [at(0, 1), at(0, -1), at(-1, 0), at(1, 0)]) { if (FLOOR[d] && d !== TILE.RAIL) return FLOOR[d]; if (d === TILE.CAVE) return CAVE_PX; } return FLOOR[TILE.TEMPLEFLOOR]; };
-  let fn = FLOOR[t];
+  const baseOf = () => { for (const d of [at(0, 1), at(0, -1), at(-1, 0), at(1, 0)]) { if ((FLOOR[d] && d !== TILE.RAIL) || d === TILE.CAVE) return floorOf(d); } return floorOf(TILE.TEMPLEFLOOR); };
+  let fn = floorOf(t);
   if (fn && t !== TILE.RAIL) { for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) { const c = fn(gx0 + x, gy0 + y), k = shade(y, x); put(x, y, c[0] * k, c[1] * k, c[2] * k); } return true; }
   if (t === TILE.RAIL) {
     const R = (d) => d === TILE.RAIL || d === TILE.CRACK;
     const n = R(at(0, -1)), s = R(at(0, 1)), w = R(at(-1, 0)), e = R(at(1, 0));
     const horiz = (w || e) && !(n || s), vert = !horiz && !((w || e) && (n || s));
     for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
-      let c = FLOOR[TILE.DARKCAVE](gx0 + x, gy0 + y);
+      let c = floorOf(TILE.DARKCAVE)(gx0 + x, gy0 + y);
       // trilho reto ou curva (quarto de círculo em volta do canto)
       let u, v2;
       if (horiz) { u = y; v2 = x; } else if (vert) { u = x; v2 = y; } else {
@@ -414,10 +446,10 @@ export function drawBiomeHard(t, at, tx, ty, put) {
     const H = (d) => d === TILE.HOLE, N = !H(at(0, -1)), S = !H(at(0, 1)), Wh = !H(at(-1, 0)), E = !H(at(1, 0));
     for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
       let c = [10, 8, 12];
-      const e = Math.min(Wh ? x : 99, E ? 15 - x : 99, S ? 15 - y : 99) + (fbm((gx0 + x) / 3, (gy0 + y) / 3, 371) - 0.5) * 2;
+      const e = Math.min(Wh ? x : 99, E ? 15 - x : 99, S ? 15 - y : 99) + (fbm(gx0 + x, gy0 + y, 3, 371) - 0.5) * 2;
       if (e < 1.4) c = fn(gx0 + x, gy0 + y);
       else if (e < 2.2) c = [40, 32, 30];
-      if (N) { const wy = y + (fbm((gx0 + x) / 3, gy0 / 3, 372) - 0.5) * 2; if (wy < 1.5) c = fn(gx0 + x, gy0 + y); else if (wy < 8) c = mix([96, 80, 70], [22, 18, 20], (wy - 1.5) / 6.5); }
+      if (N) { const wy = y + (fbm(gx0 + x, gy0, 3, 372) - 0.5) * 2; if (wy < 1.5) c = fn(gx0 + x, gy0 + y); else if (wy < 8) c = mix([96, 80, 70], [22, 18, 20], (wy - 1.5) / 6.5); }
       put(x, y, c[0], c[1], c[2]);
     }
     return true;
