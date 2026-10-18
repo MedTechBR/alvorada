@@ -34,7 +34,7 @@ const TEX = {
   flake2: dotTex(2, 2, (x) => { x.fillStyle = '#ffffff'; x.fillRect(0, 0, 2, 2); }),
   ash: dotTex(2, 2, (x) => { x.fillStyle = '#8a8486'; x.fillRect(0, 0, 2, 2); x.fillStyle = '#b8b2b2'; x.fillRect(0, 0, 1, 1); }),
   ember: dotTex(2, 2, (x) => { x.fillStyle = '#ffb040'; x.fillRect(0, 0, 2, 2); x.fillStyle = '#fff0a0'; x.fillRect(0, 0, 1, 1); }),
-  sand: dotTex(5, 1, (x) => { x.fillStyle = 'rgba(232,196,128,0.9)'; x.fillRect(0, 0, 5, 1); x.fillStyle = 'rgba(255,230,180,0.9)'; x.fillRect(3, 0, 2, 1); }),
+  sand: dotTex(9, 2, (x) => { x.fillStyle = 'rgba(255,246,222,0.95)'; x.fillRect(0, 0, 9, 1); x.fillStyle = 'rgba(150,104,52,0.8)'; x.fillRect(3, 1, 6, 1); }),
   dust: dotTex(2, 2, (x) => { x.fillStyle = 'rgba(255,244,214,0.9)'; x.fillRect(0, 0, 2, 2); }),
   drop: dotTex(1, 3, (x) => { x.fillStyle = '#bfe4ff'; x.fillRect(0, 0, 1, 3); }),
   mirage: dotTex(48, 12, (x) => {
@@ -43,7 +43,8 @@ const TEX = {
     x.fillStyle = 'rgba(255,255,255,0.7)'; for (const [a, b, w] of [[10, 4, 10], [26, 6, 12], [18, 8, 8]]) x.fillRect(a, b, w, 1);
   }),
 };
-for (const k of ['mirage']) TEX[k].source.scaleMode = 'linear';
+TEX.soft = dotTex(64, 64, (x) => { const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,0.9)'); g.addColorStop(0.5, 'rgba(255,255,255,0.45)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64); });
+for (const k of ['mirage', 'soft']) TEX[k].source.scaleMode = 'linear';
 
 export class Clima {
   constructor(g, life) {
@@ -53,7 +54,7 @@ export class Clima {
     this.parts = []; this.fog = []; this.mirages = [];
     // cor do ar (multiplica a tela) e véu da tempestade de areia, por baixo do céu do dia e da noite
     this.tint = new PIXI.Sprite(PIXI.Texture.WHITE); this.tint.blendMode = 'multiply'; this.tint.visible = false; this.tintC = [255, 255, 255];
-    this.veil = new PIXI.Sprite(PIXI.Texture.WHITE); this.veil.tint = 0xd8b478; this.veil.alpha = 0; this.veil.visible = false;
+    this.veil = new PIXI.Sprite(PIXI.Texture.WHITE); this.veil.tint = 0xb88848; this.veil.alpha = 0; this.veil.visible = false;
     const st = g.app.stage, i = st.getChildIndex(life.shade); st.addChildAt(this.veil, i); st.addChildAt(this.tint, i);
   }
   // preset do lugar onde o jogador está
@@ -102,7 +103,7 @@ export class Clima {
     this.stormK = (this.stormK ?? 0) + (this.storm * K.tempestade - (this.stormK ?? 0)) * Math.min(1, dt * 0.5);
     // rajadas de vento na neve
     this.gust += ((Math.sin(this.t * 0.37) * 0.5 + Math.sin(this.t * 1.1) * 0.5 > 0.55 ? 1 : 0) - this.gust) * Math.min(1, dt * 1.5);
-    const v = this.veil; v.alpha = this.stormK * 0.32; v.visible = v.alpha > 0.01; v.width = innerWidth; v.height = innerHeight;
+    const v = this.veil; v.alpha = this.stormK * 0.55; v.visible = v.alpha > 0.01; v.width = innerWidth; v.height = innerHeight;
   }
 
   // ---------- partículas (pool fixo, coordenadas do mundo em volta da câmera) ----------
@@ -111,7 +112,7 @@ export class Clima {
     const W = view.x1 - view.x0, H = view.y1 - view.y0, area = (W * H) / (400 * 300);
     const want = {
       flake: Math.round(110 * K.neve * area * q * (1 + this.gust * 0.6)), ash: Math.round(60 * K.cinzas * area * q), ember: Math.round(26 * K.brasas * area * q),
-      sand: Math.round(150 * (this.stormK ?? 0) * area * q + 18 * K.poeira * area * q), dust: Math.round(14 * (K.poeira + K.brilhos * 0.5) * area * q), drop: K.gotas > 0.05 ? 1 : 0,
+      sand: Math.round(220 * (this.stormK ?? 0) * area * q + 18 * K.poeira * area * q), cloud: Math.round(14 * (this.stormK ?? 0) * area * q), dust: Math.round(14 * (K.poeira + K.brilhos * 0.5) * area * q), drop: K.gotas > 0.05 ? 1 : 0,
     };
     const have = {}; for (const s of this.parts) have[s.kind] = (have[s.kind] ?? 0) + 1;
     for (const [kind, n] of Object.entries(want)) for (let i = have[kind] ?? 0; i < n; i++) this.#spawn(kind, view, true);
@@ -123,6 +124,7 @@ export class Clima {
         case 'ash': s.wx += (8 + Math.sin(s.age + s.ph) * 6) * dt; s.wy += s.vy * dt; s.rotation += dt; break;
         case 'ember': s.wx += Math.sin(s.age * 2 + s.ph) * 10 * dt; s.wy -= s.vy * dt; s.alpha = Math.max(0, Math.sin(Math.min(1, s.age / s.life) * Math.PI)) * (0.6 + Math.sin(s.age * 14) * 0.3); break;
         case 'sand': s.wx += s.vx * (0.4 + (this.stormK ?? 0)) * dt; s.wy += Math.sin(s.age * 3 + s.ph) * 6 * dt; break;
+        case 'cloud': s.wx += s.vx * dt; s.wy += Math.sin(s.age + s.ph) * 4 * dt; s.alpha = Math.min(1, (this.stormK ?? 0) * 1.5) * 0.5; break;
         case 'dust': s.wx += Math.sin(s.age * 0.5 + s.ph) * 4 * dt; s.wy += Math.cos(s.age * 0.4 + s.ph) * 3 * dt; s.alpha = 0.25 + Math.sin(s.age * 1.3 + s.ph) * 0.2; break;
         case 'drop': {
           if (s.age < 0) { s.visible = false; break; }
@@ -138,7 +140,7 @@ export class Clima {
     if (this.parts.some((s) => s.dead)) { for (const s of this.parts) if (s.dead) s.destroy(); this.parts = this.parts.filter((s) => !s.dead); }
   }
   #spawn(kind, view, scatter) {
-    const s = new PIXI.Sprite(TEX[kind === 'flake' ? (Math.random() < 0.4 ? 'flake' : 'flake2') : kind]); s.anchor.set(0.5);
+    const s = new PIXI.Sprite(kind === 'cloud' ? TEX.soft : TEX[kind === 'flake' ? (Math.random() < 0.4 ? 'flake' : 'flake2') : kind]); s.anchor.set(0.5);
     s.kind = kind; s.age = 0; s.ph = Math.random() * 6;
     (kind === 'ember' || kind === 'dust' ? this.add : this.layer).addChild(s);
     this.parts.push(s); this.#place(s, view, false, scatter);
@@ -151,6 +153,7 @@ export class Clima {
       case 'flake': s.vy = 16 + r() * 18; if (edge || !scatter) { s.wy = view.y0 - 10; if (this.k.vento > 0.2 && r() < 0.4) { s.wx = view.x0 - 20; s.wy = view.y0 + r() * H; } } s.alpha = 0.7 + r() * 0.3; break;
       case 'ash': s.vy = 8 + r() * 8; if (edge || !scatter) s.wy = view.y0 - 10; s.alpha = 0.7; break;
       case 'ember': s.vy = 14 + r() * 16; s.life = 1.5 + r() * 2; s.wy = view.y0 + H * (0.4 + r() * 0.6); break;
+      case 'cloud': s.vx = 90 + r() * 50; if (edge || !scatter) s.wx = view.x0 - 40; s.scale.set(1 + r() * 0.8, 0.5 + r() * 0.4); s.tint = 0xa87a44; break;
       case 'sand': s.vx = 160 + r() * 120; if (edge || !scatter) s.wx = view.x0 - 20; s.alpha = 0.5 + r() * 0.4; s.scale.set(1 + r(), 1); break;
       case 'dust': break;
       case 'drop': s.wy = view.y0 + r() * H * 0.6; s.floor = s.wy + 26 + r() * 40; s.visible = false; break;
@@ -187,14 +190,14 @@ export class Clima {
   // ---------- névoa baixa (mangue): manchas grandes e claras andando devagar ----------
   #fog(dt) {
     const K = this.k, view = this.g.map.view, n = Math.round(K.nevoa * (this.low ? 6 : 12));
-    while (this.fog.length < n) { const s = new PIXI.Sprite(SPR.puff); s.anchor.set(0.5); s.tint = 0xe8f4ec; s.ph = Math.random() * 6; s.wx = view.x0 + Math.random() * (view.x1 - view.x0); s.wy = view.y0 + Math.random() * (view.y1 - view.y0); s.sc = 8 + Math.random() * 8; this.layer.addChild(s); this.fog.push(s); }
+    while (this.fog.length < n) { const s = new PIXI.Sprite(TEX.soft); s.anchor.set(0.5); s.tint = 0xe8f4ec; s.ph = Math.random() * 6; s.wx = view.x0 + Math.random() * (view.x1 - view.x0); s.wy = view.y0 + Math.random() * (view.y1 - view.y0); s.sc = 1.6 + Math.random() * 1.6; this.layer.addChild(s); this.fog.push(s); }
     while (this.fog.length > n) this.fog.pop().destroy();
     for (const s of this.fog) {
       s.wx += (5 + Math.sin(s.ph) * 2) * dt;
       if (s.wx > view.x1 + 60) { s.wx = view.x0 - 60; s.wy = view.y0 + Math.random() * (view.y1 - view.y0); }
       if (s.wy < view.y0 - 60 || s.wy > view.y1 + 60) s.wy = view.y0 + Math.random() * (view.y1 - view.y0);
       s.x = s.wx; s.y = s.wy + Math.sin(this.t * 0.3 + s.ph) * 8; s.scale.set(s.sc, s.sc * 0.45);
-      s.alpha = Math.min(1, K.nevoa) * (0.24 + Math.sin(this.t * 0.25 + s.ph) * 0.08);
+      s.alpha = Math.min(1, K.nevoa) * (0.3 + Math.sin(this.t * 0.25 + s.ph) * 0.08);
     }
   }
 

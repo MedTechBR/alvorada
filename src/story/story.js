@@ -354,7 +354,7 @@ export class Story {
     this.battle?.update(dt);
     const demo = MAP_ID !== 'alvorada'; // mapa de teste (?mapa=demo-biomas): sem cenas do roteiro
     if (!demo) this.roteiro.update(dt);
-    else if (!this.demoHid) { this.demoHid = true; for (const n of [...this.roteiro.atores.values(), ...(this.roteiro.atoresPk ?? [])]) n.visible = false; }
+    else for (const n of [...this.roteiro.atores.values(), ...(this.roteiro.atoresPk ?? [])]) if (n.visible) n.visible = false;
     this.#music(dt);
     if ((this.objT -= dt) <= 0) { this.objT = 0.3; this.refreshObjective(); }
     if (this.busy) { g.ui.hud.setPrompt(null); return; }
