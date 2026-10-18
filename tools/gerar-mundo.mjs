@@ -208,7 +208,9 @@ function linha(dex, forma, alto) {
 }
 function entradas(ficha, [lo, hi], expandir) {
   const res = [], meio = (lo + hi) / 2;
-  const estagios = expandir ? linha(ficha.dex, ficha.forma, meio) : [[{ dex: ficha.dex, forma: ficha.forma, metodo: 'base' }]];
+  let estagios = expandir ? linha(ficha.dex, ficha.forma, meio) : [[{ dex: ficha.dex, forma: ficha.forma, metodo: 'base' }]];
+  // muito raros, iniciais e pseudolendários não aparecem já no último estágio
+  if (ficha.cls === 'm' || PSEUDO.has(ficha.dex) || INICIAIS.has(ficha.dex)) estagios = estagios.slice(0, 2);
   let incluidos = 0;
   for (const grupo of estagios) {
     let algum = false;
@@ -474,6 +476,18 @@ const trocaBloco = (txt, nome, novo) => { const re = new RegExp(`(<!-- gerado:${
 if (!SO_CONFERIR) {
   fs.writeFileSync(arq('docs/mundo-expandido.json'), JSON.stringify(json, null, 1) + '\n');
   fs.writeFileSync(arq('src/data/habitats.js'), habitats);
+  // versão pequena só com os biomas, que o jogo carrega ao abrir (src/main.js usa nos biomas que species.js não tem)
+  fs.writeFileSync(arq('src/data/habitats-biomas.js'), `// GERADO por tools/gerar-mundo.mjs (o mesmo conteúdo de BIOMAS_PADRAO e BIOMAS_NOITE de src/data/habitats.js).
+// Tabela de selvagens de cada bioma novo do mundo ampliado, para áreas sem \`encounters\` próprio. Os cinco biomas de
+// src/data/species.js (campo, floresta, margem, praia, planalto) continuam valendo como estão: src/main.js só usa
+// estas quando BIOME_ENCOUNTERS não tem o bioma.
+export const BIOMAS_PADRAO = {
+${Object.entries(BIOMAS_PADRAO).map(([b, t]) => `  ${b}: ${tabJs(t)},`).join('\n')}
+};
+export const BIOMAS_NOITE = {
+${Object.entries(BIOMAS_NOITE).map(([b, t]) => `  ${b}: ${tabJs(t)},`).join('\n')}
+};
+`);
   const MD = arq('docs/mundo-expandido.md');
   if (fs.existsSync(MD)) {
     let t = fs.readFileSync(MD, 'utf8');

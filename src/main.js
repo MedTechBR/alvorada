@@ -21,6 +21,7 @@ import { Story } from './story/story.js';
 import { evolutionScene } from './ui/evolucao.js';
 import { dexMark } from './ui/menu.js';
 import { NIGHT_ENCOUNTERS } from './data/species.js';
+import { BIOMAS_PADRAO, BIOMAS_NOITE } from './data/habitats-biomas.js'; // biomas novos do mundo ampliado (gerado)
 import { ITEM_INFO, itemInfo, itemName } from './data/items.js';
 import { rollShakes } from './mechanics/capture.js';
 import { setAmbiente, isNight as nightNow } from './mechanics/ambiente.js';
@@ -235,9 +236,9 @@ class Game {
       const near = zone ? this.map.areas.find((a) => a.encounters && a.name === zone.name) : this.#nearestEncounters(x, y); // pedaço do esboço com o mesmo nome, ou área vizinha
       if (near) { own = near.encounters; zone = near; }
     }
-    const day = own ?? BIOME_ENCOUNTERS[biome] ?? BIOME_ENCOUNTERS.campo;
+    const day = own ?? BIOME_ENCOUNTERS[biome] ?? BIOMAS_PADRAO[biome] ?? BIOME_ENCOUNTERS.campo;
     if (!night) return day;
-    const nt = zone?.night ?? NIGHT_ENCOUNTERS[biome];
+    const nt = zone?.night ?? NIGHT_ENCOUNTERS[biome] ?? BIOMAS_NOITE[biome];
     if (!nt?.length) return day;
     if (!own || zone?.night) return own && zone?.night ? zone.night : nt;
     const lo = Math.min(...own.map((e) => e[1])), hi = Math.max(...own.map((e) => e[2]));
