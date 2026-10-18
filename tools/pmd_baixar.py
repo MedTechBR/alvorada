@@ -24,6 +24,14 @@ import xml.etree.ElementTree as ET
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEST = os.path.join(RAIZ, 'assets', 'pmd')
 SPECIES_JS = os.path.join(RAIZ, 'src', 'data', 'species.js')
+SPECIES_GEN = os.path.join(RAIZ, 'src', 'data', 'gen', 'especies.js')  # espécies importadas da PokéAPI
+
+
+def texto_especies():
+    txt = open(SPECIES_JS, encoding='utf-8').read()
+    if os.path.exists(SPECIES_GEN):
+        txt += '\n' + open(SPECIES_GEN, encoding='utf-8').read()
+    return txt
 BASE = 'https://raw.githubusercontent.com/PMDCollab/SpriteCollab/master/'
 WANTED = ['Idle', 'Walk', 'Attack', 'Shoot', 'Charge', 'Hurt', 'Sleep', 'Faint', 'Hop',
           'Strike', 'Swing', 'Pound', 'Rotate', 'Special']
@@ -68,16 +76,19 @@ def eh_png(b):
 
 
 def dex_do_species():
-    txt = open(SPECIES_JS, encoding='utf-8').read()
+    txt = texto_especies()
     ids = set(int(m) for m in re.findall(r'^\s*(\d+)\s*:\s*(?:\{|S\()', txt, re.M))
     ids |= set(int(m) for m in re.findall(r'\bto\s*:\s*(\d+)', txt))
+    ids |= set(int(m) for m in re.findall(r'"to":(\d+)', txt))
     return sorted(ids)
 
 
 def pre_evolucoes():
     """dex -> dex anterior (para usar a forma mais próxima se faltar)."""
-    txt = open(SPECIES_JS, encoding='utf-8').read()
+    txt = texto_especies()
     pre = {}
+    for m in re.finditer(r'^\s*(\d+)\s*:\s*\{[^\n]*?"from":(\d+)', txt, re.M):
+        pre[int(m.group(1))] = int(m.group(2))
     for m in re.finditer(r'^\s*(\d+)\s*:\s*\{(?:(?!^\s*\d+\s*:).)*?evolve\s*:\s*\{[^}]*?to\s*:\s*(\d+)', txt, re.M | re.S):
         pre[int(m.group(2))] = int(m.group(1))
     return pre

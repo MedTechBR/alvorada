@@ -1,0 +1,558 @@
+# identificador PokéAPI<TAB>nome em português do Brasil (SV quando conhecido; senão tradução cuidadosa)
+pound	Pancadinha
+mega-punch	Megassoco
+pay-day	Dia de Pagamento
+fire-punch	Soco de Fogo
+ice-punch	Soco de Gelo
+thunder-punch	Soco do Trovão
+scratch	Arranhão
+vice-grip	Agarrão
+guillotine	Guilhotina
+swords-dance	Dança das Espadas
+cut	Corte
+gust	Lufada de Vento
+wing-attack	Ataque de Asa
+whirlwind	Remoinho
+fly	Voar
+bind	Amarrar
+slam	Pancada
+vine-whip	Chicote de Vinha
+stomp	Pisotear
+double-kick	Chute Duplo
+mega-kick	Megachute
+sand-attack	Ataque de Areia
+headbutt	Cabeçada
+horn-attack	Ataque de Chifre
+fury-attack	Ataque de Fúria
+horn-drill	Chifre Broca
+tackle	Investida
+body-slam	Pancada Corporal
+wrap	Enrolar
+take-down	Desmantelar
+thrash	Debater-se
+double-edge	Dois Gumes
+tail-whip	Chicote de Cauda
+poison-sting	Ferrão Venenoso
+twineedle	Agulha Dupla
+pin-missile	Míssil de Agulhas
+leer	Olhar Malicioso
+bite	Mordida
+growl	Rosnado
+roar	Rugido
+sing	Canto
+supersonic	Supersônico
+disable	Desabilitar
+acid	Ácido
+ember	Brasa
+flamethrower	Lança-Chamas
+mist	Névoa
+water-gun	Revólver d'Água
+hydro-pump	Hidro Bomba
+surf	Surfar
+ice-beam	Raio de Gelo
+blizzard	Nevasca
+psybeam	Psicorraio
+bubble-beam	Jato de Bolhas
+aurora-beam	Raio Aurora
+hyper-beam	Hiper-Raio
+peck	Bicada
+drill-peck	Bicada Broca
+submission	Submissão
+low-kick	Chute Baixo
+counter	Contra-Ataque
+seismic-toss	Arremesso Sísmico
+strength	Força
+absorb	Absorver
+mega-drain	Megadreno
+leech-seed	Semente Sanguessuga
+growth	Crescimento
+razor-leaf	Folha Navalha
+solar-beam	Raio Solar
+poison-powder	Pó Venenoso
+stun-spore	Esporo Paralisante
+sleep-powder	Pó do Sono
+petal-dance	Dança das Pétalas
+string-shot	Fio de Seda
+fire-spin	Giro de Fogo
+thunder-shock	Choque do Trovão
+thunderbolt	Relâmpago
+thunder-wave	Onda de Trovão
+thunder	Trovão
+rock-throw	Lançamento de Rocha
+earthquake	Terremoto
+fissure	Fissura
+dig	Cavar
+toxic	Tóxico
+confusion	Confusão
+psychic	Psíquico
+hypnosis	Hipnose
+agility	Agilidade
+quick-attack	Ataque Rápido
+rage	Raiva
+teleport	Teletransporte
+night-shade	Sombra Noturna
+screech	Grito
+double-team	Reflexo
+recover	Recuperação
+harden	Endurecer
+minimize	Minimizar
+smokescreen	Cortina de Fumaça
+confuse-ray	Raio Confuso
+withdraw	Recolher
+defense-curl	Enrolar-se
+light-screen	Tela de Luz
+haze	Neblina
+reflect	Refletir
+focus-energy	Energia Focada
+bide	Aguentar
+metronome	Metrônomo
+self-destruct	Autodestruição
+lick	Lambida
+smog	Poluição
+sludge	Lodo
+fire-blast	Rajada de Fogo
+waterfall	Cachoeira
+swift	Ataque Veloz
+skull-bash	Golpe de Crânio
+amnesia	Amnésia
+kinesis	Cinese
+high-jump-kick	Chute de Salto Alto
+glare	Encarada
+dream-eater	Comedor de Sonhos
+poison-gas	Gás Venenoso
+bubble	Bolha
+leech-life	Sanguessuga
+sky-attack	Ataque do Céu
+spore	Esporo
+flash	Flash
+splash	Splash
+acid-armor	Armadura Ácida
+crabhammer	Martelo de Caranguejo
+explosion	Explosão
+fury-swipes	Golpes de Fúria
+rest	Descansar
+rock-slide	Deslizamento de Rochas
+hyper-fang	Hiperpresa
+tri-attack	Ataque Triplo
+super-fang	Superpresa
+slash	Talho
+substitute	Substituto
+thief	Ladrão
+flame-wheel	Roda de Fogo
+snore	Ronco
+curse	Maldição
+flail	Esperneio
+cotton-spore	Esporo de Algodão
+reversal	Reversão
+spite	Rancor
+powder-snow	Neve em Pó
+protect	Proteção
+mach-punch	Soco Mach
+scary-face	Cara Assustadora
+sweet-kiss	Beijo Doce
+sludge-bomb	Bomba de Lodo
+mud-slap	Tapa de Lama
+spikes	Espinhos
+zap-cannon	Canhão Elétrico
+destiny-bond	Laço do Destino
+perish-song	Canção Fatal
+icy-wind	Vento Gelado
+detect	Detectar
+bone-rush	Rajada de Ossos
+outrage	Ultraje
+sandstorm	Tempestade de Areia
+giga-drain	Gigadreno
+endure	Resistir
+charm	Encanto
+rollout	Rolagem
+false-swipe	Golpe Falso
+swagger	Bravata
+milk-drink	Beber Leite
+spark	Faísca
+fury-cutter	Cortador de Fúria
+steel-wing	Asa de Aço
+mean-look	Olhar Maligno
+attract	Atração
+sleep-talk	Sonilóquio
+return	Retorno
+present	Presente
+frustration	Frustração
+safeguard	Salvaguarda
+pain-split	Divisão de Dor
+magnitude	Magnitude
+dynamic-punch	Soco Dinâmico
+megahorn	Megachifre
+dragon-breath	Sopro do Dragão
+baton-pass	Passar o Bastão
+encore	Bis
+pursuit	Perseguição
+rapid-spin	Giro Rápido
+sweet-scent	Aroma Doce
+iron-tail	Cauda de Ferro
+metal-claw	Garra de Metal
+vital-throw	Arremesso Vital
+morning-sun	Sol Matinal
+synthesis	Síntese
+moonlight	Luz da Lua
+hidden-power	Poder Oculto
+cross-chop	Golpe Cruzado
+twister	Twister
+rain-dance	Dança da Chuva
+sunny-day	Dia Ensolarado
+crunch	Triturar
+mirror-coat	Manto Espelho
+psych-up	Psicoânimo
+extreme-speed	Velocidade Extrema
+ancient-power	Poder Ancestral
+shadow-ball	Bola Sombria
+future-sight	Visão do Futuro
+rock-smash	Esmagar Rocha
+whirlpool	Redemoinho
+beat-up	Espancamento
+fake-out	Golpe Surpresa
+uproar	Algazarra
+stockpile	Estocar
+spit-up	Cuspir
+swallow	Engolir
+heat-wave	Onda de Calor
+hail	Granizo
+torment	Tormento
+flatter	Bajulação
+will-o-wisp	Fogo-Fátuo
+memento	Memento
+facade	Fachada
+focus-punch	Soco Focado
+follow-me	Siga-me
+nature-power	Poder da Natureza
+charge	Carga
+taunt	Provocação
+helping-hand	Mão Amiga
+trick	Truque
+role-play	Encenação
+wish	Desejo
+ingrain	Enraizar
+superpower	Superpoder
+magic-coat	Manto Mágico
+recycle	Reciclar
+revenge	Vingança
+brick-break	Quebra-Tijolo
+yawn	Bocejo
+knock-off	Desarmar
+endeavor	Empenho
+eruption	Erupção
+skill-swap	Troca de Habilidade
+imprison	Aprisionar
+dive	Mergulho
+arm-thrust	Empurrão
+feather-dance	Dança das Penas
+teeter-dance	Dança Cambaleante
+slack-off	Preguiça
+hyper-voice	Hipervoz
+poison-fang	Presa Venenosa
+crush-claw	Garra Esmagadora
+blast-burn	Queimadura Explosiva
+hydro-cannon	Hidrocanhão
+meteor-mash	Soco Meteoro
+astonish	Assustar
+weather-ball	Bola Climática
+aromatherapy	Aromaterapia
+fake-tears	Lágrimas Falsas
+air-cutter	Cortador de Ar
+overheat	Superaquecimento
+odor-sleuth	Farejar
+rock-tomb	Tumba de Rochas
+metal-sound	Som Metálico
+cosmic-power	Poder Cósmico
+signal-beam	Raio Sinalizador
+shadow-punch	Soco Sombrio
+extrasensory	Extrassensorial
+sand-tomb	Tumba de Areia
+sheer-cold	Frio Absoluto
+muddy-water	Água Lamacenta
+bullet-seed	Projétil de Sementes
+aerial-ace	Ás Aéreo
+icicle-spear	Lança de Gelo
+iron-defense	Defesa de Ferro
+howl	Uivo
+dragon-claw	Garra de Dragão
+frenzy-plant	Planta Frenética
+bulk-up	Fortalecer
+bounce	Quicar
+mud-shot	Tiro de Lama
+poison-tail	Cauda Venenosa
+covet	Cobiça
+magical-leaf	Folha Mágica
+water-sport	Esporte Aquático
+mud-sport	Esporte de Lama
+calm-mind	Mente Calma
+leaf-blade	Lâmina de Folha
+dragon-dance	Dança do Dragão
+rock-blast	Rajada de Rochas
+shock-wave	Onda de Choque
+water-pulse	Pulso d'Água
+roost	Pouso
+gravity	Gravidade
+hammer-arm	Braço Martelo
+gyro-ball	Giroesfera
+healing-wish	Desejo de Cura
+brine	Salmoura
+natural-gift	Dom da Natureza
+feint	Finta
+pluck	Arrancar
+tailwind	Vento a Favor
+acupressure	Acupressão
+metal-burst	Explosão Metálica
+u-turn	Meia-Volta
+close-combat	Combate Corpo a Corpo
+payback	Revide
+assurance	Garantia
+fling	Arremessar
+power-trick	Truque de Força
+gastro-acid	Ácido Gástrico
+copycat	Imitador
+power-swap	Troca de Poder
+guard-swap	Troca de Guarda
+last-resort	Último Recurso
+worry-seed	Semente da Preocupação
+sucker-punch	Golpe Baixo
+toxic-spikes	Espinhos Tóxicos
+aqua-ring	Anel Aquático
+magnet-rise	Levitação Magnética
+flare-blitz	Investida Flamejante
+force-palm	Palma de Força
+aura-sphere	Esfera de Aura
+rock-polish	Polimento de Rocha
+poison-jab	Golpe Venenoso
+dark-pulse	Pulso Sombrio
+night-slash	Talho Noturno
+aqua-tail	Cauda Aquática
+seed-bomb	Bomba de Sementes
+air-slash	Lâmina de Ar
+x-scissor	Tesoura X
+bug-buzz	Zumbido de Inseto
+dragon-pulse	Pulso do Dragão
+dragon-rush	Investida do Dragão
+power-gem	Gema de Poder
+drain-punch	Soco Dreno
+vacuum-wave	Onda de Vácuo
+focus-blast	Rajada Focada
+energy-ball	Bola de Energia
+brave-bird	Pássaro Bravo
+earth-power	Poder da Terra
+switcheroo	Troca-Troca
+giga-impact	Gigaimpacto
+nasty-plot	Plano Maligno
+bullet-punch	Soco Projétil
+avalanche	Avalanche
+ice-shard	Caco de Gelo
+shadow-claw	Garra Sombria
+thunder-fang	Presa do Trovão
+ice-fang	Presa de Gelo
+fire-fang	Presa de Fogo
+shadow-sneak	Sombra Furtiva
+psycho-cut	Psicocorte
+zen-headbutt	Cabeçada Zen
+flash-cannon	Canhão de Luz
+defog	Desembaçar
+trick-room	Sala dos Truques
+draco-meteor	Meteoro do Dragão
+discharge	Descarga
+lava-plume	Pluma de Lava
+leaf-storm	Tempestade de Folhas
+power-whip	Chicote Poderoso
+cross-poison	Veneno Cruzado
+gunk-shot	Tiro de Sujeira
+iron-head	Cabeça de Ferro
+stone-edge	Gume de Pedra
+stealth-rock	Rochas Furtivas
+grass-knot	Nó de Grama
+bug-bite	Picada
+charge-beam	Raio Carregado
+wood-hammer	Martelo de Madeira
+aqua-jet	Jato Aquático
+attack-order	Ordem de Ataque
+defend-order	Ordem de Defesa
+head-smash	Cabeçada Esmagadora
+double-hit	Golpe Duplo
+hone-claws	Afiar Garras
+wide-guard	Guarda Ampla
+guard-split	Divisão de Guarda
+wonder-room	Sala Maravilha
+psyshock	Psicochoque
+venoshock	Venochoque
+autotomize	Autotomia
+rage-powder	Pó da Raiva
+magic-room	Sala Mágica
+smack-down	Derrubar
+storm-throw	Arremesso Tempestuoso
+flame-burst	Explosão de Chamas
+sludge-wave	Onda de Lodo
+quiver-dance	Dança Vibrante
+heavy-slam	Pancada Pesada
+electro-ball	Eletrobola
+soak	Encharcar
+flame-charge	Carga de Chamas
+coil	Enroscar
+low-sweep	Rasteira
+acid-spray	Spray Ácido
+foul-play	Jogo Sujo
+simple-beam	Raio Simples
+entrainment	Arrastamento
+after-you	Depois de Você
+round	Cânone
+echoed-voice	Voz Ecoada
+clear-smog	Fumaça Limpa
+stored-power	Poder Armazenado
+quick-guard	Guarda Rápida
+ally-switch	Troca de Aliado
+scald	Escaldar
+shell-smash	Quebra-Casca
+heal-pulse	Pulso de Cura
+hex	Feitiço
+circle-throw	Arremesso Circular
+incinerate	Incinerar
+quash	Anular
+acrobatics	Acrobacia
+reflect-type	Refletir Tipo
+retaliate	Retaliação
+final-gambit	Aposta Final
+inferno	Inferno
+water-pledge	Juramento d'Água
+fire-pledge	Juramento de Fogo
+grass-pledge	Juramento de Planta
+volt-switch	Troca Voltaica
+struggle-bug	Esforço de Inseto
+bulldoze	Terraplanagem
+frost-breath	Sopro Congelante
+dragon-tail	Cauda de Dragão
+work-up	Animar
+electroweb	Teia Elétrica
+wild-charge	Carga Selvagem
+drill-run	Broca Giratória
+dual-chop	Corte Duplo
+horn-leech	Chifre Sanguessuga
+sacred-sword	Espada Sagrada
+razor-shell	Concha Navalha
+heat-crash	Colisão Térmica
+cotton-guard	Guarda de Algodão
+night-daze	Atordoamento Noturno
+psystrike	Psicogolpe
+hurricane	Furacão
+snarl	Grunhido
+icicle-crash	Colisão de Pingentes
+flying-press	Prensa Voadora
+belch	Arroto
+rototiller	Arado
+sticky-web	Teia Pegajosa
+fell-stinger	Ferrão Letal
+phantom-force	Força Fantasma
+trick-or-treat	Gostosuras ou Travessuras
+noble-roar	Rugido Nobre
+parabolic-charge	Carga Parabólica
+forests-curse	Maldição da Floresta
+petal-blizzard	Nevasca de Pétalas
+freeze-dry	Liofilização
+disarming-voice	Voz Desarmante
+parting-shot	Tiro de Despedida
+topsy-turvy	Reviravolta
+draining-kiss	Beijo Drenante
+grassy-terrain	Campo de Grama
+misty-terrain	Campo de Névoa
+electrify	Eletrificar
+play-rough	Brincadeira Bruta
+fairy-wind	Vento de Fada
+moonblast	Explosão Lunar
+boomburst	Estrondo
+fairy-lock	Tranca de Fada
+kings-shield	Escudo Real
+play-nice	Fazer as Pazes
+confide	Confidência
+diamond-storm	Tempestade de Diamantes
+water-shuriken	Shuriken d'Água
+mystical-fire	Fogo Místico
+spiky-shield	Escudo Espinhoso
+aromatic-mist	Névoa Aromática
+eerie-impulse	Impulso Estranho
+venom-drench	Banho de Veneno
+geomancy	Geomancia
+magnetic-flux	Fluxo Magnético
+electric-terrain	Campo Elétrico
+dazzling-gleam	Brilho Deslumbrante
+baby-doll-eyes	Olhos Pidões
+nuzzle	Afago
+infestation	Infestação
+oblivion-wing	Asa do Esquecimento
+thousand-arrows	Mil Flechas
+thousand-waves	Mil Ondas
+lands-wrath	Ira da Terra
+first-impression	Primeira Impressão
+darkest-lariat	Laço Sombrio
+high-horsepower	Coice Potente
+strength-sap	Seiva da Força
+solar-blade	Lâmina Solar
+leafage	Folhagem
+toxic-thread	Fio Tóxico
+laser-focus	Foco Laser
+throat-chop	Golpe na Garganta
+pollen-puff	Bola de Pólen
+psychic-terrain	Campo Psíquico
+lunge	Estocada
+power-trip	Ego Inflado
+speed-swap	Troca de Velocidade
+smart-strike	Golpe Inteligente
+core-enforcer	Executor do Núcleo
+brutal-swing	Giro Brutal
+aurora-veil	Véu Aurora
+psychic-fangs	Presas Psíquicas
+stomping-tantrum	Pisoteio Furioso
+accelerock	Acelerrocha
+liquidation	Liquidação
+tearful-look	Olhar Choroso
+no-retreat	Sem Recuo
+body-press	Prensa Corporal
+breaking-swipe	Golpe Quebrador
+branch-poke	Cutucada de Galho
+life-dew	Orvalho da Vida
+steel-beam	Raio de Aço
+expanding-force	Força Expansiva
+steel-roller	Rolo de Aço
+scale-shot	Tiro de Escamas
+meteor-beam	Raio Meteoro
+misty-explosion	Explosão de Névoa
+grassy-glide	Deslize na Grama
+rising-voltage	Voltagem Ascendente
+terrain-pulse	Pulso do Campo
+skitter-smack	Pancada Rasteira
+burning-jealousy	Ciúme Ardente
+lash-out	Desabafo
+poltergeist	Poltergeist
+corrosive-gas	Gás Corrosivo
+coaching	Treinamento
+flip-turn	Virada
+triple-axel	Axel Triplo
+dual-wingbeat	Batida de Asas Dupla
+scorching-sands	Areia Escaldante
+dire-claw	Garra Sinistra
+psyshield-bash	Investida Psicoescudo
+stone-axe	Machado de Pedra
+wave-crash	Choque de Onda
+headlong-rush	Investida Impetuosa
+tera-blast	Tera Explosão
+axe-kick	Chute Machado
+ice-spinner	Pião de Gelo
+snowscape	Paisagem Nevada
+pounce	Bote
+trailblaze	Desbravar
+chilling-water	Água Gelada
+rage-fist	Punho da Raiva
+comeuppance	Troco
+aqua-cutter	Cortador Aquático
+hard-press	Prensa Dura
+dragon-cheer	Ânimo do Dragão
+alluring-voice	Voz Sedutora
+temper-flare	Acesso de Raiva
+supercell-slam	Pancada Supercélula
+psychic-noise	Ruído Psíquico
+upper-hand	Vantagem
+struggle	Debater
+karate-chop	Golpe de Caratê

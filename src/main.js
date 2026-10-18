@@ -127,7 +127,7 @@ class Game {
     this.fx.burst(e.x, e.y - 8, 0xffffff, 1.2);
     if (e.side === 'wild') {
       const lead = this.lead;
-      if (lead?.alive && (by === lead || by?.side === 'ally')) this.giveXp(lead.mon, e.mon.xpYield());
+      if (lead?.alive && (by === lead || by?.side === 'ally')) { lead.mon.gainEvs(e.mon.sp.evs); lead.mon.addFriendship(1); this.giveXp(lead.mon, e.mon.xpYield(false, lead.mon)); } // XP escalonada (Gen 7+), EVs e amizade
       this.later(0.6, () => this.removeEntity(e));
     } else {
       this.toast(`${e.mon.name} desmaiou!`);

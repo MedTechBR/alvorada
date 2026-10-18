@@ -1,100 +1,198 @@
-// Golpes com poder/tipo/categoria oficiais e a forma de execução em tempo real.
-// kind: melee (avanço curto), dash (investida longa), proj (projétil), cone (sopro em leque),
-//       wave (onda ao redor), self (efeito em si), cloud (nuvem lenta), rain (cai sobre o alvo),
-//       quake (tremor ao redor), multi (vários golpes seguidos)
-// cd: recarga em segundos. eff: efeito secundário.
+// Golpes: dados oficiais da PokéAPI (src/data/gen/golpes.js) + forma de execução em tempo real.
+//
+// Campos que o combate lê (formato antigo, mantido):
+//   name, type, cat ('phys' | 'spec' | 'status'), power, kind, speed, range, cd, count, hits, critUp, acc, eff
+//   kind: melee (avanço curto), dash (investida longa), proj (projétil), cone (sopro em leque),
+//         wave (onda ao redor), self (efeito em si), cloud (nuvem/área lenta), rain (cai sobre o alvo),
+//         quake (tremor ao redor), multi (vários golpes seguidos)
+//   cd: recarga em segundos. eff: efeito secundário ({ status, chance, stat, by, self, flinch, drain, recoil, confuse… }).
+// Campos novos (dados oficiais): en, acc (0–1, null = nunca erra), pp, priority, target, flags, effectChance,
+//   minHits/maxHits, fixed (dano fixo), varPower (poder variável), effectId, gen, desc (pt-BR).
+// Dicas novas de tempo real (o combate pode usar quando quiser): stream (jato contínuo), homing (nunca erra →
+//   persegue o alvo), aimSpread (dispersão da mira, vem da precisão), big (tamanho do projétil), surge (onda que
+//   avança), eff.semi ('fly' | 'dig' | 'dive' | 'vanish'), eff.charge (segundos carregando), eff.protect (segundos
+//   de escudo), eff.recharge (segundos parado depois), eff.switch (troca depois do golpe).
+//
+// Regras automáticas (tools/pokeapi/importar.py): especial à distância → proj ou cone; contato → melee ou dash;
+// "todos os adversários" → wave (ou quake se for de Terra/Pedra físico); clima → rain; campo e armadilhas → cloud;
+// estado → self (em si) ou proj de estado; poder alto e PP baixo → cd maior.
+import { GOLPES } from './gen/golpes.js';
 
-export const MOVES = {
-  tackle:       { name: 'Investida', type: 'normal', cat: 'phys', power: 40, kind: 'melee', range: 1.8, cd: 1.1 },
-  scratch:      { name: 'Arranhão', type: 'normal', cat: 'phys', power: 40, kind: 'melee', range: 1.6, cd: 1.0 },
-  growl:        { name: 'Rosnado', type: 'normal', cat: 'status', kind: 'wave', range: 6, cd: 4.5, eff: { stat: 'atk', by: -1 } },
-  tailWhip:     { name: 'Chicote de Cauda', type: 'normal', cat: 'status', kind: 'wave', range: 6, cd: 4.5, eff: { stat: 'def', by: -1 } },
-  leer:         { name: 'Olhar Malicioso', type: 'normal', cat: 'status', kind: 'wave', range: 6, cd: 4.5, eff: { stat: 'def', by: -1 } },
-  screech:      { name: 'Grito', type: 'normal', cat: 'status', kind: 'wave', range: 7, cd: 6, eff: { stat: 'def', by: -2 } },
-  scaryFace:    { name: 'Cara Assustadora', type: 'normal', cat: 'status', kind: 'wave', range: 6, cd: 5.5, eff: { stat: 'spe', by: -2 } },
-  quickAttack:  { name: 'Ataque Rápido', type: 'normal', cat: 'phys', power: 40, kind: 'dash', range: 6, cd: 1.6 },
-  hyperFang:    { name: 'Super Presa', type: 'normal', cat: 'phys', power: 80, kind: 'melee', range: 1.8, cd: 2.6, eff: { flinch: 0.1 } },
-  furyAttack:   { name: 'Ataque de Fúria', type: 'normal', cat: 'phys', power: 15, kind: 'multi', range: 1.8, cd: 2.2 },
-  furySwipes:   { name: 'Golpes de Fúria', type: 'normal', cat: 'phys', power: 18, kind: 'multi', range: 1.7, cd: 2.2 },
-  slam:         { name: 'Pancada', type: 'normal', cat: 'phys', power: 80, kind: 'melee', range: 2.6, cd: 2.8 },
-  rage:         { name: 'Raiva', type: 'normal', cat: 'phys', power: 20, kind: 'melee', range: 1.8, cd: 1.0 },
-  bind:         { name: 'Amarrar', type: 'normal', cat: 'phys', power: 15, kind: 'melee', range: 2.4, cd: 4, eff: { bind: 2.5 } },
-  harden:       { name: 'Endurecer', type: 'normal', cat: 'status', kind: 'self', cd: 4, eff: { stat: 'def', by: 1, self: true } },
-  defenseCurl:  { name: 'Enrolar-se', type: 'normal', cat: 'status', kind: 'self', cd: 4, eff: { stat: 'def', by: 1, self: true } },
-  withdraw:     { name: 'Recolher', type: 'water', cat: 'status', kind: 'self', cd: 4, eff: { stat: 'def', by: 1, self: true } },
-  focusEnergy:  { name: 'Energia Focada', type: 'normal', cat: 'status', kind: 'self', cd: 8, eff: { crit: 2, self: true } },
-  doubleTeam:   { name: 'Reflexo', type: 'normal', cat: 'status', kind: 'self', cd: 6, eff: { stat: 'eva', by: 1, self: true } },
-  smokescreen:  { name: 'Cortina de Fumaça', type: 'normal', cat: 'status', kind: 'cloud', range: 9, cd: 5, eff: { stat: 'acc', by: -1 } },
-  supersonic:   { name: 'Supersônico', type: 'normal', cat: 'status', kind: 'proj', speed: 14, range: 12, cd: 6, eff: { confuse: 1 }, acc: 0.55 },
-  whirlwind:    { name: 'Remoinho', type: 'normal', cat: 'status', kind: 'cone', range: 6, cd: 7, eff: { knock: 9 } },
-  sandAttack:   { name: 'Ataque de Areia', type: 'ground', cat: 'status', kind: 'cone', range: 5, cd: 4.5, eff: { stat: 'acc', by: -1 } },
-  mudSport:     { name: 'Esporte de Lama', type: 'ground', cat: 'status', kind: 'self', cd: 9, eff: { mudSport: 8, self: true } },
-  magnitude:    { name: 'Magnitude', type: 'ground', cat: 'phys', power: 70, kind: 'quake', range: 5, cd: 4 },
-  ember:        { name: 'Brasa', type: 'fire', cat: 'spec', power: 40, kind: 'proj', speed: 16, range: 13, cd: 1.3, eff: { status: 'brn', chance: 0.1 } },
-  waterGun:     { name: 'Revólver d\'Água', type: 'water', cat: 'spec', power: 40, kind: 'proj', speed: 18, range: 13, cd: 1.3 },
-  bubble:       { name: 'Bolha', type: 'water', cat: 'spec', power: 40, kind: 'proj', speed: 9, range: 11, cd: 1.5, eff: { stat: 'spe', by: -1, chance: 0.1 }, count: 3 },
-  vineWhip:     { name: 'Chicote de Vinha', type: 'grass', cat: 'phys', power: 45, kind: 'melee', range: 4.2, cd: 1.3 },
-  razorLeaf:    { name: 'Folha Navalha', type: 'grass', cat: 'phys', power: 55, kind: 'proj', speed: 20, range: 14, cd: 1.8, count: 3, critUp: 1 },
-  leechSeed:    { name: 'Semente Sanguessuga', type: 'grass', cat: 'status', kind: 'proj', speed: 11, range: 11, cd: 7, eff: { seed: 1 } },
-  poisonPowder: { name: 'Pó Venenoso', type: 'poison', cat: 'status', kind: 'cloud', range: 8, cd: 6, eff: { status: 'psn', chance: 1 } },
-  sleepPowder:  { name: 'Pó do Sono', type: 'grass', cat: 'status', kind: 'cloud', range: 8, cd: 9, eff: { status: 'slp', chance: 1 } },
-  stunSpore:    { name: 'Esporo Paralisante', type: 'grass', cat: 'status', kind: 'cloud', range: 8, cd: 7, eff: { status: 'par', chance: 1 } },
-  stringShot:   { name: 'Fio de Seda', type: 'bug', cat: 'status', kind: 'proj', speed: 15, range: 11, cd: 4, eff: { stat: 'spe', by: -2 } },
-  poisonSting:  { name: 'Ferrão Venenoso', type: 'poison', cat: 'phys', power: 15, kind: 'proj', speed: 20, range: 12, cd: 0.9, eff: { status: 'psn', chance: 0.3 } },
-  twineedle:    { name: 'Agulha Dupla', type: 'bug', cat: 'phys', power: 25, kind: 'proj', speed: 22, range: 12, cd: 1.8, count: 2, eff: { status: 'psn', chance: 0.2 } },
-  confusion:    { name: 'Confusão', type: 'psychic', cat: 'spec', power: 50, kind: 'proj', speed: 15, range: 12, cd: 1.6, eff: { confuse: 0.1 } },
-  gust:         { name: 'Lufada de Vento', type: 'flying', cat: 'spec', power: 40, kind: 'cone', range: 6, cd: 1.4 },
-  peck:         { name: 'Bicada', type: 'flying', cat: 'phys', power: 35, kind: 'melee', range: 1.7, cd: 0.9 },
-  bite:         { name: 'Mordida', type: 'dark', cat: 'phys', power: 60, kind: 'melee', range: 1.8, cd: 1.8, eff: { flinch: 0.3 } },
-  pursuit:      { name: 'Perseguição', type: 'dark', cat: 'phys', power: 40, kind: 'dash', range: 7, cd: 1.8 },
-  metalClaw:    { name: 'Garra de Metal', type: 'steel', cat: 'phys', power: 50, kind: 'melee', range: 1.8, cd: 1.6, eff: { stat: 'atk', by: 1, self: true, chance: 0.1 } },
-  thunderShock: { name: 'Choque do Trovão', type: 'electric', cat: 'spec', power: 40, kind: 'proj', speed: 26, range: 13, cd: 1.3, eff: { status: 'par', chance: 0.1 } },
-  thunderWave:  { name: 'Onda de Trovão', type: 'electric', cat: 'status', kind: 'proj', speed: 18, range: 11, cd: 7, eff: { status: 'par', chance: 1 } },
-  lowKick:      { name: 'Chute Baixo', type: 'fighting', cat: 'phys', power: 50, kind: 'melee', range: 1.8, cd: 1.5 },
-  karateChop:   { name: 'Golpe de Caratê', type: 'fighting', cat: 'phys', power: 50, kind: 'melee', range: 1.8, cd: 1.5, critUp: 1 },
-  rockThrow:    { name: 'Lançamento de Rocha', type: 'rock', cat: 'phys', power: 50, kind: 'rain', range: 13, cd: 2.2 },
-  rockTomb:     { name: 'Tumba de Rochas', type: 'rock', cat: 'phys', power: 60, kind: 'rain', range: 13, cd: 3, eff: { stat: 'spe', by: -1, chance: 1 } },
-  // ---- golpes da região Alvorada ----
-  wingAttack:   { name: 'Ataque de Asa', type: 'flying', cat: 'phys', power: 60, kind: 'dash', range: 5, cd: 1.6 },
-  bugBite:      { name: 'Picada', type: 'bug', cat: 'phys', power: 60, kind: 'melee', range: 1.7, cd: 1.6 },
-  furyCutter:   { name: 'Cortador de Fúria', type: 'bug', cat: 'phys', power: 40, kind: 'melee', range: 1.9, cd: 1.0 },
-  absorb:       { name: 'Absorver', type: 'grass', cat: 'spec', power: 20, kind: 'proj', speed: 14, range: 11, cd: 1.0, eff: { drain: 0.5 } },
-  megaDrain:    { name: 'Megadreno', type: 'grass', cat: 'spec', power: 40, kind: 'proj', speed: 14, range: 12, cd: 1.6, eff: { drain: 0.5 } },
-  growth:       { name: 'Crescimento', type: 'normal', cat: 'status', kind: 'self', cd: 5, eff: { stat: 'spa', by: 1, self: true } },
-  mudSlap:      { name: 'Tapa de Lama', type: 'ground', cat: 'spec', power: 20, kind: 'proj', speed: 16, range: 10, cd: 1.1, eff: { stat: 'acc', by: -1, chance: 1 } },
-  mudShot:      { name: 'Tiro de Lama', type: 'ground', cat: 'spec', power: 55, kind: 'proj', speed: 15, range: 12, cd: 1.8, eff: { stat: 'spe', by: -1, chance: 1 } },
-  doubleKick:   { name: 'Chute Duplo', type: 'fighting', cat: 'phys', power: 30, kind: 'multi', hits: 2, range: 1.8, cd: 1.7 },
-  takeDown:     { name: 'Desmantelar', type: 'normal', cat: 'phys', power: 90, kind: 'dash', range: 6, cd: 2.8, eff: { recoil: 0.25 } },
-  pound:        { name: 'Pancadinha', type: 'normal', cat: 'phys', power: 40, kind: 'melee', range: 1.6, cd: 1.0 },
-  splash:       { name: 'Splash', type: 'normal', cat: 'status', kind: 'self', cd: 2, eff: { splash: true, self: true } },
-  astonish:     { name: 'Assustar', type: 'ghost', cat: 'phys', power: 30, kind: 'melee', range: 1.8, cd: 1.2, eff: { flinch: 0.3 } },
-  hypnosis:     { name: 'Hipnose', type: 'psychic', cat: 'status', kind: 'proj', speed: 12, range: 11, cd: 8, acc: 0.6, eff: { status: 'slp', chance: 1 } },
-  stomp:        { name: 'Pisotear', type: 'normal', cat: 'phys', power: 65, kind: 'melee', range: 2, cd: 2, eff: { flinch: 0.3 } },
-  rockSmash:    { name: 'Esmagar Rocha', type: 'fighting', cat: 'phys', power: 40, kind: 'melee', range: 1.8, cd: 1.3, eff: { stat: 'def', by: -1, chance: 0.5 } },
-  bulldoze:     { name: 'Terraplanagem', type: 'ground', cat: 'phys', power: 60, kind: 'quake', range: 5, cd: 3, eff: { stat: 'spe', by: -1, chance: 1 } },
-  flameWheel:   { name: 'Roda de Fogo', type: 'fire', cat: 'phys', power: 60, kind: 'dash', range: 7, cd: 1.9, eff: { status: 'brn', chance: 0.1 } },
-  flamethrower: { name: 'Lança-Chamas', type: 'fire', cat: 'spec', power: 90, kind: 'proj', speed: 18, range: 14, cd: 2.6, count: 3, eff: { status: 'brn', chance: 0.1 } },
-  roar:         { name: 'Rugido', type: 'normal', cat: 'status', kind: 'cone', range: 6, cd: 7, eff: { knock: 9 } },
-  poisonJab:    { name: 'Golpe Venenoso', type: 'poison', cat: 'phys', power: 80, kind: 'melee', range: 1.9, cd: 2.2, eff: { status: 'psn', chance: 0.3 } },
-  crushClaw:    { name: 'Garra Esmagadora', type: 'normal', cat: 'phys', power: 75, kind: 'melee', range: 2, cd: 2.2, eff: { stat: 'def', by: -1, chance: 0.5 } },
-  twister:      { name: 'Twister', type: 'dragon', cat: 'spec', power: 40, kind: 'cone', range: 6, cd: 1.8, eff: { flinch: 0.2 } },
-  disarmingVoice: { name: 'Voz Desarmante', type: 'fairy', cat: 'spec', power: 40, kind: 'wave', range: 6, cd: 1.6 },
-  agility:      { name: 'Agilidade', type: 'psychic', cat: 'status', kind: 'self', cd: 6, eff: { stat: 'spe', by: 2, self: true } },
-  waterPulse:   { name: 'Pulso d\'Água', type: 'water', cat: 'spec', power: 60, kind: 'proj', speed: 17, range: 13, cd: 1.9, eff: { confuse: 0.2 } },
-  spark:        { name: 'Faísca', type: 'electric', cat: 'phys', power: 65, kind: 'dash', range: 6, cd: 1.9, eff: { status: 'par', chance: 0.3 } },
-  // ---- lote 2 ----
-  lick:         { name: 'Lambida', type: 'ghost', cat: 'phys', power: 30, kind: 'melee', range: 1.7, cd: 1.1, eff: { status: 'par', chance: 0.3 } },
-  shadowSneak:  { name: 'Sombra Furtiva', type: 'ghost', cat: 'phys', power: 40, kind: 'dash', range: 7, cd: 1.6 },
-  smog:         { name: 'Poluição', type: 'poison', cat: 'spec', power: 30, kind: 'cloud', range: 8, cd: 2.4, acc: 0.85, eff: { status: 'psn', chance: 0.4 } },
-  teleport:     { name: 'Teletransporte', type: 'psychic', cat: 'status', kind: 'self', cd: 4, eff: { teleport: true, self: true } },
-  aquaJet:      { name: 'Jato Aquático', type: 'water', cat: 'phys', power: 40, kind: 'dash', range: 7, cd: 1.5 },
-  iceShard:     { name: 'Caco de Gelo', type: 'ice', cat: 'phys', power: 40, kind: 'proj', speed: 26, range: 12, cd: 1.2 },
-  dragonBreath: { name: 'Sopro do Dragão', type: 'dragon', cat: 'spec', power: 60, kind: 'cone', range: 6, cd: 2, eff: { status: 'par', chance: 0.3 } },
-  leafage:      { name: 'Folhagem', type: 'grass', cat: 'phys', power: 40, kind: 'proj', speed: 18, range: 12, cd: 1.2 },
-  // ---- golpes de nível alto ----
-  hydroPump:    { name: 'Hidro Bomba', type: 'water', cat: 'spec', power: 110, kind: 'proj', speed: 19, range: 15, cd: 3.2, count: 2 },
-  fireBlast:    { name: 'Rajada de Fogo', type: 'fire', cat: 'spec', power: 110, kind: 'proj', speed: 17, range: 15, cd: 3.4, eff: { status: 'brn', chance: 0.2 } },
-  dragonPulse:  { name: 'Pulso do Dragão', type: 'dragon', cat: 'spec', power: 85, kind: 'proj', speed: 19, range: 14, cd: 2.4 },
-  airSlash:     { name: 'Lâmina de Ar', type: 'flying', cat: 'spec', power: 75, kind: 'proj', speed: 24, range: 13, cd: 1.6, eff: { flinch: 0.3 } },
-  fairyWind:    { name: 'Vento de Fada', type: 'fairy', cat: 'spec', power: 40, kind: 'cone', range: 6, cd: 1.4 },
+// Ajustes finos herdados da versão anterior do jogo (já testados no mapa).
+const ANTIGOS = {
+  tackle: { kind: 'melee', range: 1.8, cd: 1.1 },
+  scratch: { kind: 'melee', range: 1.6, cd: 1 },
+  growl: { kind: 'wave', range: 6, cd: 4.5 },
+  tailWhip: { kind: 'wave', range: 6, cd: 4.5 },
+  leer: { kind: 'wave', range: 6, cd: 4.5 },
+  screech: { kind: 'wave', range: 7, cd: 6 },
+  scaryFace: { kind: 'wave', range: 6, cd: 5.5 },
+  quickAttack: { kind: 'dash', range: 6, cd: 1.6 },
+  hyperFang: { kind: 'melee', range: 1.8, cd: 2.6 },
+  furyAttack: { kind: 'multi', range: 1.8, cd: 2.2 },
+  furySwipes: { kind: 'multi', range: 1.7, cd: 2.2 },
+  slam: { kind: 'melee', range: 2.6, cd: 2.8 },
+  rage: { kind: 'melee', range: 1.8, cd: 1 },
+  bind: { kind: 'melee', range: 2.4, cd: 4 },
+  harden: { kind: 'self', cd: 4 },
+  defenseCurl: { kind: 'self', cd: 4 },
+  withdraw: { kind: 'self', cd: 4 },
+  focusEnergy: { kind: 'self', cd: 8 },
+  doubleTeam: { kind: 'self', cd: 6 },
+  smokescreen: { kind: 'cloud', range: 9, cd: 5 },
+  supersonic: { kind: 'proj', speed: 14, range: 12, cd: 6 },
+  whirlwind: { kind: 'cone', range: 6, cd: 7 },
+  sandAttack: { kind: 'cone', range: 5, cd: 4.5 },
+  mudSport: { kind: 'self', cd: 9 },
+  magnitude: { kind: 'quake', range: 5, cd: 4 },
+  ember: { kind: 'proj', speed: 16, range: 13, cd: 1.3 },
+  waterGun: { kind: 'proj', speed: 18, range: 13, cd: 1.3 },
+  bubble: { kind: 'proj', speed: 9, range: 11, cd: 1.5, count: 3 },
+  vineWhip: { kind: 'melee', range: 4.2, cd: 1.3 },
+  razorLeaf: { kind: 'proj', speed: 20, range: 14, cd: 1.8, count: 3 },
+  leechSeed: { kind: 'proj', speed: 11, range: 11, cd: 7 },
+  poisonPowder: { kind: 'cloud', range: 8, cd: 6 },
+  sleepPowder: { kind: 'cloud', range: 8, cd: 9 },
+  stunSpore: { kind: 'cloud', range: 8, cd: 7 },
+  stringShot: { kind: 'proj', speed: 15, range: 11, cd: 4 },
+  poisonSting: { kind: 'proj', speed: 20, range: 12, cd: 0.9 },
+  twineedle: { kind: 'proj', speed: 22, range: 12, cd: 1.8, count: 2 },
+  confusion: { kind: 'proj', speed: 15, range: 12, cd: 1.6 },
+  gust: { kind: 'cone', range: 6, cd: 1.4 },
+  peck: { kind: 'melee', range: 1.7, cd: 0.9 },
+  bite: { kind: 'melee', range: 1.8, cd: 1.8 },
+  pursuit: { kind: 'dash', range: 7, cd: 1.8 },
+  metalClaw: { kind: 'melee', range: 1.8, cd: 1.6 },
+  thunderShock: { kind: 'proj', speed: 26, range: 13, cd: 1.3 },
+  thunderWave: { kind: 'proj', speed: 18, range: 11, cd: 7 },
+  lowKick: { kind: 'melee', range: 1.8, cd: 1.5 },
+  karateChop: { kind: 'melee', range: 1.8, cd: 1.5 },
+  rockThrow: { kind: 'rain', range: 13, cd: 2.2 },
+  rockTomb: { kind: 'rain', range: 13, cd: 3 },
+  wingAttack: { kind: 'dash', range: 5, cd: 1.6 },
+  bugBite: { kind: 'melee', range: 1.7, cd: 1.6 },
+  furyCutter: { kind: 'melee', range: 1.9, cd: 1 },
+  absorb: { kind: 'proj', speed: 14, range: 11, cd: 1 },
+  megaDrain: { kind: 'proj', speed: 14, range: 12, cd: 1.6 },
+  growth: { kind: 'self', cd: 5 },
+  mudSlap: { kind: 'proj', speed: 16, range: 10, cd: 1.1 },
+  mudShot: { kind: 'proj', speed: 15, range: 12, cd: 1.8 },
+  doubleKick: { kind: 'multi', range: 1.8, cd: 1.7, hits: 2 },
+  takeDown: { kind: 'dash', range: 6, cd: 2.8 },
+  pound: { kind: 'melee', range: 1.6, cd: 1 },
+  splash: { kind: 'self', cd: 2 },
+  astonish: { kind: 'melee', range: 1.8, cd: 1.2 },
+  hypnosis: { kind: 'proj', speed: 12, range: 11, cd: 8 },
+  stomp: { kind: 'melee', range: 2, cd: 2 },
+  rockSmash: { kind: 'melee', range: 1.8, cd: 1.3 },
+  bulldoze: { kind: 'quake', range: 5, cd: 3 },
+  flameWheel: { kind: 'dash', range: 7, cd: 1.9 },
+  roar: { kind: 'cone', range: 6, cd: 7 },
+  poisonJab: { kind: 'melee', range: 1.9, cd: 2.2 },
+  crushClaw: { kind: 'melee', range: 2, cd: 2.2 },
+  twister: { kind: 'cone', range: 6, cd: 1.8 },
+  disarmingVoice: { kind: 'wave', range: 6, cd: 1.6 },
+  agility: { kind: 'self', cd: 6 },
+  waterPulse: { kind: 'proj', speed: 17, range: 13, cd: 1.9 },
+  spark: { kind: 'dash', range: 6, cd: 1.9 },
+  lick: { kind: 'melee', range: 1.7, cd: 1.1 },
+  shadowSneak: { kind: 'dash', range: 7, cd: 1.6 },
+  smog: { kind: 'cloud', range: 8, cd: 2.4 },
+  teleport: { kind: 'self', cd: 4 },
+  aquaJet: { kind: 'dash', range: 7, cd: 1.5 },
+  iceShard: { kind: 'proj', speed: 26, range: 12, cd: 1.2 },
+  dragonBreath: { kind: 'cone', range: 6, cd: 2 },
+  leafage: { kind: 'proj', speed: 18, range: 12, cd: 1.2 },
+  fireBlast: { kind: 'proj', speed: 17, range: 15, cd: 3.4 },
+  dragonPulse: { kind: 'proj', speed: 19, range: 14, cd: 2.4 },
+  airSlash: { kind: 'proj', speed: 24, range: 13, cd: 1.6 },
+  fairyWind: { kind: 'cone', range: 6, cd: 1.4 },
 };
+
+// Golpes famosos corrigidos à mão para ficarem com a cara certa no tempo real.
+const FAMOSOS = {
+  // Lança-Chamas: jato contínuo de fogo (muitas chamas pequenas; o poder é dividido entre elas)
+  flamethrower: { kind: 'proj', stream: true, count: 6, speed: 21, range: 9, cd: 2.4 },
+  // Hidro Bomba: um jato só, grosso, lento de recarregar
+  hydroPump: { kind: 'proj', count: 1, speed: 16, range: 15, cd: 3.4, big: 2.2 },
+  // Terremoto: tremor forte em volta de quem usa
+  earthquake: { kind: 'quake', range: 7.5, cd: 4 },
+  // Surfar: uma onda que se espalha em volta
+  surf: { kind: 'wave', range: 7, cd: 3.2, surge: true },
+  muddyWater: { kind: 'wave', range: 6.5, cd: 3, surge: true },
+  // Investida: corrida curta contra o alvo
+  tackle: { kind: 'dash', range: 4, cd: 1.1 },
+  // Voar: sobe (fica intocável), depois mergulha no alvo
+  fly: { kind: 'dash', range: 9, cd: 4.5, eff: { charge: 0.7, semi: 'fly' } },
+  bounce: { kind: 'dash', range: 8, cd: 4.2, eff: { charge: 0.7, semi: 'fly' } },
+  // Cavar: some no chão e surge debaixo do alvo
+  dig: { kind: 'dash', range: 9, cd: 4.5, eff: { charge: 0.9, semi: 'dig' } },
+  dive: { kind: 'dash', range: 9, cd: 4.5, eff: { charge: 0.9, semi: 'dive' } },
+  phantomForce: { kind: 'dash', range: 9, cd: 4.8, eff: { charge: 0.9, semi: 'vanish' } },
+  // Proteção / Detectar: escudo de 1,2 s (eff.protect)
+  protect: { kind: 'self', cd: 6 },
+  detect: { kind: 'self', cd: 6 },
+  // Trovão cai do céu sobre o alvo; Relâmpago e raios são quase instantâneos
+  thunder: { kind: 'rain', range: 13, cd: 3.6 },
+  thunderbolt: { kind: 'proj', speed: 30, range: 13 },
+  iceBeam: { kind: 'proj', speed: 30, range: 14 },
+  hyperBeam: { kind: 'proj', speed: 30, range: 15, big: 2.2 },
+  solarBeam: { kind: 'proj', speed: 30, range: 15, big: 2 },
+  // sopros largos
+  blizzard: { kind: 'cone', range: 7, cd: 3.4 },
+  heatWave: { kind: 'cone', range: 6.5, cd: 2.8 },
+  // pedras caindo
+  rockSlide: { kind: 'rain', range: 12, cd: 2.6 },
+  stoneEdge: { kind: 'rain', range: 12, cd: 3.2 },
+  // fúria descontrolada: vários golpes em sequência
+  outrage: { kind: 'multi', hits: 3, range: 2.2, cd: 4.2 },
+  thrash: { kind: 'multi', hits: 3, range: 2.2, cd: 3.8 },
+  petalDance: { kind: 'multi', hits: 3, range: 2.2, cd: 4 },
+  // redemoinhos que prendem: área sobre o alvo
+  fireSpin: { kind: 'cloud', range: 10, cd: 4 },
+  whirlpool: { kind: 'cloud', range: 10, cd: 4 },
+  sandTomb: { kind: 'cloud', range: 10, cd: 4 },
+  infestation: { kind: 'cloud', range: 10, cd: 4 },
+  // chicotes alcançam longe
+  powerWhip: { kind: 'melee', range: 4.2, cd: 2.6 },
+  // investidas de corpo inteiro
+  bodySlam: { kind: 'dash', range: 5, cd: 2.4 },
+  extremeSpeed: { kind: 'dash', range: 9, cd: 2 },
+  // explosões em volta de quem usa
+  explosion: { kind: 'wave', range: 6, cd: 8 },
+  selfDestruct: { kind: 'wave', range: 5, cd: 7 },
+  // Prensa Dura (geração 9, sem flags na PokéAPI): golpe de contato
+  hardPress: { kind: 'melee', range: 1.9, cd: 2.2, flags: ['contact', 'protect'] },
+  // Ataque Veloz: estrelas que perseguem o alvo
+  swift: { kind: 'proj', count: 5, speed: 18, range: 13, cd: 1.8 },
+};
+
+const merge = (a, b) => {
+  const o = { ...a, ...b };
+  if (a?.eff || b?.eff) o.eff = { ...(a?.eff ?? {}), ...(b?.eff ?? {}) };
+  return o;
+};
+
+export const MOVES = {};
+for (const [id, g] of Object.entries(GOLPES)) {
+  const m = merge(merge(g, ANTIGOS[id]), FAMOSOS[id]);
+  m.id = id;
+  if (m.acc === null && m.cat !== 'status') m.homing = true;
+  m.aimSpread = m.acc == null ? 0 : Math.round((1 - m.acc) * 0.8 * 100) / 100;
+  if (!m.eff) delete m.eff;
+  MOVES[id] = m;
+}
+
+export const KINDS = ['proj', 'melee', 'multi', 'cone', 'dash', 'wave', 'quake', 'cloud', 'rain', 'self'];
+
+export function moveInfo(id) { return MOVES[id]; }
+
+// Poder por acerto. Golpes que nos jogos acertam uma vez só, mas aqui saem em vários projéteis ou golpes
+// (Lança-Chamas, Folha Navalha, Bolha, Ultraje…), dividem o poder entre eles. Golpes de vários acertos
+// de verdade (Projétil de Sementes, Chute Duplo) mantêm o poder oficial por acerto.
+export function powerPerHit(mv) {
+  const p = mv.power ?? 0;
+  const n = mv.kind === 'proj' ? mv.count ?? 1 : mv.kind === 'multi' ? mv.hits ?? 3 : 1;
+  if (n <= 1 || (mv.maxHits ?? 1) > 1) return p;
+  return Math.max(1, Math.round(p / n));
+}

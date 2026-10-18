@@ -1,6 +1,8 @@
 import * as PIXI from 'pixi.js';
 import { MOVES } from '../data/moves.js';
-import { effectiveness, TYPE_COLOR } from '../data/types.js';
+import { TYPE_COLOR } from '../data/types.js';
+import { resolveHit } from '../mechanics/damage.js';
+import { catchChance } from '../mechanics/capture.js';
 
 // Combate contínuo no próprio mapa: qualquer Pokémon pode atacar qualquer alvo a qualquer momento.
 // Lados: 'ally' (seu time + você) e 'wild'. Golpes de lados opostos se chocam no ar.
@@ -130,18 +132,16 @@ export class Combat {
     const g = this.g;
     if (t.isTrainer) { t.knock(dx * 220, dy * 220); g.fx.kick(0.25, 0.05); g.fx.burst(t.x, t.y - 10, typeColor(mv.type), 0.7); return; }
     if (mv.cat === 'status') { this.#status(user, t, mv); return; }
-    const L = user.mon.level, phys = mv.cat === 'phys';
-    const A = phys ? user.stat('atk') : user.stat('spa'), D = phys ? t.stat('def') : t.stat('spd');
-    const crit = Math.random() < 1 / 16;
-    let dmg = Math.floor(Math.floor((Math.floor((2 * L) / 5 + 2) * (mv.power ?? 40) * A) / D) / 50) + 2;
-    const eff = effectiveness(mv.type, t.mon.types);
-    if (user.mon.types.includes(mv.type)) dmg *= 1.5;
-    dmg *= eff * (crit ? 1.5 : 1) * (0.85 + Math.random() * 0.15) * DMG;
-    if (phys && user.mon.status === 'brn') dmg *= 0.5;
-    dmg = eff === 0 ? 0 : Math.max(1, Math.round(dmg));
+    // dano oficial (src/mechanics/damage.js) × ritmo do tempo real (DMG)
+    const r = resolveHit(user, t, { ...mv, id }, { pace: DMG });
+    const { eff, crit } = r, dmg = r.immune ? 0 : r.damage;
+    for (const n of r.notes) g.fx.number(t.x, t.y - 46, n, '#ffe6a0');
     this.hurt(t, dmg, user, { eff, crit, mv, dx, dy });
+    if (r.recoil) this.hurt(user, r.recoil, null, { silent: true });
+    if (r.heal) user.mon.hp = Math.min(user.mon.stats.hp, user.mon.hp + r.heal);
+    if (r.flinch) t.stun = Math.max(t.stun, 0.35);
     // efeitos secundários
-    const e = mv.eff ?? {};
+    const e = r.secondary ?? mv.eff ?? {};
     if (e.status && !t.mon.status && Math.random() < (e.chance ?? 0.1)) this.#applyStatus(t, e.status);
     if (e.flinch && Math.random() < e.flinch) t.stun = Math.max(t.stun, 0.35);
     if (e.drain) { const hp = Math.round(dmg * e.drain); user.mon.hp = Math.min(user.mon.stats.hp, user.mon.hp + hp); g.fx.number(user.x, user.y - 28, '+' + hp, '#7dff8a'); }
@@ -231,13 +231,9 @@ export class Combat {
     this.zones = this.zones.filter((z) => z.t > 0);
   }
 
-  // Poké Bola: chance pela vida restante, estado e se o alvo estava distraído
-  catchChance(e) {
-    const m = e.mon, max = m.stats.hp;
-    const rate = m.sp.catchRate ?? 45;
-    let a = ((3 * max - 2 * m.hp) * rate) / (3 * max);
-    if (m.status || e.stun > 0 || e.ai.state === 'sleep') a *= 2;
-    if (e.ai.state !== 'aggro' && e.ai.state !== 'flee') a *= 1.6; // não percebeu você
-    return Math.min(1, a / 255);
+  // Poké Bola: fórmula oficial (src/mechanics/capture.js) com o tipo de bola; pegar distraído ajuda
+  catchChance(e, ball = 'pokeBall') {
+    const unaware = e.ai.state !== 'aggro' && e.ai.state !== 'flee';
+    return catchChance(e.mon, ball, { unaware, asleep: e.ai.state === 'sleep', stunned: e.stun > 0, seconds: e.battleT, leadLevel: this.g.lead?.mon.level }).chance;
   }
 }
