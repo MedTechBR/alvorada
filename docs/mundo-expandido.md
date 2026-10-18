@@ -1422,7 +1422,7 @@ Relógio só aparecem depois da trama principal.
 | Espécie | Como | Onde | Nível | Nota |
 |---|---|---|---:|---|
 | Articuno (#144) | lendario | Cume do Vento Branco | 70 |  |
-| Zapdos (#145) | lendario | torre_vento (topo, em tempestade, com 8 insígnias) | 70 |  |
+| Zapdos (#145) | lendario | Torre do Vento (Mirante dos Ventos) (topo, em tempestade, com 8 insígnias) | 70 |  |
 | Moltres (#146) | lendario | Cratera do Tição | 70 |  |
 | Mewtwo (#150) | lendario | Gruta das Cataratas — Abismo do Silêncio | 80 |  |
 | Mew (#151) | evento | Ilha Miragem | 30 | na lua cheia, depois de registrar 150 espécies |
@@ -1439,7 +1439,7 @@ Relógio só aparecem depois da trama principal.
 | Latios (#381) | errante | Ilhas Gêmeas | 55 | ilha oeste |
 | Kyogre (#382) | lendario | Recife Grande — Fundo (mergulho) | 70 | caverna submersa no fim do recife |
 | Groudon (#383) | lendario | Vulcão Sentinela | 70 |  |
-| Rayquaza (#384) | lendario | torre_vento (céu alto, ao meio-dia) | 75 |  |
+| Rayquaza (#384) | lendario | Torre do Vento (Mirante dos Ventos) (céu alto, ao meio-dia) | 75 |  |
 | Jirachi (#385) | evento | Mirante dos Ventos | 30 | missão Desejo da Nina |
 | Deoxys (#386) | lendario | Cratera da Estrela | 70 | na noite de chuva de meteoros |
 | Uxie (#480) | lendario | Lago Congelado | 50 |  |
@@ -1541,10 +1541,10 @@ Pulseira Mega: Cidade Escarpa, missão A Pedra-Chave (Dona Pedrina lapida três 
 | blastoise-mega | blastoiseite | Estação Austral | missão O canto das Lapras |
 | beedrill-mega | beedrillite | Rota 2, Trilha das Paineiras | tesouro escondido |
 | pidgeot-mega | pidgeotite | Rota 1, Campos de Lúmen | tesouro escondido no ipê mais alto |
-| raichu-mega-x | raichuiteX | farol_coral (lanterna) | tesouro escondido da dungeon do tipo |
-| raichu-mega-y | raichuiteY | farol_coral (lanterna) | tesouro escondido da dungeon do tipo |
+| raichu-mega-x | raichuiteX | Farol Coral (Cidade Coral) (lanterna) | tesouro escondido da dungeon do tipo |
+| raichu-mega-y | raichuiteY | Farol Coral (Cidade Coral) (lanterna) | tesouro escondido da dungeon do tipo |
 | clefable-mega | clefableite | Ilha Miragem | tesouro |
-| alakazam-mega | alakazamite | observatorio_boreal | Dra. Hanna |
+| alakazam-mega | alakazamite | Observatório Boreal (Vila Geada) | Dra. Hanna |
 | victreebel-mega | victreebelite | Templo das Raízes — Átrio | tesouro escondido da dungeon do tipo |
 | slowbro-mega | slowbroite | Porto Espelho | Tia Jandira (o Doutor tem uma) |
 | gengar-mega | gengarite | Cemitério das Velas | tesouro escondido (noite) |
@@ -1558,9 +1558,9 @@ Pulseira Mega: Cidade Escarpa, missão A Pedra-Chave (Dona Pedrina lapida três 
 | mewtwo-mega-y | mewtwoiteY | Cidadela do Poente | 49 vitórias na Torre de Batalha |
 | meganium-mega | meganiumite | Templo das Raízes — Átrio | tesouro escondido da dungeon do tipo |
 | feraligatr-mega | feraligatrite | Templo das Marés — Nave Alta | tesouro escondido da dungeon do tipo |
-| ampharos-mega | ampharosite | farol_coral (lanterna) | tesouro |
+| ampharos-mega | ampharosite | Farol Coral (Cidade Coral) (lanterna) | tesouro |
 | steelix-mega | steelixite | Cidade Aurora | missão O Steelix de cristal |
-| scizor-mega | scizorite | megaloja_aurora | loja do 4º andar (₽50000) |
+| scizor-mega | scizorite | Megaloja Aurora (Cidade Aurora) | loja do 4º andar (₽50000) |
 | heracross-mega | heracrossite | Vila Sussurro | revanche da Lia |
 | skarmory-mega | skarmoryite | Mina Aurora — Nível 4 | tesouro escondido da dungeon do tipo |
 | houndoom-mega | houndoomite | Templo da Chama — Portal de Basalto | tesouro |
@@ -1576,7 +1576,7 @@ Pulseira Mega: Cidade Escarpa, missão A Pedra-Chave (Dona Pedrina lapida três 
 | manectric-mega | manectricite | Cidade Coral | revanche do Jonas |
 | sharpedo-mega | sharpedoite | Templo das Marés — Nave Afundada | tesouro |
 | camerupt-mega | cameruptite | Vila Termas | missão A montanha que anda |
-| altaria-mega | altariaite | torre_vento | revanche da Celeste |
+| altaria-mega | altariaite | Torre do Vento (Mirante dos Ventos) | revanche da Celeste |
 | banette-mega | banetteite | Vila Lamparina | revanche da Zélia |
 | chimecho-mega | chimechoite | Ruínas dos Vigias — Sala dos Murais | tesouro escondido da dungeon do tipo |
 | absol-mega | absolite | Vila Lamparina | missão Sina e Véspera |
@@ -1587,7 +1587,7 @@ Pulseira Mega: Cidade Escarpa, missão A Pedra-Chave (Dona Pedrina lapida três 
 | latias-mega | latiasite | Ilhas Gêmeas | tesouro |
 | latios-mega | latiosite | Ilhas Gêmeas | tesouro |
 | rayquaza-mega | rayquazaite | (não precisa de pedra: Rayquaza com Ascensão do Dragão) | golpe |
-| staraptor-mega | staraptorite | megaloja_aurora | tesouro escondido da dungeon do tipo |
+| staraptor-mega | staraptorite | Megaloja Aurora (Cidade Aurora) | tesouro escondido da dungeon do tipo |
 | lopunny-mega | lopunnyite | Cidade Campina | revanche do Tomé |
 | garchomp-mega | garchompite | Cidade Buriti | missão Campeão da areia |
 | garchomp-mega-z | garchompiteZ | Caminho do Zênite — Caverna | tesouro escondido da dungeon do tipo |
@@ -1603,7 +1603,7 @@ Pulseira Mega: Cidade Escarpa, missão A Pedra-Chave (Dona Pedrina lapida três 
 | audino-mega | audinoite | Vila Alvorada | a Mãe dá (a Dona Fofa usa a dela) |
 | scolipede-mega | scolipedeite | Templo das Raízes — Galerias Inundadas | tesouro escondido da dungeon do tipo |
 | scrafty-mega | scraftyite | Ilha do Véu | tesouro escondido da dungeon do tipo |
-| eelektross-mega | eelektrossite | farol_coral (lanterna) | tesouro escondido da dungeon do tipo |
+| eelektross-mega | eelektrossite | Farol Coral (Cidade Coral) (lanterna) | tesouro escondido da dungeon do tipo |
 | chandelure-mega | chandelureite | Cemitério das Velas | tesouro escondido da dungeon do tipo |
 | golurk-mega | golurkite | Ruínas de Pedra Pintada — Galeria da Areia | tesouro escondido da dungeon do tipo |
 | chesnaught-mega | chesnaughtite | Templo das Raízes — Átrio | tesouro escondido da dungeon do tipo |
@@ -1621,9 +1621,9 @@ Pulseira Mega: Cidade Escarpa, missão A Pedra-Chave (Dona Pedrina lapida três 
 | diancie-mega | diancieite | Fenda Prismática — Salão dos Espelhos | tesouro |
 | crabominable-mega | crabominableite | Forte Rochedo | tesouro escondido da dungeon do tipo |
 | golisopod-mega | golisopodite | Templo das Raízes — Galerias Inundadas | tesouro escondido da dungeon do tipo |
-| drampa-mega | drampaite | megaloja_aurora | tesouro escondido da dungeon do tipo |
-| magearna-mega | magearnaite | oficina_ernesto | Vô Ernesto |
-| magearna-original-mega | magearnaite | oficina_ernesto | Vô Ernesto |
+| drampa-mega | drampaite | Megaloja Aurora (Cidade Aurora) | tesouro escondido da dungeon do tipo |
+| magearna-mega | magearnaite | Oficina do Vô Ernesto (Cidade Aurora) | Vô Ernesto |
+| magearna-original-mega | magearnaite | Oficina do Vô Ernesto (Cidade Aurora) | Vô Ernesto |
 | zeraora-mega | zeraoraite | Rota 6, Ferrovia da Aurora | torre de transmissão |
 | falinks-mega | falinksite | Forte Rochedo | tesouro escondido da dungeon do tipo |
 | scovillain-mega | scovillainite | Templo das Raízes — Átrio | tesouro escondido da dungeon do tipo |
@@ -1633,7 +1633,7 @@ Pulseira Mega: Cidade Escarpa, missão A Pedra-Chave (Dona Pedrina lapida três 
 | tatsugiri-stretchy-mega | tatsugiriite | Caminho do Zênite — Caverna | tesouro escondido da dungeon do tipo |
 | baxcalibur-mega | baxcaliburite | Caminho do Zênite — Caverna | tesouro escondido da dungeon do tipo |
 
-Bracelete Dynamax: laboratorio, a Bia monta com as leituras do Prisma; dá a quem levar a ela a foto de uma Toca de Luz acesa (qualquer uma). Tocas comuns sorteiam da tabela de encontros da área (nível da área + 5). Tocas Gigantamax têm a forma fixa listada; as raras só acendem de noite ou com clima.
+Bracelete Dynamax: Laboratório do Prof. Jatobá (Vila Alvorada), a Bia monta com as leituras do Prisma; dá a quem levar a ela a foto de uma Toca de Luz acesa (qualquer uma). Tocas comuns sorteiam da tabela de encontros da área (nível da área + 5). Tocas Gigantamax têm a forma fixa listada; as raras só acendem de noite ou com clima.
 
 | Toca de Luz | Área | Gigantamax | Nota |
 |---|---|---|---|

@@ -472,7 +472,8 @@ const mdGin = ['| # | Ginásio | Líder | Tipo | Custo | Acesso | Equipe do líd
 const rebal = rebalancear.length ? ['| Área do mapa | Hoje (mapa) | Modelo |', '|---|---|---|', ...rebalancear.map((r) => `| ${r.id} | ${r.mapa.join('–')} | ${r.modelo.join('–')} |`)].join('\n') : 'Nenhuma.';
 const contagem = { selvagens: SELVAGEM.size, exclusivas: Object.keys(EXCLUSIVAS).filter((k) => /^\d+$/.test(k)).length, outro: LISTA.filter((e) => COMO.has(e.dex) && !SELVAGEM.has(e.dex)).length, sem: SEM.length };
 const mdCont = `- Espécies na lista nacional: **${LISTA.length}**; selvagens em pelo menos uma área: **${contagem.selvagens}**; exclusivas de uma área só: **${contagem.exclusivas}**; obtidas de outro jeito (evolução, presente, troca, fóssil, ovo, lendário, evento): **${contagem.outro}**; sem lugar: **${contagem.sem}**.\n- Formas regionais: **${Object.keys(FORMAS_OUT).length}** (sem lugar: ${FORMAS_SEM.length}); Mega: **${Object.keys(MEGA_OUT).length}** pedras; Gigantamax: **${Object.keys(GMAX_OUT).length}** formas em **${ESP.DYNAMAX.tocas.length}** tocas.\n- Áreas com selvagens: **${Object.keys(TABELAS).length}**; distâncias do núcleo: ${dist.fonte === 'mapa' ? 'medidas no mapa atual' : dist.fonte}.`;
-const nomeArea = (id) => AREA.get(id)?.nome ?? id;
+const PREDIO = new Map(CIDADES.flatMap((c) => c.predios.map((p) => [p.id, `${p.nome.replace(/ \(.*\)$/, '')} (${c.nome})`])));
+const nomeArea = (id) => AREA.get(id)?.nome ?? PREDIO.get(id) ?? id;
 const nomeEsp = (k) => (/^\d+$/.test(String(k)) ? `${SP.get(+k).nome} (#${k})` : `${SP.get(FORMA.get(k)?.dex)?.nome ?? k} (${k})`);
 const mdRec = (r) => r.replace(/^item:/, 'item ').replace(/^mt:/, 'MT ').replace(/^dinheiro:/, '₽').replace(/^pokemon:/, 'Pokémon #').replace(/^pedra-mega:/, 'Mega Pedra ').replace(/^chave:/, 'item-chave ').replace(/^tutor:/, 'tutor ');
 const mdCidades = CIDADES.map((c) => {
