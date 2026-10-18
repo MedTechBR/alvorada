@@ -12,7 +12,7 @@ const DIRS = [0, 1, 2, 4, 6]; // direita, baixo-direita, baixo, esquerda, cima
 const VEC = { 0: [1, 0], 1: [0.71, 0.71], 2: [0, 1], 4: [-1, 0], 6: [0, -1] };
 
 export async function montarias({ app, world, shadowTex, label, Z, q }) {
-  const CW = 92, CH = 100, PER = 12, COLS = 3;
+  const CW = 92, CH = +(q.get('ch') ?? 100), PER = +(q.get('por') ?? 12), COLS = +(q.get('cols') ?? 3);
   const story = Object.values(MOUNTS).map((m) => m.dex);
   let list = q.get('dex') ? q.get('dex').split(',').map(Number) : [...new Set([...story, ...Object.keys(MONTARIAS).map(Number)])];
   const pag = +(q.get('pag') ?? 0);

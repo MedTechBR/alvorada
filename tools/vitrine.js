@@ -73,4 +73,4 @@ if (MODO === 'humanos') humanos();
 else if (MODO === 'montarias') extra = await (await import('./vitrine-montarias.js')).montarias({ app, world, shadowTex, label, Z, q }); // montarias com o treinador
 else await pokemon();
 app.ticker.add((tk) => { const dt = Math.min(0.05, tk.deltaMS / 1000); frame(dt); extra?.(dt); });
-window.vit = { app, frame, shot: (n) => { app.renderer.render(app.stage); app.canvas.toBlob((b) => fetch('/__shot?n=' + n, { method: 'POST', body: b }), 'image/jpeg', 0.92); }, portraitOf, ready: true };
+window.vit = { app, frame, step: (dt = 1 / 60) => { frame(dt); extra?.(dt); }, shot: (n) => { frame(1 / 60); extra?.(1 / 60); app.renderer.render(app.stage); return new Promise((ok) => app.canvas.toBlob((b) => fetch('/__shot?n=' + n, { method: 'POST', body: b }).then(ok), 'image/jpeg', 0.92)); }, portraitOf, ready: true };

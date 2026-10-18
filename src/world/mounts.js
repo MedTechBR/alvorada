@@ -43,10 +43,10 @@ const FACE_A = { down: Math.PI / 2, up: -Math.PI / 2, left: Math.PI, right: 0 };
 const lerp = (a, b, k) => a + (b - a) * k;
 
 // escala da montaria: a mesma regra dos Pokémon (altura real comprimida); sem dados da espécie, usa a altura da tabela
-function mountScale(dex, set, h = 1) {
+function mountScale(dex, set, h = 1, minPx = 30) {
   if (SPECIES[dex]?.height) {
-    // montaria precisa ter porte para carregar o treinador (32 px): no mínimo ~30 px de altura
-    const top = set?.top || 24, min = Math.round((30 / top) * 4) / 4;
+    // montaria precisa ter porte para carregar o treinador (32 px): no mínimo ~30 px de altura (34 nas da tabela)
+    const top = set?.top || 24, min = Math.round((minPx / top) * 4) / 4;
     return Math.max(speciesScale(dex, set), min);
   }
   const sh = Math.min(80, 10 + 16 * Math.pow(h, 0.85));
@@ -88,7 +88,7 @@ export function mountConfig(kind, dex = null) {
 // pose em px do mundo: multiplica as medidas do sprite pela escala (só para as montarias da tabela)
 function scaledConfig(C, s) {
   const P = C.pose; if (!P) return C;
-  return { ...C, lift: P.lift * s, back: P.back * s, backV: P.back * s * 0.55 + (P.backV ?? 0) * s, topo: P.topo * s, anim: Math.round(22 + 20 * s) };
+  return { ...C, lift: P.lift * s, back: P.back * s, backV: (P.backV ?? 0) * s, topo: P.topo * s, anim: Math.round(22 + 20 * s) };
 }
 // direção do treinador sentado a partir das 8 direções do PMD (0 = direita, sentido horário)
 const RIDER_DIR = ['right', 'right', 'down', 'left', 'left', 'left', 'up', 'right'];
@@ -119,7 +119,8 @@ export class MountRig {
     if (!kind) { this.#hide(); this.ready = Promise.resolve(); return this.ready; }
     this.ready = loadPokemonSprites(C0.dex).then((set) => {
       if (this.key !== key) return;
-      this.set = set; this.scale = mountScale(C0.dex, set, C0.h); this.C = scaledConfig(C0, this.scale);
+      // quem voa com o treinador precisa de mais porte (40 px); as outras da tabela, 34 px
+      this.set = set; this.scale = mountScale(C0.dex, set, C0.h, C0.pose ? (C0.fly ? 40 : 34) : 30); this.C = scaledConfig(C0, this.scale);
     });
     return this.ready;
   }
@@ -159,8 +160,13 @@ export class MountRig {
     const k = o.k ?? 1, r4 = RIDER_DIR[this.dir];
     // de frente para a câmera, o treinador fica atrás do pescoço/cabeça da montaria
     const behind = C.behind ? C.behind.includes(this.dir) : this.dir >= 1 && this.dir <= 3; // Sneasler leva nas costas: de lado, ele fica na frente
-    // atrás da montaria e de frente para a câmera: o quadril não passa de 9 px abaixo do topo dela (cabeça e tronco aparecem)
-    if (C.topo != null && behind && cy > 0.3) sy = Math.min(sy, oy + (f.center.y * s - C.topo) - z + bob + 9);
+    if (C.topo != null) {
+      // de frente para a câmera e atrás dela: quadril de 5 a 10 px abaixo do topo da silhueta (pernas escondidas, tronco aparece)
+      const top = oy + (f.center.y * s - C.topo) - z + bob;
+      if (behind && cy > 0.9) sy = Math.max(top + 5, Math.min(sy, top + 10));
+      // nunca acima do sprite (quem senta na cabeça, visto de costas ou na diagonal)
+      if (f.box) sy = Math.max(sy, oy + f.box.y0 * s - z + bob + 6);
+    }
     const bi = this.view.getChildIndex(this.body), si = this.view.getChildIndex(sp_);
     if (behind !== bi < si) this.view.swapChildren(this.body, sp_);
     const b = this.body;

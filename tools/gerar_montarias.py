@@ -103,8 +103,16 @@ def estilo(dex, s, modos):
 COSTAS = {903, 461, 571, 428, 861, 282, 475, 214, 127, 212, 900, 740, 115}
 LOMBO = {6, 149, 635, 445, 697, 248, 306, 217, 553, 612, 460, 9, 160, 55, 195, 537}
 
-# Correções à mão da pose (px do sprite sem escala; somadas à medida): lift sobe, back recua, backV sobe olhando para baixo
-AJUSTE = {}
+# Pose revista à mão na vitrine (px do sprite sem escala; substituem a medida): lift = assento acima do centro,
+# back = recuo para trás do centro, topo = topo da silhueta de frente, backV = sobe mais olhando para baixo,
+# behind = direções (0 = direita, sentido horário) em que o treinador fica atrás do Pokémon
+AJUSTE = {
+    95: {'lift': 20, 'back': -9},    # Onix: vai em cima da cabeça (como no anime)
+    208: {'lift': 20, 'back': -14},  # Steelix: idem
+    130: {'lift': 30, 'back': -6},   # Gyarados: no alto do pescoço, atrás da cabeça
+    851: {'lift': -6, 'back': 15},   # Centiskorch: no corpo deitado, atrás da parte erguida
+    286: {'back': 6}, 620: {'back': 5},  # Breloom e Mienshao: a cauda puxava o assento para longe
+}
 
 # ---------------------------------------------------------------- medida do sprite
 ROW_RIGHT, ROW_DOWN = 2, 0   # linhas do PMD: 0 baixo, 2 direita
@@ -144,20 +152,27 @@ def medir(dex, est):
         lin = [x for x in range(F['w']) if F['a'][x, cy] > 40]
         tras = min(lin) if lin else cx - W // 3
         return {'lift': round(0.2 * (cy - y0)), 'back': max(2, round((cx - tras) * 0.75))}
-    # lombo: vale mais fundo do contorno perto do centro (atrás dele é mais provável)
+    # lombo: vale mais fundo do contorno de cima perto do centro (entre pescoço e garupa, ou entre asas e cabeça).
+    # Só conta o corpo ligado ao centro: em cada coluna, sobe a partir da linha do centro enquanto houver pixel.
+    def corrida(x):
+        if F['a'][x, cy] <= 40: return None
+        y = cy
+        while y > 0 and F['a'][x, y - 1] > 40: y -= 1
+        return y
+    R = [corrida(x) if 0 <= x < F['w'] else None for x in range(F['w'])]
     best = None
-    lo, hi = int(cx - 0.42 * W), int(cx + 0.18 * W)
-    pref = cx - 0.08 * W
+    lo, hi = int(cx - 0.3 * W), int(cx + 0.22 * W)
+    pref = cx - 0.05 * W
     for x in range(max(x0 + 1, lo), min(x1 - 1, hi) + 1):
-        js = [T[k] for k in range(x - 2, x + 3) if 0 <= k < F['w'] and T[k] is not None]
-        if len(js) < 3: continue
+        js = [R[k] for k in range(x - 2, x + 3) if 0 <= k < F['w'] and R[k] is not None]
+        if len(js) < 4: continue
         apoio = min(js)                       # o ponto mais alto sob o assento segura o treinador
-        if apoio > cy + 2: continue           # passou do corpo (vão entre pernas, cauda caída)
-        score = apoio - 0.12 * abs(x - pref)
+        score = apoio - 0.25 * abs(x - pref)
         if best is None or score > best[0]: best = (score, x, apoio)
     if not best: return {'lift': round(0.4 * (cy - y0)), 'back': 0}
     _, sx, sy = best
-    return {'lift': cy - (sy + 1), 'back': cx - sx}
+    # vista de 3/4 por cima: o assento fica no meio do lombo, abaixo da borda do contorno (como nas 5 da história)
+    return {'lift': round(0.45 * (cy - sy)), 'back': round(min(0.6 * (cx - sx), 0.18 * W))}
 
 def medir_baixo(dex):
     """olhando para baixo: topo da silhueta na coluna do centro (o treinador precisa aparecer por cima)"""
@@ -183,8 +198,7 @@ for dex, s in sorted(ESP.items()):
     b = medir_baixo(dex) or {'topo': 0}
     adj = AJUSTE.get(dex, {})
     e = {'m': [k for k in MODOS if k in modos], 'est': est,
-         'lift': p['lift'] + adj.get('lift', 0), 'back': p['back'] + adj.get('back', 0),
-         'topo': b['topo'] + adj.get('topo', 0)}
+         'lift': adj.get('lift', p['lift']), 'back': adj.get('back', p['back']), 'topo': adj.get('topo', b['topo'])}
     for k in ('backV', 'behind', 'sink'):
         if k in adj: e[k] = adj[k]
     tabela[dex] = e
