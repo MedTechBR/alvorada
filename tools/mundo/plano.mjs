@@ -12,19 +12,19 @@ export const ORIGEM = { mundo: 'alvorada', x: 297, y: 347, nome: 'Vila Alvorada 
 export const CUSTO = {
   correr: 30,      // lama funda, areia fofa, tocos (Mudbray e afins)
   nadar: 60,       // água profunda (Lapras e afins)
-  escalar: 250,    // paredão com trepadeira ou rachadura, paredes de gelo (Sneasler e afins)
+  escalar: 200,    // paredão com trepadeira ou rachadura, paredes de gelo (Sneasler e afins)
   voar: 300,       // só se chega pelo ar (picos, ilhas sem praia)
   mergulhar: 300,  // redemoinho escuro (Mantine e afins)
   neve: 200,       // neve funda (Wyrdeer e afins)
   escondido: 150,  // lugar secreto, sem placa nem trilha
   andar: 80,       // cada andar abaixo da entrada de uma dungeon
-  navio: 1500,     // travessia até o continente do Ocaso (a partir do Terminal de Cidade Coral)
+  navio: 1700,     // travessia até o continente do Ocaso (a partir do Terminal de Cidade Coral)
 };
 export const SINUOSIDADE = 1.25; // caminho real ≈ 1,25 × linha reta dentro das regiões ainda não desenhadas
 
 // Curva de dificuldade: custo (blocos) -> nível médio dos selvagens. Faixa de uma área = média ± 2.
-export const CURVA = [[0, 3], [100, 8], [200, 14], [300, 19], [450, 25], [600, 30], [800, 36], [1000, 41], [1300, 47],
-  [1700, 54], [2200, 63], [2800, 72], [3500, 80]];
+export const CURVA = [[0, 2], [100, 7], [200, 14], [300, 20], [450, 26], [600, 31], [800, 36], [1000, 41], [1300, 47],
+  [1700, 54], [2200, 62], [2800, 71], [3500, 80]];
 export const LARGURA_FAIXA = 2;  // nível médio ± 2
 export const TOLERANCIA = 4;     // diferença aceita entre a faixa declarada (mapa ou plano) e a do modelo
 
