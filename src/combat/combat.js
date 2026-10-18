@@ -119,7 +119,7 @@ export class Combat {
     user.charging = { slot, id, mv, kind, t: 0, W, ang, tx: target.x, ty: target.y, target, lockAt: W * 0.62, A: animFor(id) };
     user.lock = W + 0.05;
     user.play(this.pickAnim(user, ['Charge', 'Idle']), true);
-    this.sfx('warn', mv.type, 0.15);
+    this.sfx('warn', null, 0.35); // vários selvagens avisando juntos não viram um apito contínuo
     return true;
   }
   #updateCharging(e, dt) {

@@ -42,6 +42,7 @@ export class UI {
   async title() {
     this.state = 'title';
     document.body.classList.add('at-title');
+    this.g.audio?.music?.('title'); // toca assim que o navegador liberar o som (primeiro toque/tecla)
     const r = await new TitleScreen(this).run();
     document.body.classList.remove('at-title');
     const g = this.g, acc = r.account;
@@ -104,10 +105,10 @@ export class UI {
   // ---------- atalhos ----------
   say(lines, opts) { this.g.input?.taps.clear(); return this.dialog.say(lines, opts); }
   toast(t) { this.hud.toast(t); }
-  openMenu() { if (this.state !== 'play' || this.menu.isOpen) return; this.menu.open(); document.body.classList.add('menu-open'); }
+  openMenu() { if (this.state !== 'play' || this.menu.isOpen || this.dialog.open) return; this.menu.open(); document.body.classList.add('menu-open'); this.g.audio?.duck?.(0.45); }
   openOnline() { this.menu.close(); const u = this.g.net?.ui; if (u && !u.modalOpen) u.toggleMenu(); }
-  openPC() { this.menu.openPC(); document.body.classList.add('menu-open'); }
-  onMenuClosed() { document.body.classList.remove('menu-open'); this.hud.v = {}; this.hud.t = 0; }
+  openPC() { this.menu.openPC(); document.body.classList.add('menu-open'); this.g.audio?.duck?.(0.45); }
+  onMenuClosed() { document.body.classList.remove('menu-open'); this.g.audio?.duck?.(1); this.hud.v = {}; this.hud.t = 0; }
   partyChanged() { this.hud.v.party = null; this.hud.t = 0; this.hud.lead(); this.hud.moves(); }
 
   save(reason = 'auto') {
