@@ -1,4 +1,4 @@
-import { SPECIES, expForLevel } from '../data/species.js';
+import { SPECIES, expForLevel, speciesOf, isBattleForm } from '../data/species.js';
 import { MOVES } from '../data/moves.js';
 import { Mon } from '../data/mon.js';
 import { NATURES as NATURE_DATA } from '../data/natures.js';
@@ -27,7 +27,9 @@ export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&a
 // Devolve { ok: true, mon } com um Mon novo e limpo, ou { ok: false, why }
 export function validateMon(o) {
   if (!o || typeof o !== 'object') return { ok: false, why: 'dados vazios' };
-  if (!isInt(o.dex, 1, 2000) || !SPECIES[o.dex]) return { ok: false, why: 'espécie inexistente' };
+  if (!isInt(o.dex, 1, 1025) || !SPECIES[o.dex]) return { ok: false, why: 'espécie inexistente' };
+  // forma (campo opcional; sem ele = forma padrão): só formas que existem e não são de batalha (Mega, Gigantamax…)
+  if (o.form != null && !(typeof o.form === 'string' && Object.hasOwn(SPECIES[o.dex].forms, o.form) && !isBattleForm(o.dex, o.form))) return { ok: false, why: 'forma inexistente' };
   if (!isInt(o.level, 1, 100)) return { ok: false, why: 'nível fora de 1–100' };
   if (!Array.isArray(o.moves) || o.moves.length < 1 || o.moves.length > 4) return { ok: false, why: 'golpes inválidos' };
   if (o.moves.some((m) => typeof m !== 'string' || !Object.hasOwn(MOVES, m))) return { ok: false, why: 'golpe inexistente' };
@@ -36,7 +38,7 @@ export function validateMon(o) {
   if (o.nature != null && !NATURES.includes(String(o.nature).toLowerCase())) return { ok: false, why: 'natureza inválida' };
   if (o.status != null && !STATUS.includes(o.status)) return { ok: false, why: 'estado inválido' };
   if (o.nick != null && typeof o.nick !== 'string') return { ok: false, why: 'apelido inválido' };
-  const sp = SPECIES[o.dex];
+  const sp = speciesOf(o.dex, o.form ?? null);
   if (o.evs != null && (!Array.isArray(o.evs) || o.evs.length !== 6 || o.evs.some((v) => !isInt(v, 0, EV_STAT_MAX)) || o.evs.reduce((a, b) => a + b, 0) > EV_TOTAL_MAX)) return { ok: false, why: 'EVs fora do limite (252 por status, 510 no total)' };
   if (o.ability != null && !(sp.abilities.includes(o.ability) || sp.hidden === o.ability)) return { ok: false, why: 'habilidade que a espécie não tem' };
   if (o.item != null && !(typeof o.item === 'string' && itemInfo(o.item)?.hold)) return { ok: false, why: 'item equipado inválido' };
@@ -53,7 +55,7 @@ export function validateMon(o) {
     nature: o.nature != null ? String(o.nature).toLowerCase() : 'hardy', ability: o.ability ?? undefined,
     gender: o.gender !== undefined ? o.gender : undefined, shiny: o.shiny === true, friendship: o.friendship ?? undefined,
     item: o.item ?? null, ball: o.ball ?? 'pokeBall', metLevel: isInt(o.metLevel, 1, 100) ? o.metLevel : undefined,
-    nick: o.nick ? cleanText(o.nick, 12) || null : null, xp, moves: o.moves.slice(), status: o.status ?? null, uid,
+    nick: o.nick ? cleanText(o.nick, 12) || null : null, xp, moves: o.moves.slice(), status: o.status ?? null, uid, form: o.form ?? null,
   });
   // HP: inteiro entre 0 e o máximo recalculado
   mon.hp = Number.isInteger(o.hp) ? Math.max(0, Math.min(mon.stats.hp, o.hp)) : mon.stats.hp;
