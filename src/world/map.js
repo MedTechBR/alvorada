@@ -245,6 +245,7 @@ export class GameMap {
   tallAt(px, py) { return TALLS.has(this.at(Math.floor(px / T), Math.floor(py / T))); }
   // Empurra um círculo para fora dos blocos sólidos
   resolve(p, r, swim = false) {
+    if ((p.pouso || p.saltando) && this.g?.vivo?.resolvePouso(p, r)) return; // em cima de algo ou saltando (src/world/vivo.js)
     const x0 = Math.floor((p.x - r) / T), x1 = Math.floor((p.x + r) / T), y0 = Math.floor((p.y - r) / T), y1 = Math.floor((p.y + r) / T);
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
       if (!this.solidAt(x * T + 1, y * T + 1, swim)) continue;
