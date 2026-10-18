@@ -27,7 +27,7 @@ R.poly('tide', [[1010, 452], [1040, 450], [1060, 458], [1030, 464], [1006, 460]]
 R.ell('sand', 980, 468, 22, 5, 0.8, ['water'])      # banco de areia
 R.ell('sand', 880, 470, 12, 4, 0.8, ['water'])
 # praia: rochedos e coqueiros
-R.tree(842, 424, 250, 28, 0.05, ['coqueiro', 'coqueiro', 'palmeira'], ['sand'])
+R.tree(842, 424, 250, 28, 0.012, ['coqueiro', 'coqueiro', 'palmeira'], ['sand'])
 R.tree(842, 430, 250, 28, 0.012, ['boulder2', 'driftwood', 'skull'], ['sand'])
 
 # --- muralha a oeste (divisa com o Núcleo) e ao norte (divisa com a Cordilheira): paredão de cânion

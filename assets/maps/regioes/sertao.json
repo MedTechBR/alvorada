@@ -193,7 +193,7 @@
     {"id": "vila_siri", "nome": "Vila Siri", "spot": "ninho_vila_siri"}
   ],
   "trees": [
-    {"x": 842, "y": 424, "w": 250, "h": 28, "p": 0.05, "kinds": ["coqueiro", "coqueiro", "palmeira"], "on": ["sand"]},
+    {"x": 842, "y": 424, "w": 250, "h": 28, "p": 0.012, "kinds": ["coqueiro", "coqueiro", "palmeira"], "on": ["sand"]},
     {"x": 842, "y": 430, "w": 250, "h": 28, "p": 0.012, "kinds": ["boulder2", "driftwood", "skull"], "on": ["sand"]},
     {"x": 607, "y": 204, "w": 143, "h": 56, "p": 0.045, "kinds": ["mandacaru", "xiquexique", "cactus", "cactus"], "on": ["caatinga", "cracked"]},
     {"x": 607, "y": 204, "w": 143, "h": 56, "p": 0.006, "kinds": ["juazeiro"], "on": ["caatinga", "cracked"]},
