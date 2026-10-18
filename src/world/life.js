@@ -19,7 +19,8 @@ export class WorldLife {
   constructor(g) {
     this.g = g; this.map = g.map;
     this.hour = 9; this.totalHours = 0; this.daySeconds = 20 * 60; // um dia inteiro em 20 minutos
-    this.taken = new Set(); this.picked = new Map(); this.visited = new Set();
+    this.taken = new Set(); this.picked = new Map();
+    this.visitados = {}; this.visited = this.#setVisitados(this.map.id); // setores visitados, um conjunto por mundo
     // camadas
     this.air = new PIXI.Container(); g.world.addChild(this.air);              // bichinhos voando, folhas
     this.shade = new PIXI.Sprite(PIXI.Texture.WHITE); this.shade.blendMode = 'multiply';
@@ -75,8 +76,8 @@ export class WorldLife {
       this.#gates(dt);
       this.#push(dt);
     }
-    // setores visitados (mapa da região)
-    if (!room) { const cx = Math.floor(p.x / T / 16), cy = Math.floor(p.y / T / 16); if (cx + cy * 64 !== this.lastSector) { this.lastSector = cx + cy * 64; for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) this.visited.add(cx + i + (cy + j) * 64); } }
+    // setores visitados (mapa da região): índice cx + cy * (largura do mapa em setores)
+    if (!room) { const CW = map.CW, cx = Math.floor(p.x / T / 16), cy = Math.floor(p.y / T / 16), k = cx + cy * CW; if (k !== this.lastSector) { this.lastSector = k; for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) if (cx + i >= 0 && cx + i < CW && cy + j >= 0) this.visited.add(cx + i + (cy + j) * CW); } }
     this.minimap.update(dt);
   }
 
@@ -129,6 +130,7 @@ export class WorldLife {
     const goingUp = p.vy < -8 || mv.y < -0.4, goingDown = p.vy > 8 || mv.y > 0.4;
     if (w.dir === 'up' && !goingUp) return;
     if (w.dir === 'down' && !goingDown) return;
+    if (w.mundo) { this.warpCool = 1.5; g.viagem?.passagem(w); return; } // passagem para outro mundo (src/world/viagem.js)
     this.warpTo(w.to.x, w.to.y, w.face);
   }
   // teleporte com fade (também serve para a história levar o jogador a um ponto)
@@ -159,9 +161,12 @@ export class WorldLife {
 
   // ---------- itens no chão ----------
   #itemsInit() {
+    for (const s of this.itemSprites ?? []) { s.parent?.removeChild(s); s.sparkle.parent?.removeChild(s.sparkle); s.sparkle.destroy(); s.destroy(); }
     this.itemSprites = [];
+    // chave do item pego: "x,y" em Alvorada (como sempre foi) e "mundo:x,y" nos outros mundos
+    const pre = this.map.id && this.map.id !== 'alvorada' ? this.map.id + ':' : '';
     for (const it of this.map.items) {
-      const s = new PIXI.Sprite(SPR.itemball); s.anchor.set(0.5, 1); s.x = it.x * T + 8; s.y = it.y * T + 13; s.zIndex = s.y - 2; s.it = it; s.key = `${it.x},${it.y}`;
+      const s = new PIXI.Sprite(SPR.itemball); s.anchor.set(0.5, 1); s.x = it.x * T + 8; s.y = it.y * T + 13; s.zIndex = s.y - 2; s.it = it; s.key = `${pre}${it.x},${it.y}`;
       if (it.hidden) s.alpha = 0; // item escondido: só um brilho de vez em quando, bem de perto
       const sp = new PIXI.Sprite(SPR.sparkle); sp.anchor.set(0.5); sp.blendMode = 'add'; s.sparkle = sp; sp.x = s.x + 3; sp.y = s.y - 9;
       this.itemSprites.push(s);
@@ -383,8 +388,28 @@ export class WorldLife {
   #ripple(x, y) { const r = this.#sprite(SPR.ripple, x, y + 1); r.kind = 'ripple'; r.life = 0.8; this.air.addChildAt(r, 0); }
 
   // ---------- estado salvo e mapa da região ----------
-  saveState() { return { hour: this.hour, totalHours: this.totalHours, taken: [...this.taken], visited: [...this.visited], picked: [...this.picked] }; }
-  loadState(s) { if (!s) return; this.hour = s.hour ?? this.hour; this.totalHours = s.totalHours ?? 0; this.taken = new Set(s.taken ?? []); this.visited = new Set(s.visited ?? []); this.picked = new Map(s.picked ?? []); }
+  // visitados de cada mundo: { alvorada: [...], ocaso: [...] } (v: 2). O formato antigo (um array com cx + cy * 64)
+  // é convertido para a largura de hoje.
+  saveState() { const vis = {}; for (const [k, v] of Object.entries(this.visitados)) vis[k] = [...v]; return { v: 2, hour: this.hour, totalHours: this.totalHours, taken: [...this.taken], visited: vis, picked: [...this.picked] }; }
+  loadState(s) {
+    if (!s) return;
+    this.hour = s.hour ?? this.hour; this.totalHours = s.totalHours ?? 0; this.taken = new Set(s.taken ?? []); this.picked = new Map(s.picked ?? []);
+    this.visitados = {};
+    if (Array.isArray(s.visited)) this.visitados.alvorada = new Set(s.visited.map((i) => (i % 64) + Math.floor(i / 64) * Math.ceil(1200 / 16)));
+    else for (const [k, v] of Object.entries(s.visited ?? {})) this.visitados[k] = new Set(v);
+    this.visited = this.#setVisitados(this.map.id); this.lastSector = null;
+  }
+  #setVisitados(id) { return (this.visitados[id ?? 'alvorada'] ??= new Set()); }
+  // outro mundo montado (map.carregar): moradores, itens, bichinhos e minimapa do mundo novo
+  trocarMapa() {
+    const g = this.g;
+    this.map = g.map; this.visited = this.#setVisitados(this.map.id); this.lastSector = null;
+    for (const c of this.critters) { c.shadow?.destroy(); c.destroy(); } this.critters = [];
+    for (const n of this.people?.list ?? []) n.destroy?.(); for (const q of this.people?.pets ?? []) q.view?.destroy({ children: true });
+    this.people = new People(g, this.map, this.map.peopleDefs ?? [], this.map.petDefs ?? []);
+    this.#itemsInit();
+    this.minimap.trocarMapa(); this.lightT = 0;
+  }
   renderRegionMap(canvas, opts) { return this.minimap.renderRegionMap(canvas, opts); }
   get spots() { return this.map.spots; }
 }
