@@ -5,6 +5,7 @@ const KEYS = {
   KeyW: 'up', ArrowUp: 'up', KeyS: 'down', ArrowDown: 'down', KeyA: 'left', ArrowLeft: 'left', KeyD: 'right', ArrowRight: 'right',
   ShiftLeft: 'run', ShiftRight: 'run', Space: 'dodge', KeyE: 'act', Enter: 'act', KeyQ: 'ball', Tab: 'swap', KeyF: 'feed',
   Digit1: 'm0', Digit2: 'm1', Digit3: 'm2', Digit4: 'm3', Escape: 'menu', KeyM: 'menu', F3: 'perf',
+  KeyB: 'catch', KeyR: 'recall', Equal: 'zoomIn', NumpadAdd: 'zoomIn', Minus: 'zoomOut', NumpadSubtract: 'zoomOut',
 };
 
 export class Input {
@@ -27,6 +28,17 @@ export class Input {
     canvas.addEventListener('mousemove', (e) => { this.mouse.x = e.clientX; this.mouse.y = e.clientY; this.mouse.inside = true; this.usingPad = false; });
     canvas.addEventListener('mousedown', (e) => { if (e.button === 0) this.taps.add('m0'); if (e.button === 2) this.taps.add('m1'); });
     canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    // zoom: roda do mouse e pinça com dois dedos
+    this.zoomDelta = 0;
+    canvas.addEventListener('wheel', (e) => { e.preventDefault(); this.zoomDelta += e.deltaY > 0 ? -1 : 1; }, { passive: false });
+    let pinch = null;
+    canvas.addEventListener('touchstart', (e) => { if (e.touches.length === 2) pinch = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); }, { passive: true });
+    canvas.addEventListener('touchmove', (e) => {
+      if (e.touches.length !== 2 || !pinch) return;
+      const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      if (d > pinch * 1.25) { this.zoomDelta += 1; pinch = d; } else if (d < pinch / 1.25) { this.zoomDelta -= 1; pinch = d; }
+    }, { passive: true });
+    canvas.addEventListener('touchend', () => { pinch = null; }, { passive: true });
     if (IS_TOUCH) this.#touch();
   }
 

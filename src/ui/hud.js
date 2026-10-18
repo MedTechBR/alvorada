@@ -144,10 +144,28 @@ export class Hud {
 
   moves() {
     const g = this.g, m = g.party[g.leadIdx];
-    const ids = m ? m.moves.join(',') : '';
+    const trainer = g.mode !== 'pokemon';
+    const ids = (trainer ? 'T:' + (m?.name ?? '') : 'P:') + (m ? m.moves.join(',') : '');
     if (ids === this.v.moves) return;
     this.v.moves = ids;
     this.v.cds = null;
+    // modo treinador: ações de enviar, capturar e escolher (no celular os botões de golpe viram essas ações)
+    if (trainer) {
+      $('moves').innerHTML = IS_TOUCH || !m ? '' :
+        `<div class="mv hint"><b>Enviar ${esc(m.name)}</b><small>joga a Poké Bola dele</small><kbd>Q</kbd></div>` +
+        `<div class="mv hint"><b>Capturar</b><small>Poké Bola de captura</small><kbd>B</kbd></div>` +
+        `<div class="mv hint"><b>Escolher</b><small>próximo da equipe</small><kbd>Tab</kbd></div>` +
+        `<div class="mv hint"><b>Zoom</b><small>roda do mouse</small><kbd>+ −</kbd></div>`;
+      const labels = [m ? `Enviar<br>${esc(m.name)}` : '', 'Capturar', 'Escolher', ''];
+      for (const b of document.querySelectorAll('.tb.move')) {
+        const i = +b.dataset.slot;
+        b.innerHTML = labels[i] ? `<span>${labels[i]}</span>` : '';
+        b.style.setProperty('--tc', i === 0 ? '#e8584a' : i === 1 ? '#3a8ad8' : '#8a8a8a');
+        b.style.visibility = labels[i] ? 'visible' : 'hidden';
+      }
+      this.cdEls = null;
+      return;
+    }
     const keys = ['1', '2', '3', '4'];
     $('moves').innerHTML = IS_TOUCH || !m ? '' : m.moves.map((id, i) => {
       const mv = MOVES[id];
