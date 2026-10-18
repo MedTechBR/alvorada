@@ -1,0 +1,681 @@
+{
+ "1": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0001"
+ },
+ "2": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0002"
+ },
+ "3": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0003"
+ },
+ "4": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0004"
+ },
+ "5": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0005"
+ },
+ "6": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0006"
+ },
+ "7": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0007"
+ },
+ "8": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0008"
+ },
+ "9": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0009"
+ },
+ "10": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0010"
+ },
+ "11": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0011"
+ },
+ "12": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0012"
+ },
+ "13": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0013"
+ },
+ "14": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0014"
+ },
+ "15": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0015"
+ },
+ "16": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0016"
+ },
+ "17": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0017"
+ },
+ "19": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0019"
+ },
+ "20": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0020"
+ },
+ "21": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0021"
+ },
+ "25": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0025"
+ },
+ "41": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0041"
+ },
+ "48": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0048"
+ },
+ "52": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0052"
+ },
+ "54": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0054"
+ },
+ "56": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0056"
+ },
+ "59": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0059"
+ },
+ "63": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0063"
+ },
+ "66": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0066"
+ },
+ "74": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0074"
+ },
+ "79": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0079"
+ },
+ "92": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0092"
+ },
+ "95": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0095"
+ },
+ "123": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0123"
+ },
+ "129": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0129"
+ },
+ "130": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0130"
+ },
+ "133": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0133"
+ },
+ "167": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0167"
+ },
+ "179": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0179"
+ },
+ "183": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0183"
+ },
+ "194": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0194"
+ },
+ "198": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0198"
+ },
+ "200": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0200"
+ },
+ "204": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0204"
+ },
+ "214": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0214"
+ },
+ "215": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0215"
+ },
+ "216": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0216"
+ },
+ "227": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0227"
+ },
+ "228": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0228"
+ },
+ "234": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0234"
+ },
+ "246": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0246"
+ },
+ "278": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0278"
+ },
+ "280": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0280"
+ },
+ "283": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0283"
+ },
+ "285": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0285"
+ },
+ "349": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0349"
+ },
+ "359": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0359"
+ },
+ "396": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0396"
+ },
+ "403": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0403"
+ },
+ "406": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0406"
+ },
+ "415": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0415"
+ },
+ "417": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0417"
+ },
+ "418": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0418"
+ },
+ "422": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0422"
+ },
+ "425": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0425"
+ },
+ "427": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0427"
+ },
+ "443": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0443"
+ },
+ "447": {
+  "faltou": [
+   "Shoot",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0447"
+ },
+ "548": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0548"
+ },
+ "550": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0550"
+ },
+ "570": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0570"
+ },
+ "590": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0590"
+ },
+ "607": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0607"
+ },
+ "628": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0628"
+ },
+ "656": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0656"
+ },
+ "659": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0659"
+ },
+ "664": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0664"
+ },
+ "701": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0701"
+ },
+ "708": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0708"
+ },
+ "734": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0734"
+ },
+ "744": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0744"
+ },
+ "750": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0750"
+ },
+ "821": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0821"
+ },
+ "903": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0903"
+ },
+ "915": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0915"
+ },
+ "926": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0926"
+ }
+}

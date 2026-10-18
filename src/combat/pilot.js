@@ -119,7 +119,7 @@ export class Pilot {
     p.speed = Math.hypot(p.vx, p.vy);
     if (p.speed > 10) p.dir = dir4(p.vx, p.vy); else if (d > 1) p.dir = dir4(dx, dy);
     const step = p.speed > 10 ? Math.floor(p.t * (p.speed > 90 ? 11 : 7.5)) % 4 : 0;
-    p.body.texture = p.frames[p.dir][step];
+    p.body.texture = ((p.speed > 90 ? p.frames.run : p.frames.walk) ?? p.frames)[p.dir][step];
     p.body.alpha = p.iframes > 0 && Math.sin(p.t * 40) > 0 ? 0.5 : 1;
     p.view.x = Math.round(p.x); p.view.y = Math.round(p.y); p.view.zIndex = p.y;
     return true;

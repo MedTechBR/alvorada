@@ -30,8 +30,19 @@ export class PokeEntity {
     this.bar = new PIXI.Graphics();
     this.view.addChild(this.shadow, this.body, this.bar);
     this.r = 6;
-    this.ready = loadPokemonSprites(mon.dex).then((set) => { this.set = set; this.r = Math.max(5, Math.min(18, set.size * 0.22)) * (this.isAlpha ? 1.3 : 1); this.shadow.scale.set(0.6 + set.shadow * 0.35); });
+    this.ready = loadPokemonSprites(mon.dex).then((set) => { this.set = set; this.r = Math.max(5, Math.min(18, set.size * 0.22)) * (this.isAlpha ? 1.3 : 1); this.shadow.scale.set(...(set.shadowScale ?? [1, 1])); });
   }
+
+  // Ponto de onde sai um golpe (boca ou mão) no quadro atual, em coordenadas do mundo.
+  // Devolve { x, y, h }: (x, y) = posição no chão abaixo da boca; h = altura da boca acima do chão (px).
+  emitPoint(kind = 'mouth') {
+    const f = this.f, s = this.scale ?? 1;
+    const p = f ? (kind === 'hand' ? f.hand : f.mouth) : { x: 0, y: -(this.set?.top ?? 16) * 0.6 };
+    const lift = Math.max(0, -p.y * s * 0.75) + this.z;  // parte da altura vira profundidade (vista 3/4)
+    return { x: this.x + p.x * s, y: this.y + p.y * s + lift - this.z, h: lift };
+  }
+  // altura do centro do corpo acima do chão (px de mundo)
+  get midH() { return (this.set?.top ?? 16) * 0.5 * (this.scale ?? 1) + this.z; }
 
   get alive() { return !this.dead && this.mon.hp > 0; }
   stat(k) { const s = this.stages[k] ?? 0; return (this.mon.stats[k] ?? 10) * (s >= 0 ? (2 + s) / 2 : 2 / (2 - s)); }
@@ -82,8 +93,9 @@ export class PokeEntity {
     }
     const f = frameOf(this.set, this.anim, this.dir, this.animT * (this.anim === 'Walk' ? Math.max(0.7, Math.hypot(this.vx, this.vy) / 45) : 1), this.animLoop);
     if (!this.animLoop && f.done && !this.dead) this.play('Idle', true);
-    this.lastFrame = f;
+    this.lastFrame = f; this.f = f;
     this.body.texture = f.tex;
+    if (f.ax != null) this.body.anchor.set(f.ax, f.ay); // o ponto do chão do quadro fica na posição da entidade
     // posição na tela (y-sort pelo pé)
     this.view.x = Math.round(this.x); this.view.y = Math.round(this.y);
     let sx = 1, sy = 1, rot = 0, a = this.alpha;
@@ -112,8 +124,12 @@ export class PokeEntity {
     this.body.scale.set(sx, sy);
     this.body.rotation = rot;
     const hide = this.alt?.mode;
-    this.body.y = -this.set.size * 0.28 * (rot && !this.dead ? 1 : sy) - this.z / sc + (hide === 'dive' ? 6 : 0) + (this.dead ? this.set.size * 0.1 * Math.min(1, (this.faintT ?? 0) * 3) : 0);
-    this.shadow.y = 0; this.shadow.alpha = 0.9 - Math.min(0.6, this.z / 40); this.shadow.scale.set((0.6 + this.set.shadow * 0.35) * (1 - Math.min(0.45, this.z / 120)));
+    // giro no ar acontece em volta do meio do corpo; no chão, em volta dos pés
+    const mid = this.spinT > 0 || this.wheelT > 0 ? (this.set.top ?? 16) * 0.5 : 0;
+    this.body.y = -this.z / sc - mid + (hide === 'dive' ? 4 : 0);
+    if (mid && f.oy != null) this.body.anchor.set(f.ax, (f.oy - mid) / (f.tex.frame.height || 1));
+    const sk = 1 - Math.min(0.45, this.z / 120), ss = this.set.shadowScale ?? [1, 1];
+    this.shadow.y = 0; this.shadow.alpha = 0.9 - Math.min(0.6, this.z / 40); this.shadow.scale.set(ss[0] * sk, ss[1] * sk);
     // cores: clarão branco, vermelho do dano, paralisia, carga do golpe
     const white = this.flashW > 0 || (this.charging && this.charging.t > this.charging.W - 0.22 && Math.sin(this.animT * 60) > 0);
     const want = white ? 1 : 0;
@@ -133,7 +149,7 @@ export class PokeEntity {
     // barra de vida (selvagens atingidos e o seu Pokémon em combate)
     this.bar.clear();
     if ((this.hpShow > 0 || this.side === 'wild' && this.mon.hp < this.mon.stats.hp) && this.alive && !hide) {
-      const w = this.isAlpha ? 26 : 22, k = this.mon.hp / this.mon.stats.hp, y = (-this.set.size * 0.55 - 6) - this.z / sc;
+      const w = this.isAlpha ? 26 : 22, k = this.mon.hp / this.mon.stats.hp, y = -(this.set.top ?? 16) - 5 - this.z / sc;
       this.bar.rect(-w / 2 - 1, y - 1, w + 2, 5).fill(this.isAlpha ? 0x5a0a0a : 0x1b1b1b);
       this.bar.rect(-w / 2, y, w * k, 3).fill(k > 0.5 ? 0x4cd06a : k > 0.2 ? 0xf2c94c : 0xef5b4b);
     }
@@ -145,12 +161,12 @@ export class PokeEntity {
       const glow = new PIXI.Sprite(this.g.fx.T.glow); glow.anchor.set(0.5); glow.tint = 0xff2a1a; glow.blendMode = 'add'; glow.alpha = 0.7; glow.scale.set(0.6, 0.35); this.eyes.addChild(glow);
       this.view.addChild(this.eyes);
     }
-    const fw = this.lastFrame?.tex?.frame?.width ?? 24, fh = this.lastFrame?.tex?.frame?.height ?? 24;
+    const f = this.f, hd = f?.head ?? { x: 0, y: -(this.set.top ?? 16) * 0.8 };
     const ca = Math.cos(this.angle), sa = Math.sin(this.angle);
     const front = sa > -0.35; // de costas não mostra os olhos
-    this.eyes.visible = front && this.flashW <= 0;
-    const cx = this.body.x + ca * fw * 0.12, cy = this.body.y - fh * 0.12 + Math.max(0, -sa) * 2;
-    const sep = 1.6 + Math.abs(sa) * 1.2;
+    this.eyes.visible = front && this.flashW <= 0 && !this.spinT;
+    const cx = hd.x + ca * 1.5, cy = hd.y + 1 + this.body.y;
+    const sep = 1.4 + Math.abs(sa) * 1.2;
     this.eyes.children[0].position.set(cx - sep, cy); this.eyes.children[1].position.set(cx + sep, cy);
     this.eyes.children[2].position.set(cx, cy); this.eyes.children[2].alpha = 0.5 + 0.3 * Math.sin(this.animT * 5);
     if (Math.random() < dt * 6) this.g.fx.emit(this.x + (Math.random() - 0.5) * this.r * 2, this.y - 2, { tex: 'glow', color: 0xff3a2a, size: 2.5, n: 1, speed: 4, vz: 30, life: 0.7, alpha: 0.7 });

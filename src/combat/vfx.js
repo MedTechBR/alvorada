@@ -237,7 +237,7 @@ export class Vfx {
   // ---------- corpo a corpo ----------
   melee(user, mv, id, dx, dy, reach, i = 0) {
     const fx = this.fx, c = typeHex(mv.type), style = meleeStyle(id);
-    const a = Math.atan2(dy, dx), cy = user.y - (user.set?.size ?? 24) * 0.22;
+    const a = Math.atan2(dy, dx), cy = user.y - (user.midH ?? 12);
     const x = user.x + dx * reach * 0.75, y = cy + dy * reach * 0.6;
     const flip = i % 2 ? -1 : 1;
     switch (style) {
@@ -328,7 +328,7 @@ export class Vfx {
   // ---------- investida: rastro ----------
   dash(u, mv, id, dt) {
     u.ghostT = (u.ghostT ?? 0) - dt;
-    const t = mv.type, c = typeHex(t), x = u.x, y = u.y - (u.set?.size ?? 24) * 0.25;
+    const t = mv.type, c = typeHex(t), x = u.x, y = u.y - (u.midH ?? 12);
     if (u.ghostT <= 0) { u.ghostT = 0.03; this.afterimage(u, c, 0.5, 0.22); }
     const R = (rate) => Math.floor(dt * rate + Math.random());
     if (t === 'fire') { for (let k = 0; k < R(80); k++) { const a = Math.random() * TAU; this.E(x + Math.cos(a) * u.r * 1.2, y + Math.sin(a) * u.r, { frames: 'flame', n: 1, speed: 10, life: 0.3, scale: 1, end: 0.3, add: true, vz: 20 }); } }

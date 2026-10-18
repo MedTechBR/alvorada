@@ -69,15 +69,14 @@ export class Combat {
     return out;
   }
   enemiesOf(e) { return this.targetsOf(e); }
-  centerY(e) { return e.isTrainer ? e.y - 10 : e.y - (e.set?.size ?? 24) * 0.28 * (e.view?.scale?.y ?? 1) - (e.z ?? 0); }
+  centerY(e) { return e.isTrainer ? e.y - 10 : e.y - (e.midH ?? 12); }
 
   // ponto de saída do golpe: usa o ponto da boca do quadro, se o sprite trouxer, senão estima
-  mouth(user, dx, dy) {
-    const f = user.lastFrame, m = f?.mouth ?? f?.emit ?? f?.point;
-    const sc = user.view?.scale?.x ?? 1;
-    if (m && Number.isFinite(m.x)) return { x: user.x + m.x * sc, y: user.y + (user.body?.y ?? 0) * sc + m.y * sc };
-    const sz = (user.set?.size ?? 24) * sc;
-    return { x: user.x + dx * (user.r * 0.9 + 2), y: user.y - sz * 0.32 - (user.z ?? 0) + dy * user.r * 0.4 };
+  mouth(user, dx, dy, kind = 'mouth') {
+    const ep = user.emitPoint?.(kind);
+    if (ep) return { x: ep.x + dx * 2, y: ep.y - ep.h + dy * 2, gy: ep.y + dy * 2, h: ep.h };
+    const h = (user.midH ?? 12) + 2;
+    return { x: user.x + dx * (user.r * 0.9 + 2), y: user.y - h + dy * user.r * 0.4, gy: user.y, h };
   }
   pickAnim(user, list) { for (const a of list) if (user.set?.anims?.[a]) return a; return 'Attack'; }
   sfx(name, type, gap = 0.035) {
@@ -230,10 +229,10 @@ export class Combat {
   #projectile(user, mv, id, dx, dy, color, aimT, i) {
     const big = Math.max(1, (mv.power ?? 40) / 55);
     const look = this.vfx.head(mv, id);
-    const m = this.mouth(user, dx, dy);
-    const h0 = user.y - m.y;
+    const m = this.mouth(user, dx, dy, mv.cat === 'phys' ? 'hand' : 'mouth');
+    const h0 = m.h;
     const sp = (mv.speed ?? 15) * M;
-    const p = { user, side: user.side, mv, id, x: m.x, gy: user.y + dy * 2, h: h0, hT: aimT ? (aimT.y - this.centerY(aimT)) : Math.max(6, h0 * 0.8),
+    const p = { user, side: user.side, mv, id, x: m.x, gy: m.gy, h: h0, hT: aimT ? (aimT.y - this.centerY(aimT)) : Math.max(6, h0 * 0.8),
       vx: dx * sp, vy: dy * sp, left: this.range(mv), color, r: 4 + 2 * big, power: mv.power ?? 30, big, look, head: this.#head(look), t: 0, i,
       wob: id === 'bubble' ? Math.random() * TAU : id === 'razorLeaf' ? (i - 1) * 2.2 : 0 };
     p.y = p.gy - p.h;
@@ -609,14 +608,14 @@ export class Combat {
     return 'hit';
   }
   hit(user, t, mv, id, dx = 0, dy = 0) { return this.strike(user, t, mv, id, dx, dy, {}); }
-  #missText(t, s) { if ((t.missT ?? 0) > this.g.time) return; t.missT = this.g.time + 0.35; this.g.fx.number(t.x, t.y - (t.set?.size ?? 20) * 0.6 - 6, s, '#d8f0ff'); }
+  #missText(t, s) { if ((t.missT ?? 0) > this.g.time) return; t.missT = this.g.time + 0.35; this.g.fx.number(t.x, t.y - (t.set?.top ?? 16) * (t.scale ?? 1) - (t.z ?? 0) - 10, s, '#d8f0ff'); }
 
   // dano + reação: recuo proporcional, clarão branco, giro no ar, números e letreiros
   hurt(t, dmg, by, { eff = 1, crit = false, mv = null, dx = 0, dy = 0, silent = false, knock = 1, quiet = false, note = null } = {}) {
     const g = this.g;
     t.mon.hp = Math.max(0, t.mon.hp - dmg);
     t.hpShow = 3;
-    const ty = t.y - (t.set?.size ?? 24) * 0.5 * (t.view?.scale?.y ?? 1) - t.z - 6;
+    const ty = t.y - (t.set?.top ?? 16) * (t.scale ?? 1) - t.z - 10;
     if (!silent) {
       const pw = mv?.power ?? 40;
       const power = Math.min(2.4, 0.55 + pw / 70) * (eff > 1 ? 1.3 : 1) * (crit ? 1.25 : 1);

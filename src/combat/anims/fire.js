@@ -22,7 +22,7 @@ export default {
   flameWheel: { // Roda de Fogo: o usuário vira uma roda de chamas
     dashStart: (v, u) => { u.wheelT = 0.45; },
     dash: (v, u, dt) => {
-      const y = u.y - (u.set?.size ?? 24) * 0.28 - u.z;
+      const y = u.y - (u.midH ?? 12);
       for (let i = R(dt, 140); i > 0; i--) { const a = v.g.time * 18 + Math.random() * 6.28, r = u.r + 4; v.E(u.x + Math.cos(a) * r, y + Math.sin(a) * r, { frames: 'flame', n: 1, speed: 20, dir: a + 1.57, spread: 0.2, life: 0.22, scale: 1, end: 0.4, add: true }); }
       if ((u.ghostT = (u.ghostT ?? 0) - dt) <= 0) { u.ghostT = 0.04; v.afterimage(u, 0xff7a2a, 0.5, 0.2); }
     },

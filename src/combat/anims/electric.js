@@ -1,6 +1,6 @@
 import { D, H, TR, IM, ME, SELF, DRAW, R } from './kit.js';
 
-const sparkAura = (rate = 30) => (v, u, dt) => { const y = u.y - (u.set?.size ?? 24) * 0.28 - u.z; if (Math.random() < dt * rate) { const a = Math.random() * 6.28; v.fx.bolt(u.x, y, u.x + Math.cos(a) * (u.r + 8), y + Math.sin(a) * (u.r + 6), 0xffe23a, 0.08, { amp: 3 }); } v.E(u.x, y, { tex: 'spark', color: 0xfff27a, n: R(dt, 30), speed: 50, life: 0.15, scale: 0.6, jitter: u.r }); };
+const sparkAura = (rate = 30) => (v, u, dt) => { const y = u.y - (u.midH ?? 12); if (Math.random() < dt * rate) { const a = Math.random() * 6.28; v.fx.bolt(u.x, y, u.x + Math.cos(a) * (u.r + 8), y + Math.sin(a) * (u.r + 6), 0xffe23a, 0.08, { amp: 3 }); } v.E(u.x, y, { tex: 'spark', color: 0xfff27a, n: R(dt, 30), speed: 50, life: 0.15, scale: 0.6, jitter: u.r }); };
 
 // Elétrico
 export default {
