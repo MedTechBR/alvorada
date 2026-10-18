@@ -84,8 +84,15 @@ async function caso(b, nome, rodada) {
     })()`);
     if (!String(ok).startsWith('ok')) { console.log(nome, ok); await p.close(); return null; }
   } else {
-    const r = await p.ev(`(() => { const x = falar('${C.falar}'); return typeof x === 'string' ? x : 'falando'; })()`);
-    if (r !== 'falando') { console.log(nome, 'não deu para falar:', r); }
+    // a primeira conversa pode ser outra cena (chegada, apresentação): fala de novo até a luta começar
+    for (let k = 0; k < 4; k++) {
+      const r = await p.ev(`(() => { const x = falar('${C.falar}'); return typeof x === 'string' ? x : 'falando'; })()`);
+      if (r !== 'falando') console.log(nome, 'não deu para falar:', r);
+      const ok = await until(() => p.ev('!!window.game.story.battle || (!window.game.story.busy && !window.game.story.roteiro.rodando && !window.game.ui.dialog?.open)'), 60000, 400);
+      await sleep(600);
+      if (await p.ev('!!window.game.story.battle')) break;
+      void ok;
+    }
   }
   const comecou = await until(() => p.ev('!!window.game.story.battle?.arena'), 60000, 300);
   if (!comecou) { console.log(nome, 'a luta com arena não começou', await p.ev('JSON.stringify({b: !!window.game.story.battle, falas: window.falas.slice(-6)})')); await p.close(); return null; }
@@ -115,7 +122,7 @@ async function caso(b, nome, rodada) {
   return { nome, rodada, ...r, fps, erros: erros.slice(0, 6), fimOk: !!fim };
 }
 
-const b = await launch(9351);
+const b = await launch(+(process.env.CDP ?? 9473)); // porta própria: outros testes usam 9351
 const todos = [];
 try {
   for (const nome of lista) for (let i = 0; i < VEZES; i++) {
