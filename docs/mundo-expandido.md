@@ -1527,8 +1527,16 @@ Relógio só aparecem depois da trama principal.
 ## 13. Mega e Dynamax (gerado)
 
 As Mega Pedras são lascas da Pedra do Alvorecer que caíram longe do Relógio. As Tocas de Luz são buracos por onde vaza
-a luz do Coração: reides de até 4 jogadores, cooperativos no online (quem estiver no mesmo setor entra junto). A
-mecânica é de outro agente; aqui fica só o onde.
+a luz do Coração: reides de até 4 jogadores, cooperativos no online (quem estiver no mesmo setor entra junto).
+
+A mecânica está pronta: Mega, Primitiva, Dynamax e Gigantamax em `src/combat/poder.js` (regras puras em
+`src/mechanics/poder.js`), as Tocas de Luz em `src/world/tocas.js` e o reide online em `src/net/reide.js`.
+**Para colocar uma toca**, acrescente uma linha em `src/data/tocas.js` (chave = id do mapa) ou um campo `"tocas": [...]`
+no JSON da região, com `id` (o da tabela abaixo), `x`, `y` (bloco do centro, chão livre num raio de 2 blocos e arena
+de ~7 blocos em volta), `gmax` (ids da PokéAPI) e, se preciso, `noite`, `requer`, `nivel`, `chanceGmax`. O cabeçalho
+do arquivo explica cada campo. Uma área, um interior ou um ginásio com `"dynamax": true` também liberam o Dynamax ali;
+um ginásio do roteiro liga com `dynamax: true` na batalha (como a da Celeste). Treinador que segura Mega Pedra
+(`[dex, nível, golpes, { item: 'garchompite' }]` no roteiro) Mega Evolui sozinho no momento certo.
 
 <!-- gerado:mega -->
 Pulseira Mega: Cidade Escarpa, missão A Pedra-Chave (Dona Pedrina lapida três lascas de prisma: Mina Abandonada, Ruínas dos Vigias, Caverna de Gelo Cristalino).
