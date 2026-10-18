@@ -77,8 +77,8 @@ R.blobs('cracked', 990, 205, 150, 46, 0.12, 0.66, ['redrock'])
 for (mx, my, mw, mh) in [(1000, 222, 8, 5), (1040, 214, 10, 6), (1072, 224, 9, 5), (1100, 214, 11, 5), (1115, 230, 8, 5), (1056, 236, 7, 4)]:
     R.poly('canyon', [[mx, my + 1], [mx + mw // 2, my], [mx + mw, my + 1], [mx + mw, my + mh], [mx, my + mh]], 0.5, ['redrock', 'cracked'])
 # o Desfiladeiro Branco (trepadeira) sobe pelo norte e a subida da Chapada vem de Buriti, pelo sul
-R.rect('climb', 1054, 244, 4, 9)
-R.rect('climb', 1004, 242, 4, 9)
+R.rect('climb', 1052, 244, 4, 12)
+R.rect('climb', 1019, 244, 4, 12)
 R.rect('climb', 1020, 200, 12, 16)
 
 # ---------------------------------------------------------------- DUNAS DOURADAS [860,290,200,100] + CRATERA DA ESTRELA
