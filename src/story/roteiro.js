@@ -64,7 +64,7 @@ export class Roteiro {
   constructor(story) {
     this.s = story; this.g = story.g;
     // a trama vem primeiro na lista: nas buscas (de trás para a frente) as cenas das cidades ganham a vez
-    this.caps = [TRAMA, ...CAPITULOS.filter((c) => JOGAVEIS.includes(c.id))];
+    this.caps = [TRAMA, ...CAPITULOS.filter((c) => JOGAVEIS.includes(c.id) || c.regiao)];
     this.jornadas = new Jornadas(this); // também em game.jornadas (diário: lista() e acompanhar(id))
     this.g.jornadas = this.jornadas;
     this.atores = new Map(); this.ativas = new Set(); this.dentro = new Set();
