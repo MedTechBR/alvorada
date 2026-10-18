@@ -8,7 +8,7 @@ import { BADGES } from '../story/names.js';
 import * as World from '../world/map.js';
 import * as Tiles from '../world/tiles.js';
 import { IS_TOUCH } from '../engine/input.js';
-import { OPTIONS, DEFAULT_OPTS, saveOpts, applyOpts, TEXT_SPEED_PT, UI_SCALES } from './options.js';
+import { OPTIONS, DEFAULT_OPTS, saveOpts, applyOpts, TEXT_SPEED_PT, UI_SCALES, QUALITY_PT } from './options.js';
 import { portraitURL, SILHOUETTE } from './portrait.js';
 import { ICONS } from './hud.js';
 import { exportCode, importCode, Auth } from '../net/auth.js';
@@ -892,7 +892,8 @@ export class GameMenu {
       { k: 'textSpeed', label: 'Velocidade do texto', type: 'choice', values: ['lenta', 'normal', 'rapida'], show: (v) => TEXT_SPEED_PT[v] },
       { k: 'uiScale', label: IS_TOUCH ? 'Tamanho dos botões e do HUD' : 'Tamanho do HUD (celular)', type: 'choice', values: UI_SCALES, show: (v) => v + '%' },
       { k: 'vibrate', label: 'Vibrar ao acertar e ser atingido', type: 'bool', on: 'Ligado', off: 'Desligado' },
-      { k: 'fps', label: 'Mostrar FPS', type: 'bool', on: 'Sim', off: 'Não' },
+      { k: 'quality', label: 'Qualidade gráfica', type: 'choice', values: ['auto', 'alta', 'baixa'], show: (v) => QUALITY_PT[v] + (v === 'auto' && this.g.quality ? ` (${this.g.quality.level})` : '') },
+      { k: 'fps', label: 'Mostrar FPS (F3)', type: 'bool', on: 'Sim', off: 'Não' },
     ];
     const set = (r, v) => {
       if (r.type === 'slider') v = Math.max(0, Math.min(10, v));

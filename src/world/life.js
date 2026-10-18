@@ -58,6 +58,7 @@ export class WorldLife {
     // tingimento: fora segue o céu; dentro de casa fica claro; na gruta é escuro
     const sky = room ? (room.dark ? 0x4a4250 : 0xfff6ea) : this.skyColor();
     this.shade.tint = sky; this.shade.width = innerWidth; this.shade.height = innerHeight;
+    this.shade.visible = sky !== 0xffffff; // de dia não desenha a camada de tela cheia à toa
     this.shade.visible = sky !== 0xffffff;
     this.fade.width = innerWidth; this.fade.height = innerHeight;
     this.lights.position.copyFrom(g.world.position); this.lights.scale.copyFrom(g.world.scale);
@@ -94,8 +95,9 @@ export class WorldLife {
         const sp = o.sprite; if (!sp) continue;
         const left = sp.x - sp.width / 2, top = sp.y - sp.height;
         for (const [lx, ly, big] of K.lights) {
-          if (big) use(left + lx, top + ly, SPR.glow, 1.1 * big, 0.9);
-          else { use(left + lx, top + ly, SPR.winlight, 1, 0.95); use(left + lx, top + ly + 6, SPR.glow, 0.65, 0.5); }
+          // qualidade baixa: só a janela acesa, sem o halo grande (src/engine/quality.js)
+          if (big) { if (!this.lowLights) use(left + lx, top + ly, SPR.glow, 1.1 * big, 0.9); else use(left + lx, top + ly, SPR.glow, 0.7 * big, 0.7); }
+          else { use(left + lx, top + ly, SPR.winlight, 1, 0.95); if (!this.lowLights) use(left + lx, top + ly + 6, SPR.glow, 0.65, 0.5); }
         }
       }
       for (let i = n; i < this.lightPool.length; i++) this.lightPool[i].visible = false;

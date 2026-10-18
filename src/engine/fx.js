@@ -87,6 +87,7 @@ export class Fx {
     this.ring(x, y, color, 14 * power);
   }
   light(x, y, color = 0xffffff, r = 24, life = 0.2, alpha = 0.8) {
+    if (this.lowLights) { if (r > 30) return; alpha *= 0.7; } // qualidade baixa: sem luzes grandes (overdraw aditivo)
     alpha *= r > 40 ? 0.6 : 0.75; // luz grande demais estoura a cena
     this.emit(x, y, { tex: 'light', color, n: 1, speed: 0, scale: r / 16, end: 1.2, life, alpha, drag: 0 });
   }

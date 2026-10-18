@@ -1,7 +1,8 @@
 // Opções do jogador (ficam neste aparelho, em localStorage). Sempre com try/catch:
 // em janela anônima ou com o armazenamento bloqueado, o jogo segue com os valores padrão.
 const KEY = 'alvorada2d.opcoes';
-export const DEFAULT_OPTS = { music: 7, sfx: 8, textSpeed: 'normal', vibrate: true, uiScale: 100, fps: false };
+export const DEFAULT_OPTS = { music: 7, sfx: 8, textSpeed: 'normal', vibrate: true, uiScale: 100, fps: false, quality: 'auto' };
+export const QUALITY_PT = { auto: 'Automática', alta: 'Alta', baixa: 'Baixa' };
 export const TEXT_SPEED = { lenta: 24, normal: 46, rapida: 95 };
 export const TEXT_SPEED_PT = { lenta: 'Lenta', normal: 'Normal', rapida: 'Rápida' };
 export const UI_SCALES = [80, 90, 100, 115, 130, 145];
@@ -17,8 +18,10 @@ export function saveOpts() { try { localStorage.setItem(KEY, JSON.stringify(OPTI
 export function applyOpts(g) {
   const o = OPTIONS;
   document.documentElement.style.setProperty('--ui-scale', String(o.uiScale / 100));
+  // o medidor só muda quando a opção muda (F3 alterna por fora; antes era desligado a cada quadro até o som destravar)
   const perf = document.getElementById('perf');
-  if (perf) perf.hidden = !o.fps;
+  if (perf && applyOpts.fps !== o.fps) { perf.hidden = !o.fps; applyOpts.fps = o.fps; }
+  if (g?.quality && g.quality.mode !== o.quality) g.quality.setMode(o.quality);
   const a = g?.audio;
   if (a?.musicGain) {
     a.mtBase ??= { m: a.musicGain.gain.value, s: a.sfxGain.gain.value };

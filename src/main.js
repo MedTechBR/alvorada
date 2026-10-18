@@ -14,6 +14,7 @@ import { SPECIES, BIOME_ENCOUNTERS } from './data/species.js';
 import { MOVES } from './data/moves.js';
 import { TYPE_PT } from './data/types.js';
 import { Audio } from './audio/audio.js';
+import { Quality } from './engine/quality.js';
 import { Online } from './net/online.js';
 import { UI } from './ui/ui.js';
 import { Story } from './story/story.js';
@@ -48,6 +49,7 @@ class Game {
     this.mount = new Mounts(this); // montarias do treinador (X): src/world/mounts.js
     this.party = []; this.box = []; this.bag = { pokeball: 0, potion: 0 }; this.money = 0; this.flags = {};
     this.leadIdx = 0; this.entities = [];
+    this.quality = new Quality(this); // qualidade gráfica automática (src/engine/quality.js)
     this.ui = new UI(this);        // HUD, menus, diálogo, título e save (src/ui)
     this.story = new Story(this);  // capítulo 1 (src/story)
     this.available = await fetch('assets/pmd/index.json').then((r) => r.json()).catch(() => [1, 4, 6, 7, 9, 25, 130, 133]);
@@ -347,6 +349,7 @@ class Game {
     this.map.flushDirty();
     this.mundo.update(rdt);
     this.hudUpdate(rdt);
+    this.quality.sample(rdt);
     inp.endFrame();
     this.#perf(rdt, performance.now() - t0);
   }
@@ -487,7 +490,7 @@ class Game {
   toast(text) { this.ui?.toast(text); }
   #perf(dt, ms) {
     const P = (this.perfD ??= { n: 0, t: 0, ms: 0 }); P.n++; P.t += dt; P.ms += ms;
-    if (P.t >= 0.5) { if (!$('perf').hidden) $('perf').textContent = `${Math.round(P.n / P.t)} FPS · lógica ${(P.ms / P.n).toFixed(2)} ms · ${this.entities.length} Pokémon · zoom ${this.zoom}x`; P.n = 0; P.t = 0; P.ms = 0; }
+    if (P.t >= 0.5) { if (!$('perf').hidden) $('perf').textContent = `${Math.round(P.n / P.t)} FPS · lógica ${(P.ms / P.n).toFixed(2)} ms · ${this.entities.length} Pokémon · ${this.fx.count} partículas · zoom ${this.zoom}x · qualidade ${this.quality.level}`; P.n = 0; P.t = 0; P.ms = 0; }
   }
 }
 

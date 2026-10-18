@@ -294,3 +294,4 @@ body:not(.touch) #hud, body:not(.touch) #ui, body:not(.touch) #menu-btn, body:no
 }
 /* durante o diálogo os controles de toque e a barra de golpes saem da frente (o A e o toque na tela avançam) */
 body.dlg-open #touch, body.dlg-open #moves { visibility: hidden; }
+body.touch #perf { top: auto; bottom: calc(var(--sb) + 52px); font-size: 10px; white-space: normal; text-align: center; max-width: 46vw; }
