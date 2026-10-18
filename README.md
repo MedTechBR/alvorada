@@ -30,8 +30,33 @@ Controle: Start abre o menu.
 
 ## Modo online (P2P)
 
-Botão **Online** (ou tecla O): criar sala, entrar, jogadores, chat (T), emotes (5 a 0), trocar, desafiar e sair.
-Perto de outro treinador, E (ou o botão A no celular) abre trocar/desafiar.
+**O online fica ligado o tempo todo.** Logado, o jogo entra sozinho num **canal do mundo**, sem código nem senha, e você
+encontra os outros andando pelo mapa (eles aparecem no mapa, com nome em cima, e como pontos amarelos no minimapa).
+O botão **Online** (ou tecla O) mostra "Canal 1 · 5 online", a lista de quem está no canal (onde está e a que distância),
+chat por perto (T), emotes (5 a 0), sala privada e "Ficar offline". Perto de outro treinador, E (ou o botão A no celular)
+abre **Desafiar, Trocar e Acenar**; o outro aceita ou recusa.
+
+- **Canais** (`src/net/world.js`): cada canal é uma sala em estrela com código fixo no servidor de sinalização
+  (`mundo-v2-c1`, `-c2`… até 12). Quem consegue **registrar** o código vira o anfitrião; quem acha ocupado conecta nele.
+  O servidor só deixa um registrar cada código, então nunca há dois anfitriões no mesmo canal. Até 16 por canal; cheio,
+  vai para o próximo. Sem internet ou com a sinalização fora do ar, o jogo segue sozinho e tenta de novo (2 s, 4 s… 1 min).
+- **Reeleição:** se o anfitrião fecha o jogo, avisa todos e indica o sucessor (o mais antigo), que assume o código em
+  ~1–2 s; os outros entram nele em fila. Se ele cai sem avisar, os clientes percebem pelo silêncio (11 s) e fazem a mesma
+  reeleição. Se o anfitrião perde a sinalização e outro assume o código, ele deixa de ser anfitrião e manda os clientes para
+  o novo dono. Durante a troca de anfitrião ninguém some: os outros ficam apagados por até 15 s e voltam no lugar. Os ids
+  dos jogadores (hash da chave do aparelho) não mudam, então **duelo e troca continuam** depois da reeleição.
+- **Tráfego:** a posição vai ao anfitrião (20x/s no duelo, 10x/s com alguém por perto, 2x/s sozinho) e ele manda a cada um
+  um lote a cada 50 ms só com as novidades de quem está perto (40 blocos, mesmo lugar); de quem está longe, 1x/s. Golpes,
+  chat, emotes e o `info` (Pokémon que acompanha) só vão para quem está perto. Só se desenha quem está no mesmo lugar
+  (lá fora ou o mesmo interior) e perto da câmera.
+- **Aba escondida** por 25 s (celular no bolso): sai do canal e volta quando a aba reaparece.
+- **Salas privadas** continuam: código + senha, só com amigos. Enquanto dura, você sai do mundo; ao sair, volta.
+- **Segurança:** limite de 45 mensagens/s por jogador no anfitrião (quem inunda é expulso daquele canal), no máximo
+  16 KB por mensagem, tipos e ids conferidos, roster limpo de novo no cliente (o anfitrião também pode ser malicioso),
+  nomes só com letras, números, espaço e `. - _ '` (até 14), chat sem caracteres de controle nem acentos empilhados, e
+  todo texto vai para a tela como texto (PixiJS) ou escapado (DOM). Pokémon e posições passam por `validate.js`.
+- `?teste=1` não entra no mundo, a menos que tenha `?online=1` (aí `?nome=` dá o nome, só no localhost). `?online=0` nunca
+  entra. `?canal_max=N` (localhost) muda o limite por canal, para testar canal cheio.
 
 - **Rede:** WebRTC com [PeerJS](https://peerjs.com) 1.5.5 (ESM pelo jsDelivr, carregado só ao entrar no online) e o
   servidor público de sinalização do PeerJS. Sem conta e sem chave. Funciona num site estático (GitHub Pages).
@@ -57,11 +82,15 @@ Perto de outro treinador, E (ou o botão A no celular) abre trocar/desafiar.
 - **PvP:** desafio → aceitar → até 3 Pokémon cada → arena desenhada no chão onde os dois estão → contagem → combate
   em tempo real normal → resultado e revanche. Sem XP; a equipe do duelo é uma cópia curada e a sua volta como estava.
   **Autoridade:** cada um simula os próprios golpes; quando um golpe seu encosta no rival, vai um pedido ao árbitro,
-  que roda no anfitrião da sala. Ele confere golpe (pela equipe validada), recarga, nº de acertos por uso e distância,
+  que roda em quem **aceitou** o desafio (não no anfitrião: no mundo o anfitrião pode ser um estranho que sai a qualquer
+  hora, e o duelo não deve cair por isso). Ele confere golpe (pela equipe validada), recarga, nº de acertos por uso e distância,
   recalcula o dano com `calcDamage` (a fórmula do jogo) e manda o resultado aos dois. Desmaio e fim também são dele.
 - **Teste com duas "abas":** `tools/online-teste.html` abre dois jogos lado a lado (`?perfil=a` e `?perfil=b`
   separam o armazenamento). Marque "Rede de teste local" (ou use `?rede=local`) para testar sem internet, via
   BroadcastChannel.
+- **Teste automático com vários clientes:** `node tools/teste-online/mundo.mjs [local|peer]` (servidor em 8743) abre 3 jogos
+  num Chrome sem interface e confere entrada no canal, um vendo o outro, aceno, troca, duelo com árbitro, queda do
+  anfitrião no meio do duelo, canal cheio, interior, sala privada, perda do código e inundação.
 - **Servidor próprio (depois):** escrever o relé descrito em `WsTransport` (transport.js) num VPS e usar
   `createTransport('ws', { url })`. O resto não muda. Num segundo passo, o árbitro (`arbiter.js`, só lógica) pode ir
   para o servidor, que vira o anfitrião permanente; aí a fórmula de dano precisa sair de `combat.js` para um arquivo
