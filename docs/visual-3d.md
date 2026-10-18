@@ -112,8 +112,53 @@ Força, portões, baús, alavancas, quebráveis) usam o sprite do Pixi como font
 | `src/visual3d/sobreposicao.js` | Pixi por cima, projetado no chão |
 | `src/visual3d/ceu.js`, `pos.js` | céu, luz do dia, pós-processamento |
 
-## 3. Lista de conferência (marcar testado, com captura em `tools/shots/`)
-Ver a seção 4 (atualizada a cada etapa).
+## 3. Mudanças de rumo (depois do desenho inicial)
+- Alvo virou o **HD-2D da referência** (vídeo "Battle Advanced"), não só "HGSS": chão pintado em 3D
+  (`ambiente/terreno.js`), grama instanciada, céu com montanhas, pós HD-2D (ramo `ambiente3d`), modelos do kit
+  (`kit/`, ramo `modelos3d`). A arte 2D do chão não é mais usada no 3D (o 2D nem pinta mais o chão: `L.semArte()`).
+- **Câmera dinâmica** (`camera.js`): explorar 19° acima do horizonte (céu e montanhas aparecem; o mundo curvo de
+  `curva.js` ajuda), batalha sobe para ~41° e afasta para enquadrar todos, interiores 56°, voo sobe, corrida afasta,
+  mergulho aproxima; sobe sozinha quando uma casa ou árvore tapa o jogador; silhueta azul do jogador e do Pokémon
+  atrás de paredes; `camera.cena({alvo, distancia, angulo, duracao})` para o roteiro; impulso em golpes fortes;
+  opção "Movimentos de câmera (3D)" nas Opções (desligada = só seguir). O zoom do jogador e o `camK` do Dynamax
+  continuam valendo.
+- Interiores **casa de boneca** (`salas.js`): parede do fundo e laterais altas com papel, faixa e rodapé, frente
+  baixinha, vazio preto. Salas escuras: escuro no pós com luz em volta do jogador, Pokémon de Fogo/Elétrico,
+  tochas acesas e pedras que brilham (mesma regra do 2D).
+- Clima (chuva, neve, areia, névoa) em espaço de tela, como no 2D.
+- Motor do mapa gigante: relevo lê blocos sem forçar regiões (`L.blocoCru`), setores de região pendente esperam,
+  região montada refaz relevo e setores aos poucos; troca de continente refaz tudo (`L.versao`).
 
-## 4. Estado
-(atualizado ao fim de cada etapa)
+## 4. Lista de conferência (captura em `tools/shots/`, `node tools/teste-3d/cenas.mjs`)
+| Item | Estado | Captura |
+|---|---|---|
+| Vila Alvorada, exploração | ok | vila-baixa.jpg, vila-lado.jpg |
+| Rota / campo, grama que abre quando passa | ok | 3d-kit-1.jpg |
+| Interior casa de boneca | ok | cena-interior.jpg |
+| Salas escuras com luz | ok | sala-0.jpg |
+| Biomas (gelo, vulcão, deserto, ruínas, praia, selva) | ok, partículas ainda de primavera em todos | biomas-grade.jpg |
+| Noite (janelas acesas, luar) | ok, telhados do kit escuros demais | cena-noite.jpg |
+| Batalha: bola, golpes, telegrafia, números, PS | ok (sobreposição projetada) | cena-batalha.jpg |
+| Choques no ar entre golpes | aparecem (mesma sobreposição); falta luz 3D própria | — |
+| Montaria: correr | ok | cena-correr.jpg |
+| Montaria: voar (sobe, sombra, câmera alta) | ok | cena-voar.jpg |
+| Montaria: nadar | ok | cena-nadar.jpg |
+| Montaria: escalar, mergulhar (vista do fundo) | não testado no 3D | — |
+| Mega / Dynamax (escala, brilho, câmera afasta) | pelo espelho e camK; não capturado | — |
+| Online (outros jogadores, nomes, balões) | pelo espelho e rótulos; não testado com 2 clientes | — |
+| Pedra empurrável, portões, baús, quebráveis | kit (peças por objeto) + espelho; não capturado | — |
+| Segundo continente (`?ir=ocaso:640,300`) | ok | ocaso.jpg |
+| Minimapa, HUD, marcador do objetivo | ok (HTML por cima; marcador usa a projeção 3D) | todas |
+
+## 5. Desempenho (`node tools/teste-3d/fps.mjs`)
+Chrome sem interface com a GPU do Mac (M3), 740×360, DPR 2 emulado, CPU 4× mais lenta, andando pela vila:
+3D ≈ 57 FPS (p50 16,8 ms, p95 24 ms, pior 60 ms), 161 draw calls, 161 mil triângulos; o 2D no mesmo teste ≈ 104
+FPS. Sem lentidão, 1280×720: ≈ 214 FPS (p50 4,5 ms). A máquina de teste estava muito carregada (outros agentes),
+os números variam ±15%. Gasto do 3D por quadro (4×): pós e cena 3,9 ms, sobreposição 3,8 ms, espelho 0,8 ms.
+
+## 6. Em aberto
+- Trocar o padrão para 3D (etapa 5): só quando os itens "não testado" acima estiverem conferidos.
+- Partículas e paleta por bioma (neve/vulcão ainda com pétalas de primavera): ambientação.
+- Telhados do kit à noite; altura das árvores com a câmera baixa: kit.
+- Choque no ar: luz 3D e tremor próprios; fumaça e telhas caindo do cenário vivo (interfaces ainda não estão em main).
+- `story/roteiro.js #naZona` gasta ~9% da CPU por quadro no 2D e no 3D (varre todos os pontos a cada chamada).
