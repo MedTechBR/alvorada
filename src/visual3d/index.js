@@ -54,6 +54,7 @@ export class Visual3D {
     this.sobre = new Sobreposicao(this);
     this.pos = this.amb ? { u: this.amb.pos.u, tamanho: () => this.amb.tamanho(), render: (sc, cam) => this.amb.render(sc, cam), amb: true } : new Pos(this);
     this.t = 0;
+    this.#luzDeGolpe();
     this.#tamanho();
     addEventListener('resize', () => this.#tamanho());
     // projeção para quem precisa (mira, marcador do objetivo)
@@ -67,6 +68,28 @@ export class Visual3D {
     this.renderer.setSize(innerWidth, innerHeight, false);
     this.camera.aspect = innerWidth / innerHeight; this.camera.updateProjectionMatrix();
     this.pos?.tamanho();
+  }
+  // luz 3D de golpes e choques: cada luz grande do 2D (fx.light, usada em impactos, choques no ar, explosões)
+  // acende uma luz pontual de verdade no cenário por um instante. Uma luz só, sempre na cena (sem recompilar).
+  #luzDeGolpe() {
+    const fx = this.g.fx; if (!fx?.light) return;
+    this.flash = new THREE.PointLight(0xffffff, 0, 220, 1.4); this.flash.position.set(0, -9999, 0); this.scene.add(this.flash);
+    this.flashT = 0; this.flashMax = 0;
+    const orig = fx.light.bind(fx);
+    fx.light = (x, y, color = 0xffffff, r = 24, life = 0.2, alpha = 0.8) => {
+      orig(x, y, color, r, life, alpha);
+      if (r < 22) return;
+      const forca = Math.min(3, r / 18) * (alpha ?? 0.8);
+      if (this.flashT > 0 && forca < this.flashMax * 0.7) return;
+      this.flash.color.setHex(color); this.flash.position.set(x, this.altura(x, y) + 22, y);
+      this.flashMax = forca; this.flashT = Math.max(0.12, life * 1.4); this.flashVida = this.flashT;
+      if (r >= 34) this.dinamica?.impulso(Math.min(0.8, r / 70));
+    };
+  }
+  #luzUpdate(dt) {
+    if (!this.flash) return;
+    if (this.flashT > 0) { this.flashT -= dt; const k = Math.max(0, this.flashT / this.flashVida); this.flash.intensity = this.flashMax * 9000 * k * k; }
+    else this.flash.intensity = 0;
   }
   // troca o desenho do Pixi pelo nosso (o quadro do jogo continua o mesmo)
   instalar() {
@@ -173,7 +196,7 @@ export class Visual3D {
     let t0 = now();
     const marca = (k) => { const t = now(); T[k] += t - t0; t0 = t; };
     try {
-      this.ceu.update(dt); marca('ceu');
+      this.ceu.update(dt); this.#luzUpdate(dt); marca('ceu');
       this.setores.update(dt); marca('setores');
       this.espelho.update(dt); marca('espelho');
       this.pos.render(this.scene, this.camera); marca('cena');
