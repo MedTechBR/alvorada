@@ -2,3 +2,5 @@ tools/shots/
 .claude/worktrees/
 .DS_Store
 dados-brutos/
+__pycache__/
+tools/conta-de-teste.json
