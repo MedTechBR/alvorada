@@ -13,13 +13,13 @@ import { IS_TOUCH } from '../engine/input.js';
 //
 // Eixos: x = x do mundo (leste), y = altura, z = y do mundo (sul). 1 unidade = 1 px de mundo (bloco = 16).
 // A câmera olha para o norte, inclinada; não gira (as direções dos sprites PMD continuam valendo).
-export const INCLINACAO = 55 * Math.PI / 180; // acima do horizonte (35° a partir da vertical)
-const FOV = 30;
+export const INCLINACAO = 50 * Math.PI / 180; // acima do horizonte (40° a partir da vertical)
+const FOV = 32;
 const LONGE = 34 * 16; // até onde o chão é montado à frente da câmera (px de mundo)
 
 export class Visual3D {
   constructor(g) {
-    this.g = g;
+    this.g = g; this.touch = IS_TOUCH;
     this.L = new MapaLeitura(g.map);
     this.relevo = new Relevo(this.L);
     this.versao = this.L.versao;

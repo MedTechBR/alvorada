@@ -9,13 +9,48 @@ const DIA = [
   [0, C(0x0e1630), C(0x8090d8), 0.25, C(0x2a3a70), C(0x0c1020), 0.55],
   [5, C(0x1a2244), C(0x9a8ad0), 0.3, C(0x384678), C(0x141826), 0.6],
   [6.2, C(0xf0a888), C(0xffb070), 1.3, C(0xf0c0b0), C(0x5a4a40), 0.85],
-  [8, C(0xbfe2f6), C(0xfff0d8), 2.6, C(0xe8f4ff), C(0x6a7a4a), 1.05],
-  [16.5, C(0xbfe2f6), C(0xfff0d8), 2.6, C(0xe8f4ff), C(0x6a7a4a), 1.05],
+  [8, C(0xbfe2f6), C(0xffecd0), 2.3, C(0xdceeff), C(0x5a6a40), 0.95],
+  [16.5, C(0xbfe2f6), C(0xffecd0), 2.3, C(0xdceeff), C(0x5a6a40), 0.95],
   [18.2, C(0xf2a070), C(0xff9a50), 1.6, C(0xf0b8a0), C(0x5a4038), 0.85],
   [19.6, C(0x3a3a78), C(0x9a7ad0), 0.4, C(0x40407a), C(0x141426), 0.6],
   [21, C(0x0e1630), C(0x8090d8), 0.25, C(0x2a3a70), C(0x0c1020), 0.55],
   [24, C(0x0e1630), C(0x8090d8), 0.25, C(0x2a3a70), C(0x0c1020), 0.55],
 ];
+
+// textura de nuvens (ruído suave que repete), para a sombra das nuvens passando no chão
+function texNuvens() {
+  const N = 128, c = document.createElement('canvas'); c.width = c.height = N;
+  const x = c.getContext('2d'), im = x.createImageData(N, N);
+  const h = (a, b) => { let k = (a * 374761393 + b * 668265263) | 0; k = (k ^ (k >>> 13)) * 1274126177; return ((k ^ (k >>> 16)) >>> 0) / 4294967295; };
+  const ruido = (X, Y, p) => { const xi = Math.floor(X), yi = Math.floor(Y), fx = X - xi, fy = Y - yi, u = fx * fx * (3 - 2 * fx), v = fy * fy * (3 - 2 * fy);
+    const g = (a, b) => h(((a % p) + p) % p, ((b % p) + p) % p); const A = g(xi, yi), B = g(xi + 1, yi), C2 = g(xi, yi + 1), D = g(xi + 1, yi + 1);
+    return A + (B - A) * u + (C2 - A) * v + (A - B - C2 + D) * u * v; };
+  for (let y = 0; y < N; y++) for (let X = 0; X < N; X++) {
+    const n = ruido(X / 32, y / 32, 4) * 0.6 + ruido(X / 16, y / 16, 8) * 0.3 + ruido(X / 8, y / 8, 16) * 0.1, k = (y * N + X) * 4;
+    im.data[k] = im.data[k + 1] = im.data[k + 2] = Math.round(n * 255); im.data[k + 3] = 255;
+  }
+  x.putImageData(im, 0, 0);
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.magFilter = t.minFilter = THREE.LinearFilter; t.generateMipmaps = false;
+  return t;
+}
+// Liga a sombra das nuvens num material Lambert (chão, adereços): escurece onde a nuvem passa
+export function comNuvens(m, v, extra) {
+  const antes = m.onBeforeCompile;
+  m.onBeforeCompile = (sh, r) => {
+    antes?.call(m, sh, r);
+    sh.uniforms.tNuvem = v.u.tNuvem; sh.uniforms.tempoN = v.u.tempo; sh.uniforms.forcaNuvem = v.u.forcaNuvem;
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\n varying vec2 vMundoN;')
+      .replace('#include <project_vertex>', '#include <project_vertex>\n vMundoN = (modelMatrix * vec4(transformed, 1.0)).xz;');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\n varying vec2 vMundoN; uniform sampler2D tNuvem; uniform float tempoN; uniform float forcaNuvem;')
+      .replace('#include <lights_fragment_begin>', `float nuv = texture2D(tNuvem, vMundoN * 0.0011 + vec2(tempoN * 0.006, tempoN * 0.0025)).r;
+        float sombraN = 1.0 - forcaNuvem * smoothstep(0.5, 0.7, nuv);
+        #include <lights_fragment_begin>`)
+      .replace('#include <lights_fragment_end>', `#include <lights_fragment_end>
+        reflectedLight.directDiffuse *= sombraN;`);
+    extra?.(sh);
+  };
+  return m;
+}
 
 export class Ceu {
   constructor(v) {
@@ -29,6 +64,14 @@ export class Ceu {
     this.sol.target = new THREE.Object3D();
     s.add(this.hemi, this.sol, this.sol.target);
     this.tmp = [new THREE.Color(), new THREE.Color(), new THREE.Color(), new THREE.Color()];
+    v.u.tNuvem = { value: texNuvens() }; v.u.forcaNuvem = { value: 0.35 }; this.noite = 0; this.noiteK = 0;
+    // sombras de verdade do sol (só na qualidade alta): mapa em volta do que a câmera vê
+    const r = v.renderer;
+    r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    const sh = this.sol.shadow, tam = v.touch ? 1024 : 2048;
+    sh.mapSize.set(tam, tam); sh.bias = -0.0004; sh.normalBias = 0.8;
+    sh.camera.near = 10; sh.camera.far = 1600;
+    this.sol.castShadow = true;
   }
   // fatia do dia para a hora h
   #amostra(h) {
@@ -58,14 +101,36 @@ export class Ceu {
     const a = v.alvo;
     const dir = room ? new THREE.Vector3(-0.5, 1.2, 0.8) : new THREE.Vector3(Math.cos(ang) * 0.9, alt, 0.75);
     dir.normalize();
-    this.sol.position.set(a.x + dir.x * 400, a.y + dir.y * 400, a.z + dir.z * 400);
-    this.sol.target.position.copy(a);
+    // sombra: o centro fica no meio do que se vê (mais para o norte), alinhado à grade do mapa de sombra (sem tremer)
+    const vw = v.view, cx = vw ? (vw.x0 + vw.x1) / 2 : a.x, cz = vw ? (vw.y0 + vw.y1) / 2 : a.z;
+    const R = vw ? Math.min(900, Math.max(vw.x1 - vw.x0, vw.y1 - vw.y0) * 0.55) : 400;
+    const sc = this.sol.shadow.camera;
+    if (sc.right !== R) { sc.left = -R; sc.right = R; sc.top = R; sc.bottom = -R; sc.updateProjectionMatrix(); }
+    const passo = (2 * R) / this.sol.shadow.mapSize.x, px = Math.round(cx / passo) * passo, pz = Math.round(cz / passo) * passo;
+    this.sol.position.set(px + dir.x * 600, a.y + dir.y * 600, pz + dir.z * 600);
+    this.sol.target.position.set(px, a.y, pz);
     this.dir = dir;
+    const alta = !g.quality?.low;
+    if (v.renderer.shadowMap.enabled !== alta) { v.renderer.shadowMap.enabled = alta; v.renderer.shadowMap.needsUpdate = true; for (const o of [v.scene]) o.traverse((m) => { if (m.material) m.material.needsUpdate = true; }); }
+    v.u.forcaNuvem.value = room ? 0 : 0.32 * Math.min(1, A.iSol / 2);
+    // pós: raios de sol mais fortes de manhã e no fim da tarde; nada à noite nem dentro de casa
+    const P = v.pos?.u;
+    if (P) {
+      const manha = Math.max(0, 1 - Math.abs(h - 8) / 2.5), tarde = Math.max(0, 1 - Math.abs(h - 17.3) / 2.2);
+      P.raios.value = room ? 0.06 : (0.1 + 0.32 * Math.max(manha, tarde)) * Math.min(1, A.iSol / 1.3);
+      P.corRaio.value.set(tarde > manha ? 0xffb070 : 0xffe2a8);
+      P.bloomK.value = room ? 0.45 : 0.5 + this.noiteK * 0.4;
+      P.limiar.value = 0.92 - this.noiteK * 0.45;
+      const pt = p ? v.paraTela(p.x, p.y, 12) : { y: innerHeight / 2 };
+      P.foco.value = 1 - pt.y / innerHeight;
+      P.tilt.value = room ? 0.55 : 1;
+    }
     // cor dos billboards: luz de uma superfície virada para a câmera (céu + parte do sol), 1 = o 2D ao meio-dia
     const ls = v.u.luzSprite.value;
-    const k = (A.iH * 0.62 + A.iSol * 0.17) / (1.05 * 0.62 + 2.6 * 0.17);
+    const k = (A.iH * 0.62 + A.iSol * 0.17) / (0.95 * 0.62 + 2.3 * 0.17);
     ls.copy(A.hc).multiplyScalar(0.55).add(this.tmp[1].clone().multiplyScalar(0.45)).multiplyScalar(k);
     ls.r = Math.min(1.15, ls.r); ls.g = Math.min(1.15, ls.g); ls.b = Math.min(1.15, ls.b);
     this.noite = g.mundo?.nightness ?? 0;
+    this.noiteK = room ? 0 : this.noite;
   }
 }

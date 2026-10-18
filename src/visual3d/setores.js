@@ -4,6 +4,7 @@ import { WATER_FRAMES, TALL, CORN } from '../world/art.js';
 import { TALL_SNOW, TALL_DRY, TALL_REED } from '../world/arte-biomas.js';
 import { PAREDE } from './relevo.js';
 import { Modelos } from './modelos.js';
+import { comNuvens } from './ceu.js';
 
 // Setores do 3D (16x16 blocos, os mesmos do 2D): cada um vira poucas malhas mescladas:
 //   chão com relevo (a arte do 2D como textura) + faces de penhasco e paredes,
@@ -88,29 +89,14 @@ export class Setores {
     Object.assign(this.matAguaBase.uniforms, { tira: this.uAgua.tira, ceu: this.uAgua.ceu, tempo: u.tempo, luz: u.luzSprite, solDir: { value: new THREE.Vector3(0, 1, 0) } });
     // mato alto: tufos em pé, voltados para a câmera, balançando com o vento; quem passa sacode (aBalanço)
     this.mato = matoAtlas();
-    this.matMato = new THREE.ShaderMaterial({
-      uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, {}]),
-      vertexShader: `attribute float aTopo; attribute float aFase; attribute float aBal; attribute vec3 aCor;
-        uniform float tempo; varying vec2 vUv; varying vec3 vCor;
-        #include <fog_pars_vertex>
-        void main(){ vUv = uv; vCor = aCor;
-          vec3 p = position;
+    this.matMato = comNuvens(new THREE.MeshLambertMaterial({ map: this.mato.tex, vertexColors: true, alphaTest: 0.5, side: THREE.DoubleSide }), v, (sh) => {
+      sh.uniforms.tempo = u.tempo;
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\n attribute float aTopo; attribute float aFase; attribute float aBal; uniform float tempo;')
+        .replace('#include <begin_vertex>', `#include <begin_vertex>
           float vento = sin(tempo * 1.6 + aFase) * 1.1 + sin(tempo * 3.7 + aFase * 2.3) * 0.35;
-          float sac = sin(tempo * 26.0) * aBal * 6.0;
-          p.x += aTopo * (vento + sac);
-          vec4 mvPosition = modelViewMatrix * vec4(p, 1.0); gl_Position = projectionMatrix * mvPosition;
-          #include <fog_vertex>
-        }`,
-      fragmentShader: `uniform sampler2D map; uniform vec3 luz; varying vec2 vUv; varying vec3 vCor;
-        #include <fog_pars_fragment>
-        void main(){ vec4 t = texture2D(map, vUv); if (t.a < 0.5) discard;
-          gl_FragColor = vec4(t.rgb * vCor * luz, 1.0);
-          #include <fog_fragment>
-          #include <colorspace_fragment>
-        }`,
-      fog: true,
+          transformed.x += aTopo * (vento + sin(tempo * 26.0) * aBal * 6.0);`);
     });
-    Object.assign(this.matMato.uniforms, { map: { value: this.mato.tex }, tempo: u.tempo, luz: u.luzSprite });
+    this.matMato.customProgramCacheKey = () => 'mt-mato';
   }
   limpar() { for (const s of this.mapa.values()) this.#liberar(s); this.mapa.clear(); this.fila.length = 0; }
 
@@ -149,7 +135,8 @@ export class Setores {
     const arte = this.L.arteDoSetor(sx, sy); if (!arte) return;
     const tex = texDe(arte, true, true); tex.anisotropy = 4;
     const s = { sx, sy, arte, tex, grupo: new THREE.Group(), visto: this.v.t };
-    s.matChao = new THREE.MeshLambertMaterial({ map: tex, vertexColors: true, alphaTest: 0.5, side: THREE.DoubleSide });
+    s.matChao = comNuvens(new THREE.MeshLambertMaterial({ map: tex, vertexColors: true, alphaTest: 0.5, side: THREE.DoubleSide }), this.v);
+    s.matChao.customProgramCacheKey = () => 'mt-chao';
     s.matAgua = this.matAguaBase.clone();
     Object.assign(s.matAgua.uniforms, this.matAguaBase.uniforms, { chao: { value: tex } });
     this.grupo.add(s.grupo);
@@ -160,11 +147,11 @@ export class Setores {
     for (const m of [s.chao, s.agua, s.mato]) if (m) { s.grupo.remove(m); m.geometry.dispose(); }
     s.chao = s.agua = s.mato = null;
     const g = this.#geometriaChao(s.sx, s.sy);
-    s.chao = new THREE.Mesh(g, s.matChao); s.grupo.add(s.chao);
+    s.chao = new THREE.Mesh(g, s.matChao); s.chao.receiveShadow = true; s.chao.castShadow = true; s.grupo.add(s.chao);
     const ga = this.#geometriaAgua(s.sx, s.sy);
     if (ga) { s.agua = new THREE.Mesh(ga, s.matAgua); s.agua.renderOrder = -1; s.grupo.add(s.agua); }
     const gm = this.#geometriaMato(s);
-    if (gm) { s.mato = new THREE.Mesh(gm, this.matMato); s.grupo.add(s.mato); }
+    if (gm) { s.mato = new THREE.Mesh(gm, this.matMato); s.mato.receiveShadow = true; s.grupo.add(s.mato); }
     this.modelos.setor(s);
   }
   #liberar(s) {
@@ -288,7 +275,9 @@ export class Setores {
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
     g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
-    g.setAttribute('aCor', new THREE.Float32BufferAttribute(cor, 3));
+    g.setAttribute('color', new THREE.Float32BufferAttribute(cor, 3));
+    const nor = new Float32Array(pos.length); for (let i = 1; i < nor.length; i += 3) nor[i] = 1;
+    g.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
     g.setAttribute('aTopo', new THREE.Float32BufferAttribute(topo, 1));
     g.setAttribute('aFase', new THREE.Float32BufferAttribute(fase, 1));
     const b = new THREE.Float32BufferAttribute(bal, 1); b.setUsage(THREE.DynamicDrawUsage);
