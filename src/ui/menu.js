@@ -946,19 +946,31 @@ export class GameMenu {
       foot: '<b>Esc</b> voltar',
       draw: (body) => {
         const row = (a, b) => `<tr><th>${a}</th><td>${b}</td></tr>`;
-        body.innerHTML = `<div class="gm-box gm-scroll gm-ctlbox"><div class="gm-sub-t">Teclado e mouse</div><table class="gm-tbl">
+        const kb = `<div class="gm-sub-t">Teclado e mouse</div><table class="gm-tbl">
             ${row('Andar / correr', '<kbd>WASD</kbd> ou setas · <kbd>Shift</kbd> corre')}
+            ${row('Enviar / voltar', '<kbd>Q</kbd> joga a Poké Bola do Pokémon escolhido · <kbd>Q</kbd> ou <kbd>R</kbd> chama de volta')}
             ${row('Golpes', '<kbd>1</kbd> a <kbd>4</kbd> · clique esquerdo = golpe 1, direito = golpe 2 · a mira segue o mouse')}
-            ${row('Esquiva', '<kbd>Espaço</kbd>')}${row('Poké Bola', '<kbd>Q</kbd>')}${row('Trocar Pokémon', '<kbd>Tab</kbd>')}
-            ${row('Falar / interagir', '<kbd>E</kbd> ou <kbd>Enter</kbd>')}${row('Menu', '<kbd>M</kbd> ou <kbd>Esc</kbd>')}${row('Medidor de FPS', '<kbd>F3</kbd>')}</table>
-          <div class="gm-sub-t">Controle de videogame</div><table class="gm-tbl">
+            ${row('Capturar', '<kbd>B</kbd> joga uma Poké Bola vazia')}
+            ${row('Esquiva', '<kbd>Espaço</kbd>')}${row('Escolher Pokémon', '<kbd>Tab</kbd>')}
+            ${row('Montaria', '<kbd>X</kbd> chama ou desce · segure <kbd>X</kbd> para voar')}
+            ${row('Voar, mergulhar, cavar', '<kbd>C</kbd> (controlando o Pokémon) · <kbd>X</kbd> pula')}
+            ${row('Falar / interagir', '<kbd>E</kbd> ou <kbd>Enter</kbd>')}${row('Menu', '<kbd>M</kbd> ou <kbd>Esc</kbd>')}
+            ${row('Zoom', 'roda do mouse ou <kbd>+</kbd> <kbd>−</kbd>')}
+            ${row('Minimapa / objetivo', '<kbd>N</kbd> gira o minimapa · <kbd>J</kbd> recolhe o objetivo')}
+            ${row('Online', '<kbd>O</kbd> abre · <kbd>T</kbd> conversa')}${row('Medidor de FPS', '<kbd>F3</kbd>')}</table>`;
+        const pad = `<div class="gm-sub-t">Controle de videogame</div><table class="gm-tbl">
             ${row('Andar / mirar', 'analógico esquerdo anda · analógico direito mira')}
             ${row('Golpes', '<kbd>RT</kbd> <kbd>RB</kbd> <kbd>LT</kbd> <kbd>LB</kbd>')}
-            ${row('Esquiva / bola', '<kbd>A</kbd> esquiva · <kbd>X</kbd> Poké Bola')}${row('Falar / trocar', '<kbd>Y</kbd> fala · <kbd>B</kbd> troca')}${row('Menu', '<kbd>Start</kbd>')}</table>
-          <div class="gm-sub-t">Tela de toque</div><table class="gm-tbl">
+            ${row('Esquiva / bola', '<kbd>A</kbd> esquiva · <kbd>X</kbd> Poké Bola')}${row('Falar / trocar', '<kbd>Y</kbd> fala · <kbd>B</kbd> troca')}
+            ${row('Montaria', '<kbd>Select</kbd>')}${row('Menu', '<kbd>Start</kbd>')}</table>`;
+        const touch = `<div class="gm-sub-t">Tela de toque</div><table class="gm-tbl">
             ${row('Andar', 'analógico à esquerda (empurre até a borda para correr)')}
+            ${row('Enviar e capturar', 'botão vermelho envia o Pokémon escolhido · azul joga uma Poké Bola vazia')}
             ${row('Golpes', 'toque = mira automática no mais perto · arraste o botão = mira manual')}
-            ${row('Botões menores', 'bola, esquiva, trocar e <b>A</b> (falar) · <b>☰</b> abre o menu')}</table></div>`;
+            ${row('Botões menores', 'esquiva, <b>A</b> (falar), sela (montaria) · no modo Pokémon: bola (voltar), trocar, voar/cavar e pular')}
+            ${row('Zoom', 'pinça com dois dedos')}
+            ${row('Menu, mapa e objetivo', '<b>☰</b> abre o menu · toque no minimapa para girar · toque no objetivo para abrir ou recolher')}</table>`;
+        body.innerHTML = `<div class="gm-box gm-scroll gm-ctlbox">${IS_TOUCH ? touch + kb + pad : kb + pad + touch}</div>`;
       },
     });
     this.#push(L);

@@ -284,3 +284,16 @@
   .gm-optnote { padding: 6px 14px; font-size: 12px; }
   .gm-optlist { max-height: 80%; }
 }
+
+/* ---- celular em pé (retrato): menu principal e opções empilhados ---- */
+.gm-extra { min-width: 0; }
+.gm-chip { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 520px) {
+  .gm-side { right: calc(12px + var(--safe-r)); top: calc(16px + var(--safe-t)); transform: none; width: min(240px, calc(100% - 24px)); }
+  .gm-info { left: calc(12px + var(--safe-l)); right: calc(12px + var(--safe-r)); bottom: calc(12px + var(--safe-b)); max-width: none; }
+  .gm-opt { flex-wrap: wrap; row-gap: 2px; }
+  .gm-opt .lb { flex: 1 1 100%; }
+  .gm-opt .ctl { margin-left: auto; }
+  .gm-head { flex-wrap: wrap; }
+  .gm-title { font-size: 16px; padding: 6px 16px; }
+}

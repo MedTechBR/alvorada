@@ -312,3 +312,9 @@ body.dlg-open #touch, body.dlg-open #moves { visibility: hidden; }
 /* os botões de golpe têm visibility inline (hud.js): sem o !important eles apareceriam por cima do diálogo/menu */
 body.dlg-open #touch *, body.menu-open #touch *, body.at-title #touch * { visibility: hidden !important; }
 body.touch #perf { top: auto; bottom: calc(var(--sb) + 52px); font-size: 10px; white-space: normal; text-align: center; max-width: 46vw; }
+
+/* retratos no HUD (portraitOf): Pokémon em campo e os do treinador adversário */
+.ld-pic { width: 26px; height: 26px; flex: none; margin: -3px 0 -3px -3px; border-radius: 50%; background: radial-gradient(circle at 50% 60%, #fff 0 45%, #dfe8fa 80%); box-shadow: inset 0 0 0 1.5px #cfdaf2; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.ld-pic img { width: 120%; height: 120%; object-fit: contain; image-rendering: pixelated; }
+.fo-pic { width: 22px; height: 22px; flex: none; border-radius: 50%; background: rgba(255,255,255,.12); overflow: hidden; display: inline-flex; align-items: center; justify-content: center; align-self: center; }
+.fo-pic img { width: 120%; height: 120%; object-fit: contain; image-rendering: pixelated; }
