@@ -2,74 +2,161 @@ import * as PIXI from 'pixi.js';
 import { T, TILE, SOLID, SWIMMABLE, MOUNT_PASS, TALLS } from './tiles.js';
 import { WATER_FRAMES, FLOWERS, LILY, TALL, CORN, SPR } from './art.js';
 import { KINDS, DECOR } from './objects.js';
-import { buildRegion } from './build.js';
+import { prepararMundo, montarParte, passosParte } from './build.js';
 import { renderTiles, prewarm } from './ground.js';
 import { ANIM, TALL_SNOW, TALL_DRY, TALL_REED } from './arte-biomas.js';
+import { dadosDoMundo, lerPrincipal, mundoInfo } from './mundos.js';
 
-// Mapa da região de Alvorada, desenhado à mão em assets/maps/alvorada.json.
+// Mapa de um mundo (continente), desenhado à mão em assets/maps/ (mundos.json, alvorada.json + um arquivo por região).
+// - Só um mundo fica montado por vez: map.carregar('ocaso') descarta o atual e monta o outro no mesmo objeto
+//   (quem guarda game.map continua valendo).
 // - Camadas: água animada < chão em pedaços (cache) < decoração plana < entidades/objetos/mato alto com y-sort.
 // - O mapa é grande: os pedaços (setores de 16x16 blocos) são montados sob demanda perto da câmera e
 //   descartados quando ficam longe, e os objetos só entram na cena quando o setor deles está visível.
+// - As regiões de fora do núcleo também são montadas sob demanda: quando a câmera chega perto (em fatias, sem
+//   engasgo) ou, na hora, quando alguém consulta um bloco delas.
 // - Colisão por bloco (sólida por construção) + pegadas dos objetos.
-const MAPS = new URL('../../assets/maps/', import.meta.url);
-// ?mapa=<nome> carrega outro arquivo da pasta (ex.: demo-biomas, só para testes); fora isso, a região de sempre
-export const MAP_ID = (new URLSearchParams(location.search).get('mapa') ?? '').replace(/[^a-z0-9-]/g, '').slice(0, 40) || 'alvorada';
-export const REGION = await fetch(new URL(MAP_ID + '.json', MAPS)).then((r) => { if (!r.ok) throw new Error('mapa não encontrado: ' + MAP_ID); return r.json(); });
-// "include": outros arquivos de mapa desenhados antes (ex.: o esboço da região gerado por tools/gerar-esboco.py)
-for (const inc of REGION.include ?? []) {
-  const J = await fetch(new URL(inc, MAPS)).then((r) => r.json());
-  REGION.ops = [...(J.ops ?? []), ...(REGION.ops ?? [])];
-  for (const k of ['objects', 'decor', 'trees', 'areas', 'items', 'warps']) if (J[k]) REGION[k] = k === 'areas' ? [...J[k], ...(REGION[k] ?? [])] : [...(REGION[k] ?? []), ...J[k]];
-  REGION.spots = { ...(J.spots ?? {}), ...(REGION.spots ?? {}) };
-}
-const ALL_AREAS = REGION.areas;
+// Dados do mundo atual. Antes da primeira montagem é o arquivo principal como está no disco (enigmas.js lê os
+// campos dele na carga do módulo); depois, os dados montados do mundo (trocados a cada map.carregar()).
+export let REGION = null;
+// ?mapa=<nome> (ou ?mundo=<id>) abre outro arquivo/mundo da pasta em modo de teste (ex.: demo-biomas); o padrão é Alvorada
+export const MAP_ID = (new URLSearchParams(location.search).get('mapa') ?? new URLSearchParams(location.search).get('mundo') ?? '').replace(/[^a-z0-9-]/g, '').slice(0, 40) || 'alvorada';
 // Lista para a interface (menu do mapa): um nome por área, com o centro em blocos (x, y)
-export const AREAS = (() => {
+export let AREAS = [];
+REGION = await lerPrincipal(MAP_ID).catch(() => ({}));
+export const listaAreas = (all) => {
   const by = new Map();
-  for (const a of ALL_AREAS) {
+  for (const a of all) {
     if (a.name === 'Alvorada') continue;
     const [x, y] = a.rect ? [a.rect[0] + a.rect[2] / 2, a.rect[1] + a.rect[3] / 2] : [a.ellipse[0], a.ellipse[1]];
     by.set(a.name, { ...a, x, y });
   }
   return [...by.values()];
-})();
+};
 const CH = 16, CPX = CH * T; // setor: 16x16 blocos = 256 px
 // chão dos biomas onde um selvagem pode aparecer mesmo sem mato alto (cavernas, neve, deserto...)
 const WILD_GROUND = new Set([TILE.CAVE, TILE.SNOWFIELD, TILE.ASH, TILE.BASALT, TILE.DUNE, TILE.CAATINGA, TILE.CRACKED, TILE.WETSAND, TILE.MANGMUD, TILE.ICEFLOOR, TILE.LAVAFLOOR,
   TILE.DARKCAVE, TILE.CRYSTALFLOOR, TILE.OLDSTONE, TILE.TEMPLEFLOOR, TILE.SNOW, TILE.RAIL, TILE.SALT, TILE.REDROCK, TILE.DRYRIVER, TILE.SHALLOW]);
 const hash = (x, y, s = 0) => { let h = (x * 374761393 + y * 668265263 + s * 1442695041) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; };
+const PERTO = 64 * T; // região a menos disso da tela começa a ser montada (em fatias)
+const agora = () => performance.now();
 
 export class GameMap {
   constructor(tx) {
-    this.tx = tx; this.region = REGION;
-    const R = buildRegion(REGION);
-    this.w = R.W; this.h = R.H; this.tiles = R.tiles; this.block = R.block; this.objects = R.objects; this.decorDefs = R.decor; this.peopleDefs = R.people; this.petDefs = R.pets;
-    this.outdoorH = REGION.outdoorH ?? this.h; this.areas = ALL_AREAS;
-    this.signs = REGION.signs ?? []; this.items = REGION.items ?? [];
-    this.interiors = (REGION.interiors ?? []).map((r) => ({ ...r, w: Math.max(...r.rows.map((s) => s.length)), h: r.rows.length }));
+    this.tx = tx; this.id = null;
+    this.dirtyTiles = []; this.visible = new Set(); this.time = 0; this.frameK = 0;
+    this.mounts = new Set(); this.passable = new Set();
+    this.chunks = []; this.objects = []; this.interiors = []; this.areas = []; this.warps = []; this.spots = {}; this.nPend = 0;
+  }
+
+  // Monta o mundo `id` (assets/maps/mundos.json). fatiar: monta em pedaços entre os quadros (troca de mapa sem travar).
+  async carregar(id, { fatiar = false, antes } = {}) {
+    const t0 = agora();
+    const R = await dadosDoMundo(id);
+    const S = prepararMundo(R);
+    for (const P of R.partes) if (!P.lazy) { if (fatiar) await this.#fatias(passosParte(S, P), 6); else montarParte(S, P); }
+    antes?.(); // quem chamou ainda pode limpar o mundo antigo antes da troca
+    this.#descartar();
+    REGION = R; this.R = R; this.S = S; this.id = id; this.nome = R.nome;
+    this.w = R.w; this.h = R.h; this.tiles = S.tiles; this.block = S.block;
+    this.objects = [...S.placed, ...S.novos]; S.novos.length = 0;
+    this.decorDefs = S.decor; this.peopleDefs = S.people; this.petDefs = S.pets;
+    this.outdoorH = R.outdoorH ?? this.h; this.areas = R.areas; AREAS = listaAreas(R.areas);
+    this.signs = R.signs ?? []; this.items = R.items ?? []; this.regioes = R.regioes ?? [];
+    this.interiors = R.interiors.map((r) => ({ ...r })); this.region = R;
     this.#links();
     this.CW = Math.ceil(this.w / CH); this.CHh = Math.ceil(this.h / CH);
     this.chunks = [];
     for (let cy = 0; cy < this.CHh; cy++) for (let cx = 0; cx < this.CW; cx++) this.chunks.push({ cx, cy, x: cx * CPX, y: cy * CPX, objs: [], decor: [], built: false, shown: false, seen: 0 });
-    const chunkAt = (tx, ty) => this.chunks[Math.floor(tx / CH) + Math.floor(ty / CH) * this.CW];
-    // objetos: tx/ty = bloco da pegada; x/y = pé do desenho em pixels (o combate usa x/y)
-    for (const o of this.objects) { o.tx = o.x; o.ty = o.y; o.x = (o.tx + o.fw / 2) * T; o.y = (o.ty + o.fh) * T; }
-    for (const o of this.objects) { const c = chunkAt(o.tx + Math.floor(o.fw / 2), o.ty + o.fh - 1); if (c) c.objs.push(o); }
-    for (const d of this.decorDefs) { const c = chunkAt(d.x, d.y); if (c) c.decor.push(d); }
-    // quebráveis já nascem com sprite (o combate pode destruí-los mesmo fora da tela)
-    for (const o of this.objects) if (o.breakable) o.sprite = this.#makeSprite(o);
+    for (const d of this.decorDefs) { const c = this.#chunkAt(d.x, d.y); if (c) c.decor.push(d); }
     this.cellObj = new Map();
-    for (const o of this.objects) for (const k of o.cells) this.cellObj.set(k, o);
-    this.dirtyTiles = []; this.visible = new Set(); this.time = 0; this.frameK = 0;
-    this.mounts = new Set(); this.passable = new Set();
+    this.#instalar(this.objects);
+    this.#indices();
+    // regiões ainda não montadas: setores marcados (uma consulta a um bloco delas monta na hora)
+    this.secPend = new Uint8Array(this.CW * this.CHh); this.nPend = 0; this.construindo = null;
+    for (const P of R.partes) if (!P.pronta) { this.nPend++; for (const r of [P.rect, P.faixa]) if (r) this.#marcarSetores(r, P.i + 1); }
+    this.dirtyTiles = []; this.visible = new Set(); this.pending = null;
     prewarm(this); // texturas dos biomas assadas nas folgas (ground.js)
+    this.tempoCarga = Math.round(agora() - t0);
+    return this;
+  }
+  async #fatias(it, budget) {
+    for (;;) { const t = agora(); while (agora() - t < budget) if (it.next().done) return; await new Promise((r) => setTimeout(r, 0)); }
+  }
+  // tira da cena tudo o que o mundo anterior desenhou
+  #descartar() {
+    for (const c of this.chunks) if (c.built) this.#freeChunk(c);
+    for (const o of this.objects) if (o.sprite && !o.sprite.destroyed) { o.sprite.parent?.removeChild(o.sprite); o.sprite.destroy(); o.sprite = null; }
+    this.groundLayer?.removeChildren(); this.decorLayer?.removeChildren();
+    this.chunks = []; this.visible = new Set(); this.pending = null; this.construindo = null;
+  }
+  #chunkAt(tx, ty) { return tx < 0 || ty < 0 || tx >= this.w || ty >= this.h ? null : this.chunks[Math.floor(tx / CH) + Math.floor(ty / CH) * this.CW]; }
+  // objetos: tx/ty = bloco da pegada; x/y = pé do desenho em pixels (o combate usa x/y)
+  #instalar(list) {
+    for (const o of list) { o.tx = o.x; o.ty = o.y; o.x = (o.tx + o.fw / 2) * T; o.y = (o.ty + o.fh) * T; }
+    for (const o of list) { const c = this.#chunkAt(o.tx + Math.floor(o.fw / 2), o.ty + o.fh - 1); if (c) { c.objs.push(o); if (c.built && c.shown && !o.sprite && this.ents) { o.sprite = this.#makeSprite(o); this.ents.addChild(o.sprite); } } }
+    // quebráveis já nascem com sprite (o combate pode destruí-los mesmo fora da tela)
+    for (const o of list) if (o.breakable && !o.sprite) o.sprite = this.#makeSprite(o);
+    for (const o of list) for (const k of o.cells) this.cellObj.set(k, o);
+  }
+  // índices por setor: salas e áreas (consultas rápidas mesmo com centenas de salas e áreas)
+  #indices() {
+    this.salaSec = new Map();
+    for (const r of this.interiors) for (let sy = Math.floor(r.y / CH); sy <= Math.floor((r.y + r.h - 1) / CH); sy++) for (let sx = Math.floor(r.x / CH); sx <= Math.floor((r.x + r.w - 1) / CH); sx++) { const k = sx + sy * this.CW; if (!this.salaSec.has(k)) this.salaSec.set(k, []); this.salaSec.get(k).push(r); }
+    this.areaSec = new Map();
+    this.areas.forEach((a, i) => {
+      const [x0, y0, x1, y1] = a.rect ? [a.rect[0], a.rect[1], a.rect[0] + a.rect[2], a.rect[1] + a.rect[3]] : [a.ellipse[0] - a.ellipse[2], a.ellipse[1] - a.ellipse[3], a.ellipse[0] + a.ellipse[2], a.ellipse[1] + a.ellipse[3]];
+      for (let sy = Math.max(0, Math.floor(y0 / CH)); sy <= Math.min(this.CHh - 1, Math.floor(y1 / CH)); sy++) for (let sx = Math.max(0, Math.floor(x0 / CH)); sx <= Math.min(this.CW - 1, Math.floor(x1 / CH)); sx++) { const k = sx + sy * this.CW; if (!this.areaSec.has(k)) this.areaSec.set(k, []); this.areaSec.get(k).push(i); }
+    });
+  }
+  #marcarSetores([x, y, w, h], v) { for (let sy = Math.floor(y / CH); sy <= Math.floor((y + h - 1) / CH); sy++) for (let sx = Math.floor(x / CH); sx <= Math.floor((x + w - 1) / CH); sx++) if (sx >= 0 && sy >= 0 && sx < this.CW && sy < this.CHh) this.secPend[sx + sy * this.CW] = v; }
+  // região ainda não montada: monta agora (ou termina a montagem fatiada que já começou)
+  #garantir(i) {
+    const P = this.R.partes[i]; if (!P || P.pronta) return;
+    const t = agora(), it = this.construindo?.P === P ? this.construindo.it : passosParte(this.S, P);
+    for (const _ of it) { /* até o fim */ }
+    this.#pronta(P);
+    (this.estat ??= []).push({ parte: P.id, como: 'na hora', ms: Math.round(agora() - t) });
+  }
+  #pronta(P) {
+    if (this.construindo?.P === P) this.construindo = null;
+    for (const r of [P.rect, P.faixa]) if (r) this.#marcarSetores(r, 0);
+    this.nPend--;
+    if (this.pending) { this.pending.img = this.pending.canvas = this.pending.ctx = null; this.pending = null; }
+    const novos = this.S.novos.splice(0); this.objects.push(...novos); this.#instalar(novos);
+    // setores já desenhados que encostam na região: redesenha só a faixa da borda (as transições de chão olham até
+    // 2 blocos para o lado), aos poucos pelo flushDirty — sem jogar fora o setor inteiro (engasgava ao cruzar a divisa)
+    if (P.rect) {
+      const [x, y, w, h] = P.rect, D = this.dirtyTiles;
+      for (let i = x - 2; i < x + w + 2; i++) for (const j of [y - 2, y - 1, y, y + 1, y + h - 2, y + h - 1, y + h, y + h + 1]) D.push([i, j]);
+      for (let j = y; j < y + h; j++) for (const i of [x - 2, x - 1, x, x + 1, x + w - 2, x + w - 1, x + w, x + w + 1]) D.push([i, j]);
+    }
+    this.g?.mundo?.minimap?.invalidar?.(P.rect);
+    this.g?.mundo?.minimap?.invalidar?.(P.faixa);
+    this.montadas = (this.montadas ?? 0) + 1;
+  }
+  // montagem fatiada das regiões perto da tela (até ~3 ms por quadro)
+  #preparar(view) {
+    if (!this.nPend) return;
+    if (!this.construindo && this.frameK % 15 === 0) {
+      for (const P of this.R.partes) {
+        if (P.pronta || !P.rect) continue;
+        const [x, y, w, h] = P.rect.map((v) => v * T);
+        if (view.x1 + PERTO > x && view.x0 - PERTO < x + w && view.y1 + PERTO > y && view.y0 - PERTO < y + h) { this.construindo = { P, it: passosParte(this.S, P) }; break; }
+      }
+    }
+    const b = this.construindo; if (!b) return;
+    const t = agora();
+    b.ms = (b.ms ?? 0); b.fatias = (b.fatias ?? 0) + 1;
+    while (agora() - t < 3) if (b.it.next().done) { this.#pronta(b.P); (this.estat ??= []).push({ parte: b.P.id, como: 'em fatias', fatias: b.fatias, ms: Math.round(b.ms + agora() - t), maiorFatia: Math.round(Math.max(b.pior ?? 0, agora() - t)) }); return; }
+    b.ms += agora() - t; b.pior = Math.max(b.pior ?? 0, agora() - t);
   }
 
   // portas, tapetes de saída e escadas: tudo vira uma lista de "warps"
   #links() {
-    const S = REGION.spots ?? {};
+    const S = this.R.spots ?? {};
     this.spots = {};
-    const R = REGION.radius ?? {};
+    const R = this.R.radius ?? {};
     for (const [k, v] of Object.entries(S)) { this.spots[k] = { x: v[0] * T + 8, y: v[1] * T + 8, tx: Math.floor(v[0]), ty: Math.floor(v[1]), dir: v[2] ?? 'down' }; if (R[k]) this.spots[k].r = R[k] * T; }
     this.warps = [];
     const byId = Object.fromEntries(this.interiors.map((r) => [r.id, r]));
@@ -84,27 +171,46 @@ export class GameMap {
       this.spots['porta_' + r.id] = { x: r.door.x * T + 8, y: r.door.y * T + 8, tx: r.door.x, ty: r.door.y, dir: 'down' };
       this.spots['dentro_' + r.id] = { x: r.entry.x * T + 8, y: r.entry.y * T + 8, tx: r.entry.x, ty: r.entry.y, dir: 'up' };
     }
-    // requer: flags (ou "item:<id>") que precisam estar valendo; msg: o aviso quando não estão (ideia dos portais de enigmas.js)
-    for (const w of REGION.warps ?? []) this.warps.push({ x: w.x, y: w.y, dir: w.dir ?? 'any', to: { x: w.to[0], y: w.to[1] }, face: w.face ?? 'down', label: w.label, requer: w.requer, msg: w.msg });
     for (const r of this.interiors) for (const [k, v] of Object.entries(r.spots ?? {})) this.spots[k] = { x: (r.x + v[0]) * T + 8, y: (r.y + v[1]) * T + 8, tx: r.x + Math.floor(v[0]), ty: r.y + Math.floor(v[1]), dir: v[2] ?? 'down' };
+    // passagens extras: para um bloco ([x, y]), para um ponto ("nome") ou para outro mundo (mundo: 'ocaso')
+    for (const w of this.R.warps ?? []) {
+      const base = { x: w.x, y: w.y, dir: w.dir ?? 'any', face: w.face ?? 'down', label: w.label, gerado: w.gerado, requer: w.requer, msg: w.msg };
+      if (w.mundo && w.mundo !== this.id) { this.warps.push({ ...base, mundo: w.mundo, destino: w.to, pergunta: w.pergunta }); continue; }
+      const s = typeof w.to === 'string' ? this.spots[w.to] : null;
+      if (typeof w.to === 'string' && !s) { console.warn('mapa: passagem para ponto que não existe', w.to); continue; }
+      this.warps.push({ ...base, to: s ? { x: s.tx, y: s.ty } : { x: w.to[0], y: w.to[1] } });
+    }
     // armadilhas (ex.: fios prateados da Estufa-Teia levam de volta à entrada)
     for (const r of this.interiors) if (r.trap) r.rows.forEach((row, j) => [...row].forEach((ch, i) => { if (ch === r.trap.tile) this.warps.push({ x: r.x + i, y: r.y + j, dir: 'any', to: { x: r.x + r.trap.to[0], y: r.y + r.trap.to[1] }, face: 'up', trap: true }); }));
-    // cada ponto diz em que interior está (map: id) ou fica fora (map: 'mundo')
-    for (const s of Object.values(this.spots)) { const r = this.interiors.find((q) => s.tx >= q.x && s.ty >= q.y && s.tx < q.x + q.w && s.ty < q.y + q.h); s.map = r ? r.id : 'mundo'; }
+    // cada ponto diz em que interior está (map: id) ou fica fora (map: 'mundo') e em que mundo (mundo: id)
+    for (const s of Object.values(this.spots)) { const r = this.interiors.find((q) => s.tx >= q.x && s.ty >= q.y && s.tx < q.x + q.w && s.ty < q.y + q.h); s.map = r ? r.id : 'mundo'; s.mundo = this.id; }
     this.warpAt = new Map(this.warps.map((w) => [w.x + w.y * this.w, w]));
-    this.spawn = this.spots.inicio ?? { x: this.w * 8, y: this.h * 8 };
+    this.spawn = this.spots.inicio ?? this.spots.chegada ?? { x: this.w * 8, y: (this.outdoorH ?? this.h) * 8 };
   }
 
   // ---------- consultas ----------
-  at(x, y) { return x < 0 || y < 0 || x >= this.w || y >= this.h ? TILE.CLIFF : this.tiles[x + y * this.w]; }
+  at(x, y) {
+    if (x < 0 || y < 0 || x >= this.w || y >= this.h) return TILE.CLIFF;
+    if (this.nPend) { const p = this.secPend[(x >> 4) + (y >> 4) * this.CW]; if (p) this.#garantir(p - 1); }
+    return this.tiles[x + y * this.w];
+  }
+  // garante montadas as regiões que tocam um retângulo de blocos (antes de desenhar um setor)
+  garantirArea(x0, y0, x1, y1) {
+    if (!this.nPend) return;
+    for (let sy = Math.max(0, y0 >> 4); sy <= Math.min(this.CHh - 1, y1 >> 4); sy++) for (let sx = Math.max(0, x0 >> 4); sx <= Math.min(this.CW - 1, x1 >> 4); sx++) { const p = this.secPend[sx + sy * this.CW]; if (p) this.#garantir(p - 1); }
+  }
   interiorAt(px, py) {
     const x = px / T, y = py / T;
-    if (y < this.outdoorH) return null;
-    return this.interiors.find((r) => x >= r.x && y >= r.y && x < r.x + r.w && y < r.y + r.h) ?? null;
+    if (y < this.outdoorH || x < 0 || y >= this.h) return null;
+    const L = this.salaSec?.get(Math.floor(x / CH) + Math.floor(y / CH) * this.CW); if (!L) return null;
+    for (const r of L) if (x >= r.x && y >= r.y && x < r.x + r.w && y < r.y + r.h) return r;
+    return null;
   }
   areaAt(px, py) {
     const x = px / T, y = py / T; let best = null;
-    for (const a of ALL_AREAS) {
+    const L = this.areaSec?.get(Math.floor(x / CH) + Math.floor(y / CH) * this.CW); if (!L) return null;
+    for (const i of L) {
+      const a = this.areas[i];
       if (a.rect) { const [ax, ay, aw, ah] = a.rect; if (x >= ax && y >= ay && x < ax + aw && y < ay + ah) best = a; }
       else if (a.ellipse) { const [cx, cy, rx, ry] = a.ellipse; if (Math.hypot((x - cx) / rx, (y - cy) / ry) < 1) best = a; }
     }
@@ -115,6 +221,14 @@ export class GameMap {
     const a = this.areaAt(px, py), t = this.at(Math.floor(px / T), Math.floor(py / T));
     if (t === TILE.SAND && a?.biome !== 'vila') return 'praia';
     return a?.biome ?? 'campo';
+  }
+  // Região de construção (arquivo de região) e continente num ponto em pixels: { mundo, id, nome, formaRegional }.
+  // formaRegional ('alola', 'hisui'… ou null) é o que as evoluções por região comparam (ctx.region).
+  regionAt(px, py) {
+    const R = this.R; if (!R) return null;
+    const sala = this.interiorAt(px, py), x = px / T, y = py / T;
+    const P = sala ? R.partes[sala.parte ?? 0] : R.partes.find((p) => p.rect && x >= p.rect[0] && y >= p.rect[1] && x < p.rect[0] + p.rect[2] && y < p.rect[1] + p.rect[3]) ?? R.partes[0];
+    return { mundo: this.id, id: P?.id ?? null, nome: P?.nome ?? this.nome, formaRegional: P?.formaRegional ?? R.formaRegional ?? null };
   }
   areaName(px, py) { const r = this.interiorAt(px, py); if (r) return r.name; return this.areaAt(px, py)?.name ?? 'Alvorada'; }
   isIndoor(px, py) { return !!this.interiorAt(px, py); }
@@ -191,6 +305,7 @@ export class GameMap {
     this.#finishChunk(c);
   }
   #startChunk(c) {
+    this.garantirArea(c.cx * CH - 3, c.cy * CH - 3, c.cx * CH + CH + 2, c.cy * CH + CH + 2);
     const cv = document.createElement('canvas'); cv.width = CPX; cv.height = CPX;
     const ctx = cv.getContext('2d'); c.canvas = cv; c.ctx = ctx; c.img = ctx.createImageData(CPX, CPX); c.row = 0;
   }
@@ -210,7 +325,7 @@ export class GameMap {
     for (let ty = oy; ty < Math.min(oy + CH, this.h); ty++) for (let tx = ox; tx < Math.min(ox + CH, this.w); tx++) {
       const t = this.at(tx, ty), h = hash(tx, ty, 31);
       if (t === TILE.FLOWERS) {
-        const kind = REGION.flowerRows ? REGION.flowerRows[Math.floor(h * REGION.flowerRows.length)] : Math.floor(h * FLOWERS.length);
+        const kind = this.R.flowerRows ? this.R.flowerRows[Math.floor(h * this.R.flowerRows.length)] : Math.floor(h * FLOWERS.length);
         const s = new PIXI.Sprite(FLOWERS[kind % FLOWERS.length][0]); s.x = tx * T; s.y = ty * T; s.f = kind % FLOWERS.length; s.ph = Math.floor(h * 4);
         c.deco.addChild(s); c.flowers.push(s);
       } else if (t === TILE.WATER && h < 0.07 && this.#nearLand(tx, ty) && this.areaAt(tx * T, ty * T)?.biome !== 'praia') {
@@ -290,17 +405,28 @@ export class GameMap {
     }
     for (const c of this.visible) if (!now.has(c)) this.#showChunk(c, false);
     this.visible = now;
-    // pré-carrega um setor por quadro em volta da tela
-    // pré-carga em fatias de 4 linhas por quadro (sem engasgo ao entrar numa área nova)
-    if (this.pending && (this.pending.built || !this.pending.img)) this.pending = null;
-    if (!this.pending) {
-      for (let cy = cy0 - 1; cy <= cy1 + 1 && !this.pending; cy++) for (let cx = cx0 - 1; cx <= cx1 + 1 && !this.pending; cx++) {
-        if (cx < 0 || cy < 0 || cx >= this.CW || cy >= this.CHh) continue;
-        const c = this.chunks[cx + cy * this.CW]; if (!c.built) { this.#startChunk(c); this.pending = c; }
+    // pré-carga dos setores em volta da tela, em fatias de 4 linhas, até ~2,5 ms por quadro (sem engasgo ao entrar numa
+    // área nova). Vai primeiro para o lado para onde a câmera anda (correndo ou voando, a tela chega antes da pré-carga).
+    this.#preparar(view);
+    const mx = (view.x0 + view.x1) / 2, my = (view.y0 + view.y1) / 2, vx = mx - (this.lastMx ?? mx), vy = my - (this.lastMy ?? my);
+    this.lastMx = mx; this.lastMy = my;
+    const ax = mx + vx * 40, ay = my + vy * 40; // para onde a câmera vai em ~40 quadros
+    const t0 = agora();
+    for (let guard = 0; guard < 64 && agora() - t0 < 2.5; guard++) {
+      if (this.pending && (this.pending.built || !this.pending.img)) this.pending = null;
+      if (!this.pending) {
+        let best = null, bd = Infinity;
+        for (let cy = cy0 - 1; cy <= cy1 + 1; cy++) for (let cx = cx0 - 1; cx <= cx1 + 1; cx++) {
+          if (cx < 0 || cy < 0 || cx >= this.CW || cy >= this.CHh) continue;
+          const c = this.chunks[cx + cy * this.CW]; if (c.built) continue;
+          const d = Math.hypot(c.x + CPX / 2 - ax, c.y + CPX / 2 - ay); if (d < bd) { bd = d; best = c; }
+        }
+        if (!best) break;
+        this.#startChunk(best); this.pending = best;
       }
+      const pc = this.pending;
+      if (pc.row < CH) this.#rowsChunk(pc, pc.row, Math.min(CH, pc.row + 4)); else { this.#finishChunk(pc); pc.seen = this.frameK; this.pending = null; }
     }
-    const pc = this.pending;
-    if (pc) { if (pc.row < CH) this.#rowsChunk(pc, pc.row, Math.min(CH, pc.row + 4)); else { this.#finishChunk(pc); pc.seen = this.frameK; this.pending = null; } }
     // descarta setores longe (memória de vídeo do celular)
     if (this.frameK % 60 === 0) {
       const built = this.chunks.filter((c) => c.built && !c.shown);

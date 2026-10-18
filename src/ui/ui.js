@@ -48,7 +48,7 @@ export class UI {
     const g = this.g, acc = r.account;
     setSaveSlot(acc.id);
     this.account = acc;
-    if (r.save) applySave(g, r.save);
+    if (r.save) await applySave(g, r.save); // pode montar outro mundo (o save guarda o continente)
     else { g.flags = {}; g.party = []; g.box = []; g.bag = { pokeball: 0, potion: 0 }; g.money = 0; g.leadIdx = 0; const h = this.story?.spots.get('home'); if (h) { g.player.x = h.x; g.player.y = h.y; } if (g.cam) { g.cam.x = g.player.x; g.cam.y = g.player.y; } }
     g.flags.playerName = acc.look?.name ?? acc.name;
     g.flags.look = acc.look ?? null;

@@ -1,0 +1,10 @@
+{
+  "name": "Terras do Ocaso",
+  "comment": "O outro continente (docs/mundo-expandido.md, seção 3). Cada região num arquivo de ocaso/; este só dá o tamanho.",
+  "w": 960,
+  "h": 1040,
+  "outdoorH": 720,
+  "base": "grass",
+  "regioes": ["ocaso/leste.json", "ocaso/oeste.json"],
+  "formaRegional": "hisui"
+}
