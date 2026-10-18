@@ -11,6 +11,8 @@
 //   apos    falas do treinador já vencido · padrao: falas quando nenhuma cena do roteiro responde
 //   substitui id de um morador do mapa (assets/maps "people") que este personagem assume
 //   pokemon dex de um Pokémon que "atua" na história (Absol), em vez de um humano
+import { ELENCO_JANDAIA } from './elenco-jandaia.js';
+
 export const LOOKS = {
   crepusculo: { preset: 'treinador', hat: 'beanie', cap: '#5a2a7a', capLogo: '#e8d8a0', outfit: 'coat', top: '#5a2a7a', trim: '#2e1442', pants: '#24182e', shoes: '#1a1a22', bagStyle: null },
   ebano: { preset: 'montanhista', hat: null, hair: '#1a1a1a', skin: '#a06a44', outfit: 'coat', top: '#4a2068', trim: '#2a1040', pants: '#1a1a22', shoes: '#1a1a22', bagStyle: null },
@@ -168,3 +170,6 @@ export const ELENCO = [
   // ---------------- Trama principal (trama.js): o Téo das revanches por marco de insígnias ----------------
   { id: 'teo_marco', quem: 'teo', nome: 'Téo', look: 'rival', cena: ['teo_marco2', 'teo_marco2_depois', 'teo_marco4', 'teo_marco4_depois', 'teo_marco6'], longe: 3 },
 ];
+
+// Treinadores das regiões novas do mundo grande (cada região traz o seu arquivo; veja docs/construir-regiao.md)
+ELENCO.push(...ELENCO_JANDAIA);

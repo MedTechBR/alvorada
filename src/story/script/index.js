@@ -14,6 +14,8 @@ import cap12 from './cap12.js';
 import regiaoBrasas from './regiao-brasas.js';  // Arquipélago das Brasas (treinadores de rota)
 
 export const CAPITULOS = [cap01, cap02, cap03, cap04, cap05, cap06, cap07, cap08, cap09, cap10, cap11, cap12, regiaoBrasas];
+import regiaoJandaia from './regiao-jandaia.js';  // Arquipélago das Jandaias (treinadores de rota)
+CAPITULOS.push(regiaoJandaia);
 
 export const capitulo = (n) => CAPITULOS[n - 1] ?? null;
 

@@ -15,6 +15,7 @@ export const LOJAS = {
   vendedor_s: { nome: 'Mercado Pokémon de Vila Sussurro', extra: [[0, ['netBall']], [1, ['nestBall']]] },
   vendedor_p: { nome: 'Balcão do Mercado de Porto Espelho', extra: [[0, ['diveBall', 'netBall']], [1, ['freshWater', 'sodaPop']]] },
   loja_geada_vendedor: { nome: 'Mercado Pokémon de Vila Geada', extra: [[0, ['heavyBall', 'iceHeal']], [2, ['maxRevive']]] },
+  vendedor_jandaia: { nome: 'Mercado da Vila Jandaia', extra: [[0, ['quickBall', 'nestBall', 'oranBerry', 'pechaBerry']], [1, ['sitrusBerry', 'freshWater']]] },
 };
 
 export function estoque(id, badges = 0) {

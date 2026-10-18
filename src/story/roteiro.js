@@ -47,7 +47,7 @@ Object.assign(LOJAS, {
 //   nomeado com raio. Zonas de "pisar": pontos nomeados <alvo> e <alvo>__<qualquer coisa> (vários acessos).
 // Para jogar uma cidade nova: escreva o capNN.js (com `jornada`), ponha o elenco e os pontos no mapa, inclua o id
 // em JOGAVEIS e a jornada em jornadas.js.
-export const JOGAVEIS = ['cap02', 'cap03', 'cap04', 'cap05', 'cap06'];
+export const JOGAVEIS = ['cap02', 'cap03', 'cap04', 'cap05', 'cap06', 'regiao_jandaia'];
 
 const T = 16;
 const DIRV = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
