@@ -59,6 +59,7 @@ def aplicar(ctx):
     vila(ctx, C)
     basalto(ctx, C)
     farol(ctx, C)
+    bichos(ctx, C)
     viagens(R)
 
 
@@ -188,6 +189,7 @@ def vila(ctx, C):
     R, G = ctx['R'], ctx['G']
     # praça central
     G[retangulo(986, 656, 9, 8)] = 'P'
+    C.obj('portico', 987, 679, forcar=True)
     C.obj('well', 990, 659, forcar=True)
     C.obj('bench', 987, 657, forcar=True)
     C.obj('bench', 992, 657, forcar=True)
@@ -246,6 +248,45 @@ def vila(ctx, C):
              lines=['Vim para o fim de semana e já estou aqui há um mês. Quem vai embora desta vila?'])
     C.pessoa(id='termas_cozinheiro', name='Seu Naka', look='treinador', x=1004, y=651, dir='down', wander=1,
              lines=['Faço o melhor ovo cozido no vapor das ilhas. A Dona Cida da pousada é minha concorrente e eu a respeito muito.'])
+
+
+# ---------------------------------------------------------------- bichos de enfeite da vila e das fontes
+def bichos(ctx, C):
+    R, G = ctx['R'], ctx['G']
+    # gaivotas nos telhados e no píer
+    for (x, y, say) in [(971, 643, 'Uma Wingull no telhado do Centro Pokémon, de olho na sua mochila.'), (981, 643, 'A Wingull observa o mar do telhado do Mercado.'),
+                        (1007, 644, 'Uma Wingull cochila no telhado da pousada, no calor da chaminé.'), (997, 641, 'A Wingull da Casa de Banhos nunca sai do vapor.')]:
+        R['pets'].append({'dex': 278, 'x': x, 'y': y, 'wander': 0, 'perch': True, 'say': say})
+    R['pets'].append({'dex': 278, 'x': 989, 'y': 612, 'wander': 0, 'say': 'Uma Wingull pousada no fim do píer, esperando o Barco das Brasas.'})
+    def snapq(x, y, r=4):
+        for rr in range(r + 1):
+            for dy in range(-rr, rr + 1):
+                for dx in range(-rr, rr + 1):
+                    xx, yy = x + dx, y + dy
+                    if G[yy - Y0, xx - X0] in '.,:;' and not C.ocup[yy - Y0, xx - X0]:
+                        return xx, yy
+        return None
+    for (dex, x, y, wander, say, sleep) in [
+        (324, 970, 661, 0, 'Um Torkoal dorme ao lado da forja. Solta fumaça pelo casco a cada ronco.', True),
+        (240, 975, 662, 1, 'Um Magby pula sobre as brasas da forja sem se queimar. Faz parte da profissão.', False),
+        (79, 1044, 662, 0, 'Um Slowpoke boia na piscina, de olhos fechados. Ele conhece o sentido da vida, mas esqueceu.', False),
+        (79, 1075, 672, 0, 'Um Slowpoke parado à beira da fonte, esperando a água esfriar. Ou esquentar.', False),
+        (79, 1056, 684, 0, 'Um Slowpoke olha o vapor subir como quem lê um livro.', False),
+        (80, 1066, 656, 0, 'Um Slowbro, o Slowpoke mais velho das fontes. Tem uma Shellder grudada e parece feliz.', False),
+        (58, 989, 689, 0, 'Um Growlithe de guarda ao lado da Guarda-Parque. Late para o vulcão quando ele ronca.', False),
+        (37, 1010, 661, 1, 'Uma Vulpix passeia entre as casas, deixando um cheirinho de brasa.', False),
+        (322, 1010, 702, 0, 'Um Numel dorme na cinza morna, bem na beira da trilha.', True),
+        (218, 1030, 640, 0, 'Uma Slugma toma sol nas pedras brancas. Deixa um rastro escuro.', False),
+        (126, 1055, 790, 0, 'Um Magmar de guarda no pé do vulcão, sem desviar o olhar da cratera.', False),
+        (324, 1096, 667, 0, 'Um Torkoal descansa na beira do ofurô secreto.', True),
+        (725, 885, 660, 1, 'Um Litten brinca com a areia preta e se esquenta na barriga.', False),
+        (558, 870, 634, 0, 'Um Crustle com uma pedra de lava nas costas descansa na praia.', True),
+        (749, 925, 652, 1, 'Um Mudbray pasta nas moitas da ilha. Não tem nada para pastar, mas ele insiste.', False),
+    ]:
+        pos = snapq(x, y, 5)
+        if pos:
+            R['pets'].append({'dex': dex, 'x': pos[0], 'y': pos[1], 'wander': wander, **({'sleep': True} if sleep else {}), 'say': say})
+            C.marca(pos[0], pos[1], 1, 1)
 
 
 # ---------------------------------------------------------------- Ilha do Basalto

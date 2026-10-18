@@ -577,6 +577,7 @@
     {"kind": "taipa", "x": 918, "y": 652, "interior": {"nome": "Casa do Pescador Gaudêncio", "npc": {"id": "pescador_gaudencio", "name": "Pescador Gaudêncio", "look": {"preset": "montanhista", "hat": "cap", "cap": "#4a7a3a", "capLogo": "#4a7a3a", "hair": "#b9b4ae", "top": "#7a8a5a", "trim": "#4a5a3a", "pants": "#3a5a9a", "bagStyle": "shoulder", "bag": "#8a6a3a"}, "lines": ["A areia preta daqui esquenta o pé, mas dá uma sorte danada na pesca. Os peixes gostam do calor."]}}},
     {"kind": "houseStone2", "x": 902, "y": 641, "interior": {"nome": "Armazém de Pedra", "tipo": "oficina", "falas": ["Guardamos aqui as redes e as caixas do barco. Tudo cheira a sal e a pedra quente."]}},
     {"kind": "farol", "x": 1038, "y": 533, "interior": {"nome": "Farol das Brasas", "tipo": "escritorio", "npc": {"id": "faroleiro_tobias", "name": "Faroleiro Tobias", "look": {"preset": "montanhista", "hat": "cap", "cap": "#f2f2f2", "capLogo": "#3a8ad8", "hair": "#e8e4dc", "top": "#e8e0d0", "pants": "#3a5a9a", "shoes": "#5a3a24", "bagStyle": null}, "lines": ["Eu acendo a luz todas as noites para os barcos não se perderem entre as ilhas. De longe, o vulcão parece outro farol, mas esse não obedece ninguém."]}}},
+    {"kind": "portico", "x": 987, "y": 679},
     {"kind": "well", "x": 990, "y": 659},
     {"kind": "bench", "x": 987, "y": 657},
     {"kind": "bench", "x": 992, "y": 657},
@@ -1389,5 +1390,24 @@
     {"id": "toca_vulcao", "x": 1121, "y": 792, "gmax": ["charizard-gmax"]}
   ],
   "mecanismos": [],
-  "noTrees": []
+  "noTrees": [],
+  "pets": [
+    {"dex": 278, "x": 971, "y": 643, "wander": 0, "perch": true, "say": "Uma Wingull no telhado do Centro Pokémon, de olho na sua mochila."},
+    {"dex": 278, "x": 981, "y": 643, "wander": 0, "perch": true, "say": "A Wingull observa o mar do telhado do Mercado."},
+    {"dex": 278, "x": 1007, "y": 644, "wander": 0, "perch": true, "say": "Uma Wingull cochila no telhado da pousada, no calor da chaminé."},
+    {"dex": 278, "x": 997, "y": 641, "wander": 0, "perch": true, "say": "A Wingull da Casa de Banhos nunca sai do vapor."},
+    {"dex": 278, "x": 989, "y": 612, "wander": 0, "say": "Uma Wingull pousada no fim do píer, esperando o Barco das Brasas."},
+    {"dex": 324, "x": 970, "y": 661, "wander": 0, "sleep": true, "say": "Um Torkoal dorme ao lado da forja. Solta fumaça pelo casco a cada ronco."},
+    {"dex": 240, "x": 975, "y": 662, "wander": 1, "say": "Um Magby pula sobre as brasas da forja sem se queimar. Faz parte da profissão."},
+    {"dex": 79, "x": 1043, "y": 661, "wander": 0, "say": "Um Slowpoke boia na piscina, de olhos fechados. Ele conhece o sentido da vida, mas esqueceu."},
+    {"dex": 79, "x": 1075, "y": 672, "wander": 0, "say": "Um Slowpoke parado à beira da fonte, esperando a água esfriar. Ou esquentar."},
+    {"dex": 79, "x": 1056, "y": 684, "wander": 0, "say": "Um Slowpoke olha o vapor subir como quem lê um livro."},
+    {"dex": 80, "x": 1066, "y": 656, "wander": 0, "say": "Um Slowbro, o Slowpoke mais velho das fontes. Tem uma Shellder grudada e parece feliz."},
+    {"dex": 58, "x": 987, "y": 687, "wander": 0, "say": "Um Growlithe de guarda ao lado da Guarda-Parque. Late para o vulcão quando ele ronca."},
+    {"dex": 37, "x": 1010, "y": 661, "wander": 1, "say": "Uma Vulpix passeia entre as casas, deixando um cheirinho de brasa."},
+    {"dex": 322, "x": 1011, "y": 701, "wander": 0, "sleep": true, "say": "Um Numel dorme na cinza morna, bem na beira da trilha."},
+    {"dex": 218, "x": 1030, "y": 640, "wander": 0, "say": "Uma Slugma toma sol nas pedras brancas. Deixa um rastro escuro."},
+    {"dex": 324, "x": 1096, "y": 667, "wander": 0, "sleep": true, "say": "Um Torkoal descansa na beira do ofurô secreto."},
+    {"dex": 749, "x": 923, "y": 651, "wander": 1, "say": "Um Mudbray pasta nas moitas da ilha. Não tem nada para pastar, mas ele insiste."}
+  ]
 }

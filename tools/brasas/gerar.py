@@ -18,7 +18,7 @@ def montar():
         'regiao': {'id': 'brasas', 'nome': 'Arquipélago das Brasas', 'mundo': 'alvorada', 'rect': [800, 480, 400, 480], 'faixa': [0, 1920, 1200, 160]},
         'comment': 'Região Arquipélago das Brasas, construída por tools/brasas/gerar.py (terreno em carimbo gerado, cidades, templo e missões). Manual: docs/construir-regiao.md.',
         'ops': [], 'areas': [], 'spots': {}, 'ninhos': [], 'objects': [], 'decor': [], 'interiors': [], 'people': [], 'warps': [],
-        'items': [], 'viagens': [], 'tocas': [], 'mecanismos': [], 'noTrees': [],
+        'items': [], 'viagens': [], 'tocas': [], 'mecanismos': [], 'noTrees': [], 'pets': [],
     }
     R['areas'] = [
         {'id': 'rota19', 'name': 'Rota Marítima 19', 'biome': 'mar', 'rect': [800, 480, 400, 100]},
