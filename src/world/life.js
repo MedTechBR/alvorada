@@ -5,6 +5,8 @@ import { KINDS } from './objects.js';
 import { Minimap } from './minimap.js';
 import { People } from './people.js';
 import { itemName } from '../data/items.js';
+import { Masmorra } from './masmorra.js';
+import { Clima } from './clima.js';
 
 // Vida do mundo: relógio de dia e noite (tingimento suave + luzes de janela), portas e escadas com fade,
 // bichinhos (borboletas, pássaros, peixes, folhas caindo, vaga-lumes), itens brilhando, árvores de frutas,
@@ -34,6 +36,8 @@ export class WorldLife {
     this.people = new People(g, this.map, this.map.peopleDefs ?? [], this.map.petDefs ?? []);
     this.signBox = this.#makeSignBox();
     this.warpCool = 0; this.tweens = [];
+    this.masmorra = new Masmorra(g, this); // terreno dos biomas e mecânicas de masmorra (masmorra.js)
+    this.clima = new Clima(g, this);       // clima e ambiente por bioma (clima.js)
   }
 
   // ---------- relógio ----------
@@ -57,7 +61,8 @@ export class WorldLife {
     map.update(dt);
     const room = map.interiorAt(p.x, p.y);
     // tingimento: fora segue o céu; dentro de casa fica claro; na gruta é escuro
-    const sky = room ? (room.dark ? 0x4a4250 : 0xfff6ea) : this.skyColor();
+    // sala escura de verdade ("escuro" no mapa): quem escurece é o mapa de luz da masmorra
+    const sky = room ? (room.escuro ? 0xffffff : room.dark ? 0x4a4250 : 0xfff6ea) : this.masmorra.darkZone() ? 0xffffff : this.skyColor();
     this.shade.tint = sky; this.shade.width = innerWidth; this.shade.height = innerHeight;
     this.shade.visible = sky !== 0xffffff; // de dia não desenha a camada de tela cheia à toa
     this.shade.visible = sky !== 0xffffff;
@@ -67,6 +72,8 @@ export class WorldLife {
     this.#critters(dt, room);
     this.people.update(dt, paused);
     this.#smoke(dt, room);
+    this.masmorra.update(dt, paused);
+    this.clima.update(dt, room);
     if (!paused) {
       this.#rustle(dt);
       this.#items(dt);
@@ -129,6 +136,12 @@ export class WorldLife {
     const goingUp = p.vy < -8 || mv.y < -0.4, goingDown = p.vy > 8 || mv.y > 0.4;
     if (w.dir === 'up' && !goingUp) return;
     if (w.dir === 'down' && !goingDown) return;
+    // passagem com condição (flags ou item:<id>): avisa e devolve um passo
+    if (w.requer && ![].concat(w.requer).every((f) => this.masmorra.flag(f))) {
+      this.warpCool = 1.2; if (w.msg) g.toast(w.msg);
+      const b = { up: [0, 10], down: [0, -10], left: [10, 0], right: [-10, 0] }[w.face] ?? [0, 0]; p.x += b[0]; p.y += b[1]; p.vx = p.vy = 0;
+      return;
+    }
     this.warpTo(w.to.x, w.to.y, w.face);
   }
   // teleporte com fade (também serve para a história levar o jogador a um ponto)

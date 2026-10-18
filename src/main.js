@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import { Input, IS_TOUCH } from './engine/input.js';
 import { Fx } from './engine/fx.js';
 import { makeTiles, T, TILE } from './world/tiles.js';
-import { GameMap } from './world/map.js';
+import { GameMap, MAP_ID } from './world/map.js';
 import { WorldLife } from './world/life.js';
 import { Mounts } from './world/mounts.js';
 import { makeTrainerFrames, dir4 } from './sprites/characters.js';
@@ -78,7 +78,8 @@ class Game {
     window.game = this;
     // tela de título (conta + personagem); depois o primeiro Pokémon sai da bola e a história começa
     // ?teste=1: entra direto com equipe de teste e sem gravar (para testes; não aparece para o jogador)
-    const teste = new URLSearchParams(location.search).has('teste');
+    // outro mapa (?mapa=demo-biomas) é sempre teste: não lê nem grava o save da aventura
+    const teste = new URLSearchParams(location.search).has('teste') || MAP_ID !== 'alvorada';
     if (teste) {
       this.noSave = true;
       Object.assign(this.flags, { intro: true, starter: 4, rivalStarter: 7, balls: true, rival1: 'win', badges: [], trainers: {}, playerName: 'Teste' });
@@ -506,11 +507,14 @@ class Game {
     p.t += dt; p.iframes -= dt; p.stun = (p.stun ?? 0) - dt; p.throwT = (p.throwT ?? 0) - dt;
     // montaria (X): quando o treinador está montado, ela cuida do movimento e do desenho
     if (!this.mount?.control(dt, pk, mx, my, mag, run)) {
-      const want = pk || p.stun > 0 ? 0 : (run ? 118 : 74);
-      const tvx = mag > 0.1 ? mx * want : 0, tvy = mag > 0.1 ? my * want : 0;
-      const acc = Math.min(1, dt * (mag > 0.1 ? 14 : 18));
+      // terreno dos biomas (src/world/masmorra.js): neve funda e areia movediça atrasam, o gelo faz escorregar
+      const tr = pk ? null : this.mundo?.masmorra?.player(dt, p, mx, my, mag);
+      const want = pk || p.stun > 0 ? 0 : (run ? 118 : 74) * (tr?.k ?? 1);
+      let tvx = mag > 0.1 ? mx * want : 0, tvy = mag > 0.1 ? my * want : 0;
+      let acc = Math.min(1, dt * (mag > 0.1 ? 14 : 18));
+      if (tr?.slide) { tvx = tr.slide.x * tr.speed; tvy = tr.slide.y * tr.speed; acc = 1; }
       p.vx += (tvx - p.vx) * acc; p.vy += (tvy - p.vy) * acc;
-      if (!pk && inp.pressed('dodge') && p.roll <= 0) {
+      if (!pk && !tr?.slide && inp.pressed('dodge') && p.roll <= 0) {
         const dx = mag > 0.1 ? mx : ({ down: 0, up: 0, left: -1, right: 1 }[p.dir]), dy = mag > 0.1 ? my : ({ down: 1, up: -1, left: 0, right: 0 }[p.dir]);
         p.kx += dx * 260; p.ky += dy * 260; p.roll = 0.5; p.iframes = 0.3; this.audio.sfx('dodge');
         this.combat.onDodge(p, true);

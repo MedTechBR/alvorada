@@ -1,21 +1,33 @@
 import { TILE } from './tiles.js';
 import { GROUND } from './art.js';
+import { FAM, SOFT, BLEED, drawBiomeHard } from './arte-biomas.js';
 
 // Compositor do chão: monta, pixel a pixel, os pedaços do mapa com bordas orgânicas (autotile por campo).
 // Cada camada (areia, terra, grama) tem um "campo" interpolado entre os centros dos blocos; o contorno
 // aparece onde o campo cruza 0,5 e ganha borda escura, brilho, espuma na beira d'água e sombra suave.
 // A água fica transparente: por baixo dela corre a camada de água animada.
 
-const RANK = new Int8Array(32).fill(3);
+const RANK = new Int8Array(256).fill(3);
 for (const t of [TILE.WATER, TILE.DEEP, TILE.BRIDGE, TILE.BRIDGEV]) RANK[t] = 0;
 RANK[TILE.SAND] = 1;
 for (const t of [TILE.PATH, TILE.PLAZA, TILE.STAIRS, TILE.COURT, TILE.CORN, TILE.MUD]) RANK[t] = 2;
 RANK[TILE.DOCK] = 0;
-const HARD = new Uint8Array(32);
+const HARD = new Uint8Array(256);
 for (const t of [TILE.CLIFF, TILE.STAIRS, TILE.BRIDGE, TILE.BRIDGEV, TILE.PLAZA, TILE.FLOOR, TILE.WALL, TILE.TILEFLOOR, TILE.VOID, TILE.COURT, TILE.MAT, TILE.CAVE, TILE.ROCK, TILE.CAVEDOOR, TILE.MUD, TILE.CLIMB, TILE.WEBG, TILE.WEBS, TILE.SNOW, TILE.DOCK]) HARD[t] = 1;
-const DARKT = new Uint8Array(32); DARKT[TILE.DARK] = 1; DARKT[TILE.FOREST] = 1;
-const GOLDT = new Uint8Array(32); GOLDT[TILE.GOLD] = 1;
+const DARKT = new Uint8Array(256); DARKT[TILE.DARK] = 1; DARKT[TILE.FOREST] = 1;
+const GOLDT = new Uint8Array(256); GOLDT[TILE.GOLD] = 1;
+// biomas novos: família de cada bloco (0 = a de sempre: grama, trilha, areia ou água conforme a camada)
+// pontes e píer são neutros (não puxam água para dentro de uma poça de lava)
+const FAMT = new Uint8Array(256), NEUTRAL = 255, FAMS = [];
+for (const f of Object.values(FAM)) FAMS[f.id] = f;
+for (const [t, name] of Object.entries(SOFT)) { RANK[t] = FAM[name].rank; FAMT[t] = FAM[name].id; }
+for (const [t, [name, r]] of Object.entries(BLEED)) { RANK[t] = r; FAMT[t] = FAM[name].id; }
+for (const t of [TILE.BRIDGE, TILE.BRIDGEV, TILE.DOCK]) FAMT[t] = NEUTRAL;
+for (const t of [TILE.CUR_E, TILE.CUR_W, TILE.CUR_N, TILE.CUR_S]) RANK[t] = 0;
+for (const t of [TILE.ICEWALL, TILE.ICEFLOOR, TILE.LAVAWALL, TILE.LAVAFLOOR, TILE.OBSIDIAN, TILE.CANYON, TILE.ROOTS, TILE.TEMPLEFLOOR, TILE.MOSAIC, TILE.OLDSTONE,
+  TILE.TEMPLEWALL, TILE.STAIRUP, TILE.STAIRDOWN, TILE.HOLE, TILE.CRACK, TILE.DARKCAVE, TILE.CRYSTALFLOOR, TILE.CRYSTALWALL, TILE.RAIL]) HARD[t] = 1;
 
+const KS = new Int32Array(4), WS = new Float32Array(4);
 function hash(x, y, s = 0) { let h = (x * 374761393 + y * 668265263 + s * 1442695041) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; }
 // ruído suave e repetível (64x64) para tornar as bordas orgânicas
 const NOISE = new Float32Array(64 * 64);
@@ -34,9 +46,9 @@ export function renderTiles(map, img, ox, oy, tx0, ty0, tw, th) {
   const d = img.data, IW = img.width;
   const at = (x, y) => map.at(x, y);
   // grade de "rank" com 1 bloco de margem
-  const GW = tw + 2, GH = th + 2, R = new Int8Array(GW * GH), D = new Uint8Array(GW * GH), DP = new Uint8Array(GW * GH), GD = new Uint8Array(GW * GH);
+  const GW = tw + 2, GH = th + 2, R = new Int8Array(GW * GH), D = new Uint8Array(GW * GH), DP = new Uint8Array(GW * GH), GD = new Uint8Array(GW * GH), FM = new Uint8Array(GW * GH);
   for (let j = 0; j < GH; j++) for (let i = 0; i < GW; i++) {
-    const t = at(tx0 + i - 1, ty0 + j - 1); R[j * GW + i] = RANK[t] ?? 3; D[j * GW + i] = DARKT[t]; GD[j * GW + i] = GOLDT[t];
+    const t = at(tx0 + i - 1, ty0 + j - 1); R[j * GW + i] = RANK[t] ?? 3; D[j * GW + i] = DARKT[t]; GD[j * GW + i] = GOLDT[t]; FM[j * GW + i] = FAMT[t];
     // fundo do lago/mar: média 5x5 para o degradê ficar redondo
     let n = 0; for (let b = -2; b <= 2; b++) for (let a = -2; a <= 2; a++) if (at(tx0 + i - 1 + a, ty0 + j - 1 + b) === TILE.DEEP) n++; DP[j * GW + i] = n * 10;
   }
@@ -59,9 +71,32 @@ export function renderTiles(map, img, ox, oy, tx0, ty0, tw, th) {
       const n = NOISE[(gy & 63) * 64 + (gx & 63)] * 0.11;
       const r00 = R[k00], r10 = R[k10], r01 = R[k01], r11 = R[k11];
       const F = (L) => (r00 >= L) * w00 + (r10 >= L) * w10 + (r01 >= L) * w01 + (r11 >= L) * w11 + n;
-      const f3 = F(3), f2 = F(2), f1 = F(1);
+      const f4 = F(4), f3 = F(3), f2 = F(2), f1 = F(1);
       const p = (y * 16 + x) * 4;
       let tex, kr = 1, ov = null, alpha = 255;
+      // biomas: família vencedora na camada vencedora (só entre os cantos dessa camada)
+      const L = f4 >= 0.5 ? 4 : f3 >= 0.5 ? 3 : f2 >= 0.5 ? 2 : f1 >= 0.5 ? 1 : 0;
+      let fa = 0, fb = -9;
+      KS[0] = k00; KS[1] = k10; KS[2] = k01; KS[3] = k11; WS[0] = w00; WS[1] = w10; WS[2] = w01; WS[3] = w11;
+      for (let q = 0; q < 4; q++) {
+        const kq = KS[q]; if (R[kq] !== L) continue;
+        const id = FM[kq]; if (id === NEUTRAL) continue;
+        let dup = false; for (let q2 = 0; q2 < q; q2++) if (R[KS[q2]] === L && FM[KS[q2]] === id) dup = true;
+        if (dup) continue;
+        let tot = id ? NOISE[((gy + id * 29) & 63) * 64 + ((gx + id * 17) & 63)] * 0.3 : 0;
+        for (let q2 = q; q2 < 4; q2++) if (R[KS[q2]] === L && FM[KS[q2]] === id) tot += WS[q2];
+        if (tot > fb) { fb = tot; fa = id; }
+      }
+      if (fa) {
+        const Fm = FAMS[fa]; let c = Fm.px(gx, gy);
+        if (L >= 3) { const fL = L === 4 ? f4 : f3; if (fL < 0.555) c = Fm.rim; else if (fL < 0.61) c = Fm.hi ?? c; else if (L === 3 && f4 > 0.4) c = [c[0] * 0.86, c[1] * 0.88, c[2] * 0.94]; }
+        else if (L === 2) { if (f3 > 0.41) c = [c[0] * 0.84, c[1] * 0.84, c[2] * 0.84]; else if (f2 < 0.55 && f1 < 0.99) c = Fm.rim; }
+        else if (L === 1) { if (f2 > 0.43 || f3 > 0.43) c = [c[0] * 0.88, c[1] * 0.88, c[2] * 0.88]; else if (f1 < 0.555) c = Fm.foam ? (Fm.foam === true ? [244, 250, 255] : Fm.foam) : Fm.rim; else if (f1 < 0.63) c = [c[0] * 0.88, c[1] * 0.88, c[2] * 0.88]; }
+        else if (Fm.shore) { for (const [lim, col] of Fm.shore) if (f1 > lim) { c = col; break; } }
+        put(bx + x, by + y, Math.min(255, c[0]), Math.min(255, c[1]), Math.min(255, c[2]), c[3] ?? 255);
+        continue;
+      }
+      if (L === 4) { put(bx + x, by + y, 240, 246, 255); continue; }
       if (f3 >= 0.5) {
         const fd = D[k00] * w00 + D[k10] * w10 + D[k01] * w01 + D[k11] * w11 + n * 0.8;
         const fg = GD[k00] * w00 + GD[k10] * w10 + GD[k01] * w01 + GD[k11] * w11 + n * 0.8;
@@ -134,6 +169,6 @@ function hardTile(map, t, tx, ty, put) {
       blit(c, (x, y) => { const sy = upper ? 1 + (y % 9) : y, p = (sy * 16 + x) * 4, q = (y * 16 + x) * 4; if (v[q + 3] > 0) return [v[q], v[q + 1], v[q + 2], 255]; return c[p + 3] < 10 ? [96, 78, 70, 255] : [c[p], c[p + 1], c[p + 2], 255]; });
       return;
     }
-    default: blit(GROUND.void);
+    default: if (!drawBiomeHard(t, at, tx, ty, put)) blit(GROUND.void);
   }
 }

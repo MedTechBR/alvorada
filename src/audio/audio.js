@@ -44,6 +44,40 @@ const TRACKS = {
     bass: seq(`A2 . E3 . A2 . E3 . | G2 . D3 . G2 . D3 . | F2 . C3 . F2 . C3 . | E2 . B2 . E2 . G#2 . |
       D2 . A2 . D2 . A2 . | F2 . C3 . F2 . C3 . | E2 . B2 . E2 . B2 . | A2 . E3 . A2 . . .`),
     drums: seq('k . . h . . s . k . . h . . . h') },
+  // ---- biomas (ramo biomas) ----
+  // gelo: calma, de sino, em ré
+  snow: { bpm: 84, lead: seq(`
+    D5 - F#5 - A5 - - - G5 - F#5 - E5 - - - | D5 - E5 - F#5 - A5 - B5 - - - A5 - - - |
+    G5 - F#5 - E5 - D5 - E5 - - - C#5 - - - | D5 - - - - - - - . . . . . . . . |`),
+    bass: seq(`D3 . A3 . F#3 . A3 . | G2 . D3 . B3 . D3 . | E3 . B3 . G3 . B3 . | A2 . E3 . C#4 . E3 .`), drums: null, soft: true },
+  // vulcão: menor, com pressa
+  volcano: { bpm: 140, lead: seq(`
+    E5 - E5 F5 E5 - D5 - E5 - G5 - F5 E5 D5 - | E5 - E5 F5 E5 - B4 - C5 - D5 - E5 - - - |
+    G5 - F5 E5 F5 - E5 D5 E5 - C5 - B4 - - - | E5 F5 G5 - F5 E5 D5 - E5 - - - . . . . |`),
+    bass: seq(`E2 E3 E2 E3 E2 E3 F2 F3 | E2 E3 E2 E3 D2 D3 D2 D3 | C2 C3 C2 C3 D2 D3 D2 D3 | E2 E3 E2 E3 E2 . E2 .`),
+    drums: seq('k . h k s . h . k k h . s . h h') },
+  // deserto e sertão: menor harmônica
+  desert: { bpm: 108, lead: seq(`
+    A4 - C5 - D5 - E5 - F5 - E5 - G#4 - - - | A4 - B4 - C5 - D5 - E5 - - - . . . . |
+    F5 - E5 - D5 - C5 - B4 - C5 - D5 - - - | E5 - D5 - C5 - B4 - A4 - - - . . . . |`),
+    bass: seq(`A2 . . A2 E3 . A2 . | A2 . . A2 E3 . G#2 . | D3 . . D3 A3 . D3 . | E2 . . E2 B2 . E2 .`),
+    drums: seq('k . . h k . s . k . . h k . s h') },
+  // mangue: lenta, molhada
+  mangrove: { bpm: 92, lead: seq(`
+    D5 - - F5 - G5 A5 - G5 - F5 - D5 - - - | C5 - D5 - F5 - - - E5 - D5 - - - . . |
+    D5 - - F5 - G5 A5 - C6 - A5 - G5 - - - | F5 - E5 - D5 - - - . . . . . . . . |`),
+    bass: seq(`D3 . A3 . D3 . C3 . | Bb2 . F3 . Bb2 . C3 . | D3 . A3 . D3 . F3 . | G2 . D3 . A2 . E3 .`),
+    drums: seq('k . h . . k h . k . h . . k h h') },
+  // cavernas: esparsa, misteriosa
+  cave: { bpm: 70, lead: seq(`
+    E5 - - - . . B4 - - - . . G5 - - - | F#5 - - - E5 - - - . . . . . . . . |
+    C5 - - - . . G4 - - - . . E5 - - - | D#5 - - - B4 - - - . . . . . . . . |`),
+    bass: seq(`E2 . . . B2 . . . | E2 . . . B2 . . . | C2 . . . G2 . . . | B1 . . . F#2 . . .`), drums: null, soft: true },
+  // templos e ruínas: solene
+  temple: { bpm: 80, lead: seq(`
+    A4 - C5 - E5 - - - D5 - C5 - B4 - - - | A4 - B4 - C5 - E5 - A5 - - - - - - - |
+    G5 - F5 - E5 - D5 - C5 - - - B4 - - - | A4 - - - - - - - . . . . . . . . |`),
+    bass: seq(`A2 . E3 . A2 . E3 . | F2 . C3 . F2 . C3 . | G2 . D3 . G2 . D3 . | E2 . B2 . E2 . G#2 .`), drums: null, soft: true },
 };
 
 // sons que tocam muito em combate ganham uma leve variação de altura (não soam sempre iguais)
@@ -66,6 +100,11 @@ export class Audio {
     this.duckGain = this.ctx.createGain(); this.duckGain.gain.value = this.duckK ?? 1; this.duckGain.connect(this.master);
     this.musicGain = this.ctx.createGain(); this.musicGain.gain.value = 0.32; this.musicGain.connect(this.duckGain);
     this.sfxGain = this.ctx.createGain(); this.sfxGain.gain.value = 0.8; this.sfxGain.connect(this.master);
+    // eco das cavernas: os efeitos também passam por um atraso com realimentação (liga com echo(true))
+    this.echoD = this.ctx.createDelay(1); this.echoD.delayTime.value = 0.23; this.echoFb = this.ctx.createGain(); this.echoFb.gain.value = 0.38;
+    this.echoWet = this.ctx.createGain(); this.echoWet.gain.value = this.echoOn ? 0.45 : 0;
+    this.sfxGain.connect(this.echoD); this.echoD.connect(this.echoFb); this.echoFb.connect(this.echoD); this.echoD.connect(this.echoWet); this.echoWet.connect(this.master);
+    this.ambGain = this.ctx.createGain(); this.ambGain.gain.value = 0.9; this.ambGain.connect(this.master);
     const real = new Float32Array(32), imag = new Float32Array(32);
     for (let n = 1; n < 32; n++) imag[n] = (2 / (n * Math.PI)) * Math.sin(n * Math.PI * 0.25); // pulso 25%
     this.pulse = this.ctx.createPeriodicWave(real, imag);
@@ -74,6 +113,7 @@ export class Audio {
     const d = this.noise.getChannelData(0);
     for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
     if (this.pendingTrack) this.music(this.pendingTrack);
+    if (this.ambName) { const n = this.ambName; this.ambName = null; this.ambient(n); }
     document.addEventListener('visibilitychange', () => (document.hidden ? this.ctx.suspend() : this.ctx.resume()));
   }
 
@@ -154,6 +194,8 @@ export class Audio {
       case 'charge': T(200, t, 0.5, { to: 900, vol: 0.08, type: 'triangle' }); T(205, t, 0.5, { to: 910, vol: 0.05, type: 'square' }); break;
       case 'shield': T(660, t, 0.3, { to: 990, vol: 0.1, type: 'sine' }); T(990, t + 0.05, 0.3, { vol: 0.06, type: 'triangle' }); break;
       case 'freeze': for (let i = 0; i < 5; i++) T(2000 + i * 400, t + i * 0.03, 0.06, { vol: 0.05, type: 'triangle' }); break;
+      case 'gota': T(1500 + Math.random() * 500, t, 0.07, { to: 700, vol: 0.05, type: 'sine' }); break;
+      case 'sino': [0, 12, 19].forEach((s2, i) => T(392 * 2 ** (s2 / 12), t + i * 0.01, 1.6 - i * 0.4, { vol: 0.12 / (i + 1), type: 'sine', attack: 0.004 })); T(784, t, 0.05, { vol: 0.08, type: 'square' }); break;
       case 'exclaim': T(1200, t, 0.08, { vol: 0.1, type: 'pulse' }); T(1600, t + 0.08, 0.1, { vol: 0.1, type: 'pulse' }); break;
       default:
         if (name.startsWith('move-')) {
@@ -211,6 +253,42 @@ export class Audio {
     if (!this.duckGain) return;
     const t = this.ctx.currentTime; this.duckGain.gain.cancelScheduledValues(t);
     this.duckGain.gain.setTargetAtTime(k, t, 0.12);
+  }
+
+  // eco (cavernas, templos, salas escuras)
+  echo(on) {
+    this.echoOn = on; if (!this.echoWet) return;
+    const t = this.ctx.currentTime; this.echoWet.gain.cancelScheduledValues(t); this.echoWet.gain.setTargetAtTime(on ? 0.45 : 0, t, 0.3);
+  }
+  // som ambiente contínuo do bioma: 'vento', 'lava', 'mar', 'gotas', 'mangue', 'templo' ou null
+  ambient(name) {
+    if (!this.ctx) { this.ambName = name; return; }
+    if (name === this.ambName) return;
+    this.ambName = name;
+    const c = this.ctx, t = c.currentTime;
+    if (this.amb) { const o = this.amb; o.g.gain.setTargetAtTime(0.0001, t, 0.5); setTimeout(() => { try { o.src.stop(); o.lfo?.stop(); } catch { /* já parou */ } }, 2500); clearInterval(o.timer); this.amb = null; }
+    if (!name) return;
+    const P = { vento: ['bandpass', 520, 0.6, 0.07, 0.13, 380], lava: ['lowpass', 170, 0.9, 0.12, 0.07, 60], mar: ['lowpass', 650, 0.7, 0.06, 0.11, 0], gotas: ['lowpass', 220, 0.8, 0.025, 0.05, 40], mangue: ['highpass', 3800, 1.5, 0.012, 0.6, 0], templo: ['lowpass', 130, 0.8, 0.04, 0.04, 30] }[name];
+    if (!P) return;
+    const [type, f0, q, vol, lfoHz, lfoAmt] = P;
+    const src = c.createBufferSource(); src.buffer = this.noise; src.loop = true;
+    const fl = c.createBiquadFilter(); fl.type = type; fl.frequency.value = f0; fl.Q.value = q;
+    const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.setTargetAtTime(vol, t, 1);
+    src.connect(fl); fl.connect(g); g.connect(this.ambGain); src.start();
+    // oscilador lento: rajadas de vento, ondas do mar
+    const lfo = c.createOscillator(); lfo.frequency.value = lfoHz; const la = c.createGain();
+    if (name === 'mar') { la.gain.value = vol * 0.8; lfo.connect(la); la.connect(g.gain); } else { la.gain.value = lfoAmt; lfo.connect(la); la.connect(fl.frequency); }
+    lfo.start();
+    // eventos soltos: bolhas de lava, gotas, sapos e grilos
+    const timer = setInterval(() => {
+      if (document.hidden) return;
+      const n = c.currentTime, r = Math.random();
+      if (name === 'lava' && r < 0.3) this.#tone(90 + Math.random() * 60, n, 0.12, { to: 40, vol: 0.06, type: 'sine', dest: this.ambGain });
+      if (name === 'gotas' && r < 0.18) this.#tone(1300 + Math.random() * 900, n, 0.06, { to: 700, vol: 0.035, type: 'sine', dest: this.sfxGain });
+      if (name === 'mangue' && r < 0.12) { const f = 95 + Math.random() * 40; for (let i = 0; i < 3; i++) this.#tone(f, n + i * 0.09, 0.06, { vol: 0.05, type: 'square', dest: this.ambGain }); }
+      if (name === 'templo' && r < 0.04) this.#tone(220 * (Math.random() < 0.5 ? 1 : 1.5), n, 2.2, { vol: 0.025, type: 'sine', dest: this.ambGain, attack: 0.6 });
+    }, 300);
+    this.amb = { src, g, lfo, timer };
   }
 
   toggleMusic(on) { this.musicOn = on; const t = this.track; this.track = null; if (on) this.music(t); else clearInterval(this.timer); }

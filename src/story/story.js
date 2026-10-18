@@ -1,3 +1,4 @@
+import { BIOME_TRACK } from '../world/clima.js';
 import * as PIXI from 'pixi.js';
 import { IS_TOUCH } from '../engine/input.js';
 import { Mon } from '../data/mon.js';
@@ -335,6 +336,7 @@ export class Story {
     }
     add(this.npc('nurse'), 38, 'Centro Pokémon', () => this.#nurseTalk());
     out.push(...this.roteiro.interactions());
+    out.push(...(g.mundo?.masmorra?.interactions() ?? [])); // alavancas, baús, sinos, tochas e portas das masmorras
     const n = this.spots.get('nurse');
     add({ x: n.x + 22, y: n.y - 6, h: 26 }, 16, 'Usar o PC', () => { g.ui.openPC(); });
     return out;
@@ -407,7 +409,8 @@ export class Story {
     if (this.battle) return;
     const p = g.player, c = this.spots.get('campina'), v = this.spots.get('village');
     const town = (v && Math.hypot(p.x - v.x, p.y - v.y) < v.r + 2 * T) || (c && Math.hypot(p.x - c.x, p.y - c.y) < c.r + 4 * T) || g.map.biome?.(p.x, p.y) === 'vila';
-    const want = town ? 'town' : g.map.biome?.(p.x, p.y) === 'floresta' ? 'forest' : 'route';
+    const bio = g.map.biome?.(p.x, p.y);
+    const want = town ? 'town' : bio === 'floresta' ? 'forest' : BIOME_TRACK[bio] ?? 'route'; // biomas novos: src/world/clima.js
     if (this.music !== want) { this.music = want; g.audio?.music?.(want); }
   }
 

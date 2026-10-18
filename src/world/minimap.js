@@ -11,6 +11,14 @@ const COLORS = {
   [TILE.BRIDGEV]: '#b8824e', [TILE.PLAZA]: '#dcd4c6', [TILE.FLOOR]: '#c7925c', [TILE.WALL]: '#6a5040', [TILE.FOREST]: '#2c6c3a', [TILE.COURT]: '#d8b48a',
   [TILE.DARK]: '#4f8c4a', [TILE.TILEFLOOR]: '#e2e8ec', [TILE.MAT]: '#c84a3c', [TILE.CAVE]: '#7a6658', [TILE.ROCK]: '#3e3238', [TILE.CAVEDOOR]: '#1a1214',
   [TILE.GOLD]: '#b8c860', [TILE.MUD]: '#6a4a32', [TILE.CORN]: '#8aa83a', [TILE.CLIMB]: '#4e7a3a', [TILE.WEBG]: '#c8a83a', [TILE.WEBS]: '#9aa4ac', [TILE.SNOW]: '#eef4fa', [TILE.DOCK]: '#b8824e',
+  // biomas
+  [TILE.SNOWFIELD]: '#e2ecf6', [TILE.DEEPSNOW]: '#f6faff', [TILE.ICE]: '#b4e0f2', [TILE.FROZEN]: '#8ac0e6', [TILE.ICEWALL]: '#5a86b0', [TILE.ICEFLOOR]: '#bcd0e4', [TILE.TALLSNOW]: '#a8c8c0',
+  [TILE.BASALT]: '#4e4448', [TILE.ASH]: '#8a8486', [TILE.LAVA]: '#f0602a', [TILE.OBSIDIAN]: '#2a2238', [TILE.HOTSPRING]: '#7ad0d0', [TILE.LAVAFLOOR]: '#4a3838', [TILE.LAVAWALL]: '#2e2426',
+  [TILE.DUNE]: '#eac282', [TILE.QUICKSAND]: '#b88a52', [TILE.CRACKED]: '#cc9460', [TILE.CANYON]: '#c07a4a', [TILE.CAATINGA]: '#b2805a', [TILE.TALLDRY]: '#c8b060',
+  [TILE.WETSAND]: '#c4aa7c', [TILE.TIDE]: '#8ab4c8', [TILE.ROOTS]: '#5a4632', [TILE.MANGMUD]: '#5e4c3a', [TILE.REEF]: '#5ac8c8',
+  [TILE.CUR_E]: '#5aa8e8', [TILE.CUR_W]: '#5aa8e8', [TILE.CUR_N]: '#5aa8e8', [TILE.CUR_S]: '#5aa8e8',
+  [TILE.TEMPLEFLOOR]: '#d8c49a', [TILE.MOSAIC]: '#b8865a', [TILE.OLDSTONE]: '#9a9686', [TILE.TEMPLEWALL]: '#7a6450', [TILE.STAIRUP]: '#e0d0b0', [TILE.STAIRDOWN]: '#6a5a4a',
+  [TILE.HOLE]: '#0c0a0e', [TILE.CRACK]: '#b8a07a', [TILE.DARKCAVE]: '#3a3238', [TILE.CRYSTALFLOOR]: '#4a3e6a', [TILE.CRYSTALWALL]: '#2e2442', [TILE.RAIL]: '#6a5a50',
 };
 const ROOF = { houseA: '#9a5a3a', houseB: '#c84a3c', houseC: '#6a8a5a', houseBlue: '#3a6ad8', lab: '#8a94a4', center: '#e8483a', mart: '#3a7ae8', barn: '#b8402e', treeCenter: '#277a38', treeHouse: '#277a38', greenhouse: '#bfe8d0', radioStation: '#d8902a', portico: '#c84a3c', stands: '#5a6a8a' };
 const DIR_ANGLE = { up: 0, right: Math.PI / 2, down: Math.PI, left: -Math.PI / 2 };

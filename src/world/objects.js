@@ -1,4 +1,5 @@
 import { BUILDINGS } from './buildings.js';
+import './arte-biomas.js'; // desenha as texturas dos biomas (SPR.*) antes do catálogo ser usado
 
 // Catálogo de objetos do cenário: textura, pegada em blocos (fw x fh, a partir do canto de cima à esquerda),
 // deslocamento do desenho, se é sólido, quebrável, luz à noite e porta.
@@ -38,6 +39,36 @@ export const KINDS = {
   bed: { tex: 'bed', fw: 1, fh: 2, oy: 0 }, table: { tex: 'table', fw: 2, fh: 1, oy: 0 }, tv: { tex: 'tv', fw: 1, fh: 1, oy: 0 },
   shelf: { tex: 'shelf', fw: 1, fh: 1, oy: 0 }, plant: { tex: 'plant', fw: 1, fh: 1, oy: 0 }, pc: { tex: 'pc', fw: 1, fh: 1, oy: 0 },
   machine: { tex: 'machine', fw: 2, fh: 1, oy: 0 }, counter: { tex: 'counter', fw: 4, fh: 1, oy: 0 }, balltable: { tex: 'balltable', fw: 3, fh: 1, oy: 0 },
+  // ---------- biomas (arte em arte-biomas.js; mecânicas em masmorra.js; lista em assets/maps/LEIAME.md) ----------
+  // plantas
+  snowPine: tree('snowPine'), snowPineBig: tree('snowPineBig', { oy: 2 }), cactus: { tex: 'cactus', fw: 1, fh: 1, oy: 1 }, mandacaru: { tex: 'mandacaru', fw: 2, fh: 1, oy: 2 },
+  coqueiro: { tex: 'coqueiro', fw: 1, fh: 1, oy: 2 }, palmeira: { tex: 'palmeira', fw: 1, fh: 1, oy: 2 }, mangue: { tex: 'mangue', fw: 3, fh: 1, oy: 2 },
+  // pedras (cristais e rocha de lava têm luz própria à noite e no escuro)
+  lavaRock: { tex: 'lavaRock', fw: 2, fh: 1, oy: 2, lights: [[14, 12, 0.7]], tint: 0xff7a2a, glow: 'glowLava' },
+  stalagmite: { tex: 'stalagmite', fw: 1, fh: 1, oy: 1 }, stalagmiteIce: { tex: 'stalagmiteIce', fw: 1, fh: 1, oy: 1 },
+  crystal: { tex: 'crystal', fw: 1, fh: 1, oy: 1, glow: 'glowCyan' }, crystalPink: { tex: 'crystalPink', fw: 1, fh: 1, oy: 1, glow: 'glowPink' },
+  obsidianRock: { tex: 'obsidianRock', fw: 1, fh: 1, oy: 1 },
+  // templo
+  statue: { tex: 'statue', fw: 2, fh: 1, oy: 1 }, altar: { tex: 'altar', fw: 2, fh: 1, oy: 1 }, brokenColumn: { tex: 'brokenColumn', fw: 1, fh: 1, oy: 1 },
+  obelisk: { tex: 'obelisk', fw: 1, fh: 1, oy: 1 }, pot: { tex: 'pot', fw: 1, fh: 1, oy: 0, breakable: true, hp: 1 },
+  torch: { tex: 'torch', fw: 1, fh: 1, oy: 1, fire: 'torchLit' }, brazier: { tex: 'brazier', fw: 1, fh: 1, oy: 1, fire: 'brazierLit' },
+  chest: { tex: 'chest', fw: 1, fh: 1, oy: 0, chest: true }, bell: { tex: 'bell', fw: 2, fh: 1, oy: 1, bell: true },
+  // casas (porta = coluna dx na última linha; "to" liga a um interior)
+  igloo: { tex: 'igloo', fw: 3, fh: 2, oy: 1, door: 1 }, cabin: { tex: 'cabin', fw: 5, fh: 3, oy: 1, door: 2, lights: [[17, 48], [63, 48]], smoke: [60, 8] },
+  taipa: { tex: 'taipa', fw: 5, fh: 3, oy: 1, door: 2, lights: [[18, 41]] },
+  // praia e extras
+  beachStall: { tex: 'beachStall', fw: 3, fh: 1, oy: 1 }, surfboard: { tex: 'surfboard', fw: 1, fh: 1, oy: 1 }, driftwood: { tex: 'driftwood', fw: 2, fh: 1, oy: 0 },
+  jangada: { tex: 'jangada', fw: 3, fh: 1, oy: 1 }, skull: { tex: 'skull', fw: 1, fh: 1, oy: 0 }, snowman: { tex: 'snowman', fw: 1, fh: 1, oy: 1 },
+  barrel: { tex: 'barrel', fw: 1, fh: 1, oy: 0, breakable: true, hp: 2 }, fumarola: { tex: 'fumarola', fw: 1, fh: 1, oy: 0, steam: true },
+  // mecânicas de masmorra (masmorra.js)
+  strengthRock: { tex: 'strengthRock', fw: 1, fh: 1, oy: 1, strength: true }, iceBlock: { tex: 'iceBlock', fw: 1, fh: 1, oy: 1, strength: true, light: true },
+  cart: { tex: 'cart', fw: 1, fh: 1, oy: 0, cart: true },
+  plate: { tex: 'plate', fw: 1, fh: 1, oy: 0, flat: true, solidCells: [] }, lever: { tex: 'lever', fw: 1, fh: 1, oy: 0, lever: true },
+  stoneDoor: { tex: 'stoneDoor', fw: 1, fh: 1, oy: 0, gate: true }, barsGate: { tex: 'barsGate', fw: 1, fh: 1, oy: 0, gate: true },
+  lockedDoor: { tex: 'lockedDoor', fw: 1, fh: 1, oy: 0, gate: true, locked: true },
+  crackedWall: { tex: 'crackedWall', fw: 1, fh: 1, oy: 0, cracked: true }, crackedRock: { tex: 'crackedRock', fw: 1, fh: 1, oy: 0, cracked: true },
+  crackedIce: { tex: 'crackedIce', fw: 1, fh: 1, oy: 0, cracked: true }, crackedLava: { tex: 'crackedLava', fw: 1, fh: 1, oy: 0, cracked: true },
+  crackedCanyon: { tex: 'crackedCanyon', fw: 1, fh: 1, oy: 0, cracked: true },
 };
 // decoração plana (sem colisão, sem y-sort): fica na camada logo acima do chão
 export const DECOR = { rug: 'rug', courtlines: 'courtlines', window: 'window', pebble: 'pebble', pebble2: 'pebble2', mush: 'mush', mush2: 'mush2', wheat: 'wheat' };
