@@ -119,7 +119,7 @@ export class Espelho {
     return t;
   }
   #lote(tex, modo) {
-    const k = tex.uid * 4 + modo;
+    const k = tex.uid * 8 + modo; // 5 modos (0 a 4): com *4 a silhueta de uma textura colidia com o lote opaco da seguinte
     let l = this.lotes.get(k);
     if (!l) { l = new Lote(this, tex, modo); this.lotes.set(k, l); }
     return l;
