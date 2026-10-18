@@ -87,6 +87,8 @@ export class Ceu {
     const lista = [g.player, ...(g.entities ?? [])];
     for (const e of lista) { if (!e || e.dead || at.length >= 8) continue; if (Math.abs(e.x - v.alvo.x) > raio || Math.abs(e.y - v.alvo.z) > raio) continue; at.push({ x: e.x, y: e.y, raio: Math.max(10, (e.r ?? 6) * 2.2), forca: 1 }); }
     A.atores(at);
+    // sol vindo um pouco do sul: a frente das casas e das árvores (o que a câmera vê) fica iluminada, como no HGSS
+    if (A.ceu.nivel) A.ceu.nivel.solNorte = -0.32;
     A.update(dt, { hora: room ? 12 : h, foco: v.alvo, raio, interior: !!room, nevoa: [D * 1.1, D * 3.4], zoom: g.zoom });
     const ls = v.u.luzSprite.value;
     ls.copy(A.luzP).multiplyScalar(1.05);

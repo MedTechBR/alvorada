@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { CURVA_GLSL } from './curva.js';
+import { FLOWERS, SPR } from '../world/art.js';
+const FLORES2D = new Set(FLOWERS.flat().map((t) => t.source));
 
 // Espelho: redesenha em 3D os sprites que o jogo monta no Pixi, sem mexer na lógica deles.
 // - game.ents (treinador, Pokémon, NPCs, outros jogadores, montarias, objetos sem modelo): billboards em pé no
@@ -138,7 +140,7 @@ export class Espelho {
     for (const s of v.L.setoresVisiveis()) {
       const d = s.deco; if (!d?.visible && !d) continue;
       this.gx = null;
-      for (const sp of d.children) if (sp.visible && sp.alpha > 0.01) this.#no(sp, 1, 0, 0, 1, 0, 0, 1, true, true);
+      for (const sp of d.children) { if (!sp.visible || sp.alpha <= 0.01) continue; if (v.amb && (FLORES2D.has(sp.texture?.source) && sp.f != null || sp.texture === SPR.pebble || sp.texture === SPR.pebble2)) continue; this.#no(sp, 1, 0, 0, 1, 0, 0, 1, true, true); }
     }
     for (const l of this.lotes.values()) l.fechar();
   }

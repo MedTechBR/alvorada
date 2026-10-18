@@ -49,7 +49,7 @@ export class CameraDinamica {
     if (lutadores && this.cinema) {
       const { x0, x1, y0, y1 } = lutadores, cx = (x0 + x1) / 2, cz = (y0 + y1) / 2;
       const ext = Math.max((x1 - x0) / (innerWidth / innerHeight), y1 - y0) + 80;
-      alvoX += (cx - alvoX) * 0.55 * this.batalhaK; alvoZ += (cz - alvoZ) * 0.55 * this.batalhaK;
+      alvoX += (cx - alvoX) * 0.4 * this.batalhaK; alvoZ += (cz - alvoZ) * 0.4 * this.batalhaK;
       const quer = Math.max(1, ext / (innerHeight / Math.max(1, g.zoom)) * 0.9);
       dist *= 1 + (Math.min(1.6, quer) - 1 + 0.12) * this.batalhaK;
       incl += 6 * this.batalhaK;

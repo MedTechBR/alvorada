@@ -74,7 +74,7 @@ export class Visual3D {
     app.ticker.add(() => this.quadro(), null, -25);
   }
   // distância da câmera: um bloco no foco tem na tela o mesmo tamanho que tem no 2D com esse zoom
-  get distancia() { const z = Math.max(0.6, this.g.zoom || 3); return innerHeight / (2 * z * Math.tan(FOV * Math.PI / 360)) * 0.92; }
+  get distancia() { const z = Math.max(0.6, this.g.zoom || 3); return innerHeight / (2 * z * Math.tan(FOV * Math.PI / 360)) * 1.04; }
   altura(px, py) { return this.relevo.em(px, py); }
   // aplica o mundo curvo uma vez em materiais que vieram de outros módulos (ambientação, kit)
   curvar(m) { if (m && !m.userData.curvado) { m.userData.curvado = true; curvarMaterial(m, this); m.needsUpdate = true; } return m; }
