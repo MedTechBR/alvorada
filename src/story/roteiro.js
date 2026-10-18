@@ -16,6 +16,14 @@ import { FOES } from '../combat/combat.js';
 import { dexMark } from '../ui/menu.js';
 import './cenario.js'; // prédios e objetos dos capítulos 4 a 6 (registra no catálogo antes de o mapa ser montado)
 import { Enigmas } from './enigmas.js';
+import { LOJAS, estoque } from '../world/lojas.js';
+
+// Mercados dos capítulos 4 a 6 no esquema de lojas do jogo (src/world/lojas.js): estoque que cresce com as insígnias
+Object.assign(LOJAS, {
+  vendedor_coral: { nome: 'Mercado Pokémon de Cidade Coral', extra: [[0, ['diveBall', 'netBall']], [1, ['freshWater', 'sodaPop']]] },
+  vendedor_lamparina: { nome: 'Mercado Pokémon de Vila Lamparina', extra: [[0, ['duskBall']], [2, ['awakening']]] },
+  vendedor_aurora: { nome: 'Megaloja Aurora', extra: [[0, ['quickBall', 'timerBall', 'repeatBall']], [3, ['maxRevive']]] },
+});
 
 // Motor de roteiro: executa os capítulos escritos em dados (src/story/script/capNN.js, formato na seção 8 de
 // docs/historia-completa.md). O capítulo 1 continua no story.js; quando ele termina (flags.ch1Done), este motor
@@ -455,6 +463,7 @@ export class Roteiro {
     const g = this.g, lista = n.e.loja;
     n.faceTo(g.player.x, g.player.y);
     await g.ui.say([n.e.ola ?? 'Bem-vindo! O que vai levar hoje?'], { name: n.name });
+    if (LOJAS[n.e.id] && g.ui.openShop) { await g.ui.openShop(estoque(n.e.id, (this.f.badges ?? []).length), { name: LOJAS[n.e.id].nome }); return; }
     for (;;) {
       const precos = lista.map((k) => ITEMS[itemId(k)]?.price ?? 0);
       const r = await g.ui.say([`Você tem ₽${g.money}. O que vai levar?`], { name: n.name, choices: [...lista.map((k, i) => `${nomeItem(k)} — ₽${precos[i]}`), 'Nada, obrigado'] });
