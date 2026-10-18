@@ -34,11 +34,14 @@ const XP_SHARE = 0.5; // parte da XP que vai para quem ficou na equipe
 const ALPHA_DROPS = [['greatBall', 2, 30], ['superPotion', 2, 25], ['stardust', 1, 14], ['pearl', 1, 14], ['bigMushroom', 1, 6], ['rareCandy', 1, 7], ['nugget', 1, 4]];
 
 const $ = (id) => document.getElementById(id);
+// Visual 3D (src/visual3d, estilo HGSS/FireRed em 3D) é o padrão; ?visual=2d (ou a opção "Visual" = 2D) volta ao 2D.
+// Sem WebGL ou se o 3D falhar ao ligar, o jogo segue em 2D sozinho.
+const VISUAL_3D = (() => { const q = new URLSearchParams(location.search).get('visual'); if (q) return q !== '2d'; try { return localStorage.getItem('alvorada.visual') !== '2d'; } catch { return true; } })();
 
 class Game {
   async init() {
     this.app = new PIXI.Application();
-    await this.app.init({ resizeTo: window, background: 0x1b2a1e, antialias: false, roundPixels: true, resolution: 1, preference: 'webgl', powerPreference: 'high-performance' });
+    await this.app.init({ resizeTo: window, background: 0x1b2a1e, backgroundAlpha: VISUAL_3D ? 0 : 1, antialias: false, roundPixels: true, resolution: 1, preference: 'webgl', powerPreference: 'high-performance' });
     $('game').appendChild(this.app.canvas);
     window.__boot?.(0.74, 'Desenhando o mundo…');
     PIXI.TextureSource.defaultOptions.scaleMode = 'nearest';
@@ -86,6 +89,11 @@ class Game {
     this.net = new Online(this); // modo online (src/net): salas, outros jogadores, troca e PvP
     this.app.ticker.maxFPS = 0;
     this.app.ticker.add((tk) => this.frame(Math.min(0.05, tk.deltaMS / 1000)));
+    if (VISUAL_3D) {
+      window.__boot?.(0.95, 'Montando o mundo em 3D…');
+      try { const { Visual3D } = await import('./visual3d/index.js'); this.v3d = new Visual3D(this); this.v3d.instalar(); }
+      catch (e) { console.error('[3D] não deu para ligar o visual 3D; seguindo em 2D', e); this.v3d = null; this.app.renderer.background.alpha = 1; }
+    }
     window.game = this;
     // tela de título (conta + personagem); depois o primeiro Pokémon sai da bola e a história começa
     // ?teste=1: entra direto com equipe de teste e sem gravar (para testes; não aparece para o jogador)
@@ -527,6 +535,7 @@ class Game {
     return { x: lead.x + fd[0] * 120, y: lead.y + fd[1] * 120 };
   }
   screenToWorld(sx, sy) { const z = this.world.scale.x; return { x: (sx - this.world.x) / z, y: (sy - this.world.y) / z }; }
+  worldToScreen(x, y, h = 0) { const z = this.world.scale.x; return { x: this.world.x + x * z, y: this.world.y + (y - h) * z }; }
 
   #control(dt) {
     const inp = this.input, p = this.player;
@@ -634,10 +643,12 @@ class Game {
   }
 
   #camera(dt) {
+    // camFocus: ponto que uma cena curta pede para mostrar (arena de ginásio: fases, entrada do ás)
     const p = this.player, c = this.cam, f = this.mode === 'pokemon' && this.lead?.alive ? this.lead : p;
     let fx = f.x, fy = f.y - (f === p ? this.mount?.camLift ?? 0 : 0); // voando, a câmera sobe com o treinador
-    const foco = this.camFoco?.(fx, fy); if (foco) { fx = foco.x; fy = foco.y; } // reide: entre o Pokémon e o chefe (src/world/tocas.js)
-    c.x += (fx - c.x) * Math.min(1, dt * 8); c.y += (fy - c.y) * Math.min(1, dt * 8);
+    const foco = this.camFocus ?? this.camFoco?.(fx, fy); if (foco) { fx = foco.x; fy = foco.y; } // reide: entre o Pokémon e o chefe (src/world/tocas.js)
+    const ck = this.camFocus ? 3.5 : 8;
+    c.x += (fx - c.x) * Math.min(1, dt * ck); c.y += (fy - c.y) * Math.min(1, dt * ck);
     let sx = 0, sy = 0;
     if (this.fx.shake > 0) { this.fx.shake -= dt; const k = this.fx.shake * 6; sx = (Math.random() - 0.5) * k; sy = (Math.random() - 0.5) * k; }
     const z = this.zoom * (this.camK ?? 1); // camK < 1: câmera afasta (Dynamax, reide; src/combat/poder.js)
@@ -645,7 +656,7 @@ class Game {
     this.world.x = Math.round(innerWidth / 2 - (c.x + sx) * z);
     this.world.y = Math.round(innerHeight / 2 - (c.y + sy) * z);
     const hw = innerWidth / 2 / z + 40, hh = innerHeight / 2 / z + 40;
-    this.map.cullChunks({ x0: c.x - hw, x1: c.x + hw, y0: c.y - hh, y1: c.y + hh });
+    if (this.v3d) this.v3d.cull(); else this.map.cullChunks({ x0: c.x - hw, x1: c.x + hw, y0: c.y - hh, y1: c.y + hh });
     const area = this.map.areaName(p.x, p.y);
     if (area !== this.area) { this.area = area; this.missoes?.evento('area', { nome: area }); const el = $('area'); el.textContent = area; el.classList.add('on'); clearTimeout(this.areaT); this.areaT = setTimeout(() => el.classList.remove('on'), 2500); }
   }

@@ -7,6 +7,8 @@ import { CenarioVivo } from '../world/vivo.js';
 // O cenário vivo (src/world/vivo.js, g.vivo) cuida do que dura: árvores que caem e rebrotam, rochas e cercas que
 // quebram e voltam, prédios com marcas de dano que se consertam, água que congela, mato que cresce e volta.
 // `by` = quem causou (Pokémon): golpe repetido de outro jogador (by.remote) só mexe no desenho.
+// Na luta de ginásio, a arena dinâmica (g.arenaGinasio, src/combat/arena-ginasio.js) vê os mesmos golpes primeiro:
+// coberturas, milho e sombras falsas seguram projéteis; fogo queima teia; alavancas e geradores respondem.
 
 const GRASSY = new Set([TILE.GRASS, TILE.GRASS2, TILE.FLOWERS]);
 
@@ -21,7 +23,10 @@ export class Arena {
   #troca(tx, ty, t, tipo, by) { if (this.vivo) this.vivo.trocarTile(tx, ty, t, tipo, undefined, by); else this.g.map.setTile(tx, ty, t); }
 
   // projétil chegando no ponto: bate em objeto (devolve true) ou mexe no mato
-  blockAt(x, y, mv, by = null) {
+  // p = projétil (a arena de ginásio usa) ou o Pokémon que causou
+  blockAt(x, y, mv, p = null) {
+    if (this.g.arenaGinasio?.bloqueia(x, y, mv, p)) return true;
+    const by = p?.user ?? p;
     const o = this.objAt(x, y);
     if (o) { this.hitObject(o, mv, 1, by); return true; }
     if (mv && this.g.map.tallAt(x, y)) {
@@ -97,10 +102,11 @@ export class Arena {
     if (this.g.map.tallAt(x, y)) this.fx.emit(x, y, { tex: 'clip', n: 3, speed: 60, life: 0.6, grav: 100, vz: 40, add: false });
     for (const [k, f] of this.fires) if (Math.hypot(f.tx * T + 8 - x, f.ty * T + 8 - y) < 18 && Math.random() < 0.5) this.fires.delete(k);
   }
-  trample(x, y, mv, by = null) { if (this.g.map.tallAt(x, y) && Math.random() < 0.5) this.cut(x, y, by); const o = this.objAt(x, y); if (o) this.hitObject(o, mv, 1.2, by); }
+  trample(x, y, mv, by = null) { this.g.arenaGinasio?.pisoteio(x, y, mv, by); if (this.g.map.tallAt(x, y) && Math.random() < 0.5) this.cut(x, y, by); const o = this.objAt(x, y); if (o) this.hitObject(o, mv, 1.2, by); }
 
   // golpe batendo no chão (sem acertar ninguém ou no alvo): mato, terra, fogo, gelo, água
   impact(x, y, mv, P = 1, swing = false, by = null) {
+    this.g.arenaGinasio?.impacto(x, y, mv, P);
     const o = this.objAt(x, y);
     if (o) { this.hitObject(o, mv, P, by); return; }
     if (!mv) return;
@@ -121,6 +127,7 @@ export class Arena {
   // explosão/queda: área com raio r (px)
   blast(x, y, r, mv, by = null) {
     const fx = this.fx;
+    const A = this.g.arenaGinasio; if (A) for (let i = 0; i < 5; i++) A.impacto(x + (i ? Math.cos(i * 1.57) * r * 0.6 : 0), y + (i ? Math.sin(i * 1.57) * r * 0.6 : 0), mv, 1.4);
     if (r >= 10) fx.decal('crater', x, y, { scale: Math.min(1.6, r / 18), life: 40 });
     this.vivo?.agua(x, y, mv, Math.min(2, r / 14), by);
     if (mv?.type === 'ground' && r >= 12) this.vivo?.fendas(x, y, r); // Terremoto, Escavar: fendas por um tempo
