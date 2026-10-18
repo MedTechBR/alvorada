@@ -1,11 +1,11 @@
 // Teste do cenário vivo (src/world/vivo.js) no Chrome sem interface (CDP). Só para desenvolvimento.
-//   python3 tools/serve.py 8761   (noutro terminal)
-//   node tools/teste-online/cenario-vivo.mjs [porta]
+//   python3 tools/serve.py 8779   (noutro terminal; uma porta só sua)
+//   node tools/teste-online/cenario-vivo.mjs [porta]   (SO_ONLINE=1: só os 2 clientes)
 // Fotos em tools/shots/cv-*.jpg. Cobre: árvore que cai e rebrota, casa danificada e consertada (pedreiro),
 // Pokémon no telhado e na árvore lutando de cima, derrubado, emboscada de um selvagem, água congelada
 // (e derretida), choque na água, e 2 clientes vendo a mesma árvore cair.
 import { launch, open, sleep, until } from './cdp.mjs';
-const port = Number(process.argv[2] ?? 8761);
+const port = Number(process.argv[2] ?? 8779);
 const base = `http://127.0.0.1:${port}/index.html?teste=1`;
 const b = await launch(9351);
 const R = {}; const falhas = [];
@@ -16,7 +16,7 @@ const pump = (p) => p.ev(`(window.__pump ??= (() => { const f = () => { try { ga
 // cada pergunta à página tem prazo (com a máquina cheia, o Chrome às vezes não responde)
 const pergunta = (p, expr, ms = 15000) => Promise.race([p.ev(expr), new Promise((_, rej) => setTimeout(() => rej(new Error('sem resposta')), ms))]);
 const espera = (p, expr, ms = 20000) => until(() => pergunta(p, expr), ms, 100);
-const carregou = async (p) => { if (!(await until(() => pergunta(p, '!!window.game?.vivo?.pronto && game.ui?.state === "play"'), 300000, 1000))) throw new Error('o jogo não carregou em 5 min'); };
+const carregou = async (p) => { if (!(await until(() => pergunta(p, '!!window.game?.vivo?.pronto && game.ui?.state === "play"'), 600000, 1000))) throw new Error('o jogo não carregou em 10 min'); };
 // ajudantes dentro da página
 const AJUDA = `window.__cv = {
   perto(f, x = game.player.x, y = game.player.y) { const v = game.vivo; return game.map.objects.filter((o) => !o.dead && f(o, v) && !game.map.interiorAt(o.x, o.y - 1)).sort((a, b) => Math.hypot(a.x - x, a.y - y) - Math.hypot(b.x - x, b.y - y))[0]; },
@@ -26,6 +26,7 @@ const AJUDA = `window.__cv = {
 };`;
 
 try {
+  if (!process.env.SO_ONLINE) { // SO_ONLINE=1: só a parte dos 2 clientes
   // ======================================================================= um jogador
   const p = await open(b, `${base}&online=0`, 'a');
   await carregou(p);
@@ -163,10 +164,11 @@ try {
   ok('console sem erros (1 jogador)', exc.length === 0, exc.slice(0, 5));
   await p.close();
 
+  }
   // ======================================================================= 2 clientes
-  const A = await open(b, `${base}&online=1&rede=local&perfil=cva`, 'A'); await sleep(1500);
-  const B = await open(b, `${base}&online=1&rede=local&perfil=cvb`, 'B');
-  for (const q of [A, B]) { await carregou(q); await pump(q); await q.ev(AJUDA); }
+  // um de cada vez: aba escondida não desenha e o mapa novo monta entre os quadros
+  const A = await open(b, `${base}&online=1&rede=local&perfil=cva`, 'A'); await carregou(A); await pump(A); await A.ev(AJUDA);
+  const B = await open(b, `${base}&online=1&rede=local&perfil=cvb`, 'B'); await carregou(B); await pump(B); await B.ev(AJUDA);
   const juntos = await until(async () => { const s = await Promise.all([A, B].map((q) => q.ev('game.net.on && game.net.room?.players.size'))); return s.every((n) => n === 2) && s; }, 90000, 500);
   ok('2 clientes no mesmo canal', !!juntos, juntos);
   const alvo = await A.ev(`(() => { const t = __cv.perto((o, v) => v.material(o) === 'arvore' && v.destrutivel(o) && o.kind !== 'palm'); window.__t = t; __cv.ir(t.x - 40, t.y + 30); return game.vivo.chave(t); })()`);
