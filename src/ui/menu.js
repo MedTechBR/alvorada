@@ -123,6 +123,7 @@ const ICON = {
   dex: '<svg viewBox="0 0 24 24"><rect x="3" y="2.5" width="18" height="19" rx="3" fill="#e5383b" stroke="#7a1418" stroke-width="1.4"/><circle cx="8" cy="7.5" r="3" fill="#7fd6ff" stroke="#fff" stroke-width="1.3"/><circle cx="14" cy="6" r="1" fill="#ffd23f"/><circle cx="17" cy="6" r="1" fill="#3ccf6e"/><rect x="6" y="13" width="12" height="5.5" rx="1.2" fill="#fff" opacity=".9"/></svg>',
   party: ICONS.ball,
   bag: '<svg viewBox="0 0 24 24"><path d="M8 7V5.5a4 4 0 0 1 8 0V7" fill="none" stroke="#6b4423" stroke-width="1.8"/><rect x="4" y="7" width="16" height="14" rx="4" fill="#f0a73c" stroke="#6b4423" stroke-width="1.5"/><rect x="8" y="12" width="8" height="5" rx="1.5" fill="#ffd27a" stroke="#6b4423" stroke-width="1.2"/></svg>',
+  voar: '<svg viewBox="0 0 24 24"><path d="M2 13c4-1 6-5 10-5s6 4 10 5c-3 1-5 4-10 4S5 14 2 13z" fill="#7fb8ff" stroke="#24406e" stroke-width="1.4" stroke-linejoin="round"/><path d="M12 8l2-4 1 4" fill="#ffd23f" stroke="#24406e" stroke-width="1.2" stroke-linejoin="round"/></svg>',
   map: '<svg viewBox="0 0 24 24"><path d="M3 5l6-2 6 2 6-2v16l-6 2-6-2-6 2z" fill="#9fd67a" stroke="#2d5d34" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 3v16M15 5v16" stroke="#2d5d34" stroke-width="1.2"/><circle cx="12" cy="10" r="2" fill="#e5383b"/></svg>',
   card: '<svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2.5" fill="#5aa6ff" stroke="#1d3f7a" stroke-width="1.4"/><circle cx="8" cy="11" r="2.4" fill="#fff"/><path d="M4.5 16.5c.8-2 2-3 3.5-3s2.7 1 3.5 3" fill="#fff"/><rect x="13" y="9" width="6.5" height="1.6" rx=".8" fill="#fff"/><rect x="13" y="12.5" width="5" height="1.6" rx=".8" fill="#fff"/></svg>',
   quests: '<svg viewBox="0 0 24 24"><path d="M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6z" fill="#f4e2b0" stroke="#6b4423" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2" fill="#c98a4b" stroke="#6b4423" stroke-width="1.4"/><circle cx="12.5" cy="12" r="5" fill="#ffd23f" stroke="#1d2340" stroke-width="1.3"/><path d="M12.5 9v3.4" stroke="#1d2340" stroke-width="1.8" stroke-linecap="round"/><circle cx="12.5" cy="14.6" r=".95" fill="#1d2340"/></svg>',
@@ -178,7 +179,8 @@ const MAIN_ITEMS = [
   ['mounts', 'Montarias', 'Quem leva você em cada modo (X): correr, nadar, escalar, voar e mergulhar.'],
   ['bag', 'Mochila', 'Poké Bolas, remédios e frutas.'],
   ['quests', 'Missões', 'Seu diário: missões ativas, concluídas e as jornadas.'],
-  ['map', 'Mapa', 'O mapa da região Alvorada.'],
+  ['map', 'Mapa', 'O mapa da região (uma aba por continente visitado).'],
+  ['voar', 'Voar', 'Voe até um Ninho de pouso já visitado (tecla V).'],
   ['card', 'Treinador', 'Seu cartão de treinador e as insígnias.'],
   ['online', 'Online', 'Quem está no mundo, sala privada, troca e duelo (tecla O).'],
   ['options', 'Opções', 'Som, texto, controles e tela.'],
@@ -448,6 +450,7 @@ export class GameMenu {
     if (id === 'close') return this.close();
     if (id === 'party' && !g.party.length) return this.#msg('Você ainda não tem Pokémon. Fale com o Prof. Jatobá!');
     if (id === 'online') { if (this.ui.g.net?.ui) this.ui.openOnline(); else this.#msg('O modo online não está disponível nesta versão.'); return; }
+    if (id === 'voar') { if (!g.viagem?.podeVoar()) return this.#msg('Você ainda não tem um Pokémon que voe com você (montaria Voar).'); this.close(); g.viagem.abrirVoo(); return; }
     ({ dex: () => this.#dex(), party: () => this.#party(), bag: () => this.#bag(), map: () => this.#map(), card: () => this.#card(),
       options: () => this.#options(), save: () => this.#save(), mounts: () => this.#mounts(),
       quests: () => telaMissoes(this, { screen: (o) => this.#screen(o), push: (l) => this.#push(l), choose: (t, o) => this.#choose(t, o), msg: (t) => this.#msg(t), refresh: () => this.refresh() }) })[id]?.();
@@ -1031,70 +1034,80 @@ export class GameMenu {
   }
 
   // ---------- Mapa (desenhado dos próprios blocos do mapa) ----------
-  #map() {
+  // Mapa de um continente por vez: abas com os mundos já visitados (Alvorada, Ocaso…). O do mundo atual vem dos blocos
+  // do mapa montado; o de outro mundo é montado à parte (src/world/viagem.js, fonteMapa), só com o que foi visitado.
+  #map(mundo = this.g.map.id) {
     const g = this.g;
-    const seen = (a) => this.#visited(a.x, a.y);
-    const here = g.map.areaName?.(g.player.x, g.player.y) ?? '';
+    const mundos = (g.viagem?.mundosVisitados?.() ?? [{ id: g.map.id, curto: g.map.nome }]);
+    const atual = mundo === g.map.id;
+    const F = this.#fonte(mundo);
+    const seen = (a) => this.#visited(a.x, a.y, F);
+    const here = atual ? g.map.areaName?.(g.player.x, g.player.y) ?? '' : '';
     // só as áreas já visitadas (o resto do mapa fica na névoa, sem revelar nomes)
-    const areas = (World.AREAS ?? []).filter((a) => a.name === here || seen(a));
+    const areas = (F.areas ?? []).filter((a) => a.name === here || seen(a));
     this.mapImg = null; // a névoa muda conforme o jogador anda: redesenha a cada abertura
     const L = this.#screen({
-      title: 'Mapa da região', cls: 'gm-mapscr', t: 0, sel: Math.max(0, areas.findIndex((a) => a.name === here)),
-      extra: () => `<span class="gm-chip">${esc(here || 'Região Alvorada')}</span>`,
-      foot: '<b>↑↓</b> ver área · <b>Esc</b> voltar',
+      title: 'Mapa da região', cls: 'gm-mapscr', t: 0, sel: Math.max(0, areas.findIndex((a) => a.name === here)), mundo, F,
+      extra: () => (mundos.length > 1 ? mundos.map((w) => `<button class="gm-tab ${w.id === mundo ? 'on' : ''}" data-w="${w.id}">${esc(w.curto ?? w.nome)}</button>`).join('') : '') + `<span class="gm-chip">${esc(here || F.nome || 'Região Alvorada')}</span>`,
+      foot: mundos.length > 1 ? '<b>↑↓</b> ver área · <b>←→</b> continente · <b>Esc</b> voltar' : '<b>↑↓</b> ver área · <b>Esc</b> voltar',
       draw: (body) => {
+        const areas = (F.areas ?? []).filter((a) => a.name === here || seen(a)); // (o mapa de outro mundo chega depois)
         body.innerHTML = `<div class="gm-box gm-mapbox"><canvas class="gm-mapcv"></canvas></div>
-          <div class="gm-box gm-areas"><div class="gm-scroll gm-arealist">${areas.map((a) => `<div class="nav gm-row" data-k="${esc(a.name)}"><span class="gm-cur">▶</span><span>${esc(a.name)}${a.name === here ? ' <span class="gm-tag">Você</span>' : ''}</span></div>`).join('') || '<div class="gm-empty">Explore para descobrir a região.</div>'}</div>
+          <div class="gm-box gm-areas"><div class="gm-scroll gm-arealist">${areas.map((a) => `<div class="nav gm-row" data-k="${esc(a.name)}"><span class="gm-cur">▶</span><span>${esc(a.name)}${a.name === here ? ' <span class="gm-tag">Você</span>' : ''}</span></div>`).join('') || `<div class="gm-empty">${F.carregando ? 'Abrindo o mapa…' : 'Explore para descobrir a região.'}</div>`}</div>
           <div class="gm-legend"><span><i class="lg-you"></i>Você</span><span><i class="lg-obj"></i>Objetivo</span><span><i class="lg-quest"></i>Missão</span><span><i class="lg-house"></i>Construções</span></div></div>`;
         body.querySelectorAll('.nav').forEach((n) => { n._act = () => {}; });
+        this.q('.gm-extra')?.querySelectorAll('[data-w]').forEach((b) => { b.onclick = (e) => { e.stopPropagation(); this.#trocaMapa(L, b.dataset.w); }; });
         L.focus = areas.find((a) => a.name === here)?.name;
         requestAnimationFrame(() => this.#drawMap(L));
       },
       onFocus: (el) => { L.focus = el?.dataset.k; this.#drawMap(L); },
+      lr: (d) => { const i = mundos.findIndex((w) => w.id === mundo); if (mundos.length > 1) this.#trocaMapa(L, mundos[(i + d + mundos.length) % mundos.length].id); },
+      tab: (d) => L.lr(d),
       tick: (dt) => { L.t += dt; if ((L.blink = (L.blink ?? 0) - dt) <= 0) { L.blink = 0.25; this.#drawMap(L); } },
     });
     this.#push(L);
   }
-  #visited(tx, ty) { const v = this.g.mundo?.visited; return !v || v.has(Math.floor(tx / 16) + Math.floor(ty / 16) * 64); }
-  #regionImage() {
-    if (this.mapImg) return this.mapImg;
+  #trocaMapa(L, mundo) { if (mundo === L.mundo) return; this.#pop(); this.#map(mundo); }
+  // fonte do mapa de um mundo: { W, H, CW, vis, areas, img?, atual }
+  #fonte(id) {
+    const g = this.g;
+    if (id === g.map.id) return { id, atual: true, nome: g.map.nome, W: g.map.w, H: g.map.outdoorH ?? g.map.h, CW: Math.ceil(g.map.w / 16), vis: g.mundo?.visited, areas: World.AREAS ?? [] };
+    const F = { id, atual: false, carregando: true, W: 1, H: 1, CW: 1, vis: new Set(), areas: [] };
+    g.viagem?.fonteMapa?.(id).then((d) => { Object.assign(F, d, { carregando: false }); this.mapImg = null; if (this.top?.F === F) this.refresh(); }).catch((e) => console.warn('mapa de outro mundo', e));
+    return F;
+  }
+  #visited(tx, ty, F = null) { const v = F ? F.vis : this.g.mundo?.visited, CW = F?.CW ?? this.g.map?.CW ?? Math.ceil((this.g.map?.w ?? 1200) / 16); return !v || v.has(Math.floor(tx / 16) + Math.floor(ty / 16) * CW); }
+  #regionImage(F) {
+    if (this.mapImg?.F === F) return this.mapImg.c;
+    if (!F.atual) { if (F.img) this.mapImg = { F, c: F.img }; return F.img ?? null; }
     const m = this.g.map, W = m.w, H = m.outdoorH ?? m.h, mm = this.g.mundo?.minimap;
-    const c = document.createElement('canvas'); c.width = W * 2; c.height = H * 2;
-    if (mm?.renderRegionMap) { try { mm.renderRegionMap(c, { fog: true, player: false, labels: false }); this.mapImg = c; return c; } catch { /* desenho próprio abaixo */ } }
-    const TL = Tiles.TILE ?? {};
-    const col = {};
-    const put = (k, cc) => { if (TL[k] != null) col[TL[k]] = cc; };
-    put('GRASS', [118, 186, 92]); put('GRASS2', [110, 178, 86]); put('TALL', [66, 140, 64]); put('PATH', [214, 190, 138]);
-    put('WATER', [96, 168, 226]); put('DEEP', [58, 120, 200]); put('SAND', [236, 216, 160]); put('FLOWERS', [150, 196, 96]); put('CLIFF', [120, 104, 88]);
-    const t = document.createElement('canvas'); t.width = W; t.height = H;
-    const x = t.getContext('2d'), img = x.createImageData(W, H);
-    for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {
-      const k = (j * W + i) * 4, cc = this.#visited(i, j) ? col[m.at(i, j)] ?? [118, 186, 92] : [233, 223, 196];
-      img.data[k] = cc[0]; img.data[k + 1] = cc[1]; img.data[k + 2] = cc[2]; img.data[k + 3] = 255;
-    }
-    x.putImageData(img, 0, 0);
-    const cx = c.getContext('2d'); cx.imageSmoothingEnabled = false; cx.drawImage(t, 0, 0, W * 2, H * 2);
-    this.mapImg = c;
+    const c = document.createElement('canvas'); c.width = W; c.height = H; // 1 pixel por bloco (o desenho amplia sem suavizar)
+    if (mm?.renderRegionMap) { try { mm.renderRegionMap(c, { fog: true, player: false, labels: false }); this.mapImg = { F, c }; return c; } catch { /* sem minimapa */ } }
+    const x = c.getContext('2d'); x.fillStyle = '#e9dfc4'; x.fillRect(0, 0, W, H);
+    this.mapImg = { F, c };
     return c;
   }
   #drawMap(L) {
     const cv = this.q('.gm-mapcv');
     if (!cv) return;
-    const g = this.g, m = g.map, box = cv.parentElement, W = m.w, H = m.outdoorH ?? m.h;
+    const F = L.F ?? this.#fonte(this.g.map.id), aqui = F.atual;
+    const g = this.g, m = g.map, box = cv.parentElement, W = F.W, H = F.H, CW = F.CW;
     const cw = Math.max(120, box.clientWidth - 12), ch = Math.max(90, box.clientHeight - 12);
     const dpr = Math.min(2, devicePixelRatio || 1);
     if (cv.width !== Math.round(cw * dpr) || cv.height !== Math.round(ch * dpr)) {
       cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr); cv.style.width = cw + 'px'; cv.style.height = ch + 'px';
     }
+    if (F.carregando) { const c = cv.getContext('2d'); c.fillStyle = '#e9dfc4'; c.fillRect(0, 0, cv.width, cv.height); c.fillStyle = '#1d2340'; c.font = `900 ${14 * dpr}px Nunito, system-ui`; c.textAlign = 'center'; c.fillText('Abrindo o mapa…', cv.width / 2, cv.height / 2); return; }
     // recorte: o que já foi visitado (mais o jogador e a área escolhida), com folga, na proporção da caixa
-    const room = m.interiorAt?.(g.player.x, g.player.y);
-    const ptx = room?.door ? room.door.x : g.player.x / 16, pty = room?.door ? room.door.y : g.player.y / 16;
-    let x0 = ptx, y0 = pty, x1 = ptx, y1 = pty;
-    for (const k of g.mundo?.visited ?? []) { const sx = (k % 64) * 16, sy = Math.floor(k / 64) * 16; if (sy >= H) continue; x0 = Math.min(x0, sx); y0 = Math.min(y0, sy); x1 = Math.max(x1, sx + 16); y1 = Math.max(y1, sy + 16); }
-    const fa = (World.AREAS ?? []).find((a) => a.name === L.focus);
-    const ot = this.ui.hud.obj?.target;
+    const room = aqui ? m.interiorAt?.(g.player.x, g.player.y) : null;
+    const ptx = aqui ? (room?.door ? room.door.x : g.player.x / 16) : null, pty = aqui ? (room?.door ? room.door.y : g.player.y / 16) : null;
+    let x0 = ptx ?? 1e9, y0 = pty ?? 1e9, x1 = ptx ?? -1e9, y1 = pty ?? -1e9;
+    for (const k of F.vis ?? []) { const sx = (k % CW) * 16, sy = Math.floor(k / CW) * 16; if (sy >= H) continue; x0 = Math.min(x0, sx); y0 = Math.min(y0, sy); x1 = Math.max(x1, sx + 16); y1 = Math.max(y1, sy + 16); }
+    if (x0 > x1) { x0 = 0; y0 = 0; x1 = W; y1 = H; }
+    const fa = (F.areas ?? []).find((a) => a.name === L.focus);
+    const ot = aqui ? this.ui.hud.obj?.target : null;
     if (ot && Number.isFinite(ot.x) && ot.y / 16 < H) { x0 = Math.min(x0, ot.x / 16 - 6); y0 = Math.min(y0, ot.y / 16 - 6); x1 = Math.max(x1, ot.x / 16 + 6); y1 = Math.max(y1, ot.y / 16 + 6); }
-    for (const q of g.missoes?.marcadores?.({ regiao: true }) ?? []) if (q.acomp && q.y / 16 < H) { x0 = Math.min(x0, q.x / 16 - 6); y0 = Math.min(y0, q.y / 16 - 6); x1 = Math.max(x1, q.x / 16 + 6); y1 = Math.max(y1, q.y / 16 + 6); }
+    if (aqui) for (const q of g.missoes?.marcadores?.({ regiao: true }) ?? []) if (q.acomp && q.y / 16 < H) { x0 = Math.min(x0, q.x / 16 - 6); y0 = Math.min(y0, q.y / 16 - 6); x1 = Math.max(x1, q.x / 16 + 6); y1 = Math.max(y1, q.y / 16 + 6); }
     if (fa) { x0 = Math.min(x0, fa.x - 8); y0 = Math.min(y0, fa.y - 8); x1 = Math.max(x1, fa.x + 8); y1 = Math.max(y1, fa.y + 8); }
     x0 -= 16; y0 -= 16; x1 += 16; y1 += 16;
     let vw = Math.max(88, x1 - x0), vh = Math.max(66, y1 - y0);
@@ -1106,12 +1119,12 @@ export class GameMenu {
     const S = (tx, ty) => [(tx - vx) * k, (ty - vy) * k];
     c.imageSmoothingEnabled = false;
     c.fillStyle = '#e9dfc4'; c.fillRect(0, 0, cv.width, cv.height);
-    c.drawImage(this.#regionImage(), 0, 0, W * 2, H * 2, -vx * k, -vy * k, W * k, H * k);
+    const img = this.#regionImage(F); if (img) c.drawImage(img, 0, 0, img.width, img.height, -vx * k, -vy * k, W * k, H * k);
     // nomes: a escolhida primeiro, depois cidades e vilas, depois o resto; sem sobrepor
     c.textAlign = 'center'; c.textBaseline = 'middle';
     const fs = Math.max(10, Math.min(15, cw / 34)) * dpr, placed = [];
     const big = (a) => /^(Cidade|Vila|Porto)/.test(a.name);
-    const list = (World.AREAS ?? []).filter((a) => a.name === L.focus || this.#visited(a.x, a.y)).sort((a, b) => (b.name === L.focus) - (a.name === L.focus) || big(b) - big(a));
+    const list = (F.areas ?? []).filter((a) => a.name === L.focus || this.#visited(a.x, a.y, F)).sort((a, b) => (b.name === L.focus) - (a.name === L.focus) || big(b) - big(a));
     for (const a of list) {
       const on = a.name === L.focus, size = on ? fs * 1.15 : big(a) ? fs : fs * 0.86;
       c.font = `900 ${Math.round(size)}px Nunito, system-ui, sans-serif`;
@@ -1122,6 +1135,7 @@ export class GameMenu {
       c.lineWidth = 4 * dpr; c.lineJoin = 'round'; c.strokeStyle = on ? '#1d2340' : 'rgba(255,255,255,.95)'; c.strokeText(a.name, x, y);
       c.fillStyle = on ? '#ffd23f' : '#1d2340'; c.fillText(a.name, x, y);
     }
+    if (!aqui) return; // outro continente: sem jogador, objetivo nem missões
     // missões ativas com lugar alvo (src/story/missoes): círculo azul com "!"; a acompanhada é maior
     for (const q of g.missoes?.marcadores?.({ regiao: true }) ?? []) {
       const [qx, qy] = S(q.x / 16, q.y / 16), r = (q.acomp ? 8 : 6) * dpr;

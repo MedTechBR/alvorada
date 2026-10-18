@@ -1,0 +1,56 @@
+{
+  "regiao": {"id": "geada", "nome": "Cordilheira Geada", "mundo": "alvorada", "rect": [600, 0, 600, 200], "faixa": [0, 1280, 1200, 160]},
+  "comment": "Região Cordilheira Geada. Ponto de partida gerado por tools/gerar-regioes.mjs (contorno, chão por bioma, passagens da seção 5). Manual: docs/construir-regiao.md.",
+  "ops": [
+    {"op": "rect", "t": "snowfield", "x": 600, "y": 0, "w": 600, "h": 200},
+    {"op": "rect", "t": "deep", "x": 1140, "y": 160, "w": 60, "h": 40},
+    {"op": "ellipse", "t": "deep", "cx": 1190, "cy": 100, "rx": 18, "ry": 90, "noise": 1},
+    {"op": "comment", "_": "geleira_uivo: Geleira do Uivo (neve)"},
+    {"op": "ellipse", "t": "snowfield", "cx": 1060, "cy": 100, "rx": 80, "ry": 80, "noise": 0.6},
+    {"op": "blobs", "t": "tallsnow", "x": 980, "y": 20, "w": 160, "h": 160, "scale": 0.12, "th": 0.62, "on": ["snowfield"]},
+    {"op": "comment", "_": "rota16: Rota 16, Campos Nevados (neve)"},
+    {"op": "ellipse", "t": "snowfield", "cx": 900, "cy": 125, "rx": 80, "ry": 45, "noise": 0.6},
+    {"op": "blobs", "t": "tallsnow", "x": 820, "y": 80, "w": 160, "h": 90, "scale": 0.12, "th": 0.62, "on": ["snowfield"]},
+    {"op": "comment", "_": "fiorde_levante: Fiorde do Levante (mar)"},
+    {"op": "ellipse", "t": "deep", "cx": 1170, "cy": 100, "rx": 30, "ry": 100, "noise": 0.6},
+    {"op": "comment", "_": "rota15: Rota 15, Passo do Uivo (planalto)"},
+    {"op": "ellipse", "t": "grass", "cx": 680, "cy": 75, "rx": 80, "ry": 35, "noise": 0.6},
+    {"op": "blobs", "t": "tall", "x": 600, "y": 40, "w": 160, "h": 70, "scale": 0.12, "th": 0.62, "on": ["grass"]},
+    {"op": "comment", "_": "lago_congelado: Lago Congelado (gelo)"},
+    {"op": "ellipse", "t": "frozen", "cx": 720, "cy": 155, "rx": 40, "ry": 35, "noise": 0.6},
+    {"op": "comment", "_": "cume_vento_branco: Cume do Vento Branco (pico)"},
+    {"op": "ellipse", "t": "snowfield", "cx": 1090, "cy": 10, "rx": 50, "ry": 10, "noise": 0.6},
+    {"op": "comment", "_": "vila_geada: Vila Geada (vila)"},
+    {"op": "ellipse", "t": "grass", "cx": 790, "cy": 125, "rx": 30, "ry": 25, "noise": 0.6},
+    {"op": "rect", "t": "plaza", "x": 786, "y": 122, "w": 8, "h": 6},
+    {"op": "comment", "_": "passagem p_uivo: Passo do Uivo (Rota 9 -> Rota 15)"},
+    {"op": "rect", "t": "grass", "x": 600, "y": 62, "w": 7, "h": 20},
+    {"op": "rect", "t": "path", "x": 600, "y": 66, "w": 7, "h": 12},
+    {"op": "comment", "_": "passagem p_r2_r1_terra: Desfiladeiro Branco (Chapada Vermelha -> Geleira)"},
+    {"op": "rect", "t": "snowfield", "x": 1016, "y": 180, "w": 20, "h": 20},
+    {"op": "rect", "t": "path", "x": 1023, "y": 184, "w": 6, "h": 16},
+    {"op": "comment", "_": "passagem p_r2_r1_mar: Mar do Levante (costa leste)"},
+    {"op": "rect", "t": "deep", "x": 1140, "y": 195, "w": 60, "h": 5}
+  ],
+  "areas": [
+    {"id": "rota15", "name": "Rota 15, Passo do Uivo", "biome": "planalto", "rect": [600, 40, 160, 70]},
+    {"id": "vila_geada", "name": "Vila Geada", "biome": "vila", "rect": [760, 100, 60, 50]},
+    {"id": "lago_congelado", "name": "Lago Congelado", "biome": "gelo", "rect": [680, 120, 80, 70]},
+    {"id": "rota16", "name": "Rota 16, Campos Nevados", "biome": "neve", "rect": [820, 80, 160, 90]},
+    {"id": "geleira_uivo", "name": "Geleira do Uivo", "biome": "neve", "rect": [980, 20, 160, 160]},
+    {"id": "cume_vento_branco", "name": "Cume do Vento Branco", "biome": "pico", "rect": [1040, 0, 100, 20]},
+    {"id": "fiorde_levante", "name": "Fiorde do Levante", "biome": "mar", "rect": [1140, 0, 60, 200]}
+  ],
+  "spots": {
+    "ninho_vila_geada": [790, 125, "down"]
+  },
+  "ninhos": [
+    {"id": "vila_geada", "nome": "Vila Geada", "spot": "ninho_vila_geada"}
+  ],
+  "objects": [],
+  "interiors": [],
+  "people": [],
+  "warps": [],
+  "items": [],
+  "viagens": []
+}

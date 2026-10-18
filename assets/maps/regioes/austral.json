@@ -1,0 +1,52 @@
+{
+  "regiao": {"id": "austral", "nome": "Mar do Sul e Ilhas Austrais", "mundo": "alvorada", "rect": [400, 480, 400, 480], "faixa": [0, 1760, 1200, 160]},
+  "comment": "Região Mar do Sul e Ilhas Austrais. Ponto de partida gerado por tools/gerar-regioes.mjs (contorno, chão por bioma, passagens da seção 5). Manual: docs/construir-regiao.md.",
+  "ops": [
+    {"op": "rect", "t": "deep", "x": 400, "y": 480, "w": 400, "h": 480},
+    {"op": "comment", "_": "ilhas_austrais: Ilhas Austrais (neve)"},
+    {"op": "ellipse", "t": "sand", "cx": 610, "cy": 880, "rx": 193, "ry": 83, "noise": 0.8},
+    {"op": "ellipse", "t": "snowfield", "cx": 610, "cy": 880, "rx": 190, "ry": 80, "noise": 0.6},
+    {"op": "blobs", "t": "tallsnow", "x": 420, "y": 800, "w": 380, "h": 160, "scale": 0.12, "th": 0.62, "on": ["snowfield"]},
+    {"op": "comment", "_": "mar_do_sul: Mar do Sul Profundo (mar)"},
+    {"op": "comment", "_": "rota18: Rota Marítima 18 (mar)"},
+    {"op": "comment", "_": "recife_grande: Recife Grande (mar)"},
+    {"op": "comment", "_": "ilha_farol_morto: Ilha do Farol Morto (praia)"},
+    {"op": "ellipse", "t": "sand", "cx": 720, "cy": 650, "rx": 43, "ry": 33, "noise": 0.8},
+    {"op": "ellipse", "t": "sand", "cx": 720, "cy": 650, "rx": 40, "ry": 30, "noise": 0.6},
+    {"op": "comment", "_": "estacao_austral: Estação Austral (vila)"},
+    {"op": "ellipse", "t": "sand", "cx": 540, "cy": 865, "rx": 23, "ry": 18, "noise": 0.8},
+    {"op": "ellipse", "t": "grass", "cx": 540, "cy": 865, "rx": 20, "ry": 15, "noise": 0.6},
+    {"op": "rect", "t": "plaza", "x": 536, "y": 862, "w": 8, "h": 6},
+    {"op": "comment", "_": "passagem p_sul: Mar do Sul (toda a costa sul do núcleo)"},
+    {"op": "rect", "t": "deep", "x": 400, "y": 480, "w": 198, "h": 5},
+    {"op": "comment", "_": "passagem p_r2_r4: Saída sul do Mangue"},
+    {"op": "rect", "t": "deep", "x": 600, "y": 480, "w": 200, "h": 5},
+    {"op": "comment", "_": "passagem p_r3_r4: Mar entre Jandaias e Recife"},
+    {"op": "rect", "t": "deep", "x": 400, "y": 480, "w": 5, "h": 480},
+    {"op": "comment", "_": "passagem p_r4_r5: Mar entre Recife e Brasas"},
+    {"op": "rect", "t": "deep", "x": 795, "y": 480, "w": 5, "h": 480},
+    {"op": "comment", "_": "cais cais_austral"},
+    {"op": "rect", "t": "dock", "x": 540, "y": 838, "w": 2, "h": 12}
+  ],
+  "areas": [
+    {"id": "rota18", "name": "Rota Marítima 18", "biome": "mar", "rect": [400, 480, 200, 120]},
+    {"id": "recife_grande", "name": "Recife Grande", "biome": "mar", "rect": [450, 600, 220, 100]},
+    {"id": "mar_do_sul", "name": "Mar do Sul Profundo", "biome": "mar", "rect": [400, 700, 400, 100]},
+    {"id": "ilha_farol_morto", "name": "Ilha do Farol Morto", "biome": "praia", "rect": [680, 620, 80, 60]},
+    {"id": "ilhas_austrais", "name": "Ilhas Austrais", "biome": "neve", "rect": [420, 800, 380, 160]},
+    {"id": "estacao_austral", "name": "Estação Austral", "biome": "vila", "rect": [520, 850, 40, 30]}
+  ],
+  "spots": {
+    "ninho_estacao_austral": [540, 865, "down"],
+    "cais_austral": [540, 847, "up"]
+  },
+  "ninhos": [
+    {"id": "estacao_austral", "nome": "Estação Austral", "spot": "ninho_estacao_austral"}
+  ],
+  "objects": [],
+  "interiors": [],
+  "people": [],
+  "warps": [],
+  "items": [],
+  "viagens": []
+}

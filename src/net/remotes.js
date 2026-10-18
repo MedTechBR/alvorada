@@ -75,6 +75,7 @@ class Remote {
     const t = Number.isFinite(ts) && this.off != null ? ts + this.off : now;
     if (this.buf.length && t <= this.buf[this.buf.length - 1].t) return; // fora de ordem
     this.buf.push({ ...s, t }); if (this.buf.length > 30) this.buf.shift();
+    this.w = s.w ?? 'alvorada'; // mundo (continente) em que ele está
   }
   // posição interpolada no instante (agora - atraso)
   sample(delay) {
@@ -197,14 +198,15 @@ export class Remotes {
   get(id) { return this.map.get(id); }
   onState(id, data) { const s = validateState(data); if (s) this.map.get(id)?.push(s, Number(data.ts)); }
   // mesmo lugar (lá fora ou o mesmo interior) que o seu treinador?
-  sameRoom(x, y) { const m = this.g.map, p = this.g.player; return (m.interiorAt(x, y)?.id ?? '') === (m.interiorAt(p.x, p.y)?.id ?? ''); }
+  // (e no mesmo mundo: quem está no outro continente não aparece; w = id do mundo dele)
+  sameRoom(x, y, w = null) { const m = this.g.map, p = this.g.player; if (w != null && w !== (m.id ?? 'alvorada')) return false; return (m.interiorAt(x, y)?.id ?? '') === (m.interiorAt(p.x, p.y)?.id ?? ''); }
   update(dt, duelWith) {
     const g = this.g, z = g.zoom || 3, hw = innerWidth / 2 / z + 96, hh = innerHeight / 2 / z + 96, c = g.cam ?? g.player;
     const inView = (x, y) => Math.abs(x - c.x) < hw && Math.abs(y - c.y) < hh && this.sameRoom(x, y);
-    for (const r of this.map.values()) r.update(dt, r.id === duelWith, inView);
+    for (const r of this.map.values()) r.update(dt, r.id === duelWith, (x, y) => (r.w ?? 'alvorada') === (g.map.id ?? 'alvorada') && inView(x, y));
   }
   // pontos do minimapa: quem está no mesmo lugar que você
-  dots() { const out = []; for (const r of this.map.values()) if (r.has && this.sameRoom(r.x, r.y)) out.push({ x: r.x, y: r.y, drop: !!r.drop }); return out; }
+  dots() { const out = []; for (const r of this.map.values()) if (r.has && this.sameRoom(r.x, r.y, r.w ?? 'alvorada')) out.push({ x: r.x, y: r.y, drop: !!r.drop }); return out; }
   nearest(x, y, max = 44) {
     let best = null, bd = max;
     for (const r of this.map.values()) { if (!r.view.visible || r.drop) continue; const d = Math.hypot(r.x - x, r.y - y); if (d < bd) { bd = d; best = r; } }

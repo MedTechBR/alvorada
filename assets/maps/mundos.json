@@ -1,0 +1,4 @@
+[
+  { "id": "alvorada", "arquivo": "alvorada.json", "nome": "Continente de Alvorada", "curto": "Alvorada" },
+  { "id": "ocaso", "arquivo": "ocaso.json", "nome": "Terras do Ocaso", "curto": "Ocaso" }
+]

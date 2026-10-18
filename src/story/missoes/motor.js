@@ -442,6 +442,7 @@ export class Missoes {
   ponto(e) {
     const g = this.g, m = g.map;
     if (e.x != null) {
+      if ((e.mundo ?? 'alvorada') !== (m.id ?? 'alvorada')) return null; // coordenadas de outro continente (mundo: 'ocaso')
       const sala = e.sala && m.interiors.find((r) => r.id === e.sala);
       const bx = (sala ? sala.x : 0) + e.x, by = (sala ? sala.y : 0) + e.y;
       return { x: bx * T + 8, y: by * T + 8, r: (e.r ?? 2) * T, map: sala ? sala.id : this.#mapaDe(bx * T + 8, by * T + 8) };
