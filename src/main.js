@@ -62,7 +62,6 @@ class Game {
     this.hudInit();
     this.story.begin(start === 'new');
   }
-  sendOut(i) { return this.#sendOut(i); }
 
   #resize() {
     // escala inteira para o pixel art ficar nítido: ~15 a 20 blocos de altura na tela
@@ -255,7 +254,7 @@ class Game {
     const inp = this.input; inp.poll();
     if (inp.pressed('perf')) $('perf').hidden = !$('perf').hidden;
     // título, menu e diálogo param o mundo (a câmera e o desenho continuam)
-    if (this.ui?.frame(rdt)) { this.#camera(rdt); this.map.flushDirty(); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; }
+    if (this.ui?.frame(rdt)) { this.net?.update(rdt); this.#camera(rdt); this.map.flushDirty(); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // o online segue mesmo com o menu aberto
     // pausa no impacto: o mundo congela por alguns milissegundos
     let dt = rdt;
     if (this.fx.hitStop > 0) { this.fx.hitStop -= rdt; dt = rdt * 0.08; }

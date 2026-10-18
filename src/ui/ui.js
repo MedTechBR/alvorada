@@ -7,7 +7,7 @@ import { OPTIONS, applyOpts } from './options.js';
 import { serialize, applySave, writeSave, setSaveSlot } from '../save.js';
 import { Auth } from '../net/auth.js';
 import { makePlayerFrames } from '../sprites/npc.js';
-import { lookFrames } from './looks.js';
+import { lookFrames, toCharLook } from './looks.js';
 
 // Camada de interface: título, HUD, diálogo, menu, save automático, celular (tela cheia, girar,
 // vibração) e PWA. O main.js só chama: ui.title() no começo, ui.frame(dt) a cada quadro
@@ -48,6 +48,10 @@ export class UI {
     else { g.flags = {}; g.party = []; g.box = []; g.bag = { pokeball: 0, potion: 0 }; g.money = 0; g.leadIdx = 0; const h = this.story?.spots.get('home'); if (h) { g.player.x = h.x; g.player.y = h.y; } if (g.cam) { g.cam.x = g.player.x; g.cam.y = g.player.y; } }
     g.flags.playerName = acc.look?.name ?? acc.name;
     g.flags.look = acc.look ?? null;
+    // o online (src/net/online.js) lê game.look e usa o nome do treinador nas salas
+    const { name: _n, ...look } = toCharLook(acc.look);
+    g.look = look; g.player.look = look;
+    try { g.net?.setName?.(g.flags.playerName); } catch { /* online indisponível */ }
     await this.applyLook(acc.look);
     this.g.audio?.unlock?.();
     this.state = 'play';
@@ -72,6 +76,7 @@ export class UI {
     if (this.rotateOn) { inp.taps.clear(); return true; }
     if (this.menu.isOpen) { this.menu.update(dt); inp.taps.clear(); return true; }
     if (this.dialog.open) { this.dialog.update(dt); this.#lock(); return true; }
+    if (g.net?.ui?.modalOpen) { this.#lock(); return false; } // janela do online aberta: o mundo segue, o jogador não anda
     if (inp.pressed('menu') && !this.story?.busy) { this.openMenu(); return true; }
     this.story?.update(dt);
     if (this.story?.busy) this.#lock();
@@ -97,6 +102,7 @@ export class UI {
   say(lines, opts) { this.g.input?.taps.clear(); return this.dialog.say(lines, opts); }
   toast(t) { this.hud.toast(t); }
   openMenu() { if (this.state !== 'play' || this.menu.isOpen) return; this.menu.open(); document.body.classList.add('menu-open'); }
+  openOnline() { this.menu.close(); const u = this.g.net?.ui; if (u && !u.modalOpen) u.toggleMenu(); }
   openPC() { this.menu.openPC(); document.body.classList.add('menu-open'); }
   onMenuClosed() { document.body.classList.remove('menu-open'); this.hud.v = {}; this.hud.t = 0; }
   partyChanged() { this.hud.v.party = null; this.hud.t = 0; this.hud.lead(); this.hud.moves(); }
