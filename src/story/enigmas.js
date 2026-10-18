@@ -467,12 +467,12 @@ export class Enigmas {
     const P = ENIGMAS.prisma, tem = (this.g.bag?.[P.item] ?? 0) > 0;
     if (!force && tem === this.prismaOn) return;
     this.prismaOn = tem;
-    if (!this.prismaG) { this.prismaG = new PIXI.Graphics(); this.glow.addChild(this.prismaG); }
-    this.prismaG.clear();
+    if (!this.prismaG) { this.prismaG = new PIXI.Graphics(); this.glow.addChild(this.prismaG); this.prismaF = new PIXI.Graphics(); this.floor.addChild(this.prismaF); }
+    this.prismaG.clear(); this.prismaF.clear();
     for (const [x, y, v] of P.cells) {
       if (tem) this.map.setTile(x, y, v ? TILE.BRIDGEV : TILE.BRIDGE);
       else if (this.map.at(x, y) === TILE.BRIDGE || this.map.at(x, y) === TILE.BRIDGEV) this.map.setTile(x, y, TILE.WATER);
-      if (tem) this.prismaG.rect(x * T + 1, y * T + 1, 14, 14).fill({ color: 0x9afff4, alpha: 0.25 });
+      if (tem) { this.prismaG.rect(x * T + 1, y * T + 1, 14, 14).fill({ color: 0x9afff4, alpha: 0.25 }); this.prismaF.rect(x * T, y * T, 16, 16).fill({ color: 0x9afff4, alpha: 0.45 }); for (let k = 2; k < 16; k += 5) this.prismaF.rect(x * T + 1, y * T + k, 14, 1).fill({ color: 0xe8fffc, alpha: 0.7 }); }
     }
   }
 
@@ -489,7 +489,7 @@ export class Enigmas {
     // o raio de luar cintila
     if (this.esp) this.esp.beamGlow.alpha = 0.75 + Math.sin(this.t * 3) * 0.15;
     // luz das tábuas do brejo (mesmo de dia, bem fraca)
-    if (this.prismaG) this.prismaG.alpha = 0.6 + Math.sin(this.t * 2) * 0.3;
+    if (this.prismaG) { this.prismaG.alpha = 0.6 + Math.sin(this.t * 2) * 0.3; this.prismaF.alpha = 0.7 + Math.sin(this.t * 2) * 0.25; }
   }
   interactions() {
     const out = [], sala = this.#sala();

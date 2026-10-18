@@ -2009,17 +2009,6 @@
 "id": "rota5"
 },
 {
-"name": "Praia dos Corais",
-"biome": "praia",
-"rect": [
-240,
-384,
-180,
-24
-],
-"id": "praia_corais"
-},
-{
 "name": "Rota 8, Escalada do Paredão",
 "biome": "campo",
 "rect": [
@@ -2051,17 +2040,6 @@
 18
 ],
 "id": "rota1"
-},
-{
-"name": "Cidade Aurora",
-"biome": "vila",
-"rect": [
-480,
-168,
-60,
-36
-],
-"id": "cidade_aurora"
 },
 {
 "name": "Rota 3, Margem das Garças",
@@ -2141,17 +2119,6 @@
 "id": "cidade_escarpa"
 },
 {
-"name": "Cidade Coral",
-"biome": "vila",
-"rect": [
-324,
-408,
-48,
-24
-],
-"id": "cidade_coral"
-},
-{
 "name": "Vila Alvorada",
 "biome": "vila",
 "rect": [
@@ -2172,17 +2139,6 @@
 30
 ],
 "id": "vila_sussurro"
-},
-{
-"name": "Vila Lamparina",
-"biome": "vila",
-"rect": [
-324,
-216,
-36,
-30
-],
-"id": "vila_lamparina"
 },
 {
 "name": "Porto Espelho",
