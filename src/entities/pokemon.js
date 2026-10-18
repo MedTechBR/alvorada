@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { frameOf, dir8, loadPokemonSprites } from '../sprites/pmd.js';
 import { TEMPER } from '../data/species.js';
+import { speciesScale } from '../sprites/scale.js';
 
 // silhueta branca para o clarão de acerto (um filtro só, compartilhado)
 let WHITE = null;
@@ -30,19 +31,31 @@ export class PokeEntity {
     this.bar = new PIXI.Graphics();
     this.view.addChild(this.shadow, this.body, this.bar);
     this.r = 6;
-    this.ready = loadPokemonSprites(mon.dex).then((set) => { this.set = set; this.r = Math.max(5, Math.min(18, set.size * 0.22)) * (this.isAlpha ? 1.3 : 1); this.shadow.scale.set(...(set.shadowScale ?? [1, 1])); });
+    this.ready = loadPokemonSprites(mon.dex).then((set) => this.setSprites(set));
   }
+
+  // Troca o conjunto de sprites (entrada e evolução) e aplica a escala da espécie (altura real)
+  setSprites(set) {
+    this.set = set;
+    this.baseScale = speciesScale(this.mon.dex, set);
+    this.h = (set.top || 24) * this.baseScale;            // altura na tela (px), sem o tamanho de alfa
+    this.r = Math.max(5, Math.min(28, set.size * 0.22 * this.baseScale)) * (this.isAlpha ? 1.3 : 1);
+    this.shadow.scale.set(...(set.shadowScale ?? [1, 1]));
+  }
+  get fullScale() { return (this.scale ?? 1) * (this.baseScale ?? 1); }
 
   // Ponto de onde sai um golpe (boca ou mão) no quadro atual, em coordenadas do mundo.
   // Devolve { x, y, h }: (x, y) = posição no chão abaixo da boca; h = altura da boca acima do chão (px).
   emitPoint(kind = 'mouth') {
-    const f = this.f, s = this.scale ?? 1;
+    const f = this.f, s = this.fullScale;
     const p = f ? (kind === 'hand' ? f.hand : f.mouth) : { x: 0, y: -(this.set?.top ?? 16) * 0.6 };
     const lift = Math.max(0, -p.y * s * 0.75) + this.z;  // parte da altura vira profundidade (vista 3/4)
     return { x: this.x + p.x * s, y: this.y + p.y * s + lift - this.z, h: lift };
   }
   // altura do centro do corpo acima do chão (px de mundo)
-  get midH() { return (this.set?.top ?? 16) * 0.5 * (this.scale ?? 1) + this.z; }
+  get midH() { return (this.h ?? 16) * 0.5 * (this.scale ?? 1) + this.z; }
+  // topo da cabeça acima do chão (px de mundo)
+  get topH() { return (this.h ?? 16) * (this.scale ?? 1) + this.z; }
 
   get alive() { return !this.dead && this.mon.hp > 0; }
   stat(k) { const s = this.stages[k] ?? 0; return (this.mon.stats[k] ?? 10) * (s >= 0 ? (2 + s) / 2 : 2 / (2 - s)); }
@@ -119,7 +132,7 @@ export class PokeEntity {
       this.alpha = a;
       if (t > 0.36 && !this.faintDust) { this.faintDust = true; this.g.fx.emit(this.x, this.y, { tex: 'dust', n: 7, speed: 40, life: 0.7, scale: 0.8, end: 2, add: false, alpha: 0.7 }); this.g.fx.kick(0.1, 0); }
     }
-    const sc = this.scale;
+    const sc = this.fullScale;
     this.view.scale.set(sc);
     this.body.scale.set(sx, sy);
     this.body.rotation = rot;

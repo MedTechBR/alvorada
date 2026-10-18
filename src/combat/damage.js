@@ -11,13 +11,14 @@ export function computeDamage(user, target, mv, ctx = {}) {
   const L = user.mon.level, phys = mv.cat === 'phys';
   const A = phys ? user.stat('atk') : user.stat('spa'), D = phys ? target.stat('def') : target.stat('spd');
   const power = ctx.power ?? mv.power ?? 40;
-  const critStage = (mv.critUp ?? 0) + (user.critBoost > 0 ? 2 : 0);
-  const crit = !ctx.noCrit && Math.random() < [1 / 16, 1 / 8, 1 / 2, 1][Math.min(3, critStage)];
+  const critStage = (mv.critUp ?? 0) + ((user.critBoost ?? 0) > 0 ? 2 : 0);
+  const rnd = ctx.rnd ?? Math.random;
+  const crit = !ctx.noCrit && rnd() < [1 / 16, 1 / 8, 1 / 2, 1][Math.min(3, critStage)];
   let dmg = Math.floor(Math.floor((Math.floor((2 * L) / 5 + 2) * power * A) / D) / 50) + 2;
   const eff = effectiveness(mv.type, target.mon.types);
   if (user.mon.types.includes(mv.type)) dmg *= 1.5;
   const tm = terrainMod(user, target, mv, ctx.g);
-  dmg *= eff * (crit ? 1.5 : 1) * (0.85 + Math.random() * 0.15) * DMG * tm.mult * (ctx.scale ?? 1);
+  dmg *= eff * (crit ? 1.5 : 1) * (0.85 + rnd() * 0.15) * DMG * tm.mult * (ctx.scale ?? 1);
   if (phys && user.mon.status === 'brn') dmg *= 0.5;
   dmg = eff === 0 ? 0 : Math.max(1, Math.round(dmg));
   return { dmg, eff, crit, mult: tm.mult, note: tm.note };

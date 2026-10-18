@@ -26,3 +26,42 @@ Celular: analógico à esquerda; botões de golpe à direita (toque = mira autom
   trocáveis. `makeCharacterFrames(look)` em `src/sprites/characters.js`; opções do criador em `LOOK_OPTIONS`;
   NPCs prontos em `PRESETS` (professor, mae, rival, treinador, treinadora, montanhista).
 - **Vitrine:** `tools/vitrine.html` (todas as espécies paradas e andando; `?pts=1` mostra cabeça/boca/mão; `?modo=humanos`).
+
+## Modo online (P2P)
+
+Botão **Online** (ou tecla O): criar sala, entrar, jogadores, chat (T), emotes (5 a 0), trocar, desafiar e sair.
+Perto de outro treinador, E (ou o botão A no celular) abre trocar/desafiar.
+
+- **Rede:** WebRTC com [PeerJS](https://peerjs.com) 1.5.5 (ESM pelo jsDelivr, carregado só ao entrar no online) e o
+  servidor público de sinalização do PeerJS. Sem conta e sem chave. Funciona num site estático (GitHub Pages).
+- **Sala em estrela:** o anfitrião cria a sala (código `ALV-1234`) e define a senha; até 8 jogadores, todos ligados só
+  a ele, que repassa as mensagens e carimba quem mandou. A senha nunca trafega: o anfitrião manda um desafio aleatório
+  e o amigo responde `SHA-256(desafio|código|senha)`. Senha errada = recusa (com atraso, contra chute).
+- **Quedas:** ping a cada 2,5 s; 11 s sem nada = caiu. Quem caiu tenta voltar 6 vezes para a mesma vaga (o anfitrião
+  guarda a vaga por 30 s e mostra "caiu…"). Anfitrião saindo encerra a sala com aviso para todos.
+- **Camadas** (`src/net/`): `transport.js` (contrato + PeerJS, BroadcastChannel de teste e esboço WebSocket) →
+  `room.js` (sala, senha, repasse, reconexão) → `online.js` (liga ao jogo) → `remotes.js` (outros jogadores),
+  `trade.js`, `duel.js` + `arbiter.js` (PvP). Interface em `src/ui/online.js`. Validação de tudo que chega em
+  `validate.js` (espécie, nível 1–100, golpes, IVs, natureza, visual, textos).
+- **Mundo compartilhado:** posição 10x/s (20x/s no duelo), mostrada ~130 ms no passado e interpolada. Cada um aparece
+  com o visual do criador de personagem (`look`, enviado no aperto de mão e no `info`), nome, balão de fala e emotes.
+  Os golpes dos outros aparecem, mas fora do duelo não acertam nada (lado `peer`).
+- **Selvagens locais:** cada jogador tem os seus. Sem disputa de quem capturou ou derrotou, sem tráfego de IA e
+  funciona com os amigos longe uns dos outros. O custo: você não vê o selvagem que o amigo está enfrentando.
+- **Troca:** pedido → os dois escolhem (o outro valida e vê espécie, nível, tipos, HP, golpes, IVs e natureza) →
+  os dois confirmam (a confirmação vale para aquele par de ofertas) → efetivação em duas fases: quem pediu manda
+  `commit`, o outro confere e fica pronto (`ack`), só então os dois efetivam. Se cair no meio, quem ficou pronto
+  pergunta ao voltar. Evolução por troca: `tradeHooks.onTraded(mon)` em `src/net/trade.js` (ou `game.onTraded`),
+  que devolve `{ evolve: dex }`.
+- **PvP:** desafio → aceitar → até 3 Pokémon cada → arena desenhada no chão onde os dois estão → contagem → combate
+  em tempo real normal → resultado e revanche. Sem XP; a equipe do duelo é uma cópia curada e a sua volta como estava.
+  **Autoridade:** cada um simula os próprios golpes; quando um golpe seu encosta no rival, vai um pedido ao árbitro,
+  que roda no anfitrião da sala. Ele confere golpe (pela equipe validada), recarga, nº de acertos por uso e distância,
+  recalcula o dano com `calcDamage` (a fórmula do jogo) e manda o resultado aos dois. Desmaio e fim também são dele.
+- **Teste com duas "abas":** `tools/online-teste.html` abre dois jogos lado a lado (`?perfil=a` e `?perfil=b`
+  separam o armazenamento). Marque "Rede de teste local" (ou use `?rede=local`) para testar sem internet, via
+  BroadcastChannel.
+- **Servidor próprio (depois):** escrever o relé descrito em `WsTransport` (transport.js) num VPS e usar
+  `createTransport('ws', { url })`. O resto não muda. Num segundo passo, o árbitro (`arbiter.js`, só lógica) pode ir
+  para o servidor, que vira o anfitrião permanente; aí a fórmula de dano precisa sair de `combat.js` para um arquivo
+  sem PixiJS.

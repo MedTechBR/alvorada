@@ -22,6 +22,14 @@ function segDist(px, py, ax, ay, bx, by) {
   return Math.hypot(px - (ax + vx * t), py - (ay + vy * t));
 }
 
+// Quem pode acertar quem. Lados do online (src/net/*): 'rival' = Pokémon de outro jogador num
+// duelo PvP (inimigo do seu); 'peer' = Pokémon de outro jogador passeando (ninguém acerta nem é acertado).
+export const FOES = { ally: ['wild', 'rival'], wild: ['ally'], rival: ['ally'], peer: [] };
+
+// Fórmula de dano (pura, sem relevo). Usada pelo árbitro do PvP online (src/net/arbiter.js), para os dois
+// lados de um duelo calcularem igual. user/t: qualquer objeto com .mon e .stat(k).
+export function calcDamage(user, t, mv, rnd = Math.random) { return computeDamage(user, t, mv, { rnd }); }
+
 export class Combat {
   constructor(g) {
     this.g = g;
@@ -57,10 +65,12 @@ export class Combat {
     if (!b || a === b) return false;
     if (b.isTrainer) return a.side === 'wild' && !a.isTrainer;
     if (b.dead || b.mon?.hp <= 0 || a.isTrainer) return false;
-    if (a.side !== 'wild') return b.side === 'wild';
-    if (b.side !== 'wild') return true;
-    if (a.pack && a.pack === b.pack) return false;
-    return a.aggroTarget === b || b.aggroTarget === a;
+    if (a.side === 'wild' && b.side === 'wild') { // selvagens só brigam entre si se forem rivais/provocados
+      if (a.pack && a.pack === b.pack) return false;
+      return a.aggroTarget === b || b.aggroTarget === a;
+    }
+    const f = FOES[a.side];
+    return f ? f.includes(b.side) : (a.side === 'wild' ? b.side !== 'wild' : b.side === 'wild');
   }
   targetsOf(user) {
     const out = [];
@@ -209,6 +219,7 @@ export class Combat {
       case 'dive': this.alt.diveMove(user, mv, id, ax, ay); break;
       default: fire(() => this.#projectile(user, mv, id, dx, dy, color, null, 0), 0.1);
     }
+    if (slot >= 0 && !opts.moveId) this.onUse?.(user, slot, ax, ay); // gancho do online: avisa os outros jogadores (src/net/online.js)
     return true;
   }
   #aimTarget(user, ax, ay) {
@@ -587,6 +598,9 @@ export class Combat {
       if (t.iframes > 0) { if (t.side === 'ally' || t.isTrainer) this.#missText(t, 'Esquivou!'); return 'miss'; }
     }
     if (t.isTrainer) { t.knock(dx * 220, dy * 220); g.fx.kick(0.2, 0.04); this.vfx.impact(mv.type, t.x, t.y - 10, 0, 0.6, t.y); return 'hit'; }
+    // Gancho do PvP online: golpe entre Pokémon de duelo não tira HP aqui; vira um pedido ao
+    // árbitro (src/net/duel.js), que devolve o dano oficial para os dois jogadores.
+    if ((t.pvp || user.pvp) && this.onPvpHit) { this.onPvpHit(user, t, mv, id, dx, dy); return 'hit'; }
     // precisão (estágios de precisão do atacante e evasão do alvo)
     const st = (user.stages.acc ?? 0) - (t.stages.eva ?? 0), accM = st >= 0 ? (3 + st) / 3 : 3 / (3 - st);
     if (info.src !== 'beam' && Math.random() > (mv.cat === 'status' ? (mv.acc ?? 1) : 1) * Math.min(1, accM)) { this.#missText(t, 'Errou!'); return 'miss'; }
@@ -608,14 +622,15 @@ export class Combat {
     return 'hit';
   }
   hit(user, t, mv, id, dx = 0, dy = 0) { return this.strike(user, t, mv, id, dx, dy, {}); }
-  #missText(t, s) { if ((t.missT ?? 0) > this.g.time) return; t.missT = this.g.time + 0.35; this.g.fx.number(t.x, t.y - (t.set?.top ?? 16) * (t.scale ?? 1) - (t.z ?? 0) - 10, s, '#d8f0ff'); }
+  #missText(t, s) { if ((t.missT ?? 0) > this.g.time) return; t.missT = this.g.time + 0.35; this.g.fx.number(t.x, t.y - (t.topH ?? 20) - 10, s, '#d8f0ff'); }
 
   // dano + reação: recuo proporcional, clarão branco, giro no ar, números e letreiros
-  hurt(t, dmg, by, { eff = 1, crit = false, mv = null, dx = 0, dy = 0, silent = false, knock = 1, quiet = false, note = null } = {}) {
+  hurt(t, dmg, by, { eff = 1, crit = false, mv = null, dx = 0, dy = 0, silent = false, knock = 1, quiet = false, note = null, auth = false } = {}) {
     const g = this.g;
+    if (t.pvp && !auth) return; // duelo online: só o árbitro tira HP (veneno e queimadura inclusos)
     t.mon.hp = Math.max(0, t.mon.hp - dmg);
     t.hpShow = 3;
-    const ty = t.y - (t.set?.top ?? 16) * (t.scale ?? 1) - t.z - 10;
+    const ty = t.y - (t.topH ?? 20) - 10;
     if (!silent) {
       const pw = mv?.power ?? 40;
       const power = Math.min(2.4, 0.55 + pw / 70) * (eff > 1 ? 1.3 : 1) * (crit ? 1.25 : 1);

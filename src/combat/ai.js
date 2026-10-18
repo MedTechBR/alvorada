@@ -38,7 +38,7 @@ export class WildAI {
     this.g.fx.emit(w.x, w.y - 20, { tex: 'zz', color: 0xffffff, n: 2, speed: 30, life: 0.5, add: false });
     w.wakeT = 0.4;
   }
-  #mark(w, s, c) { if ((w.markT ?? 0) > this.g.time) return; w.markT = this.g.time + 0.8; this.g.fx.number(w.x, w.y - (w.set?.top ?? 16) * w.scale - w.z - 12, s, c, true); }
+  #mark(w, s, c) { if ((w.markT ?? 0) > this.g.time) return; w.markT = this.g.time + 0.8; this.g.fx.number(w.x, w.y - (w.topH ?? 20) - 12, s, c, true); }
   flee(w, from) { if (w.mon.hp < w.mon.stats.hp * 0.25 && from) { this.provoke(w, from, true); return; } w.ai.state = 'flee'; w.ai.t = 3 + Math.random() * 2; w.ai.from = from ?? this.g.player; this.#mark(w, '!', 0x9ad0ff); }
 
   provoke(w, by, cornered = false) {
@@ -81,7 +81,7 @@ export class WildAI {
   makeAlpha(w) {
     w.isAlpha = true;
     const m = w.mon; m.level = Math.min(100, m.level + 3); m.calc(); m.stats.hp = Math.round(m.stats.hp * 1.5); m.hp = m.stats.hp;
-    w.scale = 1.38; w.r = Math.min(20, w.r * 1.3);
+    w.scale = 1.38; w.r = Math.min(28, w.r * 1.3);
     if (w.temper === 'timid') w.temper = 'neutral';
   }
 
@@ -93,7 +93,7 @@ export class WildAI {
     const dP = Math.hypot(pl.x - e.x, pl.y - e.y);
     if (ai.state === 'sleep') {
       if (dP < 18 && pl.speed > 60) this.wake(e);
-      if ((e.zzT = (e.zzT ?? 0) - dt) <= 0) { e.zzT = 1.3; g.fx.emit(e.x + 4, e.y - (e.set?.top ?? 16) * e.scale, { tex: 'zz', color: 0xffffff, n: 1, speed: 4, life: 1.4, vz: 14, vx: 8, add: false, end: 1.6, scale: 0.6 }); }
+      if ((e.zzT = (e.zzT ?? 0) - dt) <= 0) { e.zzT = 1.3; g.fx.emit(e.x + 4, e.y - (e.topH ?? 20), { tex: 'zz', color: 0xffffff, n: 1, speed: 4, life: 1.4, vz: 14, vx: 8, add: false, end: 1.6, scale: 0.6 }); }
       return Z;
     }
     let v = Z;
