@@ -29,6 +29,20 @@ const TRACKS = {
     bass: seq(`D3 D4 D3 D4 D3 D4 D3 D4 | C3 C4 C3 C4 C3 C4 C3 C4 | D3 D4 D3 D4 D3 D4 D3 D4 | Bb2 Bb3 Bb2 Bb3 A2 A3 A2 A3 |
       G2 G3 G2 G3 G2 G3 G2 G3 | C3 C4 C3 C4 C3 C4 C3 C4 | Bb2 Bb3 Bb2 Bb3 A2 A3 A2 A3 | D3 D4 D3 D4 A2 A3 C#3 E3`),
     drums: seq('k h s h k k s h k h s h k s s s') },
+  // luta contra líder de ginásio (arena dinâmica): mais pesada que a de treinador, em mi menor
+  gym: { bpm: 156, lead: seq(`
+    E5 - E5 G5 B5 - A5 G5 F#5 - F#5 A5 B5 - - - | E5 - E5 G5 B5 - D6 C6 B5 - A5 G5 F#5 - - - |
+    G5 - G5 A5 B5 - G5 E5 A5 - A5 B5 C6 - B5 A5 | B5 - A5 G5 F#5 - G5 A5 B5 - - - . . . . |`),
+    bass: seq(`E2 E3 E2 E3 E2 E3 B2 B3 | D2 D3 D2 D3 D2 D3 A2 A3 | C3 C4 C3 C4 G2 G3 G2 G3 | D3 D4 D3 D4 B2 B3 B2 B3 |
+      E2 E3 E2 E3 E2 E3 B2 B3 | D2 D3 D2 D3 F#2 F#3 F#2 F#3 | C3 C4 C3 C4 A2 A3 A2 A3 | B2 B3 B2 B3 B2 B3 D#3 F#3`),
+    drums: seq('k h s h k h s h k k s h k h s s') },
+  // fase final da arena: o mesmo tema mais rápido, subindo
+  gymFinal: { bpm: 178, lead: seq(`
+    B5 - B5 D6 E6 - D6 B5 A5 - A5 B5 D6 - - - | B5 - B5 D6 E6 - G6 F#6 E6 - D6 B5 A5 - - - |
+    C6 - C6 D6 E6 - C6 A5 D6 - D6 E6 F#6 - E6 D6 | E6 - D6 C6 B5 - C6 D6 E6 - - - E6 F#6 G6 - |`),
+    bass: seq(`E2 E3 E2 E3 E2 E3 E2 E3 | D2 D3 D2 D3 D2 D3 D2 D3 | C3 C4 C3 C4 C3 C4 C3 C4 | B2 B3 B2 B3 B2 B3 B2 B3 |
+      E2 E3 E2 E3 G2 G3 G2 G3 | D2 D3 D2 D3 F#2 F#3 F#2 F#3 | C3 C4 C3 C4 D3 D4 D3 D4 | B2 B3 B2 B3 D#3 D#4 F#3 F#4`),
+    drums: seq('k s k s k s k s k k s k k s s s') },
   // tela de título: calma, devagar, sem bateria
   title: { bpm: 76, lead: seq(`
     E5 - - - G5 - A5 - B5 - - - A5 - G5 - | E5 - - - D5 - E5 - G5 - - - - - - - |
@@ -196,6 +210,8 @@ export class Audio {
       case 'freeze': for (let i = 0; i < 5; i++) T(2000 + i * 400, t + i * 0.03, 0.06, { vol: 0.05, type: 'triangle' }); break;
       case 'gota': T(1500 + Math.random() * 500, t, 0.07, { to: 700, vol: 0.05, type: 'sine' }); break;
       case 'sino': [0, 12, 19].forEach((s2, i) => T(392 * 2 ** (s2 / 12), t + i * 0.01, 1.6 - i * 0.4, { vol: 0.12 / (i + 1), type: 'sine', attack: 0.004 })); T(784, t, 0.05, { vol: 0.08, type: 'square' }); break;
+      case 'crowd': for (let i = 0; i < 4; i++) N(t + i * 0.07, 0.35, { freq: 900 + Math.random() * 900, vol: 0.07, q: 0.7 }); T(330, t, 0.25, { to: 420, vol: 0.03, type: 'triangle' }); break;
+      case 'berimbau': T(196, t, 0.28, { to: 186, vol: 0.12, type: 'triangle' }); T(392, t, 0.12, { vol: 0.05, type: 'square' }); N(t, 0.03, { freq: 5000, vol: 0.05 }); break;
       case 'exclaim': T(1200, t, 0.08, { vol: 0.1, type: 'pulse' }); T(1600, t + 0.08, 0.1, { vol: 0.1, type: 'pulse' }); break;
       default:
         if (name.startsWith('move-')) {

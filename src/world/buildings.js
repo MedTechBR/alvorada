@@ -61,7 +61,7 @@ function house({ w = 112, h = 96, roof = ['#c84a3c', '#a83a30', '#e87a5c'], wall
     for (const wx of [Math.min(20, dx - 24), Math.max(w - 36, dx + dw + 6)]) { window1(x, wx, y0 + 9, 16, 14); lights.push([wx + 8, y0 + 16]); }
     px(x, '#5ab45a', 18, y0 + 26, 20, 3); px(x, '#ff7aa8', 21, y0 + 25, 2, 2); px(x, '#ffd84a', 27, y0 + 25, 2, 2); px(x, '#ff7aa8', 33, y0 + 25, 2, 2);
   });
-  return { tex: texOf(outline(c)), lights, smoke: chimney ? [w - 28, 2] : null };
+  return { tex: texOf(outline(c)), lights, smoke: chimney ? [w - 28, 2] : null, estilo: { tipo: 'casa', w, h, roof, wall, door, chimney, wallH: 40 } };
 }
 
 // prédio de telhado plano com letreiro (Centro Pokémon, loja, laboratório)
@@ -88,7 +88,7 @@ function hall({ w, h, roof, wall, band, sign, door = 'glass', wins = [], skyligh
     for (const wx of wins) { window1(x, wx, y0 + 18, 16, 14, '#4a5a6a'); lights.push([wx + 8, y0 + 25]); }
     sign?.(x, w, y0, rt, rb, dx, dy, dw);
   });
-  return { tex: texOf(outline(c)), lights };
+  return { tex: texOf(outline(c)), lights, estilo: { tipo: 'salao', w, h, roof, wall, band, door, wins, skylight, wallH: 50 } };
 }
 
 const ball = (x, cx, cy, r) => {
@@ -98,7 +98,8 @@ const ball = (x, cx, cy, r) => {
 };
 
 const B = {};
-const mk = (name, r, fw, fh, door) => { SPR['bld_' + name] = r.tex; B[name] = { tex: 'bld_' + name, fw, fh, oy: 3, door, lights: r.lights, smoke: r.smoke ?? null }; };
+// estilo: os parâmetros do desenho (o visual 3D monta o prédio em volume a partir deles, src/visual3d/modelos.js)
+const mk = (name, r, fw, fh, door) => { SPR['bld_' + name] = r.tex; B[name] = { tex: 'bld_' + name, fw, fh, oy: 3, door, lights: r.lights, smoke: r.smoke ?? null, estilo: r.estilo ?? null }; };
 mk('houseA', house({ roof: ['#9a5a3a', '#7a4228', '#c07a52'] }), 7, 3, 3);
 mk('houseB', house({ roof: ['#c84a3c', '#a03a30', '#ee7a5e'], wall: ['#f2e4c4', '#d8c8a2', '#fff8e8'] }), 7, 3, 3);
 mk('houseC', house({ roof: ['#6a8a5a', '#4e6e42', '#90b07a'], wall: ['#efe6d4', '#d4c8b0', '#fffaf0'], chimney: false }), 7, 3, 3);

@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import { Mon } from '../data/mon.js';
 import { PokeEntity } from '../entities/pokemon.js';
 import { dexMark } from '../ui/menu.js';
+import { arenaPara } from '../combat/arena-ginasio.js';
 
 // Batalha contra treinador NO MAPA, sem tela de batalha: o treinador arremessa a Poké Bola e o
 // Pokémon dele luta no mundo, com o mesmo combate em tempo real (src/combat/combat.js).
@@ -11,6 +12,8 @@ import { dexMark } from '../ui/menu.js';
 // Opções (motor de roteiro): semBola = o Pokémon já está no mapa (chefe selvagem, sem treinador);
 // alfa = vira Pokémon Alfa (maior, olhos vermelhos, mais forte); interromperApos = n: a luta para depois de
 // n desmaios do lado do treinador e termina com 'interrompida' (cena que invade a batalha).
+// Líder de ginásio com arena em src/data/arenas.js: a luta ganha a arena dinâmica (src/combat/arena-ginasio.js), com
+// perigos, fases, peças, plateia e a entrada especial do último Pokémon (semArena: true desliga).
 export class TrainerBattle {
   constructor(story, npc, def, opts = {}) {
     this.s = story; this.g = story.g; this.npc = npc; this.def = def; this.opts = opts;
@@ -18,12 +21,15 @@ export class TrainerBattle {
     this.next = 0; this.active = []; this.done = false; this.pending = 0;
     this.max = def.double ? 2 : 1;
     this.promise = new Promise((r) => (this.resolve = r));
+    this.arena = arenaPara(this);
   }
 
   start() {
     const g = this.g;
     g.audio?.music?.('battle');
-    for (let i = 0; i < this.max; i++) this.sendNext(i * 0.35);
+    const vai = () => { if (!this.done) for (let i = 0; i < this.max; i++) this.sendNext(i * 0.35); };
+    if (this.arena) this.arena.abertura().catch((err) => console.warn('abertura da arena', err)).then(vai);
+    else vai();
     return this.promise;
   }
 
@@ -40,9 +46,11 @@ export class TrainerBattle {
 
   sendNext(delay = 0) {
     if (this.done || this.next >= this.team.length) return false;
+    const ultimo = this.next === this.team.length - 1 && this.team.length > 1;
+    if (ultimo && this.arena && !this.opts.semBola) delay += this.arena.antesDoAs(); // cena do ás antes do arremesso
     const g = this.g, mon = this.team[this.next++], k = this.next;
     this.pending++;
-    if (this.opts.semBola) { g.later(delay, () => this.#appear(mon, { x: this.npc.x, y: this.npc.y })); return true; }
+    if (this.opts.semBola) { g.later(delay, () => this.#appear(mon, { x: this.npc.x, y: this.npc.y }, ultimo)); return true; }
     const to = this.#spot(k);
     g.later(delay, () => {
       if (this.done) { this.pending--; return; }
@@ -56,14 +64,14 @@ export class TrainerBattle {
         t += g.app.ticker.deltaMS / 1000 / 0.4;
         const q = Math.min(1, t);
         ball.x = x0 + (to.x - x0) * q; ball.y = y0 + (to.y - y0) * q - Math.sin(q * Math.PI) * 22; ball.rotation += 0.4;
-        if (q >= 1) { g.app.ticker.remove(tick); ball.destroy(); this.#appear(mon, to); }
+        if (q >= 1) { g.app.ticker.remove(tick); ball.destroy(); this.#appear(mon, to, ultimo); }
       };
       g.app.ticker.add(tick);
     });
     return true;
   }
 
-  async #appear(mon, at) {
+  async #appear(mon, at, ultimo = false) {
     const g = this.g;
     const e = new PokeEntity(g, mon, 'foe', at.x, at.y);
     await e.ready;
@@ -79,6 +87,7 @@ export class TrainerBattle {
     this.active.push(e);
     dexMark(g, mon.dex, 1);
     g.toast(this.opts.semBola ? `${this.def.name} ataca!` : `${this.def.name} enviou ${mon.name}!`);
+    this.arena?.entrou(e, ultimo);
   }
 
   update(dt) {
@@ -90,15 +99,19 @@ export class TrainerBattle {
       e.hpShow = Math.max(e.hpShow, 0.3);
       e.aggroTarget = tgt; e.ai.state = 'aggro'; e.ai.t = 10;
       if (e.stun > 0 || e.lock > 0) { e.vx = e.vy = 0; continue; }
-      const v = e.think(dt); e.vx = v.vx; e.vy = v.vy;
+      let v = e.think(dt);
+      if (this.arena) v = this.arena.guiar(e, v, dt); // a IA do líder usa a arena (foge dos avisos, peças, fase)
+      e.vx = v.vx; e.vy = v.vy;
       if (Math.hypot(v.vx, v.vy) > 1) e.face(v.vx, v.vy);
     }
+    this.arena?.update(dt);
     // fugiu para longe: o treinador recolhe os Pokémon e volta ao posto
     if (!this.opts.noFlee && Math.hypot(g.player.x - this.npc.x, g.player.y - this.npc.y) > 26 * 16) { g.toast(`Você fugiu da batalha com ${this.def.name}.`); this.finish('flee'); }
   }
 
   // chamado pelo main.js (gancho onFaint) quando um Pokémon 'foe' desmaia
   onFaint(e, by) {
+    if (this.arena?.onFaint(e)) return true; // ajudantes da arena (casulos) não contam para a vitória
     if (!this.active.includes(e)) return false;
     const g = this.g;
     e.dead = true; e.play('Hurt');
@@ -120,6 +133,7 @@ export class TrainerBattle {
     const g = this.g;
     for (const e of this.active) if (!e.dead) { g.fx.burst(e.x, e.y - 8, 0xff5a5a, 0.8); e.dead = true; g.removeEntity(e); }
     this.active = [];
+    this.arena?.fim(result);
     this.s.restoreMusic?.();
     this.resolve(result);
   }

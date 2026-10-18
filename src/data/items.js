@@ -224,6 +224,10 @@ export const ITEMS = {
   bigMushroom: I('Cogumelo Grande', 'Big Mushroom', 'treasure', 5000, { desc: 'Um cogumelo grande e raro. Vale ₽2.500 no Mercado.' }),
   bigPearl: I('Pérola Grande', 'Big Pearl', 'treasure', 8000, { desc: 'Uma pérola grande e brilhante. Vale ₽4.000 no Mercado.' }),
   nugget: I('Pepita', 'Nugget', 'treasure', 10000, { desc: 'Uma pepita de ouro puro. Vale ₽5.000 no Mercado.' }),
+  // fósseis: saem (raramente) de rochedos e pedras quebradas no mapa (src/world/vivo.js)
+  helixFossil: I('Fóssil de Hélice', 'Helix Fossil', 'treasure', 7000, { desc: 'Fóssil de um Pokémon antigo que vivia no mar. Vale ₽3.500 no Mercado.' }),
+  domeFossil: I('Fóssil de Domo', 'Dome Fossil', 'treasure', 7000, { desc: 'Fóssil de um Pokémon antigo com carapaça. Vale ₽3.500 no Mercado.' }),
+  oldAmber: I('Âmbar Antigo', 'Old Amber', 'treasure', 9000, { desc: 'Resina antiga com material genético de um Pokémon. Vale ₽4.500 no Mercado.' }),
   abilityCapsule: I('Cápsula de Habilidade', 'Ability Capsule', 'misc', 10000, { abilitySwap: true, desc: 'Troca a habilidade pela outra comum da espécie.' }),
 };
 

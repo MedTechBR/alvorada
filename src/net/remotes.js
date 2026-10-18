@@ -148,7 +148,8 @@ class Remote {
     const anim = sp > 10 && s.r ? this.frames.run : this.frames.walk;
     const step = sp > 10 ? Math.floor(this.t * (s.r ? 11 : 7.5)) % anim[this.dir].length : 0;
     this.body.texture = anim[this.dir][step];
-    v.x = Math.round(s.x); v.y = Math.round(s.y); v.zIndex = s.y;
+    v.x = Math.round(s.x); v.y = Math.round(s.y); v.zIndex = s.y + (s.tz ? s.tz + 2 : 0);
+    if (!s.m && !this.rig?.kind) { this.body.y = 2 - (s.tz ?? 0); v.children[0].y = -(s.tz ?? 0); } // no telhado (src/world/vivo.js)
     v.alpha = this.drop ? 0.45 : 1;
     // montado: o mesmo desenho da montaria do jogador (Pokémon PMD + treinador sentado); nome e balão sobem junto
     if (s.m || this.rig?.kind) {
@@ -169,6 +170,8 @@ class Remote {
       // a física do quadro soma vx*dt depois; compensamos para cair exatamente no ponto interpolado
       e.x = s.l.x - e.vx * dt; e.y = s.l.y - e.vy * dt;
       if (Math.hypot(e.vx, e.vy) > 8) e.face(e.vx, e.vy); else e.dir = s.l.a;
+      // altura: em cima de algo (piso) ou no ar; o cenário vivo é que segura o z
+      e.piso = s.l.p ? s.l.h : 0; e.pouso = s.l.p ? { h: s.l.h, camada: null, remoto: true } : null; if (s.l.h > 0) { e.z = s.l.h; e.vz = 0; }
       e.alpha = this.drop ? 0.45 : e.alpha;
     }
   }
