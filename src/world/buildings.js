@@ -190,3 +190,5 @@ mk('treeHouse', treeBuilding('house'), 7, 3, 3);
 mk('greenhouse', greenhouse(), 8, 3, 4);
 mk('radioStation', radio(), 6, 3, 3);
 export const BUILDINGS = B;
+// ajudantes de desenho, para outros módulos criarem prédios no mesmo estilo (ex.: src/story/cenario.js)
+export { house, hall, px, ell, poly, text, window1, woodDoor, glassDoor, ball };

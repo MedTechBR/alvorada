@@ -92,9 +92,6 @@ export function validateState(s) {
   if (!num(s.x) || !num(s.y)) return null;
   const out = { x: s.x, y: s.y, d: ['down', 'up', 'left', 'right'].includes(s.d) ? s.d : 'down', r: !!s.r, seq: isInt(s.seq, 0, 1e9) ? s.seq : 0 };
   if (s.l && num(s.l.x) && num(s.l.y) && typeof s.l.u === 'string') out.l = { x: s.l.x, y: s.l.y, u: s.l.u.slice(0, 16), a: isInt(s.l.a, 0, 7) ? s.l.a : 2, z: !!s.l.z };
-  if (['correr', 'nadar', 'escalar', 'voar', 'mergulhar'].includes(s.m)) {
-    out.m = s.m; out.z = Number.isFinite(s.z) ? Math.max(0, Math.min(120, s.z)) : 0; out.u = !!s.u; // montaria (src/world/mounts.js)
-    if (isInt(s.mountDex, 1, 2000) && SPECIES[s.mountDex]) out.mountDex = s.mountDex; // espécie montada, se o jogo mandar
-  }
+  if (['correr', 'nadar', 'escalar', 'voar', 'mergulhar'].includes(s.m)) { out.m = s.m; out.z = Number.isFinite(s.z) ? Math.max(0, Math.min(120, s.z)) : 0; out.u = !!s.u; out.mountDex = isInt(s.mountDex, 1, 1025) ? s.mountDex : null; } // montaria (src/world/mounts.js)
   return out;
 }

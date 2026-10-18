@@ -152,7 +152,7 @@ class Remote {
     // montado: o mesmo desenho da montaria do jogador (Pokémon PMD + treinador sentado); nome e balão sobem junto
     if (s.m || this.rig?.kind) {
       this.rig ??= new MountRig(this.g, v, this.body, v.children[0]);
-      this.rig.setKind(s.m ?? null, s.mountDex); // mountDex: espécie montada (quando o src/world/mounts.js mandar)
+      this.rig.setKind(s.m ?? null, s.mountDex); // espécie montada (mountDex); fora da tabela, a padrão do modo
       const on = this.rig.update(dt, { x: s.x, y: s.y, vx: s.vx, vy: s.vy, z: s.z ?? 0, frames: this.frames, dir4: this.dir, under: !!s.u, face: { down: Math.PI / 2, up: -Math.PI / 2, left: Math.PI, right: 0 }[this.dir] });
       const lift = on ? this.rig.lift : 0;
       this.tag.y = TAG_Y - lift; this.dot.y = -lift; if (v.bubble) v.bubble.y = BUBBLE_Y - lift;
