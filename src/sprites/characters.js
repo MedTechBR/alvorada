@@ -8,6 +8,7 @@ import { buildCharacter, resolveLook, PRESETS, LOOK_OPTIONS, DEFAULT_LOOK, DIRS,
 //     walk:  { down: [4 texturas], up, left, right },   // quadro 0 = parado
 //     run:   { down: [4], ... },
 //     throw: { down: [3], ... },                        // preparo, soltura, acompanhamento
+//     ride:  { down: [2], ... },                        // montado (sentado, pernas abertas); 1 = inclinado na corrida
 //     idle:  { down: textura, ... },
 //     down/up/left/right: atalhos para walk (compatível com o makeTrainerFrames antigo),
 //     fw, fh, groundY, look, canvas (folha completa, útil para prévia no criador)
@@ -17,7 +18,7 @@ import { buildCharacter, resolveLook, PRESETS, LOOK_OPTIONS, DEFAULT_LOOK, DIRS,
 
 export { LOOK_OPTIONS, DEFAULT_LOOK, PRESETS, FW, FH, GROUND_Y };
 export const NPC_PRESETS = Object.keys(PRESETS);
-const ANIMS = ['walk', 'run', 'throw'];
+const ANIMS = ['walk', 'run', 'throw', 'ride'];
 const cache = new Map();
 
 export function makeCharacterFrames(look = 'menino') {

@@ -159,6 +159,8 @@ export function frameOf(set, name, dir, t, loop = true) {
     tex: a.frames[Math.min(row, a.frames.length - 1)][i], index: i, anim: a.name,
     done: !loop && Math.floor(t * 60) >= a.total, hit: i >= a.hit,
     ox, oy, ax: ox / a.fw, ay: oy / a.fh, center, head, mouth, hand: hand ?? mouth,
+    // caixa do conteúdo do quadro (px, relativa ao chão): x0/y0 = canto de cima à esquerda (montarias usam o topo do lombo)
+    box: q && q[12] > q[10] ? { x0: q[10] - ox, y0: q[11] - oy, x1: q[12] - ox, y1: q[13] - oy } : null,
   };
 }
 

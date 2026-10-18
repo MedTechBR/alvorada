@@ -1,5 +1,5 @@
 // Pixel art dos humanos (treinador, NPCs), desenhada por código, sem dependências.
-// Quadro de 24x32: cabeça grande (estilo DS), 4 direções, caminhada (4), corrida (4) e lançamento (3).
+// Quadro de 24x32: cabeça grande (estilo DS), 4 direções, caminhada (4), corrida (4), lançamento (3) e montado (2).
 // As cores são trocáveis (pele, cabelo, boné, roupa, calça, sapato, mochila) para o futuro criador de personagem:
 // sombra, brilho e contorno saem da cor base, então basta passar um hex por parte.
 // Saída: RGBA puro (Uint8ClampedArray), usado pelo characters.js (PixiJS) e pela prévia em Node.
@@ -218,7 +218,20 @@ function drawFrame(o, dir, pose) {
 
   // ----- pernas
   const legKey = (i) => (shorts ? (i ? 'S' : 's') : (i ? 'P' : 'p'));
-  if (!side) {
+  if (pose.ride) {
+    // montado: sentado no lombo, coxas abertas para os lados e canelas caindo pelos flancos
+    const shin = (far) => (shorts ? (far ? 'S' : 's') : (far ? 'P' : 'p'));
+    if (!side) {
+      rect(4, hipY, 5, 3, 'p'); rect(4, hipY + 2, 5, 1, 'P'); rect(3, hipY + 2, 3, 4, shin(false)); rect(3, hipY + 6, 3, 2, dir === 'up' ? 'O' : 'o');
+      rect(15, hipY, 5, 3, 'p'); rect(15, hipY + 2, 5, 1, 'P'); rect(18, hipY + 2, 3, 4, shin(true)); rect(18, hipY + 6, 3, 2, 'O');
+      if (dir === 'down') { set(4, hipY + 6, 'q'); set(19, hipY + 6, 'q'); }
+    } else {
+      // de lado: só a perna de perto aparece (a outra fica do outro lado da montaria)
+      const hx = 12 + lean;
+      line(hx, hipY, hx - 4, hipY + 1, 3, 'p'); line(hx - 4, hipY + 1, hx - 4, hipY + 5, 3, shin(false));
+      rect(hx - 7, hipY + 5, 5, 2, 'o'); set(hx - 7, hipY + 5, 'q'); set(hx - 3, hipY + 6, 'O');
+    }
+  } else if (!side) {
     pose.legs.forEach((L, i) => {
       const x = i === 0 ? 8 : 12, foot = 30 - (L.lift ?? 0);
       const top = hipY, len = foot - 1 - top;
@@ -350,6 +363,10 @@ function poses(dir) {
         P(0, { dx: -2, lift: 2 }, { dx: 1 }, { a: -40, len: 5 }, { a: 35, len: 5 }, { lean: -1 }),
         P(1, { dx: -4, lift: 1 }, { dx: 4 }, { a: 50, len: 5 }, { a: -45, len: 5 }, { lean: -1 }),
       ],
+      ride: [
+        P(0, {}, {}, { a: 55, len: 6 }, { a: 45, len: 5 }, { ride: true }),
+        P(0, {}, {}, { a: 70, len: 6 }, { a: 60, len: 5 }, { ride: true, lean: -1 }),
+      ],
       throw: [
         P(0, { dx: 2 }, { dx: -2 }, { a: -150, len: 6 }, { a: 20 }, { lean: 1 }),
         P(1, { dx: 4 }, { dx: -3 }, { a: 100, len: 7 }, { a: -30 }, { lean: -1 }),
@@ -369,6 +386,10 @@ function poses(dir) {
       P(1, { lift: 3 }, {}, { len: 4, a: 50 }, { len: 7 }),
       P(0, {}, { lift: 1 }, { len: 6 }, { len: 5, a: 30 }),
       P(1, {}, { lift: 3 }, { len: 7 }, { len: 4, a: 50 }),
+    ],
+    ride: [
+      P(0, {}, {}, { len: 5, out: -1 }, { len: 5, out: 1 }, { ride: true }),
+      P(0, {}, {}, { len: 4, a: 40, out: -1 }, { len: 4, a: 40, out: 1 }, { ride: true }),
     ],
     throw: [
       P(0, {}, {}, { len: 6 }, { len: 0 }, { throwUp: 8 }),

@@ -4,6 +4,7 @@ import { Fx } from './engine/fx.js';
 import { makeTiles, T, TILE } from './world/tiles.js';
 import { GameMap } from './world/map.js';
 import { WorldLife } from './world/life.js';
+import { Mounts } from './world/mounts.js';
 import { makeTrainerFrames, dir4 } from './sprites/characters.js';
 import { loadPokemonSprites } from './sprites/pmd.js';
 import { PokeEntity } from './entities/pokemon.js';
@@ -44,6 +45,7 @@ class Game {
     this.mundo = new WorldLife(this); // dia e noite, portas, bichinhos, minimapa
     // treinador e equipe
     this.player = this.#makeTrainer(this.map.spawn.x, this.map.spawn.y);
+    this.mount = new Mounts(this); // montarias do treinador (X): src/world/mounts.js
     this.party = []; this.box = []; this.bag = { pokeball: 0, potion: 0 }; this.money = 0; this.flags = {};
     this.leadIdx = 0; this.entities = [];
     this.ui = new UI(this);        // HUD, menus, diálogo, título e save (src/ui)
@@ -131,6 +133,8 @@ class Game {
     if (!mon) return;
     if (mon.fainted) { this.toast(`${mon.name} não pode lutar.`); return; }
     if (this.throwingMon) return;
+    // montado: desce primeiro e depois joga (no voo, pousa antes)
+    if (this.mount?.active) { if (!this.mount.busy) this.mount.dismount(() => this.throwMon(i, ax, ay)); return; }
     const p = this.player, dx = ax - p.x, dy = ay - p.y, d = Math.hypot(dx, dy) || 1;
     const dist = Math.min(d, 90), tx = p.x + dx / d * dist, ty = p.y + dy / d * dist;
     const ball = new PIXI.Graphics(); ball.circle(0, 0, 3).fill(0xffffff); ball.rect(-3, -3, 6, 3).fill(0xe5383b); ball.circle(0, 0, 1).fill(0x222222);
@@ -158,6 +162,8 @@ class Game {
     this.hudLead(); this.hudMoves();
   }
   sendOut(i) { return this.#sendOut(i); } // público para o online (equipe do duelo, troca)
+  // Libera uma montaria ('mudbray' | 'lapras' | 'sneasler' | 'corviknight' | 'mantine', ou 'correr' | 'nadar' | ...) com aviso
+  unlockMount(kind, opts) { return this.mount?.unlock(kind, opts) ?? false; }
   // Escolhe o próximo Pokémon da equipe (no modo Pokémon, troca o que está em campo)
   swap() {
     const n = this.party.length;
@@ -373,28 +379,31 @@ class Game {
 
     // ----- treinador -----
     p.t += dt; p.iframes -= dt; p.stun = (p.stun ?? 0) - dt; p.throwT = (p.throwT ?? 0) - dt;
-    const want = pk || p.stun > 0 ? 0 : (run ? 118 : 74);
-    const tvx = mag > 0.1 ? mx * want : 0, tvy = mag > 0.1 ? my * want : 0;
-    const acc = Math.min(1, dt * (mag > 0.1 ? 14 : 18));
-    p.vx += (tvx - p.vx) * acc; p.vy += (tvy - p.vy) * acc;
-    if (!pk && inp.pressed('dodge') && p.roll <= 0) {
-      const dx = mag > 0.1 ? mx : ({ down: 0, up: 0, left: -1, right: 1 }[p.dir]), dy = mag > 0.1 ? my : ({ down: 1, up: -1, left: 0, right: 0 }[p.dir]);
-      p.kx += dx * 260; p.ky += dy * 260; p.roll = 0.5; p.iframes = 0.3; this.audio.sfx('dodge');
-      this.combat.onDodge(p, true);
+    // montaria (X): quando o treinador está montado, ela cuida do movimento e do desenho
+    if (!this.mount?.control(dt, pk, mx, my, mag, run)) {
+      const want = pk || p.stun > 0 ? 0 : (run ? 118 : 74);
+      const tvx = mag > 0.1 ? mx * want : 0, tvy = mag > 0.1 ? my * want : 0;
+      const acc = Math.min(1, dt * (mag > 0.1 ? 14 : 18));
+      p.vx += (tvx - p.vx) * acc; p.vy += (tvy - p.vy) * acc;
+      if (!pk && inp.pressed('dodge') && p.roll <= 0) {
+        const dx = mag > 0.1 ? mx : ({ down: 0, up: 0, left: -1, right: 1 }[p.dir]), dy = mag > 0.1 ? my : ({ down: 1, up: -1, left: 0, right: 0 }[p.dir]);
+        p.kx += dx * 260; p.ky += dy * 260; p.roll = 0.5; p.iframes = 0.3; this.audio.sfx('dodge');
+        this.combat.onDodge(p, true);
+      }
+      p.roll -= dt;
+      p.x += (p.vx + p.kx) * dt; p.y += (p.vy + p.ky) * dt;
+      p.kx *= 1 - Math.min(1, dt * 8); p.ky *= 1 - Math.min(1, dt * 8);
+      this.map.resolve(p, p.r);
+      p.speed = Math.hypot(p.vx, p.vy);
+      if (p.speed > 10) p.dir = dir4(p.vx, p.vy);
+      else if (pk) p.dir = dir4(this.lead.x - p.x, this.lead.y - p.y); // olha para o próprio Pokémon
+      const step = p.speed > 10 ? Math.floor(p.t * (run ? 11 : 7.5)) % 4 : 0;
+      const set = p.throwT > 0 && p.frames.throw ? p.frames.throw : run && p.speed > 90 ? p.frames.run : p.frames.walk ?? p.frames;
+      p.body.texture = (set[p.dir] ?? p.frames.walk[p.dir])[p.throwT > 0 ? Math.min(2, Math.floor((0.3 - p.throwT) / 0.1)) : step] ?? p.frames.walk[p.dir][0];
+      p.body.alpha = p.iframes > 0 && Math.sin(p.t * 40) > 0 ? 0.5 : 1;
+      p.view.x = Math.round(p.x); p.view.y = Math.round(p.y); p.view.zIndex = p.y;
+      if (this.map.tallAt(p.x, p.y) && p.speed > 20 && Math.random() < dt * 4) this.fx.emit(p.x, p.y - 2, { color: 0x5aa84e, n: 2, speed: 25, size: 3, life: 0.35, add: false, grav: 120, vz: 40 });
     }
-    p.roll -= dt;
-    p.x += (p.vx + p.kx) * dt; p.y += (p.vy + p.ky) * dt;
-    p.kx *= 1 - Math.min(1, dt * 8); p.ky *= 1 - Math.min(1, dt * 8);
-    this.map.resolve(p, p.r);
-    p.speed = Math.hypot(p.vx, p.vy);
-    if (p.speed > 10) p.dir = dir4(p.vx, p.vy);
-    else if (pk) p.dir = dir4(this.lead.x - p.x, this.lead.y - p.y); // olha para o próprio Pokémon
-    const step = p.speed > 10 ? Math.floor(p.t * (run ? 11 : 7.5)) % 4 : 0;
-    const set = p.throwT > 0 && p.frames.throw ? p.frames.throw : run && p.speed > 90 ? p.frames.run : p.frames.walk ?? p.frames;
-    p.body.texture = (set[p.dir] ?? p.frames.walk[p.dir])[p.throwT > 0 ? Math.min(2, Math.floor((0.3 - p.throwT) / 0.1)) : step] ?? p.frames.walk[p.dir][0];
-    p.body.alpha = p.iframes > 0 && Math.sin(p.t * 40) > 0 ? 0.5 : 1;
-    p.view.x = Math.round(p.x); p.view.y = Math.round(p.y); p.view.zIndex = p.y;
-    if (this.map.tallAt(p.x, p.y) && p.speed > 20 && Math.random() < dt * 4) this.fx.emit(p.x, p.y - 2, { color: 0x5aa84e, n: 2, speed: 25, size: 3, life: 0.35, add: false, grav: 120, vz: 40 });
 
     // ----- Pokémon em campo: você controla direto -----
     const l = this.lead;
@@ -441,7 +450,7 @@ class Game {
 
   // ninguém atravessa ninguém
   #crowd() {
-    const list = [this.player, ...this.entities.filter((e) => e.alive && !e.busy)];
+    const list = [...(this.mount?.ghost ? [] : [this.player]), ...this.entities.filter((e) => e.alive && !e.busy)];
     for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) {
       const a = list[i], b = list[j];
       const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy), m = (a.r + b.r) * 0.85;

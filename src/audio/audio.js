@@ -107,6 +107,7 @@ export class Audio {
       // ---- combate ----
       case 'hit-heavy': N(t, 0.25, { freq: 700, vol: 0.5 }); T(140, t, 0.25, { to: 40, vol: 0.4, type: 'square' }); N(t + 0.02, 0.3, { freq: 200, vol: 0.3, type: 'lowpass' }); break;
       case 'warn': T(980, t, 0.05, { vol: 0.05, type: 'pulse' }); T(980, t + 0.09, 0.05, { vol: 0.05, type: 'pulse' }); break;
+      case 'whistle': T(1700, t, 0.12, { to: 2300, vol: 0.09, type: 'sine' }); T(2300, t + 0.15, 0.22, { to: 1800, vol: 0.09, type: 'sine' }); break;
       case 'whoosh': N(t, 0.22, { freq: 600, to: 2600, vol: 0.18, q: 0.6 }); break;
       case 'clash': N(t, 0.3, { freq: 2500, vol: 0.35, q: 2 }); T(1800, t, 0.12, { to: 900, vol: 0.12, type: 'square' }); T(2400, t + 0.03, 0.15, { to: 1200, vol: 0.08, type: 'square' }); break;
       case 'boom': N(t, 0.8, { freq: 500, to: 60, vol: 0.6, type: 'lowpass' }); T(90, t, 0.6, { to: 30, vol: 0.5, type: 'triangle' }); N(t, 0.15, { freq: 3000, vol: 0.25 }); break;
