@@ -12,8 +12,11 @@ const R = {}; const falhas = [];
 const ok = (nome, cond, info = '') => { R[nome] = !!cond; if (!cond) falhas.push(nome); console.log(cond ? 'OK  ' : 'FALHOU', nome, info === '' ? '' : JSON.stringify(info)); };
 const shot = (p, n) => p.ev(`(async () => { game.app.renderer.render(game.app.stage); const b = await new Promise((r) => game.app.canvas.toBlob(r, 'image/jpeg', 0.85)); await fetch('/__shot?n=${n}', { method: 'POST', body: b }); return 1; })()`);
 // o Chrome sem interface desenha devagar (WebGL por software): um relógio próprio avança a lógica a 30 quadros/s
-const pump = (p) => p.ev(`(window.__pump ??= setInterval(() => game.frame(1 / 30), 33), 1)`);
-const espera = (p, expr, ms = 20000) => until(() => p.ev(expr), ms, 100);
+const pump = (p) => p.ev(`(window.__pump ??= (() => { const f = () => { try { game.frame(1 / 30); } finally { setTimeout(f, 34); } }; f(); return 1; })(), 1)`);
+// cada pergunta à página tem prazo (com a máquina cheia, o Chrome às vezes não responde)
+const pergunta = (p, expr, ms = 15000) => Promise.race([p.ev(expr), new Promise((_, rej) => setTimeout(() => rej(new Error('sem resposta')), ms))]);
+const espera = (p, expr, ms = 20000) => until(() => pergunta(p, expr), ms, 100);
+const carregou = async (p) => { if (!(await until(() => pergunta(p, '!!window.game?.vivo?.pronto && game.ui?.state === "play"'), 300000, 1000))) throw new Error('o jogo não carregou em 5 min'); };
 // ajudantes dentro da página
 const AJUDA = `window.__cv = {
   perto(f, x = game.player.x, y = game.player.y) { const v = game.vivo; return game.map.objects.filter((o) => !o.dead && f(o, v) && !game.map.interiorAt(o.x, o.y - 1)).sort((a, b) => Math.hypot(a.x - x, a.y - y) - Math.hypot(b.x - x, b.y - y))[0]; },
@@ -25,7 +28,7 @@ const AJUDA = `window.__cv = {
 try {
   // ======================================================================= um jogador
   const p = await open(b, `${base}&online=0`, 'a');
-  await until(() => p.ev('!!window.game?.vivo?.pronto && game.ui?.state === "play"'), 300000);
+  await carregou(p);
   await pump(p); await p.ev(AJUDA);
   await p.ev('game.mundo.setHour(10), 1');
 
@@ -163,7 +166,7 @@ try {
   // ======================================================================= 2 clientes
   const A = await open(b, `${base}&online=1&rede=local&perfil=cva`, 'A'); await sleep(1500);
   const B = await open(b, `${base}&online=1&rede=local&perfil=cvb`, 'B');
-  for (const q of [A, B]) { await until(() => q.ev('!!window.game?.vivo?.pronto && game.ui?.state === "play"'), 300000); await pump(q); await q.ev(AJUDA); }
+  for (const q of [A, B]) { await carregou(q); await pump(q); await q.ev(AJUDA); }
   const juntos = await until(async () => { const s = await Promise.all([A, B].map((q) => q.ev('game.net.on && game.net.room?.players.size'))); return s.every((n) => n === 2) && s; }, 90000, 500);
   ok('2 clientes no mesmo canal', !!juntos, juntos);
   const alvo = await A.ev(`(() => { const t = __cv.perto((o, v) => v.material(o) === 'arvore' && v.destrutivel(o) && o.kind !== 'palm'); window.__t = t; __cv.ir(t.x - 40, t.y + 30); return game.vivo.chave(t); })()`);
