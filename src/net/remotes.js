@@ -7,11 +7,13 @@ import { validateMon, validateState, cleanLook } from './validate.js';
 import { MountRig } from '../world/mounts.js';
 
 // Os outros treinadores no seu mapa: boneco com o visual do criador de personagem (makeCharacterFrames), nome em cima, balão de fala,
-// emotes e o Pokémon que acompanha. A posição chega 10x/s (20x/s no duelo) e é interpolada:
+// emotes e o Pokémon que acompanha. A posição chega 10x/s (20x/s no duelo; 1x/s de quem está longe) e é interpolada:
 // mostramos cada um ~130 ms no passado, entre duas amostras reais, para o movimento sair liso.
+// Só se desenha quem está no mesmo lugar que você (lá fora, ou no mesmo interior) e perto da câmera; os outros
+// ficam só com a posição guardada (minimapa e lista do menu), sem boneco nem Pokémon em campo.
 
 const DELAY = 130, DELAY_DUEL = 90, EXTRAP = 160;
-export const EMOTES = { heart: '♥', excl: '!', ask: '?', note: '♪', dots: '…', gg: 'GG', zz: 'zZ', smile: ':)' };
+export const EMOTES = { heart: '♥', excl: '!', ask: '?', note: '♪', dots: '…', gg: 'GG', zz: 'zZ', smile: ':)', wave: 'Oi!' }; // wave = Acenar
 
 function label(text, color = '#ffffff', size = 6) {
   const t = new PIXI.Text({ text, style: { fontFamily: 'Avenir Next, Nunito, system-ui', fontWeight: '900', fontSize: size, fill: color, stroke: { color: '#14201a', width: 2.2 }, align: 'center' } });
@@ -127,11 +129,19 @@ class Remote {
     this.follower = null;
     if (this.g.entities.includes(e)) this.g.removeEntity(e);
   }
-  update(dt, duel) {
+  // fora da vista: some o boneco, o Pokémon que acompanha e a montaria (a sombra dela fica noutra camada)
+  hide() {
+    if (!this.view.visible) return;
+    this.view.visible = false;
+    this.dropFollower(); this.leadKey = '';
+    this.rig?.setKind(null);
+  }
+  update(dt, duel, inView) {
     const s = this.sample(duel ? DELAY_DUEL : DELAY);
     if (!s) return;
-    const v = this.view; v.visible = true;
-    this.x = s.x; this.y = s.y; this.t += dt;
+    this.x = s.x; this.y = s.y; this.has = true;
+    if (!duel && !inView(s.x, s.y)) { this.hide(); return; }
+    const v = this.view; v.visible = true; this.t += dt;
     const sp = Math.hypot(s.vx, s.vy);
     if (sp > 10) this.dir = dir4(s.vx, s.vy); else this.dir = s.d;
     const anim = sp > 10 && s.r ? this.frames.run : this.frames.walk;
@@ -142,7 +152,7 @@ class Remote {
     // montado: o mesmo desenho da montaria do jogador (Pokémon PMD + treinador sentado); nome e balão sobem junto
     if (s.m || this.rig?.kind) {
       this.rig ??= new MountRig(this.g, v, this.body, v.children[0]);
-      this.rig.setKind(s.m ?? null);
+      this.rig.setKind(s.m ?? null, s.mountDex); // espécie montada (mountDex); fora da tabela, a padrão do modo
       const on = this.rig.update(dt, { x: s.x, y: s.y, vx: s.vx, vy: s.vy, z: s.z ?? 0, frames: this.frames, dir4: this.dir, under: !!s.u, face: { down: Math.PI / 2, up: -Math.PI / 2, left: Math.PI, right: 0 }[this.dir] });
       const lift = on ? this.rig.lift : 0;
       this.tag.y = TAG_Y - lift; this.dot.y = -lift; if (v.bubble) v.bubble.y = BUBBLE_Y - lift;
@@ -171,8 +181,9 @@ class Remote {
 
 export class Remotes {
   constructor(g) { this.g = g; this.map = new Map(); }
-  sync(roster, selfId) {
-    const want = new Set();
+  // keep: ids que não estão no roster mas devem continuar na tela por um tempo (reeleição do anfitrião do canal)
+  sync(roster, selfId, keep = null) {
+    const want = new Set(keep ?? []);
     for (const p of roster) {
       if (p.id === selfId) continue;
       want.add(p.id);
@@ -180,11 +191,20 @@ export class Remotes {
       if (!r) { r = new Remote(this.g, p); this.map.set(p.id, r); }
       r.rename(p.name); if (p.look) r.setLook(p.look); r.drop = !!p.drop;
     }
+    for (const id of keep ?? []) { const r = this.map.get(id); if (r) r.drop = true; }
     for (const [id, r] of this.map) if (!want.has(id)) { r.destroy(); this.map.delete(id); }
   }
   get(id) { return this.map.get(id); }
   onState(id, data) { const s = validateState(data); if (s) this.map.get(id)?.push(s, Number(data.ts)); }
-  update(dt, duelWith) { for (const r of this.map.values()) r.update(dt, r.id === duelWith); }
+  // mesmo lugar (lá fora ou o mesmo interior) que o seu treinador?
+  sameRoom(x, y) { const m = this.g.map, p = this.g.player; return (m.interiorAt(x, y)?.id ?? '') === (m.interiorAt(p.x, p.y)?.id ?? ''); }
+  update(dt, duelWith) {
+    const g = this.g, z = g.zoom || 3, hw = innerWidth / 2 / z + 96, hh = innerHeight / 2 / z + 96, c = g.cam ?? g.player;
+    const inView = (x, y) => Math.abs(x - c.x) < hw && Math.abs(y - c.y) < hh && this.sameRoom(x, y);
+    for (const r of this.map.values()) r.update(dt, r.id === duelWith, inView);
+  }
+  // pontos do minimapa: quem está no mesmo lugar que você
+  dots() { const out = []; for (const r of this.map.values()) if (r.has && this.sameRoom(r.x, r.y)) out.push({ x: r.x, y: r.y, drop: !!r.drop }); return out; }
   nearest(x, y, max = 44) {
     let best = null, bd = max;
     for (const r of this.map.values()) { if (!r.view.visible || r.drop) continue; const d = Math.hypot(r.x - x, r.y - y); if (d < bd) { bd = d; best = r; } }

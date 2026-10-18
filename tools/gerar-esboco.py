@@ -18,7 +18,7 @@ def op(**k): ops.append(k)
 def note(t): op(op='comment', _=t)
 
 # lugares detalhados à mão (o esboço só põe o terreno de base embaixo deles)
-DETALHADOS = {'vila_alvorada', 'cidade_campina', 'fazenda_tome', 'rota1', 'rota2', 'vila_sussurro', 'lagoa_dourada', 'toca_absol', 'porto_espelho'}
+DETALHADOS = {'vila_alvorada', 'cidade_campina', 'fazenda_tome', 'rota1', 'rota2', 'vila_sussurro', 'lagoa_dourada', 'toca_absol', 'porto_espelho', 'cidade_coral', 'vila_lamparina', 'cidade_aurora'}
 
 note('==== esboço gerado por tools/gerar-esboco.py a partir de docs/mapa-alvorada.json (não editar à mão) ====')
 note('montanhas ao norte e Monte Zênite')
@@ -167,7 +167,10 @@ BIOMA = {'cidade': 'vila', 'rota': 'campo', 'floresta': 'floresta', 'lago': 'mar
          'montanha': 'planalto', 'ilha': 'praia', 'secreta': 'campo', 'caverna': 'planalto', 'local': 'campo', 'santuario': 'planalto',
          'rota_agua': 'margem', 'templo_submerso': 'margem', 'submerso': 'margem'}
 lst = sorted(plan['lugares'], key=lambda p: -p['w'] * p['h'])
+# lugares redesenhados à mão com área própria em alvorada.json: o esboço não deixa uma área maior com o mesmo id
+COM_AREA_PROPRIA = {'cidade_coral', 'vila_lamparina', 'cidade_aurora', 'praia_corais'}
 for p in lst:
+    if p['id'] in COM_AREA_PROPRIA: continue
     x, y, w, h = box(p)
     bio = BIOMA.get(p['tipo'], 'campo')
     if p['id'] == 'rota2': bio = 'floresta'

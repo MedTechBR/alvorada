@@ -3,6 +3,7 @@ import { T, TILE, SOLID, SWIMMABLE } from './tiles.js';
 import { frameOf, loadPokemonSprites, portraitOf } from '../sprites/pmd.js';
 import { speciesScale } from '../sprites/scale.js';
 import { SPECIES } from '../data/species.js';
+import { MONTARIAS } from '../data/montarias.js';
 import { IS_TOUCH } from '../engine/input.js';
 import { dir4 } from '../sprites/characters.js';
 
@@ -14,7 +15,11 @@ import { dir4 } from '../sprites/characters.js';
 //   voar       Corviknight (823)  segure X; voa por cima de tudo (sombra no chão, câmera afasta) e pousa em lugar livre
 //   mergulhar  Mantine (226)      X sobre um redemoinho (água funda marcada); mostra o fundo
 // Desbloqueio: flags.mounts.<tipo> (ou game.unlockMount('mudbray' | 'correr' ...)); com ?teste=1 todas ficam liberadas.
-// O desenho (montaria PMD + treinador sentado) fica em MountRig, usado também pelos outros jogadores do online.
+// Essas 5 são as padrão. Liberado o modo, qualquer Pokémon do jogador (equipe ou PC) que carregue gente serve no lugar
+// (src/data/montarias.js, gerado por tools/gerar_montarias.py): escolha no menu Montarias ou em "Usar como montaria",
+// gravada em flags.montaria.<tipo> = uid. Cada espécie usa o próprio sprite e a escala real, com pose e velocidade próprias.
+// O desenho (montaria PMD + treinador sentado) fica em MountRig, usado também pelos outros jogadores do online
+// (o estado leva o modo em m e a espécie em mountDex).
 
 export const MOUNTS = {
   correr:    { dex: 749, name: 'Mudbray',     label: 'Correr',    h: 1.0, walk: 132, run: 190, acc: 7,   anim: 55, lift: 1, back: 4,  r: 7, lean: 150, bob: 1.5 },
@@ -34,21 +39,60 @@ const HINT = {
   mergulhar: 'Aperte X sobre um redemoinho escuro, navegando, para mergulhar.',
 };
 const ALT = 58;                // altura do voo (px)
+// ?teste=1&montarias=1: Pokémon montáveis de vários modos que vão para o PC
+const TEST_MONS = [6, 59, 128, 445, 130, 131, 319, 350, 149, 227, 373, 68, 673, 461, 95, 208, 750, 717];
 const JUMPABLE = new Set(['log', 'stump', 'fence', 'fenceV', 'wfence', 'wfenceV']);
 const FACE = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
 const FACE_A = { down: Math.PI / 2, up: -Math.PI / 2, left: Math.PI, right: 0 };
 const lerp = (a, b, k) => a + (b - a) * k;
 
 // escala da montaria: a mesma regra dos Pokémon (altura real comprimida); sem dados da espécie, usa a altura da tabela
-function mountScale(kind, set) {
-  const C = MOUNTS[kind];
-  if (SPECIES[C.dex]?.height) {
-    // montaria precisa ter porte para carregar o treinador (32 px): no mínimo ~30 px de altura
-    const top = set?.top || 24, min = Math.round((30 / top) * 4) / 4;
-    return Math.max(speciesScale(C.dex, set), min);
+function mountScale(dex, set, h = 1, minPx = 30) {
+  if (SPECIES[dex]?.height) {
+    // montaria precisa ter porte para carregar o treinador (32 px): no mínimo ~30 px de altura (34 nas da tabela)
+    const top = set?.top || 24, min = Math.round((minPx / top) * 4) / 4;
+    return Math.max(speciesScale(dex, set), min);
   }
-  const h = Math.min(80, 10 + 16 * Math.pow(C.h, 0.85));
-  return Math.max(0.5, Math.min(3, Math.round(h / (set?.top || 24) * 4) / 4));
+  const sh = Math.min(80, 10 + 16 * Math.pow(h, 0.85));
+  return Math.max(0.5, Math.min(3, Math.round(sh / (set?.top || 24) * 4) / 4));
+}
+
+// ------------------------------------------------------------------------------------------------
+// Montarias de qualquer espécie que carregue o treinador (src/data/montarias.js, gerado por tools/gerar_montarias.py).
+// As 5 da história (MOUNTS) são o padrão de cada modo; um Pokémon do jogador (equipe ou PC) pode tomar o lugar
+// (flags.montaria.<modo> = uid do Pokémon). Velocidade: base de Velocidade da espécie e porte (altura e peso).
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+export const mountModes = (dex) => MOUNT_KINDS.filter((k) => MOUNTS[k].dex === +dex || MONTARIAS[dex]?.m.includes(k));
+export const canMount = (dex, kind) => mountModes(dex).includes(kind);
+const CFG = new Map();
+// configuração da montaria (velocidades e pose) para o modo e a espécie; a padrão do modo usa os valores feitos à mão
+export function mountConfig(kind, dex = null) {
+  const base = MOUNTS[kind]; if (!base) return null;
+  dex = +(dex ?? base.dex);
+  if (dex === base.dex || !MONTARIAS[dex]?.m.includes(kind) || !SPECIES[dex]) return base;
+  const key = kind + ':' + dex;
+  if (CFG.has(key)) return CFG.get(key);
+  const P = MONTARIAS[dex], sp = SPECIES[dex], spe = sp.base[5], h = sp.height, w = Math.max(10, sp.weight);
+  const heavy = Math.log(w); // 110 kg ~ 4,7; 900 kg ~ 6,8
+  let walk, run, acc, climb;
+  if (kind === 'voar') { walk = clamp(108 + spe * 0.45, 125, 172); run = walk * 1.43; acc = clamp(1.8 + spe / 80, 2, 3.6); }
+  else if (kind === 'nadar' || kind === 'mergulhar') { walk = clamp(66 + spe * 0.36 + h * 2, 78, 124); run = walk * 1.4; acc = clamp(2 + spe / 70, 2.4, 4.2); if (kind === 'mergulhar') { walk *= 0.95; run *= 0.95; } }
+  else if (kind === 'escalar') { walk = clamp(84 + spe * 0.26, 90, 126); run = walk * 1.45; climb = clamp(34 + spe * 0.22, 40, 68); acc = clamp(10 - heavy, 4.5, 8.5); }
+  else { walk = clamp(94 + spe * 0.36 + clamp(h, 1, 4) * 4, 106, 160); run = walk * 1.45; acc = clamp(11 - 1.2 * heavy, 3, 8); }
+  const cfg = {
+    dex, name: sp.name, label: base.label, water: base.water, fly: base.fly, h,
+    walk: Math.round(walk), run: Math.round(run), acc: Math.round(acc * 10) / 10, climb: climb && Math.round(climb),
+    r: Math.round(clamp(5 + h * 1.1, 6, 9)), bob: kind === 'voar' ? 1 : base.water ? 0.8 : P.est === 'costas' ? 1 : sp.shape === 'serpent' ? 0.6 : 1.5,
+    lean: kind === 'correr' && P.est === 'lombo' ? 150 : kind === 'escalar' ? 140 : 0, pose: P,
+    behind: P.behind ?? (P.est === 'costas' ? [0, 1, 2, 3, 4] : null),
+  };
+  CFG.set(key, cfg);
+  return cfg;
+}
+// pose em px do mundo: multiplica as medidas do sprite pela escala (só para as montarias da tabela)
+function scaledConfig(C, s) {
+  const P = C.pose; if (!P) return C;
+  return { ...C, lift: P.lift * s, back: P.back * s, backV: (P.backV ?? 0) * s, topo: P.topo * s, anim: Math.round(22 + 20 * s) };
 }
 // direção do treinador sentado a partir das 8 direções do PMD (0 = direita, sentido horário)
 const RIDER_DIR = ['right', 'right', 'down', 'left', 'left', 'left', 'up', 'right'];
@@ -71,13 +115,19 @@ export class MountRig {
     groundLayer(g).addChild(this.shadow);
     this.kind = null; this.set = null; this.angle = Math.PI / 2; this.dir = 2; this.animT = 0; this.fxT = 0; this.lift = 0;
   }
-  setKind(kind) {
-    if (kind === this.kind) return this.ready ?? Promise.resolve();
-    this.kind = kind; this.set = null;
+  // kind = modo; dex = espécie montada (null = a montaria padrão do modo)
+  setKind(kind, dex = null) {
+    const C0 = kind ? mountConfig(kind, dex) : null, key = kind ? kind + ':' + C0.dex : null;
+    if (key === this.key) return this.ready ?? Promise.resolve();
+    // trocou só a espécie (escolha no menu, montado): o desenho antigo fica até o novo carregar
+    const keep = kind && this.kind === kind && this.set;
+    this.kind = kind; this.key = key;
+    if (!keep) { this.set = null; this.C = C0; }
     if (!kind) { this.#hide(); this.ready = Promise.resolve(); return this.ready; }
-    this.ready = loadPokemonSprites(MOUNTS[kind].dex).then((set) => {
-      if (this.kind !== kind) return;
-      this.set = set; this.scale = mountScale(kind, set);
+    this.ready = loadPokemonSprites(C0.dex).then((set) => {
+      if (this.key !== key) return;
+      // quem voa com o treinador precisa de mais porte (40 px); as outras da tabela, 34 px
+      this.set = set; this.scale = mountScale(C0.dex, set, C0.h, C0.pose ? (C0.fly ? 40 : 34) : 30); this.C = scaledConfig(C0, this.scale);
     });
     return this.ready;
   }
@@ -90,7 +140,7 @@ export class MountRig {
   update(dt, o) {
     const S = this.set, kind = this.kind;
     if (!kind || !S) { if (this.sprite.visible) this.#hide(); return false; }
-    const C = MOUNTS[kind], sp = Math.hypot(o.vx, o.vy), moving = sp > 8;
+    const C = this.C, sp = Math.hypot(o.vx, o.vy), moving = sp > 8;
     // vira suave para onde anda (ou para onde o treinador olha)
     const want = moving ? Math.atan2(o.vy, o.vx) : o.face != null ? o.face : this.angle;
     let da = want - this.angle; while (da > Math.PI) da -= Math.PI * 2; while (da < -Math.PI) da += Math.PI * 2;
@@ -112,10 +162,18 @@ export class MountRig {
     const tint = o.under ? 0xd0e8ff : 0xffffff; sp_.tint = tint;
     // ponto da sela: centro do corpo do quadro (offsets do PMD), um pouco acima e para trás
     const cx = Math.cos(this.angle), cy = Math.sin(this.angle);
-    const sx = ox + f.center.x * s - cx * C.back, sy = oy + f.center.y * s - C.lift - cy * (cy > 0 ? C.backV ?? C.back : C.back * 0.5) - z + bob;
+    let sy = oy + f.center.y * s - C.lift - cy * (cy > 0 ? C.backV ?? C.back : C.back * 0.5) - z + bob;
+    const sx = ox + f.center.x * s - cx * C.back;
     const k = o.k ?? 1, r4 = RIDER_DIR[this.dir];
     // de frente para a câmera, o treinador fica atrás do pescoço/cabeça da montaria
     const behind = C.behind ? C.behind.includes(this.dir) : this.dir >= 1 && this.dir <= 3; // Sneasler leva nas costas: de lado, ele fica na frente
+    if (C.topo != null) {
+      // de frente para a câmera e atrás dela: quadril de 5 a 10 px abaixo do topo da silhueta (pernas escondidas, tronco aparece)
+      const top = oy + (f.center.y * s - C.topo) - z + bob;
+      if (behind && cy > 0.9) sy = Math.max(top + 5, Math.min(sy, top + 10));
+      // nunca acima do sprite (quem senta na cabeça, visto de costas ou na diagonal)
+      if (f.box) sy = Math.max(sy, oy + f.box.y0 * s - z + bob + 6);
+    }
     const bi = this.view.getChildIndex(this.body), si = this.view.getChildIndex(sp_);
     if (behind !== bi < si) this.view.swapChildren(this.body, sp_);
     const b = this.body;
@@ -141,7 +199,7 @@ export class MountRig {
   }
   // poeira, espirro de água e vento (o online também usa)
   trail(dt, o, sp) {
-    const fx = this.g.fx, C = MOUNTS[this.kind]; if (!fx || !C) return;
+    const fx = this.g.fx, C = this.C; if (!fx || !C) return;
     this.fxT -= dt; if (this.fxT > 0) return;
     const x = o.x + (o.ox ?? 0), y = o.y + (o.oy ?? 0), z = o.z ?? 0;
     if (C.fly && z > 8) {
@@ -302,6 +360,11 @@ export class Mounts {
     this.scanT -= dt; if (this.scanT > 0) return; this.scanT = 0.5;
     // ?teste=1: todas liberadas também nas flags (a história não barra o lamaçal etc.)
     if (this.teste && !this.known) { const f = this.g.flags; f.mounts = { ...(f.mounts ?? {}), ...Object.fromEntries(MOUNT_KINDS.map((k) => [k, true])) }; }
+    // ?teste=1&montarias=1: o PC ganha uma leva de Pokémon montáveis, para testar a escolha de montaria
+    if (this.teste && !this.testMons && new URLSearchParams(location.search).has('montarias')) {
+      this.testMons = true;
+      import('../data/mon.js').then(({ Mon }) => { for (const d of TEST_MONS) this.g.box.push(new Mon(d, 40)); });
+    }
     const now = MOUNT_KINDS.filter((k) => this.has(k));
     if (!this.known) { this.known = new Set(now); this.g.hudMoves?.(); return; }
     for (const k of now) if (!this.known.has(k)) { this.known.add(k); if (!this.teste) this.announce(k); this.g.hudMoves?.(); }
@@ -401,7 +464,7 @@ export class Mounts {
     this.#whistle();
     this.#setKind(kind);
     if (kind === 'mergulhar') this.under = false;
-    const rig = this.rig; await rig.setKind(kind);
+    const rig = this.rig; await rig.setKind(kind, this.cfg?.dex);
     if (this.kind !== kind) return false;
     const tx = at?.x ?? p.x, ty = at?.y ?? p.y;
     rig.angle = FACE_A[p.dir] ?? Math.PI / 2;
@@ -410,7 +473,8 @@ export class Mounts {
     if (MOUNTS[kind].water) { g.audio?.sfx('splash'); g.fx.emit(tx, ty - 2, { color: 0xd8f2ff, n: 12, speed: 50, size: 3, life: 0.6, grav: 240, vz: 80, add: false }); }
     else g.fx.emit(tx, ty - 1, { color: 0xc8ae84, n: 8, speed: 40, size: 4, life: 0.5, grav: 40, vz: 15, add: false, alpha: 0.6, end: 1.8 });
     this.hop = { x0: p.x, y0: p.y, x1: tx, y1: ty, t: 0, dur: at ? 0.42 : 0.3, h: at ? 14 : 10, mode: 'on', mount: { x: tx, y: ty } };
-    if (!this.toldX) { this.toldX = true; g.toast(`${MOUNTS[kind].name}! (X desce)`); }
+    if (!this.toldX) { this.toldX = true; g.toast(`${this.riderName}! (X desce)`); } else if (this.mon && this.lastMon !== this.mon) g.toast(`${this.riderName}!`);
+    this.lastMon = this.mon;
     return true;
   }
   // troca direto de uma montaria para outra (Mudbray -> Lapras na margem, Mudbray -> Sneasler no paredão)
@@ -462,6 +526,9 @@ export class Mounts {
   }
   #setKind(kind) {
     const m = this.g.map;
+    // espécie montada: a escolhida pelo jogador para o modo (se ainda for dele e estiver de pé) ou a padrão
+    const pk = kind ? this.pick(kind) : null;
+    this.cfg = kind ? mountConfig(kind, pk.dex) : null; this.mon = pk?.mon ?? null;
     for (const k of ['correr', 'escalar']) m.setMount(k, false);
     if (kind === 'correr' || kind === 'escalar') m.setMount(kind, true);
     this.kind = kind;
@@ -487,7 +554,7 @@ export class Mounts {
     if (this.kind) { this.#fadeOut(this.kind, p.x, p.y); this.#setKind(null); this.rig.setKind(null); }
     this.#whistle();
     this.#setKind('voar');
-    await this.rig.setKind('voar');
+    await this.rig.setKind('voar', this.cfg?.dex);
     if (this.kind !== 'voar') return false;
     g.fx.burst(p.x, p.y - 10, 0xffffff, 1.2); g.audio?.sfx('whoosh');
     for (let i = 0; i < 10; i++) g.fx.emit(p.x, p.y - 2, { color: 0xc8c8c0, n: 1, speed: 70, size: 4, life: 0.5, add: false, alpha: 0.6, end: 2 });
@@ -553,7 +620,7 @@ export class Mounts {
       g.audio?.sfx('splash'); g.fx.ring(p.x, p.y, 0xffffff, 7, 0.6, { mult: 2.6 }); g.fx.emit(p.x, p.y - 4, { color: 0xd8f2ff, n: 16, speed: 60, size: 3, life: 0.6, grav: 240, vz: 90, add: false });
       g.toast('Mergulhou! (X volta à superfície)');
     };
-    if (this.kind !== 'mergulhar') { this.#fadeOut(this.kind, p.x, p.y); this.#setKind('mergulhar'); this.rig.setKind('mergulhar').then(go); }
+    if (this.kind !== 'mergulhar') { this.#fadeOut(this.kind, p.x, p.y); this.#setKind('mergulhar'); this.rig.setKind('mergulhar', this.cfg?.dex).then(go); }
     else go();
     return true;
   }
@@ -607,7 +674,7 @@ export class Mounts {
     // montaria d'água em terra firme (teleporte): desce na hora
     if (this.kind && !this.busy && MOUNTS[this.kind].water && !this.#swimmable(p.x, p.y) && this.#walkable(p.x, p.y)) { this.#fadeOut(this.kind, p.x, p.y); this.#setKind(null); this.rig.setKind(null); }
     if (!this.kind) return false;
-    const C = MOUNTS[this.kind], rig = this.rig;
+    const C = this.cfg ?? MOUNTS[this.kind], rig = this.rig;
     let ox = 0, oy = 0, k = 1, arc = 0, alpha = 1, grow = 1;
     const tile = this.#tileAt(p.x, p.y);
     const climb = this.kind === 'escalar' && tile === TILE.CLIMB;
@@ -690,9 +757,49 @@ export class Mounts {
     const u = this.unlocked(); if (!u.length) return null;
     const k = this.kind, fly = u.includes('voar');
     if (!k) return { key: 'm' + u.join(','), title: 'Montaria', sub: fly ? 'segure para voar' : 'conforme o terreno' };
-    const name = MOUNTS[k].name;
-    return { key: k + (this.under ? 'u' : ''), title: k === 'voar' ? 'Pousar' : this.under ? 'Subir' : 'Descer', sub: `${name}${k === 'correr' ? ' · Espaço salta' : ''}` };
+    const name = this.riderName;
+    return { key: k + (this.cfg?.dex ?? '') + (this.under ? 'u' : ''), title: k === 'voar' ? 'Pousar' : this.under ? 'Subir' : 'Descer', sub: `${name}${k === 'correr' ? ' · Espaço salta' : ''}` };
   }
   // estado para o online
-  netState() { return this.kind ? { m: this.kind, z: Math.round(this.z), u: this.under ? 1 : 0 } : null; }
+  // estado para o online: modo, altura do voo, mergulho e a espécie montada (mountDex)
+  netState() { return this.kind ? { m: this.kind, z: Math.round(this.z), u: this.under ? 1 : 0, mountDex: this.cfg?.dex ?? MOUNTS[this.kind].dex } : null; }
+
+  // ---------- escolha da montaria de cada modo (flags.montaria.<modo> = uid de um Pokémon do jogador) ----------
+  get riderName() { return this.mon?.name ?? this.cfg?.name ?? MOUNTS[this.kind]?.name ?? ''; }
+  #owned() { const g = this.g; return [...(g.party ?? []).map((mon) => ({ mon, where: 'Equipe' })), ...(g.box ?? []).map((mon) => ({ mon, where: 'PC' }))]; }
+  // Pokémon do jogador que servem para o modo (os mais rápidos primeiro)
+  options(kind) {
+    return this.#owned().filter((o) => canMount(o.mon.dex, kind))
+      .map((o) => ({ ...o, cfg: mountConfig(kind, o.mon.dex) }))
+      .sort((a, b) => b.cfg.run - a.cfg.run);
+  }
+  // o que foi escolhido para o modo: { mon, dex } (mon null = a padrão da história)
+  chosen(kind) {
+    const uid = this.g.flags?.montaria?.[kind];
+    const mon = uid ? this.#owned().find((o) => o.mon.uid === uid)?.mon : null;
+    return mon && canMount(mon.dex, kind) ? { mon, dex: mon.dex } : { mon: null, dex: MOUNTS[kind].dex };
+  }
+  // o que vai de fato: o escolhido, se estiver de pé; senão a padrão (avisa uma vez)
+  pick(kind) {
+    const c = this.chosen(kind);
+    if (c.mon && (c.mon.fainted || c.mon.hp <= 0)) {
+      if (this.warnKO !== c.mon.uid) { this.warnKO = c.mon.uid; this.g.toast?.(`${c.mon.name} está sem forças; ${MOUNTS[kind].name} veio no lugar.`); }
+      return { mon: null, dex: MOUNTS[kind].dex };
+    }
+    return c;
+  }
+  // grava a escolha (mon null = volta para a padrão); montado nesse modo, troca na hora
+  choose(kind, mon = null) {
+    if (!MOUNTS[kind] || (mon && !canMount(mon.dex, kind))) return false;
+    const g = this.g; g.flags ??= {};
+    const cur = { ...(g.flags.montaria ?? {}) };
+    if (mon) cur[kind] = mon.uid; else delete cur[kind];
+    g.flags.montaria = cur;
+    if (this.kind === kind && !this.busy) {
+      const pk = this.pick(kind); this.cfg = mountConfig(kind, pk.dex); this.mon = pk.mon; this.lastMon = this.mon;
+      this.rig.setKind(kind, this.cfg.dex);
+    }
+    g.hudMoves?.();
+    return true;
+  }
 }

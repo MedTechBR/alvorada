@@ -55,3 +55,15 @@ Depois de editar à mão, `python3 tools/formatar-mapa.py assets/maps/alvorada.j
 | `g` | gold (campo dourado) | | `L` | mud (lamaçal: Correr) |
 | `M` | corn (milharal, sólido) | | `V` | climb (paredão com trepadeira: Escalar) |
 | `y` / `x` | fio dourado / prateado (Estufa-Teia) | | `s` / `D` | snow / dock (píer) |
+
+## Capítulos 4 a 6
+
+- Objetos novos (catálogo estendido em `src/story/cenario.js`): `farol`, `casarao`, `torre`, `vidro`, `megaloja`, `redacao`,
+  `estacao`, `hospital`, `casaMaquinas`, `capela`, casas `houseStone`, `houseStone2`, `housePink`, `houseYellow`, `houseMiner`,
+  `houseGlass`; `posteLuzita`, `lampiao`, `lapide`, `lapideVela`, `velas`, `arvoreSeca`, `barraca`, `guardaSol`, `palco`,
+  `torreTx`, `outdoor`, `carrinho` (empurrável), `carrinhoParado`, `vigaCaida`, `pedregulho`, `maquete`, `painel`, `elevador`,
+  `quadro`, `quadroBenta`, `garra`, `cristal`, `estante`, `fogao`, `poleiro`, `placaAurora`, `conePlast`, `cavalete`, `gerador`.
+  Decoração: `trilho`, `trilhoH`, `ondas` (calçadão), `tapeteRoxo`, `luzChao`, `folhas`, `poeira`.
+- Entradas marcadas com `"cap456": true` foram geradas para estes capítulos. Os quebra-cabeças usam coordenadas
+  relativas às salas (`src/story/enigmas.js`): mudar uma sala de lugar não quebra nada, mudar o desenho dela sim.
+- Os interiores ficam na faixa de baixo (y ≥ 480), afastados uns dos outros (≥ 20 blocos) para a câmera não mostrar a sala vizinha.

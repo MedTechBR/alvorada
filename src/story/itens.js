@@ -6,6 +6,13 @@ import { MOVES } from '../data/moves.js';
 const HISTORIA = {
   apito_montaria: { name: 'Apito de Montaria', cat: 'key', key: true, color: '#c8a040', desc: 'Presente da Lili e do Tomé. Chama a montaria certa para o obstáculo à frente.' },
   chaveiro_luzita: { name: 'Chaveiro de Luzita', cat: 'key', key: true, color: '#9afff4', desc: 'Brinde da Companhia Aurora. O cristal brilha sozinho, morno na palma da mão.' },
+  lente_prisma: { name: 'Lente Prisma', cat: 'key', key: true, color: '#9afff4', desc: 'Feita pelo Jonas para estudar a luzita. Mostra rastros de luz que o olho não vê (e as tábuas de luz do Brejo).' },
+  isca_luz: { name: 'Isca de Luz', cat: 'key', key: false, color: '#ffe27a', desc: 'Um saquinho de pó de luzita. De noite, atrai os Pokémon curiosos.' },
+  vela_eterna: { name: 'Vela Eterna', cat: 'key', key: true, color: '#ffb84a', desc: 'Presente da Dona Zélia. Não apaga nem com vento nem com mentira. Ilumina cavernas escuras.' },
+  cracha_aurora: { name: 'Crachá Aurora', cat: 'key', key: true, color: '#e0b030', desc: '"CRACHÁ AURORA: ACESSO DE SERVIÇO". Caiu do bolso do Gerente Lúcio. Abre portas de serviço da Companhia.' },
+  foto_painel: { name: 'Foto do Painel', cat: 'key', key: true, color: '#c8d4dc', desc: 'Foto da sala de controle da Torre Aurora: a coluna "consumo de alvorada", em minutos. Uma prova.' },
+  diario_tiago: { name: 'Diário de Tiago', cat: 'key', key: true, color: '#c8a888', desc: 'O caderno do menino Tiago Solano. A última página tem um desenho do irmão "que vai acender o mundo".' },
+  bilhete_morse: { name: 'Bilhete da Iracema', cat: 'key', key: true, color: '#f4ead2', desc: 'Anotado pela Iracema à luz do farol: "··· ––– –·–· ––– ·–· ·–· –––". S-O-C-O-R-R-O.' },
   bolo_laranja: { name: 'Bolo de Laranja', cat: 'medicine', heal: 60, color: '#f2a03a', desc: 'Feito pela sua mãe. Recupera 60 PS (e um pouco da saudade).' },
 };
 const POCKET = { key: 'chave', medicine: 'remedios', tm: 'tms' };
