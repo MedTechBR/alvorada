@@ -377,7 +377,8 @@ export class Story {
 
     // sem Pokémon não sai da vila
     const v = this.spots.get('village');
-    if (!f.starter && v && Math.hypot(p.x - v.x, p.y - v.y) > v.r) {
+    // (dentro de casa ou do laboratório não conta: as salas ficam numa faixa longe da vila)
+    if (!f.starter && v && !g.map.isIndoor(p.x, p.y) && Math.hypot(p.x - v.x, p.y - v.y) > v.r) {
       this.#cut(async () => {
         this.autoMove = { x: v.x, y: v.y };
         await g.ui.say(PROF.leave, { name: NAMES.prof });
