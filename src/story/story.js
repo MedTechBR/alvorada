@@ -18,7 +18,7 @@ import { Missoes } from './missoes/motor.js';
 // Abertura e Cidade Campina (portado do 3D): personagens, escolha do inicial, treinadores que avistam o jogador e
 // desafiam, ginásio do Líder Tomé, insígnia e objetivo no HUD. Mundo aberto: depois dos presentes do professor
 // (Poké Bolas, Poções e a montaria Mudbray) a região inteira fica livre; as jornadas das cidades e a trama
-// principal correm no roteiro.js (jornadas.js). Campina é uma jornada como as outras (não precisa ser a primeira).
+// principal correm no roteiro.js (jornadas.js). Campina é uma jornada como as outras (o 3º ginásio da escada).
 // As posições vêm de pontos nomeados (spots.js): o mapa define os dele em `map.spots`.
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const T = 16;
@@ -191,7 +191,7 @@ export class Story {
     g.bag.apito_montaria = Math.max(1, g.bag.apito_montaria ?? 0);
     f.ganhouMudbray = true;
     if (typeof g.unlockMount === 'function') g.unlockMount('mudbray'); else f.mounts = { ...(f.mounts ?? {}), correr: true };
-    await this.#talk(prof, PROF_MUNDO.livre);
+    await this.#talk(prof, PROF_MUNDO.livre());
     if (f.jornadas?.alvorada) f.jornadas.alvorada.feita = true;
     g.ui.save?.('presentes');
   }
@@ -429,17 +429,20 @@ const PROF_MUNDO = {
     'E mais uma coisa. Lá fora tem alguém esperando por você: a Paçoca, uma Mudbray da fazenda do Tomé.',
     'Ela corre mais que o vento, atravessa lama funda e salta cerca baixa. Com este Apito de Montaria, é só chamar.',
   ],
-  livre: [
-    'Alvorada é sua. Os oito ginásios aceitam desafio em qualquer ordem: quem decide o caminho é você.',
-    'Os perto da vila são mais tranquilos. O de Cidade Campina, a oeste pela Rota 1, é o mais manso. Quanto mais longe, mais fortes os líderes.',
-    'Na entrada de cada ginásio tem uma placa com a força do líder. E a água, os paredões e o céu? Para isso você vai precisar de Pokémon que nadem, escalem ou voem.',
-  ],
+  livre: () => {
+    const [g1, g2] = [...GINASIOS].sort((a, b) => a.nivel - b.nivel);
+    return [
+      'Alvorada é sua. Os oito ginásios aceitam desafio em qualquer ordem: quem decide o caminho é você.',
+      `Os perto da vila são mais tranquilos. O mais manso é o de ${g1.cidade}, ${g1.caminho}. Depois vem o de ${g2.cidade}, ${g2.caminho}. Quanto mais longe, mais fortes os líderes.`,
+      'Na entrada de cada ginásio tem uma placa com a força do líder. E a água, os paredões e o céu? Para isso você vai precisar de Pokémon que nadem, escalem ou voem.',
+    ];
+  },
   // dica do professor depois da primeira conversa: o ginásio mais tranquilo que ainda falta
   dica(f) {
     const falta = GINASIOS.filter((x) => !(f.badges ?? []).includes(x.id)).sort((a, b) => a.nivel - b.nivel);
     const g = falta[0];
     return g
-      ? ['Os Pokémon selvagens vivem no mato alto, no bosque e perto da água.', `Se quer uma sugestão: o ginásio de ${g.cidade} (${g.caminho}). ${g.lider} usa equipes de nível ~${g.nivel}.`, 'Mas a ordem é sua. Qualquer Pokémon seu que nade, escale ou voe também serve de montaria.']
+      ? ['Os Pokémon selvagens vivem no mato alto, no bosque e perto da água.', `Se quer uma sugestão: o ginásio de ${g.cidade}, ${g.caminho}. ${g.lider} usa equipes de nível ~${g.nivel}.`, 'Mas a ordem é sua. Qualquer Pokémon seu que nade, escale ou voe também serve de montaria.']
       : ['Você já venceu todos os ginásios que eu conheço por aqui! Eu tenho orgulho, sabia?'];
   },
 };

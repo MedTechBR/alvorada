@@ -10,15 +10,16 @@
 // jornada) e flags.jornadaHud (a jornada que o painel de objetivo acompanha).
 // Interface para o diário (menu Missões, aba Jornadas): game.jornadas.lista() e game.jornadas.acompanhar(id).
 
-// Ginásios e a força de cada um: nível fixo pelo lugar (como em Scarlet/Violet). A Rota 1 a oeste é o começo
-// manso; quanto mais longe da Vila Alvorada pelas estradas (e quanto mais terreno difícil no caminho), mais forte.
-// nivel = nível do Pokémon mais forte do líder (o "ás"); a placa e o painel mostram "~nivel".
+// Ginásios e a força de cada um: nível fixo pelo lugar (como em Scarlet/Violet), pela distância REAL no mapa desde a
+// casa do jogador, somando o custo do terreno (docs/mundo-expandido.md, seção 8: Coral 90 blocos, Espelho 161,
+// Campina 172, Lamparina 227 + nadar, Sussurro 246). Perto da vila, mais fraco; longe, mais forte. Qualquer ordem vale.
+// nivel = nível do Pokémon mais forte do líder (o "ás"); a placa da entrada e o painel mostram "~nivel".
 export const GINASIOS = [
-  { id: 'campina', cidade: 'Cidade Campina', lider: 'Líder Tomé', tipo: 'Normal', nivel: 12, alvo: 'gym', caminho: 'Rota 1, a oeste da vila' },
-  { id: 'sussurro', cidade: 'Vila Sussurro', lider: 'Líder Lia', tipo: 'Inseto', nivel: 19, alvo: 'estufa_lia', caminho: 'depois da Fazenda do Tomé, da Rota 2 e do Bosque Sussurrante' },
-  { id: 'espelho', cidade: 'Porto Espelho', lider: 'Líder Marina', tipo: 'Água', nivel: 24, alvo: 'galpao_barcos', caminho: 'Rota 3, a leste da vila' },
-  { id: 'coral', cidade: 'Cidade Coral', lider: 'Líder Jonas', tipo: 'Elétrico', nivel: 29, alvo: 'farol_coral', caminho: 'escadaria do Mirante, ao sul da vila, ou o Rio Lúmen' },
-  { id: 'lamparina', cidade: 'Vila Lamparina', lider: 'Dona Zélia', tipo: 'Fantasma', nivel: 34, alvo: 'casarao_velas', caminho: 'Brejo das Lamparinas, ao norte (de Lapras ou pelas tábuas de luz)' },
+  { id: 'coral', cidade: 'Cidade Coral', lider: 'Líder Jonas', tipo: 'Elétrico', nivel: 11, alvo: 'farol_coral', caminho: 'pela escadaria do Mirante, logo ao sul da vila' },
+  { id: 'espelho', cidade: 'Porto Espelho', lider: 'Líder Marina', tipo: 'Água', nivel: 15, alvo: 'galpao_barcos', caminho: 'pela Rota 3, a leste da vila' },
+  { id: 'campina', cidade: 'Cidade Campina', lider: 'Líder Tomé', tipo: 'Normal', nivel: 16, alvo: 'gym', caminho: 'pela Rota 1, a oeste da vila' },
+  { id: 'lamparina', cidade: 'Vila Lamparina', lider: 'Dona Zélia', tipo: 'Fantasma', nivel: 20, alvo: 'casarao_velas', caminho: 'atravessando o Brejo das Lamparinas, ao norte (com um Pokémon que nade, ou pelas tábuas de luz)' },
+  { id: 'sussurro', cidade: 'Vila Sussurro', lider: 'Líder Lia', tipo: 'Inseto', nivel: 21, alvo: 'estufa_lia', caminho: 'depois de Campina, da Fazenda do Tomé, da Rota 2 e do Bosque Sussurrante' },
 ];
 export const ginasio = (id) => GINASIOS.find((x) => x.id === id) ?? null;
 

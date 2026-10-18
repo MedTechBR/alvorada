@@ -1,7 +1,7 @@
 // Jornada de Vila Sussurro: "Sussurros no bosque" (era o capítulo 2).
 // Fazenda do Tomé → Rota 2 (lamaçal) → Bosque Sussurrante → Toca do Absol → Vila Sussurro → Ginásio da Lia.
 // Mundo aberto: começa ao entrar no bosque, em qualquer ordem; a Mudbray já vem do professor.
-// Jogável pelo motor src/story/roteiro.js. Níveis do lugar: selvagens 10–16, treinadores 12–16, Lia 16–19 (~19).
+// Jogável pelo motor src/story/roteiro.js. Níveis do lugar (escada por distância): selvagens 15–23, treinadores 16–18, Ariados Alfa 20, Lia 18–21 (~21).
 
 export default {
   id: 'cap02',
@@ -37,14 +37,14 @@ export default {
       local: 'rota2',
       gatilho: { tipo: 'avistar', alvo: 'r2_marcia' },
       falas: [['treinador', 'Picnic interrompido! Só porque você chegou no meu sanduíche, vai ter que batalhar!']],
-      depois: { batalha: { id: 'r2_marcia', nome: 'Picnicker Márcia', dinheiro: 360, equipe: [[819, 12, ['tackle', 'tailWhip', 'bite']], [546, 13, ['absorb', 'fairyWind']]] } },
+      depois: { batalha: { id: 'r2_marcia', nome: 'Picnicker Márcia', dinheiro: 360, equipe: [[819, 15, ['tackle', 'tailWhip', 'bite']], [546, 16, ['absorb', 'fairyWind']]] } },
     },
     {
       id: 'treinador_rota2b',
       local: 'rota2',
       gatilho: { tipo: 'avistar', alvo: 'r2_otavio' },
       falas: [['treinador', 'Estou estudando os Pikipek das paineiras. Eles bicam o tronco no ritmo de samba. Quer ver o meu bicar você?']],
-      depois: { batalha: { id: 'r2_otavio', nome: 'Observador Otávio', dinheiro: 380, equipe: [[731, 13, ['peck', 'growl', 'echoedVoice']], [290, 13, ['scratch', 'harden', 'absorb']]] } },
+      depois: { batalha: { id: 'r2_otavio', nome: 'Observador Otávio', dinheiro: 380, equipe: [[731, 16, ['peck', 'growl', 'echoedVoice']], [290, 16, ['scratch', 'harden', 'absorb']]] } },
     },
     {
       id: 'agrimensores',
@@ -104,7 +104,7 @@ export default {
       ],
       depois: {
         // nível 14 + o bônus de Alfa (+3 níveis, 50% mais HP) = luta de chefe por volta do nível 17
-        batalha: { id: 'alfa_ariados', nome: 'Ariados Alfa', alfa: true, perder: 'repete', equipe: [[168, 14, ['poisonSting', 'nightShade', 'stringShot', 'bugBite']]] },
+        batalha: { id: 'alfa_ariados', nome: 'Ariados Alfa', alfa: true, perder: 'repete', equipe: [[168, 20, ['poisonSting', 'nightShade', 'stringShot', 'bugBite']]] },
         flags: { seguiuAbsol: true },
       },
     },
@@ -170,7 +170,7 @@ export default {
         ['recruta', 'Então vem pegar!'],
       ],
       depois: {
-        batalha: { id: 'c2_recruta', nome: 'Recruta Crepúsculo', dinheiro: 500, equipe: [[41, 15, ['leechLife', 'supersonic', 'astonish']], [198, 15, ['peck', 'astonish', 'pursuit']]] },
+        batalha: { id: 'c2_recruta', nome: 'Recruta Crepúsculo', dinheiro: 500, equipe: [[41, 17, ['leechLife', 'supersonic', 'astonish']], [198, 17, ['peck', 'astonish', 'pursuit']]] },
       },
     },
     {
@@ -180,7 +180,7 @@ export default {
       falas: [
         ['recruta2', 'Deixa comigo! Houndour, morde a canela dele! Com carinho, que ele é criança!'],
       ],
-      depois: { batalha: { id: 'c2_recruta2', nome: 'Recruta Crepúsculo', dinheiro: 500, equipe: [[228, 15, ['ember', 'leer', 'bite']], [92, 16, ['lick', 'hypnosis']]] } },
+      depois: { batalha: { id: 'c2_recruta2', nome: 'Recruta Crepúsculo', dinheiro: 500, equipe: [[228, 17, ['ember', 'leer', 'bite']], [92, 18, ['lick', 'hypnosis']]] } },
     },
     {
       id: 'estufa_fim',
@@ -209,14 +209,14 @@ export default {
       local: 'estufa_lia',
       gatilho: { tipo: 'avistar', alvo: 'g2_nando' },
       falas: [['aprendiz', 'Pisou no fio prateado? Não? Então ainda dá pra me enfrentar! Fio dourado é seguro, fio prateado é encrenca.']],
-      depois: { batalha: { id: 'g2_nando', nome: 'Caçador Nando', dinheiro: 520, equipe: [[664, 14, ['tackle', 'stringShot', 'struggleBug']], [401, 15, ['growl', 'bide', 'furyCutter']]] } },
+      depois: { batalha: { id: 'g2_nando', nome: 'Caçador Nando', dinheiro: 520, equipe: [[664, 16, ['tackle', 'stringShot', 'struggleBug']], [401, 17, ['growl', 'bide', 'furyCutter']]] } },
     },
     {
       id: 'aprendiz_lia2',
       local: 'estufa_lia',
       gatilho: { tipo: 'avistar', alvo: 'g2_bel' },
       falas: [['aprendiz', 'Os casulos apontam para a próxima folha. Eu não devia ter falado isso. Agora vou ter que te vencer pra compensar!']],
-      depois: { batalha: { id: 'g2_bel', nome: 'Caçadora Bel', dinheiro: 560, equipe: [[595, 15, ['stringShot', 'absorb', 'thunderShock']], [415, 16, ['gust', 'bugBite', 'sweetScent']]] } },
+      depois: { batalha: { id: 'g2_bel', nome: 'Caçadora Bel', dinheiro: 560, equipe: [[595, 17, ['stringShot', 'absorb', 'thunderShock']], [415, 18, ['gust', 'bugBite', 'sweetScent']]] } },
     },
     {
       id: 'lia_desafio',
@@ -230,10 +230,10 @@ export default {
         batalha: {
           id: 'leader_lia', nome: 'Líder Lia', dinheiro: 1800,
           equipe: [
-            [415, 16, ['bugBite', 'gust', 'sweetScent']],
-            [167, 17, ['stringShot', 'poisonSting', 'absorb', 'nightShade']],
-            [48, 17, ['confusion', 'poisonPowder', 'supersonic']],
-            [123, 19, ['quickAttack', 'furyCutter', 'leer', 'wingAttack']],
+            [415, 18, ['bugBite', 'gust', 'sweetScent']],
+            [167, 19, ['stringShot', 'poisonSting', 'absorb', 'nightShade']],
+            [48, 19, ['confusion', 'poisonPowder', 'supersonic']],
+            [123, 21, ['quickAttack', 'furyCutter', 'leer', 'wingAttack']],
           ],
         },
       },

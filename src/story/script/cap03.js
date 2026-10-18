@@ -1,7 +1,7 @@
 // Jornada de Porto Espelho: "O espelho partido" (era o capítulo 3).
 // Rota 3 (Margem das Garças) → Porto Espelho → Galpão de Barcos (ginásio) → assalto da Crepúsculo → Lapras.
 // Mundo aberto: começa na ponte da Rota 3 ou ao chegar ao porto, em qualquer ordem (o bolo da Mãe foi para a trama).
-// Jogável pelo motor src/story/roteiro.js. Níveis do lugar: selvagens 16–23, treinadores 17–21, Ébano 21–23, Marina 21–24 (~24).
+// Jogável pelo motor src/story/roteiro.js. Níveis do lugar (escada por distância): selvagens 5–9 na Rota 3 e 19–23 no lago, treinadores 6–12, Ébano 12–14, Marina 12–15 (~15).
 
 export default {
   id: 'cap03',
@@ -25,14 +25,14 @@ export default {
       local: 'rota3',
       gatilho: { tipo: 'avistar', alvo: 'r3_seu_bigode' },
       falas: [['treinador', 'Quarenta anos pescando aqui e nunca vi o lago tão quieto. Até o Magikarp anda triste. Vamos batalhar pra animar!']],
-      depois: { batalha: { id: 'r3_seu_bigode', nome: 'Pescador Bigode', dinheiro: 640, equipe: [[129, 17, ['splash', 'tackle']], [129, 17, ['splash', 'tackle']], [339, 19, ['mudSlap', 'waterGun', 'watersport']]] } },
+      depois: { batalha: { id: 'r3_seu_bigode', nome: 'Pescador Bigode', dinheiro: 640, equipe: [[129, 6, ['splash', 'tackle']], [129, 6, ['splash', 'tackle']], [339, 8, ['mudSlap', 'waterGun', 'watersport']]] } },
     },
     {
       id: 'nadadora_rota3',
       local: 'rota3',
       gatilho: { tipo: 'avistar', alvo: 'r3_carol' },
       falas: [['treinador', 'Sabe por que o lago se chama Espelho? Olha pra água. Olhou? Pronto, batalha!']],
-      depois: { batalha: { id: 'r3_carol', nome: 'Garota da Praia Carol', dinheiro: 660, equipe: [[283, 18, ['bubble', 'quickAttack', 'sweetScent']], [580, 19, ['waterGun', 'wingAttack', 'defog']]] } },
+      depois: { batalha: { id: 'r3_carol', nome: 'Garota da Praia Carol', dinheiro: 660, equipe: [[283, 7, ['bubble', 'quickAttack', 'sweetScent']], [580, 8, ['waterGun', 'wingAttack', 'defog']]] } },
     },
     {
       id: 'porto_chegada',
@@ -89,14 +89,14 @@ export default {
       local: 'galpao_barcos',
       gatilho: { tipo: 'avistar', alvo: 'g3_zeca' },
       falas: [['aprendiz', 'Peixe que nada contra a corrente fica forte! Peixe que nada a favor chega antes. Eu sou dos dois!']],
-      depois: { batalha: { id: 'g3_zeca', nome: 'Pescador Zeca', dinheiro: 700, equipe: [[129, 19, ['splash', 'tackle', 'flail']], [339, 20, ['mudSlap', 'waterGun', 'amnesia']]] } },
+      depois: { batalha: { id: 'g3_zeca', nome: 'Pescador Zeca', dinheiro: 700, equipe: [[129, 10, ['splash', 'tackle', 'flail']], [339, 11, ['mudSlap', 'waterGun', 'amnesia']]] } },
     },
     {
       id: 'aprendiz_marina2',
       local: 'galpao_barcos',
       gatilho: { tipo: 'avistar', alvo: 'g3_taina' },
       falas: [['aprendiz', 'Quer chegar na Marina? Primeiro aprende a ficar molhado!']],
-      depois: { batalha: { id: 'g3_taina', nome: 'Nadadora Tainá', dinheiro: 740, equipe: [[278, 20, ['waterGun', 'wingAttack', 'supersonic']], [183, 21, ['bubble', 'rollout', 'defenseCurl']]] } },
+      depois: { batalha: { id: 'g3_taina', nome: 'Nadadora Tainá', dinheiro: 740, equipe: [[278, 11, ['waterGun', 'wingAttack', 'supersonic']], [183, 12, ['bubble', 'rollout', 'defenseCurl']]] } },
     },
     {
       id: 'marina_desafio',
@@ -112,10 +112,10 @@ export default {
           id: 'leader_marina', nome: 'Líder Marina', dinheiro: 2200, perder: 'centro',
           interrompe: 'assalto', // depois do segundo Pokémon dela, a cena "assalto" interrompe a luta
           equipe: [
-            [54, 21, ['waterGun', 'confusion', 'scratch']],
-            [418, 22, ['aquaJet', 'quickAttack', 'waterGun']],
-            [79, 22, ['waterGun', 'confusion', 'yawn']],
-            [550, 24, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
+            [54, 12, ['waterGun', 'confusion', 'scratch']],
+            [418, 13, ['aquaJet', 'quickAttack', 'waterGun']],
+            [79, 13, ['waterGun', 'confusion', 'yawn']],
+            [550, 15, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
           ],
         },
       },
@@ -140,7 +140,7 @@ export default {
         ['vespera', 'Você está do lado certo pelas razões erradas, menino. Um dia vai entender. Ébano, segure-o.'],
       ],
       depois: {
-        batalha: { id: 'c3_ebano', nome: 'Admin Ébano', dinheiro: 1500, perder: 'continua', equipe: [[41, 21, ['bite', 'supersonic', 'wingAttack']], [228, 22, ['ember', 'bite', 'roar']], [302, 23, ['furySwipes', 'astonish', 'detect']]] },
+        batalha: { id: 'c3_ebano', nome: 'Admin Ébano', dinheiro: 1500, perder: 'continua', equipe: [[41, 12, ['bite', 'supersonic', 'wingAttack']], [228, 13, ['ember', 'bite', 'roar']], [302, 14, ['furySwipes', 'astonish', 'detect']]] },
       },
     },
     {
@@ -165,8 +165,8 @@ export default {
         batalha: {
           id: 'leader_marina_pier', nome: 'Líder Marina', dinheiro: 2200,
           equipe: [
-            [79, 22, ['waterGun', 'confusion', 'yawn']],
-            [550, 24, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
+            [79, 13, ['waterGun', 'confusion', 'yawn']],
+            [550, 15, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
           ],
         },
       },

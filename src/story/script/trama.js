@@ -10,7 +10,8 @@
 //   5 insígnias rádio das 7h12 (o comunicado da Aurora)
 //   6 insígnias rádio das 7h31 e a 3ª revanche do Téo (antes do Forte Rochedo)
 //   8 insígnias a Liga Alvorada abre (o único requisito da Liga)
-// O Téo aparece na próxima cidade em que o jogador entrar depois do marco; a equipe dele sobe com o marco.
+// O Téo aparece na próxima cidade em que o jogador entrar depois do marco; a equipe dele sobe com o marco, no passo
+// da escada dos ginásios (2 insígnias ~17, 4 ~23, 6 ~30: docs/jornadas.md).
 
 const CIDADES = ['vila_alvorada', 'cidade_campina', 'vila_sussurro', 'porto_espelho', 'cidade_coral', 'vila_lamparina', 'cidade_aurora'];
 const SEM_CORAL = CIDADES.filter((c) => c !== 'cidade_coral'); // em Coral a revanche é no calçadão (cap04.js)
@@ -80,7 +81,7 @@ export default {
       depois: {
         batalha: {
           id: 'rival2', nome: 'Rival Téo', dinheiro: 1800, perder: 'continua',
-          equipe: [[396, 19, ['wingAttack', 'quickAttack', 'doubleTeam']], [58, 19, ['ember', 'bite', 'roar']], [133, 20, ['quickAttack', 'bite', 'sandAttack']], ['rival:2', 22, []]],
+          equipe: [[397, 14, ['wingAttack', 'quickAttack', 'doubleTeam']], [58, 14, ['ember', 'bite', 'roar']], [133, 15, ['quickAttack', 'bite', 'sandAttack']], ['rival:2', 17, []]],
         },
         flags: { rival2: true },
       },
@@ -150,7 +151,7 @@ export default {
       depois: {
         batalha: {
           id: 'rival3', nome: 'Rival Téo', dinheiro: 3000, perder: 'continua',
-          equipe: [[397, 29, ['wingAttack', 'quickAttack', 'aerialAce']], [58, 29, ['flameWheel', 'bite', 'roar']], [133, 30, ['quickAttack', 'bite', 'swift']], ['rival:2', 32, []]],
+          equipe: [[397, 20, ['wingAttack', 'quickAttack', 'aerialAce']], [58, 20, ['flameWheel', 'bite', 'roar']], [133, 21, ['quickAttack', 'bite', 'swift']], ['rival:2', 23, []]],
         },
         flags: { rival3: true },
       },
@@ -200,7 +201,7 @@ export default {
       depois: {
         batalha: {
           id: 'rival4', nome: 'Rival Téo', dinheiro: 4200, perder: 'continua',
-          equipe: [[398, 36, ['braveBird', 'closeCombat', 'quickAttack']], [59, 36, ['flameWheel', 'crunch', 'extremeSpeed']], [197, 37, ['feintAttack', 'confuseRay', 'moonlight']], ['rival:3', 38, []]],
+          equipe: [[397, 27, ['wingAttack', 'aerialAce', 'quickAttack']], [59, 27, ['flameWheel', 'crunch', 'extremeSpeed']], [197, 28, ['feintAttack', 'confuseRay', 'moonlight']], ['rival:3', 30, []]],
         },
         flags: { rival4: true },
       },

@@ -2,7 +2,7 @@
 // Rota 5 (Brejo das Lamparinas) → Vila Lamparina → Casa da Vó Benta → Cemitério das Velas (Véspera) → Casarão das Velas (ginásio, de noite).
 // Mundo aberto: começa no brejo ou ao chegar à vila, em qualquer ordem; as falas mudam conforme o que o jogador já viu
 // (a Véspera em Porto Espelho, a gruta do bosque, o bolo da Mãe).
-// Jogável pelo motor src/story/roteiro.js. Níveis do lugar: selvagens 27–33, treinadores 29–32, Dona Zélia 31–34 (~34).
+// Jogável pelo motor src/story/roteiro.js. Níveis do lugar (escada por distância): selvagens 13–19, treinadores 14–18, Dona Zélia 17–20 (~20).
 // Quebra-cabeça do casarão (portas dos quadros e espelhos com o raio de luar): src/story/enigmas.js.
 // O brejo: canal fundo no meio; atravessa de Lapras ou pelas tábuas de luz que só aparecem com a Lente Prisma.
 
@@ -29,14 +29,14 @@ export default {
       local: 'rota5',
       gatilho: { tipo: 'avistar', alvo: 'r5_ofelia', hora: 'noite' },
       falas: [['treinador', 'Os espíritos do brejo me disseram que você vinha. Também me disseram que você ia perder. Eles mentem muito.']],
-      depois: { batalha: { id: 'r5_ofelia', nome: 'Médium Ofélia', dinheiro: 1100, equipe: [[92, 28, ['lick', 'hypnosis', 'curse']], [200, 29, ['astonish', 'confuseRay', 'psybeam']], [93, 30, ['shadowPunch', 'hypnosis', 'lick']]] } },
+      depois: { batalha: { id: 'r5_ofelia', nome: 'Médium Ofélia', dinheiro: 1100, equipe: [[92, 14, ['lick', 'hypnosis', 'curse']], [200, 15, ['astonish', 'confuseRay', 'psybeam']], [92, 16, ['shadowPunch', 'hypnosis', 'lick']]] } },
     },
     {
       id: 'sapo_rota5',
       local: 'rota5',
       gatilho: { tipo: 'avistar', alvo: 'r5_guto' },
       falas: [['treinador', 'Shhh! Tô ouvindo os Tympole. Eles cantam em três vozes. Agora você estragou o coro. Batalha!']],
-      depois: { batalha: { id: 'r5_guto', nome: 'Pescador Guto', dinheiro: 1100, equipe: [[536, 28, ['bubbleBeam', 'supersonic', 'round']], [453, 29, ['poisonSting', 'feintAttack', 'revenge']], [618, 29, ['mudShot', 'thunderShock', 'bide']]] } },
+      depois: { batalha: { id: 'r5_guto', nome: 'Pescador Guto', dinheiro: 1100, equipe: [[535, 14, ['bubbleBeam', 'supersonic', 'round']], [453, 15, ['poisonSting', 'feintAttack', 'revenge']], [618, 15, ['mudShot', 'thunderShock', 'bide']]] } },
     },
     {
       id: 'lamparina_chegada',
@@ -154,14 +154,14 @@ export default {
       local: 'casarao_velas',
       gatilho: { tipo: 'avistar', alvo: 'g5_odete', hora: 'noite' },
       falas: [['aprendiz', 'Tem alguém atrás de você. Brincadeira. Ou não. Batalha!']],
-      depois: { batalha: { id: 'g5_odete', nome: 'Médium Odete', dinheiro: 1160, equipe: [[92, 30, ['lick', 'hypnosis', 'nightShade']], [353, 31, ['shadowSneak', 'screech', 'willOWisp']]] } },
+      depois: { batalha: { id: 'g5_odete', nome: 'Médium Odete', dinheiro: 1160, equipe: [[92, 16, ['lick', 'hypnosis', 'nightShade']], [353, 17, ['shadowSneak', 'screech', 'willOWisp']]] } },
     },
     {
       id: 'aprendiz_zelia2',
       local: 'casarao_velas',
       gatilho: { tipo: 'avistar', alvo: 'g5_ciro', hora: 'noite' },
       falas: [['aprendiz', 'Meu Greavard enterrou o osso dele em algum lugar desta casa em 1994. A gente procura até hoje. Me ajuda depois da batalha?']],
-      depois: { batalha: { id: 'g5_ciro', nome: 'Médium Ciro', dinheiro: 1200, equipe: [[971, 31, ['bite', 'lick', 'roar']], [355, 32, ['nightShade', 'disable', 'confuseRay']]] } },
+      depois: { batalha: { id: 'g5_ciro', nome: 'Médium Ciro', dinheiro: 1200, equipe: [[971, 17, ['bite', 'lick', 'roar']], [355, 18, ['nightShade', 'disable', 'confuseRay']]] } },
     },
     {
       id: 'zelia_desafio',
@@ -179,11 +179,11 @@ export default {
         batalha: {
           id: 'leader_zelia', nome: 'Dona Zélia', dinheiro: 3300,
           equipe: [
-            [353, 31, ['shadowSneak', 'nightShade', 'willOWisp']],
-            [425, 32, ['ominousWind', 'gust', 'astonish']],
-            [708, 32, ['hex', 'leechSeed', 'astonish']],
-            [607, 32, ['ember', 'hex', 'confuseRay']],
-            [608, 34, ['hex', 'flameBurst', 'willOWisp', 'confuseRay']],
+            [353, 17, ['shadowSneak', 'nightShade', 'willOWisp']],
+            [425, 18, ['ominousWind', 'gust', 'astonish']],
+            [708, 18, ['hex', 'leechSeed', 'astonish']],
+            [607, 18, ['ember', 'hex', 'confuseRay']],
+            [608, 20, ['hex', 'flameBurst', 'willOWisp', 'confuseRay']],
           ],
         },
       },

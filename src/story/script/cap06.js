@@ -2,7 +2,7 @@
 // Rota 6 (ferrovia) → Cidade Aurora → Torre Aurora (visita guiada, Gerente Lúcio) → Mina Aurora (4 níveis, resgate do Heitor com o Téo).
 // Mundo aberto: começa ao chegar à cidade (a Pipa pode ter ligado antes, no marco de 4 insígnias, ou não).
 // Reviravolta 1: a luzita é a raiz do cadeado do Relógio; a mina é o que atrasa o sol.
-// Jogável pelo motor src/story/roteiro.js. Níveis do lugar (o mais longe da vila): selvagens 31–37, treinadores 32–34, Lúcio 33–34, Alfas 33–34, Steelix Alfa 35.
+// Jogável pelo motor src/story/roteiro.js. Níveis do lugar (o mais longe da vila): selvagens 19–26 fora e 27–38 na mina (cada andar mais forte), treinadores 20–21, Lúcio 22–23, Alfas 33–34, Steelix Alfa 35.
 // Mina: alavancas dos desvios (nível 1), carrinhos nos trilhos (nível 3) e passagens que abrem com a história (enigmas.js).
 // Sem ginásio. As lutas da mina são em dupla: o Pokémon do Téo luta ao seu lado (roteiro.js, batalha.dupla).
 
@@ -29,14 +29,14 @@ export default {
       local: 'rota6',
       gatilho: { tipo: 'avistar', alvo: 'r6_wagner' },
       falas: [['treinador', 'Sou maquinista de folga. Quando eu não estou dirigindo trem, eu batalho. Quando eu não estou batalhando, eu penso em trem.']],
-      depois: { batalha: { id: 'r6_wagner', nome: 'Maquinista Wagner', dinheiro: 1300, equipe: [[309, 32, ['spark', 'bite', 'howl']], [835, 32, ['spark', 'bite', 'roar']], [100, 33, ['spark', 'rollout', 'selfDestruct']]] } },
+      depois: { batalha: { id: 'r6_wagner', nome: 'Maquinista Wagner', dinheiro: 1300, equipe: [[309, 20, ['spark', 'bite', 'howl']], [835, 20, ['spark', 'bite', 'roar']], [100, 21, ['spark', 'rollout', 'selfDestruct']]] } },
     },
     {
       id: 'treinadora_rota6',
       local: 'rota6',
       gatilho: { tipo: 'avistar', alvo: 'r6_yara' },
       falas: [['treinador', 'Meu Pawmi carrega o celular de todo mundo do acampamento. Ele é a pessoa mais útil daqui, e ele nem é pessoa.']],
-      depois: { batalha: { id: 'r6_yara', nome: 'Campista Yara', dinheiro: 1300, equipe: [[921, 32, ['spark', 'quickAttack', 'nuzzle']], [922, 33, ['spark', 'machPunch', 'nuzzle']], [180, 33, ['thunderShock', 'cottonSpore', 'takeDown']]] } },
+      depois: { batalha: { id: 'r6_yara', nome: 'Campista Yara', dinheiro: 1300, equipe: [[921, 20, ['spark', 'quickAttack', 'nuzzle']], [922, 21, ['spark', 'machPunch', 'nuzzle']], [180, 21, ['thunderShock', 'cottonSpore', 'takeDown']]] } },
     },
     {
       id: 'aurora_chegada',
@@ -108,7 +108,7 @@ export default {
         ['lucio', 'E vai ser resgatado pela equipe oficial da Aurora, assim que o protocolo de imagem estiver… quer dizer, o protocolo de segurança.'],
         ['jogador', 'Sai da frente.'],
       ],
-      depois: { batalha: { id: 'c6_lucio', nome: 'Gerente Lúcio', dinheiro: 2600, equipe: [[82, 33, ['thunderShock', 'sonicBoom', 'mirrorShot']], [600, 33, ['gearGrind', 'charge', 'bind']], [969, 34, ['rockThrow', 'acidSpray', 'stealthRock']]] } },
+      depois: { batalha: { id: 'c6_lucio', nome: 'Gerente Lúcio', dinheiro: 2600, equipe: [[81, 22, ['thunderShock', 'sonicBoom', 'mirrorShot']], [599, 22, ['gearGrind', 'charge', 'bind']], [969, 23, ['rockThrow', 'acidSpray', 'stealthRock']]] } },
     },
     {
       id: 'lucio_perdeu',

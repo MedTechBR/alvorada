@@ -3,7 +3,7 @@
 // da Aurora) → Téo no calçadão → Farol Coral (ginásio) → Praia dos Corais.
 // Mundo aberto: começa ao chegar à costa, em qualquer ordem. A revanche do Téo no calçadão só acontece se ele estiver
 // devendo uma (marco de 2 insígnias, trama.js); senão ele só conversa.
-// Jogável pelo motor src/story/roteiro.js. Níveis do lugar: selvagens 22–28, treinadores 23–26, Jonas 25–29 (~29), Ébano 27–28.
+// Jogável pelo motor src/story/roteiro.js. Níveis do lugar (o ginásio mais perto de casa): selvagens 5–18, treinadores 6–16, Jonas 7–11 (~11), Ébano 13–14.
 // Quebra-cabeça do farol (circuitos, portões de raio e os três geradores): src/story/enigmas.js.
 
 const FAROL = { farol_coral: 'escada_f1', farol_coral_2: 'escada_f2', farol_topo: 'jonas' };
@@ -33,7 +33,7 @@ export default {
         ['kaua', 'Bora uma batalha de boa? Se eu perder, te dou aula grátis. Se eu ganhar, te dou aula grátis também, porque eu sou gente boa.'],
         ['kaua', 'Encosta o Lapras aqui no banco de areia, desce e manda o teu Pokémon. Na água é covardia!'],
       ],
-      depois: { batalha: { id: 'r4_kaua', nome: 'Surfista Kauã', dinheiro: 900, equipe: [[278, 23, ['waterGun', 'wingAttack', 'quickAttack']], [418, 24, ['aquaJet', 'swift', 'quickAttack']], [279, 25, ['waterGun', 'wingAttack', 'protect']]] } },
+      depois: { batalha: { id: 'r4_kaua', nome: 'Surfista Kauã', dinheiro: 900, equipe: [[278, 14, ['waterGun', 'wingAttack', 'quickAttack']], [418, 15, ['aquaJet', 'swift', 'quickAttack']], [279, 16, ['waterGun', 'wingAttack', 'protect']]] } },
     },
     {
       id: 'kaua_perdeu',
@@ -47,7 +47,7 @@ export default {
       local: 'rota4',
       gatilho: { tipo: 'avistar', alvo: 'r4_sandra' },
       falas: [['treinador', 'A areia aqui esconde Sandile! Esconde Trapinch! Esconde até o meu chinelo, que eu perdi ontem!']],
-      depois: { batalha: { id: 'r4_sandra', nome: 'Turista Sandra', dinheiro: 920, equipe: [[551, 24, ['bite', 'sandTomb', 'leer']], [328, 24, ['bite', 'sandAttack', 'bulldoze']], [449, 25, ['bite', 'sandTomb', 'yawn']]] } },
+      depois: { batalha: { id: 'r4_sandra', nome: 'Turista Sandra', dinheiro: 920, equipe: [[551, 10, ['bite', 'sandTomb', 'leer']], [328, 10, ['bite', 'sandAttack', 'bulldoze']], [449, 11, ['bite', 'sandTomb', 'yawn']]] } },
     },
     {
       id: 'coral_chegada',
@@ -91,10 +91,10 @@ export default {
         batalha: {
           id: 'rival2', nome: 'Rival Téo', dinheiro: 1800, perder: 'continua',
           equipe: [
-            [396, 19, ['wingAttack', 'quickAttack', 'doubleTeam']],
-            [58, 19, ['ember', 'bite', 'roar']],
-            [133, 20, ['quickAttack', 'bite', 'sandAttack']],
-            ['rival:2', 22, []],
+            [397, 14, ['wingAttack', 'quickAttack', 'doubleTeam']],
+            [58, 14, ['ember', 'bite', 'roar']],
+            [133, 15, ['quickAttack', 'bite', 'sandAttack']],
+            ['rival:2', 17, []],
           ],
         },
         flags: { rival2: true, teoCalcadao: true, lutouCalcadao: true },
@@ -167,14 +167,14 @@ export default {
       local: 'farol_coral',
       gatilho: { tipo: 'avistar', alvo: 'g4_saulo' },
       falas: [['aprendiz', 'Cuidado com o portão de raio do andar de cima! Ele abre e fecha a cada dois segundos. Eu já levei três choques hoje. Meu cabelo nunca mais abaixou.']],
-      depois: { batalha: { id: 'g4_saulo', nome: 'Técnico Saulo', dinheiro: 960, equipe: [[81, 24, ['thunderShock', 'sonicBoom', 'supersonic']], [100, 25, ['spark', 'rollout', 'screech']]] } },
+      depois: { batalha: { id: 'g4_saulo', nome: 'Técnico Saulo', dinheiro: 960, equipe: [[81, 6, ['thunderShock', 'sonicBoom', 'supersonic']], [100, 7, ['spark', 'rollout', 'screech']]] } },
     },
     {
       id: 'aprendiz_jonas2',
       local: 'farol_coral_2',
       gatilho: { tipo: 'avistar', alvo: 'g4_duda' },
       falas: [['aprendiz', 'Último andar antes do Jonas! Ninguém passa sem carga total!']],
-      depois: { batalha: { id: 'g4_duda', nome: 'Técnica Duda', dinheiro: 1000, equipe: [[309, 25, ['spark', 'howl', 'quickAttack']], [694, 26, ['thunderShock', 'quickAttack', 'parabolicCharge']]] } },
+      depois: { batalha: { id: 'g4_duda', nome: 'Técnica Duda', dinheiro: 1000, equipe: [[309, 7, ['spark', 'howl', 'quickAttack']], [694, 8, ['thunderShock', 'quickAttack', 'parabolicCharge']]] } },
     },
     {
       id: 'jonas_desafio',
@@ -189,11 +189,11 @@ export default {
         batalha: {
           id: 'leader_jonas', nome: 'Líder Jonas', dinheiro: 2900,
           equipe: [
-            [81, 25, ['thunderShock', 'sonicBoom', 'thunderWave']],
-            [180, 26, ['thunderShock', 'cottonSpore', 'takeDown']],
-            [417, 26, ['spark', 'quickAttack', 'sweetKiss']],
-            [404, 27, ['spark', 'bite', 'leer']],
-            [171, 29, ['spark', 'waterGun', 'confuseRay', 'bubbleBeam']],
+            [81, 7, ['thunderShock', 'sonicBoom', 'thunderWave']],
+            [179, 8, ['thunderShock', 'cottonSpore', 'takeDown']],
+            [417, 8, ['spark', 'quickAttack', 'sweetKiss']],
+            [403, 9, ['spark', 'bite', 'leer']],
+            [170, 11, ['spark', 'waterGun', 'confuseRay', 'bubbleBeam']],
           ],
         },
       },
@@ -243,7 +243,7 @@ export default {
         ['jonas', '{jogador}! Eles estão na casa de máquinas! O meu fragmento fica lá!'],
         ['recruta', 'Ih, o moleque de novo. Esse moleque é praga.'],
       ],
-      depois: { batalha: { id: 'c4_recruta', nome: 'Recruta Crepúsculo', dinheiro: 1000, equipe: [[261, 26, ['bite', 'howl', 'sandAttack']], [434, 26, ['poisonGas', 'feintAttack', 'screech']], [41, 26, ['bite', 'supersonic', 'wingAttack']]] } },
+      depois: { batalha: { id: 'c4_recruta', nome: 'Recruta Crepúsculo', dinheiro: 1000, equipe: [[261, 12, ['bite', 'howl', 'sandAttack']], [434, 12, ['poisonGas', 'feintAttack', 'screech']], [41, 12, ['bite', 'supersonic', 'wingAttack']]] } },
     },
     {
       id: 'praia_ebano',
@@ -255,7 +255,7 @@ export default {
         ['jogador', 'Por que vocês estão roubando os fragmentos?'],
         ['ebano', 'Porque se a gente não pegar, outro pega. E esse outro tem mais dinheiro que a gente e menos vergonha. Agora chega de papo.'],
       ],
-      depois: { batalha: { id: 'c4_ebano', nome: 'Admin Ébano', dinheiro: 2200, equipe: [[198, 27, ['wingAttack', 'pursuit', 'haze']], [228, 27, ['ember', 'bite', 'smog']], [302, 28, ['shadowSneak', 'feintAttack', 'furySwipes', 'detect']]] } },
+      depois: { batalha: { id: 'c4_ebano', nome: 'Admin Ébano', dinheiro: 2200, equipe: [[198, 13, ['wingAttack', 'pursuit', 'haze']], [228, 13, ['ember', 'bite', 'smog']], [302, 14, ['shadowSneak', 'feintAttack', 'furySwipes', 'detect']]] } },
     },
     {
       id: 'praia_recupera',
