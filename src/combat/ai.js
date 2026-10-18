@@ -1,7 +1,6 @@
 import { PokeEntity } from '../entities/pokemon.js';
 import { Mon } from '../data/mon.js';
 import { effectiveness } from '../data/types.js';
-import { MOVES } from '../data/moves.js';
 import { kindOf } from './anims/index.js';
 
 // IA dos selvagens:
@@ -204,17 +203,17 @@ export class WildAI {
       if (busy < (e.pack ? 2 : 1) && Math.random() < dt * rate) {
         // prefere golpes de dano; golpes de estado só de vez em quando
         let tot = 0; const opts = [];
-        e.mon.moves.forEach((id, i) => { const mv = MOVES[id]; if (mv && e.cds[i] <= 0 && c.inRange(e, mv, d, id)) { const w = mv.cat === 'status' ? 0.3 : 1 + (mv.power ?? 40) / 100; opts.push([i, w]); tot += w; } });
+        e.mon.moves.forEach((_, i) => { const { id, mv } = c.moveAt(e, i); if (mv && e.cds[i] <= 0 && c.inRange(e, mv, d, id)) { const w = mv.cat === 'status' ? 0.3 : 1 + (mv.power ?? 40) / 100; opts.push([i, w]); tot += w; } });
         if (opts.length) { let r = Math.random() * tot, i = opts[0][0]; for (const [k, w] of opts) { if ((r -= w) <= 0) { i = k; break; } } if (c.windup(e, i, tg)) ai.retreat = 0.5; }
       }
     }
     // movimento: distância certa, circula o alvo, recua depois de atacar
     // só conta golpes de dano: rosnado e afins não seguram ninguém de longe
-    const dmgMove = (id, set) => { const mv = MOVES[id]; return mv && mv.cat !== 'status' && set.includes(kindOf(id, mv)); };
+    const dmgMove = (i, set) => { const { id, mv } = c.moveAt(e, i); return mv && mv.cat !== 'status' && set.includes(kindOf(id, mv)); };
     const RK = ['proj', 'cone', 'wave', 'cloud', 'rain', 'bolt', 'sky', 'surf', 'target', 'line'];
-    const ranged = e.mon.moves.some((id) => dmgMove(id, RK));
-    const rangedReady = e.mon.moves.some((id, i) => e.cds[i] <= 0 && dmgMove(id, RK));
-    const melee = e.mon.moves.some((id) => dmgMove(id, ['melee', 'multi', 'dash']));
+    const ranged = e.mon.moves.some((_, i) => dmgMove(i, RK));
+    const rangedReady = e.mon.moves.some((_, i) => e.cds[i] <= 0 && dmgMove(i, RK));
+    const melee = e.mon.moves.some((_, i) => dmgMove(i, ['melee', 'multi', 'dash']));
     ai.phaseT = (ai.phaseT ?? 0) - dt;
     if (ai.phaseT <= 0) { ai.phaseT = 2 + Math.random() * 2.5; ai.press = melee && (!ranged || Math.random() < 0.5); ai.side = Math.random() < 0.5 ? 1 : -1; }
     if (melee && !rangedReady) ai.press = true;

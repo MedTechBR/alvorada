@@ -4,6 +4,7 @@ import { Remotes, EMOTES, bubble, tickBubble } from './remotes.js';
 import { Arbiter } from './arbiter.js';
 import { Trade } from './trade.js';
 import { Duel } from './duel.js';
+import { NetReide } from './reide.js';
 import { cleanText, cleanName, cleanLook, monWire } from './validate.js';
 import { OnlineUI } from '../ui/online.js';
 
@@ -24,7 +25,7 @@ import { OnlineUI } from '../ui/online.js';
 // Selvagens são LOCAIS de cada jogador (cada um tem os seus). Ver README: menos tráfego, nenhuma
 // briga sobre quem capturou/derrotou, e funciona mesmo com os amigos longe uns dos outros.
 
-const ARBITER_TYPES = new Set(['st', 'use', 'd-open', 'd-team', 'd-active', 'd-claim', 'd-forfeit']);
+const ARBITER_TYPES = new Set(['st', 'use', 'd-open', 'd-team', 'd-active', 'd-claim', 'd-forfeit', 'd-poder']);
 const NEAR = 40 * 16;          // "perto" para o anfitrião repassar posição a 10 Hz, golpes e chat (40 blocos)
 const GHOST = 15000;           // na reeleição do anfitrião, quem sumiu continua na tela (apagado) por até 15 s
 const Q = new URLSearchParams(location.search);
@@ -40,6 +41,7 @@ export class Online {
     this.g = g; this.room = null; this.arbiter = null; this.names = new Map(); this.ghosts = new Map(); this.iqAt = new Map();
     this.remotes = new Remotes(g);
     this.trade = new Trade(this); this.duel = new Duel(this);
+    this.reide = new NetReide(this); // reide cooperativo das Tocas de Luz
     this.key = store.get('alv-net-key') ?? (() => { const k = Math.random().toString(36).slice(2) + Date.now().toString(36); store.set('alv-net-key', k); return k; })();
     this.name = store.get('alv-net-nome') ?? 'Treinador' + Math.floor(10 + Math.random() * 90);
     this.kind = Q.get('rede') === 'local' ? 'local' : (store.get('alv-net-rede') ?? 'peer');
@@ -149,7 +151,7 @@ export class Online {
   #gone(id, left, say) {
     if (say) this.ui.toast(`${this.nameOf(id)} saiu da sala.`);
     this.ghosts.delete(id);
-    this.trade.onPlayerGone(id, left); this.duel.onPlayerGone(id); this.arbiter?.onLeave(id);
+    this.trade.onPlayerGone(id, left); this.duel.onPlayerGone(id); this.arbiter?.onLeave(id); this.reide.onPlayerGone(id);
   }
   #cleanup() {
     for (const id of [...this.ghosts.keys()]) this.#gone(id, true, false);
@@ -190,6 +192,7 @@ export class Online {
     }
     if (type.startsWith('t-')) return this.trade.handle(type, data, from);
     if (type.startsWith('d-')) return this.duel.handle(type, data, from);
+    if (type.startsWith('r-')) return this.reide.handle(type, data, from);
   }
 
   // seus golpes: os outros veem a animação (fora do duelo não acerta ninguém do outro lado)
@@ -273,7 +276,7 @@ export class Online {
     }
     this.duel.update(dt);
     // perto de alguém: E (ou o botão A) abre as opções com aquele jogador
-    const near = this.duel.active || paused ? null : this.remotes.nearest(p.x, p.y, 40);
+    const near = this.duel.active || paused || g.tocas?.reide ? null : this.remotes.nearest(p.x, p.y, 40);
     this.ui.near(near);
     if (near && g.input.pressed('act') && !this.ui.modalOpen) { g.input.taps.delete('act'); this.ui.playerMenu(near.id); }
   }

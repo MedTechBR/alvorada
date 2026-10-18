@@ -20,6 +20,8 @@ const { CIDADES, GINASIOS, ELITE, NIVEL_LIGA } = await import('./mundo/cidades.m
 const { DUNGEONS } = await import('./mundo/dungeons.mjs');
 const { LUGARES, ALFAS } = await import('./mundo/lugares.mjs');
 const ESP = await import('./mundo/especiais.mjs');
+const JOGO = await import('../src/data/species.js');      // nomes das Mega Pedras e formas, como o jogo usa
+const JOGO_ITENS = await import('../src/data/items.js');
 const LISTA = JSON.parse(fs.readFileSync(arq('tools/mundo/especies.json'), 'utf8'));
 
 const erros = [], avisos = [];
@@ -304,13 +306,16 @@ for (const [d, cl] of Object.entries(EVO_REGIONAL)) {
   if (pf && !COMO.has(+d)) add(+d, { como: 'evolucao', de: pf[0] });
 }
 // Mega e Gigantamax
-const camel = (s) => s.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
 const MEGA_OUT = {}, GMAX_OUT = {};
 for (const f of FORMA.values()) {
   if (f.classe === 'mega') {
-    const nome = SP.get(f.dex).nome.normalize('NFD').replace(/[^\w]/g, '').toLowerCase();
-    const sufixo = f.id.split('-mega')[1]?.replace(/^-/, '') ?? '';
-    const pedra = nome + 'ite' + (sufixo ? camel('-' + sufixo) : '');
+    // a pedra é a do jogo (src/data/species.js → forms[f].megaStone, o id do item em src/data/items.js); montar o nome
+    // pela espécie errava 55 delas (blastoiseite em vez de blastoisinite). Rayquaza não tem pedra (Ascensão do Dragão).
+    const gf = JOGO.formFromApi(f.id), jf = gf && JOGO.SPECIES[gf.dex]?.forms[gf.form];
+    if (!jf) erro(`forma Mega sem dados no jogo: ${f.id}`);
+    const pedra = jf?.megaStone ?? null;
+    if (jf && !pedra && !jf.megaMove) erro(`forma Mega sem pedra no jogo: ${f.id}`);
+    if (pedra && !JOGO_ITENS.ITEMS[pedra]) erro(`Mega Pedra sem item no jogo: ${pedra} (${f.id})`);
     const fixo = ESP.MEGA.pedras[f.id];
     const onde = fixo ? fixo[0] : ESP.TESOURO_POR_TIPO[SP.get(f.dex).tipos[0]];
     MEGA_OUT[f.id] = { dex: f.dex, pedra, onde, como: fixo ? fixo[1] : 'tesouro escondido da dungeon do tipo', tipos: f.tipos };
@@ -501,7 +506,7 @@ for (const [fid, F] of Object.entries(FORMAS_OUT)) for (const o of F.como) if ([
 const mdLendarios = ['| Espécie | Como | Onde | Nível | Nota |', '|---|---|---|---:|---|', ...especiaisLinhas].join('\n');
 const mdMega = [`Pulseira Mega: ${nomeArea(ESP.MEGA.pulseira.onde)}, ${ESP.MEGA.pulseira.como}.`, '',
   '| Forma Mega | Pedra | Onde | Como |', '|---|---|---|---|',
-  ...Object.entries(MEGA_OUT).map(([k, m]) => `| ${k} | ${m.pedra} | ${nomeArea(m.onde.split(' ')[0])}${m.onde.includes(' ') ? ' ' + m.onde.split(' ').slice(1).join(' ') : ''} | ${m.como} |`), '',
+  ...Object.entries(MEGA_OUT).map(([k, m]) => `| ${k} | ${m.pedra ?? '—'} | ${nomeArea(m.onde.split(' ')[0])}${m.onde.includes(' ') ? ' ' + m.onde.split(' ').slice(1).join(' ') : ''} | ${m.como} |`), '',
   `Bracelete Dynamax: ${nomeArea(ESP.DYNAMAX.bracelete.onde)}, ${ESP.DYNAMAX.bracelete.como}. ${ESP.DYNAMAX.regras}`, '',
   '| Toca de Luz | Área | Gigantamax | Nota |', '|---|---|---|---|',
   ...ESP.DYNAMAX.tocas.map((t) => `| ${t.id} | ${nomeArea(t.area)} | ${t.gmax.join(', ') || '(sorteio)'} | ${t.nota ?? ''} |`)].join('\n');

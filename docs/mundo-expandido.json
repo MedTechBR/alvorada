@@ -10008,7 +10008,7 @@
    },
    "blastoise-mega": {
     "dex": 9,
-    "pedra": "blastoiseite",
+    "pedra": "blastoisinite",
     "onde": "estacao_austral",
     "como": "missão O canto das Lapras",
     "tipos": [
@@ -10037,7 +10037,7 @@
    },
    "raichu-mega-x": {
     "dex": 26,
-    "pedra": "raichuiteX",
+    "pedra": "raichuniteX",
     "onde": "farol_coral (lanterna)",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10046,7 +10046,7 @@
    },
    "raichu-mega-y": {
     "dex": 26,
-    "pedra": "raichuiteY",
+    "pedra": "raichuniteY",
     "onde": "farol_coral (lanterna)",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10055,7 +10055,7 @@
    },
    "clefable-mega": {
     "dex": 36,
-    "pedra": "clefableite",
+    "pedra": "clefablite",
     "onde": "ilha_miragem",
     "como": "tesouro",
     "tipos": [
@@ -10065,7 +10065,7 @@
    },
    "alakazam-mega": {
     "dex": 65,
-    "pedra": "alakazamite",
+    "pedra": "alakazite",
     "onde": "observatorio_boreal",
     "como": "Dra. Hanna",
     "tipos": [
@@ -10084,7 +10084,7 @@
    },
    "slowbro-mega": {
     "dex": 80,
-    "pedra": "slowbroite",
+    "pedra": "slowbronite",
     "onde": "porto_espelho",
     "como": "Tia Jandira (o Doutor tem uma)",
     "tipos": [
@@ -10113,7 +10113,7 @@
    },
    "starmie-mega": {
     "dex": 121,
-    "pedra": "starmieite",
+    "pedra": "starminite",
     "onde": "templo_mares_1",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10153,7 +10153,7 @@
    },
    "dragonite-mega": {
     "dex": 149,
-    "pedra": "dragoniteite",
+    "pedra": "dragoninite",
     "onde": "liga_zenite",
     "como": "Iberê, na revanche",
     "tipos": [
@@ -10163,7 +10163,7 @@
    },
    "mewtwo-mega-x": {
     "dex": 150,
-    "pedra": "mewtwoiteX",
+    "pedra": "mewtwoniteX",
     "onde": "gruta_cataratas_2",
     "como": "tesouro",
     "tipos": [
@@ -10173,7 +10173,7 @@
    },
    "mewtwo-mega-y": {
     "dex": 150,
-    "pedra": "mewtwoiteY",
+    "pedra": "mewtwoniteY",
     "onde": "cidadela_poente",
     "como": "49 vitórias na Torre de Batalha",
     "tipos": [
@@ -10192,7 +10192,7 @@
    },
    "feraligatr-mega": {
     "dex": 160,
-    "pedra": "feraligatrite",
+    "pedra": "feraligite",
     "onde": "templo_mares_1",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10232,7 +10232,7 @@
    },
    "heracross-mega": {
     "dex": 214,
-    "pedra": "heracrossite",
+    "pedra": "heracronite",
     "onde": "vila_sussurro",
     "como": "revanche da Lia",
     "tipos": [
@@ -10242,7 +10242,7 @@
    },
    "skarmory-mega": {
     "dex": 227,
-    "pedra": "skarmoryite",
+    "pedra": "skarmorite",
     "onde": "mina_aurora_n4",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10252,7 +10252,7 @@
    },
    "houndoom-mega": {
     "dex": 229,
-    "pedra": "houndoomite",
+    "pedra": "houndoominite",
     "onde": "templo_chama_1",
     "como": "tesouro",
     "tipos": [
@@ -10272,7 +10272,7 @@
    },
    "sceptile-mega": {
     "dex": 254,
-    "pedra": "sceptileite",
+    "pedra": "sceptilite",
     "onde": "templo_raizes_2",
     "como": "tesouro",
     "tipos": [
@@ -10312,7 +10312,7 @@
    },
    "sableye-mega": {
     "dex": 302,
-    "pedra": "sableyeite",
+    "pedra": "sablenite",
     "onde": "mina_abandonada",
     "como": "tesouro",
     "tipos": [
@@ -10322,7 +10322,7 @@
    },
    "mawile-mega": {
     "dex": 303,
-    "pedra": "mawileite",
+    "pedra": "mawilite",
     "onde": "caminho_zenite",
     "como": "tesouro",
     "tipos": [
@@ -10351,7 +10351,7 @@
    },
    "manectric-mega": {
     "dex": 310,
-    "pedra": "manectricite",
+    "pedra": "manectite",
     "onde": "cidade_coral",
     "como": "revanche do Jonas",
     "tipos": [
@@ -10360,7 +10360,7 @@
    },
    "sharpedo-mega": {
     "dex": 319,
-    "pedra": "sharpedoite",
+    "pedra": "sharpedonite",
     "onde": "templo_mares_2",
     "como": "tesouro",
     "tipos": [
@@ -10380,7 +10380,7 @@
    },
    "altaria-mega": {
     "dex": 334,
-    "pedra": "altariaite",
+    "pedra": "altarianite",
     "onde": "torre_vento",
     "como": "revanche da Celeste",
     "tipos": [
@@ -10390,7 +10390,7 @@
    },
    "banette-mega": {
     "dex": 354,
-    "pedra": "banetteite",
+    "pedra": "banettite",
     "onde": "vila_lamparina",
     "como": "revanche da Zélia",
     "tipos": [
@@ -10399,7 +10399,7 @@
    },
    "chimecho-mega": {
     "dex": 358,
-    "pedra": "chimechoite",
+    "pedra": "chimechite",
     "onde": "ruinas_vigias_sub",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10428,7 +10428,7 @@
    },
    "glalie-mega": {
     "dex": 362,
-    "pedra": "glalieite",
+    "pedra": "glalitite",
     "onde": "vila_geada",
     "como": "missão A luz que dança",
     "tipos": [
@@ -10437,7 +10437,7 @@
    },
    "salamence-mega": {
     "dex": 373,
-    "pedra": "salamenceite",
+    "pedra": "salamencite",
     "onde": "chapada_vermelha",
     "como": "tesouro",
     "tipos": [
@@ -10477,7 +10477,7 @@
    },
    "rayquaza-mega": {
     "dex": 384,
-    "pedra": "rayquazaite",
+    "pedra": null,
     "onde": "(não precisa de pedra: Rayquaza com Ascensão do Dragão)",
     "como": "golpe",
     "tipos": [
@@ -10487,7 +10487,7 @@
    },
    "staraptor-mega": {
     "dex": 398,
-    "pedra": "staraptorite",
+    "pedra": "staraptite",
     "onde": "megaloja_aurora",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10497,7 +10497,7 @@
    },
    "lopunny-mega": {
     "dex": 428,
-    "pedra": "lopunnyite",
+    "pedra": "lopunnite",
     "onde": "cidade_campina",
     "como": "revanche do Tomé",
     "tipos": [
@@ -10526,7 +10526,7 @@
    },
    "lucario-mega": {
     "dex": 448,
-    "pedra": "lucarioite",
+    "pedra": "lucarionite",
     "onde": "cidade_escarpa",
     "como": "junto com a Pulseira Mega",
     "tipos": [
@@ -10536,7 +10536,7 @@
    },
    "lucario-mega-z": {
     "dex": 448,
-    "pedra": "lucarioiteZ",
+    "pedra": "lucarioniteZ",
     "onde": "forte_rochedo",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10546,7 +10546,7 @@
    },
    "abomasnow-mega": {
     "dex": 460,
-    "pedra": "abomasnowite",
+    "pedra": "abomasite",
     "onde": "caverna_gelo_1",
     "como": "tesouro",
     "tipos": [
@@ -10556,7 +10556,7 @@
    },
    "gallade-mega": {
     "dex": 475,
-    "pedra": "galladeite",
+    "pedra": "galladite",
     "onde": "ruinas_vigias_sub",
     "como": "tesouro",
     "tipos": [
@@ -10586,7 +10586,7 @@
    },
    "darkrai-mega": {
     "dex": 491,
-    "pedra": "darkraiite",
+    "pedra": "darkranite",
     "onde": "vila_lamparina",
     "como": "capela, na lua nova",
     "tipos": [
@@ -10605,7 +10605,7 @@
    },
    "excadrill-mega": {
     "dex": 530,
-    "pedra": "excadrillite",
+    "pedra": "excadrite",
     "onde": "ruinas_pintada_2",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10615,7 +10615,7 @@
    },
    "audino-mega": {
     "dex": 531,
-    "pedra": "audinoite",
+    "pedra": "audinite",
     "onde": "vila_alvorada",
     "como": "a Mãe dá (a Dona Fofa usa a dela)",
     "tipos": [
@@ -10625,7 +10625,7 @@
    },
    "scolipede-mega": {
     "dex": 545,
-    "pedra": "scolipedeite",
+    "pedra": "scolipite",
     "onde": "templo_raizes_2",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10635,7 +10635,7 @@
    },
    "scrafty-mega": {
     "dex": 560,
-    "pedra": "scraftyite",
+    "pedra": "scraftinite",
     "onde": "ilha_veu",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10654,7 +10654,7 @@
    },
    "chandelure-mega": {
     "dex": 609,
-    "pedra": "chandelureite",
+    "pedra": "chandelurite",
     "onde": "cemiterio_velas",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10694,7 +10694,7 @@
    },
    "greninja-mega": {
     "dex": 658,
-    "pedra": "greninjaite",
+    "pedra": "greninjite",
     "onde": "templo_mares_1",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10714,7 +10714,7 @@
    },
    "floette-mega": {
     "dex": 670,
-    "pedra": "floetteite",
+    "pedra": "floettite",
     "onde": "mata_araucarias",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10751,7 +10751,7 @@
    },
    "barbaracle-mega": {
     "dex": 689,
-    "pedra": "barbaracleite",
+    "pedra": "barbaracite",
     "onde": "mina_abandonada",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10761,7 +10761,7 @@
    },
    "dragalge-mega": {
     "dex": 691,
-    "pedra": "dragalgeite",
+    "pedra": "dragalgite",
     "onde": "rota5",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10771,7 +10771,7 @@
    },
    "hawlucha-mega": {
     "dex": 701,
-    "pedra": "hawluchaite",
+    "pedra": "hawluchanite",
     "onde": "forte_rochedo",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10781,7 +10781,7 @@
    },
    "zygarde-mega": {
     "dex": 718,
-    "pedra": "zygardeite",
+    "pedra": "zygardite",
     "onde": "fundo_canion",
     "como": "tesouro (com Zygarde capturado)",
     "tipos": [
@@ -10791,7 +10791,7 @@
    },
    "diancie-mega": {
     "dex": 719,
-    "pedra": "diancieite",
+    "pedra": "diancite",
     "onde": "fenda_prismatica_3",
     "como": "tesouro",
     "tipos": [
@@ -10801,7 +10801,7 @@
    },
    "crabominable-mega": {
     "dex": 740,
-    "pedra": "crabominableite",
+    "pedra": "crabominite",
     "onde": "forte_rochedo",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10811,7 +10811,7 @@
    },
    "golisopod-mega": {
     "dex": 768,
-    "pedra": "golisopodite",
+    "pedra": "golisopite",
     "onde": "templo_raizes_2",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10821,7 +10821,7 @@
    },
    "drampa-mega": {
     "dex": 780,
-    "pedra": "drampaite",
+    "pedra": "drampanite",
     "onde": "megaloja_aurora",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10831,7 +10831,7 @@
    },
    "magearna-mega": {
     "dex": 801,
-    "pedra": "magearnaite",
+    "pedra": "magearnite",
     "onde": "oficina_ernesto",
     "como": "Vô Ernesto",
     "tipos": [
@@ -10841,7 +10841,7 @@
    },
    "magearna-original-mega": {
     "dex": 801,
-    "pedra": "magearnaite",
+    "pedra": "magearnite",
     "onde": "oficina_ernesto",
     "como": "Vô Ernesto",
     "tipos": [
@@ -10851,7 +10851,7 @@
    },
    "zeraora-mega": {
     "dex": 807,
-    "pedra": "zeraoraite",
+    "pedra": "zeraorite",
     "onde": "rota6",
     "como": "torre de transmissão",
     "tipos": [
@@ -10879,7 +10879,7 @@
    },
    "glimmora-mega": {
     "dex": 970,
-    "pedra": "glimmoraite",
+    "pedra": "glimmoranite",
     "onde": "mina_abandonada",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10889,7 +10889,7 @@
    },
    "tatsugiri-curly-mega": {
     "dex": 978,
-    "pedra": "tatsugiriite",
+    "pedra": "tatsugirinite",
     "onde": "caminho_zenite",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10899,7 +10899,7 @@
    },
    "tatsugiri-droopy-mega": {
     "dex": 978,
-    "pedra": "tatsugiriite",
+    "pedra": "tatsugirinite",
     "onde": "caminho_zenite",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10909,7 +10909,7 @@
    },
    "tatsugiri-stretchy-mega": {
     "dex": 978,
-    "pedra": "tatsugiriite",
+    "pedra": "tatsugirinite",
     "onde": "caminho_zenite",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [
@@ -10919,7 +10919,7 @@
    },
    "baxcalibur-mega": {
     "dex": 998,
-    "pedra": "baxcaliburite",
+    "pedra": "baxcalibrite",
     "onde": "caminho_zenite",
     "como": "tesouro escondido da dungeon do tipo",
     "tipos": [

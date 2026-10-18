@@ -1,7 +1,8 @@
 // Ambiente que algumas mecânicas consultam: hora do dia, clima, campo e lua cheia.
-// O mundo pode informar o estado com setAmbiente({ hora, clima, campo, luaCheia, caverna }).
+// O mundo pode informar o estado com setAmbiente({ hora, clima, campo, luaCheia, caverna, regiao }).
+// `regiao` (valor ou função): região de forma regional onde o jogador está ('alola' | 'hisui' | 'galar' | null).
 // `hora` pode ser um número (0–24) ou uma função que devolve a hora; sem isso, usa o relógio do aparelho.
-const estado = { hora: null, clima: null, campo: null, luaCheia: false, caverna: false };
+const estado = { hora: null, clima: null, campo: null, luaCheia: false, caverna: false, regiao: null };
 
 export function setAmbiente(o) { Object.assign(estado, o); }
 export function getAmbiente() { return { ...estado }; }
@@ -25,3 +26,4 @@ export const weather = () => estado.clima;       // 'rain' | 'sun' | 'sand' | 's
 export const terrain = () => estado.campo;       // 'electric' | 'grassy' | 'misty' | 'psychic' | null
 export const fullMoon = () => !!estado.luaCheia;
 export const inCave = () => !!(typeof estado.caverna === 'function' ? estado.caverna() : estado.caverna);
+export const regiao = () => (typeof estado.regiao === 'function' ? estado.regiao() : estado.regiao) ?? null;

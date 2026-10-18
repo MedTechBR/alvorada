@@ -31,7 +31,7 @@ function conditionsOk(mon, e, ctx) {
   if (e.atkDef != null) { const d = Math.sign((mon.stats?.atk ?? 0) - (mon.stats?.def ?? 0)); if (d !== e.atkDef) return false; }
   if (e.natures && !e.natures.includes(mon.nature)) return false;
   if (e.split != null && splitOf(mon) !== e.split) return false;
-  if (e.region && e.region !== ctx.region) return false;
+  if (e.region && e.region !== (ctx.region !== undefined ? ctx.region : amb.regiao())) return false; // o mundo informa a região (ambiente.js)
   return true;
 }
 
@@ -45,7 +45,9 @@ export function evolutionFor(mon, trigger = 'level', ctx = {}) {
   const sp = mon.sp ?? SPECIES[mon.dex];
   if (!sp?.evo?.length || itemId(mon.item) === 'everstone') return null;
   const item = ctx.item ? itemId(ctx.item) : null;
-  for (const e of sp.evo) {
+  // a regra regional vem antes da comum (Pikachu + Pedra do Trovão em Alola vira Raichu de Alola, fora de lá o comum)
+  const rules = sp.evo.some((e) => e.region) ? [...sp.evo].sort((a, b) => (b.region ? 1 : 0) - (a.region ? 1 : 0)) : sp.evo;
+  for (const e of rules) {
     if (!SPECIES[e.to]) continue;
     if (trigger === 'item') {
       if (!e.item || e.item !== item) continue;

@@ -10,6 +10,8 @@ import { makeTrainerFrames, dir4 } from './sprites/characters.js';
 import { loadPokemonSprites } from './sprites/pmd.js';
 import { PokeEntity } from './entities/pokemon.js';
 import { Combat } from './combat/combat.js';
+import { Poder } from './combat/poder.js';
+import { Tocas } from './world/tocas.js';
 import { Mon } from './data/mon.js';
 import { SPECIES, BIOME_ENCOUNTERS, speciesKey, genderForm, formFromApi } from './data/species.js';
 import { MOVES } from './data/moves.js';
@@ -26,6 +28,7 @@ import { BIOMAS_PADRAO, BIOMAS_NOITE } from './data/habitats-biomas.js'; // biom
 import { ITEM_INFO, itemInfo, itemName } from './data/items.js';
 import { rollShakes } from './mechanics/capture.js';
 import { setAmbiente, isNight as nightNow } from './mechanics/ambiente.js';
+import { formaRegionalEm } from './data/regioes.js';
 
 const XP_SHARE = 0.5; // parte da XP que vai para quem ficou na equipe
 const ALPHA_DROPS = [['greatBall', 2, 30], ['superPotion', 2, 25], ['stardust', 1, 14], ['pearl', 1, 14], ['bigMushroom', 1, 6], ['rareCandy', 1, 7], ['nugget', 1, 4]];
@@ -60,7 +63,8 @@ class Game {
     this.mundo = new WorldLife(this); // dia e noite, portas, bichinhos, minimapa
     this.viagem = new Viagem(this);    // troca de mundo: navios, voo (Voar para…), passagens entre mapas
     // as mecânicas (Bola do Crepúsculo, evolução por hora, encontros) seguem o relógio do jogo, não o do aparelho
-    setAmbiente({ hora: () => this.mundo.hour, caverna: () => !!this.map.interiorAt(this.player.x, this.player.y)?.dark });
+    setAmbiente({ hora: () => this.mundo.hour, caverna: () => !!this.map.interiorAt(this.player.x, this.player.y)?.dark,
+      regiao: () => formaRegionalEm(this.map, this.player.x, this.player.y, MAP_ID) }); // evoluções regionais (src/data/regioes.js)
     // treinador e equipe
     this.player = this.#makeTrainer(this.map.spawn.x, this.map.spawn.y);
     this.mount = new Mounts(this); // montarias do treinador (X): src/world/mounts.js
@@ -69,6 +73,8 @@ class Game {
     this.quality = new Quality(this); // qualidade gráfica automática (src/engine/quality.js)
     this.ui = new UI(this);        // HUD, menus, diálogo, título e save (src/ui)
     this.story = new Story(this);  // capítulo 1 (src/story)
+    this.poder = new Poder(this);  // Mega Evolução, Dynamax e Gigantamax (src/combat/poder.js)
+    this.tocas = new Tocas(this);  // Tocas de Luz e Reides Max (src/world/tocas.js)
     window.__boot?.(0.92, 'Preparando a aventura…');
     import('./data/habitats.js').then((H) => { this.habitats = H; }).catch((e) => console.warn('habitats.js', e)); // 180 KB: depois da abertura
     this.available = await fetch('assets/pmd/index.json').then((r) => r.json()).catch(() => [1, 4, 6, 7, 9, 25, 130, 133]);
@@ -491,6 +497,8 @@ class Game {
     this.net?.update(dt); // online: manda sua posição, mostra os outros, cuida do duelo
     this.#updateWild(dt);
     this.combat.update(dt);
+    this.poder.update(dt);
+    this.tocas.update(dt);
     this.#updateBalls(dt);
     this.#updateThrowMon(dt);
     for (const e of this.entities) { if (e.fadeIn) { e.alpha = Math.min(1, e.alpha + dt * 2); if (e.alpha >= 1) e.fadeIn = false; } if (e.dead) e.alpha = Math.max(0, e.alpha - dt * 2); e.update(dt); e.view.zIndex = e.y; }
@@ -518,7 +526,7 @@ class Game {
     const fd = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] }[p.dir];
     return { x: lead.x + fd[0] * 120, y: lead.y + fd[1] * 120 };
   }
-  screenToWorld(sx, sy) { return { x: (sx - this.world.x) / this.zoom, y: (sy - this.world.y) / this.zoom }; }
+  screenToWorld(sx, sy) { const z = this.world.scale.x; return { x: (sx - this.world.x) / z, y: (sy - this.world.y) / z }; }
 
   #control(dt) {
     const inp = this.input, p = this.player;
@@ -528,7 +536,7 @@ class Game {
     if (inp.pressed('zoomOut')) this.setZoom(this.zoom - 1);
     const pk = this.mode === 'pokemon' && this.lead?.alive;
     // numa batalha de treinador da história, o seu Pokémon sai sozinho (como nos jogos)
-    if (!pk && this.story?.battle && !this.story.battle.done && !this.throwingMon && !(this.sendingOut > 0) && this.party.some((m) => !m.fainted)) {
+    if (!pk && ((this.story?.battle && !this.story.battle.done) || (this.tocas?.reide && !this.tocas.reide.done)) && !this.throwingMon && !(this.sendingOut > 0) && this.party.some((m) => !m.fainted)) {
       const i = this.party[this.leadIdx]?.fainted ? this.party.findIndex((m) => !m.fainted) : this.leadIdx;
       const a = this.#aimPoint(); this.throwMon(i, a.x, a.y);
     }
@@ -585,6 +593,7 @@ class Game {
       }
       l.dodgeCd = (l.dodgeCd ?? 0) - dt;
       for (let s = 0; s < 4; s++) if (inp.pressed('m' + s)) { const a = this.#aimPoint(); this.combat.use(l, s, a.x, a.y); }
+      if (inp.pressed('power')) this.poder?.usar(); // V: Mega Evolução ou Dynamax (src/combat/poder.js)
       if (inp.pressed('recall') || inp.pressed('ball')) this.recall();
     } else {
       // treinador: Q (ou 1º botão) envia o Pokémon escolhido; B (ou 2º botão) joga Poké Bola de captura
@@ -626,11 +635,13 @@ class Game {
 
   #camera(dt) {
     const p = this.player, c = this.cam, f = this.mode === 'pokemon' && this.lead?.alive ? this.lead : p;
-    const fy = f.y - (f === p ? this.mount?.camLift ?? 0 : 0); // voando, a câmera sobe com o treinador
-    c.x += (f.x - c.x) * Math.min(1, dt * 8); c.y += (fy - c.y) * Math.min(1, dt * 8);
+    let fx = f.x, fy = f.y - (f === p ? this.mount?.camLift ?? 0 : 0); // voando, a câmera sobe com o treinador
+    const foco = this.camFoco?.(fx, fy); if (foco) { fx = foco.x; fy = foco.y; } // reide: entre o Pokémon e o chefe (src/world/tocas.js)
+    c.x += (fx - c.x) * Math.min(1, dt * 8); c.y += (fy - c.y) * Math.min(1, dt * 8);
     let sx = 0, sy = 0;
     if (this.fx.shake > 0) { this.fx.shake -= dt; const k = this.fx.shake * 6; sx = (Math.random() - 0.5) * k; sy = (Math.random() - 0.5) * k; }
-    const z = this.zoom;
+    const z = this.zoom * (this.camK ?? 1); // camK < 1: câmera afasta (Dynamax, reide; src/combat/poder.js)
+    if (this.world.scale.x !== z) this.world.scale.set(z);
     this.world.x = Math.round(innerWidth / 2 - (c.x + sx) * z);
     this.world.y = Math.round(innerHeight / 2 - (c.y + sy) * z);
     const hw = innerWidth / 2 / z + 40, hh = innerHeight / 2 / z + 40;
