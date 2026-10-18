@@ -69,6 +69,9 @@ def main():
             shutil.rmtree(SAIDA)
         shutil.copytree(saida, SAIDA)
         tot = sum(os.path.getsize(os.path.join(a, f)) for a, _, fs in os.walk(SAIDA) for f in fs)
+        import json
+        lst = sorted(os.path.relpath(os.path.join(a, f), SAIDA)[:-4] for a, _, fs in os.walk(SAIDA) for f in fs if f.endswith('.glb'))
+        json.dump(lst, open(os.path.join(SAIDA, '_lista.json'), 'w'))
         print('glb em', SAIDA, '%.1f MB' % (tot / 1e6))
 
 
