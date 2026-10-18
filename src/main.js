@@ -200,6 +200,8 @@ class Game {
       const mon = new Mon(dex, lo + Math.floor(Math.random() * (hi - lo + 1)));
       const w = new PokeEntity(this, mon, 'wild', x, y);
       await w.ready;
+      // sem internet: só aparecem espécies cujos sprites já estão guardados (nada de bolinha no lugar do Pokémon)
+      if (w.set?.placeholder && !navigator.onLine) { w.view.destroy({ children: true }); continue; }
       if (Math.random() < 0.15) w.ai.state = 'sleep';
       this.entities.push(w); this.wilds.push(w); this.ents.addChild(w.view);
       w.alpha = 0; w.fadeIn = true;
