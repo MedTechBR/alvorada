@@ -12,6 +12,7 @@ const FLORES2D = new Set(FLOWERS.flat().map((t) => t.source));
 // - Decoração plana do mapa (flores, vitórias-régias, seixos, tapetes, lava/maré animadas): no chão.
 // Lotes por folha de textura e modo (um draw call cada), refeitos a cada quadro.
 const MODOS = { opaco: 0, transp: 1, aditivo: 2, chao: 3, silhueta: 4 };
+const PK_3D = 1.6; // Pokémon (sprites PMD) maiores no 3D que no 2D, na escala do demo
 const ORDEM = [0, 4, 6, 2, 9]; // renderOrder por modo: chão antes dos billboards transparentes
 const lin = new Float32Array(256); for (let i = 0; i < 256; i++) lin[i] = Math.pow(i / 255, 2.2);
 
@@ -129,7 +130,10 @@ export class Espelho {
     this.sombra = g.tx?.shadow?.source;
     this.dono = v.setores.modelos.donosDeSprite?.() ?? null;
     this.subst = this.pers.update();
-    const epv = (this.entPorView ??= new Map()); epv.clear();
+    // corpos PMD dos Pokémon desenhados maiores no 3D (escala do demo), crescendo a partir do pé
+    const pk = (this.pkCorpos ??= new Set()); pk.clear();
+    for (const e of g.entities ?? []) if (e.body && e.mon && !this.subst?.has(e.body)) pk.add(e.body);
+    const epv =(this.entPorView ??= new Map()); epv.clear();
     for (const e of g.entities ?? []) if (e.view && e.pouso) epv.set(e.view, e);
     if (g.player?.pouso) epv.set(g.player.view, g.player);
     const cam = v.camera.position;
@@ -195,6 +199,7 @@ export class Espelho {
   #sprite(n, a, b, c, d, tx, ty, alpha, plano, deco) {
     const sub = this.subst?.get(n);
     if (sub) return this.#spriteHGSS(n, sub, a, b, c, d, tx, ty, alpha);
+    if (this.pkCorpos?.has(n)) { const K = PK_3D; a *= K; b *= K; c *= K; d *= K; }
     const T = n.texture, src = T.source; if (!src?.resource) return;
     const f = T.frame, o = T.orig, w = o.width, h = o.height; if (!w || !h) return;
     const ax = n.anchor.x, ay = n.anchor.y;

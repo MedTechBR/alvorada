@@ -17,8 +17,9 @@ export class Personagens {
     this.v = v; this.ok = false; this.texs = new Map(); this.corpos = new Map();
     if (new URLSearchParams(location.search).get('pers') === '2d') return;
     fetch(RAIZ + 'indice.json').then((r) => (r.ok ? r.json() : null)).then((J) => { if (J) { this.J = J; this.ok = true; } }).catch(() => {});
-    // sprites de batalha dos Pokémon (frente e costas, animados): ?pk=pmd mantém os PMD
-    if (new URLSearchParams(location.search).get('pk') !== 'pmd') fetch(RAIZ_PK + 'indice.json').then((r) => (r.ok ? r.json() : null)).then((P) => { if (P?.sprites) this.P = P; }).catch(() => {});
+    // Pokémon: o padrão são os PMD (andam nas 8 direções, atacam, apanham); os sprites de batalha (só frente e
+    // costas, e parados da 6ª geração em diante) ficam como opção: ?pk=batalha
+    if (new URLSearchParams(location.search).get('pk') === 'batalha') fetch(RAIZ_PK + 'indice.json').then((r) => (r.ok ? r.json() : null)).then((P) => { if (P?.sprites) this.P = P; }).catch(() => {});
   }
   #texPk(pasta, chave, S) {
     const k = pasta + chave; let t = this.texs.get(k);
