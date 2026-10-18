@@ -66,7 +66,9 @@ MAO = {
     95: '+correr', 208: '+correr',  # Onix e Steelix: correntes de pedra e aço que levam gente na cabeça
     545: '+correr', 851: '+correr',  # Scolipede (rápido) e Centiskorch (comprido)
     376: '+correr',              # Metagross: quatro pernas, 550 kg
-    713: '+correr',              # Avalugg: carrega Bergmite (e gente) no lombo
+    713: '+correr +nadar',       # Avalugg: leva Bergmite (e gente) no lombo, inclusive pelo mar
+    398: '+voar', 663: '+voar',  # Staraptor e Talonflame: leves, mas usam Voar nos jogos
+    916: '+correr',              # Oinkologne: porco de 120 kg, criança monta
     # bípedes que correm com o treinador nas costas
     445: '+correr', 697: '+correr', 248: '+correr +escalar', 306: '+correr +escalar', 217: '+correr +escalar',
     553: '+correr', 612: '+correr', 115: '+correr',

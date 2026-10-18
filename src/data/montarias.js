@@ -1,5 +1,5 @@
 // GERADO por tools/gerar_montarias.py (não edite à mão: ajustes vão nas tabelas MAO e AJUSTE do script).
-// Espécies que carregam o treinador: 100 (correr 38, nadar 19, escalar 32, voar 20, mergulhar 12).
+// Espécies que carregam o treinador: 103 (correr 39, nadar 20, escalar 32, voar 22, mergulhar 12).
 // m = modos; est = lombo (senta em cima) | costas (vai agarrado às costas, como no Sneasler);
 // lift = altura do assento acima do centro do corpo; back = recuo do assento para trás do centro;
 // topo = altura da silhueta acima do centro, olhando para a câmera (o treinador aparece por cima dela).
@@ -54,6 +54,7 @@ export const MONTARIAS = {
   359: {"m":["correr","escalar"],"est":"lombo","lift":2,"back":1,"topo":20}, // Absol
   373: {"m":["correr","voar"],"est":"lombo","lift":0,"back":7,"topo":13}, // Salamence
   376: {"m":["correr"],"est":"lombo","lift":3,"back":1,"topo":6}, // Metagross
+  398: {"m":["voar"],"est":"lombo","lift":2,"back":2,"topo":14}, // Staraptor
   405: {"m":["correr"],"est":"lombo","lift":3,"back":3,"topo":14}, // Luxray
   419: {"m":["nadar"],"est":"lombo","lift":5,"back":2,"topo":16}, // Floatzel
   428: {"m":["escalar"],"est":"costas","lift":3,"back":8,"topo":12}, // Lopunny
@@ -81,13 +82,14 @@ export const MONTARIAS = {
   628: {"m":["voar"],"est":"lombo","lift":1,"back":4,"topo":14}, // Braviary
   635: {"m":["voar"],"est":"lombo","lift":4,"back":2,"topo":20}, // Hydreigon
   652: {"m":["escalar"],"est":"costas","lift":3,"back":9,"topo":15}, // Chesnaught
+  663: {"m":["voar"],"est":"lombo","lift":7,"back":-1,"topo":16}, // Talonflame
   668: {"m":["correr"],"est":"lombo","lift":0,"back":1,"topo":10}, // Pyroar
   673: {"m":["correr","escalar"],"est":"lombo","lift":2,"back":2,"topo":13}, // Gogoat
   675: {"m":["escalar"],"est":"costas","lift":3,"back":10,"topo":17}, // Pangoro
   691: {"m":["nadar","mergulhar"],"est":"lombo","lift":2,"back":4,"topo":21}, // Dragalge
   697: {"m":["correr"],"est":"lombo","lift":1,"back":7,"topo":23}, // Tyrantrum
   699: {"m":["correr"],"est":"lombo","lift":3,"back":5,"topo":18}, // Aurorus
-  713: {"m":["correr"],"est":"lombo","lift":2,"back":9,"topo":12}, // Avalugg
+  713: {"m":["correr","nadar"],"est":"lombo","lift":2,"back":9,"topo":12}, // Avalugg
   715: {"m":["voar"],"est":"lombo","lift":7,"back":1,"topo":15}, // Noivern
   716: {"m":["correr"],"est":"lombo","lift":1,"back":1,"topo":25}, // Xerneas
   717: {"m":["voar"],"est":"lombo","lift":10,"back":2,"topo":20}, // Yveltal
@@ -104,5 +106,6 @@ export const MONTARIAS = {
   900: {"m":["escalar"],"est":"costas","lift":2,"back":6,"topo":15}, // Kleavor
   901: {"m":["correr"],"est":"lombo","lift":1,"back":-5,"topo":14}, // Ursaluna
   903: {"m":["escalar"],"est":"costas","lift":4,"back":8,"topo":15}, // Sneasler
+  916: {"m":["correr"],"est":"lombo","lift":2,"back":1,"topo":11}, // Oinkologne
   979: {"m":["escalar"],"est":"costas","lift":5,"back":9,"topo":22}, // Annihilape
 };
