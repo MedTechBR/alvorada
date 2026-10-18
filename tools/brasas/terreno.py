@@ -154,8 +154,8 @@ def construir():
     # --- Campos de Cinza
     c = Z['campos']
     G[c] = 'a'
-    G[c & (g1 > 0.52)] = 'v'
-    G[c & (g2 > 0.74)] = 'o'
+    G[c & (g1 > 0.46)] = 'v'
+    G[c & (g2 > 0.72)] = 'o'
     G[c & (d_f == 1)] = 'v'
     G[c & (d_f == 2) & (g3 > 0.4)] = 'v'
 
@@ -192,6 +192,21 @@ def construir():
         G[anel] = 'o'
         G[elipse(cx, cy, rx, ry, ruido=0.15, semente=190 + i) & m_for] = 'v'
         G[meio] = 'l'
+    # mesetas de basalto com escada: mirantes e esconderijos nos campos (o topo guarda um item escondido)
+    mesas = [(958, 711, 6, 3.4, 0), (1092, 712, 7, 3.6, 0), (1042, 762, 6, 3.2, 0), (987, 764, 5, 3, 0), (1076, 748, 5, 3, 0)]
+    info['mesas'] = []
+    for i, (cx, cy, rx, ry, _) in enumerate(mesas):
+        anel = elipse(cx, cy, rx + 1.6, ry + 1.4, ruido=0.12, semente=600 + i) & m_for
+        topo = elipse(cx, cy, rx - 0.4, ry - 0.3, ruido=0.12, semente=610 + i) & m_for
+        G[anel] = '#'
+        G[topo] = 'v'
+        G[topo & (fbm(620 + i, (5, 3), (0.6, 0.4)) > 0.6)] = 'o'
+        sy = int(round(cy + ry + 0.6))
+        for dx in (-1, 0):
+            for dy in (-1, 0, 1):
+                if G[sy + dy - Y0, cx + dx - X0] == '#':
+                    G[sy + dy - Y0, cx + dx - X0] = '^'
+        info['mesas'].append((cx, cy))
     # rios de cinza: leitos escuros no meio dos campos
     for i, pts in enumerate([[(940, 735), (975, 728), (1010, 740), (1040, 735)], [(1060, 705), (1075, 722), (1100, 740)]]):
         m = faixa(pts, 3, ruido=1.5, semente=200 + i) & c & (G == 'a')
@@ -262,6 +277,7 @@ def construir():
         G[mm & np.isin(G, ['v', 'a', '#'])] = 'o'
         m = faixa(pts, larg, ruido=1.0, semente=220 + i) & m_for
         G[m & (G != 'V') & (G != 'H') & (G != 'E')] = 'l'
+    G[rim & (G != 'l') & (G != 'V') & (G != 'H')] = '#'     # a margem de obsidiana dos rios não pode furar a borda da cratera
     # ------------------------------------------------------------ Ilhota Fumegante (termal, só por cima)
     di = interior(m_ilhota, 30)
     G[m_ilhota] = '.'

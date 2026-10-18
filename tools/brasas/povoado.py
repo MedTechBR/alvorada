@@ -313,6 +313,9 @@ def farol(ctx, C):
         for _ in range(8):
             x, y = int(cx + (rr.u() - .5) * 2 * rx * .8), int(cy + (rr.u() - .5) * 2 * ry * .8)
             C.obj(rr.pick(['palmeira', 'driftwood', 'rock', 'coqueiro', 'barrel', 'boulder2']), x, y)
+    # boias do recife da Rota Marítima 19 (x 900 a 940)
+    for i, x in enumerate(range(900, 942, 6)):
+        C.obj('boia', x, 487 + (i % 2) * 3, forcar=True)
     # naufrágio
     C.obj('sucata', 938, 928, forcar=True, text='Restos de um casco partido, comido de sal. Não dá para saber de que barco era.')
     C.obj('driftwood', 944, 930, forcar=True); C.obj('barrel', 947, 931, forcar=True)

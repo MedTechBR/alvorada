@@ -266,6 +266,11 @@ def campos(ctx, C):
         C.obj('roundbush', x, y)
     for (x, y) in escolhe(C, G, c & (d_f >= 3), 4, 523, sep=10, chao=set('av')):
         C.obj('skull', x, y)
+    for (mx, my) in info['mesas']:
+        R['items'].append({'x': mx, 'y': my, 'item': Sorteio(mx * 3 + my).pick(['rareCandy', 'nugget', 'fullRestore', 'maxRevive']), 'hidden': True})
+        C.marca(mx - 6, my - 4, 13, 9)
+        R['objects'].append({'kind': 'lavaRock', 'x': mx - 2, 'y': my - 1})
+        R['objects'].append({'kind': 'obsidianRock', 'x': mx + 2, 'y': my})
     C.obj('sign', 992, 702, forcar=True, text='Campos de Cinza. O chão aqui respira: se subir, pode ser um Camerupt. Ande leve.')
     C.obj('sign', 1048, 768, forcar=True, text='Pé do Tição. A subida é ao norte da cratera, pelo paredão de cipós. Só para quem escala.')
     C.spot('brasas_campos_alfa', 1060, 735, 'down')
