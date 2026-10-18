@@ -373,3 +373,35 @@ body.touch #t-mais { display: flex; }
 body.touch:not(.mais-on) #t-swap, body.touch:not(.mais-on) #t-alt, body.touch:not(.mais-on) #t-jump { visibility: hidden; }
 body.touch.mais-on #t-mais { background: #ffd23f; }
 body.touch.hb-on #t-mais { right: 268px; bottom: 174px; }
+
+/* ---------- botões de toque num cacho só, no canto inferior direito (pedido do dono: menos espalhado) ----------
+   posições em px a partir do canto inferior direito do cacho; principais maiores, secundários (52 px, >= 44 px mesmo
+   com a escala de telas baixas) colados em volta, com folga uniforme. Explorando: Enviar no canto, Capturar e
+   Escolher dos lados, A na diagonal, ">>", Bola, "…" e montaria em volta. Com o Pokémon em campo: golpes em
+   losango, A, ">>", Bola e "…" nos cantos do losango; Trocar, Voar e Pular saem do "…". */
+body.touch #tbtns { width: 268px; height: 236px; right: calc(2.5vw + var(--sr)); bottom: calc(3vh + var(--sb)); }
+body.touch #tbtns .tb { transform: none; }
+body.touch #tbtns .tb.small, body.touch #t-mais, body.touch #t-mount, body.touch #t-alt, body.touch #t-jump, body.touch #t-power { width: 52px !important; height: 52px !important; }
+body.touch:not(.mode-pokemon) #tbtns .tb.move[data-slot="0"] { right: 0 !important; bottom: 0 !important; width: 84px !important; height: 84px !important; }
+body.touch:not(.mode-pokemon) #tbtns .tb.move[data-slot="1"] { right: 90px !important; bottom: 0 !important; width: 64px !important; height: 64px !important; }
+body.touch:not(.mode-pokemon) #tbtns .tb.move[data-slot="2"] { right: 0 !important; bottom: 90px !important; width: 64px !important; height: 64px !important; }
+body.touch:not(.mode-pokemon) #tbtns .tb.move[data-slot="3"] { right: 160px !important; bottom: 58px !important; width: 52px !important; height: 52px !important; font-size: 9px; }
+body.touch:not(.mode-pokemon) #t-act { right: 76px !important; bottom: 76px !important; }
+body.touch:not(.mode-pokemon) #t-dodge { right: 160px !important; bottom: 0 !important; }
+body.touch:not(.mode-pokemon) #t-mais { right: 0 !important; bottom: 160px !important; }
+body.touch:not(.mode-pokemon) #t-mount { right: 58px !important; bottom: 160px !important; }
+body.touch.mode-pokemon #tbtns .tb.move { width: 62px !important; height: 62px !important; }
+body.touch.mode-pokemon #tbtns .tb.move[data-slot="0"] { right: 68px !important; bottom: 136px !important; }
+body.touch.mode-pokemon #tbtns .tb.move[data-slot="1"] { right: 136px !important; bottom: 68px !important; }
+body.touch.mode-pokemon #tbtns .tb.move[data-slot="2"] { right: 0 !important; bottom: 68px !important; }
+body.touch.mode-pokemon #tbtns .tb.move[data-slot="3"] { right: 68px !important; bottom: 0 !important; }
+body.touch.mode-pokemon #t-act { right: 0 !important; bottom: 0 !important; }
+body.touch.mode-pokemon #t-dodge { right: 136px !important; bottom: 0 !important; }
+body.touch.mode-pokemon #t-ball { right: 0 !important; bottom: 136px !important; }
+body.touch.mode-pokemon #t-mais { right: 136px !important; bottom: 136px !important; }
+body.touch.mode-pokemon #t-swap { right: 200px !important; bottom: 0 !important; }
+body.touch.mode-pokemon #t-alt { right: 200px !important; bottom: 58px !important; }
+body.touch.mode-pokemon #t-jump { right: 200px !important; bottom: 116px !important; }
+body.touch.mode-pokemon #t-power { right: 200px !important; bottom: 174px !important; }
+/* zoom: no celular a pinça basta; os botões + e − aparecem com o "…" */
+body.touch:not(.mais-on) #zoom { display: none; }
