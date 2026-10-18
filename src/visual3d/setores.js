@@ -156,8 +156,9 @@ export class Setores {
     const arte = this.L.arteDoSetor(sx, sy); if (!arte) return;
     const tex = texDe(arte, true, true); tex.anisotropy = 4;
     const s = { sx, sy, arte, tex, grupo: new THREE.Group(), visto: this.v.t };
-    s.matChao = comNuvens(new THREE.MeshLambertMaterial({ map: tex, vertexColors: true, alphaTest: 0.5, side: THREE.DoubleSide }), this.v);
-    s.matChao.customProgramCacheKey = () => 'mt-chao';
+    const A = this.v.amb;
+    if (A) s.matChao = this.v.curvar(A.materialChao(sx, sy, { lados: THREE.DoubleSide })); // chão pintado da ambientação (não a arte 2D)
+    else { s.matChao = comNuvens(new THREE.MeshLambertMaterial({ map: tex, vertexColors: true, alphaTest: 0.5, side: THREE.DoubleSide }), this.v); s.matChao.customProgramCacheKey = () => 'mt-chao'; }
     s.matAgua = this.matAguaBase.clone();
     Object.assign(s.matAgua.uniforms, this.matAguaBase.uniforms, { chao: { value: tex } });
     this.grupo.add(s.grupo);
@@ -167,11 +168,24 @@ export class Setores {
   #refazer(s) {
     for (const m of [s.chao, s.agua, s.mato]) if (m) { s.grupo.remove(m); m.geometry.dispose(); }
     s.chao = s.agua = s.mato = null;
+    const A = this.v.amb, L = this.L, R = this.v.relevo;
+    if (A) {
+      if (s.grama) { s.grupo.remove(s.grama.grupo); s.grama.liberar(); }
+      if (s.arbustos) { s.grupo.remove(s.arbustos.grupo); s.arbustos.liberar(); }
+      const masc = s.matChao.userData.mascara; if (masc && s.feito) A.terreno.preencher(masc);
+      s.feito = true;
+      const alt = (px, pz) => R.em(px, pz);
+      s.grama = A.gramaDoSetor(s.sx, s.sy, { altura: alt, ocupado: (x, y) => L.ocupado(x, y) && !MATO_DE[L.bloco(x, y)] && MATO_DE[L.bloco(x, y)] !== 0, extra: (x, y) => (L.ocupado(x, y + 1) || L.ocupado(x - 1, y) || L.ocupado(x + 1, y)) ? 0.35 : 0 });
+      s.grupo.add(s.grama.grupo);
+      s.arbustos = A.arbustosDoSetor(s.sx, s.sy, { altura: alt, objetos: L.objetosDoSetor(s.sx, s.sy).filter((o) => o.kind === 'roundbush') });
+      s.grupo.add(s.arbustos.grupo);
+      for (const gr of [s.grama.grupo, s.arbustos.grupo]) gr.traverse((m) => { if (m.material) { this.v.curvar(m.material); m.frustumCulled = false; } });
+    }
     const g = this.#geometriaChao(s.sx, s.sy);
     s.chao = new THREE.Mesh(g, s.matChao); s.chao.receiveShadow = true; s.chao.castShadow = true; s.grupo.add(s.chao);
     const ga = this.#geometriaAgua(s.sx, s.sy);
     if (ga) { s.agua = new THREE.Mesh(ga, s.matAgua); s.agua.renderOrder = -1; s.grupo.add(s.agua); }
-    const gm = this.#geometriaMato(s);
+    const gm = A ? null : this.#geometriaMato(s);
     if (gm) { s.mato = new THREE.Mesh(gm, this.matMato); s.mato.receiveShadow = true; s.grupo.add(s.mato); }
     this.modelos.setor(s);
   }
@@ -179,7 +193,8 @@ export class Setores {
     this.v.scene.remove(s.grupo); this.grupo.remove(s.grupo);
     for (const m of [s.chao, s.agua, s.mato]) m?.geometry.dispose();
     this.modelos.liberar(s);
-    s.tex.dispose(); s.matChao.dispose(); s.matAgua.dispose();
+    if (this.v.amb) this.v.amb.liberarSetor(s.matChao, s.grama, s.arbustos); else s.matChao.dispose();
+    s.tex.dispose(); s.matAgua.dispose();
   }
 
   // ---------- alturas da superfície (com paredes) ----------
@@ -187,6 +202,7 @@ export class Setores {
   sup(x, y) {
     const R = this.v.relevo, L = this.L;
     const n = R.n(x, y), s = R.s(x, y), t = L.bloco(x, y), H = PAREDE[t];
+    if (AGUA[t]) { const f = t === TILE.DEEP ? 16 : 9; return [n - f, s - f, 4]; } // leito: a água fica por cima, com fundo de verdade
     if (!H) return [n, s, 0];
     const sala = y >= L.externoH;
     const sul = L.bloco(x, y + 1);
@@ -255,7 +271,7 @@ export class Setores {
       const x = ox + i, y = oy + j; if (x >= L.w || y >= L.h) continue;
       const t = L.bloco(x, y);
       if (!AGUA[t] && t !== TILE.TIDE && t !== TILE.SHALLOW && t !== TILE.REED) continue;
-      const h = Math.min(R.n(x, y), R.s(x, y)) - 2.5, n = pos.length / 3;
+      const h = Math.min(R.n(x, y), R.s(x, y)) - 2, n = pos.length / 3;
       const x0 = x * 16, z0 = y * 16;
       pos.push(x0, h, z0, x0 + 16, h, z0, x0, h, z0 + 16, x0 + 16, h, z0 + 16);
       uv.push(i / 16, j / 16, (i + 1) / 16, j / 16, i / 16, (j + 1) / 16, (i + 1) / 16, (j + 1) / 16);

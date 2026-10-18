@@ -6,6 +6,8 @@ import { Espelho } from './espelho.js';
 import { Sobreposicao } from './sobreposicao.js';
 import { Ceu } from './ceu.js';
 import { Pos } from './pos.js';
+import { Ambiente } from './ambiente/index.js';
+import { curvarMaterial } from './curva.js';
 import { IS_TOUCH } from '../engine/input.js';
 import { curvaY } from './curva.js';
 import { CameraDinamica } from './camera.js';
@@ -39,11 +41,17 @@ export class Visual3D {
     this.direita = new THREE.Vector3(1, 0, 0);
     this.dinamica = new CameraDinamica(this);
     this.u = { tempo: { value: 0 }, luzSprite: { value: new THREE.Color(1, 1, 1) }, curva: { value: 0.0011 }, alvoZ: { value: 0 } }; // uniformes compartilhados
+    // ambientação HD-2D (src/visual3d/ambiente): terreno pintado, grama, arbustos, céu, luz, pós, partículas.
+    // ?amb=0 volta à luz/pós antigos (ceu.js, pos.js) para comparar.
+    if (new URLSearchParams(location.search).get('amb') !== '0') {
+      try { this.amb = new Ambiente({ renderer: r, scene: this.scene, camera: this.camera, quality: g.quality, L: this.L }); }
+      catch (e) { console.error('[3D] ambientação falhou; seguindo sem ela', e); this.amb = null; }
+    }
     this.ceu = new Ceu(this);
     this.setores = new Setores(this);
     this.espelho = new Espelho(this);
     this.sobre = new Sobreposicao(this);
-    this.pos = new Pos(this);
+    this.pos = this.amb ? { u: this.amb.pos.u, tamanho: () => this.amb.tamanho(), render: (sc, cam) => this.amb.render(sc, cam), amb: true } : new Pos(this);
     this.t = 0;
     this.#tamanho();
     addEventListener('resize', () => this.#tamanho());
@@ -68,6 +76,8 @@ export class Visual3D {
   // distância da câmera: um bloco no foco tem na tela o mesmo tamanho que tem no 2D com esse zoom
   get distancia() { const z = Math.max(0.6, this.g.zoom || 3); return innerHeight / (2 * z * Math.tan(FOV * Math.PI / 360)) * 0.92; }
   altura(px, py) { return this.relevo.em(px, py); }
+  // aplica o mundo curvo uma vez em materiais que vieram de outros módulos (ambientação, kit)
+  curvar(m) { if (m && !m.userData.curvado) { m.userData.curvado = true; curvarMaterial(m, this); m.needsUpdate = true; } return m; }
 
   #camera() {
     const g = this.g, agora = performance.now(), dt = Math.min(0.1, (agora - (this.tCam ?? agora)) / 1000); this.tCam = agora;

@@ -3,6 +3,7 @@ import { SPR } from '../world/art.js';
 import { criarAtlas, AtlasDinamico } from './atlas.js';
 import { comNuvens } from './ceu.js';
 import { curvarMaterial } from './curva.js';
+import { kit } from './kit/index.js';
 
 // Modelos low-poly gerados por código, no estilo HD-2D do protótipo (blocos meio voxel, pixel art nas faces),
 // sem copiar modelo nenhum. Por setor, tudo o que é estático vira uma malha só (um draw call):
@@ -157,13 +158,15 @@ export class Modelos {
     const bt = new THREE.CanvasTexture(c); bt.colorSpace = THREE.SRGBColorSpace;
     this.matSombra = curvarMaterial(new THREE.MeshBasicMaterial({ map: bt, transparent: true, depthWrite: false, color: 0x1a2030 }), v);
     this.donos = new Set();
-    this.kit = null; // kit de modelos (ramo modelos3d): usarKit(kit) quando entrar
+    this.kit = new URLSearchParams(location.search).get('kit') === '0' ? null : kit; // kit de modelos (src/visual3d/kit); ?kit=0 usa os modelos daqui
+    if (this.kit) { this.matKit = v.curvar(kit.material()); }
   }
   usarKit(kit) { this.kit = kit; for (const s of this.v.setores?.mapa.values() ?? []) s.sujo = true;
   }
   #construtor(K, kind) {
-    if (!K || MECANICA(K)) return null;
+    if (!K) return null;
     if (this.kit?.temModelo?.(kind)) return 'kitModelo';
+    if (MECANICA(K)) return null;
     if (K.estilo?.tipo === 'casa') return 'casa';
     if (K.estilo?.tipo === 'salao') return 'salao';
     if (ehPinheiro(kind)) return 'pinheiro';
@@ -177,7 +180,7 @@ export class Modelos {
   setor(s) {
     this.liberar(s);
     const v = this.v, L = v.L, M = new Malha(this.at), F = new Malha(this.at), S = [];
-    s.objsModelo = new Set();
+    s.objsModelo = new Set(); this.itensKit = [];
     for (const o of L.objetosDoSetor(s.sx, s.sy)) {
       if (o.dead) continue;
       const K = L.catalogo(o.kind), tipo = this.#construtor(K, o.kind);
@@ -186,6 +189,7 @@ export class Modelos {
       try { this[tipo](M, F, S, o, K, h); } catch (e) { console.warn('[3D] modelo', o.kind, e); continue; }
       s.objsModelo.add(o); o.__pos3d = o.tx + ',' + o.ty;
     }
+    if (this.itensKit.length) { s.kitMesh = new THREE.Mesh(this.kit.mesclar(this.itensKit), this.matKit); s.kitMesh.castShadow = s.kitMesh.receiveShadow = true; s.grupo.add(s.kitMesh); }
     if (!M.vazio) { s.props = new THREE.Mesh(M.geometria(), this.mat); s.props.castShadow = s.props.receiveShadow = true; s.grupo.add(s.props); }
     if (!F.vazio) { s.fachadas = new THREE.Mesh(F.geometria(), this.matFach); s.fachadas.castShadow = s.fachadas.receiveShadow = true; s.grupo.add(s.fachadas); }
     if (S.length) {
@@ -195,15 +199,16 @@ export class Modelos {
       s.sombras = new THREE.Mesh(g, this.matSombra); s.sombras.renderOrder = 1; s.grupo.add(s.sombras);
     }
   }
-  liberar(s) { for (const k of ['props', 'fachadas', 'sombras']) if (s[k]) { s.grupo.remove(s[k]); s[k].geometry.dispose(); s[k] = null; } }
+  liberar(s) { for (const k of ['props', 'fachadas', 'sombras', 'kitMesh']) if (s[k]) { s.grupo.remove(s[k]); s[k].geometry.dispose(); s[k] = null; } }
   // sprites do Pixi que o espelho não deve desenhar (o objeto já tem modelo); objeto quebrado ou movido refaz o setor
   update() {
     const v = this.v, d = this.donos; d.clear();
     v.u.noite.value = Math.max(v.ceu.noite ?? 0, v.ceu.sala?.dark ? 0.6 : 0);
+    this.kit?.noite(v.u.noite.value);
     for (const s of v.setores.mapa.values()) {
       if (!s.objsModelo || !s.grupo.visible) continue;
       for (const o of s.objsModelo) {
-        if (o.dead || o.__pos3d !== o.tx + ',' + o.ty) { s.sujo = true; continue; }
+        if (o.dead || o.__pos3d !== o.tx + ',' + o.ty || (o.__chave3d && this.kit.chave(o.kind, o) !== o.__chave3d)) { s.sujo = true; continue; }
         if (o.sprite) d.add(o.sprite);
       }
     }
@@ -212,11 +217,13 @@ export class Modelos {
   // altura do topo de um modelo (telhado, copa) num ponto, para quem sobe nele (cenário vivo)
   topoEm(o) { return o?.__topo3d ?? null; }
 
+  // modelo do kit: origem no pé do objeto (o.x, chão, o.y), como o 2D
   kitModelo(M, F, S, o, K, h) {
     const r = this.kit.modelo(o.kind, o); if (!r?.geometry) throw new Error('kit sem geometria');
-    M.anexar(r.geometry, o.x, h, o.y - (K.fh ?? 1) * 8, 0);
-    o.__topo3d = r.topo != null ? h + r.topo : null;
-    S.push([o.x, o.y - (K.fh ?? 1) * 8 + 2, (K.fw ?? 1) * 10, (K.fh ?? 1) * 8 + 4, h + 0.3]);
+    this.itensKit.push({ geometry: r.geometry, x: o.x, y: h, z: o.y });
+    o.__chave3d = this.kit.dinamico(o.kind) ? this.kit.chave(o.kind, o) : null;
+    o.__topo3d = h + (r.topo?.y ?? r.altura ?? 0);
+    if (!this.v.amb) S.push([o.x, o.y - (K.fh ?? 1) * 8 + 2, (K.fw ?? 1) * 10, (K.fh ?? 1) * 8 + 4, h + 0.3]);
   }
 
   // =================== árvores ===================

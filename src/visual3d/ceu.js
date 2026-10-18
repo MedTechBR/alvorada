@@ -56,6 +56,8 @@ export function comNuvens(m, v, extra) {
 export class Ceu {
   constructor(v) {
     this.v = v;
+    this.noite = 0; this.noiteK = 0;
+    if (v.amb) { v.u.tNuvem = { value: texNuvens() }; v.u.forcaNuvem = { value: 0 }; return; } // a ambientação cuida do céu, da luz e das sombras
     const s = v.scene;
     this.fundo = new THREE.Color(0xbfe2f6);
     s.background = this.fundo;
@@ -74,6 +76,27 @@ export class Ceu {
     sh.camera.near = 10; sh.camera.far = 1600;
     this.sol.castShadow = true;
   }
+  // com a ambientação: ela faz o céu, a luz, as sombras e o pós; aqui só o que é do jogo
+  #comAmbiente(dt, room, h) {
+    const v = this.v, g = v.g, A = v.amb, vw = v.view;
+    const raio = vw ? Math.min(1100, Math.max(vw.x1 - vw.x0, vw.y1 - vw.y0) * 0.6) : 600;
+    const D = v.distancia;
+    // quem passa empurra a grama (até 8, os mais perto da câmera)
+    const at = this.atores ??= [];
+    at.length = 0;
+    const lista = [g.player, ...(g.entities ?? [])];
+    for (const e of lista) { if (!e || e.dead || at.length >= 8) continue; if (Math.abs(e.x - v.alvo.x) > raio || Math.abs(e.y - v.alvo.z) > raio) continue; at.push({ x: e.x, y: e.y, raio: Math.max(10, (e.r ?? 6) * 2.2), forca: 1 }); }
+    A.atores(at);
+    A.update(dt, { hora: room ? 12 : h, foco: v.alvo, raio, interior: !!room, nevoa: [D * 1.1, D * 3.4], zoom: g.zoom });
+    const ls = v.u.luzSprite.value;
+    ls.copy(A.luzP).multiplyScalar(1.05);
+    const m = Math.max(ls.r, ls.g, ls.b); if (m > 1.15) ls.multiplyScalar(1.15 / m);
+    if (room) ls.set(room.escuro ? 0.35 : room.dark ? 0.6 : 1, room.escuro ? 0.35 : room.dark ? 0.58 : 0.97, room.escuro ? 0.4 : room.dark ? 0.62 : 0.92);
+    this.noite = g.mundo?.nightness ?? 0;
+    this.noiteK = room ? 0 : this.noite;
+    this.fundo = this.fundo ?? new THREE.Color(0xbfe2f6);
+    if (A.ceu.uCeu?.horizonte) this.fundo.copy(A.ceu.uCeu.horizonte.value);
+  }
   // fatia do dia para a hora h
   #amostra(h) {
     let i = 0; while (i < DIA.length - 2 && DIA[i + 1][0] <= h) i++;
@@ -81,11 +104,12 @@ export class Ceu {
     const [c0, c1, c2, c3] = this.tmp;
     return { ceu: c0.copy(a[1]).lerp(b[1], k), sol: c1.copy(a[2]).lerp(b[2], k), iSol: lerp(a[3], b[3], k), hc: c2.copy(a[4]).lerp(b[4], k), hg: c3.copy(a[5]).lerp(b[5], k), iH: lerp(a[6], b[6], k) };
   }
-  update() {
+  update(dt = 0.016) {
     const v = this.v, g = v.g, p = g.player;
     const room = p ? g.map.interiorAt(p.x, p.y) : null;
     this.sala = room;
     const h = g.mundo?.hour ?? 12;
+    if (v.amb) return this.#comAmbiente(dt, room, h);
     let A = this.#amostra(h);
     if (room) {
       // dentro de casa: luz clara e quente, vinda da janela (frente-esquerda); gruta: escura
