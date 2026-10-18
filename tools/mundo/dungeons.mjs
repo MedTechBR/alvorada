@@ -47,12 +47,12 @@ export const DUNGEONS = [
   {
     id: 'caverna_gelo', nome: 'Caverna de Gelo Cristalino', regiao: 'geada', entrada: 'Geleira do Uivo (1000, 60)', acesso: 'Escalar (paredes de gelo da geleira)',
     andares: [
-      { id: 'caverna_gelo_1', nome: 'Saguão', mapa: ['###########', '#E.iiiii..#', '#..i#iii.T#', '#.iiiii#iS#', '###########'], enigma: 'gelo escorregadio: o jogador desliza até bater; pedras o servem de parada' },
+      { id: 'caverna_gelo_1', nome: 'Saguão', mapa: ['###########', '#E.iiiii..#', '#..i#iii.T#', '#.iiiii#iS#', '###########'], enigma: 'gelo escorregadio: o jogador desliza até bater; as pedras servem de parada' },
       { id: 'caverna_gelo_2', nome: 'Rio Congelado', mapa: ['############', '#S..iiix..T#', '#.oo.iiiii.#', '#..^..iix.S#', '############'],
         enigma: 'empurrar blocos de gelo no rio para fazer paradas; rachaduras x quebram depois de pisadas duas vezes e derrubam para o andar de baixo' },
       { id: 'caverna_gelo_3', nome: 'Coração Azul', mapa: ['##########', '#S*.ii.*T#', '#.*i##i*.#', '#..*B*...#', '##########'], enigma: 'espelhos de gelo refletem a luz da Vela Eterna para derreter a parede do altar' },
     ],
-    chefe: 'Alfa Avalugg (#713) no Rio Congelado; Glalie Alfa (#362) no Coração Azul. Pós-Liga: a Câmara do Zero Absoluto guarda Kyurem (#646).',
+    chefe: 'Alfa Avalugg (#713) no Rio Congelado; Glalie Alfa (#362) no Coração Azul. Atrás de uma parede de gelo grosso, a Câmara do Zero Absoluto guarda Kyurem (#646)',
     tesouros: ['Lasca de prisma (Pulseira Mega)', 'Fóssil Vela (Amaura)', 'Pedra de Gelo', 'Glalita', 'Abomasnita', 'Froslassita', 'MT Nevasca'],
   },
   {

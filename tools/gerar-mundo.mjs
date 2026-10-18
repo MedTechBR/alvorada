@@ -461,16 +461,53 @@ export function encontrosDaArea(id, noite = false) {
 `;
 
 // tabelas do .md
+const TIPO_PT = { normal: 'Normal', fire: 'Fogo', water: 'Água', grass: 'Planta', electric: 'Elétrico', ice: 'Gelo', fighting: 'Lutador', poison: 'Venenoso', ground: 'Terrestre', flying: 'Voador', psychic: 'Psíquico', bug: 'Inseto', rock: 'Pedra', ghost: 'Fantasma', dragon: 'Dragão', dark: 'Sombrio', steel: 'Aço', fairy: 'Fada' };
 const nomeMont = (l) => (l.length ? l.join(' + ') : 'a pé');
 const linhasNivel = PLANO.AREAS.filter((a) => a.selvagem !== false).map((a) => resumoArea(a)).sort((x, y) => x.custo - y.custo)
   .map((r) => `| ${r.nome} | ${PLANO.REGIOES.find((g) => g.id === r.regiao)?.nome ?? r.regiao} | ${r.bioma} | ${r.custo} | ${nomeMont(r.acesso)}${r.escondido ? ', escondido' : ''} | ${r.nivel[0]}–${r.nivel[1]} | ${r.equipe} |`);
 const mdNiveis = ['| Área | Região | Bioma | Custo | Acesso | Selvagens (nível) | Equipe recomendada |', '|---|---|---|---:|---|---|---:|', ...linhasNivel].join('\n');
 const mdGin = ['| # | Ginásio | Líder | Tipo | Custo | Acesso | Equipe do líder | Ás |', '|---:|---|---|---|---:|---|---|---:|',
-  ...ESCADA.map((g, i) => `| ${i + 1} | ${CIDADES.find((c) => c.id === g.cidade)?.nome} | ${g.lider} | ${g.tipo} | ${g.custo} | ${nomeMont(g.exige)} | ${g.equipe[0]}–${g.equipe[1]} | ${g.as} |`),
+  ...ESCADA.map((g, i) => `| ${i + 1} | ${CIDADES.find((c) => c.id === g.cidade)?.nome} | ${g.lider} | ${TIPO_PT[g.tipo]} | ${g.custo} | ${nomeMont(g.exige)} | ${g.equipe[0]}–${g.equipe[1]} | ${g.as} |`),
   `| — | Liga Alvorada (8 insígnias) | Elite | — | — | todas | ${NIVEL_LIGA.elite[0]}–${NIVEL_LIGA.elite[1]} | Campeã ${NIVEL_LIGA.campea[1]} |`].join('\n');
 const rebal = rebalancear.length ? ['| Área do mapa | Hoje (mapa) | Modelo |', '|---|---|---|', ...rebalancear.map((r) => `| ${r.id} | ${r.mapa.join('–')} | ${r.modelo.join('–')} |`)].join('\n') : 'Nenhuma.';
 const contagem = { selvagens: SELVAGEM.size, exclusivas: Object.keys(EXCLUSIVAS).filter((k) => /^\d+$/.test(k)).length, outro: LISTA.filter((e) => COMO.has(e.dex) && !SELVAGEM.has(e.dex)).length, sem: SEM.length };
 const mdCont = `- Espécies na lista nacional: **${LISTA.length}**; selvagens em pelo menos uma área: **${contagem.selvagens}**; exclusivas de uma área só: **${contagem.exclusivas}**; obtidas de outro jeito (evolução, presente, troca, fóssil, ovo, lendário, evento): **${contagem.outro}**; sem lugar: **${contagem.sem}**.\n- Formas regionais: **${Object.keys(FORMAS_OUT).length}** (sem lugar: ${FORMAS_SEM.length}); Mega: **${Object.keys(MEGA_OUT).length}** pedras; Gigantamax: **${Object.keys(GMAX_OUT).length}** formas em **${ESP.DYNAMAX.tocas.length}** tocas.\n- Áreas com selvagens: **${Object.keys(TABELAS).length}**; distâncias do núcleo: ${dist.fonte === 'mapa' ? 'medidas no mapa atual' : dist.fonte}.`;
+const nomeArea = (id) => AREA.get(id)?.nome ?? id;
+const nomeEsp = (k) => (/^\d+$/.test(String(k)) ? `${SP.get(+k).nome} (#${k})` : `${SP.get(FORMA.get(k)?.dex)?.nome ?? k} (${k})`);
+const mdRec = (r) => r.replace(/^item:/, 'item ').replace(/^mt:/, 'MT ').replace(/^dinheiro:/, '₽').replace(/^pokemon:/, 'Pokémon #').replace(/^pedra-mega:/, 'Mega Pedra ').replace(/^chave:/, 'item-chave ').replace(/^tutor:/, 'tutor ');
+const mdCidades = CIDADES.map((c) => {
+  const g = c.ginasio ? ` · Ginásio: **${c.ginasio.lider}** (${TIPO_PT[c.ginasio.tipo]}), Insígnia ${c.ginasio.insignia}, ${c.ginasio.local}` : '';
+  return [`#### ${c.nome}`, `Região: ${PLANO.REGIOES.find((r) => r.id === c.regiao)?.nome}${g}.`, '',
+    '**Prédios (todos com interior):**', ...c.predios.map((p) => `- ${p.nome}${p.existe ? ' *(já no mapa)*' : ''}: ${p.dentro}.`), '',
+    `**Moradores:** ${c.moradores.join('; ')}.`, '', '**Missões:**',
+    ...c.missoes.map((m) => `- **${m.nome}** \`${m.id}\` (${m.tipo}${m.depois ? `, depois de \`${m.depois}\`` : ''}): ${m.resumo} Recompensa: ${m.recompensa.map(mdRec).join(', ')}.`), ''].join('\n');
+}).join('\n');
+const mdDungeons = DUNGEONS.map((d) => {
+  const andares = d.andares.map((a) => {
+    const f = FAIXA.get(a.id);
+    return [`- **${a.nome}**${f ? ` (selvagens ${f[0]}–${f[1]})` : ''}: ${a.enigma ?? ''}`, ...(a.mapa ? ['', '  ```', ...a.mapa.map((l) => '  ' + l), '  ```'] : [])].join('\n');
+  }).join('\n');
+  const excl = d.andares.flatMap((a) => Object.entries(EXCLUSIVAS).filter(([, v]) => v === a.id).map(([k]) => nomeEsp(k)));
+  return [`#### ${d.nome}`, `Região: ${PLANO.REGIOES.find((r) => r.id === d.regiao)?.nome}. Entrada: ${d.entrada}. Acesso: ${d.acesso}.${d.estado ? ` Estado: ${d.estado}.` : ''}`, '', andares, '',
+    `**Chefe ou alfa:** ${d.chefe.replace(/\.$/, '')}.`, `**Tesouros:** ${d.tesouros.join(', ')}.`, excl.length ? `**Só aqui:** ${excl.join(', ')}.` : '', ''].join('\n');
+}).join('\n');
+const especiaisLinhas = [];
+for (const e of LISTA) {
+  const c = (COMO.get(e.dex) ?? []).filter((o) => ['lendario', 'evento', 'errante', 'ultrafera'].includes(o.como));
+  for (const o of c) especiaisLinhas.push(`| ${e.nome} (#${e.dex}) | ${o.como} | ${nomeArea(String(o.onde).split(' ')[0])}${String(o.onde).includes(' ') ? ' ' + String(o.onde).split(' ').slice(1).join(' ') : ''} | ${o.nivel ?? ''} | ${o.nota ?? ''} |`);
+}
+for (const [fid, F] of Object.entries(FORMAS_OUT)) for (const o of F.como) if (['errante', 'lendario'].includes(o.como)) especiaisLinhas.push(`| ${nomeEsp(fid)} | ${o.como} | ${nomeArea(o.onde)} | ${o.nivel ?? ''} | ${o.nota ?? ''} |`);
+const mdLendarios = ['| Espécie | Como | Onde | Nível | Nota |', '|---|---|---|---:|---|', ...especiaisLinhas].join('\n');
+const mdMega = [`Pulseira Mega: ${nomeArea(ESP.MEGA.pulseira.onde)}, ${ESP.MEGA.pulseira.como}.`, '',
+  '| Forma Mega | Pedra | Onde | Como |', '|---|---|---|---|',
+  ...Object.entries(MEGA_OUT).map(([k, m]) => `| ${k} | ${m.pedra} | ${nomeArea(m.onde.split(' ')[0])}${m.onde.includes(' ') ? ' ' + m.onde.split(' ').slice(1).join(' ') : ''} | ${m.como} |`), '',
+  `Bracelete Dynamax: ${nomeArea(ESP.DYNAMAX.bracelete.onde)}, ${ESP.DYNAMAX.bracelete.como}. ${ESP.DYNAMAX.regras}`, '',
+  '| Toca de Luz | Área | Gigantamax | Nota |', '|---|---|---|---|',
+  ...ESP.DYNAMAX.tocas.map((t) => `| ${t.id} | ${nomeArea(t.area)} | ${t.gmax.join(', ') || '(sorteio)'} | ${t.nota ?? ''} |`)].join('\n');
+const porRegiao = PLANO.REGIOES.map((r) => {
+  const ex = Object.entries(EXCLUSIVAS).filter(([, a]) => AREA.get(a)?.regiao === r.id).map(([k]) => nomeEsp(k));
+  return `- **${r.nome}** (${ex.length}): ${ex.join(', ')}.`;
+}).join('\n');
 const trocaBloco = (txt, nome, novo) => { const re = new RegExp(`(<!-- gerado:${nome} -->)[\\s\\S]*?(<!-- /gerado:${nome} -->)`); return re.test(txt) ? txt.replace(re, `$1\n${novo}\n$2`) : txt; };
 
 if (!SO_CONFERIR) {
@@ -492,6 +529,8 @@ ${Object.entries(BIOMAS_NOITE).map(([b, t]) => `  ${b}: ${tabJs(t)},`).join('\n'
   if (fs.existsSync(MD)) {
     let t = fs.readFileSync(MD, 'utf8');
     t = trocaBloco(t, 'niveis', mdNiveis); t = trocaBloco(t, 'ginasios', mdGin); t = trocaBloco(t, 'rebalancear', rebal); t = trocaBloco(t, 'contagem', mdCont);
+    t = trocaBloco(t, 'cidades', mdCidades); t = trocaBloco(t, 'dungeons', mdDungeons); t = trocaBloco(t, 'lendarios', mdLendarios); t = trocaBloco(t, 'mega', mdMega);
+    t = trocaBloco(t, 'exclusivas', porRegiao);
     fs.writeFileSync(MD, t);
   }
 }
