@@ -429,6 +429,7 @@ export class CenarioVivo {
     const s = this.#s(o, false); if (s && s.fase !== 'ok' && s.fase !== 'danificado') return false;
     if (this.g.map.interiorAt(o.x, o.y - 1)) return false;
     if (!e.isTrainer && !podeSubir(this.perfil(e), c.camada)) return false;
+    if (e.dmaxT > 0) return false; // Dynamax: gigante demais para subir em qualquer coisa
     const lot = o.fw * o.fh >= 6 ? 4 : 2; let n = 0; for (const q of this.#emCima(o)) if (q !== e) n++;
     return n < lot;
   }
@@ -756,12 +757,25 @@ export class CenarioVivo {
         if (e === g.lead && e.pouso.borda > 18 && g.input?.move && Math.hypot(g.input.move.x, g.input.move.y) > 0.5) { e.pouso.borda = 0; this.descer(e); }
       } else if (e.piso && !e.remote) e.piso = 0;
       if (e.quedaT > 0) e.quedaT -= dt;
+      if (e.dmaxT > 0 && e.alive) this.#pisoGigante(e, dt);
       if (e.cvSubir && !e.pouso) { const s = e.cvSubir; if (g.time > s.ate || e.ai?.state === 'aggro') e.cvSubir = null; else if (Math.hypot(e.x - e.ai.tx, e.y - e.ai.ty) < 10) { e.cvSubir = null; this.subir(e, s.o); } }
     }
     this.#treinador(dt);
     this.#selvagens(dt);
     this.#desenhaEscadas();
     this.#rede(dt);
+  }
+  // Dynamax: gigante não fica em cima de nada e quebra o que pisa (prédio só ganha marcas)
+  #pisoGigante(e, dt) {
+    if (e.pouso) this.derrubar(e);
+    if (e.remote || (e.cvPisa = (e.cvPisa ?? 0) - dt) > 0) return;
+    e.cvPisa = 0.25;
+    const m = this.g.map, R = Math.ceil((e.r ?? 10) / T), cx = Math.floor(e.x / T), cy = Math.floor(e.y / T), vistos = new Set();
+    for (let j = -R; j <= R; j++) for (let i = -R; i <= R; i++) {
+      const o = m.cellObj.get(cx + i + (cy + j) * m.w); if (!o || o.dead || vistos.has(o)) continue; vistos.add(o);
+      if (Math.hypot(o.x - e.x, o.y - 4 - e.y) > (e.r ?? 10) + 10) continue;
+      if (!this.g.mundo?.masmorra?.hitObject(o, { type: 'normal', cat: 'phys', power: 120 }, 2)) this.golpe(o, { type: 'normal', cat: 'phys', power: 120, name: 'Pisada' }, 2, e, { explosao: true });
+    }
   }
   // relógio do cenário + tudo o que está mudando (só os objetos mexidos)
   #tick(dt, forcado = null) {

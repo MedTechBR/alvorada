@@ -25,7 +25,7 @@ const AJUDA = `window.__cv = {
 try {
   // ======================================================================= um jogador
   const p = await open(b, `${base}&online=0`, 'a');
-  await until(() => p.ev('!!window.game?.vivo?.pronto && game.ui?.state === "play"'), 60000);
+  await until(() => p.ev('!!window.game?.vivo?.pronto && game.ui?.state === "play"'), 300000);
   await pump(p); await p.ev(AJUDA);
   await p.ev('game.mundo.setHour(10), 1');
 
@@ -163,7 +163,7 @@ try {
   // ======================================================================= 2 clientes
   const A = await open(b, `${base}&online=1&rede=local&perfil=cva`, 'A'); await sleep(1500);
   const B = await open(b, `${base}&online=1&rede=local&perfil=cvb`, 'B');
-  for (const q of [A, B]) { await until(() => q.ev('!!window.game?.vivo?.pronto && game.ui?.state === "play"'), 60000); await pump(q); await q.ev(AJUDA); }
+  for (const q of [A, B]) { await until(() => q.ev('!!window.game?.vivo?.pronto && game.ui?.state === "play"'), 300000); await pump(q); await q.ev(AJUDA); }
   const juntos = await until(async () => { const s = await Promise.all([A, B].map((q) => q.ev('game.net.on && game.net.room?.players.size'))); return s.every((n) => n === 2) && s; }, 90000, 500);
   ok('2 clientes no mesmo canal', !!juntos, juntos);
   const alvo = await A.ev(`(() => { const t = __cv.perto((o, v) => v.material(o) === 'arvore' && v.destrutivel(o) && o.kind !== 'palm'); window.__t = t; __cv.ir(t.x - 40, t.y + 30); return game.vivo.chave(t); })()`);

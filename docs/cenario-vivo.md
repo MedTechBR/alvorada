@@ -79,6 +79,8 @@ Quem sobe (`perfilEscalada(mon)`):
 - **escala** (montarias `escalar` de `montarias.js`, macacos, gatos, esquilos, lagartixas, aranhas, insetos ≤ 40 kg, ou Velocidade base ≥ 85 e ≤ 50 kg): rocha, copa e telhado;
 - **pula** (os outros abaixo de 100 kg): só rocha;
 - **pesado** (≥ 100 kg e não voa): nada.
+- **Dynamax** (`e.dmaxT > 0`, src/combat/poder.js): gigante, não sobe em nada; se estava em cima, cai; e o que ele pisa
+  leva golpe de explosão a cada 0,25 s (árvores caem, cercas e pedras quebram, prédio só ganha marcas).
 
 Controles do seu Pokémon: X perto do objeto = sobe (se a espécie consegue; senão aviso "Não consegue subir aí"/"Pesado demais");
 C em cima = desce; X em cima = pula ali mesmo; golpe corpo a corpo ou investida mirando fora do telhado = salta
