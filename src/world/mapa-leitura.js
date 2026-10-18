@@ -43,6 +43,11 @@ export class MapaLeitura {
   get h() { return this.map.h; }
   get externoH() { return this.map.outdoorH ?? this.map.h; }
   bloco(x, y) { return this.map.at(x, y); }
+  // o bloco como está agora, SEM mandar montar a região (para varreduras grandes, como o relevo)
+  blocoCru(x, y) { const m = this.map; return x < 0 || y < 0 || x >= m.w || y >= m.h ? TILE.CLIFF : m.tiles[x + y * m.w]; }
+  // regiões montadas sob demanda (motor do mapa): setor ainda por montar? quantas montagens já houve?
+  pendente(sx, sy) { const m = this.map; return !!(m.nPend && m.secPend?.[sx + sy * m.CW]); }
+  get montadas() { return this.map.montadas ?? 0; }
   ocupado(x, y) { return x >= 0 && y >= 0 && x < this.map.w && y < this.map.h && this.map.block[x + y * this.map.w] === 1; }
   get tiles() { return this.map.tiles; }
   catalogo(kind) { return KINDS[kind]; }

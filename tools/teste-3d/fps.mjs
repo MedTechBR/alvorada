@@ -11,7 +11,7 @@ try {
   if (mobile) await P.raw('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
   await until(() => P.ev('!!(window.game && game.ui && game.ui.state === "play")'), 90000, 300);
   await sleep(3000);
-  if (process.env.Q) { await P.ev(`game.quality.setMode('${process.env.Q}'), 1`); await sleep(2500); }
+  if (process.env.Q) { await P.ev(`game.quality.setMode('${process.env.Q}'), 1`); await sleep(7000); }
   await P.raw('Emulation.setCPUThrottlingRate', { rate: +lent });
   // anda em volta da vila e pela Rota 1 (posição mexida direto; a câmera e o mundo seguem)
   await P.ev(`(() => { const g = game, p = g.player, x0 = p.x, y0 = p.y; let t = 0;

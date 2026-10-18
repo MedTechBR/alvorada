@@ -41,7 +41,7 @@ export class Relevo {
     const x0 = Math.max(0, cx0 - MARGEM), y0 = Math.max(0, cy0 - MARGEM), x1 = Math.min(MW, cx0 + ZONA + MARGEM), y1 = Math.min(MH, cy0 + ZONA + MARGEM);
     const W = x1 - x0, H = y1 - y0, N = W * H;
     const tiles = new Uint8Array(N);
-    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) tiles[x + y * W] = L.bloco(x0 + x, y0 + y);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) tiles[x + y * W] = L.blocoCru(x0 + x, y0 + y);
     // 1) regiões: componentes ligados do chão que não é penhasco nem escada
     const comp = new Int32Array(N).fill(-1), size = [];
     const stack = new Int32Array(N);

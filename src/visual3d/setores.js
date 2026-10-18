@@ -130,7 +130,7 @@ export class Setores {
       for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) { const s = this.mapa.get(this.#k(Math.floor((x + i) / CH), Math.floor((y + j) / CH))); if (s) s.sujo = true; }
     }
     // setores que a câmera vê (pela pegada 3D, não pelo 2D)
-    const vw = v.view, quer = new Set();
+    const vw = v.view, quer = new Set(); let refeitos = 0;
     let falta = null, fd = Infinity;
     const ax = v.alvo.x / CPX, az = v.alvo.z / CPX;
     if (vw) {
@@ -142,12 +142,12 @@ export class Setores {
         const arte = L.arteDoSetor(sx, sy);
         if (s) {
           if (arte && s.arte !== arte) { if (s.tex === this.texVazia) s.tex = texDe(arte, true, true); else { s.tex.image = arte; s.tex.needsUpdate = true; } s.arte = arte; s.matAgua.uniforms.chao.value = s.tex; s.matAgua.uniforms.temChao.value = 1; }
-          if (s.sujo) { s.sujo = false; this.#refazer(s); }
+          if (s.sujo && refeitos < 2) { s.sujo = false; refeitos++; this.#refazer(s); }
           s.visto = v.t; s.grupo.visible = true;
           // nível de detalhe: grama só perto, arbustos um pouco mais longe
           if (s.grama) s.grama.grupo.visible = d < 1.7;
           if (s.arbustos) s.arbustos.grupo.visible = d < 2.4;
-        } else if (d < fd) { fd = d; falta = { cx: sx, cy: sy }; }
+        } else if (d < fd && !L.pendente(sx, sy)) { fd = d; falta = { cx: sx, cy: sy }; }
       }
     }
     // um setor novo por quadro (dois se nada estiver pronto ainda)

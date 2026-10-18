@@ -119,6 +119,8 @@ export class Visual3D {
   // chamado pela câmera do jogo no lugar de map.cullChunks
   cull() {
     if (this.L.versao !== this.versao) this.#novoMundo();
+    // região nova montada (motor do mapa): o relevo e os setores daquela parte são refeitos aos poucos
+    if (this.L.montadas !== this.montadas) { const prim = this.montadas == null; this.montadas = this.L.montadas; if (!prim) { this.relevo.limpar(); for (const s of this.setores.mapa.values()) s.sujo = true; } }
     this.#camera();
     const v = this.pegada(this.focoH, 1.08);
     v.y1 += 48; v.y0 -= 64; // objetos altos ao norte e ao sul da tela
