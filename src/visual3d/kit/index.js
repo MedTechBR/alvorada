@@ -3,7 +3,7 @@ import { Malha, mesclar, criarMaterial, EY } from './construtor.js';
 import { NATUREZA } from './natureza.js';
 import { OBJETOS } from './objetos.js';
 import { PREDIOS } from './predios.js';
-import { INTERIOR } from './interior.js';
+import { INTERIOR, paredeInterior } from './interior.js';
 
 // Kit de modelos 3D low-poly (HD-2D) gerados por código. Interface em docs/visual-3d-kit.md.
 //
@@ -60,6 +60,7 @@ export const kit = {
     return r;
   },
   mesclar,
+  parede: paredeInterior, // paredeInterior(w, h, { papel, rodape, faixa, meia }) -> geometria (não cacheada)
   material() { return (mat ??= criarMaterial(uNoite)); },
   noite(v) { uNoite.value = v; },
   uNoite,
