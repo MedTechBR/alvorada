@@ -28,7 +28,7 @@ const CENAS = {
     g.unlockMount('mergulhar', { silent: true }); if (best) { g.player.x = best.x * 16 + 8; g.player.y = best.y * 16 + 8; g.cam.x = g.player.x; g.cam.y = g.player.y; } await new Promise((r) => setTimeout(r, 500)); await g.mount.call('mergulhar'); await new Promise((r) => setTimeout(r, 900)); g.mount.dive?.();`,
   objetos: `const want = ['strengthRock', 'chest', 'stoneDoor', 'barsGate', 'lever', 'iceBlock']; const o = g.map.objects.find((q) => want.includes(q.kind));
     if (o) { g.player.x = o.x + 24; g.player.y = o.y + 20; g.cam.x = g.player.x; g.cam.y = g.player.y; }`,
-  toca: `const t = g.tocas?.lista?.[0] ?? g.tocas?.tocas?.[0]; if (t) { g.player.x = (t.x ?? t.tx * 16) + 30; g.player.y = (t.y ?? t.ty * 16) + 30; g.cam.x = g.player.x; g.cam.y = g.player.y; }`,
+  toca: `const T = g.tocas; const t = T?.list?.find((q) => T.ativa?.(q)) ?? T?.list?.[0]; if (t) { T.ativa = () => true; g.player.x = t.px + 40; g.player.y = t.py + 60; g.cam.x = g.player.x; g.cam.y = g.player.y; }`,
 };
 const b = await launch();
 try {

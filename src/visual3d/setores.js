@@ -131,6 +131,8 @@ export class Setores {
     }
     // setores que a câmera vê (pela pegada 3D, não pelo 2D)
     const vw = v.view, quer = new Set(); let refeitos = 0;
+    // nível de detalhe da grama (em setores): menor no celular e na qualidade baixa
+    this.lodGrama = v.g.quality?.low ? 1.1 : v.touch ? 1.35 : 1.8;
     let falta = null, fd = Infinity;
     const ax = v.alvo.x / CPX, az = v.alvo.z / CPX;
     if (vw) {
@@ -145,8 +147,8 @@ export class Setores {
           if (s.sujo && refeitos < 2) { s.sujo = false; refeitos++; this.#refazer(s); }
           s.visto = v.t; s.grupo.visible = true;
           // nível de detalhe: grama só perto, arbustos um pouco mais longe
-          if (s.grama) s.grama.grupo.visible = d < 1.7;
-          if (s.arbustos) s.arbustos.grupo.visible = d < 2.4;
+          if (s.grama) s.grama.grupo.visible = d < this.lodGrama;
+          if (s.arbustos) s.arbustos.grupo.visible = d < this.lodGrama + 0.8;
         } else if (d < fd && !L.pendente(sx, sy)) { fd = d; falta = { cx: sx, cy: sy }; }
       }
     }

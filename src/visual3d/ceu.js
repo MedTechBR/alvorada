@@ -85,7 +85,7 @@ export class Ceu {
   // com a ambientação: ela faz o céu, a luz, as sombras e o pós; aqui só o que é do jogo
   #comAmbiente(dt, room, h) {
     const v = this.v, g = v.g, A = v.amb, vw = v.view;
-    const raio = Math.min(room ? 420 : 560, vw ? Math.max(vw.x1 - vw.x0, vw.y1 - vw.y0) * 0.6 : 560); // sombra do sol só perto (longe a névoa e o tilt-shift escondem)
+    const raio = Math.min(room ? 420 : v.touch ? 420 : 560, vw ? Math.max(vw.x1 - vw.x0, vw.y1 - vw.y0) * 0.6 : 560); // sombra do sol só perto (longe a névoa e o tilt-shift escondem)
     const D = v.distancia;
     // quem passa empurra a grama (até 8, os mais perto da câmera)
     const at = this.atores ??= [];
