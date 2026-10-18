@@ -46,6 +46,8 @@ const HP_MADEIRA = { fence: 3, fenceV: 3, wfence: 3, wfenceV: 3, cercaVara: 2, s
 const PROTEGIDOS = new Set(['templo', 'caverna', 'ruina', 'mina', 'cristal']);
 const FORTE_ROCHA = new Set(['fighting', 'ground', 'steel', 'rock', 'water']);
 const FORTE_ARVORE = new Set(['fighting', 'steel', 'bug', 'rock', 'dragon', 'grass']);
+// mudanças que vão para a rede (as que dependem só do relógio, como toco, broto e conserto, cada um faz sozinho)
+const ENVIA = new Set(['dano', 'caindo', 'quebrou', 'cipo', 'queima', 'apagou']);
 const ORDEM = { ok: 0, danificado: 1, caindo: 2, caido: 3, toco: 4, broto: 5, quebrado: 6 };
 // Pokémon que se escondem nas árvores (como em Arceus) e o peso de cada um; só os que têm sprite baixado aparecem
 const DA_ARVORE = [[190, 8], [204, 6], [165, 5], [167, 4], [10, 6], [13, 6], [16, 5], [412, 3], [415, 3], [396, 4], [287, 3], [819, 4], [731, 4], [214, 1], [127, 1], [163, 3]];
@@ -96,13 +98,15 @@ export class CenarioVivo {
       consertando: !!s.pedreiro,
     };
   }
+  // caído, toco, broto ou quebrado (o desenho é do cenário vivo)
+  mexido(o) { const s = this.est.get(o.cvk ?? this.chave(o)); return !!s && s.fase !== 'ok' && s.fase !== 'danificado'; }
   mexidos() { return [...this.est.values()].map((s) => ({ o: s.o, ...this.estado(s.o) })); }
   camada(o) { const c = this.#camada(o); return c ? { ...c, nome: CAMADA_NOME[c.camada] } : null; }
   altura(e) { const p = e?.pouso; return { z: e?.z ?? 0, piso: e?.piso ?? 0, camada: p ? p.camada : CAMADA.CHAO, nome: CAMADA_NOME[p ? p.camada : 0], pouso: p?.k ?? null, saltando: !!e?.saltando }; }
   temporarios() { const out = []; for (const t of this.tiles.values()) out.push({ tipo: t.tipo, tx: t.tx, ty: t.ty, orig: t.orig, novo: t.novo, resta: Math.max(0, t.ate - this.horas) }); for (const f of this.fendas) out.push({ tipo: 'fenda', x: f.x, y: f.y, ang: f.ang, len: f.len, resta: Math.max(0, f.ate - this.horas) }); return out; }
   perfil(e) { return e?.isTrainer ? null : (e.cvPerfil ??= perfilEscalada(e.mon)); }
   // testes: adianta o relógio do cenário (horas do jogo)
-  passar(h) { this.horas += h; this.#tick(0, true); }
+  passar(h) { this.#tick(0, h); }
 
   // ======================================================================== início preguiçoso
   #iniciar() {
@@ -189,9 +193,9 @@ export class CenarioVivo {
     if (by?.remote) return true; // golpe repetido de outro jogador: só o desenho; o estado vem da rede (quem causou manda)
     if (dano <= 0 && !(fogo && (mat === 'arvore' || mat === 'predio'))) return true;
     const s = this.#s(o);
-    s.ultimo = this.horas; s.dir = by ? (o.x >= by.x ? 1 : -1) : s.dir ?? (Math.random() < 0.5 ? -1 : 1);
-    if (fogo && (mat === 'arvore' || mat === 'predio')) { s.queima = Math.max(s.queima ?? 0, mat === 'predio' ? 5 : 7 * P); s.queimado = true; }
-    if (mat === 'predio') { s.dano = Math.min(100, s.dano + dano); s.hp = 100 - s.dano; this.#mudou(s, 'dano'); return true; }
+    s.rede = false; s.ultimo = this.horas; s.dir = by ? (o.x >= by.x ? 1 : -1) : s.dir ?? (Math.random() < 0.5 ? -1 : 1);
+    if (fogo && (mat === 'arvore' || mat === 'predio')) { s.queima = Math.max(s.queima ?? 0, mat === 'predio' ? 5 : 7 * P); s.queimado = true; s.qRede = false; }
+    if (mat === 'predio') { s.dano = Math.min(100, s.dano + dano); s.hp = 100 - s.dano; s.fase = 'danificado'; this.#mudou(s, 'dano'); return true; }
     s.hp = Math.max(0, s.hp - dano);
     if (mat === 'arvore' && cat === 'phys' && dano >= 1) this.#sacudir(s, P, by);
     if (s.hp <= 0) this.#quebrar(s, tipo);
@@ -741,7 +745,7 @@ export class CenarioVivo {
     if (!this.pronto && !this.#iniciar()) return;
     const g = this.g;
     if (g.flags !== this.flagsRef) this.#aplicarSave();
-    this.#tick(dt, false);
+    this.#tick(dt);
     // saltos e alturas
     for (const e of g.entities) {
       if (e.saltando) { this.#passoSalto(e, dt); continue; }
@@ -760,9 +764,9 @@ export class CenarioVivo {
     this.#rede(dt);
   }
   // relógio do cenário + tudo o que está mudando (só os objetos mexidos)
-  #tick(dt, salto) {
+  #tick(dt, forcado = null) {
     const g = this.g, fx = g.fx, life = g.mundo;
-    const dh = salto ? 0 : dt * 24 / (life?.daySeconds ?? 1200);
+    const dh = forcado ?? dt * 24 / (life?.daySeconds ?? 1200);
     this.horas += dh; this.st.h = this.horas;
     const noite = life?.isNight?.() ?? false;
     // tremidas
@@ -780,12 +784,12 @@ export class CenarioVivo {
         if (vis && Math.random() < dt * 5) fx.emit(o.x, o.y - hy - 10, { tex: 'smoke', n: 1, speed: 8, life: 1.6, scale: 0.8, end: 2.2, vz: 30, alpha: 0.4, add: false, color: 0x4a4a4a });
         if (vis && Math.random() < dt * 5) fx.light(o.x, o.y - hy, 0xff7a2a, 22, 0.15, 0.5);
         s.qt = (s.qt ?? 0) - dt;
-        if (s.qt <= 0 && !s.remoto) {
+        if (s.qt <= 0 && !s.qRede) { // o fogo que veio da rede só aparece: quem acendeu é quem conta o dano
           s.qt = 1.1;
           if (s.mat === 'arvore' && (s.fase === 'ok' || s.fase === 'danificado')) { s.hp -= 1; s.ultimo = this.horas; if (s.hp <= 0) { s.queima = 0; this.#quebrar(s, 'fire'); } else this.#mudou(s, 'queima'); }
           else if (s.mat === 'predio') { s.dano = Math.min(100, s.dano + 3); s.hp = 100 - s.dano; s.ultimo = this.horas; this.#mudou(s, 'queima'); }
           // o fogo pula para a árvore do lado
-          if (s.mat === 'arvore' && Math.random() < 0.18) for (const q of this.#vizinhos(o, 40)) if (this.material(q) === 'arvore' && this.destrutivel(q) && !(this.#s(q, false)?.queima > 0)) { const t = this.#s(q); t.queima = 6; t.queimado = true; t.ultimo = this.horas; this.#mudou(t, 'queima'); break; }
+          if (s.mat === 'arvore' && Math.random() < 0.18) for (const q of this.#vizinhos(o, 40)) if (this.material(q) === 'arvore' && this.destrutivel(q) && !(this.#s(q, false)?.queima > 0)) { const t = this.#s(q); t.queima = 6; t.queimado = true; t.qRede = false; t.ultimo = this.horas; if (t.fase === 'ok') t.fase = 'danificado'; this.#mudou(t, 'queima'); break; }
         }
         if (s.queima <= 0) { s.queima = 0; if (s.mat === 'arvore' && (s.fase === 'ok' || s.fase === 'danificado')) s.ate = Math.max(s.ate ?? 0, this.horas + H_COPA); this.#mudou(s, 'apagou'); }
       }
@@ -805,7 +809,7 @@ export class CenarioVivo {
             fx.emit(o.x + s.dir * len * 0.7, o.y - 10, { tex: s.carbonizada ? 'ember' : 'leaf', n: 14, speed: 70, life: 1.2, grav: 150, vz: 60, add: !!s.carbonizada, spin: 10 });
             fx.kick(0.3, 0.06); g.combat?.sfx('thud'); g.combat?.ai?.noise(o.x, o.y, 200, null);
             this.#esmagar(s, len);
-            if (!s.remoto && !s.carbonizada) { if (!s.frutas) { s.frutas = true; if (o.berry || Math.random() < 0.5) this.#fruta(o, o.berry ? 2 : 1); } if (!s.revistada && Math.random() < 0.25) { s.revistada = true; this.#escondido(o).catch(() => {}); } }
+            if (!s.rede && !s.carbonizada) { if (!s.frutas) { s.frutas = true; if (o.berry || Math.random() < 0.5) this.#fruta(o, o.berry ? 2 : 1); } if (!s.revistada && Math.random() < 0.25) { s.revistada = true; this.#escondido(o).catch(() => {}); } }
             this.#mudou(s, 'caiu');
           }
           break;
@@ -845,7 +849,7 @@ export class CenarioVivo {
   #vizinhos(o, r) { const m = this.g.map, out = new Set(), cx = o.tx, cy = o.ty, R = Math.ceil(r / T) + 1; for (let j = -R; j <= R; j++) for (let i = -R; i <= o.fw + R; i++) { const q = m.cellObj.get(cx + i + (cy + j) * m.w); if (q && q !== o && !q.dead && Math.hypot(q.x - o.x, q.y - o.y) < r + 8) out.add(q); } return out; }
   // a árvore caindo acerta quem estiver embaixo
   #esmagar(s, len) {
-    const g = this.g, o = s.o; if (s.remoto || !g.combat) return;
+    const g = this.g, o = s.o; if (s.rede || !g.combat) return; // quem derrubou é quem calcula o dano
     for (const e of g.entities) {
       if (!e.alive || e.remote || e.pouso) continue;
       const along = (e.x - o.x) * s.dir, lat = Math.abs(e.y - o.y);
@@ -856,7 +860,7 @@ export class CenarioVivo {
     this.est.delete(s.k); delete this.st.o[s.k];
     const o = s.o; if (o.sprite && !o.dead) this.#visualOk(o, o.sprite);
     s.marcas?.destroy({ children: true }); s.marcas = null; this.#tirarPedreiro(s);
-    s.fase = 'ok'; s.v = ++this.v; if (!s.remoto) this.#fila('o', s, true);
+    s.fase = 'ok'; s.v = ++this.v;
     this.emit('objeto', { o, estado: null, motivo });
   }
 
@@ -874,7 +878,7 @@ export class CenarioVivo {
     if (consertando && !s.remoto) {
       s.dano = Math.max(0, s.dano - (noite ? CONSERTO_NOITE : CONSERTO_H) * dh); s.hp = 100 - s.dano;
       if (s.dano < 20) s.queimado = false;
-      s.mt = (s.mt ?? 0) - dt; if (s.mt <= 0) { s.mt = 2; this.st.o[s.k] = this.#salvo(s); this.#fila('o', s); }
+      s.mt = (s.mt ?? 0) - dt; if (s.mt <= 0) { s.mt = 2; this.st.o[s.k] = this.#salvo(s); }
       if (s.dano <= 0 && !cipo) { if (vis) g.toast('O prédio foi consertado.'); this.#apagar(s, 'conserto'); return; }
     }
     if (consertando && vis && s.dano > 0) this.#pedreiro(s, dt); else this.#tirarPedreiro(s);
@@ -957,7 +961,7 @@ export class CenarioVivo {
     s.v = ++this.v;
     if (s.o.sprite && s.fase !== 'caindo') this.#visual(s.o, s.o.sprite);
     if (s.mat === 'predio' || ['arvore', 'rochedo', 'pedra', 'madeira'].includes(s.mat)) this.st.o[s.k] = this.#salvo(s);
-    if (!s.remoto) this.#fila('o', s);
+    if (!s.remoto && ENVIA.has(motivo)) this.#fila('o', s);
     s.remoto = false;
     this.emit('objeto', { o: s.o, estado: this.estado(s.o), motivo });
   }
@@ -985,8 +989,12 @@ export class CenarioVivo {
     if (d.r != null) s.ate = this.horas + d.r;
     let f = d.f;
     if (doSave && f === 'caindo') f = 'toco'; if (doSave && f === 'caido') f = 'toco';
-    if (f === 'quebrado' && !o.dead) { this.#esconder(o); for (const e of this.#emCima(o)) this.derrubar(e, o); }
-    if (f === 'caindo' && antes !== 'caindo' && ORDEM[antes] < ORDEM.caindo) { s.t = 0; for (const e of this.#emCima(o)) this.derrubar(e, o); }
+    if (f === 'quebrado' && !o.dead) {
+      this.#esconder(o); for (const e of this.#emCima(o)) this.derrubar(e, o);
+      if (!doSave) { const pedra = mat === 'rochedo' || mat === 'pedra'; this.g.fx.emit(o.x, o.y - 6, { tex: pedra ? 'rock0' : 'clip', n: 10, speed: 90, life: 0.9, grav: 400, vz: 110, add: false, spin: 12, color: mat === 'madeira' ? 0xa87a4a : undefined }); this.g.fx.emit(o.x, o.y - 4, { tex: 'dust', n: 5, speed: 40, life: 0.8, scale: 0.8, end: 2, add: false, alpha: 0.7 }); }
+    }
+    if (f === 'caindo' && antes !== 'caindo' && ORDEM[antes] < ORDEM.caindo) { s.t = 0; s.rede = !doSave; for (const e of this.#emCima(o)) this.derrubar(e, o); }
+    if (f === 'caido' && antes === 'caindo' && !doSave) f = 'caindo'; // a queda daqui ainda está animando: termina sozinha
     if (f === 'caido' && ORDEM[antes] < ORDEM.caindo) s.ang = s.dir * Math.PI / 2;
     if (f === 'caido') s.ate1 = this.horas + H_TRONCO;
     s.fase = f;
@@ -1034,7 +1042,7 @@ export class CenarioVivo {
         const s = this.est.get(x.k), cur = s?.v ?? 0;
         if (v < cur || (v === cur && String(from) <= self)) continue;
         this.#aplicar(o, { f: x.f, n: fin(x.n) ? clamp(x.n, 0, 100) : null, r, q: (x.q | 0) & 3, d: x.d === -1 ? -1 : 1 });
-        const ns = this.est.get(x.k); if (ns) { ns.v = v; if (x.q & 4) ns.queima = Math.max(ns.queima ?? 0, 4); }
+        const ns = this.est.get(x.k); if (ns) { ns.v = v; if (x.q & 4 && !(ns.queima > 0)) { ns.queima = 4; ns.qRede = true; } else if (!(x.q & 4) && ns.qRede) ns.queima = 0; }
       } else if (Array.isArray(x.t) && x.t.length === 2 && x.t.every(Number.isInteger)) {
         const [tx, ty] = x.t; if (tx < 0 || ty < 0 || tx >= m.w || ty >= m.h || !Number.isInteger(x.a) || !Number.isInteger(x.b) || !(x.tp in H_TILE)) continue;
         if (m.interiorAt(tx * T, ty * T)) continue;

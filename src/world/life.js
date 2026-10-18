@@ -237,7 +237,7 @@ export class WorldLife {
     const ax = p.x + f[0] * 14, ay = p.y - 4 + f[1] * 14;
     let best = null, bd = 22;
     for (const c of this.map.visible) for (const o of c.objs) {
-      if (o.dead || !(o.text || o.berry || o.kind === 'pc')) continue;
+      if (o.dead || !(o.text || o.berry || o.kind === 'pc') || o.berry && this.g.vivo?.mexido(o)) continue; // árvore caída/toco (src/world/vivo.js) não dá fruta
       const d = Math.hypot(o.x - ax, o.y - 8 - ay); if (d < bd + (o.berry ? 10 : 0)) { bd = d; best = o; }
     }
     const who = this.people.nearest(p.x, p.y, p.dir);
@@ -277,7 +277,7 @@ export class WorldLife {
   // árvores colhidas ficam sem fruta por 6 horas do jogo
   #berries() {
     for (const c of this.map.visible) for (const o of c.objs) {
-      if (!o.berry || !o.sprite) continue;
+      if (!o.berry || !o.sprite || this.g.vivo?.mexido(o)) continue; // o cenário vivo está desenhando (caída, toco, broto)
       const last = this.picked.get(`${o.tx},${o.ty}`);
       const empty = last !== undefined && this.totalHours - last < 6;
       o.sprite.texture = empty ? SPR.bigtree : SPR[o.kind];
