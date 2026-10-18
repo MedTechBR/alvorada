@@ -36,7 +36,7 @@ function textura(rel, { flipY = true } = {}) {
 const DIRS = ['down', 'up', 'left', 'right'];
 
 export async function carregarHGSS() {
-  const [tex, pers, pok, lista] = await Promise.all([json('texturas/indice.json'), json('personagens/indice.json'), json('pokemon/indice.json'), json('modelos/_lista.json').catch(() => [])]);
+  const [tex, pers, pok, lista] = await Promise.all([json('texturas/indice.json'), json('personagens/indice.json'), json('pokemon/indice.json').catch(() => ({ sprites: {} })), json('modelos/_lista.json').catch(() => [])]);
   const atlas = textura('texturas/atlas.png');
   const porNome = (n) => { const e = tex.tex[n]; if (!e) throw new Error('textura HGSS desconhecida: ' + n); return e; };
   const tipoDe = (t) => tex.tipos[typeof t === 'number' ? Object.keys(tex.tipos).find((k) => tex.tipos[k].id === t) : String(t).toLowerCase()];
@@ -59,7 +59,7 @@ export async function carregarHGSS() {
   const cacheP = new Map();
   function sheetPers(id) {
     if (!pers.personagens[id]) throw new Error('personagem HGSS desconhecido: ' + id);
-    if (!cacheP.has(id)) cacheP.set(id, textura('personagens/' + id + '.webp', { flipY: false }));
+    if (!cacheP.has(id)) cacheP.set(id, textura('personagens/' + id + '.webp'));
     return cacheP.get(id);
   }
   // look do jogo (string do mapa, ou objeto {sexo|gender, ...}) -> id do sprite
@@ -106,7 +106,7 @@ export async function carregarHGSS() {
     if (!s) return null;
     const pasta = (e[lado] ? lado : (lado === 'f' ? 'b' : 'f')) === 'f' ? 'frente' : 'costas';
     const k = pasta + ch;
-    if (!cacheK.has(k)) cacheK.set(k, textura('pokemon/' + pasta + '/' + ch + '.webp', { flipY: false }));
+    if (!cacheK.has(k)) cacheK.set(k, textura('pokemon/' + pasta + '/' + ch + '.webp'));
     const base = cacheK.get(k);
     const dur = Array.isArray(s.d) ? s.d : Array(s.n).fill(s.d);
     const total = dur.reduce((a, b) => a + b, 0);

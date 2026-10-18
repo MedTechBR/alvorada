@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Vitrine HGSS</title>
+<style>body{margin:0;background:#233;color:#fff;font:12px system-ui}canvas{display:block}#t{position:absolute;left:8px;top:4px;opacity:.8}</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
+</head><body><div id="t"></div>
+<script type="module">
+import * as THREE from 'three';
+import { carregarHGSS } from '../src/visual3d/hgss/carregar.js';
+// Vitrine dos assets HGSS: ?parte=personagens|texturas|pokemon|modelos  (padrão: tudo em abas empilhadas)
+const parte = new URLSearchParams(location.search).get('parte') || 'tudo';
+const H = await carregarHGSS();
+window.H = H;
+const W = 1280, HH = 720;
+const renderer = new THREE.WebGLRenderer({ antialias: false, preserveDrawingBuffer: true });
+renderer.setSize(W, HH); document.body.appendChild(renderer.domElement);
+renderer.setClearColor(0x3b6b55);
+const cam = new THREE.OrthographicCamera(0, W, HH, 0, -100, 100); // pixels, origem em cima-esquerda
+const scene = new THREE.Scene();
+const vivos = [];
+const planos = [];
+function sprite(tex, x, y, w, h, alpha = true) {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: tex, transparent: alpha, alphaTest: 0.05 }));
+  m.position.set(x + w / 2, HH - (y + h / 2), 0); scene.add(m); return m;
+}
+function rotulo(txt, x, y) {
+  const c = document.createElement('canvas'); c.width = 200; c.height = 14; const g = c.getContext('2d'); g.font = '10px sans-serif'; g.fillStyle = '#fff'; g.fillText(txt, 1, 10);
+  const t = new THREE.CanvasTexture(c); t.magFilter = THREE.NearestFilter; sprite(t, x, y, 200, 14);
+}
+const out = { erros: [] };
+if (parte === 'personagens' || parte === 'tudo') {
+  // jogador e elenco: andando nas 4 direções
+  const looks = ['menino', 'menina', 'professor', 'mae', 'rival', 'treinador', 'treinadora', 'montanhista', 'nurse', 'leader', 'bugcatcher', 'youngster',
+    'brendan', 'may', 'ethan', 'lyra', 'cientista', 'pescador', 'policial', 'esquiador'];
+  looks.forEach((lk, i) => {
+    const a = H.personagem(lk);
+    ['down', 'up', 'left', 'right'].forEach((d, j) => {
+      const s = sprite(a.textura.clone ? a.textura : a.textura, 20 + i * 62 + 0, 40 + j * 70, 64, 64);
+      // cada direção precisa da sua textura: clona o ator por direção
+      const b = H.personagem(lk);
+      s.material.map = b.textura; s.material.needsUpdate = true;
+      vivos.push((t) => b.quadro(d, true, t));
+    });
+    rotulo(lk, 20 + i * 62, 24 + (i % 2) * 0);
+  });
+  // todos os 307 em miniatura parados
+  const ids = Object.keys(H.personagens.personagens);
+  ids.forEach((id, i) => {
+    const b = H.personagem(id); b.quadro('down', false, 0);
+    sprite(b.textura, 10 + (i % 38) * 33, 340 + Math.floor(i / 38) * 34, 32, 32);
+  });
+}
+function loop() {
+  const t = performance.now() / 1000;
+  vivos.forEach((f) => f(t));
+  renderer.render(scene, cam); requestAnimationFrame(loop);
+}
+loop();
+window.pronto = true;
+window.out = out;
+</script></body></html>
