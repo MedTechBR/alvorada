@@ -4,7 +4,7 @@ import { WATER_FRAMES, TALL, CORN } from '../world/art.js';
 import { TALL_SNOW, TALL_DRY, TALL_REED } from '../world/arte-biomas.js';
 import { PAREDE } from './relevo.js';
 import { Modelos } from './modelos.js';
-import { paredesDasSalas } from './salas.js';
+import { paredesDasSalas, luzDasJanelas } from './salas.js';
 import { comNuvens } from './ceu.js';
 import { CURVA_GLSL } from './curva.js';
 
@@ -201,7 +201,9 @@ export class Setores {
     if (gm) { s.mato = new THREE.Mesh(gm, this.matMato); s.mato.receiveShadow = true; s.grupo.add(s.mato); }
     this.modelos.setor(s);
     if (s.paredes) { s.grupo.remove(s.paredes); s.paredes.geometry.dispose(); s.paredes = null; }
-    if (this.v.amb && s.sy * CH + CH > L.externoH) { const g = paredesDasSalas(this.v, s.sx, s.sy); if (g) { s.paredes = new THREE.Mesh(g, this.modelos.matParede ??= this.v.curvar(this.v.setores.matParedeNovo())); s.paredes.castShadow = s.paredes.receiveShadow = true; s.grupo.add(s.paredes); } }
+    if (s.luzJanela) { s.grupo.remove(s.luzJanela); s.luzJanela.geometry.dispose(); s.luzJanela = null; }
+    if (this.v.amb && s.sy * CH + CH > L.externoH) { const g = paredesDasSalas(this.v, s.sx, s.sy); if (g) { s.paredes = new THREE.Mesh(g, this.modelos.matParede ??= this.v.curvar(this.v.setores.matParedeNovo())); s.paredes.castShadow = s.paredes.receiveShadow = true; s.grupo.add(s.paredes); }
+      s.luzJanela = luzDasJanelas(this.v, s.sx, s.sy); if (s.luzJanela) s.grupo.add(s.luzJanela); }
   }
   matParedeNovo() { return new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide }); }
   #liberar(s) {

@@ -24,6 +24,34 @@ function paleta(r) {
   return PALETA.padrao;
 }
 
+// Luz do sol pela janela: um feixe inclinado (dois planos aditivos) e a mancha clara no piso. Leve: sem luz dinâmica.
+let matLuz = null;
+function texLuz() {
+  const c = document.createElement('canvas'); c.width = 64; c.height = 64;
+  const x = c.getContext('2d'), g = x.createLinearGradient(0, 0, 0, 64);
+  g.addColorStop(0, 'rgba(255,236,190,0.0)'); g.addColorStop(0.25, 'rgba(255,236,190,0.75)'); g.addColorStop(1, 'rgba(255,236,190,0.0)');
+  x.fillStyle = g; x.fillRect(0, 0, 64, 64);
+  const h = x.createLinearGradient(0, 0, 64, 0); h.addColorStop(0, 'rgba(0,0,0,1)'); h.addColorStop(0.15, 'rgba(0,0,0,0)'); h.addColorStop(0.85, 'rgba(0,0,0,0)'); h.addColorStop(1, 'rgba(0,0,0,1)');
+  x.globalCompositeOperation = 'destination-out'; x.fillStyle = h; x.fillRect(0, 0, 64, 64);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+export function luzDasJanelas(v, sx, sy) {
+  const js = v.salasJanelas?.get(sx + ',' + sy); if (!js?.length) return null;
+  matLuz ??= v.curvar(new THREE.MeshBasicMaterial({ map: texLuz(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, opacity: 0.32 }));
+  const pos = [], uv = [], idx = [];
+  const q = (a, b, c, d) => { const n = pos.length / 3; pos.push(...a, ...b, ...c, ...d); uv.push(0, 1, 1, 1, 1, 0, 0, 0); idx.push(n, n + 1, n + 2, n, n + 2, n + 3); };
+  for (const j of js) {
+    const y0 = j.h + 0.6, top = j.h + 44, bot = j.h + 24, dx = -34, len = 84; // o sol vem do alto, um pouco da direita
+    // mancha no piso (paralelogramo deitado)
+    q([j.x - 20 + dx, y0, j.z + len], [j.x + 20 + dx, y0, j.z + len], [j.x + 18, y0, j.z + 14], [j.x - 18, y0, j.z + 14]); q([j.x - 20 + dx, y0 + 0.1, j.z + len], [j.x + 20 + dx, y0 + 0.1, j.z + len], [j.x + 18, y0 + 0.1, j.z + 14], [j.x - 18, y0 + 0.1, j.z + 14]);
+    // feixe: da janela até a mancha
+    q([j.x - 14 + dx, y0, j.z + len], [j.x + 14 + dx, y0, j.z + len], [j.x + 13, top, j.z + 1], [j.x - 13, top, j.z + 1]);
+    q([j.x - 14 + dx * 0.6, y0 + 2, j.z + len * 0.6], [j.x + 14 + dx * 0.6, y0 + 2, j.z + len * 0.6], [j.x + 13, bot, j.z + 1], [j.x - 13, bot, j.z + 1]);
+  }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeBoundingSphere();
+  const m = new THREE.Mesh(g, matLuz); m.renderOrder = 8; return m;
+}
+
 export function paredesDasSalas(v, sx, sy) {
   const L = v.L, R = v.relevo, pos = [], cor = [], idx = [];
   const quad = (a, b, c, d, k) => { const n = pos.length / 3; pos.push(...a, ...b, ...c, ...d); for (let i = 0; i < 4; i++) cor.push(...k); idx.push(n, n + 1, n + 2, n, n + 2, n + 3); };
@@ -36,6 +64,7 @@ export function paredesDasSalas(v, sx, sy) {
     quad([x1, y0, z1], [x1, y0, z0], [x1, y1, z0], [x1, y1, z1], ks);
     quad([x0, y1, z1], [x1, y1, z1], [x1, y1, z0], [x0, y1, z0], kt);
   };
+  const janelas = [];
   const piso = (x, y) => { const t = L.bloco(x, y); return t !== TILE.WALL && t !== TILE.VOID; };
   for (const r of L.interiores ?? []) {
     if (Math.floor(r.x / 16) !== sx || Math.floor(r.y / 16) !== sy) continue;
@@ -45,6 +74,9 @@ export function paredesDasSalas(v, sx, sy) {
     // parede de fundo: para cada coluna, o primeiro piso de cima para baixo
     const fundo = (x) => { for (let y = r.y; y < r.y + r.h; y++) if (piso(x, y)) return y; return null; };
     const baixo = (x) => { for (let y = r.y + r.h - 1; y >= r.y; y--) if (piso(x, y)) return y; return null; };
+    // janela na parede do fundo (a 2/3 da sala), com a luz do sol entrando e caindo no piso
+    const jx = Math.floor(r.x + r.w * 0.66), jy = fundo(jx);
+    if (jy != null && r.w >= 7 && !r.dark && !r.escuro) janelas.push({ x: jx * 16 + 8, z: jy * 16, h });
     for (let x = r.x; x < r.x + r.w; x++) {
       const yf = fundo(x); if (yf == null) continue;
       const X0 = x * 16, X1 = X0 + 16, Z = yf * 16;
@@ -68,6 +100,16 @@ export function paredesDasSalas(v, sx, sy) {
       caixa((xb + 1) * 16 - 1.3, h, Z0, (xb + 1) * 16, h + 5, Z1, rodape);
     }
   }
+  // moldura e vidro das janelas (o vidro brilha de leve; a luz no chão é janelaLuz, aditiva)
+  for (const j of janelas) {
+    const X0 = j.x - 13, X1 = j.x + 13, Y0 = j.h + 22, Y1 = j.h + 46, Z = j.z + 0.15, mold = C('#8a5a34'), vidro = [1.15, 1.25, 1.35];
+    quad([X0 - 2, Y0 - 2, Z], [X1 + 2, Y0 - 2, Z], [X1 + 2, Y1 + 2, Z], [X0 - 2, Y1 + 2, Z], mold);
+    quad([X0, Y0, Z + 0.1], [X1, Y0, Z + 0.1], [X1, Y1, Z + 0.1], [X0, Y1, Z + 0.1], vidro);
+    quad([j.x - 0.8, Y0, Z + 0.2], [j.x + 0.8, Y0, Z + 0.2], [j.x + 0.8, Y1, Z + 0.2], [j.x - 0.8, Y1, Z + 0.2], mold);
+    quad([X0, (Y0 + Y1) / 2 - 0.8, Z + 0.2], [X1, (Y0 + Y1) / 2 - 0.8, Z + 0.2], [X1, (Y0 + Y1) / 2 + 0.8, Z + 0.2], [X0, (Y0 + Y1) / 2 + 0.8, Z + 0.2], mold);
+    quad([X0 - 4, Y0 - 3, Z], [X1 + 4, Y0 - 3, Z], [X1 + 4, Y0 - 1, Z + 3], [X0 - 4, Y0 - 1, Z + 3], C('#f4eee2'));
+  }
+  v.salasJanelas = (v.salasJanelas ?? new Map()); v.salasJanelas.set(sx + ',' + sy, janelas);
   if (!idx.length) return null;
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
