@@ -151,3 +151,20 @@ da água) ou cava (os demais); **X** pula; **Espaço** esquiva com invencibilida
 - **Dano:** ponto único em `src/combat/damage.js` (`computeDamage`; `calcDamage` em combat.js é a versão pura do PvP).
   Relevo: Água mais forte na água, Planta no mato alto, Elétrico em alvo molhado, Fogo fraco em alvo na água.
 - **Testes:** `combat.showNames = true` mostra o nome do golpe ao usar.
+
+## Acabamento (ramo `acabamento`)
+
+- **Qualidade gráfica** (`src/engine/quality.js`, opção em Opções): Automática, Alta ou Baixa. A automática começa em
+  baixa em aparelho de toque fraco (≤ 3 GB ou ≤ 4 núcleos) e cai para baixa se ficar abaixo de 45 FPS (celular) ou
+  50 FPS (computador) por 6 s. Baixa = 40% das partículas, sem luzes grandes/halos de janela, desenho a 75%.
+- **F3** mostra FPS, tempo de lógica, partículas e o nível de qualidade.
+- **Carregamento:** barra real em `index.html` (conta os arquivos; o total da última visita fica em
+  `localStorage['alvorada.boot.n']`) e etapas do `main.js` via `window.__boot(fração, texto)` / `window.__bootDone()`.
+- **Service worker** (`sw.js`): código em rede primeiro (6 s de limite, depois a cópia guardada); sprites em cache
+  próprio (`alvorada-sprites-v1`), cache primeiro e só do que aparece. Na primeira visita a página manda ao SW a
+  lista do que já carregou (`{ type: 'guardar', urls }`) para o jogo abrir offline na visita seguinte. Ao mudar a
+  estrutura do cache, troque o nome em `CODE`/`SPR`.
+- **HUD:** objetivo recolhível (toque/clique ou J; no celular fica recolhido e abre 6 s quando muda); minimapa com
+  tamanho e posição no CSS (`#minimapa`); no computador com tela grande a interface cresce pelo `--k` (zoom do CSS).
+- **Som:** faixas `title` (tela de título) e `forest` (bosques) além de `town`, `route` e `battle`; o menu abaixa a
+  música (`audio.duck(k)`); compressor no fim da cadeia.
