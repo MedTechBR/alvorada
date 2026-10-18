@@ -144,7 +144,7 @@ export class Espelho {
     for (const s of v.L.setoresVisiveis()) {
       const d = s.deco; if (!d?.visible && !d) continue;
       this.gx = null; this.sil = false;
-      for (const sp of d.children) { if (!sp.visible || sp.alpha <= 0.01) continue; if (v.amb && (FLORES2D.has(sp.texture?.source) && sp.f != null || sp.texture === SPR.pebble || sp.texture === SPR.pebble2)) continue; this.#no(sp, 1, 0, 0, 1, 0, 0, 1, true, true); }
+      for (const sp of d.children) { if (!sp.visible || sp.alpha <= 0.01) continue; if (v.amb && !v.pixel && (FLORES2D.has(sp.texture?.source) && sp.f != null || sp.texture === SPR.pebble || sp.texture === SPR.pebble2)) continue; this.#no(sp, 1, 0, 0, 1, 0, 0, 1, true, true); }
     }
     for (const l of this.lotes.values()) l.fechar();
   }

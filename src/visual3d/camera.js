@@ -14,7 +14,7 @@ const CHAVE = 'alvorada.camera3d';
 export class CameraDinamica {
   constructor(v) {
     this.v = v;
-    this.x = null; this.z = null; this.dist = 1; this.incl = 30; this.giro = 0; this.rolo = 0;
+    this.x = null; this.z = null; this.dist = 1; this.incl = 44; this.giro = 0; this.rolo = 0;
     this.olhar = { x: 0, z: 0 }; this.parado = 0; this.batalhaK = 0;
     this.imp = 0; this.impGiro = 0;
     this.cenaAtual = null;
@@ -35,7 +35,7 @@ export class CameraDinamica {
     const foco = pk ?? p;
     const room = p ? g.map.interiorAt(p.x, p.y) : null;
     const m = g.mount;
-    let alvoX = c.x, alvoZ = c.y, dist = 1, incl = this.cinema ? 19 : 34, giro = 0; // explorar: baixa, com céu e montanhas
+    let alvoX = c.x, alvoZ = c.y, dist = 1, incl = this.cinema ? 44 : 48, giro = 0; // como no demo (HGSS/FireRed em 3D): ~45° // explorar: baixa, com céu e montanhas
     // olhar à frente (velocidade suavizada)
     const vx = foco?.vx ?? 0, vy = foco?.vy ?? 0, vel = Math.hypot(vx, vy);
     const ah = this.cinema && !room ? 0.32 : 0;
@@ -52,7 +52,7 @@ export class CameraDinamica {
       alvoX += (cx - alvoX) * 0.4 * this.batalhaK; alvoZ += (cz - alvoZ) * 0.4 * this.batalhaK;
       const quer = Math.max(1, ext / (innerHeight / Math.max(1, g.zoom)) * 0.9);
       dist *= 1 + (Math.min(1.6, quer) - 1 + 0.12) * this.batalhaK;
-      incl += 22 * this.batalhaK; // em batalha sobe: os golpes e as alturas ficam legíveis
+      incl += 8 * this.batalhaK; // em batalha sobe: os golpes e as alturas ficam legíveis
     }
     // alguém na frente (casa, árvore alta entre a câmera e o jogador): a câmera sobe até enxergar
     this.tapado = amortece(this.tapado ?? 0, room ? 0 : this.#tapa(g, foco, incl), 3, dt);

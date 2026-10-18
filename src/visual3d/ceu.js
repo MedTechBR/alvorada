@@ -103,7 +103,7 @@ export class Ceu {
     if (P.quente) P.quente.value = 0.22; if (P.frio) P.frio.value = 0.6;
     if (P.exposicao && !room) P.exposicao.value = Math.min(P.exposicao.value, 0.9 + (g.mundo?.nightness ?? 0) * 0.25);
     if (P.bloomK) P.bloomK.value *= 0.55;
-    if (P.tilt) P.tilt.value *= 1 - 0.75 * bat;
+    if (P.tilt) P.tilt.value *= (v.pixel ? 0.45 : 1) * (1 - 0.75 * bat); // desfoque leve, como no demo
     // noite legível: luar azulado que ainda mostra o chão e os sprites (HGSS); exposição um pouco menor de dia
     const nt = room ? 0 : (g.mundo?.nightness ?? 0);
     if (nt > 0) { A.ceu.hemi.intensity = Math.max(A.ceu.hemi.intensity, 1.25 * nt); A.ceu.hemi.color.lerp(this.luar ??= new THREE.Color(0x8aa8ff), nt * 0.6); }

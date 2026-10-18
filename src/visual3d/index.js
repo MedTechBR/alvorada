@@ -25,6 +25,8 @@ const LONGE = 38 * 16; // até onde o chão é montado à frente da câmera (px 
 export class Visual3D {
   constructor(g) {
     this.g = g; this.touch = IS_TOUCH;
+    // estilo pixel (HGSS/FireRed): toda superfície com arte de 16 px e filtro nearest. ?estilo=liso volta ao chão pintado.
+    this.pixel = new URLSearchParams(location.search).get('estilo') !== 'liso';
     this.L = new MapaLeitura(g.map);
     this.relevo = new Relevo(this.L);
     if (new URLSearchParams(location.search).get('amb') !== '0') this.L.semArte(true);
@@ -42,7 +44,7 @@ export class Visual3D {
     this.cima = new THREE.Vector3(0, Math.cos(INCLINACAO), -Math.sin(INCLINACAO)); // "para cima" dos billboards (segue a câmera)
     this.direita = new THREE.Vector3(1, 0, 0);
     this.dinamica = new CameraDinamica(this);
-    this.u = { tempo: { value: 0 }, luzSprite: { value: new THREE.Color(1, 1, 1) }, curva: { value: 0.0007 }, alvoZ: { value: 0 } }; // uniformes compartilhados
+    this.u = { tempo: { value: 0 }, luzSprite: { value: new THREE.Color(1, 1, 1) }, curva: { value: 0.0002 }, alvoZ: { value: 0 } }; // uniformes compartilhados
     // ambientação HD-2D (src/visual3d/ambiente): terreno pintado, grama, arbustos, céu, luz, pós, partículas.
     // ?amb=0 volta à luz/pós antigos (ceu.js, pos.js) para comparar.
     if (new URLSearchParams(location.search).get('amb') !== '0') {

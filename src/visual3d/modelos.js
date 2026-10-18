@@ -1,13 +1,14 @@
 import * as THREE from 'three';
 import { ModelosKit } from './kit/modelos-setor.js';
 import { kit } from './kit/index.js';
+import { comPixel } from './pixel.js';
 import { Modelos as ModelosCodigo } from './modelos-codigo.js';
 
 // Modelos low-poly: o kit (src/visual3d/kit, docs/visual-3d-kit.md) com o mundo curvo e a sombra do sol.
 // ?kit=0 usa os modelos antigos daqui (modelos-codigo.js), só para comparar.
 class ModelosNoMundo extends ModelosKit {
   constructor(v) {
-    super(v); v.curvar(this.mat);
+    super(v); v.curvar(this.mat); if (v.pixel) comPixel(this.mat, v);
     // sombra de contato (mancha macia) debaixo dos móveis e objetos: assenta tudo no chão, dentro e fora
     const c = document.createElement('canvas'); c.width = c.height = 64;
     const x = c.getContext('2d'), gr = x.createRadialGradient(32, 32, 0, 32, 32, 32);
