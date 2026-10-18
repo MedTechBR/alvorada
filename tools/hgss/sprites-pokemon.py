@@ -18,8 +18,9 @@ registradas em dados-brutos/pokeapi-sprites/_ausentes.json e não são pedidas d
 
 Índice: { "<chave>": { "n": nome, "f": {...}, "b": {...} } }  onde chave = "0025" ou "0006-megaX";
 cada lado = { "w": largura do quadro, "h": altura, "n": quadros, "d": [ms por quadro] | ms (um só valor para todos),
+              "c": colunas da grade (só quando a tira passaria de 16000 px; senão uma linha só),
               "src": "demo" | "gif" | "png" }.
-Tira = quadros lado a lado, da esquerda para a direita, todos w x h.
+Tira = quadros lado a lado, da esquerda para a direita, todos w x h; com "c", em ordem de leitura numa grade.
 """
 import io
 import json
@@ -161,17 +162,24 @@ def compacta(quadros, durs):
     return qs, ds
 
 
+def colunas_de(w, n):
+    """WebP aceita até 16383 px de lado: tiras muito longas viram grade (c colunas, quadros em ordem de leitura)."""
+    return max(1, min(n, 16000 // w))
+
+
 def tira(quadros):
     w, h = quadros[0].size
-    folha = Image.new('RGBA', (w * len(quadros), h), (0, 0, 0, 0))
+    c = colunas_de(w, len(quadros))
+    linhas = -(-len(quadros) // c)
+    folha = Image.new('RGBA', (w * c, h * linhas), (0, 0, 0, 0))
     for k, q in enumerate(quadros):
-        folha.paste(q, (k * w, 0))
+        folha.paste(q, ((k % c) * w, (k // c) * h))
     return folha
 
 
 def grava(folha, destino):
     os.makedirs(os.path.dirname(destino), exist_ok=True)
-    folha.save(destino, 'WEBP', lossless=True, quality=100, method=6, exact=False)
+    folha.save(destino, 'WEBP', lossless=True, quality=100, method=3, exact=False)
     return os.path.getsize(destino)
 
 
@@ -209,10 +217,14 @@ def converte_lado(c, lado, idx, tam):
         shutil.copyfile(demo, destino)
         tam[0] += os.path.getsize(destino)
         info = {'w': h, 'h': h, 'n': n, 'd': d_compacto(durs), 'src': 'demo'}
+        if folha.width > 16383:
+            raise SystemExit('tira do demo larga demais: ' + demo)
     elif os.path.exists(gif):
         q, d = compacta(*gif_para_quadros(gif))
         tam[0] += grava(tira(q), destino)
         info = {'w': q[0].width, 'h': q[0].height, 'n': len(q), 'd': d_compacto(d), 'src': 'gif'}
+        if colunas_de(q[0].width, len(q)) < len(q):
+            info['c'] = colunas_de(q[0].width, len(q))
     elif os.path.exists(png):
         im = Image.open(png).convert('RGBA')
         b = im.getchannel('A').getbbox()
@@ -223,26 +235,32 @@ def converte_lado(c, lado, idx, tam):
     return info
 
 
-def converter():
-    cat = catalogo()
-    idx = {}
+def _um(c):
     tam = [0]
-    falta = []
-    for k, c in enumerate(cat):
-        e = {'n': c['nome']}
-        for lado in ('f', 'b'):
-            info = converte_lado(c, lado, idx, tam)
-            if info:
-                e[lado] = info
-        if 'f' in e or 'b' in e:
-            idx[c['chave']] = e
-        else:
-            falta.append(c['chave'])
-        if k % 200 == 0:
-            log('  convertido', c['chave'], '%.1f MB' % (tam[0] / 1e6))
+    e = {'n': c['nome']}
+    for lado in ('f', 'b'):
+        info = converte_lado(c, lado, None, tam)
+        if info:
+            e[lado] = info
+    return c['chave'], e, tam[0]
+
+
+def converter():
+    from multiprocessing import Pool
+    cat = catalogo()
+    idx, falta, total = {}, [], 0
+    with Pool(6) as pool:
+        for k, (chave, e, t) in enumerate(pool.imap(_um, cat, chunksize=4)):
+            total += t
+            if 'f' in e or 'b' in e:
+                idx[chave] = e
+            else:
+                falta.append(chave)
+            if k % 100 == 0:
+                log('  convertido', chave, '%.1f MB' % (total / 1e6))
     json.dump({'versao': 1, 'cabecalho': 'chave = dex 4 digitos ou dex-forma; f=frente, b=costas; veja tools/hgss/sprites-pokemon.py',
                'sprites': idx}, open(os.path.join(SAIDA, 'indice.json'), 'w'), separators=(',', ':'))
-    log('converter: %d entradas, %.1f MB, sem sprite: %d %s' % (len(idx), tam[0] / 1e6, len(falta), falta[:20]))
+    log('converter: %d entradas, %.1f MB, sem sprite: %d %s' % (len(idx), total / 1e6, len(falta), falta[:20]))
     json.dump(falta, open(os.path.join(SAIDA, '_sem_sprite.json'), 'w'))
 
 

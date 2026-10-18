@@ -109,14 +109,15 @@ export async function carregarHGSS() {
     if (!cacheK.has(k)) cacheK.set(k, textura('pokemon/' + pasta + '/' + ch + '.webp'));
     const base = cacheK.get(k);
     const dur = Array.isArray(s.d) ? s.d : Array(s.n).fill(s.d);
+    const cols = s.c || s.n, linhas = Math.ceil(s.n / cols);
     const total = dur.reduce((a, b) => a + b, 0);
     const acum = []; let a = 0; for (const d of dur) { a += d; acum.push(a); }
     const idx = (tMs) => { if (s.n === 1) return 0; const m = tMs % total; return acum.findIndex((x) => m < x); };
     return {
       chave: ch, w: s.w, h: s.h, n: s.n, textura: base, fonte: s.src, indiceQuadro: idx,
       // aplica o quadro do tempo numa textura clonada (use uma por sprite na cena)
-      clone() { const t = base.clone(); t.needsUpdate = true; t.repeat.set(1 / s.n, 1); return t; },
-      aplicar(t, tMs) { t.offset.set(idx(tMs) / s.n, 0); },
+      clone() { const t = base.clone(); t.needsUpdate = true; t.repeat.set(1 / cols, 1 / linhas); t.offset.set(0, 1 - 1 / linhas); return t; },
+      aplicar(t, tMs) { const i = idx(tMs); t.offset.set((i % cols) / cols, 1 - (Math.floor(i / cols) + 1) / linhas); },
     };
   }
 
