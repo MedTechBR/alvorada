@@ -5,9 +5,12 @@ import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Mapa, raiz } from './lib.mjs';
 import { RECT, terreno, detalhes } from './jandaia-terreno.mjs';
+import { Colocador } from './jandaia-util.mjs';
+import { vila, salasVila } from './jandaia-vila.mjs';
 
 const M = new Mapa('jandaia', RECT);
 terreno(M); detalhes(M);
+const C = new Colocador(M);
 
 const J = {
   regiao: { id: 'jandaia', nome: 'Arquipélago das Jandaias', mundo: 'alvorada', rect: RECT, faixa: [0, 1600, 1200, 160], formaRegional: 'alola' },
@@ -31,5 +34,8 @@ J.ninhos = [{ id: 'vila_jandaia', nome: 'Vila Jandaia', spot: 'ninho_vila_jandai
 J.viagens = [{ id: 'balsa_coral', nome: 'A balsa', fala: ['Volta para a Costa Coral?'], destinos: [{ nome: 'Cidade Coral', destino: 'cais_coral', preco: 300, cena: 'A balsa balança devagar até a Costa Coral…' }] }];
 J.people = [{ id: 'barqueiro_jandaia', name: 'Barqueiro', look: { preset: 'montanhista', top: '#2a4a7a', pants: '#3a3a5a', hair: '#5a3a2a' }, x: 93, y: 566, dir: 'down', viagem: 'balsa_coral', lines: ['A balsa leva de volta para Cidade Coral.'] }];
 
+vila(M, C, J); salasVila(J);
+J.objects = C.objects;
+if (C.avisos.length) console.log('AVISOS:\n  ' + C.avisos.join('\n  '));
 const saida = join(raiz, 'assets/maps/regioes/jandaia.json');
 if (!process.argv.includes('--ver')) { writeFileSync(saida, JSON.stringify(J, null, 1)); console.log('escrito', saida, JSON.stringify(J).length, 'bytes'); }

@@ -57,6 +57,7 @@ export function detalhes(M) {
   M.comment('ilha_jandaia: praia de areia fina, capim da vila e mato alto nas pontas');
   M.blobs('tall', 38, 575, 40, 60, 0.13, 0.6, ['grass']);          // mato alto a oeste
   M.blobs('tall', 112, 575, 55, 70, 0.12, 0.62, ['grass']);        // mato alto a leste e ao sul
+  M.rect_('grass', 58, 590, 58, 42, ['tall']);                      // a vila não tem mato alto
   M.scatter('flowers', 40, 572, 130, 78, 0.035, ['grass']);
   M.comment('vila_jandaia: praça, ruas de terra e o píer da balsa');
   M.ellipse('plaza', 86, 600, 24, 4.5, 0.4);                       // praça comprida entre as fileiras de casas
@@ -130,7 +131,10 @@ export function detalhes(M) {
   ]);
 
   // ===================== PRAIA DO CIPÓ =====================
-  M.comment('praia_cipo: areia molhada na beira e cipós que descem do paredão');
+  M.comment('praia_cipo: toda de areia, com uma língua de areia ligando à saída sul da selva');
+  M.poly('sand', blob(225, 903, 70, 18, { seed: 41, jit: 0.1, n: 30 }), 0.9);
+  M.path('sand', [[203, 868], [204, 892]], 9, 1, ['water', 'deep', 'grass', 'sand', 'dark']);
+  M.ellipse('grass', 225, 900, 22, 5, 0.8, ['sand']);
   M.blobs('wetsand', 160, 880, 140, 40, 0.18, 0.55, ['sand']);
   M.scatter('flowers', 165, 886, 120, 24, 0.02, ['grass']);
 
