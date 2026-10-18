@@ -7,8 +7,9 @@ Jogo de fã, pessoal e não comercial. 2D com sprites, roda no navegador (comput
 - Rodar: `python3 tools/serve.py 8700` e abrir http://127.0.0.1:8700
 
 Controles (computador): WASD anda, Shift corre, mouse mira, 1–4 / clique esquerdo / direito = golpes,
-Espaço = esquiva, Q = Poké Bola, Tab = trocar Pokémon, F3 = medidor de FPS.
-Celular: analógico à esquerda; botões de golpe à direita (toque = mira automática, arrastar = mirar).
+Espaço = esquiva, Q = Poké Bola, Tab = trocar Pokémon, E/Enter = falar, M/Esc = menu, F3 = medidor de FPS.
+Celular: analógico à esquerda; botões de golpe à direita (toque = mira automática, arrastar = mirar); A fala, ☰ abre o menu.
+Controle: Start abre o menu.
 
 ## Sprites
 
@@ -26,3 +27,10 @@ Celular: analógico à esquerda; botões de golpe à direita (toque = mira autom
   trocáveis. `makeCharacterFrames(look)` em `src/sprites/characters.js`; opções do criador em `LOOK_OPTIONS`;
   NPCs prontos em `PRESETS` (professor, mae, rival, treinador, treinadora, montanhista).
 - **Vitrine:** `tools/vitrine.html` (todas as espécies paradas e andando; `?pts=1` mostra cabeça/boca/mão; `?modo=humanos`).
+
+Interface e história (ramo `interface`):
+- `src/ui/` título com contas locais e criador de personagem, HUD, diálogo clássico, menu (Pokédex, equipe, mochila, mapa, cartão, opções, salvar, PC).
+- `src/net/auth.js` contas locais (hash PBKDF2) e código de transferência do save; ponto de entrada para um servidor futuro.
+- `src/story/` capítulo 1 (Prof. Jatobá, Téo, treinadores, Cidade Campina, Líder Tomé). Posições por pontos nomeados: o mapa pode definir `map.spots` (ver `src/story/spots.js`).
+- `src/save.js` save por conta no localStorage, automático a cada 30 s.
+- PWA: `manifest.webmanifest`, `sw.js` (rede primeiro), ícones em `assets/icons` (`python3 tools/make_icons.py`).

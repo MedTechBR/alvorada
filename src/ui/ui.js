@@ -7,6 +7,7 @@ import { OPTIONS, applyOpts } from './options.js';
 import { serialize, applySave, writeSave, setSaveSlot } from '../save.js';
 import { Auth } from '../net/auth.js';
 import { makePlayerFrames } from '../sprites/npc.js';
+import { lookFrames } from './looks.js';
 
 // Camada de interface: título, HUD, diálogo, menu, save automático, celular (tela cheia, girar,
 // vibração) e PWA. O main.js só chama: ui.title() no começo, ui.frame(dt) a cada quadro
@@ -55,17 +56,10 @@ export class UI {
   // Jogo vindo de um código de transferência: já grava no espaço da conta nova
   writeImported(acc, save) { setSaveSlot(acc.id); writeSave(save); }
 
-  // Visual do jogador: usa o treinador de cores trocáveis do ramo `sprites` se existir; senão, o provisório
+  // Visual do jogador: treinador de cores trocáveis do ramo `sprites` (src/sprites/characters.js)
   async applyLook(look) {
     if (!look) return;
-    let frames = null;
-    try {
-      const mod = await import('../sprites/characters.js');
-      const fn = mod.makeCharacterFrames ?? mod.makePlayerFrames ?? mod.makeTrainerFrames ?? mod.default;
-      const f = typeof fn === 'function' ? await fn(look) : null;
-      if (f?.down?.length && f.up && f.left && f.right) frames = f;
-    } catch { /* ainda não existe: usa o desenho provisório */ }
-    this.g.player.frames = frames ?? makePlayerFrames(look);
+    try { this.g.player.frames = lookFrames(look); } catch { this.g.player.frames = makePlayerFrames(look); }
     this.g.player.body.texture = this.g.player.frames.down[0];
   }
 

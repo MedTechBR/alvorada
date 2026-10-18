@@ -13,6 +13,7 @@ import { portraitURL, SILHOUETTE } from './portrait.js';
 import { ICONS } from './hud.js';
 import { exportCode, importCode, Auth } from '../net/auth.js';
 import { serialize, writeSave } from '../save.js';
+import { drawLook, FW, FH } from './looks.js';
 
 // Menu do jogo no estilo clássico (portado do 3D): lista vertical com cursor de seta,
 // caixas claras de borda arredondada dupla. Navega com mouse, teclado (setas/Enter/Esc), controle e toque.
@@ -828,14 +829,14 @@ export class GameMenu {
               <tr><th>Tempo de jogo</th><td>${fmtTime(g.flags.playTime)}</td></tr>
               <tr><th>Aventura desde</th><td>${started}</td></tr>
             </table>
-            <div class="gm-tc-emblem">${g.party[0] ? slot(g.party[0].dex) : ICONS.ball}</div>
+            <div class="gm-tc-emblem"><canvas class="gm-tc-av" width="${FW}" height="${FH}"></canvas></div>
           </div>
           <div class="gm-tc-badges"><div class="gm-sub-t">Insígnias</div><div class="gm-badges">${BADGES.map((b, i) => {
             const on = got.includes(b.id);
             return `<div class="gm-badge ${on ? 'got' : ''}" style="--bc:${BADGE_COLOR[b.type] ?? '#f2c335'}" title="${on ? esc(b.name) + ' · ' + esc(b.town) : 'Ginásio ainda não vencido'}"><span>${on ? '★' : i + 1}</span><small>${on ? esc(b.name.replace('Insígnia ', '')) : ''}</small></div>`;
           }).join('')}</div></div>
         </div>`;
-        fillPortraits(body);
+        try { drawLook(body.querySelector('.gm-tc-av').getContext('2d'), g.flags.look ?? Auth.current?.look, 'down', 0); } catch { /* sem visual */ }
       },
     });
     this.#push(L);

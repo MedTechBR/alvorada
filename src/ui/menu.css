@@ -270,3 +270,4 @@
 .gm-stats td.hb { padding-left: 10px; }
 .gm-stats td.iv { width: 46px; padding: 7px 4px; }
 .gm-badge.got { color: #3a2a00; text-shadow: 0 1px 0 rgba(255,255,255,.6); }
+.gm-tc-av { width: 96px; height: 128px; image-rendering: pixelated; display: block; }

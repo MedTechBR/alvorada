@@ -396,5 +396,6 @@ export class Story {
     if (this.music !== want) { this.music = want; g.audio?.music?.(want); }
   }
 
-  refreshObjective() { this.g.ui.hud.setObjective(this.battle ? { id: 'battle', title: 'Batalha', text: `Vença ${this.battle.def.name}!`, target: null } : currentObjective(this)); }
+  // na batalha o painel do treinador ocupa o lugar do objetivo
+  refreshObjective() { this.g.ui.hud.setObjective(this.battle ? null : currentObjective(this)); }
 }

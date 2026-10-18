@@ -144,8 +144,8 @@ export async function importCode(code) {
   let raw = fromB64url(m[3]);
   if (m[1] === 'z') {
     if (typeof DecompressionStream !== 'function') throw new Error('Este navegador não consegue abrir códigos comprimidos.');
-    raw = await pipe(raw, DecompressionStream);
+    try { raw = await pipe(raw, DecompressionStream); } catch { throw new Error('O código está incompleto ou foi alterado. Copie de novo, do começo ao fim.'); }
   }
   if (crc32(raw) !== m[2]) throw new Error('O código está incompleto ou foi alterado (soma de verificação não confere).');
-  return JSON.parse(new TextDecoder().decode(raw));
+  try { return JSON.parse(new TextDecoder().decode(raw)); } catch { throw new Error('O código não pôde ser lido.'); }
 }

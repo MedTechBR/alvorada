@@ -131,7 +131,7 @@ body.touch .foe { --hud-k: var(--ui-scale); }
   body.touch .objective { top: calc(var(--g) + var(--st) + 80px); max-width: 170px; }
   #tbtns { transform: scale(calc(var(--ui-scale) * .82)); }
   #stick { transform: scale(calc(var(--ui-scale) * .85)); }
-  .foe { top: calc(var(--g) + var(--st) + 54px); }
+  .foe { top: calc(var(--g) + var(--st) + 84px); }
 }
 
 /* ---------- camada de interface ---------- */

@@ -1,18 +1,31 @@
 import * as PIXI from 'pixi.js';
 import { makeNpcFrames } from '../sprites/npc.js';
-import { dir4 } from '../sprites/trainer.js';
+import { makeCharacterFrames, dir4 } from '../sprites/characters.js';
+
+// Visuais da história no formato do ramo `sprites` (predefinições + cores próprias)
+const LOOK = {
+  prof: 'professor', mom: 'mae', rival: 'rival', youngster: 'treinador',
+  bugcatcher: { preset: 'treinador', hat: 'cap', cap: '#e8c860', capLogo: '#b8902a', top: '#7fbf4f', legs: 'shorts', pants: '#c9a46a', bag: '#5a8a3a' },
+  leader: { preset: 'montanhista', hat: 'cap', cap: '#e8c860', capLogo: '#b8902a', top: '#c8452f', trim: '#3a5a9a', pants: '#3a5a9a', bagStyle: null },
+  nurse: { preset: 'treinadora', hair: '#f08ab0', hairStyle: 'long', top: '#ffffff', trim: '#f08ab0', pants: '#f4c0d0', shoes: '#f08ab0', bagStyle: null },
+  hiker: 'montanhista',
+};
+function framesFor(look) {
+  try { const f = makeCharacterFrames(LOOK[look] ?? look); if (f?.down) return f; } catch { /* desenho provisório */ }
+  return makeNpcFrames(look);
+}
 
 // Personagem da história no mapa: anda até um ponto (cenas), vira para o jogador e mostra "!".
 export class Npc {
   constructor(g, { id, name, look, x, y, dir = 'down' }) {
     this.g = g; this.id = id; this.name = name;
     this.x = x; this.y = y; this.dir = dir; this.home = { x, y, dir };
-    this.frames = makeNpcFrames(look);
-    this.r = 6; this.h = this.frames.big ? 34 : 30; this.t = 0; this.walk = null; this.speed = 0;
+    this.frames = framesFor(look);
+    this.r = 6; this.h = (this.frames.fh ?? 30) + (look === 'leader' ? 4 : 0); this.t = 0; this.walk = null; this.speed = 0;
     this.view = new PIXI.Container();
     const shadow = new PIXI.Sprite(g.tx.shadow); shadow.anchor.set(0.5); shadow.scale.set(0.8);
     this.body = new PIXI.Sprite(this.frames[dir][0]); this.body.anchor.set(0.5, 1); this.body.y = 2;
-    if (this.frames.big) this.body.scale.set(1.12);
+    if (look === 'leader') this.body.scale.set(1.12);
     this.view.addChild(shadow, this.body);
     g.ents.addChild(this.view);
     this.update(0);
@@ -29,6 +42,9 @@ export class Npc {
     this.walk?.res();
     return new Promise((res) => { this.walk = { x, y, speed, res, t: 0, stuck: 0 }; });
   }
+
+  // pose de arremesso da Poké Bola (quando o desenho tem a animação "throw")
+  throwPose() { this.throwT = 0.45; }
 
   exclaim(text = '!', color = 0xe5383b) {
     const g = this.g;
@@ -65,7 +81,11 @@ export class Npc {
       }
     }
     const step = this.speed > 5 ? Math.floor(this.t * 8) % 4 : 0;
-    this.body.texture = this.frames[this.dir][step];
+    if (this.throwT > 0 && this.frames.throw) {
+      this.throwT -= dt;
+      const th = this.frames.throw[this.dir];
+      this.body.texture = th[Math.min(th.length - 1, Math.floor((0.45 - this.throwT) / 0.15))] ?? th[0];
+    } else this.body.texture = this.frames[this.dir][step];
     this.view.x = Math.round(this.x); this.view.y = Math.round(this.y); this.view.zIndex = this.y;
   }
   destroy() { this.view.destroy({ children: true }); }

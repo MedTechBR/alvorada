@@ -1,18 +1,15 @@
 import { Auth, normName, importCode } from '../net/auth.js';
 import { readSlot, describe, clearSlot } from '../save.js';
-import { DEFAULT_LOOK, drawPlayerFrame } from '../sprites/npc.js';
+import { LOOK_OPTIONS, FW, FH, toCharLook, drawLook } from './looks.js';
 import { IS_TOUCH } from '../engine/input.js';
 
 // Tela inicial: Entrar / Criar conta → (conta nova) criador de personagem → jogo.
 // "Continuar" = entrar na conta e seguir o save dela. Também importa um código de transferência.
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-const SKINS = ['#f8d8b8', '#f4c9a0', '#e0a878', '#c08050', '#8a5a34', '#5e3a22'];
-const HAIRS = ['#2a1c14', '#5a3418', '#8a5a2a', '#d8a848', '#e8e0c8', '#c8452f', '#3a64c8', '#e86a9a'];
-const OUTFITS = ['#2f6fe4', '#e5383b', '#3aa35a', '#f2c335', '#8a4ad8', '#f08ab0', '#2b2f45', '#f4f4f0'];
-const PANTS = ['#2b2f45', '#3a64c8', '#5a4a3a', '#7a7a82', '#c8452f', '#f4f4f0'];
-const CAPS = ['#e5383b', '#2f6fe4', '#3aa35a', '#f2c335', '#2b2f45', '#ffffff', 'none'];
-const STYLES = [['short', 'Curto'], ['spiky', 'Espetado'], ['long', 'Longo'], ['ponytail', 'Rabo de cavalo']];
+// opções do criador vêm do ramo `sprites` (src/sprites/characters.js, LOOK_OPTIONS)
+const O = LOOK_OPTIONS;
+const opt = (list) => list.map((x) => (typeof x === 'string' ? [x, x] : [x.id, x.nome]));
 
 export class TitleScreen {
   constructor(ui) {
@@ -40,11 +37,11 @@ export class TitleScreen {
     const list = (await Auth.list()).sort((a, b) => (b.lastLogin ?? 0) - (a.lastLogin ?? 0));
     const accHtml = list.map((a) => {
       const d = describe(readSlot(a.id));
-      return `<button class="tt-acc" data-id="${a.id}"><canvas width="17" height="23" data-look='${esc(JSON.stringify(a.look ?? {}))}'></canvas><span><b>${esc(a.name)}</b><small>${d ? `${d.badges} insígnia${d.badges === 1 ? '' : 's'} · ${d.time} · ${esc(d.area)}` : 'sem jogo salvo'}</small></span><i>▶</i></button>`;
+      return `<button class="tt-acc" data-id="${a.id}"><canvas width="${FW}" height="${FH}" data-look='${esc(JSON.stringify(a.look ?? {}))}'></canvas><span><b>${esc(a.name)}</b><small>${d ? `${d.badges} insígnia${d.badges === 1 ? '' : 's'} · ${d.time} · ${esc(d.area)}` : 'sem jogo salvo'}</small></span><i>▶</i></button>`;
     }).join('');
     this.#show(`${list.length ? `<div class="tt-h">Entrar como</div><div class="tt-accs">${accHtml}</div>` : '<div class="tt-h">Bem-vindo à região Alvorada!</div><p class="tt-p">Crie uma conta de treinador para guardar o seu jogo neste aparelho.</p>'}
       <div class="tt-btns"><button class="tt-btn ${list.length ? '' : 'primary tt-go'}" data-a="create">Criar conta</button><button class="tt-btn" data-a="import">Importar código</button></div>`, () => {
-      this.panel.querySelectorAll('canvas[data-look]').forEach((c) => { try { drawPlayerFrame(c.getContext('2d'), JSON.parse(c.dataset.look), 'down', 0); } catch { /* sem visual */ } });
+      this.panel.querySelectorAll('canvas[data-look]').forEach((c) => { try { drawLook(c.getContext('2d'), JSON.parse(c.dataset.look), 'down', 0); } catch { /* sem visual */ } });
       this.panel.querySelectorAll('.tt-acc').forEach((b) => { b.onclick = () => this.login(list.find((a) => a.id === b.dataset.id)); });
       this.panel.querySelector('[data-a=create]').onclick = () => this.create();
       this.panel.querySelector('[data-a=import]').onclick = () => this.import();
@@ -76,10 +73,10 @@ export class TitleScreen {
     if (!a.look) { this.creator(a, null); return; }
     if (!save) { this.creator(a, null, true); return; }
     this.#show(`<div class="tt-h">Olá, <b>${esc(a.name)}</b>!</div>
-      <div class="tt-save"><canvas width="17" height="23"></canvas><div><b>${esc(d.name)}</b><small>${esc(d.area)} · ${d.badges} insígnia${d.badges === 1 ? '' : 's'} · Pokédex ${d.dex} · ${d.time}</small><small>Salvo em ${d.when}</small></div></div>
+      <div class="tt-save"><canvas width="${FW}" height="${FH}"></canvas><div><b>${esc(d.name)}</b><small>${esc(d.area)} · ${d.badges} insígnia${d.badges === 1 ? '' : 's'} · Pokédex ${d.dex} · ${d.time}</small><small>Salvo em ${d.when}</small></div></div>
       <div class="tt-btns"><button class="tt-btn primary tt-go" data-a="go">Continuar</button><button class="tt-btn" data-a="new">Novo jogo</button></div>
       <button class="tt-link" data-a="out">Trocar de conta</button>`, () => {
-      drawPlayerFrame(this.panel.querySelector('canvas').getContext('2d'), a.look, 'down', 0);
+      drawLook(this.panel.querySelector('canvas').getContext('2d'), a.look, 'down', 0);
       this.panel.querySelector('[data-a=go]').onclick = () => this.finish({ account: a, save });
       this.panel.querySelector('[data-a=new]').onclick = () => this.confirm('Começar um jogo novo apaga o jogo salvo desta conta. Tem certeza?', 'Começar do zero', () => this.creator(a, null, true), () => this.account(a));
       this.panel.querySelector('[data-a=out]').onclick = () => { Auth.logout(); this.home(); };
@@ -142,19 +139,21 @@ export class TitleScreen {
 
   // ---------- criador de personagem ----------
   creator(acc, save, fresh = false) {
-    const look = { ...DEFAULT_LOOK, ...(acc.look ?? {}), name: acc.look?.name ?? acc.name };
-    const sw = (k, list) => `<div class="tt-sw" data-k="${k}">${list.map((c) => `<button class="${look[k] === c ? 'on' : ''} ${c === 'none' ? 'none' : ''}" data-v="${c}" style="--c:${c === 'none' ? 'transparent' : c}" aria-label="${c === 'none' ? 'Sem boné' : c}">${c === 'none' ? '∅' : ''}</button>`).join('')}</div>`;
-    const seg = (k, list) => `<div class="tt-seg" data-k="${k}">${list.map(([v, t]) => `<button class="${look[k] === v ? 'on' : ''}" data-v="${v}">${t}</button>`).join('')}</div>`;
+    const look = { ...toCharLook(acc.look), name: acc.look?.name ?? acc.name };
+    if (!look.chapeu) look.chapeu = look.sexo === 'menina' ? 'gorro' : 'bone';
+    const sw = (k, list) => `<div class="tt-sw" data-k="${k}">${list.map((c) => `<button data-v="${c}" style="--c:${c}" aria-label="${c}"></button>`).join('')}</div>`;
+    const seg = (k, list) => `<div class="tt-seg" data-k="${k}">${opt(list).map(([v, t]) => `<button data-v="${v}">${esc(t)}</button>`).join('')}</div>`;
     this.#show(`<div class="tt-h">Crie seu personagem</div>
-      <div class="cc"><div class="cc-prev"><canvas width="17" height="23"></canvas><div class="cc-floor"></div><small>Girando nas 4 direções</small></div>
+      <div class="cc"><div class="cc-prev"><canvas width="${FW}" height="${FH}"></canvas><div class="cc-floor"></div><small>Girando nas 4 direções</small></div>
       <div class="cc-opts">
-        <div class="cc-row"><span>Visual</span>${seg('gender', [['m', 'Menino'], ['f', 'Menina']])}</div>
-        <div class="cc-row"><span>Pele</span>${sw('skin', SKINS)}</div>
-        <div class="cc-row"><span>Cabelo</span>${seg('hairStyle', STYLES)}</div>
-        <div class="cc-row"><span>Cor do cabelo</span>${sw('hair', HAIRS)}</div>
-        <div class="cc-row"><span>Roupa</span>${sw('shirt', OUTFITS)}</div>
-        <div class="cc-row"><span>${look.gender === 'f' ? 'Saia / calça' : 'Calça'}</span>${sw('pants', PANTS)}</div>
-        <div class="cc-row"><span>Boné</span>${sw('cap', CAPS)}</div>
+        <div class="cc-row"><span>Visual</span>${seg('sexo', O.sexo)}</div>
+        <div class="cc-row"><span>Pele</span>${sw('pele', O.pele)}</div>
+        <div class="cc-row"><span>Cabelo</span>${seg('cabelo', O.cabelo)}</div>
+        <div class="cc-row"><span>Cor do cabelo</span>${sw('corCabelo', O.corCabelo)}</div>
+        <div class="cc-row"><span>Roupa</span>${sw('roupa', O.roupa)}</div>
+        <div class="cc-row"><span>Calça / saia</span>${sw('calca', O.calca)}</div>
+        <div class="cc-row"><span>Chapéu</span>${seg('chapeu', O.chapeu)}</div>
+        <div class="cc-row"><span>Cor do chapéu</span>${sw('bone', O.bone)}</div>
         <label class="cc-row"><span>Nome</span><input class="cc-name" maxlength="12" value="${esc(look.name)}"></label>
       </div></div>
       <div class="tt-err" hidden></div>
@@ -162,18 +161,19 @@ export class TitleScreen {
       const cv = this.panel.querySelector('.cc-prev canvas'), x = cv.getContext('2d');
       const dirs = ['down', 'left', 'up', 'right'];
       let t = 0;
-      const paint = () => { x.clearRect(0, 0, 17, 23); drawPlayerFrame(x, look, dirs[Math.floor(t / 8) % 4], [0, 1, 0, 2][t % 4]); };
-      clearInterval(this.anim); this.anim = setInterval(() => { t++; paint(); }, 160); paint();
-      const sync = () => this.panel.querySelectorAll('[data-k]').forEach((g) => g.querySelectorAll('button').forEach((b) => b.classList.toggle('on', String(look[g.dataset.k]) === b.dataset.v)));
+      const paint = () => drawLook(x, look, dirs[Math.floor(t / 8) % 4], t % 4);
+      clearInterval(this.anim); this.anim = setInterval(() => { t++; paint(); }, 150); paint();
+      const sync = () => this.panel.querySelectorAll('[data-k]').forEach((g) => g.querySelectorAll('button').forEach((b) => b.classList.toggle('on', String(look[g.dataset.k]).toLowerCase() === b.dataset.v.toLowerCase())));
+      sync();
       this.panel.querySelectorAll('[data-k] button').forEach((b) => { b.onclick = () => {
         const k = b.parentElement.dataset.k; look[k] = b.dataset.v;
-        if (k === 'gender' && !b.dataset.keep) { if (look.gender === 'f' && look.hairStyle === 'short') look.hairStyle = 'long'; if (look.gender === 'm' && look.hairStyle === 'long') look.hairStyle = 'short'; }
+        if (k === 'sexo') { const keep = look.name; Object.assign(look, toCharLook({ sexo: look.sexo }), { name: keep }); }
         sync(); paint();
         this.ui.g.audio?.sfx?.('blip');
       }; });
       this.panel.querySelector('[data-a=rand]').onclick = () => {
-        const r = (a) => a[Math.floor(Math.random() * a.length)];
-        Object.assign(look, { gender: r(['m', 'f']), skin: r(SKINS), hair: r(HAIRS), hairStyle: r(STYLES)[0], shirt: r(OUTFITS), pants: r(PANTS), cap: r(CAPS) });
+        const r = (a) => { const v = a[Math.floor(Math.random() * a.length)]; return typeof v === 'string' ? v : v.id; };
+        Object.assign(look, { sexo: r(O.sexo), pele: r(O.pele), cabelo: r(O.cabelo), corCabelo: r(O.corCabelo), roupa: r(O.roupa), calca: r(O.calca), chapeu: r(O.chapeu), bone: r(O.bone) });
         sync(); paint();
       };
       this.panel.querySelector('.tt-go').onclick = async () => {
