@@ -38,7 +38,7 @@ const CH = 16, CPX = CH * T; // setor: 16x16 blocos = 256 px
 const WILD_GROUND = new Set([TILE.CAVE, TILE.SNOWFIELD, TILE.ASH, TILE.BASALT, TILE.DUNE, TILE.CAATINGA, TILE.CRACKED, TILE.WETSAND, TILE.MANGMUD, TILE.ICEFLOOR, TILE.LAVAFLOOR,
   TILE.DARKCAVE, TILE.CRYSTALFLOOR, TILE.OLDSTONE, TILE.TEMPLEFLOOR, TILE.SNOW, TILE.RAIL, TILE.SALT, TILE.REDROCK, TILE.DRYRIVER, TILE.SHALLOW]);
 const hash = (x, y, s = 0) => { let h = (x * 374761393 + y * 668265263 + s * 1442695041) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; };
-const PERTO = 48 * T; // região a menos disso da tela começa a ser montada (em fatias)
+const PERTO = 64 * T; // região a menos disso da tela começa a ser montada (em fatias)
 const agora = () => performance.now();
 
 export class GameMap {
@@ -113,9 +113,10 @@ export class GameMap {
   // região ainda não montada: monta agora (ou termina a montagem fatiada que já começou)
   #garantir(i) {
     const P = this.R.partes[i]; if (!P || P.pronta) return;
-    const it = this.construindo?.P === P ? this.construindo.it : passosParte(this.S, P);
+    const t = agora(), it = this.construindo?.P === P ? this.construindo.it : passosParte(this.S, P);
     for (const _ of it) { /* até o fim */ }
     this.#pronta(P);
+    (this.estat ??= []).push({ parte: P.id, como: 'na hora', ms: Math.round(agora() - t) });
   }
   #pronta(P) {
     if (this.construindo?.P === P) this.construindo = null;
@@ -123,9 +124,13 @@ export class GameMap {
     this.nPend--;
     if (this.pending) { this.pending.img = this.pending.canvas = this.pending.ctx = null; this.pending = null; }
     const novos = this.S.novos.splice(0); this.objects.push(...novos); this.#instalar(novos);
-    // setores já desenhados que encostam na região: redesenha a borda (o chão de lá mudou)
-    const [x, y, w, h] = P.rect ?? [0, 0, 0, 0];
-    for (const c of this.chunks) if (c.built && c.cx * CH < x + w + 1 && c.cx * CH + CH > x - 1 && c.cy * CH < y + h + 1 && c.cy * CH + CH > y - 1) { this.#freeChunk(c); }
+    // setores já desenhados que encostam na região: redesenha só a faixa da borda (as transições de chão olham até
+    // 2 blocos para o lado), aos poucos pelo flushDirty — sem jogar fora o setor inteiro (engasgava ao cruzar a divisa)
+    if (P.rect) {
+      const [x, y, w, h] = P.rect, D = this.dirtyTiles;
+      for (let i = x - 2; i < x + w + 2; i++) for (const j of [y - 2, y - 1, y, y + 1, y + h - 2, y + h - 1, y + h, y + h + 1]) D.push([i, j]);
+      for (let j = y; j < y + h; j++) for (const i of [x - 2, x - 1, x, x + 1, x + w - 2, x + w - 1, x + w, x + w + 1]) D.push([i, j]);
+    }
     this.g?.mundo?.minimap?.invalidar?.(P.rect);
     this.g?.mundo?.minimap?.invalidar?.(P.faixa);
     this.montadas = (this.montadas ?? 0) + 1;
@@ -142,7 +147,9 @@ export class GameMap {
     }
     const b = this.construindo; if (!b) return;
     const t = agora();
-    while (agora() - t < 3) if (b.it.next().done) { this.#pronta(b.P); return; }
+    b.ms = (b.ms ?? 0); b.fatias = (b.fatias ?? 0) + 1;
+    while (agora() - t < 3) if (b.it.next().done) { this.#pronta(b.P); (this.estat ??= []).push({ parte: b.P.id, como: 'em fatias', fatias: b.fatias, ms: Math.round(b.ms + agora() - t), maiorFatia: Math.round(Math.max(b.pior ?? 0, agora() - t)) }); return; }
+    b.ms += agora() - t; b.pior = Math.max(b.pior ?? 0, agora() - t);
   }
 
   // portas, tapetes de saída e escadas: tudo vira uma lista de "warps"
@@ -398,18 +405,28 @@ export class GameMap {
     }
     for (const c of this.visible) if (!now.has(c)) this.#showChunk(c, false);
     this.visible = now;
-    // pré-carrega um setor por quadro em volta da tela
-    // pré-carga em fatias de 4 linhas por quadro (sem engasgo ao entrar numa área nova)
-    if (this.pending && (this.pending.built || !this.pending.img)) this.pending = null;
-    if (!this.pending) {
-      for (let cy = cy0 - 1; cy <= cy1 + 1 && !this.pending; cy++) for (let cx = cx0 - 1; cx <= cx1 + 1 && !this.pending; cx++) {
-        if (cx < 0 || cy < 0 || cx >= this.CW || cy >= this.CHh) continue;
-        const c = this.chunks[cx + cy * this.CW]; if (!c.built) { this.#startChunk(c); this.pending = c; }
-      }
-    }
+    // pré-carga dos setores em volta da tela, em fatias de 4 linhas, até ~2,5 ms por quadro (sem engasgo ao entrar numa
+    // área nova). Vai primeiro para o lado para onde a câmera anda (correndo ou voando, a tela chega antes da pré-carga).
     this.#preparar(view);
-    const pc = this.pending;
-    if (pc) { if (pc.row < CH) this.#rowsChunk(pc, pc.row, Math.min(CH, pc.row + 4)); else { this.#finishChunk(pc); pc.seen = this.frameK; this.pending = null; } }
+    const mx = (view.x0 + view.x1) / 2, my = (view.y0 + view.y1) / 2, vx = mx - (this.lastMx ?? mx), vy = my - (this.lastMy ?? my);
+    this.lastMx = mx; this.lastMy = my;
+    const ax = mx + vx * 40, ay = my + vy * 40; // para onde a câmera vai em ~40 quadros
+    const t0 = agora();
+    for (let guard = 0; guard < 64 && agora() - t0 < 2.5; guard++) {
+      if (this.pending && (this.pending.built || !this.pending.img)) this.pending = null;
+      if (!this.pending) {
+        let best = null, bd = Infinity;
+        for (let cy = cy0 - 1; cy <= cy1 + 1; cy++) for (let cx = cx0 - 1; cx <= cx1 + 1; cx++) {
+          if (cx < 0 || cy < 0 || cx >= this.CW || cy >= this.CHh) continue;
+          const c = this.chunks[cx + cy * this.CW]; if (c.built) continue;
+          const d = Math.hypot(c.x + CPX / 2 - ax, c.y + CPX / 2 - ay); if (d < bd) { bd = d; best = c; }
+        }
+        if (!best) break;
+        this.#startChunk(best); this.pending = best;
+      }
+      const pc = this.pending;
+      if (pc.row < CH) this.#rowsChunk(pc, pc.row, Math.min(CH, pc.row + 4)); else { this.#finishChunk(pc); pc.seen = this.frameK; this.pending = null; }
+    }
     // descarta setores longe (memória de vídeo do celular)
     if (this.frameK % 60 === 0) {
       const built = this.chunks.filter((c) => c.built && !c.shown);
