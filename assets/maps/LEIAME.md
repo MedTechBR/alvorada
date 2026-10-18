@@ -26,6 +26,11 @@ Depois de editar à mão, `python3 tools/formatar-mapa.py assets/maps/alvorada.j
 - `spots`: pontos nomeados para a história `[x,y,direção]`. Também são criados `porta_<id>` e `dentro_<id>`.
 - `areas`: nome e bioma (`vila`, `campo`, `floresta`, `margem`, `praia`, `planalto`) por `rect` ou `ellipse`;
   a última que contém o ponto vence. Bioma `vila` não tem selvagens.
+  `id` (opcional) dá nome ao lugar para o roteiro (gatilho `entrar`). `encounters: [[dex, nív. mín., nív. máx., peso], …]`
+  troca a tabela de selvagens do bioma por uma própria (vale também num interior, ex.: a Toca do Absol).
+- Pontos para o roteiro (`src/story/roteiro.js`): zonas de `pisar` são pontos com o mesmo nome (ou `<nome>__<acesso>`
+  quando há mais de uma entrada), raio padrão de 3 blocos (ou `radius`). Treinadores e personagens dos capítulos 2+
+  ficam nos pontos citados em `src/story/elenco.js`.
 - `items`: Poké Bolas no chão `{x,y,item}` (brilham; pegar ao passar por cima).
 - `people`: moradores `{id,name,look,x,y,dir,wander,kid?,lines,heal?,all?}` (também dentro de cada interior, em
   coordenadas da sala). `look` é uma predefinição de `src/sprites/charart.js` (`menino`, `menina`, `professor`, `mae`,

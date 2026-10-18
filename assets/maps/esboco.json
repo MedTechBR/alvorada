@@ -621,61 +621,6 @@
 },
 {
 "op": "rect",
-"t": "plaza",
-"x": 446,
-"y": 323,
-"w": 14,
-"h": 6
-},
-{
-"op": "rect",
-"t": "path",
-"x": 432,
-"y": 329,
-"w": 42,
-"h": 2
-},
-{
-"op": "rect",
-"t": "dock",
-"x": 440,
-"y": 302,
-"w": 2,
-"h": 10,
-"on": [
-"water",
-"deep",
-"sand"
-]
-},
-{
-"op": "rect",
-"t": "dock",
-"x": 452,
-"y": 302,
-"w": 2,
-"h": 10,
-"on": [
-"water",
-"deep",
-"sand"
-]
-},
-{
-"op": "rect",
-"t": "dock",
-"x": 464,
-"y": 302,
-"w": 2,
-"h": 10,
-"on": [
-"water",
-"deep",
-"sand"
-]
-},
-{
-"op": "rect",
 "t": "grass",
 "x": 324,
 "y": 408,
@@ -1667,42 +1612,6 @@
 "x": 516,
 "y": 255,
 "text": "ILHA DO VÉU\nUm observatório antigo some na neblina."
-},
-{
-"kind": "center",
-"x": 437,
-"y": 320
-},
-{
-"kind": "mart",
-"x": 461,
-"y": 320
-},
-{
-"kind": "sign",
-"x": 452,
-"y": 327,
-"text": "PORTO ESPELHO\nPalafitas, píer comprido, barcos a vela.\n(esboço: cidade em construção)"
-},
-{
-"kind": "lamp",
-"x": 445,
-"y": 325
-},
-{
-"kind": "lamp",
-"x": 460,
-"y": 325
-},
-{
-"kind": "houseA",
-"x": 434,
-"y": 332
-},
-{
-"kind": "houseB",
-"x": 464,
-"y": 332
 },
 {
 "kind": "center",

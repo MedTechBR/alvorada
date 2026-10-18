@@ -18,7 +18,7 @@ def op(**k): ops.append(k)
 def note(t): op(op='comment', _=t)
 
 # lugares detalhados à mão (o esboço só põe o terreno de base embaixo deles)
-DETALHADOS = {'vila_alvorada', 'cidade_campina', 'fazenda_tome', 'rota1', 'rota2', 'vila_sussurro', 'lagoa_dourada', 'toca_absol'}
+DETALHADOS = {'vila_alvorada', 'cidade_campina', 'fazenda_tome', 'rota1', 'rota2', 'vila_sussurro', 'lagoa_dourada', 'toca_absol', 'porto_espelho'}
 
 note('==== esboço gerado por tools/gerar-esboco.py a partir de docs/mapa-alvorada.json (não editar à mão) ====')
 note('montanhas ao norte e Monte Zênite')
@@ -119,6 +119,8 @@ for pid, txt in EXTRA.items():
     p = P[pid]; x, y, w, h = box(p); cx, cy = x + w // 2, y + h // 2
     base = {'cidade_aurora': 'plaza', 'liga_zenite': 'snow'}.get(pid, 'grass')
     op(op='rect', t=base, x=x, y=y, w=w, h=h, on=['grass', 'grass2', 'tall', 'flowers', 'forest', 'dark', 'gold', 'rock', 'snow', 'path'])
+    if pid in DETALHADOS:  # desenhada à mão em alvorada.json: só o terreno de base e o ponto
+        spots[pid] = [cx, cy + 6, 'down']; continue
     op(op='rect', t='plaza', x=cx - 7, y=cy - 1, w=14, h=6)
     op(op='rect', t='path', x=x, y=cy + 5, w=w, h=2)
     objects += [{'kind': 'center', 'x': cx - 16, 'y': cy - 4}, {'kind': 'mart', 'x': cx + 8, 'y': cy - 4},
