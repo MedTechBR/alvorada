@@ -58,7 +58,7 @@ class Lote {
     this.mesh = new THREE.Mesh(this.geo, this.mat);
     this.mesh.frustumCulled = false; this.mesh.renderOrder = ORDEM[modo];
     // os sprites em pé fazem sombra de verdade (recorte pela transparência da arte)
-    if (modo === MODOS.opaco) { this.mesh.castShadow = true; this.mesh.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: tex, alphaTest: 0.5, side: THREE.DoubleSide }); }
+    if (modo === MODOS.opaco && !esp.v.touch) { this.mesh.castShadow = true; this.mesh.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: tex, alphaTest: 0.5, side: THREE.DoubleSide }); }
     this.#crescer(64);
     esp.grupo.add(this.mesh);
   }

@@ -19,7 +19,7 @@ class ModelosNoMundo extends ModelosKit {
   setor(s) {
     super.setor(s);
     if (s.kitMalha) s.kitMalha.castShadow = s.kitMalha.receiveShadow = true;
-    for (const m of s.kitMoveis ?? []) { m.castShadow = m.receiveShadow = true; m.frustumCulled = false; }
+    for (const m of s.kitMoveis ?? []) { m.castShadow = !this.v.touch; m.receiveShadow = true; m.frustumCulled = false; }
     if (s.contato) { s.grupo.remove(s.contato); s.contato.geometry.dispose(); s.contato = null; }
     const pos = [], idx = [], uv = [], sala = s.sy * 16 + 16 > this.v.L.externoH;
     for (const o of this.v.L.objetosDoSetor(s.sx, s.sy)) {
