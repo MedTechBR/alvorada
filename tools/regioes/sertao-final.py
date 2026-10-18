@@ -25,3 +25,12 @@ for a in R.areas: pass
 # tocas de luz (src/data/tocas.js explica) já foram registradas em R.tocas
 
 # ---------------------------------------------------------------- Ninhos de pouso: os 3 do ponto de partida já existem (spots ninho_*)
+
+# ---------------------------------------------------------------- garantias: nada de árvore solta em cima de gente, item, baú, sinal ou toca
+for p in R.people: R.noTrees.append([p['x'] - 1, p['y'] - 1, 3, 3])
+for i in R.items: R.noTrees.append([i['x'] - 1, i['y'] - 1, 3, 3])
+for o in R.objects:
+    if o['kind'] in ('chest', 'sign', 'bench'): R.noTrees.append([o['x'] - 1, o['y'] - 1, 3, 3])
+for t in R.tocas: R.noTrees.append([t['x'] - 4, t['y'] - 4, 9, 9])
+for n, (x, y, d) in R.spots.items():
+    if n.startswith('sertao_') or n.startswith('ninho_'): R.noTrees.append([int(x) - 2, int(y) - 2, 5, 5])

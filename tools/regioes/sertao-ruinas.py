@@ -53,7 +53,7 @@ seguro(18, 11, 27, 12)                                             # corredor le
 seguro(26, 6, 27, 12)                                              # subida para a porta
 seguro(20, 5, 25, 6)                                               # galho norte (placa 2)
 seguro(18, 16, 25, 17); seguro(18, 13, 19, 17)                     # galho sul (placa 1)
-g.carve(29, 6, 29, 6, 'E')                                         # vão do portão (parede x=29)
+g.carve(28, 6, 28, 6, 'z'); g.carve(29, 6, 29, 6, 'E')            # vão do portão (parede x=29)
 g.carve(30, 3, 34, 9, 'E'); g.carve(31, 4, 33, 8, 'Y'); g.put(32, 3, '>')   # câmara do Alfa e escada para baixo
 for x in (12, 13, 14, 15, 16, 17): g.put(x, 4, 'H')
 p2 = ruina('ruinas_pintada_2', 'Ruínas de Pedra Pintada: Galeria da Areia', g, afunda={'sala': 'ruinas_pintada_1', 'x': 15, 'y': 14})
