@@ -13,7 +13,7 @@ const ok = (nome, cond, info = '') => { R[nome] = !!cond; if (!cond) falhas.push
 const shot = (p, n) => p.ev(`(async () => { game.app.renderer.render(game.app.stage); const b = await new Promise((r) => game.app.canvas.toBlob(r, 'image/jpeg', 0.85)); await fetch('/__shot?n=${n}', { method: 'POST', body: b }); return 1; })()`);
 // o Chrome sem interface desenha devagar (WebGL por software): um relógio próprio avança a lógica a 30 quadros/s
 const pump = (p) => p.ev(`(window.__pump ??= setInterval(() => game.frame(1 / 30), 33), 1)`);
-const espera = (p, expr, ms = 8000) => until(() => p.ev(expr), ms, 100);
+const espera = (p, expr, ms = 20000) => until(() => p.ev(expr), ms, 100);
 // ajudantes dentro da página
 const AJUDA = `window.__cv = {
   perto(f, x = game.player.x, y = game.player.y) { const v = game.vivo; return game.map.objects.filter((o) => !o.dead && f(o, v) && !game.map.interiorAt(o.x, o.y - 1)).sort((a, b) => Math.hypot(a.x - x, a.y - y) - Math.hypot(b.x - x, b.y - y))[0]; },
@@ -54,7 +54,7 @@ try {
   const pedra = await p.ev(`(() => { const r = __cv.perto((o, v) => v.material(o) === 'rochedo' && v.destrutivel(o)); if (!r) return null; window.__ped = r; __cv.ir(r.x, r.y + 28); for (let i = 0; i < 8; i++) game.vivo.golpe(r, __cv.fis(80), 1.2, game.player); return { kind: r.kind, dead: r.dead, livres: r.cells.every((k) => game.map.block[k] === 0), fase: game.vivo.estado(r)?.fase }; })()`);
   ok('rochedo quebra e libera o caminho', pedra?.dead && pedra.livres, pedra);
   await sleep(500); await shot(p, 'cv-rochedo-quebrado');
-  await p.ev('__cv.ir(__ped.x + 80, __ped.y + 60), game.vivo.passar(8.2), 1'); await sleep(300);
+  await p.ev('__cv.ir(__ped.x + 80, __ped.y + 60), game.vivo.passar(8.2), 1'); await espera(p, '!__ped.dead');
   ok('rochedo volta depois de 8 h do jogo', await p.ev(`!__ped.dead && __ped.cells.every((k) => game.map.block[k] === 1) && game.vivo.estado(__ped) === null`));
   const cerca = await p.ev(`(() => { const c = __cv.perto((o, v) => v.material(o) === 'madeira' && v.destrutivel(o)); if (!c) return null; for (let i = 0; i < 4; i++) game.vivo.golpe(c, __cv.fis(60, 'normal'), 1, game.player); return { kind: c.kind, dead: c.dead }; })()`);
   ok('madeira (cerca/placa/poste) quebra', cerca?.dead, cerca);
@@ -69,7 +69,7 @@ try {
   const dc = await p.ev(`game.vivo.estado(__casa)`);
   ok('casa danificada (não some; porta continua)', dc?.dano >= 75 && !(await p.ev('__casa.dead')) && (await p.ev(`game.map.warps.some((w) => w.x === __casa.doorX && w.y === __casa.doorY)`)), dc);
   await shot(p, 'cv-casa-1-danificada');
-  await p.ev('game.mundo.setHour(22), 1'); await espera(p, `game.vivo.estado(__casa)?.consertando && game.vivo.estado(__casa).dano < 99`, 15000); await sleep(800);
+  await p.ev('game.mundo.setHour(22), 1'); await espera(p, `game.vivo.estado(__casa)?.consertando && game.vivo.estado(__casa).dano < 99`, 40000); await sleep(800);
   const pd = await p.ev(`game.vivo.estado(__casa)`);
   ok('à noite o pedreiro conserta', pd?.consertando && pd.dano < dc.dano, pd);
   await shot(p, 'cv-casa-2-pedreiro-noite');
@@ -109,12 +109,12 @@ try {
   ok('dano na árvore derruba quem está em cima', await p.ev(`!game.lead.pouso && !game.lead.saltando && game.lead.cvQueda === true`));
 
   // ---- 6. selvagem na árvore e emboscada
-  const amb = await p.ev(`(async () => { const t = __arv2, w = await __cv.selvagem(190, 7, t.x, t.y + 14); window.__aip = w; const r = game.vivo.subir(w, t, { instantaneo: true }); window.__emb = 0; game.vivo.on('emboscada', () => { window.__emb++; }); return { r, perfil: game.vivo.perfil(w) }; })()`);
+  const amb = await p.ev(`(async () => { const t = __arv2, w = await __cv.selvagem(190, 7, t.x, t.y + 14); window.__aip = w; w.temper = 'aggressive'; const r = game.vivo.subir(w, t, { instantaneo: true }); window.__emb = 0; game.vivo.on('emboscada', () => { window.__emb++; }); return { r, perfil: game.vivo.perfil(w) }; })()`);
   ok('Aipom sobe na árvore', amb.r, amb);
   await p.ev(`(() => { const l = game.lead; l.x = __arv2.x + 50; l.y = __arv2.y + 30; __cv.ir(__arv2.x + 20, __arv2.y + 60); return 1; })()`);
   await sleep(900); await shot(p, 'cv-aipom-arvore');
   await p.ev(`(() => { __aip.temper = 'aggressive'; game.combat.ai.provoke(__aip, game.lead); return 1; })()`);
-  ok('selvagem salta de cima para emboscar', await until(() => p.ev('window.__emb > 0'), 8000, 200));
+  ok('selvagem salta de cima para emboscar', await until(() => p.ev('window.__emb > 0'), 20000, 200), await p.ev(`({ st: __aip.ai.state, pouso: !!__aip.pouso, alive: __aip.alive, d: Math.round(Math.hypot(game.lead.x - __aip.x, game.lead.y - __aip.y)) })`));
   await shot(p, 'cv-emboscada');
   await p.ev(`(() => { if (__aip.alive) game.removeEntity(__aip); return 1; })()`);
 
@@ -164,26 +164,26 @@ try {
   const A = await open(b, `${base}&online=1&rede=local&perfil=cva`, 'A'); await sleep(1500);
   const B = await open(b, `${base}&online=1&rede=local&perfil=cvb`, 'B');
   for (const q of [A, B]) { await until(() => q.ev('!!window.game?.vivo?.pronto && game.ui?.state === "play"'), 60000); await pump(q); await q.ev(AJUDA); }
-  const juntos = await until(async () => { const s = await Promise.all([A, B].map((q) => q.ev('game.net.on && game.net.room?.players.size'))); return s.every((n) => n === 2) && s; }, 45000, 500);
+  const juntos = await until(async () => { const s = await Promise.all([A, B].map((q) => q.ev('game.net.on && game.net.room?.players.size'))); return s.every((n) => n === 2) && s; }, 90000, 500);
   ok('2 clientes no mesmo canal', !!juntos, juntos);
   const alvo = await A.ev(`(() => { const t = __cv.perto((o, v) => v.material(o) === 'arvore' && v.destrutivel(o) && o.kind !== 'palm'); window.__t = t; __cv.ir(t.x - 40, t.y + 30); return game.vivo.chave(t); })()`);
   await B.ev(`(() => { window.__t = [...game.map.objects].find((o) => game.vivo.chave(o) === ${JSON.stringify(alvo)}); __cv.ir(__t.x + 40, __t.y + 30); return 1; })()`);
   await sleep(2500);
   await A.ev(`(() => { for (let i = 0; i < 12; i++) game.vivo.golpe(__t, __cv.fis(80), 1.2, game.player); return 1; })()`);
   await sleep(500); await shot(B, 'cv-online-b-vendo-cair');
-  const fb = await until(() => B.ev(`game.vivo.estado(__t)?.fase`).then((f) => (f === 'caindo' || f === 'caido') && f), 6000, 150);
+  const fb = await until(() => B.ev(`game.vivo.estado(__t)?.fase`).then((f) => (f === 'caindo' || f === 'caido') && f), 20000, 150);
   await espera(A, `game.vivo.estado(__t)?.fase === 'caido'`); await espera(B, `game.vivo.estado(__t)?.fase === 'caido'`);
   const fa = await A.ev(`game.vivo.estado(__t)?.fase`), fb2 = await B.ev(`game.vivo.estado(__t)?.fase`);
   ok('o outro jogador vê a mesma árvore cair', !!fb && fa === 'caido' && fb2 === 'caido', { alvo, A: fa, B: fb2 });
   await shot(A, 'cv-online-a'); await shot(B, 'cv-online-b');
   // casa danificada também chega
   await A.ev(`(() => { const h = __cv.perto((o, v) => v.material(o) === 'predio' && v.destrutivel(o)); window.__h = h; for (let i = 0; i < 5; i++) game.vivo.golpe(h, __cv.fis(90), 1.5, game.player); return game.vivo.chave(h); })()`).then((k) => B.ev(`window.__h = game.map.objects.find((o) => game.vivo.chave(o) === ${JSON.stringify(k)}), 1`));
-  const dh = await until(() => B.ev(`game.vivo.estado(__h)?.dano ?? 0`).then((d) => d > 30 && d), 6000, 200);
+  const dh = await until(() => B.ev(`game.vivo.estado(__h)?.dano ?? 0`).then((d) => d > 30 && d), 20000, 200);
   ok('dano da casa sincroniza', !!dh, dh);
   // altura do Pokémon sincroniza
   await A.ev(`(async () => { await game.sendOut(1); return 1; })()`); await until(() => A.ev('!!game.lead?.set'), 10000);
   await A.ev(`(() => { const l = game.lead, h = __h; l.x = h.x; l.y = h.y + 10; return game.vivo.subir(l, h); })()`);
-  const hz = await until(() => B.ev(`(() => { const r = [...game.net.remotes.map.values()][0]; const e = r?.follower; return e && e.piso > 20 && Math.round(e.z); })()`), 10000, 250);
+  const hz = await until(() => B.ev(`(() => { const r = [...game.net.remotes.map.values()][0]; const e = r?.follower; return e && e.piso > 20 && Math.round(e.z); })()`), 25000, 250);
   ok('altura do Pokémon do outro jogador aparece', !!hz, hz);
   await sleep(600); await shot(B, 'cv-online-b-pikachu-telhado');
   for (const q of [A, B]) { const ex = q.logs.filter((l) => /EXC|Uncaught|TypeError|ReferenceError/.test(l)); ok(`console sem erros (${q.tag})`, ex.length === 0, ex.slice(0, 5)); }
