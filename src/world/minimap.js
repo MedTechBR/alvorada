@@ -22,6 +22,9 @@ const COLORS = {
   [TILE.SALT]: '#eceef2', [TILE.SALTMIRROR]: '#bcdcf4', [TILE.REDROCK]: '#b85a3c', [TILE.DRYRIVER]: '#b8a080', [TILE.SHALLOW]: '#6ab4b0', [TILE.REED]: '#5a9a5a',
 };
 const ROOF = { houseA: '#9a5a3a', houseB: '#c84a3c', houseC: '#6a8a5a', houseBlue: '#3a6ad8', lab: '#8a94a4', center: '#e8483a', mart: '#3a7ae8', barn: '#b8402e', treeCenter: '#277a38', treeHouse: '#277a38', greenhouse: '#bfe8d0', radioStation: '#d8902a', portico: '#c84a3c', stands: '#5a6a8a' };
+// cor de cada bloco em [r, g, b] (também para o mapa de outro continente, src/world/viagem.js)
+export const CORES = Object.fromEntries(Object.entries(COLORS).map(([k, v]) => [k, [parseInt(v.slice(1, 3), 16), parseInt(v.slice(3, 5), 16), parseInt(v.slice(5, 7), 16)]]));
+const MB = 128; // blocos da imagem base do minimapa (128x128 blocos do mapa)
 const DIR_ANGLE = { up: 0, right: Math.PI / 2, down: Math.PI, left: -Math.PI / 2 };
 
 export class Minimap {
@@ -51,20 +54,44 @@ export class Minimap {
   }
   toggle() { this.rotate = !this.rotate; try { localStorage.setItem('alvorada.minimapa.gira', this.rotate ? '1' : '0'); } catch {} this.g.toast?.(this.rotate ? 'Minimapa: gira com você' : 'Minimapa: norte para cima'); }
 
-  // imagem base: 1 pixel por bloco, prédios pintados com a cor do telhado
-  #bake() {
-    const m = this.map, c = document.createElement('canvas'); c.width = m.w; c.height = m.h;
-    const x = c.getContext('2d'); const im = x.createImageData(m.w, m.h), d = im.data;
-    const rgb = {}; for (const [k, v] of Object.entries(COLORS)) rgb[k] = [parseInt(v.slice(1, 3), 16), parseInt(v.slice(3, 5), 16), parseInt(v.slice(5, 7), 16)];
-    for (let i = 0; i < m.w * m.h; i++) { const c3 = rgb[m.tiles[i]] ?? [120, 200, 96]; d[i * 4] = c3[0]; d[i * 4 + 1] = c3[1]; d[i * 4 + 2] = c3[2]; d[i * 4 + 3] = 255; }
-    x.putImageData(im, 0, 0);
-    for (const o of m.objects) {
-      if (ROOF[o.kind]) { x.fillStyle = ROOF[o.kind]; x.fillRect(o.tx, o.ty - 1, o.fw, o.fh + 1); }
-      else if (o.forest) continue;
-      else if (/tree|pine|autumn|oran|pecha|palm|cone|roundbush/.test(o.kind)) { x.fillStyle = '#2f7a3a'; x.fillRect(o.tx, o.ty, o.fw, 1); }
-      else if (/rock|boulder/.test(o.kind)) { x.fillStyle = '#8a8a92'; x.fillRect(o.tx, o.ty, o.fw, 1); }
+  // imagem base: 1 pixel por bloco, prédios pintados com a cor do telhado. Feita em blocos de 128x128 (só os que
+  // aparecem são desenhados; regiões ainda não montadas ficam de fora e entram quando o mapa monta a região).
+  #bake() { this.blocos = new Map(); this.rgb = {}; for (const [k, v] of Object.entries(COLORS)) this.rgb[k] = [parseInt(v.slice(1, 3), 16), parseInt(v.slice(3, 5), 16), parseInt(v.slice(5, 7), 16)]; return null; }
+  // mapa trocado (outro mundo): esquece os blocos desenhados
+  trocarMapa() { this.map = this.g.map; this.blocos = new Map(); this.objPorBloco = null; }
+  // a região [x, y, w, h] mudou (foi montada): redesenha os blocos que ela toca
+  invalidar(r) { if (!r || !this.blocos) return; for (const k of [...this.blocos.keys()]) { const bx = (k % 1024) * MB, by = Math.floor(k / 1024) * MB; if (bx < r[0] + r[2] + 1 && bx + MB > r[0] - 1 && by < r[1] + r[3] + 1 && by + MB > r[1] - 1) this.blocos.delete(k); } this.objPorBloco = null; }
+  #bloco(bx, by) {
+    const k = bx + by * 1024; let c = this.blocos.get(k); if (c) return c;
+    const m = this.map, x0 = bx * MB, y0 = by * MB, w = Math.min(MB, m.w - x0), h = Math.min(MB, m.h - y0);
+    if (w <= 0 || h <= 0) return null;
+    c = document.createElement('canvas'); c.width = MB; c.height = MB;
+    const x = c.getContext('2d'), im = x.createImageData(MB, MB), d = im.data, rgb = this.rgb, pend = m.nPend ? m.secPend : null;
+    for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
+      const tx = x0 + i, ty = y0 + j, o = (j * MB + i) * 4;
+      if (pend && pend[(tx >> 4) + (ty >> 4) * m.CW]) { d[o + 3] = 0; continue; } // região ainda não montada: transparente
+      const c3 = rgb[m.tiles[tx + ty * m.w]] ?? [120, 200, 96]; d[o] = c3[0]; d[o + 1] = c3[1]; d[o + 2] = c3[2]; d[o + 3] = 255;
     }
+    x.putImageData(im, 0, 0);
+    if (!this.objPorBloco) { this.objPorBloco = new Map(); for (const o of m.objects) { const kk = Math.floor(o.tx / MB) + Math.floor(o.ty / MB) * 1024; if (!this.objPorBloco.has(kk)) this.objPorBloco.set(kk, []); this.objPorBloco.get(kk).push(o); } }
+    for (const o of this.objPorBloco.get(k) ?? []) {
+      const ox = o.tx - x0, oy = o.ty - y0;
+      if (ROOF[o.kind]) { x.fillStyle = ROOF[o.kind]; x.fillRect(ox, oy - 1, o.fw, o.fh + 1); }
+      else if (o.forest) continue;
+      else if (/tree|pine|autumn|oran|pecha|palm|cone|roundbush/.test(o.kind)) { x.fillStyle = '#2f7a3a'; x.fillRect(ox, oy, o.fw, 1); }
+      else if (/rock|boulder/.test(o.kind)) { x.fillStyle = '#8a8a92'; x.fillRect(ox, oy, o.fw, 1); }
+    }
+    this.blocos.set(k, c);
+    // memória: no máximo ~40 blocos guardados (cada um tem 64 KB)
+    if (this.blocos.size > 40) { const k0 = this.blocos.keys().next().value; this.blocos.delete(k0); }
     return c;
+  }
+  // desenha a imagem base (blocos) no retângulo de blocos [x0, y0, x1, y1) do contexto atual (1 unidade = 1 bloco)
+  #base(ctx, x0, y0, x1, y1) {
+    const m = this.map;
+    for (let by = Math.max(0, Math.floor(y0 / MB)); by <= Math.min(Math.ceil(m.h / MB) - 1, Math.floor((y1 - 1) / MB)); by++) for (let bx = Math.max(0, Math.floor(x0 / MB)); bx <= Math.min(Math.ceil(m.w / MB) - 1, Math.floor((x1 - 1) / MB)); bx++) {
+      const c = this.#bloco(bx, by); if (c) ctx.drawImage(c, bx * MB, by * MB);
+    }
   }
 
   update(dt) {
@@ -85,7 +112,7 @@ export class Minimap {
     ctx.imageSmoothingEnabled = false;
     const px = p.x / T, py = p.y / T, a = room ? 0 : this.angle;
     ctx.translate(R, R); ctx.rotate(-a); ctx.scale(zoom, zoom); ctx.translate(-px, -py);
-    ctx.drawImage(this.base, 0, 0);
+    const vr = S / zoom * 0.75; this.#base(ctx, px - vr, py - vr, px + vr, py + vr);
     ctx.restore();
     // marcadores (sempre de pé)
     const toS = (wx, wy) => { const dx = (wx / T - px) * zoom, dy = (wy / T - py) * zoom; const c = Math.cos(-a), s = Math.sin(-a); return [R + dx * c - dy * s, R + dx * s + dy * c]; };
@@ -134,16 +161,23 @@ export class Minimap {
     if (this.label.textContent !== lt) this.label.textContent = lt;
   }
 
-  // Mapa completo da região (para o menu): fog nos setores não visitados, nomes das áreas e o jogador
+  // Mapa completo da região (para o menu): fog nos setores não visitados, nomes das áreas e o jogador.
+  // Só desenha os blocos com algum setor visitado (o resto fica na névoa de qualquer jeito).
   renderRegionMap(canvas, { fog = true, player = true, labels = true } = {}) {
-    const m = this.map, W = m.w, H = m.outdoorH, ctx = canvas.getContext('2d');
+    const m = this.map, W = m.w, H = m.outdoorH, ctx = canvas.getContext('2d'), vis = this.life.visited, CW = Math.ceil(W / 16);
     const s = Math.min(canvas.width / W, canvas.height / H), ox = (canvas.width - W * s) / 2, oy = (canvas.height - H * s) / 2;
     ctx.save(); ctx.fillStyle = '#e9dfc4'; ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(this.base, 0, 0, W, H, ox, oy, W * s, H * s);
+    const usados = new Set(); if (fog) { for (const k of vis) usados.add(Math.floor((k % CW) * 16 / MB) + Math.floor(Math.floor(k / CW) * 16 / MB) * 1024); }
+    ctx.save(); ctx.translate(ox, oy); ctx.scale(s, s);
+    for (let by = 0; by < Math.ceil(H / MB); by++) for (let bx = 0; bx < Math.ceil(W / MB); bx++) {
+      if (fog && !usados.has(bx + by * 1024)) continue;
+      const c = this.#bloco(bx, by); if (c) ctx.drawImage(c, 0, 0, MB, Math.min(MB, H - by * MB), bx * MB, by * MB, MB, Math.min(MB, H - by * MB));
+    }
+    ctx.restore();
     if (fog) {
       ctx.fillStyle = '#e9dfc4';
-      for (let cy = 0; cy < Math.ceil(H / 16); cy++) for (let cx = 0; cx < Math.ceil(W / 16); cx++) if (!this.life.visited.has(cx + cy * 64)) ctx.fillRect(ox + cx * 16 * s - 0.5, oy + cy * 16 * s - 0.5, 16 * s + 1, 16 * s + 1);
+      for (let cy = 0; cy < Math.ceil(H / 16); cy++) for (let cx = 0; cx < CW; cx++) if (!vis.has(cx + cy * CW)) ctx.fillRect(ox + cx * 16 * s - 0.5, oy + cy * 16 * s - 0.5, 16 * s + 1, 16 * s + 1);
     }
     if (labels) {
       ctx.font = `800 ${Math.max(9, 5 * s)}px system-ui`; ctx.textAlign = 'center'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.fillStyle = '#2a2018';
@@ -151,7 +185,7 @@ export class Minimap {
       for (const a of [...(m.areas ?? [])].reverse()) {
         if (a.name === 'Alvorada' || seen.has(a.name)) continue; seen.add(a.name);
         const [cx, cy] = a.rect ? [a.rect[0] + a.rect[2] / 2, a.rect[1] + a.rect[3] / 2] : [a.ellipse[0], a.ellipse[1]];
-        if (fog && !this.life.visited.has(Math.floor(cx / 16) + Math.floor(cy / 16) * 64)) continue;
+        if (fog && !vis.has(Math.floor(cx / 16) + Math.floor(cy / 16) * CW)) continue;
         ctx.strokeText(a.name, ox + cx * s, oy + cy * s); ctx.fillText(a.name, ox + cx * s, oy + cy * s);
       }
     }

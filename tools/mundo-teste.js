@@ -22,10 +22,18 @@ window.vista = async (n, tx, ty, z = 1, hour) => {
   if (n) await window.shot(n);
   G.zoom = oz; G.world.scale.set(oz); return n;
 };
+// recorte do mapa (blocos x, y, w, h), k px por bloco, num canvas salvo como shot (para conferir regiões e bordas)
+window.recorte = async (n, x, y, w, h, k = 4) => {
+  const G = g(), c = document.createElement('canvas'); c.width = G.map.w * k; c.height = G.map.outdoorH * k;
+  G.map.garantirArea?.(x, y, x + w, y + h);
+  G.mundo.renderRegionMap(c, { fog: false, labels: true, player: false });
+  const o = document.createElement('canvas'); o.width = w * k; o.height = h * k; o.getContext('2d').drawImage(c, x * k, y * k, w * k, h * k, 0, 0, w * k, h * k);
+  const b = await (await fetch(o.toDataURL('image/jpeg', 0.92))).blob();
+  await fetch('/__shot?n=' + n, { method: 'POST', body: b }); return n;
+};
 // mapa inteiro em escala reduzida (cada bloco = k px) num canvas, salvo como shot
 window.mapaInteiro = async (n = 'mapa', k = 2) => {
   const G = g(), c = document.createElement('canvas'); c.width = G.map.w * k; c.height = G.map.outdoorH * k;
-  G.mundo.visited = new Set([...Array(64 * 64).keys()]);
   G.mundo.renderRegionMap(c, { fog: false });
   const b = await (await fetch(c.toDataURL('image/jpeg', 0.92))).blob();
   await fetch('/__shot?n=' + n, { method: 'POST', body: b }); return n;

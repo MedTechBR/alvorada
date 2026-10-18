@@ -1,8 +1,98 @@
-# Mapa da região (alvorada.json)
+# Mapas dos mundos (alvorada.json, ocaso.json e os arquivos de região)
 
-A região inteira, desenhada à mão, num JSON só. Coordenadas em **blocos de 16 px** (x para a direita, y para baixo).
-O jogo monta o mapa ao carregar (`src/world/build.js`) e desenha os setores de 16x16 blocos sob demanda.
-Depois de editar à mão, `python3 tools/formatar-mapa.py assets/maps/alvorada.json` deixa o arquivo arrumado.
+Cada continente é um **mundo** com mapa próprio; cada mundo é montado de um arquivo principal mais **um arquivo por
+região**. Coordenadas em **blocos de 16 px** (x para a direita, y para baixo), sempre absolutas do mundo.
+O jogo junta os arquivos (`src/world/mundos.js`), monta os blocos (`src/world/build.js`) e desenha os setores de 16x16
+blocos sob demanda (`src/world/map.js`). Depois de editar à mão, `python3 tools/formatar-mapa.py <arquivo>` arruma.
+Manual curto para quem constrói uma região: `docs/construir-regiao.md`.
+
+## Mundos, regiões e faixas de interiores
+
+| Mundo | Arquivo | Tamanho (w x outdoorH, h) | Regiões (`regioes`) |
+|---|---|---|---|
+| `alvorada` (Continente de Alvorada) | `alvorada.json` (+ `esboco.json` no `include`) | 1200 x 960, h 2080 | `regioes/nucleo.json` (acréscimos ao núcleo), `geada`, `sertao`, `jandaia`, `austral`, `brasas` |
+| `ocaso` (Terras do Ocaso) | `ocaso.json` | 960 x 720, h 1040 | `ocaso/leste.json`, `ocaso/oeste.json` |
+
+- `mundos.json`: a lista dos mundos `{ id, arquivo, nome, curto }`. Só um fica montado por vez; a troca é por navio,
+  voo ou passagem (veja **Viagens**). `?mundo=ocaso` (ou `?mapa=<arquivo sem .json>`, para mapas de teste como
+  `demo-biomas`) abre direto noutro mundo, em modo de teste.
+- Arquivo principal: `w`, `h`, `outdoorH`, `base`, `rect` (o retângulo que ele mesmo desenha; o núcleo é
+  `[0, 0, 600, 480]`), `faixa` (onde ficam as salas dele), `include` (desenhados **antes**: o esboço) e `regioes`
+  (desenhados **depois**, um arquivo por região).
+- **Arquivo de região**: começa com o cabeçalho
+  `"regiao": { "id", "nome", "mundo", "rect": [x, y, w, h], "faixa": [x, y, w, h], "formaRegional"? }` e traz os
+  mesmos campos de sempre (`ops`, `trees`, `objects`, `decor`, `interiors`, `warps`, `spots`, `radius`, `areas`,
+  `items`, `people`, `pets`, `noTrees`, `signs`, `forestZones`, `mecanismos`, `buracos`, `viagens`, `ninhos`).
+  - O `include`/`regioes` junta **tudo** de cada arquivo. As operações de pintura de uma região são **recortadas** no
+    `rect` dela: pintar fora não tem efeito (e o console avisa objeto ou área fora do retângulo). Árvores soltas e as
+    fileiras da mata também ficam dentro do retângulo.
+  - Cada região tem a **própria semente** de ruído (`ellipse`, `blobs`, `scatter`… com `noise`): mexer numa região não
+    muda o desenho de outra. O núcleo (`alvorada.json` + `esboco.json`) continua com o contador de sempre e sai
+    idêntico ao de antes das regiões (`node tools/teste-mapa/nucleo.mjs` confere).
+  - As regiões fora do núcleo são **montadas sob demanda**: em fatias de até ~3 ms por quadro quando a câmera chega a
+    64 blocos delas, ou na hora, se alguém consulta um bloco delas (teleporte, voo). O minimapa é desenhado em blocos
+    de 128x128 e só os que aparecem.
+  - `formaRegional` (`'alola'`, `'hisui'`…): o que `game.map.regionAt(x, y)` devolve para as evoluções por região
+    (`ctx.region`). `regionAt(px, py)` dá `{ mundo, id, nome, formaRegional }` do ponto (salas contam pela região dona).
+- **Salas (interiores)** ficam abaixo de `outdoorH`, na faixa da região, isoladas por vazio:
+  - numa região, `interiors[]` **sem `x`/`y`** ganha lugar sozinho na faixa (prateleiras da esquerda para a direita, 20
+    blocos de vazio entre salas, 12 de folga no topo); com `x`/`y`, eles são **relativos à faixa** da região. Dois
+    agentes nunca colidem. No `alvorada.json`, as salas antigas têm posição absoluta (y de 972 a 1155).
+  - o que fica dentro da sala usa coordenadas da sala: `objects`, `decor`, `people`, `pets`, `spots`, `items`,
+    `warps`, `mecanismos`, `buracos`. Uma passagem interna pode ir para `[x, y]` (mesma sala), `["outra_sala", x, y]` ou
+    `"nome_do_ponto"`.
+  - o jogo salvo guarda a posição **relativa à sala** (a sala pode mudar de lugar quando a região cresce).
+- Migração do núcleo (já feita; idempotente): `node tools/migrar-nucleo.mjs` (`--conferir` só mostra). Desce 480 blocos
+  tudo o que estiver na faixa antiga (y 480–959) do `alvorada.json`: rode de novo depois de juntar um ramo que ainda
+  mexia no formato velho.
+- Ponto de partida das regiões: `node tools/gerar-regioes.mjs` (cria só os arquivos que faltam; `--forcar` reescreve):
+  contorno de terra e mar, o chão de cada área pelo bioma (seção 6 do plano), as passagens da seção 5, as áreas com os
+  ids do plano, um Ninho por cidade e os cais.
+
+## Interiores gerados (todo prédio entra)
+
+Todo objeto com porta (`center`, `mart`, casas `house*`, `cabin`, `taipa`, `igloo`, `barn`, `lab`…) que **não tem
+`to`** ganha uma sala gerada (`src/world/interiores.js`), alocada na faixa da região do prédio:
+
+- tipo pelo prédio: Centro Pokémon (enfermeira que cura, PC, máquina), Mercado (vendedor com estoque), casa de um
+  cômodo (sala, cozinha ou quarto), **sobrado** (sala e cozinha embaixo, quarto em cima, com escada), oficina,
+  laboratório, celeiro, estufa, escritório, salão;
+- móveis com texto, 1 ou 2 moradores com falas coerentes com a cidade (o que o plano diz dela: ginásio, prédios,
+  moradores e boatos, em `src/world/cidades.js`, gerado de `docs/mundo-expandido.json` por `node tools/gerar-cidades.mjs`)
+  e às vezes um item no chão;
+- **determinístico pela posição**: a mesma casa tem sempre o mesmo interior. O id também: `casa_<x>_<y>`,
+  `centro_<x>_<y>`, `loja_<x>_<y>`, `oficina_<x>_<y>`… (o andar de cima do sobrado é `<id>_2`); os moradores são
+  `<sala>_m1`, `<sala>_m2`, a enfermeira `<sala>_enfermeira` e o vendedor `<sala>_vendedor`.
+
+No próprio objeto do prédio:
+
+| campo | efeito |
+|---|---|
+| `"to": "<id>"` | usa a sala feita à mão (nada é gerado) |
+| `"semInterior": true` | prédio sem porta funcional (enfeite) |
+| `"predio": "<id do plano>"` | usa o prédio da seção 10 do plano: o id vira o da sala, nome e "o que tem dentro" vêm de lá |
+| `"interior": { "tipo", "nome", "andares": 2, "npc", "moradores", "itens", "falas" }` | ajusta a sala gerada. `npc` (um morador ou uma lista, com `id`) é o **gancho para um NPC de missão** morar numa casa gerada; `moradores` troca os gerados; `itens: [["oran", 2]]` põe itens no chão; `falas` soma falas aos moradores. `tipo`: `casa`, `sala`, `cozinha`, `quarto`, `sobrado`, `loja`, `centro`, `oficina`, `lab`, `celeiro`, `estufa`, `escritorio`, `salao` |
+
+## Viagens (`src/world/viagem.js`, `game.viagem`)
+
+- **Navios, balsas e trens**: um morador com `"viagem": "<id>"` abre a conversa da viagem descrita em `viagens` (no
+  arquivo da região):
+  `{ "id", "nome", "fala": [...], "destinos": [{ "nome", "mundo"?, "destino", "preco"?, "horarios"?: [10, 22], "requer"?, "cena"?, "falas"? }] }`.
+  `destino` é um ponto (`"porto_rubro_cais"`), `[x, y]`, `["sala", x, y]` ou `{ "area": "id" }`. Sem `mundo`, é no mesmo
+  mapa (balsa, trem). Fora do horário, o barqueiro oferece esperar (a hora do jogo pula). O cargueiro Coral ↔ Porto
+  Rubro e a balsa de Coral (Jandaia, Estação Austral) já estão ligados (`regioes/nucleo.json`, `ocaso/leste.json`,
+  `regioes/jandaia.json`, `regioes/austral.json`).
+- **Voo**: `"ninhos": [{ "id", "nome", "spot" }]` (ou `x`, `y`) marca um Ninho de pouso; passar a menos de 6 blocos
+  registra (`flags.ninhos.<mundo>.<id>`). A tela clássica **Voar para…** (menu → Voar, ou tecla V; precisa da montaria
+  Voar, ou `?teste=1`) lista os ninhos visitados com abas por continente; outro continente só aparece depois de chegar
+  lá uma vez de navio (`flags.viagens.<mundo>`).
+- **Passagens entre mapas**: um warp com `"mundo": "ocaso"` e `"to"` no formato de destino; `"pergunta": "Entrar?"`
+  pede confirmação.
+- A troca de mundo faz fade, mostra "Viajando para…", monta o outro mapa em fatias (o jogo não trava) e põe o jogador no
+  destino. O que a história e as missões puseram na cena em coordenadas do mundo anterior fica guardado e volta quando o
+  jogador voltar. O jogo salvo guarda o mundo (`mundo`), e o online leva o mundo em cada posição: só aparece quem está
+  no mesmo mundo e lugar. O desmaio leva ao último Centro Pokémon, mesmo no outro continente.
+- Para testar: `node tools/teste-mapa/viagens.mjs` (navio, voo, ninhos, save e recarga no Ocaso).
 
 ## Campos
 
@@ -20,9 +110,11 @@ Depois de editar à mão, `python3 tools/formatar-mapa.py assets/maps/alvorada.j
 - `objects`: `{kind,x,y,...}`; `x,y` é o canto de cima à esquerda da pegada. Catálogo em `src/world/objects.js`.
   Prédios com `"to": "<id do interior>"` ganham porta com fade. Placas têm `text`.
 - `decor`: decoração plana (`courtlines`, `rug`, `wheat` com `w/h` para preencher área, `window`...).
-- `interiors`: salas `{id,name,x,y,rows,objects,decor,spots,biome?,wild?,dark?}` desenhadas em texto; o tapete `m`
-  é a saída (pisar nele andando para baixo volta para a porta).
-- `warps`: passagens extras `{x,y,dir,to:[x,y],face,label}` (gruta, escadas).
+- `interiors`: salas `{id,name,x?,y?,rows,objects,decor,spots,people,pets,items,warps,biome?,wild?,dark?,encounters?}`
+  desenhadas em texto; o tapete `m` é a saída (pisar nele andando para baixo volta para a porta). Posição: veja
+  **Salas** acima (numa região, sem x/y = automática; com x/y = relativa à faixa).
+- `warps`: passagens extras `{x,y,dir,to,face,label,requer?,msg?,mundo?}` (gruta, escadas); `to`: `[x, y]`,
+  `["sala", x, y]` ou `"ponto"`; com `mundo`, leva a outro mundo.
 - `spots`: pontos nomeados para a história `[x,y,direção]`. Também são criados `porta_<id>` e `dentro_<id>`.
 - `areas`: nome e bioma (`vila`, `campo`, `floresta`, `margem`, `praia`, `planalto`) por `rect` ou `ellipse`;
   a última que contém o ponto vence. Bioma `vila` não tem selvagens.
@@ -37,7 +129,10 @@ Depois de editar à mão, `python3 tools/formatar-mapa.py assets/maps/alvorada.j
   `rival`, `treinador`, `treinadora`, `montanhista`) ou `{preset, ...cores}`. Cada conversa mostra a próxima fala.
 - `pets`: Pokémon passivos `{dex,x,y,wander,perch?,sleep?,say}`; `perch: true` = parado num telhado.
 - Objetos com `text` (placas e móveis) mostram o texto com E. `noTrees`: retângulos `[x,y,w,h]` sem árvores soltas.
-- `include`: arquivos desenhados antes deste (o esboço da região).
+- `include`: arquivos desenhados antes deste (o esboço da região). `regioes`: um arquivo por região, desenhados depois.
+- `ninhos`, `viagens`: pontos de pouso do voo e navios/balsas/trens (veja **Viagens**).
+- Selvagens: a tabela de `src/data/habitats.js` (`AREAS_ENCONTROS[id da área ou da sala]`, com dia, noite e formas)
+  vale antes da `encounters` do mapa; sem as duas, a do bioma.
 
 ## Tipos de bloco (caracteres dos carimbos)
 
@@ -66,7 +161,7 @@ Depois de editar à mão, `python3 tools/formatar-mapa.py assets/maps/alvorada.j
   Decoração: `trilho`, `trilhoH`, `ondas` (calçadão), `tapeteRoxo`, `luzChao`, `folhas`, `poeira`.
 - Entradas marcadas com `"cap456": true` foram geradas para estes capítulos. Os quebra-cabeças usam coordenadas
   relativas às salas (`src/story/enigmas.js`): mudar uma sala de lugar não quebra nada, mudar o desenho dela sim.
-- Os interiores ficam na faixa de baixo (y ≥ 480), afastados uns dos outros (≥ 20 blocos) para a câmera não mostrar a sala vizinha.
+- Os interiores ficam na faixa de baixo (y ≥ 960 em Alvorada), afastados uns dos outros (≥ 20 blocos) para a câmera não mostrar a sala vizinha.
 
 ## Biomas novos: blocos, objetos, mecânicas e clima (ramo `biomas`)
 

@@ -87,12 +87,15 @@ export function cleanLook(o) {
 }
 
 // Estado de posição (10–20 vezes por segundo): números finitos e dentro do mapa
-const MAPPX = 1024 * 16; // o mapa da região tem 600x480 blocos + faixa de interiores (antes: 200 blocos, e quem passava de x/y = 3200 px sumia)
+// O maior mundo (Alvorada) tem 1200 x 2080 blocos com a faixa de interiores; folga até 4096 blocos para crescer.
+// (Antes: 1024 blocos, e quem passava de x/y = 16384 px sumia.)
+export const MAPPX = 4096 * 16;
+const MUNDO_ID = /^[a-z0-9-]{1,24}$/;
 export function validateState(s) {
   if (!s || typeof s !== 'object') return null;
   const num = (v) => Number.isFinite(v) && v >= -64 && v <= MAPPX + 64;
   if (!num(s.x) || !num(s.y)) return null;
-  const out = { x: s.x, y: s.y, d: ['down', 'up', 'left', 'right'].includes(s.d) ? s.d : 'down', r: !!s.r, seq: isInt(s.seq, 0, 1e9) ? s.seq : 0 };
+  const out = { x: s.x, y: s.y, d: ['down', 'up', 'left', 'right'].includes(s.d) ? s.d : 'down', r: !!s.r, seq: isInt(s.seq, 0, 1e9) ? s.seq : 0, w: typeof s.w === 'string' && MUNDO_ID.test(s.w) ? s.w : 'alvorada' };
   if (s.l && num(s.l.x) && num(s.l.y) && typeof s.l.u === 'string') out.l = { x: s.l.x, y: s.l.y, u: s.l.u.slice(0, 16), a: isInt(s.l.a, 0, 7) ? s.l.a : 2, z: !!s.l.z, h: Number.isFinite(s.l.h) ? Math.max(0, Math.min(160, s.l.h)) : 0, p: s.l.p === 1 };
   if (Number.isFinite(s.tz)) out.tz = Math.max(0, Math.min(120, s.tz)); // altura do treinador (telhado: src/world/vivo.js)
   if (['correr', 'nadar', 'escalar', 'voar', 'mergulhar'].includes(s.m)) { out.m = s.m; out.z = Number.isFinite(s.z) ? Math.max(0, Math.min(120, s.z)) : 0; out.u = !!s.u; out.mountDex = isInt(s.mountDex, 1, 1025) || (typeof s.mountDex === 'string' && /^\d{1,4}-[A-Za-z]{1,24}$/.test(s.mountDex)) ? s.mountDex : null; } // montaria (src/world/mounts.js); com forma: "59-hisui"

@@ -1,0 +1,49 @@
+{
+  "regiao": {"id": "nucleo", "nome": "Núcleo de Alvorada (acréscimos)", "mundo": "alvorada", "rect": [0, 0, 600, 480], "faixa": [0, 960, 1200, 320]},
+  "comment": "Acréscimos ao núcleo para o mundo grande (gerado por tools/gerar-regioes.mjs; pode editar à mão). O núcleo em si está em alvorada.json e esboco.json.",
+  "ops": [
+    {"op": "comment", "_": "Passo do Uivo: a trilha da Rota 9 vai do Mirante até a divisa leste (Rota 15)"},
+    {"op": "path", "t": "path", "pts": [[516, 72], [560, 72], [599, 72]], "width": 6, "wobble": 2},
+    {"op": "comment", "_": "Estrada do Sertão: do portão leste de Cidade Aurora até a divisa (Rota 14), abrindo a borda de mata"},
+    {"op": "path", "t": "path", "pts": [[553, 186], [572, 192], [588, 203], [599, 203]], "width": 6, "wobble": 1},
+    {"op": "rect", "t": "path", "x": 594, "y": 200, "w": 6, "h": 8},
+    {"op": "comment", "_": "Costa do Siri: água funda na borda leste (a mata da borda vira mar)"},
+    {"op": "rect", "t": "deep", "x": 596, "y": 416, "w": 4, "h": 64, "on": ["forest", "water", "deep"]},
+    {"op": "comment", "_": "Mar do Sul: a mata da borda sul vira mar (nadar para as Jandaias e o Recife)"},
+    {"op": "rect", "t": "deep", "x": 2, "y": 476, "w": 596, "h": 4, "on": ["forest", "water", "deep"]},
+    {"op": "comment", "_": "Forte Rochedo: portão leste na muralha, para a trilha da Rota 7 (antes ninguém chegava)"},
+    {"op": "rect", "t": "path", "x": 306, "y": 158, "w": 2, "h": 9},
+    {"op": "rect", "t": "path", "x": 304, "y": 160, "w": 2, "h": 5}
+  ],
+  "spots": {
+    "cais_coral": [346, 421, "up"],
+    "ninho_forte_rochedo": [285, 170, "down"],
+    "ninho_cidade_escarpa": [153, 99, "down"],
+    "ninho_mirante_ventos": [537, 36, "down"],
+    "ninho_liga_zenite": [306, 10, "down"]
+  },
+  "ninhos": [
+    {"id": "vila_alvorada", "nome": "Vila Alvorada", "spot": "inicio"},
+    {"id": "cidade_campina", "nome": "Cidade Campina", "spot": "porta_centro_campina"},
+    {"id": "vila_sussurro", "nome": "Vila Sussurro", "spot": "porta_centro_sussurro"},
+    {"id": "porto_espelho", "nome": "Porto Espelho", "spot": "porta_centro_porto"},
+    {"id": "cidade_coral", "nome": "Cidade Coral", "spot": "porta_centro_coral"},
+    {"id": "vila_lamparina", "nome": "Vila Lamparina", "spot": "porta_centro_lamparina"},
+    {"id": "cidade_aurora", "nome": "Cidade Aurora", "spot": "porta_centro_aurora"},
+    {"id": "forte_rochedo", "nome": "Forte Rochedo", "spot": "ninho_forte_rochedo"},
+    {"id": "cidade_escarpa", "nome": "Cidade Escarpa", "spot": "ninho_cidade_escarpa"},
+    {"id": "mirante_ventos", "nome": "Mirante dos Ventos", "spot": "ninho_mirante_ventos"},
+    {"id": "liga_zenite", "nome": "Liga Alvorada", "spot": "ninho_liga_zenite"}
+  ],
+  "objects": [
+    {"kind": "sign", "x": 345, "y": 411, "text": "CAIS DE CIDADE CORAL\nCargueiro Estrela-d’Alva: Porto Rubro (Terras do Ocaso), 10h e 22h.\nBalsa: Ilha Jandaia (8h, 13h e 18h) · Navio de Pesquisa: Estação Austral."}
+  ],
+  "people": [
+    {"id": "mestre_cargueiro", "name": "Mestre do Cargueiro", "look": {"preset": "montanhista", "top": "#2a4a7a", "pants": "#3a3a5a", "hair": "#5a3a2a"}, "x": 347, "y": 423, "dir": "up", "viagem": "navio_ocaso", "lines": ["O Estrela-d’Alva cruza o Mar do Poente."]},
+    {"id": "barqueira_coral", "name": "Barqueira Dalva", "look": {"preset": "treinadora", "top": "#e8843a", "pants": "#2a4a6a", "hair": "#3a2a1a"}, "x": 349, "y": 413, "dir": "down", "viagem": "barcos_coral", "lines": ["A balsa e o navio de pesquisa saem daqui."]}
+  ],
+  "viagens": [
+    {"id": "navio_ocaso", "nome": "O Cargueiro Estrela-d’Alva", "fala": ["O Estrela-d’Alva leva carga e gente até Porto Rubro, nas Terras do Ocaso.", "São ₽2000 a passagem. Embarca?"], "destinos": [{"nome": "Porto Rubro (Terras do Ocaso)", "mundo": "ocaso", "destino": "porto_rubro_cais", "preco": 2000, "horarios": [10, 22], "cena": "O cargueiro sai do cais e o sol nasce atrás de você. Do outro lado do mar, o Ocaso…"}]},
+    {"id": "barcos_coral", "nome": "A balsa", "fala": ["Para onde vai?"], "destinos": [{"nome": "Ilha Jandaia", "destino": "cais_jandaia", "preco": 300, "horarios": [8, 13, 18], "cena": "A balsa balança devagar até as Jandaias…"}, {"nome": "Estação Austral", "destino": "cais_austral", "preco": 800, "horarios": [10], "cena": "O navio de pesquisa passa pelo Recife Grande e pela Ilha do Farol Morto…"}]}
+  ]
+}

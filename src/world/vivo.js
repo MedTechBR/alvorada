@@ -88,7 +88,8 @@ export class CenarioVivo {
   // ======================================================================== interface (docs/cenario-vivo.md)
   on(ev, fn) { if (!this.ouvintes.has(ev)) this.ouvintes.set(ev, new Set()); this.ouvintes.get(ev).add(fn); return () => this.ouvintes.get(ev)?.delete(fn); }
   emit(ev, d) { for (const fn of this.ouvintes.get(ev) ?? []) { try { fn(d); } catch (e) { console.warn('cenario-vivo', ev, e); } } }
-  chave(o) { return (o.cvk ??= `${o.kind}@${o.tx},${o.ty}`); }
+  // chave estável do objeto: mundo/tipo@bloco (o mesmo em todos os jogadores e no save)
+  chave(o) { return (o.cvk ??= `${this.g.map?.id ?? 'alvorada'}/${o.kind}@${o.tx},${o.ty}`); }
   // estado de um objeto (null = intacto)
   estado(o) {
     const s = this.est.get(this.chave(o)); if (!s) return null;
@@ -110,15 +111,35 @@ export class CenarioVivo {
 
   // ======================================================================== início preguiçoso
   #iniciar() {
-    const g = this.g, m = g.map; if (!m || !g.player) return false;
+    const g = this.g, m = g.map; if (!m?.id || !m.objects?.length || !g.player) return false;
     this.pronto = true;
-    const prev = m.spriteHook; // a masmorra também desenha pelo gancho: encadeia
-    m.spriteHook = (o, s) => { prev?.(o, s); this.#visual(o, s); };
+    this.#gancho();
     const p = g.player, k0 = p.knock;
     p.knock = function (kx, ky) { k0.call(this, kx, ky); if (this.pouso && kx * kx + ky * ky > 400) g.vivo?.derrubar(this); };
+    this.mapaId = m.id; this.nObjs = m.objects.length;
     this.escadas = this.#escadas();
     this.flagsRef = null;
     return true;
+  }
+  // a masmorra também desenha pelo gancho do mapa: encadeia (e de novo se alguém trocar o gancho)
+  #gancho() {
+    const m = this.g.map; if (m.spriteHook && m.spriteHook === this.hook) return;
+    const prev = m.spriteHook;
+    this.hook = m.spriteHook = (o, s) => { prev?.(o, s); this.#visual(o, s); };
+  }
+  // trocou de mundo (map.carregar) ou uma região nova foi montada: refaz índices e escadas; no mundo novo, aplica o save dele
+  #mapaMudou() {
+    const g = this.g, m = g.map;
+    if (m.id !== this.mapaId) {
+      for (const s of this.est.values()) { s.marcas?.destroy({ children: true }); this.#tirarPedreiro(s); }
+      this.est.clear(); this.tiles.clear(); this.fendas = []; this.fila.clear(); this.mec = null;
+      for (const e of [g.player, ...g.entities]) if (e) { e.pouso = null; e.saltando = null; e.piso = 0; if (e.isTrainer) e.z = 0; }
+      this.mapaId = m.id; this.flagsRef = null; // aplica o save do mundo novo no próximo passo
+    }
+    this.nObjs = m.objects.length; this.idx = null; this.flagsRef = null; // região nova montada: o save dela vale agora
+    for (const l of this.escadas ?? []) l.sprite?.destroy();
+    this.escadas = this.#escadas();
+    this.#gancho();
   }
   get st() { const f = this.g.flags; return (f.cv ??= { h: 0, o: {} }); }
 
@@ -745,6 +766,8 @@ export class CenarioVivo {
   update(dt) {
     if (!this.pronto && !this.#iniciar()) return;
     const g = this.g;
+    if (!g.map?.id) return; // trocando de mundo
+    if (g.map.id !== this.mapaId || g.map.objects.length !== this.nObjs) this.#mapaMudou();
     if (g.flags !== this.flagsRef) this.#aplicarSave();
     this.#tick(dt);
     // saltos e alturas
@@ -987,7 +1010,8 @@ export class CenarioVivo {
     const st = this.st; this.horas = st.h ?? 0;
     const idx = this.#indice();
     for (const [k, v] of Object.entries(st.o ?? {})) {
-      const o = idx.get(k); if (!o || !Array.isArray(v)) { delete st.o[k]; continue; }
+      if (!k.startsWith(this.mapaId + '/')) continue; // é de outro mundo
+      const o = idx.get(k); if (!o || !Array.isArray(v)) { if (this.g.map.objects.length && !this.g.map.nPend) delete st.o[k]; continue; }
       this.#aplicar(o, { f: v[0], n: v[1], r: v[2], q: v[3], d: v[4] }, true);
     }
   }
@@ -1034,7 +1058,7 @@ export class CenarioVivo {
     this.enviarT = 0.25;
     const l = [...this.fila.values()].slice(0, 40);
     for (const x of l) this.fila.delete(x.k ? 'o:' + x.k : 't:' + x.t.join(','));
-    this.g.net.send('cv', { l });
+    this.g.net.send('cv', { w: this.mapaId, l });
   }
   // chegou alguém: manda o que está mexido
   novoJogador(id) {
@@ -1042,10 +1066,11 @@ export class CenarioVivo {
     const l = [];
     for (const s of this.est.values()) l.push({ k: s.k, f: s.fase, n: Math.round((s.mat === 'predio' ? s.dano : s.hp) * 10) / 10, r: s.ate != null ? Math.round((s.ate - this.horas) * 1000) / 1000 : null, v: s.v, q: (s.queimado ? 1 : 0) | (s.carbonizada ? 2 : 0), d: s.dir ?? 1 });
     for (const t of this.tiles.values()) l.push({ t: [t.tx, t.ty], a: t.novo, b: t.orig, tp: t.tipo, r: Math.round((t.ate - this.horas) * 1000) / 1000, v: t.v });
-    for (let i = 0; i < l.length; i += 40) this.g.net.send('cv', { l: l.slice(i, i + 40) }, id);
+    for (let i = 0; i < l.length; i += 40) this.g.net.send('cv', { w: this.mapaId, l: l.slice(i, i + 40) }, id);
   }
   receber(data, from) {
     const l = Array.isArray(data?.l) ? data.l.slice(0, 60) : []; if (!l.length || !this.pronto) return;
+    if ((data.w ?? 'alvorada') !== this.mapaId) return; // o outro jogador está noutro mundo
     const idx = this.#indice(), m = this.g.map, fin = Number.isFinite, self = this.g.net?.selfId ?? '';
     for (const x of l) {
       if (!x || typeof x !== 'object') continue;

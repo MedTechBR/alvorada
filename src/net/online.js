@@ -86,6 +86,7 @@ export class Online {
     if (!fin(a.x) || !fin(a.y) || !fin(b.x) || !fin(b.y)) return false;
     if (Math.abs(a.x - b.x) > NEAR || Math.abs(a.y - b.y) > NEAR) return false;
     const m = this.g.map;
+    if ((a.w ?? 'alvorada') !== (b.w ?? 'alvorada')) return false; // outro continente
     return (m.interiorAt(a.x, a.y)?.id ?? '') === (m.interiorAt(b.x, b.y)?.id ?? '');
   }
 
@@ -235,7 +236,7 @@ export class Online {
     return room.roster.map((q) => {
       const r = this.remotes.get(q.id), me = q.id === room.selfId;
       const has = me || r?.has, x = me ? p.x : r?.x, y = me ? p.y : r?.y;
-      const same = has && this.remotes.sameRoom(x, y);
+      const same = has && this.remotes.sameRoom(x, y, me ? null : r?.w ?? 'alvorada');
       return { ...q, me, area: has ? m.areaName(x, y) : '…', dist: has && same && !me ? Math.round(Math.hypot(x - p.x, y - p.y) / 16) : null, near: !!r?.view.visible };
     });
   }
@@ -261,7 +262,7 @@ export class Online {
       const busy = this.duel.active || this.remotes.nearest(p.x, p.y, NEAR + 160) || this.room.players.size <= 2 || this.mode === 'room';
       this.stT = this.duel.active ? 0.05 : busy ? 0.1 : 0.5;
       const r1 = (v) => Math.round(v * 10) / 10;
-      const st = { ts: Math.round(performance.now()), seq: ++this.seq, x: r1(p.x), y: r1(p.y), d: p.dir, r: p.speed > 100 };
+      const st = { ts: Math.round(performance.now()), seq: ++this.seq, x: r1(p.x), y: r1(p.y), d: p.dir, r: p.speed > 100, w: this.g.map?.id ?? 'alvorada' }; // w: mundo (continente)
       if (l?.alive) { st.l = { x: r1(l.x), y: r1(l.y), u: l.mon.uid, a: l.dir }; if (l.z > 0.5) st.l.h = Math.round(l.z); if (l.piso > 0) st.l.p = 1; } // altura (no ar ou em cima de algo)
       if (p.z > 0.5) st.tz = Math.round(p.z); // treinador no telhado
       const mt = this.g.mount?.netState(); if (mt) Object.assign(st, mt); // montaria: tipo, altura do voo, mergulho (e mountDex)
