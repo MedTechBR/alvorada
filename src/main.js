@@ -59,17 +59,36 @@ class Game {
     this.app.ticker.add((tk) => this.frame(Math.min(0.05, tk.deltaMS / 1000)));
     window.game = this;
     // tela de título (conta + personagem); depois o primeiro Pokémon sai da bola e a história começa
+    // ?teste=1: entra direto com equipe de teste e sem gravar (para testes; não aparece para o jogador)
+    const teste = new URLSearchParams(location.search).has('teste');
+    if (teste) {
+      this.noSave = true;
+      Object.assign(this.flags, { intro: true, starter: 4, rivalStarter: 7, balls: true, rival1: 'win', badges: [], trainers: {}, playerName: 'Teste' });
+      this.party = [new Mon(4, 14), new Mon(25, 12), new Mon(7, 12)];
+      Object.assign(this.bag, { pokeball: 10, potion: 5 });
+      if (this.ui) this.ui.title = async () => { this.ui.state = 'play'; return 'test'; }; // sem conta: nada é gravado
+    }
     const start = await this.ui.title();
-    if (this.party.length) await this.#sendOut(this.leadIdx);
+    this.mode = 'trainer';
+    this.leadIdx = Math.max(0, this.party.findIndex((m) => !m.fainted));
     this.hudInit();
     this.story.begin(start === 'new');
   }
-  sendOut(i) { return this.#sendOut(i); }
 
   #resize() {
-    // escala inteira para o pixel art ficar nítido: ~15 a 20 blocos de altura na tela
-    this.zoom = Math.max(2, Math.round(innerHeight / (T * (IS_TOUCH ? 13 : 18))));
+    // escala inteira para o pixel art ficar nítido; o jogador ajusta com roda, pinça ou + e −
+    const auto = Math.max(2, Math.round(innerHeight / (T * (IS_TOUCH ? 13 : 18))));
+    let pref = null; try { pref = +localStorage.getItem('alvorada.zoom') || null; } catch (e) { /* sem armazenamento */ }
+    this.zoomAuto = auto;
+    this.zoom = Math.max(1, Math.min(6, pref ?? auto));
     this.world.scale.set(this.zoom);
+  }
+  setZoom(z) {
+    z = Math.max(1, Math.min(6, Math.round(z)));
+    if (z === this.zoom) return;
+    this.zoom = z; this.world.scale.set(z);
+    try { localStorage.setItem('alvorada.zoom', String(z)); } catch (e) { /* sem armazenamento */ }
+    this.toast(`Zoom ${z}x`);
   }
 
   #makeTrainer(x, y) {
@@ -91,20 +110,65 @@ class Game {
   }
 
   // ---------- equipe ----------
-  async #sendOut(i) {
-    const mon = this.party[i];
-    if (this.lead) { this.fx.burst(this.lead.x, this.lead.y - 8, 0xff5a5a, 0.8); this.ents.removeChild(this.lead.view); this.entities = this.entities.filter((e) => e !== this.lead); }
+  // Envia o Pokémon i para o campo (onde a bola caiu) e passa a controlar ele
+  async #sendOut(i, at = null) {
+    const mon = this.party[i]; if (!mon) return;
+    if (this.lead) { this.fx.burst(this.lead.x, this.lead.y - 8, 0xff5a5a, 0.8); this.ents.removeChild(this.lead.view); this.entities = this.entities.filter((e) => e !== this.lead); this.lead = null; }
     this.leadIdx = i;
-    const e = new PokeEntity(this, mon, 'ally', this.player.x + 14, this.player.y + 6);
+    const x = at?.x ?? this.player.x + 14, y = at?.y ?? this.player.y + 6;
+    const e = new PokeEntity(this, mon, 'ally', x, y);
     await e.ready;
+    this.map.resolve(e, e.r);
     this.lead = e; this.entities.push(e); this.ents.addChild(e.view);
-    this.fx.burst(e.x, e.y - 8, 0xffffff, 1); e.vz = 90;
+    this.fx.burst(e.x, e.y - 8, 0xffffff, 1); this.fx.ring(e.x, e.y, 0xffffff, 12, 0.35); e.vz = 90;
+    this.mode = 'pokemon';
+    this.audio.sfx('pop');
+    this.hudLead(); this.hudMoves();
+  }
+  // Joga a Poké Bola do Pokémon escolhido na direção da mira
+  throwMon(i, ax, ay) {
+    const mon = this.party[i];
+    if (!mon) return;
+    if (mon.fainted) { this.toast(`${mon.name} não pode lutar.`); return; }
+    if (this.throwingMon) return;
+    const p = this.player, dx = ax - p.x, dy = ay - p.y, d = Math.hypot(dx, dy) || 1;
+    const dist = Math.min(d, 90), tx = p.x + dx / d * dist, ty = p.y + dy / d * dist;
+    const ball = new PIXI.Graphics(); ball.circle(0, 0, 3).fill(0xffffff); ball.rect(-3, -3, 6, 3).fill(0xe5383b); ball.circle(0, 0, 1).fill(0x222222);
+    this.world.addChild(ball);
+    this.throwingMon = { s: ball, i, x0: p.x, y0: p.y - 14, x1: tx, y1: ty, t: 0, dur: 0.22 + dist / 500 };
+    p.throwT = 0.3; p.dir = dir4(dx, dy);
+    this.audio.sfx('throw');
+    this.toast(`Vai, ${mon.name}!`);
+  }
+  #updateThrowMon(dt) {
+    const b = this.throwingMon; if (!b) return;
+    b.t += dt / b.dur; const k = Math.min(1, b.t);
+    b.s.x = b.x0 + (b.x1 - b.x0) * k; b.s.y = b.y0 + (b.y1 - b.y0) * k - Math.sin(k * Math.PI) * 22; b.s.rotation += dt * 20;
+    if (k >= 1) { this.throwingMon = null; b.s.destroy(); this.#sendOut(b.i, { x: b.x1, y: b.y1 }); }
+  }
+  // Chama o Pokémon de volta (raio vermelho até o treinador) e volta a controlar o treinador
+  recall(silent = false) {
+    const l = this.lead; if (!l) { this.mode = 'trainer'; return; }
+    const p = this.player;
+    for (let k = 0; k <= 8; k++) this.fx.emit(l.x + (p.x - l.x) * k / 8, l.y - 8 + (p.y - 12 - l.y + 8) * k / 8, { color: 0xff4a4a, n: 2, speed: 8, size: 4, life: 0.3 });
+    this.fx.burst(l.x, l.y - 8, 0xff5a5a, 0.7);
+    this.ents.removeChild(l.view); this.entities = this.entities.filter((e) => e !== l); this.lead = null;
+    this.mode = 'trainer';
+    if (!silent) { this.toast(`${l.mon.name}, volte!`); this.audio.sfx('pop'); }
     this.hudLead(); this.hudMoves();
   }
   sendOut(i) { return this.#sendOut(i); } // público para o online (equipe do duelo, troca)
+  // Escolhe o próximo Pokémon da equipe (no modo Pokémon, troca o que está em campo)
   swap() {
     const n = this.party.length;
-    for (let k = 1; k <= n; k++) { const i = (this.leadIdx + k) % n; if (!this.party[i].fainted) { if (i !== this.leadIdx) { this.#sendOut(i); this.toast(`Vai, ${this.party[i].name}!`); } return; } }
+    for (let k = 1; k <= n; k++) {
+      const i = (this.leadIdx + k) % n;
+      if (this.party[i].fainted) continue;
+      if (i === this.leadIdx) return;
+      if (this.mode === 'pokemon' && this.lead) { const at = { x: this.lead.x, y: this.lead.y }; this.#sendOut(i, at); this.toast(`Vai, ${this.party[i].name}!`); }
+      else { this.leadIdx = i; this.toast(`Escolhido: ${this.party[i].name} (Q para enviar)`); this.hudLead(); this.hudMoves(); }
+      return;
+    }
   }
 
   // ---------- selvagens ----------
@@ -143,8 +207,10 @@ class Game {
       this.toast(`${e.mon.name} desmaiou!`);
       this.later(0.8, () => {
         const next = this.party.findIndex((m) => !m.fainted);
-        if (next >= 0) { this.#sendOut(next); this.toast(`Vai, ${this.party[next].name}!`); }
-        else this.blackout();
+        if (next < 0) { this.recall(true); this.blackout(); return; }
+        const inBattle = this.story?.battle && !this.story.battle.done;
+        if (inBattle) { const at = { x: e.x, y: e.y }; this.#sendOut(next, at); this.toast(`Vai, ${this.party[next].name}!`); }
+        else { this.recall(true); this.leadIdx = next; this.toast(`Escolha outro Pokémon (Tab) e jogue com Q.`); this.hudLead(); this.hudMoves(); }
       });
     }
   }
@@ -174,7 +240,7 @@ class Game {
     this.party.forEach((m) => m.heal());
     const home = this.story?.spots.get('home') ?? this.map.spawn;
     this.player.x = home.x; this.player.y = home.y;
-    this.#sendOut(0);
+    this.recall(true); this.leadIdx = 0;
   }
 
   // ---------- Poké Bola (a qualquer momento) ----------
@@ -252,7 +318,7 @@ class Game {
     const inp = this.input; inp.poll();
     if (inp.pressed('perf')) $('perf').hidden = !$('perf').hidden;
     // título, menu e diálogo param o mundo (a câmera e o desenho continuam)
-    if (this.ui?.frame(rdt)) { this.#camera(rdt); this.map.flushDirty(); this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; }
+    if (this.ui?.frame(rdt)) { this.net?.update(rdt); this.#camera(rdt); this.map.flushDirty(); this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // o online segue mesmo com o menu aberto
     // pausa no impacto: o mundo congela por alguns milissegundos
     let dt = rdt;
     if (this.fx.hitStop > 0) { this.fx.hitStop -= rdt; dt = rdt * 0.08; }
@@ -263,6 +329,7 @@ class Game {
     this.#updateWild(dt);
     this.combat.update(dt);
     this.#updateBalls(dt);
+    this.#updateThrowMon(dt);
     for (const e of this.entities) { if (e.fadeIn) { e.alpha = Math.min(1, e.alpha + dt * 2); if (e.alpha >= 1) e.fadeIn = false; } if (e.dead) e.alpha = Math.max(0, e.alpha - dt * 2); e.update(dt); e.view.zIndex = e.y; }
     this.#crowd();
     this.fx.update(dt);
@@ -290,19 +357,28 @@ class Game {
 
   #control(dt) {
     const inp = this.input, p = this.player;
-    // treinador
-    p.t += dt; p.iframes -= dt; p.stun = (p.stun ?? 0) - dt;
-    const run = inp.down('run');
-    const want = p.stun > 0 ? 0 : (run ? 118 : 74);
+    // zoom (roda, pinça, + e −)
+    if (inp.zoomDelta) { this.setZoom(this.zoom + Math.sign(inp.zoomDelta)); inp.zoomDelta = 0; }
+    if (inp.pressed('zoomIn')) this.setZoom(this.zoom + 1);
+    if (inp.pressed('zoomOut')) this.setZoom(this.zoom - 1);
+    const pk = this.mode === 'pokemon' && this.lead?.alive;
+    // numa batalha de treinador da história, o seu Pokémon sai sozinho (como nos jogos)
+    if (!pk && this.story?.battle && !this.story.battle.done && !this.throwingMon && this.party.some((m) => !m.fainted)) {
+      const i = this.party[this.leadIdx]?.fainted ? this.party.findIndex((m) => !m.fainted) : this.leadIdx;
+      const a = this.#aimPoint(); this.throwMon(i, a.x, a.y);
+    }
     const mx = inp.move.x, my = inp.move.y, mag = Math.min(1, Math.hypot(mx, my));
+    const run = inp.down('run');
+
+    // ----- treinador -----
+    p.t += dt; p.iframes -= dt; p.stun = (p.stun ?? 0) - dt; p.throwT = (p.throwT ?? 0) - dt;
+    const want = pk || p.stun > 0 ? 0 : (run ? 118 : 74);
     const tvx = mag > 0.1 ? mx * want : 0, tvy = mag > 0.1 ? my * want : 0;
     const acc = Math.min(1, dt * (mag > 0.1 ? 14 : 18));
     p.vx += (tvx - p.vx) * acc; p.vy += (tvy - p.vy) * acc;
-    if (inp.pressed('dodge') && p.roll <= 0) {
+    if (!pk && inp.pressed('dodge') && p.roll <= 0) {
       const dx = mag > 0.1 ? mx : ({ down: 0, up: 0, left: -1, right: 1 }[p.dir]), dy = mag > 0.1 ? my : ({ down: 1, up: -1, left: 0, right: 0 }[p.dir]);
-      p.kx += dx * 260; p.ky += dy * 260; p.roll = 0.5; p.iframes = 0.3;
-      if (this.lead?.alive) { const l = this.lead; l.kx += dx * 300; l.ky += dy * 300; l.iframes = 0.3; l.play('Hop'); }
-      this.audio.sfx('dodge');
+      p.kx += dx * 260; p.ky += dy * 260; p.roll = 0.5; p.iframes = 0.3; this.audio.sfx('dodge');
     }
     p.roll -= dt;
     p.x += (p.vx + p.kx) * dt; p.y += (p.vy + p.ky) * dt;
@@ -310,27 +386,39 @@ class Game {
     this.map.resolve(p, p.r);
     p.speed = Math.hypot(p.vx, p.vy);
     if (p.speed > 10) p.dir = dir4(p.vx, p.vy);
+    else if (pk) p.dir = dir4(this.lead.x - p.x, this.lead.y - p.y); // olha para o próprio Pokémon
     const step = p.speed > 10 ? Math.floor(p.t * (run ? 11 : 7.5)) % 4 : 0;
-    p.body.texture = (run && p.speed > 90 ? p.frames.run : p.frames.walk ?? p.frames)[p.dir][step];
+    const set = p.throwT > 0 && p.frames.throw ? p.frames.throw : run && p.speed > 90 ? p.frames.run : p.frames.walk ?? p.frames;
+    p.body.texture = (set[p.dir] ?? p.frames.walk[p.dir])[p.throwT > 0 ? Math.min(2, Math.floor((0.3 - p.throwT) / 0.1)) : step] ?? p.frames.walk[p.dir][0];
     p.body.alpha = p.iframes > 0 && Math.sin(p.t * 40) > 0 ? 0.5 : 1;
     p.view.x = Math.round(p.x); p.view.y = Math.round(p.y); p.view.zIndex = p.y;
     if (this.map.tallAt(p.x, p.y) && p.speed > 20 && Math.random() < dt * 4) this.fx.emit(p.x, p.y - 2, { color: 0x5aa84e, n: 2, speed: 25, size: 3, life: 0.35, add: false, grav: 120, vz: 40 });
 
-    // Pokémon que acompanha: fica ao lado e ataca para onde você mira
+    // ----- Pokémon em campo: você controla direto -----
     const l = this.lead;
-    if (l?.alive) {
-      if (l.lock <= 0 && !l.dashing) {
-        const back = { down: [-14, -8], up: [14, 10], left: [12, -6], right: [-12, -6] }[p.dir];
-        const tx = p.x + back[0], ty = p.y + back[1];
-        const dx = tx - l.x, dy = ty - l.y, d = Math.hypot(dx, dy);
-        if (d > 260) { l.x = tx; l.y = ty; }
-        const sp = d > 6 ? Math.min(d * 5, Math.max(p.speed * 1.1, 60)) : 0;
-        l.vx = d > 0.1 ? dx / d * sp : 0; l.vy = d > 0.1 ? dy / d * sp : 0;
-        if (sp > 0) l.face(dx, dy); else if (p.speed < 5) l.face(p.dir === 'left' ? -1 : p.dir === 'right' ? 1 : 0, p.dir === 'up' ? -1 : p.dir === 'down' ? 1 : 0);
+    if (pk) {
+      if (l.lock <= 0 && !l.dashing && l.stun <= 0) {
+        const sp = l.speed(run ? 1.45 : 1.1) * 1.15;
+        l.vx = mag > 0.1 ? mx * sp : 0; l.vy = mag > 0.1 ? my * sp : 0;
+        // não pode ir longe demais do treinador
+        const tdx = l.x - p.x, tdy = l.y - p.y, td = Math.hypot(tdx, tdy), LEASH = 20 * T;
+        if (td > LEASH && (l.vx * tdx + l.vy * tdy) > 0) { l.vx *= 0.15; l.vy *= 0.15; if (!this.leashT || this.time > this.leashT) { this.toast('Longe demais do treinador!'); this.leashT = this.time + 3; } }
+        if (mag > 0.1) l.face(mx, my);
       } else { l.vx = 0; l.vy = 0; }
+      if (inp.pressed('dodge') && (l.dodgeCd ?? 0) <= 0) {
+        const dx = mag > 0.1 ? mx : Math.cos(l.angle), dy = mag > 0.1 ? my : Math.sin(l.angle);
+        l.kx += dx * 320; l.ky += dy * 320; l.iframes = 0.32; l.dodgeCd = 0.7; l.play('Hop'); l.vz = 80; this.audio.sfx('dodge');
+        for (let k = 0; k < 5; k++) this.fx.emit(l.x, l.y - 6, { color: 0xffffff, n: 1, speed: 20, size: 4, life: 0.25 });
+      }
+      l.dodgeCd = (l.dodgeCd ?? 0) - dt;
       for (let s = 0; s < 4; s++) if (inp.pressed('m' + s)) { const a = this.#aimPoint(); this.combat.use(l, s, a.x, a.y); }
+      if (inp.pressed('recall') || inp.pressed('ball')) this.recall();
+    } else {
+      // treinador: Q (ou 1º botão) envia o Pokémon escolhido; B (ou 2º botão) joga Poké Bola de captura
+      if (inp.pressed('ball') || inp.pressed('m0')) { const a = this.#aimPoint(); this.throwMon(this.leadIdx, a.x, a.y); }
+      if (inp.pressed('m2')) this.swap();
     }
-    if (inp.pressed('ball')) { const a = this.#aimPoint(); this.throwBall(a.x, a.y); }
+    if (inp.pressed('catch') || (!pk && inp.pressed('m1'))) { const a = this.#aimPoint(); this.throwBall(a.x, a.y); }
     if (inp.pressed('swap')) this.swap();
   }
 
@@ -361,8 +449,8 @@ class Game {
   }
 
   #camera(dt) {
-    const p = this.player, c = this.cam;
-    c.x += (p.x - c.x) * Math.min(1, dt * 8); c.y += (p.y - c.y) * Math.min(1, dt * 8);
+    const p = this.player, c = this.cam, f = this.mode === 'pokemon' && this.lead?.alive ? this.lead : p;
+    c.x += (f.x - c.x) * Math.min(1, dt * 8); c.y += (f.y - c.y) * Math.min(1, dt * 8);
     let sx = 0, sy = 0;
     if (this.fx.shake > 0) { this.fx.shake -= dt; const k = this.fx.shake * 6; sx = (Math.random() - 0.5) * k; sy = (Math.random() - 0.5) * k; }
     const z = this.zoom;

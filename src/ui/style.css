@@ -242,3 +242,9 @@ body.touch .foe { --hud-k: var(--ui-scale); }
   .cc-prev canvas { width: 68px; height: 92px; } .cc-prev { width: 96px; } .cc-row > span { width: 80px; } .tt-sw button { width: 22px; height: 22px; } .cc-opts { gap: 4px; }
 }
 #moves .mv b { display: block; max-width: 132px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* modo online (src/ui/online.js): o botão vira item do menu; atalhos rápidos sem cobrir o HUD */
+#net-btn { display: none !important; }
+body.at-title #net, body.menu-open #net { visibility: hidden; }
+#net-quick { left: 50% !important; transform: translateX(-50%); top: calc(var(--st) + 54px) !important; }
+#net-emos { left: 50% !important; transform: translateX(-50%); top: calc(var(--st) + 98px) !important; }
