@@ -19,7 +19,17 @@ for (const inc of REGION.include ?? []) {
   for (const k of ['objects', 'decor', 'trees', 'areas', 'items', 'warps']) if (J[k]) REGION[k] = k === 'areas' ? [...J[k], ...(REGION[k] ?? [])] : [...(REGION[k] ?? []), ...J[k]];
   REGION.spots = { ...(J.spots ?? {}), ...(REGION.spots ?? {}) };
 }
-export const AREAS = REGION.areas;
+const ALL_AREAS = REGION.areas;
+// Lista para a interface (menu do mapa): um nome por área, com o centro em blocos (x, y)
+export const AREAS = (() => {
+  const by = new Map();
+  for (const a of ALL_AREAS) {
+    if (a.name === 'Alvorada') continue;
+    const [x, y] = a.rect ? [a.rect[0] + a.rect[2] / 2, a.rect[1] + a.rect[3] / 2] : [a.ellipse[0], a.ellipse[1]];
+    by.set(a.name, { ...a, x, y });
+  }
+  return [...by.values()];
+})();
 const CH = 16, CPX = CH * T; // setor: 16x16 blocos = 256 px
 const hash = (x, y, s = 0) => { let h = (x * 374761393 + y * 668265263 + s * 1442695041) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; };
 
@@ -28,7 +38,7 @@ export class GameMap {
     this.tx = tx;
     const R = buildRegion(REGION);
     this.w = R.W; this.h = R.H; this.tiles = R.tiles; this.block = R.block; this.objects = R.objects; this.decorDefs = R.decor;
-    this.outdoorH = REGION.outdoorH ?? this.h; this.areas = AREAS;
+    this.outdoorH = REGION.outdoorH ?? this.h; this.areas = ALL_AREAS;
     this.signs = REGION.signs ?? []; this.items = REGION.items ?? [];
     this.interiors = (REGION.interiors ?? []).map((r) => ({ ...r, w: Math.max(...r.rows.map((s) => s.length)), h: r.rows.length }));
     this.#links();
@@ -86,7 +96,7 @@ export class GameMap {
   }
   areaAt(px, py) {
     const x = px / T, y = py / T; let best = null;
-    for (const a of AREAS) {
+    for (const a of ALL_AREAS) {
       if (a.rect) { const [ax, ay, aw, ah] = a.rect; if (x >= ax && y >= ay && x < ax + aw && y < ay + ah) best = a; }
       else if (a.ellipse) { const [cx, cy, rx, ry] = a.ellipse; if (Math.hypot((x - cx) / rx, (y - cy) / ry) < 1) best = a; }
     }
@@ -149,6 +159,18 @@ export class GameMap {
     root.addChild(this.water, this.groundLayer, this.decorLayer);
     this.root = root;
     return root;
+  }
+  // Mapa da região (menu): sem canvas, devolve um canvas de w x h (1 pixel por bloco) com os setores visitados
+  renderRegionMap(canvas, opts) {
+    const mm = this.g?.mundo?.minimap; if (!mm) return null;
+    if (!(canvas instanceof HTMLCanvasElement)) {
+      canvas = document.createElement('canvas'); canvas.width = this.w; canvas.height = this.h;
+      const x = canvas.getContext('2d'); x.fillStyle = '#3a78c8'; x.fillRect(0, 0, this.w, this.h);
+      const top = document.createElement('canvas'); top.width = this.w; top.height = this.outdoorH;
+      mm.renderRegionMap(top, { fog: true, player: false, labels: false, ...opts });
+      x.drawImage(top, 0, 0); return canvas;
+    }
+    return mm.renderRegionMap(canvas, opts);
   }
   // Liga o mapa à cena: objetos e mato alto entram no contêiner com y-sort do jogo
   attach(g) { this.g = g; this.ents = g.ents; return this.cellObj; }

@@ -58,7 +58,7 @@ export const GROUND = {
   dark: [pix(NAT, 8, 0), pix(NAT, 9, 0), pix(NAT, 8, 1), pix(NAT, 9, 1)].map((p) => adjust(p, (r, g, b) => [r * 0.82 + 6, g * 0.86, b * 0.62])),
   sand: [pix(NAT, 32, 0), pix(NAT, 33, 0), pix(NAT, 32, 1), pix(NAT, 33, 1)].map((p) => adjust(p, lighten(0.18))),
   path: [pix(OUT, 16, 3), pix(OUT, 17, 3), pix(OUT, 21, 3), pix(OUT, 21, 5)].map((p) => adjust(p, (r, g, b) => [r * 1.12 + 22, g * 1.08 + 14, b * 0.95 + 4])),
-  gold: [pix(NAT, 16, 0), pix(NAT, 17, 0), pix(NAT, 16, 1), pix(NAT, 17, 1)].map((p) => adjust(p, (r, g, b) => [r * 1.4 + 128, g * 0.95 + 22, b * 0.6 + 42])),
+  gold: [pix(NAT, 16, 0), pix(NAT, 17, 0), pix(NAT, 16, 1), pix(NAT, 17, 1)].map((p) => adjust(p, (r, g, b) => { const l = Math.max(0, Math.min(1, ((r + g + b) / 3 - 60) / 110)); return [150 + 84 * l, 118 + 92 * l, 34 + 70 * l]; })),
   cliff: [pix(NAT, 18, 2), pix(NAT, 19, 2), pix(NAT, 20, 2)],
   rim: [pix(NAT, 18, 1), pix(NAT, 19, 1), pix(NAT, 20, 1)],
 };
