@@ -1,8 +1,9 @@
-// Quem aparece no mapa nos capítulos executados pelo motor de roteiro (roteiro.js).
+// Quem aparece no mapa nas jornadas executadas pelo motor de roteiro (roteiro.js). Mundo aberto: todo mundo
+// fica no lugar desde o primeiro Pokémon (o campo `cap` é só a origem, do tempo dos capítulos).
 // Cada entrada:
 //   id      identificador único no mapa (treinadores usam o mesmo id da batalha: r2_marcia, g2_nando...)
 //   quem    id do personagem no roteiro (personagens.js); o gatilho "falar" procura por ele
-//   cap     a partir de qual capítulo aparece
+//   cap     capítulo de origem (só anotação; não esconde ninguém)
 //   spot    ponto nomeado do mapa (map.spots); sem spot = aparece perto do jogador quando a cena começa
 //   cena    lista de cenas: só aparece enquanto uma delas está tocando (vilões que entram, agrimensores...)
 //   mostrar { requer, semFlag }: condições de flags para ficar no mapa
@@ -53,7 +54,8 @@ export const ELENCO = [
   // ---------------- Capítulo 2 ----------------
   { id: 'tome_fazenda', quem: 'tome', cap: 2, look: 'leader', nome: 'Líder Tomé', cena: ['fazenda'] },
   { id: 'lili_fazenda', quem: 'lili', cap: 2, look: LOOKS.lili, nome: 'Lili', cena: ['fazenda'] },
-  { id: 'lili', quem: 'lili', cap: 2, substitui: 'zeca_celeiro', nome: 'Lili', look: LOOKS.lili },
+  { id: 'lili', quem: 'lili', cap: 2, substitui: 'zeca_celeiro', nome: 'Lili', look: LOOKS.lili,
+    padrao: ['Oi! Eu sou a Lili, filha do Tomé. Os Mudbray dormem aqui.', 'A Paçoca tá se comportando? Se ela empacar, é só coçar atrás da orelha.'] },
   { id: 'r2_marcia', quem: 'treinador', cap: 2, nome: 'Picnicker Márcia', look: LOOKS.picnic, spot: 'r2_marcia', visao: 6,
     apos: ['Perdi a batalha e o sanduíche esfriou. Mas a paineira continua linda.', 'Dizem que Mudbray atravessa qualquer lama. Eu atravesso qualquer piquenique.'] },
   { id: 'r2_otavio', quem: 'treinador', cap: 2, nome: 'Observador Otávio', look: LOOKS.observador, spot: 'r2_otavio', visao: 6,
@@ -100,10 +102,7 @@ export const ELENCO = [
   { id: 'vendedor_lamparina', quem: 'vendedor', cap: 2, nome: 'Vendedora', look: { ...LOOKS.vendedor, preset: 'treinadora', hairStyle: 'bun', hair: '#3a2a22' }, spot: 'vendedor_lamparina', loja: ['pokeball', 'potion', 'superPotion', 'hyperPotion', 'fullHeal', 'revive'], ola: 'Boa noite, querido. Aqui é sempre boa noite. O que vai levar?' },
   { id: 'vendedor_aurora', quem: 'vendedor', cap: 2, nome: 'Vendedor da Megaloja', look: { ...LOOKS.aurora, bagStyle: null }, spot: 'vendedor_aurora', loja: ['pokeball', 'superPotion', 'hyperPotion', 'fullHeal', 'revive', 'maxRevive'], ola: 'Bem-vindo à Megaloja Aurora! Tudo o que você precisa, com a luz que você merece!' },
   // ---------------- Capítulo 4 ----------------
-  { id: 'obra1', quem: 'operario', sempre: true, nome: 'Operário da Aurora', look: LOOKS.operario, spot: 'obra1', mostrar: { semFlag: ['defendeuPraia'] },
-    padrao: ['Escadaria interditada! Obra de iluminação da Companhia Aurora. Vamos pôr poste de luzita em cada degrau.', 'Quer ir pra Cidade Coral? Desce o Rio Lúmen de barco. Ou de Lapras, se você for chique.'] },
-  { id: 'obra2', quem: 'operario', sempre: true, nome: 'Operária da Aurora', look: { ...LOOKS.operario, preset: 'treinadora', hairStyle: 'ponytail' }, spot: 'obra2', mostrar: { semFlag: ['defendeuPraia'] },
-    padrao: ['Previsão de entrega da obra? Quando a luz chegar. A luz sempre chega, é o lema da firma.'] },
+  // (os operários que fechavam a escadaria do Mirante saíram: a costa se alcança a pé desde o começo)
   { id: 'r4_kaua', quem: 'kaua', cap: 4, nome: 'Surfista Kauã', look: LOOKS.surf, spot: 'r4_kaua', visao: 9,
     apos: ['De boa, brother! A aula grátis tá de pé: o segredo do surfe é cair com estilo.', 'O farol novo pisca esquisito à noite. Os Wingull ficam tontos. Eu também, mas aí é o sol mesmo.'] },
   { id: 'r4_sandra', quem: 'treinador', cap: 4, nome: 'Turista Sandra', look: LOOKS.turista, spot: 'r4_sandra', visao: 6,
@@ -161,9 +160,11 @@ export const ELENCO = [
     padrao: ['Vamos. Meu pai está lá embaixo. Vamos.', 'Se aparecer Alfa, eu ajudo. O {rival_inicial} está pronto.'] },
   { id: 'heitor_mina', quem: 'heitor', cap: 6, nome: 'Heitor', look: LOOKS.heitor, spot: 'heitor_mina', mostrar: { semFlag: ['reviravolta1'] },
     padrao: ['Lá embaixo, no nível 4. O Steelix. Cuidado, meninos.'] },
-  { id: 'heitor_torre', quem: 'heitor', cap: 6, nome: 'Heitor', look: LOOKS.heitor, spot: 'heitor_torre', mostrar: { requer: ['reviravolta1'], semFlag: ['ch6Done'] },
+  { id: 'heitor_torre', quem: 'heitor', cap: 6, nome: 'Heitor', look: LOOKS.heitor, spot: 'heitor_torre', mostrar: { requer: ['reviravolta1'], semFlag: ['jornadas.aurora.feita'] },
     padrao: ['Obrigado, {jogador}. O Téo falou de você o caminho inteiro. Bem, ele falou mais do Pokémon dele. Mas de você também.'] },
   { id: 'solano_torre', quem: 'solano', cap: 6, nome: 'Augusto Solano', look: LOOKS.solano, spot: 'solano_torre', cena: ['saida_mina'] },
   { id: 'duskull_solano', quem: 'duskull', cap: 6, pokemon: 355, nome: 'Duskull', spot: 'diario_solano', mostrar: { semFlag: ['sq_solano_completa'] } },
   { id: 'teo_saida', quem: 'teo', cap: 6, nome: 'Téo', look: 'rival', spot: 'teo_torre', cena: ['saida_mina'] },
+  // ---------------- Trama principal (trama.js): o Téo das revanches por marco de insígnias ----------------
+  { id: 'teo_marco', quem: 'teo', nome: 'Téo', look: 'rival', cena: ['teo_marco2', 'teo_marco2_depois', 'teo_marco4', 'teo_marco4_depois', 'teo_marco6'], longe: 3 },
 ];

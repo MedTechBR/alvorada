@@ -4,7 +4,7 @@ import { Mon } from '../data/mon.js';
 import { SPECIES } from '../data/species.js';
 import { TYPE_PT } from '../data/types.js';
 import { NAMES, badgeInfo } from './names.js';
-import { WAKE, MOM, PROF, RIVAL, NURSE, CAMPINA_ARRIVE, CHAPTER } from './dialogs.js';
+import { WAKE, MOM, PROF, RIVAL, NURSE, CAMPINA_ARRIVE } from './dialogs.js';
 import { ROUTE_TRAINERS, GYM_TRAINERS, LEADER1 } from './chapter1.js';
 import { currentObjective, hasBadge, beaten } from './quests.js';
 import { Spots } from './spots.js';
@@ -12,9 +12,12 @@ import { Npc } from './npc.js';
 import { TrainerBattle } from './battle.js';
 import { makeStarterTable, makeBallTexture } from '../sprites/npc.js';
 import { Roteiro } from './roteiro.js';
+import { GINASIOS } from './jornadas.js';
 
-// História principal (capítulo 1, portado do 3D): personagens, escolha do inicial, treinadores que
-// avistam o jogador e desafiam, Cidade Campina, ginásio do Líder Tomé, insígnia e objetivo no HUD.
+// Abertura e Cidade Campina (portado do 3D): personagens, escolha do inicial, treinadores que avistam o jogador e
+// desafiam, ginásio do Líder Tomé, insígnia e objetivo no HUD. Mundo aberto: depois dos presentes do professor
+// (Poké Bolas, Poções e a montaria Mudbray) a região inteira fica livre; as jornadas das cidades e a trama
+// principal correm no roteiro.js (jornadas.js). Campina é uma jornada como as outras (não precisa ser a primeira).
 // As posições vêm de pontos nomeados (spots.js): o mapa define os dele em `map.spots`.
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const T = 16;
@@ -111,7 +114,8 @@ export class Story {
       f.intro = true;
       this.busy = true;
       const h = this.spots.get('home'); this.#teleport(h.x, h.y, h.dir);
-      await g.ui.chapterCard(CHAPTER.one);
+      await g.ui.chapterCard('Jornada: O primeiro alvorecer', 'VILA ALVORADA');
+      (f.jornadas ??= {}).alvorada = { inicio: true, t: Date.now() };
       g.bag.pokedex = 1; g.bag.townMap = 1;
       await this.#talk(this.npc('mom'), WAKE(this.pname));
       await this.#talk(this.npc('mom'), MOM.fruits);
@@ -170,15 +174,24 @@ export class Story {
     }
     if (!f.balls) return this.#gift();
     if (hasBadge(f, 'campina') && !f.profBadge) { f.profBadge = true; await this.#talk(prof, PROF.afterBadge(this.pname)); return; }
-    await this.#talk(prof, PROF.hint);
+    await this.#talk(prof, PROF_MUNDO.dica(f));
   }
+  // Presentes do professor: bolas, poções e a Mudbray (montaria desde o começo). Depois disso, mundo aberto.
   async #gift() {
-    const g = this.g;
-    await this.#talk(this.npc('prof'), PROF.gift(IS_TOUCH));
+    const g = this.g, f = this.flags, prof = this.npc('prof');
+    const linhas = PROF.gift(IS_TOUCH);
+    await this.#talk(prof, linhas.slice(0, -1)); // a última fala antiga mandava para Campina primeiro
     g.bag.pokeball = (g.bag.pokeball ?? 0) + 5; g.bag.potion = (g.bag.potion ?? 0) + 3;
-    this.flags.balls = true;
+    f.balls = true;
     g.audio?.sfx?.('pickup');
     g.toast('Recebeu 5 Poké Bolas e 3 Poções!');
+    await this.#talk(prof, PROF_MUNDO.mudbray);
+    g.bag.apito_montaria = Math.max(1, g.bag.apito_montaria ?? 0);
+    f.ganhouMudbray = true;
+    if (typeof g.unlockMount === 'function') g.unlockMount('mudbray'); else f.mounts = { ...(f.mounts ?? {}), correr: true };
+    await this.#talk(prof, PROF_MUNDO.livre);
+    if (f.jornadas?.alvorada) f.jornadas.alvorada.feita = true;
+    g.ui.save?.('presentes');
   }
 
   // Escolha do inicial na mesa do laboratório
@@ -273,33 +286,24 @@ export class Story {
     g.toast(`${b.leader} também deu 3 Poções, 5 Poké Bolas, 2 Frutas Oran e a MT Mordida.`);
     await sleep(1000);
     await this.#talk(npc, d.after);
-    if (d.badge === 'campina' && !f.ch1Done) await this.#chapterEnd();
-  }
-  async #chapterEnd() {
-    const g = this.g, f = this.flags;
-    await sleep(500);
-    g.audio?.sfx?.('exclaim'); g.ui.buzz?.(60);
-    g.toast('Seu Pokédex está vibrando… é uma chamada!');
-    await sleep(700);
-    await g.ui.say(PROF.phone(this.pname), { name: `${NAMES.prof} · chamada` });
-    f.ch1Done = true; f.chapter = 2;
-    g.ui.banner(CHAPTER.oneDone.toUpperCase(), '#ffe27a');
-    await sleep(1400);
-    g.ui.save('capítulo'); // o capítulo 2 começa sozinho (roteiro.js)
+    // fim da jornada de Campina; a chamada do professor pela primeira insígnia (de qualquer ginásio) é da trama
+    if (d.badge === 'campina') await this.roteiro.jornadas.concluir('campina');
   }
 
   // ---------- Cidade Campina ----------
   async #arriveCampina() {
     const g = this.g, f = this.flags;
     f.campina = true;
+    await this.roteiro.jornadas.iniciar('campina');
     g.toast(CAMPINA_ARRIVE);
-    if (f.rivalCampina || hasBadge(f, 'campina')) return;
+    // o Téo só está saindo do ginásio se o jogador chegou cedo (até uma insígnia de outro lugar)
+    if (f.rivalCampina || hasBadge(f, 'campina') || (f.badges ?? []).length >= 2) return;
     f.rivalCampina = true;
     const r = this.npc('rival'), gym = this.spots.get('gym'), p = g.player;
     r.place(gym.x, gym.y, 'right'); r.visible = true;
     const dx = gym.x - p.x, dy = gym.y - p.y, d = Math.hypot(dx, dy) || 1;
     await r.walkTo(p.x + dx / d * 30, p.y + dy / d * 30, 80);
-    await this.#talk(r, RIVAL.campina(this.pname));
+    await this.#talk(r, (f.badges ?? []).length ? RIVAL_MUNDO.campina(this.pname) : RIVAL.campina(this.pname));
     await r.walkTo(r.x, r.y - 26 * T, 95);
     r.visible = false;
     g.ui.save('campina');
@@ -414,3 +418,31 @@ export class Story {
   // na batalha o painel do treinador ocupa o lugar do objetivo
   refreshObjective() { this.g.ui.hud.setObjective(this.battle ? null : currentObjective(this)); }
 }
+
+// Falas da abertura em mundo aberto (as de dialogs.js continuam valendo; estas trocam as que mandavam seguir uma ordem)
+const PROF_MUNDO = {
+  mudbray: [
+    'E mais uma coisa. Lá fora tem alguém esperando por você: a Paçoca, uma Mudbray da fazenda do Tomé.',
+    'Ela corre mais que o vento, atravessa lama funda e salta cerca baixa. Com este Apito de Montaria, é só chamar.',
+  ],
+  livre: [
+    'Alvorada é sua. Os oito ginásios aceitam desafio em qualquer ordem: quem decide o caminho é você.',
+    'Os perto da vila são mais tranquilos. O de Cidade Campina, a oeste pela Rota 1, é o mais manso. Quanto mais longe, mais fortes os líderes.',
+    'Na entrada de cada ginásio tem uma placa com a força do líder. E a água, os paredões e o céu? Para isso você vai precisar de Pokémon que nadem, escalem ou voem.',
+  ],
+  // dica do professor depois da primeira conversa: o ginásio mais tranquilo que ainda falta
+  dica(f) {
+    const falta = GINASIOS.filter((x) => !(f.badges ?? []).includes(x.id)).sort((a, b) => a.nivel - b.nivel);
+    const g = falta[0];
+    return g
+      ? ['Os Pokémon selvagens vivem no mato alto, no bosque e perto da água.', `Se quer uma sugestão: o ginásio de ${g.cidade} (${g.caminho}). ${g.lider} usa equipes de nível ~${g.nivel}.`, 'Mas a ordem é sua. Qualquer Pokémon seu que nade, escale ou voe também serve de montaria.']
+      : ['Você já venceu todos os ginásios que eu conheço por aqui! Eu tenho orgulho, sabia?'];
+  },
+};
+const RIVAL_MUNDO = {
+  campina: (p) => [
+    `${p}! Você também já tem insígnia? Então estamos empatados. Bom, eu acabei de ganhar a Espiga, então agora eu tô na frente!`,
+    'O Tomé usa Pokémon do tipo Normal. Eles batem firme, mas não têm truque. Só precisa aguentar!',
+    'Tchau! Ainda tem muita insígnia por aí e eu quero todas antes de você!',
+  ],
+};

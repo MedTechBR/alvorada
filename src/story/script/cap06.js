@@ -1,7 +1,8 @@
-// Capítulo 6: O preço da luz
+// Jornada de Cidade Aurora: "O preço da luz" (era o capítulo 6).
 // Rota 6 (ferrovia) → Cidade Aurora → Torre Aurora (visita guiada, Gerente Lúcio) → Mina Aurora (4 níveis, resgate do Heitor com o Téo).
+// Mundo aberto: começa ao chegar à cidade (a Pipa pode ter ligado antes, no marco de 4 insígnias, ou não).
 // Reviravolta 1: a luzita é a raiz do cadeado do Relógio; a mina é o que atrasa o sol.
-// Jogável pelo motor src/story/roteiro.js. Níveis: selvagens 31–37, treinadores 32–34, Lúcio 33–34, Alfas 33–34, Steelix Alfa 35.
+// Jogável pelo motor src/story/roteiro.js. Níveis do lugar (o mais longe da vila): selvagens 31–37, treinadores 32–34, Lúcio 33–34, Alfas 33–34, Steelix Alfa 35.
 // Mina: alavancas dos desvios (nível 1), carrinhos nos trilhos (nível 3) e passagens que abrem com a história (enigmas.js).
 // Sem ginásio. As lutas da mina são em dupla: o Pokémon do Téo luta ao seu lado (roteiro.js, batalha.dupla).
 
@@ -9,26 +10,10 @@ const MINA = { torre_aurora: 'elevador_mina', mina_aurora_n1: 'rampa_n1', mina_a
 
 export default {
   id: 'cap06',
+  jornada: 'aurora',
   titulo: 'O preço da luz',
   sol: '7h12',
   cenas: [
-    {
-      id: 'titulo',
-      local: 'rota6',
-      gatilho: { tipo: 'inicio', requer: ['ch5Done'] },
-      falas: [['narrador', 'Capítulo 6: O preço da luz']],
-      depois: { flags: { chapter: 6 }, objetivo: { texto: 'Siga a Ferrovia da Aurora até Cidade Aurora e encontre a Pipa', alvo: 'cidade_aurora', sub: 'A Rota 6 sai do leste de Vila Lamparina' } },
-    },
-    {
-      id: 'radio',
-      local: 'rota6',
-      gatilho: { tipo: 'apos', cena: 'titulo' },
-      falas: [
-        ['radio', 'Bom dia, Alvorada. Sete e doze.'],
-        ['radio', 'A Companhia Aurora mandou um comunicado para a rádio: "O atraso do sol é um fenômeno natural e passageiro. Fique tranquilo: a luz da Aurora nunca atrasa."'],
-        ['radio', 'Eu li porque eles pagam o anúncio. Mas eu não fiquei tranquila, não.'],
-      ],
-    },
     {
       id: 'ferrovia',
       local: 'rota6',
@@ -60,12 +45,15 @@ export default {
       falas: [
         ['narrador', 'Cidade Aurora. Avenidas largas, prédios de vidro, outdoors que se mexem. Tudo brilha com uma luz dourada, até de dia.'],
         ['narrador', 'No centro, a Torre Aurora: um prédio branco que termina numa ponta de cristal. Atrás dela, a encosta do Paredão está aberta como uma ferida, cheia de andaimes.'],
-        ['pipa', 'Ei! {jogador}! Aqui! Sou a Pipa! Essa é a Flash, minha Rotom câmera. Diz oi, Flash.'],
+        ['pipa', 'Ei! {jogador}! Aqui! Sou a Pipa! Você veio mesmo! Essa é a Flash, minha Rotom câmera. Diz oi, Flash.', { requer: ['pipaLigou'] }],
+        ['pipa', 'Ei, você! É o {jogador}, não é? O treinador das {insignias_ext} insígnias! Eu sou a Pipa, repórter do "O Farol". Essa é a Flash, minha Rotom câmera. Diz oi, Flash.', { semFlag: ['pipaLigou'], requer: ['insignias>=1'] }],
+        ['pipa', 'Ei, você! Treinador! Eu sou a Pipa, repórter do "O Farol". Essa é a Flash, minha Rotom câmera. Diz oi, Flash.', { semFlag: ['pipaLigou', 'insignias>=1'] }],
         ['narrador', 'A câmera flutuante dá um flash na sua cara.'],
+        ['pipa', 'Eu estou investigando a Companhia Aurora. Tem coisa errada naquela mina, e ninguém deixa jornalista entrar. Mas estudante em visita guiada, eles deixam.', { semFlag: ['pipaLigou'] }],
         ['pipa', 'Ela gosta de você! Escuta: tem uma visita guiada na Torre daqui a pouco. Eu entro como sua "irmã mais velha". A Flash entra como "celular".'],
         ['pipa', 'Lá dentro tem uma sala de controle. Se a gente conseguir uma foto do painel principal, eu tenho a reportagem da minha vida.'],
       ],
-      depois: { flags: { aurora: true }, objetivo: { texto: 'Faça a visita guiada na Torre Aurora', alvo: 'torre_aurora' } },
+      depois: { flags: { aurora: true, pipaLigou: true, 'objetivos.trama': null }, objetivo: { texto: 'Faça a visita guiada na Torre Aurora', alvo: 'torre_aurora' } },
     },
     {
       id: 'heitor_bairro',
@@ -83,7 +71,8 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'torre_aurora', requer: ['aurora'], semFlag: ['visitaTorre'] },
       falas: [
         ['lucio', 'Sejam muito bem-vindos à Torre Aurora! Eu sou o Gerente Lúcio, gerente de Relações com a Comunidade, Segurança e Eventos. Três cargos! Um salário.'],
-        ['lucio', 'Ora, ora, se não é o jovem herói da Praia dos Corais! Uma foto, uma foto! Sorria! Com a mão no logo!'],
+        ['lucio', 'Ora, ora, se não é o jovem herói da Praia dos Corais! Uma foto, uma foto! Sorria! Com a mão no logo!', { requer: ['defendeuPraia'] }],
+        ['lucio', 'Ora, ora, um treinador de verdade! Quantas insígnias? {insignias}? Uma foto, uma foto! Sorria! Com a mão no logo!', { semFlag: ['defendeuPraia'] }],
         ['lucio', 'Aqui temos a maquete da nossa mina. A luzita é extraída com todo o cuidado, de veios naturais que se renovam sozinhos. Energia infinita e limpinha!'],
         ['pipa', '(baixinho) Se renovam sozinhos? Os veios estão encolhendo, eu tenho as medições.'],
         ['lucio', 'Mais alguma pergunta? Não? Excelente! Eu odeio perguntas.'],
@@ -254,22 +243,22 @@ export default {
     {
       id: 'pipa_depois',
       local: 'redacao_farol',
-      gatilho: { tipo: 'entrar', alvo: 'redacao_farol', requer: ['reviravolta1'], semFlag: ['ch6Done'] },
+      gatilho: { tipo: 'entrar', alvo: 'redacao_farol', requer: ['reviravolta1'], semFlag: ['jornadas.aurora.feita'] },
       falas: [
         ['pipa', 'Eu tenho a foto. Mas foto sozinha não derruba ninguém. Eles vão dizer que é montagem, que é outro painel, que é maquete.'],
         ['pipa', 'Preciso de mais. De onde vem essa luz? O que é aquela garra? Por que o Relógio de Pedra está metido nisso?'],
         ['pipa', 'O Forte Rochedo tem o arquivo histórico da região. Mapas antigos, cartas, tudo. Se tiver alguma resposta, está lá.'],
         ['pipa', 'Toma. Uma MT que a Flash "achou" na sala de controle. Canhão de Luz. Acho justo devolver um pouco de luz pra quem merece.'],
         ['pipa', 'E se você fotografar Pokémon Alfa pela região, me manda. Cada foto é uma prova.'],
-        ['narrador', 'Fim do Capítulo 6'],
       ],
-      depois: { mt: 'flashCannon', flags: { ch6Done: true, chapter: 7, sq_pipa: 'ativa', dupla: null }, objetivo: 'Siga pela Rota 7 até o Forte Rochedo', fimCapitulo: true },
+      depois: { mt: 'flashCannon', flags: { sq_pipa: 'ativa', dupla: null }, fimJornada: true },
     },
 
     // ---------------- missão secundária: A casa dos Solano (sq_solano) ----------------
     {
       id: 'sq_solano_casa',
       local: 'casa_solano',
+      solta: true, // missão secundária na Vila Lamparina: não começa a jornada de Aurora
       gatilho: { tipo: 'pisar', alvo: 'diario_solano', semFlag: ['sq_solano_completa'] },
       falas: [
         ['narrador', 'No canto do quarto empoeirado, um Duskull flutua quietinho. Ele segura uma máscara de papel de menino, pintada com um sol.'],

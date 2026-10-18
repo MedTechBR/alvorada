@@ -1,38 +1,25 @@
-// Capítulo 4: Faísca na Costa Coral
-// Rota 4 (Rio Lúmen de Lapras, Restinga) → Cidade Coral (inauguração da Aurora) → Téo → Farol Coral (ginásio) → Praia dos Corais.
-// Jogável pelo motor src/story/roteiro.js. Níveis: selvagens 22–28, treinadores 23–26, Téo 25–28, Jonas 25–29, Ébano 27–28.
+// Jornada de Cidade Coral: "Faísca na Costa Coral" (era o capítulo 4).
+// Escadaria do Mirante (a pé, da Vila Alvorada) ou Rota 4 (Rio Lúmen de Lapras, Restinga) → Cidade Coral (inauguração
+// da Aurora) → Téo no calçadão → Farol Coral (ginásio) → Praia dos Corais.
+// Mundo aberto: começa ao chegar à costa, em qualquer ordem. A revanche do Téo no calçadão só acontece se ele estiver
+// devendo uma (marco de 2 insígnias, trama.js); senão ele só conversa.
+// Jogável pelo motor src/story/roteiro.js. Níveis do lugar: selvagens 22–28, treinadores 23–26, Jonas 25–29 (~29), Ébano 27–28.
 // Quebra-cabeça do farol (circuitos, portões de raio e os três geradores): src/story/enigmas.js.
 
 const FAROL = { farol_coral: 'escada_f1', farol_coral_2: 'escada_f2', farol_topo: 'jonas' };
 
 export default {
   id: 'cap04',
+  jornada: 'coral',
   titulo: 'Faísca na Costa Coral',
   sol: '6h40',
   cenas: [
-    {
-      id: 'titulo',
-      local: 'rota4',
-      gatilho: { tipo: 'inicio', requer: ['ch3Done'] },
-      falas: [['narrador', 'Capítulo 4: Faísca na Costa Coral']],
-      depois: { flags: { chapter: 4 }, objetivo: { texto: 'Desça o Rio Lúmen de Lapras até Cidade Coral', alvo: 'rio_lumen_inicio', sub: 'Na margem, de frente para a água, X chama o Lapras' } },
-    },
-    {
-      id: 'radio',
-      local: 'rota4',
-      gatilho: { tipo: 'apos', cena: 'titulo' },
-      falas: [
-        ['radio', 'Bom dia, Alvorada! Seis e quarenta. Seis e quarenta, gente. O galo do Seu Zé desistiu de cantar e agora só suspira.'],
-        ['radio', 'Hoje tem festa em Cidade Coral: o Farol ganha holofotes novos da Companhia Aurora. O próprio Augusto Solano vai fazer discurso!'],
-        ['radio', 'E atenção: a escadaria do Mirante, que desce da Vila Alvorada para a praia, segue fechada para obra. Quem quiser a festa, que desça o rio!'],
-      ],
-    },
     {
       id: 'rio',
       local: 'rota4',
       gatilho: { tipo: 'pisar', alvo: 'rio_lumen_inicio', semFlag: ['desceuRio'] },
       falas: [
-        ['narrador', 'O Rio Lúmen se alarga entre manguezais. Os Buizel apostam corrida com o Lapras e perdem de propósito, só para rir.'],
+        ['narrador', 'O Rio Lúmen se alarga entre manguezais. Os Buizel apostam corrida com você e perdem de propósito, só para rir.'],
         ['narrador', 'Mais adiante, o rio encontra as dunas e o mar. Dá para sentir o cheiro de sal.'],
       ],
       depois: { flags: { desceuRio: true }, objetivo: { texto: 'Siga o rio até a foz e atravesse a Restinga até Cidade Coral', alvo: 'cidade_coral' } },
@@ -91,34 +78,48 @@ export default {
       depois: { flags: { discursoSolano: true, sq_farol: 'disponivel' }, objetivo: { texto: 'Dê uma volta pelo calçadão', alvo: 'calcadao' } },
     },
     {
+      // revanche do marco de 2 insígnias (trama.js), aqui no calçadão, se o Téo ainda estiver devendo
       id: 'teo_calcadao',
       local: 'cidade_coral',
-      gatilho: { tipo: 'pisar', alvo: 'calcadao', requer: ['discursoSolano'], semFlag: ['rival2'] },
+      gatilho: { tipo: 'pisar', alvo: 'calcadao', requer: ['discursoSolano', 'insignias>=2'], semFlag: ['rival2'] },
       falas: [
         ['teo', '{jogador}! Aqui! Você viu o Solano? Meu pai trabalha pra ele, sabia? Lá na Mina Aurora. Chefe de turma!'],
         ['teo', 'Ganhei do Jonas hoje de manhã. A Insígnia Faísca já é minha. Meu pai prometeu que vinha ver a próxima batalha.'],
-        ['teo', 'Ele deve estar chegando. Ele disse que vinha. Então vamos batalhar agora, que aí ele vê!'],
+        ['teo', 'Você tem {insignias_ext} insígnias? Eu também. Ele deve estar chegando. Ele disse que vinha. Então vamos batalhar agora, que aí ele vê!'],
       ],
       depois: {
         batalha: {
-          id: 'rival2', nome: 'Rival Téo', dinheiro: 2400,
+          id: 'rival2', nome: 'Rival Téo', dinheiro: 1800, perder: 'continua',
           equipe: [
-            [397, 25, ['wingAttack', 'quickAttack', 'doubleTeam']],
-            [58, 25, ['ember', 'bite', 'roar']],
-            [133, 26, ['quickAttack', 'bite', 'sandAttack']],
-            ['rival:2', 28, []],
+            [396, 19, ['wingAttack', 'quickAttack', 'doubleTeam']],
+            [58, 19, ['ember', 'bite', 'roar']],
+            [133, 20, ['quickAttack', 'bite', 'sandAttack']],
+            ['rival:2', 22, []],
           ],
         },
-        flags: { rival2: true },
+        flags: { rival2: true, teoCalcadao: true },
       },
+    },
+    {
+      // sem revanche pendente: o Téo só conversa (esperando o pai que não vem)
+      id: 'teo_calcadao_conversa',
+      local: 'cidade_coral',
+      gatilho: { tipo: 'pisar', alvo: 'calcadao', requer: ['discursoSolano'], semFlag: ['teoCalcadao'] },
+      falas: [
+        ['teo', '{jogador}! Aqui! Você viu o Solano? Meu pai trabalha pra ele, sabia? Lá na Mina Aurora. Chefe de turma!'],
+        ['teo', 'Ganhei do Jonas hoje de manhã. A Insígnia Faísca já é minha. Meu pai prometeu que vinha ver a festa comigo.'],
+        ['teo', 'Ele deve estar chegando. Ele disse que vinha. A gente batalha outro dia, quando você tiver mais insígnia. Hoje eu tô esperando ele.', { semFlag: ['rival2'] }],
+        ['teo', 'Ele deve estar chegando. Ele disse que vinha. Nossa revanche já foi, né? Então hoje eu só espero.', { requer: ['rival2'] }],
+      ],
+      depois: { flags: { teoCalcadao: true } },
     },
     {
       id: 'teo_pier',
       local: 'cidade_coral',
-      gatilho: { tipo: 'apos', cena: 'teo_calcadao' },
+      gatilho: { tipo: 'apos', cena: ['teo_calcadao', 'teo_calcadao_conversa'] },
       falas: [
-        ['teo', 'Boa batalha. Muito boa. Ele ia ter gostado.'],
-        ['narrador', 'Téo olha para a escadaria fechada do Mirante, lá no alto. Ninguém vem.'],
+        ['teo', 'Boa batalha. Muito boa. Ele ia ter gostado.', { requer: ['trainers.rival2'] }],
+        ['narrador', 'Téo olha para a escadaria do Mirante, lá no alto. Ninguém desce.'],
         ['teo', 'Deve ter tido problema na mina. Sempre tem problema na mina. Fala que tá tudo bem e manda dinheiro. E manda luzita de presente. A gente tem luzita em casa até no banheiro.'],
       ],
       escolhas: [
@@ -268,7 +269,7 @@ export default {
         ['jonas', 'Toma isto. É a Lente Prisma. Eu fiz pra estudar a luzita. Com ela dá pra ver rastros de luz que o olho não vê.'],
         ['jonas', 'Eu olhei a luz do farol com ela ontem. Sabe o que eu vi? A luz não vai pro mar. Ela vai pro norte. Pro Paredão.'],
         ['narrador', '{jogador} recebeu a Lente Prisma!'],
-        ['jonas', 'Ah, e a obra da escadaria do Mirante acabou hoje. Pela escada você chega na Vila Alvorada num pulo.'],
+        ['jonas', 'E se for subir pra Vila Alvorada, vai pela escadaria do Mirante. Botaram poste de luzita em cada degrau. Claro que botaram.'],
       ],
       depois: { flags: { defendeuPraia: true, fragmentoCoral: 'jonas' }, itens: [['lente_prisma', 1], ['isca_luz', 3]] },
     },
@@ -279,11 +280,11 @@ export default {
       falas: [
         ['pokedex', 'Bzzz…'],
         ['bia', '{jogador}! Você é famoso! A Pipa do "O Farol" ligou aqui perguntando quem é o menino que recuperou um fragmento.'],
-        ['bia', 'O Professor quer que você vá para Vila Lamparina, ao norte, depois do Brejo das Lamparinas. A Dona Zélia guarda o quinto fragmento. E sua avó mora lá!'],
-        ['bia', 'Ah, o ginásio de lá só abre de noite. A Dona Zélia diz que fantasma não trabalha de dia. Sindicato.'],
-        ['narrador', 'Fim do Capítulo 4'],
+        ['bia', 'O Professor ficou olhando a Lente Prisma no jornal da tarde. Disse que com ela dá pra ver as tábuas de luz do Brejo das Lamparinas. Sua avó mora do outro lado!', { semFlag: ['badges.lamparina'] }],
+        ['bia', 'Ah, o ginásio de Lamparina só abre de noite. A Dona Zélia diz que fantasma não trabalha de dia. Sindicato.', { semFlag: ['badges.lamparina'] }],
+        ['bia', 'O Professor ficou olhando a Lente Prisma no jornal da tarde e não disse nada. Ele anda assim. Quieto demais.', { requer: ['badges.lamparina'] }],
       ],
-      depois: { flags: { ch4Done: true, chapter: 5 }, objetivo: 'Vá a Vila Lamparina pelo Brejo das Lamparinas', fimCapitulo: true },
+      depois: { fimJornada: true },
     },
 
     // ---------------- missão secundária: O farol pisca errado (sq_farol) ----------------

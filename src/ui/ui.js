@@ -134,7 +134,8 @@ export class UI {
     const el = document.createElement('div'); el.className = 'chapter';
     // "Capítulo 2 — Sussurros no bosque" vira número pequeno em cima e o nome grande embaixo
     const m = /^Cap[ií]tulo\s+(\d+)\s*[—–:-]\s*(.+)$/.exec(String(title));
-    el.innerHTML = m ? `<small>${sub}</small><em>Capítulo ${m[1]}</em><b>${m[2]}</b><i></i>` : `<small>${sub}</small><b>${title}</b><i></i>`;
+    const j = /^Jornada\s*[—–:-]\s*(.+)$/.exec(String(title)); // "Jornada: Nome" (mundo aberto, src/story/jornadas.js)
+    el.innerHTML = m ? `<small>${sub}</small><em>Capítulo ${m[1]}</em><b>${m[2]}</b><i></i>` : j ? `<small>${sub}</small><em>Jornada</em><b>${j[1]}</b><i></i>` : `<small>${sub}</small><b>${title}</b><i></i>`;
     $('ui').appendChild(el);
     await sleep(1700); el.classList.add('out'); await sleep(1300); el.remove();
   }
