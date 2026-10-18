@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { CURVA_GLSL } from './curva.js';
+import { Personagens } from './personagens.js';
 import { FLOWERS, SPR } from '../world/art.js';
 const FLORES2D = new Set(FLOWERS.flat().map((t) => t.source));
 
@@ -99,6 +100,7 @@ export class Espelho {
     this.texs = new Map(); // fonte do Pixi -> textura do three
     this.pool = []; this.np = 0;
     this.M = [];
+    this.pers = new Personagens(v); // folhas FireRed/HeartGold no lugar dos bonecos 2D
   }
   #tex(src) {
     let t = this.texs.get(src);
@@ -126,6 +128,7 @@ export class Espelho {
     this.np = 0;
     this.sombra = g.tx?.shadow?.source;
     this.dono = v.setores.modelos.donosDeSprite?.() ?? null;
+    this.subst = this.pers.update();
     const cam = v.camera.position;
     this.cx = cam.x; this.cz = cam.z;
     const vw = v.view;
@@ -149,6 +152,25 @@ export class Espelho {
     for (const l of this.lotes.values()) l.fechar();
   }
   // percorre a árvore do Pixi compondo a transformação (a, b, c, d, tx, ty) e a transparência
+  // corpo trocado pela folha HGSS: quadro de 32x32 com o pé na linha "pe" (escala 1, como no demo)
+  #spriteHGSS(n, S, a, b, c, d, tx, ty, alpha) {
+    const tex = S.tex; if (!tex.image) return;
+    const q = this.#quad(), v = this.v, cx = v.cima.x, cy = v.cima.y, cz = v.cima.z, rx = v.direita.x, ry = v.direita.y, rz = v.direita.z;
+    const sx = Math.hypot(a, b) / Math.max(1e-3, Math.hypot(n.scale.x, n.scale.y) / Math.SQRT2), K = 1.45;
+    const x0 = -S.fw / 2 * K, x1 = S.fw / 2 * K, y0 = -S.pe * K, y1 = (S.fh - S.pe) * K;
+    const P = q.p; let k = 0;
+    // posição do pé: a do sprite do Pixi (inclui pulo e voo); o tamanho é o da folha
+    for (const [lx, ly] of [[x0, y0], [x1, y0], [x0, y1], [x1, y1]]) {
+      const X = tx + lx * sx, Y = ty + ly * sx, up = this.gy - Y, dx = X - this.gx;
+      P[k] = this.gx + dx * rx + up * cx; P[k + 1] = this.h + dx * ry + up * cy; P[k + 2] = this.gy + dx * rz + up * cz; k += 3;
+    }
+    const U = q.uv; U[0] = S.u0; U[1] = S.v0; U[2] = S.u1; U[3] = S.v0; U[4] = S.u0; U[5] = S.v1; U[6] = S.u1; U[7] = S.v1;
+    const C = q.c; C[0] = C[1] = C[2] = 1; C[3] = alpha;
+    q.b[0] = this.gx; q.b[1] = this.h; q.b[2] = this.gy; q.w = n.filters?.length ? 1 : 0; q.d = this.gy;
+    const modo = alpha < 0.99 ? 1 : 0;
+    this.#lote(tex, modo).add(q);
+    if (this.sil && modo === 0) { const q2 = this.#quad(); q2.p.set(q.p); q2.uv.set(q.uv); q2.c.set(q.c); q2.b.set(q.b); q2.w = 0; q2.d = q.d; this.#lote(tex, MODOS.silhueta).add(q2); }
+  }
   #no(n, pa, pb, pc, pd, ptx, pty, alpha, plano, deco = false) {
     if (!n.visible || !n.renderable) return;
     const sx = n.scale.x, sy = n.scale.y, r = n.rotation, kx = n.skew.x, ky = n.skew.y;
@@ -164,6 +186,8 @@ export class Espelho {
     if (ch?.length) for (let i = 0; i < ch.length; i++) this.#no(ch[i], a, b, c, d, tx, ty, alpha, plano, deco);
   }
   #sprite(n, a, b, c, d, tx, ty, alpha, plano, deco) {
+    const sub = this.subst?.get(n);
+    if (sub) return this.#spriteHGSS(n, sub, a, b, c, d, tx, ty, alpha);
     const T = n.texture, src = T.source; if (!src?.resource) return;
     const f = T.frame, o = T.orig, w = o.width, h = o.height; if (!w || !h) return;
     const ax = n.anchor.x, ay = n.anchor.y;
