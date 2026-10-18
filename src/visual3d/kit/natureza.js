@@ -206,9 +206,9 @@ export const NATUREZA = {
   araucaria: { f: (m, c) => {
     m.cil(0, 0, -8, 3, 2.2, 58, 6, '#6a4a32', { tampa: false });
     for (const [y, w] of [[34, 17], [44, 15], [52, 11], [58, 8]]) {
+      m.bloco(0, y - 3, -8, w * 2, 2, 2, '#4a3a2a', { ao: false });
       for (const s of [-1, 1]) {
-        m.bloco(s * w / 2, y - 3, -8, w, 2, 2, '#4a3a2a', { ao: false });
-        m.bloco(s * w, y - 4, -8, 10, 4, 8, '#2a5a3a', { var: 0.08, ao: false });
+                m.bloco(s * w, y - 4, -8, 10, 4, 8, '#2a5a3a', { var: 0.08, ao: false });
         m.bloco(s * w, y, -7.5, 7, 2, 6, '#4a8a5a', { ao: false });
       }
     }
@@ -243,7 +243,7 @@ export const NATUREZA = {
   } },
   bambu: { f: (m) => {
     for (const [x, h, cr, z] of [[-8, 44, '#6aa84a', -10], [-2, 48, '#7ab85a', -7], [4, 40, '#5a9a3e', -11], [9, 46, '#6aa84a', -6]]) {
-      for (let y = 0; y < h; y += 8) m.bloco(x, y, z, 2.6, 7.4, 2.6, cr, { var: 0.08 });
+      for (let y = 0; y < h; y += 12) m.bloco(x, y, z, 2.6, Math.min(11.4, h - y), 2.6, cr, { var: 0.08 });
       m.bloco(x + 3, h - 6, z, 7, 1, 3, '#4a8a3a', { ao: false }); m.bloco(x - 3, h - 2, z, 6, 1, 3, '#5a9a3e', { ao: false });
     }
     return topoDe(48, 6);
