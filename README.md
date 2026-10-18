@@ -7,7 +7,7 @@ Jogo de fã, pessoal e não comercial. 2D com sprites, roda no navegador (comput
 - Rodar: `python3 tools/serve.py 8700` e abrir http://127.0.0.1:8700
 
 Controles (computador): WASD anda, Shift corre, mouse mira, 1–4 / clique esquerdo / direito = golpes,
-Espaço = esquiva, Q = Poké Bola, Tab = trocar Pokémon, E/Enter = falar, M/Esc = menu, F3 = medidor de FPS.
+Espaço = esquiva, Q = enviar/chamar de volta o Pokémon (R também chama), B = Poké Bola de captura (G troca o tipo de bola), Tab = trocar Pokémon, E/Enter = falar, M/Esc = menu, F3 = medidor de FPS.
 Celular: analógico à esquerda; botões de golpe à direita (toque = mira automática, arrastar = mirar); A fala, ☰ abre o menu.
 Controle: Start abre o menu.
 
@@ -151,3 +151,24 @@ da água) ou cava (os demais); **X** pula; **Espaço** esquiva com invencibilida
 - **Dano:** ponto único em `src/combat/damage.js` (`computeDamage`; `calcDamage` em combat.js é a versão pura do PvP).
   Relevo: Água mais forte na água, Planta no mato alto, Elétrico em alvo molhado, Fogo fraco em alvo na água.
 - **Testes:** `combat.showNames = true` mostra o nome do golpe ao usar.
+
+## Equilíbrio, economia e captura (ramo `qa-jogo`)
+
+- **Ritmo do dano** (`src/combat/damage.js`): `DMG = 0.34` para todos e `FOE_DMG = 1.5` a mais quando um selvagem
+  ou Pokémon de treinador acerta o seu (eles telegrafam e você pode esquivar; o PvP online não usa esse peso).
+  Alfa bate ×1,25. Estágios de status se desfazem 1 nível a cada 6 s (`STAGE_DECAY` em combat.js). Um selvagem por
+  vez prepara golpe contra o mesmo alvo (dois num bando com alfa). Medido com um robô no combate real: selvagem do
+  mesmo nível cai em 3 a 30 s (mediana ~10 s); jogando parado sem esquivar, perde-se 0 a 70% do HP por luta.
+- **XP**: quem lutou ganha tudo; o resto da equipe ganha metade (`XP_SHARE` em main.js). Com 4 golpes, aprender um
+  novo abre a tela clássica de esquecer (`menu.askLearn`). Evolução com a cena clássica (`src/ui/evolucao.js`),
+  inclusive por pedra; avisos que param o jogo passam pela fila `ui.queue`.
+- **Encontros**: tabela da área (`encounters`), a da área de mesmo nome no esboço ou a da área vizinha (até 24
+  blocos); à noite entram os noturnos do bioma no nível da área. Alfa: 7% dos selvagens (`ALPHA_ODDS` em ai.js),
+  +3 níveis, PS ×1,5, não foge; vencido dá XP em dobro e deixa cair um item (`ALPHA_DROPS` em main.js).
+- **Captura**: a bola escolhida (Mochila → Preparar, ou G) entra na fórmula oficial; sacudidas seguidas; "Capturado!",
+  registro na Pokédex, Bola de Cura e Bola Amiga funcionam. Dormindo, distraído e com pouco HP ajudam.
+- **Mercado** (`src/world/lojas.js`): falar com o balconista abre comprar/vender; o estoque cresce com as insígnias
+  (Grande Bola e Superpoção com 1, Reviver com 2, Ultra Bola com 3…), cada cidade tem extras. Vender = metade do
+  preço. Tesouros (Pérola, Pepita, Cogumelos, Pó Estelar) só servem para vender. O PC de qualquer Centro abre a caixa.
+- **Itens escondidos**: `hidden: true` nos `items` do mapa (só um brilho fraco de perto).
+
