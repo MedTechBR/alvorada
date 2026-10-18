@@ -102,8 +102,37 @@ export class Ceu {
     if (room) ls.set(room.escuro ? 0.35 : room.dark ? 0.6 : 1, room.escuro ? 0.35 : room.dark ? 0.58 : 0.97, room.escuro ? 0.4 : room.dark ? 0.62 : 0.92);
     this.noite = g.mundo?.nightness ?? 0;
     this.noiteK = room ? 0 : this.noite;
+    this.#escuro();
     this.fundo = this.fundo ?? new THREE.Color(0xbfe2f6);
     if (A.ceu.uCeu?.horizonte) this.fundo.copy(A.ceu.uCeu.horizonte.value);
+  }
+  // salas e biomas escuros (masmorra.darkZone): escuro de verdade com luz em volta do jogador, do Pokémon de
+  // Fogo/Elétrico, das tochas acesas e das pedras que brilham (a mesma regra do 2D)
+  #escuro() {
+    const v = this.v, g = v.g, P = v.amb?.pos?.u; if (!P?.luzes) return;
+    const ms = g.mundo?.masmorra, z = ms?.darkZone?.();
+    if (!z) { P.escuro.value = 0; return; }
+    const lvl = z.escuro === true ? 1 : +z.escuro || 0.8;
+    P.escuro.value = 1; P.escBase.value = 0.05 + (1 - lvl) * 0.55;
+    const L = P.luzes.value, t = v.t, flick = 0.94 + Math.sin(t * 11) * 0.03 + Math.sin(t * 23) * 0.02;
+    const LIG = new Set(['fire', 'electric']);
+    let n = 0;
+    const add = (x, y, r, a = 1) => {
+      if (n >= 8) return;
+      const s = v.paraTela(x, y, 10); if (s.x < -300 || s.y < -300 || s.x > innerWidth + 300 || s.y > innerHeight + 300) return;
+      const k = v.escalaEm(x, y);
+      L[n++].set(s.x / innerWidth, 1 - s.y / innerHeight, (r * k) / innerHeight, a);
+    };
+    const p = g.player, party = g.party ?? [];
+    const acende = party.some((m) => !m.fainted && m.types?.some((q) => LIG.has(q)));
+    add(p.x, p.y, acende ? 74 * flick : 30, acende ? 1 : 0.85);
+    const l = g.lead; if (l?.alive && l.mon?.types?.some((q) => LIG.has(q))) add(l.x, l.y, 82 * flick);
+    for (const c of v.L.setoresVisiveis()) for (const o of c.objs ?? []) {
+      if (o.dead) continue; const K = v.L.catalogo(o.kind); if (!K) continue;
+      if (K.fire && ms.lit?.(o)) add(o.x, o.y - 12, 70 * flick);
+      else if (K.glow) add(o.x, o.y - 4, o.kind === 'lavaRock' ? 46 : 38, 0.9);
+    }
+    P.nLuzes.value = n;
   }
   // fatia do dia para a hora h
   #amostra(h) {

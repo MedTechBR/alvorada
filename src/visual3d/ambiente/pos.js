@@ -23,6 +23,7 @@ const RAIOS = `uniform sampler2D t; uniform vec2 sol; uniform float limiar; unif
 const FINAL = `uniform sampler2D tCena, tD1, tD2, tD3, tD4, tR;
   uniform float tempo, tilt, foco, faixa, bloomK, limiar, raios, raiosR, vinheta, sat, exposicao, simples, contraste, quente, oliva, frio;
   uniform vec3 tinta, corRaio; uniform vec2 sol, aspecto;
+  uniform float escuro, escBase; uniform vec4 luzes[8]; uniform float nLuzes; // salas escuras (o principal preenche)
   varying vec2 vUv;
   void main(){
     vec2 uv = vUv;
@@ -47,6 +48,11 @@ const FINAL = `uniform sampler2D tCena, tD1, tD2, tD3, tD4, tR;
       c = c + fx * (1.0 - min(c, vec3(1.0)));
     }
     c *= tinta * exposicao;
+    if (escuro > 0.0) {
+      float L = 0.0;
+      for (int i = 0; i < 8; i++) { if (float(i) >= nLuzes) break; vec4 l = luzes[i]; vec2 dd = (uv - l.xy) * aspecto; L += l.w * smoothstep(l.z, l.z * 0.12, length(dd)); }
+      c *= mix(1.0, clamp(escBase + L, 0.0, 1.15), escuro);
+    }
     // gradação HD-2D (antes da curva): verdes puxados para oliva/amarelo, sombras frias, claros dourados
     float lum0 = dot(c, vec3(0.2126, 0.7152, 0.0722));
     float verde = clamp((c.g - max(c.r, c.b)) / max(c.g, 1e-3), 0.0, 1.0);
@@ -89,6 +95,7 @@ export class PosHD {
       vinheta: { value: 0.4 }, sat: { value: 1.1 }, exposicao: { value: 1.25 }, contraste: { value: 1.04 }, quente: { value: 0.7 }, oliva: { value: 0.26 }, frio: { value: 0.4 },
       tinta: { value: new THREE.Color(1, 1, 1) }, corRaio: { value: new THREE.Color(1, 0.86, 0.6) }, sol: { value: new THREE.Vector2(0.85, 1.05) },
       aspecto: { value: new THREE.Vector2(1, 1) }, simples: { value: 0 },
+      escuro: { value: 0 }, escBase: { value: 0.06 }, luzes: { value: Array.from({ length: 8 }, () => new THREE.Vector4()) }, nLuzes: { value: 0 },
     }, FINAL);
     this.sol3 = new THREE.Vector3();
   }
