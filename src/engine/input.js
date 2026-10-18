@@ -5,7 +5,7 @@ const KEYS = {
   KeyW: 'up', ArrowUp: 'up', KeyS: 'down', ArrowDown: 'down', KeyA: 'left', ArrowLeft: 'left', KeyD: 'right', ArrowRight: 'right',
   ShiftLeft: 'run', ShiftRight: 'run', Space: 'dodge', KeyE: 'act', Enter: 'act', KeyQ: 'ball', Tab: 'swap', KeyF: 'feed',
   Digit1: 'm0', Digit2: 'm1', Digit3: 'm2', Digit4: 'm3', Escape: 'menu', KeyM: 'menu', F3: 'perf',
-  KeyB: 'catch', KeyR: 'recall', KeyC: 'alt', KeyX: 'jump', Equal: 'zoomIn', NumpadAdd: 'zoomIn', Minus: 'zoomOut', NumpadSubtract: 'zoomOut',
+  KeyB: 'catch', KeyG: 'ballNext', KeyR: 'recall', KeyC: 'alt', KeyX: 'jump', Equal: 'zoomIn', NumpadAdd: 'zoomIn', Minus: 'zoomOut', NumpadSubtract: 'zoomOut',
 };
 
 export class Input {

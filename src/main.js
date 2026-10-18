@@ -17,6 +17,15 @@ import { Audio } from './audio/audio.js';
 import { Online } from './net/online.js';
 import { UI } from './ui/ui.js';
 import { Story } from './story/story.js';
+import { evolutionScene } from './ui/evolucao.js';
+import { dexMark } from './ui/menu.js';
+import { NIGHT_ENCOUNTERS } from './data/species.js';
+import { ITEM_INFO, itemInfo, itemName } from './data/items.js';
+import { rollShakes } from './mechanics/capture.js';
+import { setAmbiente, isNight as nightNow } from './mechanics/ambiente.js';
+
+const XP_SHARE = 0.5; // parte da XP que vai para quem ficou na equipe
+const ALPHA_DROPS = [['greatBall', 2, 30], ['superPotion', 2, 25], ['stardust', 1, 14], ['pearl', 1, 14], ['bigMushroom', 1, 6], ['rareCandy', 1, 7], ['nugget', 1, 4]];
 
 const $ = (id) => document.getElementById(id);
 
@@ -43,6 +52,8 @@ class Game {
     this.app.stage.addChild(this.world);
     this.#buildObjects();
     this.mundo = new WorldLife(this); // dia e noite, portas, bichinhos, minimapa
+    // as mecânicas (Bola do Crepúsculo, evolução por hora, encontros) seguem o relógio do jogo, não o do aparelho
+    setAmbiente({ hora: () => this.mundo.hour, caverna: () => !!this.map.interiorAt(this.player.x, this.player.y)?.dark });
     // treinador e equipe
     this.player = this.#makeTrainer(this.map.spawn.x, this.map.spawn.y);
     this.mount = new Mounts(this); // montarias do treinador (X): src/world/mounts.js
@@ -119,7 +130,11 @@ class Game {
     this.leadIdx = i;
     const x = at?.x ?? this.player.x + 14, y = at?.y ?? this.player.y + 6;
     const e = new PokeEntity(this, mon, 'ally', x, y);
-    await e.ready;
+    this.sendingOut = (this.sendingOut ?? 0) + 1; // enquanto o sprite carrega, ninguém joga outra bola (evita Pokémon duplicados)
+    try { await e.ready; } finally { this.sendingOut--; }
+    if (this.lead) { this.ents.removeChild(this.lead.view); this.entities = this.entities.filter((o) => o !== this.lead); this.lead = null; }
+    // o treinador passou por uma porta (ou foi levado pela história) enquanto a bola voava: sai do lado dele
+    if (Math.hypot(e.x - this.player.x, e.y - this.player.y) > 6 * T) { e.x = this.player.x + 14; e.y = this.player.y + 6; }
     this.map.resolve(e, e.r);
     this.lead = e; this.entities.push(e); this.ents.addChild(e.view);
     this.fx.burst(e.x, e.y - 8, 0xffffff, 1); this.fx.ring(e.x, e.y, 0xffffff, 12, 0.35); e.vz = 90;
@@ -132,7 +147,7 @@ class Game {
     const mon = this.party[i];
     if (!mon) return;
     if (mon.fainted) { this.toast(`${mon.name} não pode lutar.`); return; }
-    if (this.throwingMon) return;
+    if (this.throwingMon || this.sendingOut > 0) return;
     // montado: desce primeiro e depois joga (no voo, pousa antes)
     if (this.mount?.active) { if (!this.mount.busy) this.mount.dismount(() => this.throwMon(i, ax, ay)); return; }
     const p = this.player, dx = ax - p.x, dy = ay - p.y, d = Math.hypot(dx, dy) || 1;
@@ -185,8 +200,8 @@ class Game {
       const { x, y } = sp;
       const biome = this.map.biome(x, y); if (biome === 'vila') continue;
       // tabela da área (assets/maps: "encounters" na área ou no interior) ou a do bioma
-      const own = (this.map.interiorAt(x, y) ?? this.map.areaAt(x, y))?.encounters;
-      const table = (own ?? BIOME_ENCOUNTERS[biome] ?? BIOME_ENCOUNTERS.campo).filter((e) => this.available.includes(e[0]) && SPECIES[e[0]]);
+      const room = this.map.interiorAt(x, y), zone = room ?? this.map.areaAt(x, y), own = zone?.encounters;
+      const table = this.#encounterTable(own, biome, !room && nightNow(), zone, room ? null : x, room ? null : y).filter((e) => this.available.includes(e[0]) && SPECIES[e[0]]);
       const pool = table.length ? table : this.available.filter((d) => SPECIES[d] && d !== 130).map((d) => [d, 3, 8, 1]);
       let r = Math.random() * pool.reduce((s, e) => s + e[3], 0); const entry = pool.find((e) => (r -= e[3]) < 0) ?? pool[0];
       const [dex, lo, hi] = entry;
@@ -202,6 +217,43 @@ class Game {
     }
   }
 
+  // Tabela de encontros: a da área (ou do bioma). À noite os noturnos aparecem: no bioma, a tabela "noite"
+  // substitui a do dia; numa área com tabela própria, os noturnos do bioma entram no nível da área (~45% do peso).
+  #encounterTable(own, biome, night, zone, x, y) {
+    // fora das áreas desenhadas (bordas do esboço): usa a tabela da área com encontros mais perto (até 24 blocos), ou a
+    // da área de mesmo nome; senão o selvagem do lado da Rota 2 ou do Bosque saía com nível de Rota 1
+    if (!own && x != null) {
+      const near = zone ? this.map.areas.find((a) => a.encounters && a.name === zone.name) : this.#nearestEncounters(x, y); // pedaço do esboço com o mesmo nome, ou área vizinha
+      if (near) { own = near.encounters; zone = near; }
+    }
+    const day = own ?? BIOME_ENCOUNTERS[biome] ?? BIOME_ENCOUNTERS.campo;
+    if (!night) return day;
+    const nt = zone?.night ?? NIGHT_ENCOUNTERS[biome];
+    if (!nt?.length) return day;
+    if (!own || zone?.night) return own && zone?.night ? zone.night : nt;
+    const lo = Math.min(...own.map((e) => e[1])), hi = Math.max(...own.map((e) => e[2]));
+    const wDay = own.reduce((a, e) => a + e[3], 0), wNt = nt.reduce((a, e) => a + e[3], 0) || 1;
+    const k = (wDay * 0.8) / wNt; // noturnos ≈ 45% do total
+    return [...own, ...nt.filter((e) => !own.some((o) => o[0] === e[0])).map(([d, , , w]) => [d, lo, hi, w * k])];
+  }
+
+  // Tabela de encontros que vale num ponto (testes e ferramentas)
+  encounterAt(x, y, night = nightNow()) {
+    const room = this.map.interiorAt(x, y), zone = room ?? this.map.areaAt(x, y);
+    return this.#encounterTable(zone?.encounters, this.map.biome(x, y), !room && night, zone, room ? null : x, room ? null : y);
+  }
+  #nearestEncounters(px, py) {
+    const x = px / T, y = py / T; let best = null, bd = 24;
+    for (const a of this.map.areas) {
+      if (!a.encounters) continue;
+      let d;
+      if (a.rect) { const [ax, ay, aw, ah] = a.rect; d = Math.hypot(Math.max(ax - x, 0, x - (ax + aw)), Math.max(ay - y, 0, y - (ay + ah))); }
+      else { const [cx, cy, rx, ry] = a.ellipse; d = Math.max(0, Math.hypot(x - cx, y - cy) - Math.min(rx, ry)); }
+      if (d < bd) { bd = d; best = a; }
+    }
+    return best;
+  }
+
   onFaint(e, by) {
     if (e.dead) return;
     if (this.net?.onFaint(e, by)) return; // duelo online: quem decide o desmaio é o árbitro
@@ -210,7 +262,11 @@ class Game {
     this.fx.burst(e.x, e.y - 8, 0xffffff, 1.2);
     if (e.side === 'wild') {
       const lead = this.lead;
-      if (lead?.alive && (by === lead || by?.side === 'ally')) { lead.mon.gainEvs(e.mon.sp.evs); lead.mon.addFriendship(1); this.giveXp(lead.mon, e.mon.xpYield(false, lead.mon)); } // XP escalonada (Gen 7+), EVs e amizade
+      if (lead?.alive && (by === lead || by?.side === 'ally')) {
+        lead.mon.gainEvs(e.mon.sp.evs); lead.mon.addFriendship(1);
+        this.giveXp(lead.mon, e.mon.xpYield(false, lead.mon) * (e.isAlpha ? 2 : 1)); // XP escalonada (Gen 7+), EVs e amizade; alfa vale o dobro
+        if (e.isAlpha) this.#alphaDrop(e);
+      }
       this.later(1.1, () => this.removeEntity(e));
     } else {
       this.toast(`${e.mon.name} desmaiou!`);
@@ -223,25 +279,60 @@ class Game {
       });
     }
   }
+  // Alfa vencido deixa cair um item (bolas, remédios, tesouros para vender, às vezes um Doce Raro)
+  #alphaDrop(e) {
+    const tot = ALPHA_DROPS.reduce((a, d) => a + d[2], 0); let r = Math.random() * tot;
+    const [k, n] = ALPHA_DROPS.find((d) => (r -= d[2]) < 0) ?? ALPHA_DROPS[0];
+    this.bag[k] = (this.bag[k] ?? 0) + n;
+    this.later(0.6, () => {
+      this.fx.emit(e.x, e.y - 6, { color: 0xffe27a, n: 14, speed: 50, size: 3, life: 0.7, vz: 60 });
+      this.audio.sfx('pickup');
+      this.toast(`O Alfa deixou cair ${n > 1 ? n + '× ' : ''}${itemName(k)}!`);
+    });
+  }
   removeEntity(e) { this.ents.removeChild(e.view); e.view.destroy({ children: true }); this.entities = this.entities.filter((o) => o !== e); this.wilds = this.wilds.filter((o) => o !== e); }
-  giveXp(mon, xp) {
-    const ev = mon.gainXp(xp);
-    this.fx.number(this.lead.x, this.lead.y - 34, `+${xp} XP`, '#9ad0ff');
-    for (const v of ev) {
-      if (v.type === 'level') { this.toast(`${mon.name} subiu para o nível ${v.level}!`); this.audio.sfx('levelup'); this.fx.ring(this.lead.x, this.lead.y - 8, 0xffe27a, 16, 0.6); }
-      if (v.type === 'learn') { if (mon.moves.length < 4) { mon.learn(v.move); this.toast(`${mon.name} aprendeu ${MOVES[v.move]?.name ?? v.move}!`); } else this.toast(`${mon.name} quer aprender ${MOVES[v.move]?.name}, mas já sabe 4 golpes.`); }
-      if (v.type === 'evolve') this.later(1.2, () => this.evolve(mon, v.to));
-    }
+  // XP: quem lutou ganha tudo; o resto da equipe (sem desmaiar) ganha metade, como o Compartilhar Experiência
+  // dos jogos novos. Assim o Pokémon capturado também cresce sem precisar moer.
+  giveXp(mon, xp, { share = true } = {}) {
+    if (this.lead?.mon === mon) this.fx.number(this.lead.x, this.lead.y - 34, `+${xp} XP`, '#9ad0ff');
+    this.#xpEvents(mon, mon.gainXp(xp, this.#evoCtx()), true);
+    if (share) for (const m of this.party) if (m !== mon && !m.fainted && m.level < 100) this.#xpEvents(m, m.gainXp(Math.max(1, Math.floor(xp * XP_SHARE)), this.#evoCtx()), false);
     this.hudLead(); this.hudMoves();
   }
+  #evoCtx() { return { partyTypes: this.party.flatMap((m) => m.types) }; }
+  #xpEvents(mon, ev, main) {
+    for (const v of ev) {
+      if (v.type === 'level') {
+        this.toast(`${mon.name} subiu para o nível ${v.level}!`); this.audio.sfx('levelup');
+        if (this.lead?.mon === mon) this.fx.ring(this.lead.x, this.lead.y - 8, 0xffe27a, 16, 0.6);
+      }
+      if (v.type === 'learn') this.teach(mon, v.move);
+      if (v.type === 'evolve') this.ui.queue(() => this.evolve(mon, v.to));
+    }
+    void main;
+  }
+  // Aprender golpe: com menos de 4, aprende na hora; com 4, abre a tela clássica para escolher qual esquecer
+  teach(mon, id) {
+    if (!MOVES[id] || mon.moves.includes(id)) return;
+    if (mon.moves.length < 4) { mon.learn(id); this.toast(`${mon.name} aprendeu ${MOVES[id].name}!`); this.hudMoves(); return; }
+    this.ui.queue(async () => { if (!mon.moves.includes(id)) await this.ui.menu.askLearn(mon, id); this.hudMoves(); });
+  }
+  // Evolução com a cena clássica (o mundo para); depois troca o sprite se ele estiver em campo
   async evolve(mon, to) {
-    const old = mon.name;
-    const e = this.lead; if (!e || e.mon !== mon) { mon.evolveTo(to); return; }
-    for (let i = 0; i < 6; i++) this.later(i * 0.12, () => { e.flash = 0.08; this.fx.ring(e.x, e.y - 8, 0xffffff, 10 + i * 3, 0.3); });
-    this.later(0.8, async () => {
-      mon.evolveTo(to); const set = await loadPokemonSprites(to); e.setSprites(set);
-      this.fx.burst(e.x, e.y - 10, 0xffffff, 2); this.toast(`${old} evoluiu para ${mon.name}!`); this.audio.sfx('caught'); this.hudLead();
-    });
+    if (!SPECIES[to] || mon.dex === to) return;
+    const old = mon.name, from = mon.dex;
+    await evolutionScene(this.ui, old, from, to);
+    const learned = mon.evolveTo(to);
+    const e = this.lead;
+    if (e?.mon === mon) {
+      const set = await loadPokemonSprites(to).catch(() => null);
+      if (set) e.setSprites(set);
+      this.fx.burst(e.x, e.y - 10, 0xffffff, 2);
+    }
+    dexMark(this, to, 2);
+    this.toast(`${old} evoluiu para ${mon.name}!`);
+    for (const v of learned ?? []) if (v.type === 'learn') this.teach(mon, v.move);
+    this.hudLead(); this.hudMoves(); this.ui.partyChanged?.();
   }
   blackout() {
     if (this.story?.onBlackout()) return; // batalha que não manda para casa (ex.: rival no laboratório)
@@ -253,14 +344,27 @@ class Game {
   }
 
   // ---------- Poké Bola (a qualquer momento) ----------
+  // Bolas da mochila (chaves de ITEM_INFO com .ball), na ordem: Poké, Grande, Ultra e as especiais
+  ballKeys() { return Object.keys(this.bag).filter((k) => this.bag[k] > 0 && ITEM_INFO[k]?.ball != null).sort((a, b) => (itemInfo(a)?.price || 9999) - (itemInfo(b)?.price || 9999)); }
+  // Bola escolhida para arremessar (menu Mochila → "Preparar"); sem ela, a primeira que tiver
+  currentBall() { const ks = this.ballKeys(); return ks.includes(this.ballSel) ? this.ballSel : ks[0] ?? null; }
+  cycleBall(d = 1) {
+    const ks = this.ballKeys(); if (!ks.length) { this.toast('Sem Poké Bolas!'); return; }
+    const i = ks.indexOf(this.currentBall());
+    this.ballSel = ks[(i + d + ks.length) % ks.length];
+    this.toast(`Bola: ${itemName(this.ballSel)} (×${this.bag[this.ballSel]})`); this.audio.sfx('blip'); this.hudMoves();
+  }
   throwBall(ax, ay) {
-    if (!this.bag.pokeball) { this.toast('Sem Poké Bolas!'); return; }
-    this.bag.pokeball--;
+    const key = this.currentBall();
+    if (!key) { this.toast('Sem Poké Bolas! Compre mais no Mercado.'); return; }
+    this.bag[key]--; this.hudMoves();
     const p = this.player, dx = ax - p.x, dy = ay - p.y, d = Math.hypot(dx, dy) || 1;
     const ball = new PIXI.Graphics(); ball.circle(0, 0, 3).fill(0xffffff); ball.rect(-3, -3, 6, 3).fill(0xe5383b); ball.circle(0, 0, 1).fill(0x222222);
     this.world.addChild(ball);
     const dist = Math.min(d, 150), tx = p.x + dx / d * dist, ty = p.y + dy / d * dist;
-    this.balls ??= []; this.balls.push({ s: ball, x0: p.x, y0: p.y - 12, x1: tx, y1: ty, t: 0, dur: 0.25 + dist / 600 });
+    const col = parseInt((ITEM_INFO[key]?.color ?? '#e5383b').slice(1), 16);
+    if (key !== 'pokeball' && col !== 0xe5383b) { ball.clear(); ball.circle(0, 0, 3).fill(0xffffff); ball.rect(-3, -3, 6, 3).fill(col); ball.circle(0, 0, 1).fill(0x222222); }
+    this.balls ??= []; this.balls.push({ s: ball, key, x0: p.x, y0: p.y - 12, x1: tx, y1: ty, t: 0, dur: 0.25 + dist / 600 });
     this.audio.sfx('throw');
   }
   #updateBalls(dt) {
@@ -277,8 +381,8 @@ class Game {
   }
   #capture(b, w) {
     b.capture = true; w.busy = true; w.lock = 99;
-    const chance = this.combat.catchChance(w);
-    const shakes = chance >= 1 ? 4 : [0, 1, 2, 3].filter(() => Math.random() < Math.pow(chance, 0.25)).length;
+    const chance = this.combat.catchChance(w, b.key ?? 'pokeBall');
+    const shakes = chance >= 1 ? 4 : rollShakes(chance); // sacudidas seguidas, como nos jogos (4 = capturou)
     this.fx.burst(w.x, w.y - 8, 0xffffff, 1.2); this.audio.sfx('pop');
     w.view.visible = false;
     b.s.x = w.x; b.s.y = w.y - 3;
@@ -288,8 +392,17 @@ class Game {
       if (shakes >= 4) {
         this.audio.sfx('caught'); this.fx.emit(b.s.x, b.s.y, { color: 0xffe27a, n: 14, speed: 40, size: 4, life: 0.7, vz: 60 });
         const m = w.mon; m.status = null;
+        const bi = itemInfo(b.key ?? 'pokeBall');
+        m.ball = (b.key === 'pokeball' ? 'pokeBall' : b.key) ?? 'pokeBall'; m.metLevel = m.level;
+        if (w.isAlpha) { m.stats = null; m.calc(); m.hp = Math.min(m.hp, m.stats.hp); } // o alfa capturado volta aos status normais da espécie
+        if (bi?.onCatch === 'heal') m.heal();
+        if (bi?.onCatch === 'friend') m.friendship = Math.max(m.friendship, 150);
+        const novo = dexMark(this, m.dex, 2);
+        this.fx.number(b.s.x, b.s.y - 18, 'Capturado!', 0xffe27a, true, 'banner');
+        this.fx.emit(b.s.x, b.s.y - 4, { tex: 'star', color: 0xffe27a, n: 8, speed: 70, life: 0.6, spin: 6 });
         if (this.party.length < 6) { this.party.push(m); this.toast(`${m.name} foi capturado e entrou na equipe!`); } else { this.box.push(m); this.toast(`${m.name} foi capturado (enviado ao PC).`); }
-        w.dead = true; this.removeEntity(w); this.hudLead();
+        if (novo) this.later(0.9, () => this.toast(`Dados de ${m.sp.name} registrados na Pokédex!`));
+        w.dead = true; this.removeEntity(w); this.hudLead(); this.ui?.partyChanged?.();
       } else {
         w.view.visible = true; w.busy = false; w.lock = 0; this.fx.burst(w.x, w.y - 8, 0xff5a5a, 1); this.audio.sfx('pop');
         this.toast(['Ah, não! Escapou!', 'Quase!', 'Por pouco!'][Math.min(2, shakes)]); w.provoke(this.lead ?? this.player);
@@ -372,7 +485,7 @@ class Game {
     if (inp.pressed('zoomOut')) this.setZoom(this.zoom - 1);
     const pk = this.mode === 'pokemon' && this.lead?.alive;
     // numa batalha de treinador da história, o seu Pokémon sai sozinho (como nos jogos)
-    if (!pk && this.story?.battle && !this.story.battle.done && !this.throwingMon && this.party.some((m) => !m.fainted)) {
+    if (!pk && this.story?.battle && !this.story.battle.done && !this.throwingMon && !(this.sendingOut > 0) && this.party.some((m) => !m.fainted)) {
       const i = this.party[this.leadIdx]?.fainted ? this.party.findIndex((m) => !m.fainted) : this.leadIdx;
       const a = this.#aimPoint(); this.throwMon(i, a.x, a.y);
     }
@@ -431,7 +544,9 @@ class Game {
       // treinador: Q (ou 1º botão) envia o Pokémon escolhido; B (ou 2º botão) joga Poké Bola de captura
       if (inp.pressed('ball') || inp.pressed('m0')) { const a = this.#aimPoint(); this.throwMon(this.leadIdx, a.x, a.y); }
       if (inp.pressed('m2')) this.swap();
+      if (inp.pressed('m3')) this.cycleBall(); // no celular, o 4º botão troca a bola
     }
+    if (inp.pressed('ballNext')) this.cycleBall();
     this.combat.pilot.control(dt, pk); // voar/mergulhar/cavar (C), pular (X), água para Pokémon de Água
     if (inp.pressed('catch') || (!pk && inp.pressed('m1'))) { const a = this.#aimPoint(); this.throwBall(a.x, a.y); }
     if (inp.pressed('swap')) this.swap();

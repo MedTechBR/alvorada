@@ -271,3 +271,14 @@
 .gm-stats td.iv { width: 46px; padding: 7px 4px; }
 .gm-badge.got { color: #3a2a00; text-shadow: 0 1px 0 rgba(255,255,255,.6); }
 .gm-tc-av { width: 96px; height: 128px; image-rendering: pixelated; display: block; }
+
+/* Mercado e "aprender golpe" */
+.gm-shopmain { max-width: 420px; margin: auto; }
+.gm-shop .gm-item .qt { min-width: 84px; text-align: right; font-weight: 900; }
+.gm-shop .gm-item .gm-soft { margin-right: 10px; }
+.gm-qty { display: flex; align-items: center; gap: 12px; padding: 6px 12px 10px; font-size: 20px; }
+.gm-qty .gm-step { cursor: pointer; user-select: none; color: #36426b; }
+.gm-qty .gm-soft { margin-left: auto; font-size: 16px; }
+.gm-learn .gm-learnrow { padding: 2px 6px; }
+.gm-learn .gm-learnrow .gm-move { flex: 1; margin-bottom: 4px; }
+.gm-learn .gm-new { box-shadow: 0 0 0 2px #ffd23f inset; }

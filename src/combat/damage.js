@@ -6,12 +6,17 @@ import { TILE, T } from '../world/tiles.js';
 // computeDamage(user, target, mv, ctx) -> { dmg, eff, crit, mult, note, r }  (r = resultado completo da mecânica)
 // ctx: { g, power (substitui mv.power), scale, noCrit, rnd }. Com ctx.g (combate local) também gasta itens e frutas.
 
-export const DMG = 0.34; // ritmo do tempo real: lutas de 10 a 40 s contra selvagens do mesmo nível
+export const DMG = 0.34; // ritmo do tempo real: lutas de 8 a 25 s contra selvagens do mesmo nível
+// Selvagens e Pokémon de treinador batem mais forte que o seu: eles telegrafam, recarregam 20% mais devagar e você
+// pode esquivar. Sem esse peso, um jogador descuidado nunca perdia (o selvagem levava 40 a 80 s para vencer).
+// Só no combate local (com ctx.g): o PvP online (calcDamage, árbitro) continua simétrico.
+export const FOE_DMG = 1.5;
 
 export function computeDamage(user, target, mv, ctx = {}) {
   const tm = terrainMod(user, target, mv, ctx.g);
   const m = ctx.power != null ? { ...mv, power: ctx.power, count: 1, hits: 1 } : mv;
-  const opts = { rng: ctx.rnd ?? Math.random, pace: DMG * tm.mult * (ctx.scale ?? 1) };
+  const foe = ctx.g && (user?.side === 'wild' || user?.side === 'foe') && target?.side === 'ally' ? FOE_DMG * (user.isAlpha ? 1.25 : 1) : 1;
+  const opts = { rng: ctx.rnd ?? Math.random, pace: DMG * foe * tm.mult * (ctx.scale ?? 1) };
   if (ctx.noCrit) opts.crit = false;
   const r = (ctx.g ? resolveHit : officialDamage)(user, target, m, opts);
   const dmg = r.immune ? 0 : r.damage;

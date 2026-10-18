@@ -28,7 +28,8 @@ export const PROF = {
   choose: ['Os três Pokémon estão nas Poké Bolas da mesa. Escolha com calma!'],
   gift: (touch) => [
     'Leve também estas Poké Bolas e Poções. Elas vão ajudar na sua jornada.',
-    touch ? 'Quando um Pokémon selvagem estiver fraco, toque no botão da bola para arremessá-la.' : 'Quando um Pokémon selvagem estiver fraco, aperte Q para arremessar uma Poké Bola.',
+    touch ? 'Quando um Pokémon selvagem estiver fraco, chame o seu Pokémon de volta e toque em Capturar para arremessar uma Poké Bola.' : 'Quando um Pokémon selvagem estiver fraco, aperte B para arremessar uma Poké Bola. O Q envia e chama de volta o seu Pokémon.',
+    'Pegar um Pokémon dormindo, distraído ou com pouco HP é bem mais fácil. Quem segura a bola é você, então fique de olho!',
     touch ? 'E o botão ☰ abre o menu: Pokédex, equipe, mochila e o seu cartão de treinador.' : 'E a tecla M (ou Esc) abre o menu: Pokédex, equipe, mochila e o seu cartão de treinador.',
     'Cada cidade de Alvorada tem um Ginásio. Os líderes guardam fragmentos de uma pedra antiga: a Pedra do Alvorecer.',
     'O mais perto é o de Cidade Campina. Siga a trilha a oeste, pelos Campos de Lúmen. Boa sorte!',

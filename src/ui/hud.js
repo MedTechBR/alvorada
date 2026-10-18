@@ -1,3 +1,4 @@
+import { itemName } from '../data/items.js';
 import * as PIXI from 'pixi.js';
 import { MOVES } from '../data/moves.js';
 import { TYPE_PT, TYPE_COLOR } from '../data/types.js';
@@ -145,7 +146,8 @@ export class Hud {
   moves() {
     const g = this.g, m = g.party[g.leadIdx];
     const trainer = g.mode !== 'pokemon';
-    const ids = (trainer ? 'T:' + (m?.name ?? '') : 'P:') + (m ? m.moves.join(',') : '') + '|' + (g.mount?.hint()?.key ?? '');
+    const bk = trainer ? g.currentBall?.() : null, bn = bk ? g.bag[bk] : 0;
+    const ids = (trainer ? 'T:' + (m?.name ?? '') + '|' + bk + bn : 'P:') + (m ? m.moves.join(',') : '') + '|' + (g.mount?.hint()?.key ?? '');
     if (ids === this.v.moves) return;
     this.v.moves = ids;
     this.v.cds = null;
@@ -153,11 +155,11 @@ export class Hud {
     if (trainer) {
       $('moves').innerHTML = IS_TOUCH || !m ? '' :
         `<div class="mv hint"><b>Enviar ${esc(m.name)}</b><small>joga a Poké Bola dele</small><kbd>Q</kbd></div>` +
-        `<div class="mv hint"><b>Capturar</b><small>Poké Bola de captura</small><kbd>B</kbd></div>` +
+        `<div class="mv hint"><b>Capturar</b><small>${bk ? `${esc(itemName(bk))} ×${bn} · G troca` : 'sem Poké Bolas'}</small><kbd>B</kbd></div>` +
         `<div class="mv hint"><b>Escolher</b><small>próximo da equipe</small><kbd>Tab</kbd></div>` +
         `<div class="mv hint"><b>Zoom</b><small>roda do mouse</small><kbd>+ −</kbd></div>` +
         (g.mount?.hint() ? `<div class="mv hint"><b>${esc(g.mount.hint().title)}</b><small>${esc(g.mount.hint().sub)}</small><kbd>X</kbd></div>` : ''); // montaria (src/world/mounts.js)
-      const labels = [m ? `Enviar<br>${esc(m.name)}` : '', 'Capturar', 'Escolher', ''];
+      const labels = [m ? `Enviar<br>${esc(m.name)}` : '', `Capturar<br><small>×${bn}</small>`, 'Escolher', bk && g.ballKeys().length > 1 ? `Bola<br><small>${esc(itemName(bk))}</small>` : ''];
       for (const b of document.querySelectorAll('.tb.move')) {
         const i = +b.dataset.slot;
         b.innerHTML = labels[i] ? `<span>${labels[i]}</span>` : '';

@@ -333,7 +333,7 @@ export class Story {
       const quem = t.def.id === 'leader_tome' ? 'tome' : t.def.id;
       add(t, 26, done ? 'Falar' : t.def.badge ? 'Desafiar' : 'Batalhar', done ? R(quem, () => this.#afterTalk(t)) : () => this.#challenge(t));
     }
-    add(this.npc('nurse'), 28, 'Centro Pokémon', () => this.#nurseTalk());
+    add(this.npc('nurse'), 38, 'Centro Pokémon', () => this.#nurseTalk());
     out.push(...this.roteiro.interactions());
     const n = this.spots.get('nurse');
     add({ x: n.x + 22, y: n.y - 6, h: 26 }, 16, 'Usar o PC', () => { g.ui.openPC(); });

@@ -216,6 +216,13 @@ export const ITEMS = {
   expCandyM: I('Doce de Exp. M', 'Exp. Candy M', 'candy', 1000, { exp: 3000, desc: 'Dá 3.000 pontos de experiência.' }),
   expCandyL: I('Doce de Exp. G', 'Exp. Candy L', 'candy', 3000, { exp: 10000, desc: 'Dá 10.000 pontos de experiência.' }),
   expCandyXl: I('Doce de Exp. GG', 'Exp. Candy XL', 'candy', 10000, { exp: 30000, desc: 'Dá 30.000 pontos de experiência.' }),
+  // Tesouros: não servem para nada além de vender no Mercado (metade do preço). Alfas e esconderijos deixam cair.
+  tinyMushroom: I('Cogumelo Pequeno', 'Tiny Mushroom', 'treasure', 1000, { desc: 'Um cogumelo pequeno e raro. Vale ₽500 no Mercado.' }),
+  pearl: I('Pérola', 'Pearl', 'treasure', 2000, { desc: 'Uma pérola pequena e brilhante. Vale ₽1.000 no Mercado.' }),
+  stardust: I('Pó Estelar', 'Stardust', 'treasure', 3000, { desc: 'Areia vermelha e bonita, lisa ao toque. Vale ₽1.500 no Mercado.' }),
+  bigMushroom: I('Cogumelo Grande', 'Big Mushroom', 'treasure', 5000, { desc: 'Um cogumelo grande e raro. Vale ₽2.500 no Mercado.' }),
+  bigPearl: I('Pérola Grande', 'Big Pearl', 'treasure', 8000, { desc: 'Uma pérola grande e brilhante. Vale ₽4.000 no Mercado.' }),
+  nugget: I('Pepita', 'Nugget', 'treasure', 10000, { desc: 'Uma pepita de ouro puro. Vale ₽5.000 no Mercado.' }),
   abilityCapsule: I('Cápsula de Habilidade', 'Ability Capsule', 'misc', 10000, { abilitySwap: true, desc: 'Troca a habilidade pela outra comum da espécie.' }),
 };
 
@@ -269,7 +276,7 @@ const COLOR = {
   cheriBerry: '#d8344a', rawstBerry: '#4cae8a', sitrusBerry: '#f2d04c', lumBerry: '#6cc04a', silkScarf: '#f4f0e0', charcoal: '#3a3a3a',
   miracleSeed: '#5ab84a', mysticWater: '#4aa0e8', leftovers: '#c98a4a', pokedex: '#e5383b', townMap: '#9fd67a',
 };
-const CAT_COLOR = { ball: '#e5383b', medicine: '#9b59d6', berry: '#d8344a', held: '#c0c0c0', evolution: '#7ad0e0', tm: '#7a8aa0', vitamin: '#e08a3a', candy: '#5ad0a0', key: '#9fd67a', misc: '#bbbbbb' };
+const CAT_COLOR = { treasure: '#f2c94c', ball: '#e5383b', medicine: '#9b59d6', berry: '#d8344a', held: '#c0c0c0', evolution: '#7ad0e0', tm: '#7a8aa0', vitamin: '#e08a3a', candy: '#5ad0a0', key: '#9fd67a', misc: '#bbbbbb' };
 
 function view(id) {
   const it = ITEMS[id];
@@ -291,6 +298,9 @@ for (const [old, id] of Object.entries(ITEM_ALIAS)) if (ITEMS[id]) ITEM_INFO[old
 
 export const usableOnMon = (key) => !!ITEM_INFO[key]?.usable;
 export const holdable = (key) => !!ITEM_INFO[key]?.hold;
+// Preço de venda no Mercado: metade do preço (0 = não se vende: itens-chave e MTs)
+export const sellPrice = (key) => { const it = itemInfo(key); return !it || it.key || it.cat === 'tm' ? 0 : Math.floor((it.price ?? 0) / 2); };
+export const buyPrice = (key) => itemInfo(key)?.price ?? 0;
 export const itemName = (key) => ITEM_INFO[key]?.name ?? itemInfo(key)?.name ?? (key ? String(key) : '');
 
 // Usa um item da mochila num Pokémon da equipe. Gasta da mochila se der certo. Devolve { ok, text, events }.

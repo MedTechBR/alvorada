@@ -219,7 +219,7 @@ export class WorldLife {
     const ax = p.x + f[0] * 14, ay = p.y - 4 + f[1] * 14;
     let best = null, bd = 22;
     for (const c of this.map.visible) for (const o of c.objs) {
-      if (o.dead || !(o.text || o.berry)) continue;
+      if (o.dead || !(o.text || o.berry || o.kind === 'pc')) continue;
       const d = Math.hypot(o.x - ax, o.y - 8 - ay); if (d < bd + (o.berry ? 10 : 0)) { bd = d; best = o; }
     }
     const who = this.people.nearest(p.x, p.y, p.dir);
@@ -227,7 +227,7 @@ export class WorldLife {
     // balão "E · Falar" (só quando a história não mostrou o dela neste quadro)
     if (hud?.setPrompt && (!hud.bubble?.visible || this.ownPrompt)) {
       if (who) hud.setPrompt({ x: who.o.x, y: who.o.y, h: 30 }, who.kind === 'pet' ? 'Brincar' : 'Falar');
-      else if (best) hud.setPrompt({ x: best.x, y: best.y - 8, h: 24 }, best.berry ? 'Sacudir' : best.kind === 'sign' ? 'Ler' : 'Ver');
+      else if (best) hud.setPrompt({ x: best.x, y: best.y - 8, h: 24 }, best.berry ? 'Sacudir' : best.kind === 'pc' ? 'Usar o PC' : best.kind === 'sign' ? 'Ler' : 'Ver');
       else if (this.ownPrompt) hud.setPrompt(null);
       this.ownPrompt = !!(who || best);
     }
@@ -235,6 +235,7 @@ export class WorldLife {
     if (who) { inp.taps.delete('act'); this.people.talk(who); return; }
     if (!best) return;
     inp.taps.delete('act');
+    if (best.kind === 'pc' && !best.text) { g.audio?.sfx?.('blip'); g.ui?.openPC?.(); return; }
     if (best.berry) this.#shake(best);
     else this.showSign(best.text, best.x, best.y, best.kind === 'sign' ? 'Placa' : '');
   }

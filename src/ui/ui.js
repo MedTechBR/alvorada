@@ -33,7 +33,7 @@ export class UI {
   }
   get story() { return this.g.story; }
   // o mundo para: título, menu, diálogo ou aviso de girar o aparelho
-  get blocking() { return this.state !== 'play' || this.menu.isOpen || this.dialog.open || this.rotateOn; }
+  get blocking() { return this.state !== 'play' || this.menu.isOpen || this.dialog.open || this.rotateOn || this.sceneOn; }
 
   // ---------- começo ----------
   async title() {
@@ -73,7 +73,7 @@ export class UI {
     if (this.state !== 'play') return true;
     g.flags.playTime = (g.flags.playTime ?? 0) + dt;
     if (!this.audioOk) this.audioOk = applyOpts(g);
-    if (this.rotateOn) { inp.taps.clear(); return true; }
+    if (this.rotateOn || this.sceneOn) { inp.taps.clear(); return true; }
     if (this.menu.isOpen) { this.menu.update(dt); inp.taps.clear(); return true; }
     if (this.dialog.open) { this.dialog.update(dt); this.#lock(); return true; }
     if (g.net?.ui?.modalOpen) { this.#lock(); return false; } // janela do online aberta: o mundo segue, o jogador não anda
@@ -104,6 +104,9 @@ export class UI {
   openMenu() { if (this.state !== 'play' || this.menu.isOpen) return; this.menu.open(); document.body.classList.add('menu-open'); }
   openOnline() { this.menu.close(); const u = this.g.net?.ui; if (u && !u.modalOpen) u.toggleMenu(); }
   openPC() { this.menu.openPC(); document.body.classList.add('menu-open'); }
+  openShop(stock, opts) { return this.menu.openShop(stock, opts); }
+  // Fila de avisos que param o jogo (aprender golpe, evolução): um de cada vez, na ordem em que chegaram
+  queue(fn) { const run = async () => { try { while (this.dialog.open || this.state !== 'play') await sleep(120); await fn(); } catch (e) { console.warn('fila da interface', e); } }; this.fila = (this.fila ?? Promise.resolve()).then(run); return this.fila; }
   onMenuClosed() { document.body.classList.remove('menu-open'); this.hud.v = {}; this.hud.t = 0; }
   partyChanged() { this.hud.v.party = null; this.hud.t = 0; this.hud.lead(); this.hud.moves(); }
 

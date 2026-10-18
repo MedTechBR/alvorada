@@ -145,7 +145,7 @@ da água) ou cava (os demais); **X** pula; **Espaço** esquiva com invencibilida
 - **Leitura do perigo:** o selvagem telegrafa (faixa, leque ou círculo no chão; vermelho = dano, amarelo = só efeito)
   e pisca antes de soltar o golpe. Esquiva perfeita (perto do acerto) dá câmera lenta curta.
 - **IA** (`src/combat/ai.js`): temperamentos, bandos com alfa (maior, olhos vermelhos, chama o bando), acordar com
-  barulho, esquiva de projéteis, circular o alvo, no máximo 2 preparando golpe contra o mesmo alvo, rivais que brigam.
+  barulho, esquiva de projéteis, circular o alvo, um selvagem por vez preparando golpe contra o mesmo alvo (dois num bando), rivais que brigam.
 - **Arena** (`src/combat/arena.js`): crateras, terra revirada, mato cortado, fogo que se espalha pelo mato alto e deixa
   chão queimado, arbustos e pedras que quebram em detritos, árvores que tremem e soltam folhas.
 - **Dano:** ponto único em `src/combat/damage.js` (`computeDamage`; `calcDamage` em combat.js é a versão pura do PvP).

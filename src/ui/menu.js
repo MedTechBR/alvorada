@@ -2,7 +2,7 @@ import { SPECIES, BIOME_ENCOUNTERS, NIGHT_ENCOUNTERS } from '../data/species.js'
 import { MOVES } from '../data/moves.js';
 import { TYPE_COLOR, TYPE_PT } from '../data/types.js';
 import { DEX_TEXT } from '../data/dex.js';
-import { ITEM_INFO, POCKETS, useItemOn, usableOnMon, holdable, itemName } from '../data/items.js';
+import { ITEM_INFO, POCKETS, useItemOn, usableOnMon, holdable, itemName, itemInfo, sellPrice, buyPrice } from '../data/items.js';
 import { ALVORADA_DEX } from '../story/pokedex.js';
 import { BADGES } from '../story/names.js';
 import * as World from '../world/map.js';
@@ -226,12 +226,14 @@ export class GameMenu {
   }
   close() {
     if (this.el.hidden) return;
+    const pend = this.pendingClose; this.pendingClose = null;
     this.el.hidden = true;
     this.layers = [];
     this.q('.gm-pop').hidden = true; this.q('.gm-msg').hidden = true;
     clearTimeout(this.dexTimer);
     this.g?.input?.taps.clear();
     this.ui.onMenuClosed?.();
+    pend?.(); // loja ou "aprender golpe" abertos por fora: fechar o menu também encerra a espera
   }
 
   update(dt) {
@@ -243,6 +245,7 @@ export class GameMenu {
   // ---------- entrada ----------
   #key(e) {
     if (!this.isOpen) return;
+    if (performance.now() < (this.deaf ?? 0)) { e.preventDefault(); return; } // a tecla que fechou o diálogo não vale aqui
     const map = { ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down', ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right',
       Enter: 'ok', Space: 'ok', KeyE: 'ok', KeyZ: 'ok', Escape: 'back', Backspace: 'back', KeyX: 'back', KeyM: 'close', Tab: 'tab' };
     const a = map[e.code];
@@ -569,7 +572,7 @@ export class GameMenu {
 
   // ---------- Caixa do PC (aberta no Centro Pokémon) ----------
   openPC() {
-    if (!this.isOpen) { this.el.hidden = false; this.layers = []; this.padPrev = this.#padNow(); }
+    if (!this.isOpen) { this.el.hidden = false; this.layers = []; this.padPrev = this.#padNow(); this.deaf = performance.now() + 180; }
     const g = this.g;
     const L = this.#screen({
       title: 'PC · Caixa de Pokémon', cls: 'gm-pc', cols: 1,
@@ -606,6 +609,160 @@ export class GameMenu {
     }
     this.ui.partyChanged();
     this.refresh();
+  }
+
+  // abre o menu sem a tela principal (PC, loja, aprender golpe); devolve true se fomos nós que abrimos
+  #openBare() {
+    if (this.isOpen) return false;
+    this.el.hidden = false; this.layers = []; this.padPrev = this.#padNow();
+    this.deaf = performance.now() + 180;
+    document.body.classList.add('menu-open');
+    return true;
+  }
+
+  // ---------- Aprender golpe (já sabe 4): tela clássica para escolher qual esquecer ----------
+  // Devolve true se aprendeu. Funciona com o menu fechado (subir de nível no mapa) ou aberto (Doce Raro).
+  askLearn(m, id) {
+    const mv = MOVES[id];
+    if (!mv || m.moves.includes(id)) return Promise.resolve(false);
+    if (m.moves.length < 4) { m.moves.push(id); return Promise.resolve(true); }
+    const own = this.#openBare(), base = this.layers.length;
+    return new Promise((res) => {
+      this.pendingClose = () => res(false);
+      const finish = async (ok, text) => {
+        await this.#msg(text);
+        this.pendingClose = null;
+        while (this.layers.length > base) this.layers.pop();
+        if (own) this.close(); else this.#show();
+        res(ok);
+      };
+      const card = (x, cls = '') => {
+        const v = MOVES[x]; if (!v) return '';
+        const [cat, cc] = CAT_PT[v.cat] ?? ['—', '#999'];
+        return `<div class="gm-move ${cls}" style="--c:${TYPE_COLOR[v.type]}"><div class="gm-mline"><b>${esc(v.name)}</b>${typePills([v.type])}<span class="gm-type" style="background:${cc}">${cat}</span></div>
+          <div class="gm-soft">Poder <b>${v.power ?? '—'}</b> · Recarga <b>${String(v.cd ?? 1).replace('.', ',')} s</b> · ${KIND_PT[v.kind] ?? ''}</div>${moveEffect(v) ? `<div class="gm-eff">${moveEffect(v)}</div>` : ''}</div>`;
+      };
+      const L = this.#screen({
+        title: 'Aprender golpe', cls: 'gm-sum gm-learn',
+        foot: '<b>↑↓</b> escolher · <b>Enter</b> esquecer este · <b>Esc</b> não aprender',
+        draw: (body) => {
+          body.innerHTML = `<div class="gm-box gm-sumleft">${slot(m.dex, 'big')}<div class="gm-big">${esc(m.name)}</div><div class="gm-soft">Nv. ${m.level}</div>
+              <p class="gm-desc">${esc(m.name)} quer aprender <b>${esc(mv.name)}</b>, mas já sabe 4 golpes.<br>Esquecer um golpe para dar lugar a ${esc(mv.name)}?</p></div>
+            <div class="gm-box gm-sumright gm-moves"><div class="gm-sub-t">Golpe novo</div>${card(id, 'gm-new')}
+              <div class="gm-sub-t">Esquecer qual?</div>
+              ${m.moves.map((x, k) => `<div class="nav gm-row gm-learnrow" data-k="${k}"><span class="gm-cur">▶</span>${card(x)}</div>`).join('')}
+              <div class="nav gm-row" data-k="-1"><span class="gm-cur">▶</span>Não aprender ${esc(mv.name)}</div></div>`;
+          body.querySelectorAll('.nav').forEach((n) => {
+            const k = +n.dataset.k;
+            n._act = async () => {
+              if (k < 0) { const c = await this.#choose(`Desistir de aprender ${esc(mv.name)}?`, ['Sim', 'Não']); if (c === 0) finish(false, `${m.name} não aprendeu ${mv.name}.`); return; }
+              const old = MOVES[m.moves[k]]?.name ?? m.moves[k];
+              const c = await this.#choose(`Esquecer ${esc(old)} e aprender ${esc(mv.name)}?`, ['Sim', 'Não']);
+              if (c !== 0) return;
+              m.moves[k] = id;
+              this.g.audio?.sfx?.('levelup');
+              this.ui.partyChanged();
+              finish(true, `1, 2 e… pronto! ${m.name} esqueceu ${old} e aprendeu ${mv.name}!`);
+            };
+          });
+          fillPortraits(body);
+        },
+        onBack: async () => { const c = await this.#choose(`Desistir de aprender ${esc(mv.name)}?`, ['Sim', 'Não']); if (c === 0) finish(false, `${m.name} não aprendeu ${mv.name}.`); },
+      });
+      this.#push(L);
+    });
+  }
+
+  // ---------- Mercado: comprar e vender (balcão do vendedor) ----------
+  // stock: chaves da mochila à venda (preço de src/data/items.js). Devolve quando o jogador sai.
+  openShop(stock, { name = 'Mercado Pokémon' } = {}) {
+    const g = this.g, own = this.#openBare(), base = this.layers.length;
+    return new Promise((res) => {
+      this.pendingClose = () => res();
+      const leave = () => { this.pendingClose = null; while (this.layers.length > base) this.layers.pop(); if (own) this.close(); else this.#show(); res(); };
+      const money = () => `<span class="gm-chip">₽ <b>${(g.money ?? 0).toLocaleString('pt-BR')}</b></span>`;
+      const root = this.#screen({
+        title: name, cls: 'gm-shop',
+        extra: money,
+        draw: (body) => {
+          body.innerHTML = `<div class="gm-box gm-ask gm-shopmain"><div class="gm-big">Em que posso ajudar?</div>
+              <div class="nav gm-row" data-a="buy"><span class="gm-cur">▶</span>Comprar</div>
+              <div class="nav gm-row" data-a="sell"><span class="gm-cur">▶</span>Vender</div>
+              <div class="nav gm-row" data-a="out"><span class="gm-cur">▶</span>Sair</div></div>`;
+          const [b, s, o] = body.querySelectorAll('.nav');
+          b._act = () => this.#shopList('buy', stock, money);
+          s._act = () => this.#shopList('sell', null, money);
+          o._act = leave;
+        },
+        onBack: leave,
+      });
+      this.#push(root);
+    });
+  }
+  #shopList(mode, stock, money) {
+    const g = this.g, buy = mode === 'buy';
+    const keys = () => (buy ? stock : Object.keys(g.bag).filter((k) => g.bag[k] > 0 && sellPrice(k) > 0));
+    const price = (k) => (buy ? buyPrice(k) : sellPrice(k));
+    const L = this.#screen({
+      title: buy ? 'Comprar' : 'Vender', cls: 'gm-bag gm-shop',
+      extra: money,
+      foot: `<b>↑↓</b> mover · <b>Enter</b> ${buy ? 'comprar' : 'vender'} · <b>Esc</b> voltar`,
+      draw: (body) => {
+        const ks = keys();
+        body.innerHTML = `<div class="gm-box gm-scroll gm-items">${ks.length ? ks.map((k) => `<div class="nav gm-row gm-item" data-k="${k}"><span class="gm-cur">▶</span><span class="gm-ic">${itemIcon(k)}</span><span class="nm">${esc(itemName(k))}</span><span class="gm-soft">${buy ? `tem ${g.bag[k] ?? 0}` : '×' + g.bag[k]}</span><span class="qt">₽ ${price(k).toLocaleString('pt-BR')}</span></div>`).join('') : `<div class="gm-empty">${buy ? 'Nada à venda.' : 'Você não tem nada que o Mercado compre.'}</div>`}</div>
+          <div class="gm-box gm-itemdesc"></div>`;
+        body.querySelectorAll('.nav').forEach((n) => { n._act = () => this.#shopQty(mode, n.dataset.k, price(n.dataset.k)); });
+        if (!ks.length) this.q('.gm-itemdesc').innerHTML = `<div class="gm-soft">${buy ? '' : 'Frutas, remédios, bolas e tesouros (Pérola, Pepita…) podem ser vendidos pela metade do preço.'}</div>`;
+      },
+      onFocus: (el) => {
+        const k = el?.dataset.k, box = this.q('.gm-itemdesc');
+        if (k && box) box.innerHTML = `<span class="gm-ic big">${itemIcon(k)}</span><div><b>${esc(itemName(k))}</b><div class="gm-soft">${esc(ITEM_INFO[k]?.desc ?? itemInfo(k)?.desc ?? '')}</div></div>`;
+      },
+    });
+    this.#push(L);
+  }
+  #shopQty(mode, k, unit) {
+    const g = this.g, buy = mode === 'buy';
+    const max = buy ? Math.max(0, Math.min(99, Math.floor((g.money ?? 0) / Math.max(1, unit)))) : g.bag[k] ?? 0;
+    if (max <= 0) { this.#msg(buy ? 'Você não tem dinheiro suficiente.' : 'Você não tem esse item.'); return; }
+    let n = 1;
+    const pop = this.q('.gm-pop');
+    const L = {
+      kind: 'pop', el: pop,
+      render: () => {
+        pop.innerHTML = `<div class="gm-pop-t">${esc(itemName(k))} · ${buy ? 'quantos?' : 'vender quantos?'}</div>
+          <div class="gm-qty"><span class="gm-step" data-d="-1">◀</span><b>× ${n}</b><span class="gm-step" data-d="1">▶</span><span class="gm-soft">₽ ${(unit * n).toLocaleString('pt-BR')}</span></div>
+          <div class="nav gm-row"><span class="gm-cur">▶</span>${buy ? 'Comprar' : 'Vender'}</div>`;
+        pop.querySelectorAll('[data-d]').forEach((b) => { b.onclick = (e) => { e.stopPropagation(); L.ud(-b.dataset.d); }; });
+        pop.querySelector('.nav')._act = async () => {
+          this.#pop();
+          const total = unit * n;
+          const c = await this.#choose(buy ? `${esc(itemName(k))} × ${n} fica ₽${total.toLocaleString('pt-BR')}. Tudo certo?` : `Posso pagar ₽${total.toLocaleString('pt-BR')} por ${esc(itemName(k))} × ${n}. Fechado?`, ['Sim', 'Não']);
+          if (c !== 0) return;
+          if (buy) {
+            if ((g.money ?? 0) < total) { await this.#msg('Você não tem dinheiro suficiente.'); return; }
+            g.money -= total; g.bag[k] = (g.bag[k] ?? 0) + n;
+            // como nos jogos: quem leva 10 Poké Bolas ganha uma Bola Premier
+            let extra = '';
+            if (itemInfo(k)?.cat === 'ball' && n >= 10) { const bonus = Math.floor(n / 10); g.bag.premierBall = (g.bag.premierBall ?? 0) + bonus; extra = ` De brinde, ${bonus > 1 ? bonus + ' Bolas Premier' : 'uma Bola Premier'}!`; }
+            g.audio?.sfx?.('pickup');
+            this.refresh();
+            await this.#msg(`Aqui está! Obrigado pela preferência.${extra}`);
+          } else {
+            g.bag[k] -= n; if (g.bag[k] <= 0) delete g.bag[k];
+            g.money = (g.money ?? 0) + total;
+            g.audio?.sfx?.('pickup');
+            this.refresh();
+            await this.#msg(`Você entregou ${itemName(k)} × ${n} e recebeu ₽${total.toLocaleString('pt-BR')}.`);
+          }
+          this.ui.hud?.moves?.();
+        };
+      },
+      // como nos jogos: ↑↓ muda de 1 em 1 (dá a volta), ←→ de 10 em 10
+      ud: (d) => { n = ((n - 1 - d) % max + max) % max + 1; L.render(); this.#focus(0); },
+      lr: (d) => { n = Math.max(1, Math.min(max, n + d * 10)); L.render(); this.#focus(0); },
+    };
+    this.#push(L);
   }
 
   // ---------- Resumo ----------
@@ -731,7 +888,14 @@ export class GameMenu {
       await this.#msg(r.text);
       return;
     }
-    await this.#msg(k === 'pokeball' ? (IS_TOUCH ? 'Toque no botão da bola perto de um Pokémon selvagem para arremessar.' : 'Aperte Q perto de um Pokémon selvagem para arremessar. A mira segue o mouse.') : ITEM_INFO[k]?.desc ?? 'Não dá para usar isso agora.');
+    if (it?.ball != null && g.ballKeys) {
+      const c = await this.#choose(esc(it.name), ['Preparar para arremessar', 'Cancelar']);
+      if (c !== 0) return;
+      g.ballSel = k; g.hudMoves?.();
+      await this.#msg(`${it.name} pronta! ${IS_TOUCH ? 'Toque em Capturar perto de um Pokémon selvagem.' : 'Aperte B perto de um Pokémon selvagem (G troca de bola).'}`);
+      return;
+    }
+    await this.#msg(k === 'pokeball' ? (IS_TOUCH ? 'Toque no botão da bola perto de um Pokémon selvagem para arremessar.' : 'Aperte B perto de um Pokémon selvagem para arremessar. A mira segue o mouse.') : ITEM_INFO[k]?.desc ?? 'Não dá para usar isso agora.');
   }
 
   // ---------- Mapa (desenhado dos próprios blocos do mapa) ----------
@@ -910,7 +1074,9 @@ export class GameMenu {
         body.innerHTML = `<div class="gm-box gm-scroll gm-ctlbox"><div class="gm-sub-t">Teclado e mouse</div><table class="gm-tbl">
             ${row('Andar / correr', '<kbd>WASD</kbd> ou setas · <kbd>Shift</kbd> corre')}
             ${row('Golpes', '<kbd>1</kbd> a <kbd>4</kbd> · clique esquerdo = golpe 1, direito = golpe 2 · a mira segue o mouse')}
-            ${row('Esquiva', '<kbd>Espaço</kbd>')}${row('Poké Bola', '<kbd>Q</kbd>')}${row('Trocar Pokémon', '<kbd>Tab</kbd>')}
+            ${row('Esquiva', '<kbd>Espaço</kbd>')}${row('Enviar / chamar de volta o Pokémon', '<kbd>Q</kbd> · <kbd>R</kbd> chama de volta')}
+            ${row('Capturar', '<kbd>B</kbd> joga a Poké Bola · <kbd>G</kbd> troca o tipo de bola')}${row('Trocar Pokémon', '<kbd>Tab</kbd>')}
+            ${row('Montaria', '<kbd>X</kbd> chama ou dispensa · segurar <kbd>X</kbd> voa')}${row('Zoom', 'roda do mouse ou <kbd>+</kbd> <kbd>−</kbd>')}
             ${row('Falar / interagir', '<kbd>E</kbd> ou <kbd>Enter</kbd>')}${row('Menu', '<kbd>M</kbd> ou <kbd>Esc</kbd>')}${row('Medidor de FPS', '<kbd>F3</kbd>')}</table>
           <div class="gm-sub-t">Controle de videogame</div><table class="gm-tbl">
             ${row('Andar / mirar', 'analógico esquerdo · analógico direito mira')}

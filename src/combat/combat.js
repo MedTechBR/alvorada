@@ -16,6 +16,7 @@ import { animFor, kindOf } from './anims/index.js';
 const M = 16;            // 1 m = 16 px
 const TAU = Math.PI * 2;
 const WARN_HIT = 0xff3b2f, WARN_SOFT = 0xffd84a;
+const STAGE_DECAY = 6; // segundos para um estágio (+1/−1) se desfazer
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const angDiff = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
 function segDist(px, py, ax, ay, bx, by) {
@@ -924,6 +925,9 @@ export class Combat {
     this.gfx.clear(); this.gfxN.clear();
     this.pilot.drawWorld(G);
     for (const e of g.entities) {
+      // estágios de status voltam ao normal aos poucos (1 nível a cada STAGE_DECAY s): numa luta de 30 s, Rosnado e
+      // Chicote em sequência levavam a Defesa a −6 e um Tackle tirava metade da vida
+      if (e.stages && (e.stageT = (e.stageT ?? STAGE_DECAY) - dt) <= 0) { e.stageT = STAGE_DECAY; for (const k in e.stages) if (e.stages[k]) e.stages[k] -= Math.sign(e.stages[k]); }
       if (e.charging) { this.#updateCharging(e, dt); if (e.charging && !e.charging.ally && e.side !== 'ally') this.#drawTelegraph(G, e); }
       if (e.critBoost > 0) e.critBoost -= dt;
       if (e.seeded && e.alive) {
