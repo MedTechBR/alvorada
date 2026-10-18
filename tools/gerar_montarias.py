@@ -104,6 +104,13 @@ MAO = {
 }
 # lendários e grandes que a regra deixa de fora
 MAO.update({716: '+correr', 791: '+correr', 717: '+voar', 792: '+voar', 899: '+correr', 901: '+correr'})
+# espécies e formas novas (todas as 1025): montarias de Paldea e o que a regra erra
+MAO.update({
+    1007: '+correr -escalar',    # Koraidon: a moto de Scarlet, corre com o treinador no lombo
+    1008: '+correr +nadar +voar',  # Miraidon: a moto de Violet (corre, nada e plana)
+    968: '+correr',              # Orthworm: minhocão de aço comprido, leva gente no dorso
+    '892-rapidStrike': '-nadar -mergulhar',  # Urshifu Golpe Fluido: lutador bípede, não é barco
+})
 
 # ---------------------------------------------------------------- estilo do assento
 # lombo: senta em cima (quadrúpedes, serpentes, peixes, aves); costas: vai agarrado às costas (bípedes em pé)
@@ -112,7 +119,7 @@ def estilo(dex, s, modos):
     if dex in LOMBO: return 'lombo'
     return 'costas' if s['shape'] == 'biped' and not ({'voar', 'nadar', 'mergulhar'} & modos) else 'lombo'
 COSTAS = {903, 461, 571, 428, 861, 282, 475, 214, 127, 212, 900, 740, 115}
-LOMBO = {6, 149, 635, 445, 697, 248, 306, 217, 553, 612, 460, 9, 160, 55, 195, 537}
+LOMBO = {6, 149, 635, 445, 697, 248, 306, 217, 553, 612, 460, 9, 160, 55, 195, 537, 1007, 1008, 968}
 
 # Pose revista à mão na vitrine (px do sprite sem escala; substituem a medida): lift = assento acima do centro,
 # back = recuo para trás do centro, topo = topo da silhueta de frente, backV = sobe mais olhando para baixo,
