@@ -16,7 +16,7 @@ const CEL = args.includes('--celular'), FOTOS = args.includes('--fotos'), VEZES 
 const CASOS = {
   jonas: { equipe: [[4, 12], [7, 11], [1, 11]], sala: 'farol_topo', em: [4, 8], flags: { 'trainers.g4_saulo': true, 'trainers.g4_duda': true, geradoresLigados: true, farolDentro: true }, falar: 'jonas' },
   marina: { equipe: [[25, 15], [1, 15], [4, 14]], sala: 'galpao_barcos', em: [10, 13], flags: { 'trainers.g3_zeca': true, 'trainers.g3_taina': true }, falar: 'marina' },
-  marina_pier: { equipe: [[25, 15], [1, 15], [4, 14]], perto: [435, 305], flags: { 'trainers.c3_ebano': true, 'trainers.g3_zeca': true, 'trainers.g3_taina': true, 'trainers.leader_marina': true }, falar: 'marina' },
+  marina_pier: { equipe: [[25, 15], [1, 15], [4, 14]], perto: [435, 305], flags: { 'trainers.c3_ebano': true, 'trainers.g3_zeca': true, 'trainers.g3_taina': true }, cena: ['cap03', 'marina_pier'] },
   tome: { equipe: [[66, 16], [4, 15], [7, 15]], perto: [128, 383], flags: { 'trainers.g1_icaro': true, 'trainers.g1_rui': true, campina: true }, falar: 'leader_tome' },
   zelia: { equipe: [[5, 20], [8, 20], [25, 19]], sala: 'casarao_velas', em: [40, 13], flags: { candelabrosAcesos: true, 'trainers.g5_odete': true, 'trainers.g5_ciro': true }, falar: 'zelia', noite: true },
   lia: { equipe: [[5, 21], [8, 21], [2, 20]], sala: 'estufa_lia', em: [11, 15], flags: { defendeuEstufa: true, 'trainers.g2_nando': true, 'trainers.g2_bel': true }, falar: 'lia' },
@@ -83,6 +83,8 @@ async function caso(b, nome, rodada) {
       return 'ok ' + at.join(',');
     })()`);
     if (!String(ok).startsWith('ok')) { console.log(nome, ok); await p.close(); return null; }
+  } else if (C.cena) { // toca a cena direto (a mesma que falar com a líder no lugar certo tocaria)
+    await p.ev(`(async () => { const { CAPITULOS } = await import('/src/story/script/index.js'); const c = CAPITULOS.find((q) => q.id === '${C.cena[0]}'), s = c.cenas.find((q) => q.id === '${C.cena[1]}'); window.game.story.roteiro.tocar(c, s); return 'ok'; })()`);
   } else {
     // a primeira conversa pode ser outra cena (chegada, apresentação): fala de novo até a luta começar
     for (let k = 0; k < 4; k++) {
