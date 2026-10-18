@@ -172,11 +172,14 @@ function falas(c, papel) {
 function moradores(c, salaId, pontos) {
   const I = c.o.interior ?? {}, r = c.r, out = [];
   if (I.moradores) return I.moradores.map((d) => ({ ...d }));
-  const n = 1 + (r() < 0.45 ? 1 : 0);
+  const n = 1 + (r() < 0.45 ? 1 : 0), usados = new Set();
   for (let i = 0; i < n && i < pontos.length; i++) {
     const jovem = i === 1 && r() < 0.6, [x, y] = pontos[i];
     const look = { preset: pick(r, jovem ? LOOKS_J : LOOKS_A), top: pick(r, CORES), pants: pick(r, ['#3a3a5a', '#5a4a3a', '#2a4a6a', '#6a3a3a']) };
-    out.push({ id: `${salaId}_m${i + 1}`, name: jovem ? pick(r, JOVENS) : pick(r, ADULTOS), look, x, y, dir: 'down', wander: 1, ...(jovem ? { kid: true } : {}), lines: falas(c, jovem ? 'jovem' : 'adulto'), gerado: true });
+    let name; do name = jovem ? pick(r, JOVENS) : pick(r, ADULTOS); while (usados.has(name)); usados.add(name);
+    // cada morador começa a conversa por um assunto diferente
+    const L = falas(c, jovem ? 'jovem' : 'adulto'), k = i * 2 % Math.max(1, L.length), lines = [...L.slice(k), ...L.slice(0, k)];
+    out.push({ id: `${salaId}_m${i + 1}`, name, look, x, y, dir: 'down', wander: 1, ...(jovem ? { kid: true } : {}), lines, gerado: true });
   }
   return out;
 }

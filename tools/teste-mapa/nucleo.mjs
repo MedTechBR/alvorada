@@ -18,7 +18,8 @@ try {
   const dump = await P.ev(`(() => {
     const m = game.map, W = m.w, OX = 600, OY = 480;
     let h = 0; const fnv = (s, v) => (Math.imul(s ^ v, 16777619) >>> 0);
-    let th = 2166136261; for (let y = 0; y < OY; y++) for (let x = 0; x < OX; x++) th = fnv(th, m.tiles[x + y * W]);
+    let th = 2166136261; for (let y = 0; y < OY; y++) for (let x = 0; x < OX; x++) th = fnv(th, m.at(x, y));
+    let bin = ''; for (let y = 0; y < OY; y++) for (let x = 0; x < OX; x++) bin += String.fromCharCode(m.at(x, y));
     const rooms = {}; for (const r of m.interiors) { if (r.gerado || r.auto) continue; let s = 2166136261; for (let y = 0; y < r.h; y++) for (let x = 0; x < r.w; x++) s = fnv(s, m.tiles[r.x + x + (r.y + y) * W]); rooms[r.id] = s; }
     const sala = (tx, ty) => m.interiors.find((q) => !q.gerado && tx >= q.x && ty >= q.y && tx < q.x + q.w && ty < q.y + q.h);
     const objs = m.objects.filter((o) => !o.gerado).map((o) => { const r = sala(o.tx, o.ty); return r ? o.kind + '@' + r.id + ':' + (o.tx - r.x) + ',' + (o.ty - r.y) : (o.tx < OX && o.ty < OY ? o.kind + '@' + o.tx + ',' + o.ty : null); }).filter(Boolean).sort();
@@ -27,7 +28,7 @@ try {
     const r1 = (v) => Math.round(v * 100) / 100;
     const people = (m.peopleDefs ?? []).filter((d) => !d.gerado).map((d) => d.id + '@' + (d.room ? d.room + ':' + r1(d.x - m.interiors.find((r) => r.id === d.room).x) + ',' + r1(d.y - m.interiors.find((r) => r.id === d.room).y) : d.x + ',' + d.y)).sort();
     const areas = m.areas.filter((a) => a.rect ? a.rect[0] < OX && a.rect[1] < OY : a.ellipse[0] < OX && a.ellipse[1] < OY).map((a) => (a.id ?? '') + '|' + a.name + '|' + a.biome + '|' + (a.rect ?? a.ellipse).join(',')).sort();
-    return { tiles: th, rooms, objs, spots, warps, people, areas, w: m.w, h: m.h };
+    return { tiles: th, mapa: btoa(bin), rooms, objs, spots, warps, people, areas, w: m.w, h: m.h };
   })()`);
   // setores desenhados (pixels do chão) longe das bordas leste e sul do núcleo
   dump.setores = {};
@@ -43,6 +44,15 @@ try {
     const R = JSON.parse(readFileSync(REF, 'utf8')); let bad = 0;
     const cmp = (nome, a, b) => { const A = JSON.stringify(a), B = JSON.stringify(b); if (A === B) { console.log('ok  ', nome); return; } if (Array.isArray(a) && Array.isArray(b)) { const sa = new Set(a), sb = new Set(b), falta = a.filter((x) => !sb.has(x)), novo = b.filter((x) => !sa.has(x)); if (!falta.length) { console.log('ok  ', nome, `(+${novo.length} novos: interiores gerados e acréscimos)`); return; } bad++; console.log('DIFF', nome, 'faltam:', falta.slice(0, 12), 'novos:', novo.slice(0, 12)); return; } bad++; if (false) {} else if (typeof a === 'object') { for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) if (JSON.stringify(a[k]) !== JSON.stringify(b[k])) console.log('DIFF', nome, k, a[k], b[k]); } else console.log('DIFF', nome, a, b); };
     const arred = (L) => L.map((x) => x.replace(/-?\d+\.\d+/g, (n) => String(Math.round(+n * 100) / 100))); R.people = arred(R.people); dump.people = arred(dump.people);
+    // blocos: as únicas diferenças aceitas são as dos acréscimos ao núcleo (assets/maps/regioes/nucleo.json)
+    if (R.mapa && dump.mapa) {
+      const A = Buffer.from(R.mapa, 'base64'), B = Buffer.from(dump.mapa, 'base64');
+      const N = JSON.parse(readFileSync(new URL('../../assets/maps/regioes/nucleo.json', import.meta.url), 'utf8'));
+      const zonas = (N.ops ?? []).filter((o) => o.op !== 'comment').map((o) => o.op === 'rect' ? [o.x, o.y, o.x + o.w, o.y + o.h] : o.pts ? [Math.min(...o.pts.map((p) => p[0])) - (o.width ?? 3) - (o.wobble ?? 0), Math.min(...o.pts.map((p) => p[1])) - (o.width ?? 3) - (o.wobble ?? 0), Math.max(...o.pts.map((p) => p[0])) + (o.width ?? 3) + (o.wobble ?? 0) + 1, Math.max(...o.pts.map((p) => p[1])) + (o.width ?? 3) + (o.wobble ?? 0) + 1] : [0, 0, 0, 0]);
+      let dif = 0, fora = []; for (let i = 0; i < A.length; i++) if (A[i] !== B[i]) { dif++; const x = i % 600, y = Math.floor(i / 600); if (!zonas.some((z) => x >= z[0] && y >= z[1] && x < z[2] && y < z[3])) fora.push([x, y]); }
+      if (fora.length) { bad++; console.log('DIFF blocos fora dos acréscimos:', fora.length, fora.slice(0, 10)); } else console.log('ok   blocos', `(${dif} mudados, todos nos acréscimos do núcleo: passagens, portão do Forte)`);
+      delete R.tiles; delete dump.tiles;
+    }
     for (const k of ['tiles', 'rooms', 'objs', 'spots', 'warps', 'people', 'areas', 'setores']) cmp(k, R[k], dump[k]);
     console.log(bad ? `${bad} diferença(s)` : 'núcleo idêntico');
   }

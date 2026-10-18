@@ -136,7 +136,7 @@ function alocar(R, salas) {
   for (const r of salas) {
     if (r.x != null) continue;
     const P = R.partes[r.parte] ?? R.partes[0], F = P.faixa ?? R.partes[0].faixa;
-    let c = cursor.get(P) ?? { x: F[0] + 4, y: F[1] + 4, linha: 0 };
+    let c = cursor.get(P) ?? { x: F[0] + 4, y: F[1] + 12, linha: 0 }; // 12 blocos de folga no topo (a câmera não mostra o lado de fora)
     for (let n = 0; n < 4000; n++) {
       if (c.x + r.w > F[0] + F[2] - 2) { c = { x: F[0] + 4, y: c.y + Math.max(8, c.linha) + GAP, linha: 0 }; continue; }
       if (c.y + r.h > F[1] + F[3] - 1) { R.avisos.push(`faixa de interiores de "${P.id}" cheia: sala ${r.id} ficou fora`); console.warn('mapa: faixa de interiores cheia em', P.id, '(sala', r.id + ')'); break; }
