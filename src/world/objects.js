@@ -1,3 +1,5 @@
+import { BUILDINGS } from './buildings.js';
+
 // Catálogo de objetos do cenário: textura, pegada em blocos (fw x fh, a partir do canto de cima à esquerda),
 // deslocamento do desenho, se é sólido, quebrável, luz à noite e porta.
 // Posição no mapa = bloco do canto superior esquerdo da pegada; o desenho fica centrado na pegada,
@@ -20,13 +22,9 @@ export const KINDS = {
   fence: { tex: 'fenceM', fw: 1, fh: 1, oy: 2 }, fenceV: { tex: 'fenceV', fw: 1, fh: 1, oy: 2 },
   wfence: { tex: 'wfenceM', fw: 1, fh: 1, oy: 2 }, wfenceV: { tex: 'wfenceV', fw: 1, fh: 1, oy: 2 },
   // prédios (porta = coluna dx na última linha da pegada)
-  houseA: { tex: 'houseA', fw: 5, fh: 3, oy: 0, door: 3, lights: [[30, 84], [40, 62]] },
-  houseB: { tex: 'houseB', fw: 5, fh: 3, oy: 0, door: 3, lights: [[30, 84], [40, 62]] },
-  houseC: { tex: 'houseC', fw: 5, fh: 3, oy: 0, door: 3, lights: [[30, 84], [40, 62]] },
-  houseBlue: { tex: 'houseBlue', fw: 5, fh: 3, oy: 0, door: 3, lights: [[30, 84], [40, 62]] },
-  lab: { tex: 'lab', fw: 7, fh: 3, oy: 0, door: 3, lights: [[8, 66], [24, 66], [40, 66], [72, 66], [104, 66], [8, 32], [104, 32]] },
-  center: { tex: 'center', fw: 5, fh: 3, oy: 0, door: 2, lights: [[13, 50], [67, 50], [40, 52]] },
-  mart: { tex: 'mart', fw: 5, fh: 3, oy: 0, door: 2, lights: [[13, 50], [67, 50], [40, 52]] },
+  // prédios desenhados por código (src/world/buildings.js); os do Tuxemon ficam como 'tux*'
+  ...BUILDINGS,
+  tuxHouse: { tex: 'houseA', fw: 5, fh: 3, oy: 0, door: 3 }, tuxCenter: { tex: 'center', fw: 5, fh: 3, oy: 0, door: 2 },
   haybale: { tex: 'haybale', fw: 1, fh: 1, oy: 0, breakable: true, hp: 1 }, windmill: { tex: 'windmill', fw: 3, fh: 2, oy: 0 },
   bench: { tex: 'bench', fw: 2, fh: 1, oy: 0 }, well: { tex: 'well', fw: 2, fh: 1, oy: 0 },
   sundial: { tex: 'sundial', fw: 2, fh: 1, oy: 0 },

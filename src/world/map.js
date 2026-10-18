@@ -32,6 +32,8 @@ export class GameMap {
     for (const o of this.objects) { o.tx = o.x; o.ty = o.y; o.x = (o.tx + o.fw / 2) * T; o.y = (o.ty + o.fh) * T; }
     for (const o of this.objects) { const c = chunkAt(o.tx + Math.floor(o.fw / 2), o.ty + o.fh - 1); if (c) c.objs.push(o); }
     for (const d of this.decorDefs) { const c = chunkAt(d.x, d.y); if (c) c.decor.push(d); }
+    // quebráveis já nascem com sprite (o combate pode destruí-los mesmo fora da tela)
+    for (const o of this.objects) if (o.breakable) o.sprite = this.#makeSprite(o);
     this.cellObj = new Map();
     for (const o of this.objects) for (const k of o.cells) this.cellObj.set(k, o);
     this.dirtyTiles = []; this.visible = new Set(); this.time = 0; this.frameK = 0;
@@ -147,7 +149,7 @@ export class GameMap {
     c.sprite = new PIXI.Sprite(c.tex); c.sprite.x = c.x; c.sprite.y = c.y; c.sprite.visible = false;
     this.groundLayer.addChild(c.sprite);
     // decoração plana: flores animadas, vitórias-régias, seixos, tapetes...
-    c.deco = new PIXI.Container(); c.deco.visible = false; c.flowers = [];
+    c.deco = new PIXI.Container(); c.deco.visible = false; c.flowers = []; c.waves = [];
     for (let ty = oy; ty < Math.min(oy + CH, this.h); ty++) for (let tx = ox; tx < Math.min(ox + CH, this.w); tx++) {
       const t = this.at(tx, ty), h = hash(tx, ty, 31);
       if (t === TILE.FLOWERS) {
@@ -156,6 +158,9 @@ export class GameMap {
         c.deco.addChild(s); c.flowers.push(s);
       } else if (t === TILE.WATER && h < 0.07 && this.#nearLand(tx, ty) && this.areaAt(tx * T, ty * T)?.biome !== 'praia') {
         const s = new PIXI.Sprite(LILY[Math.floor(hash(tx, ty, 5) * 4)]); s.x = tx * T + 1; s.y = ty * T + 2; c.deco.addChild(s);
+      } else if (t === TILE.WATER && this.at(tx, ty - 1) === TILE.SAND && this.areaAt(tx * T, ty * T)?.biome === 'praia') {
+        // ondas chegando na praia
+        const s = new PIXI.Sprite(SPR.foam); s.x = tx * T; s.y0 = ty * T - 3; s.y = s.y0; s.ph = tx * 0.35; c.deco.addChild(s); c.waves.push(s);
       } else if ((t === TILE.GRASS || t === TILE.GRASS2) && h < 0.005 && !this.block[tx + ty * this.w]) {
         const s = new PIXI.Sprite(SPR[h < 0.0025 ? 'pebble' : 'pebble2']); s.x = tx * T; s.y = ty * T; c.deco.addChild(s);
       } else if (t === TILE.DARK && h < 0.03 && !this.block[tx + ty * this.w]) {
@@ -241,6 +246,7 @@ export class GameMap {
     if (this.water && this.water.texture !== WATER_FRAMES[wf]) this.water.texture = WATER_FRAMES[wf];
     const ff = Math.floor(this.time / 0.25);
     if (ff !== this.lastFF) { this.lastFF = ff; for (const c of this.visible) for (const s of c.flowers) s.texture = FLOWERS[s.f][(ff + s.ph) % 4]; }
+    for (const c of this.visible) for (const s of c.waves) { const k = Math.sin(this.time * 1.4 + s.ph); s.y = s.y0 + k * 3; s.alpha = 0.35 + 0.55 * (k * 0.5 + 0.5); }
     for (const c of this.visible) for (const s of c.tall.values()) {
       if (s.sway > 0) { s.sway = Math.max(0, s.sway - dt); const k = Math.sin(s.sway * 26) * s.sway * 2.2; s.texture = TALL[k > 0.25 ? 1 : k < -0.25 ? 2 : 0]; s.skew.x = k * 0.18; }
     }

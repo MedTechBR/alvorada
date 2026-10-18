@@ -7,8 +7,9 @@ import * as PIXI from 'pixi.js';
 const BASE = new URL('../../assets/tiles/tuxemon/', import.meta.url).href;
 
 async function sheet(name) {
-  // onload em vez de decode(): decode() pode não terminar com a aba em segundo plano
-  const img = new Image(); await new Promise((ok, err) => { img.onload = ok; img.onerror = () => err(new Error('falhou ao carregar ' + name)); img.src = BASE + name; });
+  // fetch + createImageBitmap: decodifica na hora (Image.onload/decode podem atrasar com a aba em segundo plano)
+  const r = await fetch(BASE + name); if (!r.ok) throw new Error('falhou ao carregar ' + name);
+  const img = await createImageBitmap(await r.blob());
   const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
   const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(img, 0, 0);
   const tex = PIXI.Texture.from(c); tex.source.scaleMode = 'nearest';
@@ -38,7 +39,7 @@ const px = (x, c, X, Y, w = 1, h = 1) => { x.fillStyle = c; x.fillRect(X, Y, w, 
 const rng = (seed) => { let s = seed; return () => ((s = (s * 16807) % 2147483647) / 2147483647); };
 
 // Contorno escuro suave em volta de tudo o que foi desenhado (estilo DS / PMD)
-function outline(c, color = [28, 36, 40], a = 230) {
+export function outline(c, color = [28, 36, 40], a = 230) {
   const x = c.getContext('2d'); const im = x.getImageData(0, 0, c.width, c.height), d = im.data, W = c.width, H = c.height;
   const src = new Uint8Array(W * H); for (let i = 0; i < W * H; i++) src[i] = d[i * 4 + 3] > 40 ? 1 : 0;
   for (let y = 0; y < H; y++) for (let X = 0; X < W; X++) {
@@ -335,4 +336,5 @@ SPR.bird = [0, 1, 2].map((f) => texOf(outline(canvas(12, 9, (x) => {
 SPR.fish = texOf(outline(canvas(10, 6, (x) => { ell(x, 4, 3, 4, 2, '#9ab4d0'); px(x, '#dce8f4', 2, 2, 3, 1); x.fillStyle = '#9ab4d0'; x.beginPath(); x.moveTo(7, 3); x.lineTo(10, 0); x.lineTo(10, 6); x.fill(); })));
 SPR.sparkle = texOf(canvas(7, 7, (x) => { px(x, '#fff', 3, 0, 1, 7); px(x, '#fff', 0, 3, 7, 1); px(x, '#fff8c0', 2, 2, 3, 3); }));
 SPR.firefly = texOf(canvas(6, 6, (x) => { const g = x.createRadialGradient(3, 3, 0, 3, 3, 3); g.addColorStop(0, 'rgba(230,255,140,1)'); g.addColorStop(1, 'rgba(230,255,140,0)'); x.fillStyle = g; x.fillRect(0, 0, 6, 6); }));
+SPR.foam = texOf(canvas(16, 6, (x) => { for (let i = 0; i < 16; i++) { const y = Math.round(2 + Math.sin(i / 16 * Math.PI * 2) * 1.2); px(x, 'rgba(255,255,255,0.95)', i, y, 1, 2); if (i % 4 === 1) px(x, 'rgba(220,240,255,0.8)', i, y + 2, 1, 1); } }));
 SPR.ripple = texOf(canvas(16, 8, (x) => { x.strokeStyle = 'rgba(255,255,255,0.85)'; x.lineWidth = 1; x.beginPath(); x.ellipse(8, 4, 7, 3, 0, 0, 7); x.stroke(); }));

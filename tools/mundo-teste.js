@@ -3,7 +3,8 @@
 const g = () => window.game;
 window.shot = async (n) => {
   const G = g(); G.app.renderer.render(G.app.stage);
-  const b = await new Promise((r) => G.app.canvas.toBlob(r, 'image/jpeg', 0.9));
+  // toDataURL é síncrono (toBlob às vezes não termina com a aba em segundo plano)
+  const b = await (await fetch(G.app.canvas.toDataURL('image/jpeg', 0.9))).blob();
   await fetch('/__shot?n=' + n, { method: 'POST', body: b }); return n;
 };
 window.vista = async (n, tx, ty, z = 1, hour) => {
@@ -26,7 +27,7 @@ window.mapaInteiro = async (n = 'mapa', k = 2) => {
   const G = g(), c = document.createElement('canvas'); c.width = G.map.w * k; c.height = G.map.outdoorH * k;
   G.mundo.visited = new Set([...Array(64 * 64).keys()]);
   G.mundo.renderRegionMap(c, { fog: false });
-  const b = await new Promise((r) => c.toBlob(r, 'image/jpeg', 0.92));
+  const b = await (await fetch(c.toDataURL('image/jpeg', 0.92))).blob();
   await fetch('/__shot?n=' + n, { method: 'POST', body: b }); return n;
 };
 export default true;
