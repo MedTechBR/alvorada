@@ -80,12 +80,13 @@ export function cleanLook(o) {
 }
 
 // Estado de posição (10–20 vezes por segundo): números finitos e dentro do mapa
-const MAPPX = 200 * 16;
+const MAPPX = 1024 * 16; // o mapa da região tem 600x480 blocos + faixa de interiores (antes: 200 blocos, e quem passava de x/y = 3200 px sumia)
 export function validateState(s) {
   if (!s || typeof s !== 'object') return null;
   const num = (v) => Number.isFinite(v) && v >= -64 && v <= MAPPX + 64;
   if (!num(s.x) || !num(s.y)) return null;
   const out = { x: s.x, y: s.y, d: ['down', 'up', 'left', 'right'].includes(s.d) ? s.d : 'down', r: !!s.r, seq: isInt(s.seq, 0, 1e9) ? s.seq : 0 };
   if (s.l && num(s.l.x) && num(s.l.y) && typeof s.l.u === 'string') out.l = { x: s.l.x, y: s.l.y, u: s.l.u.slice(0, 16), a: isInt(s.l.a, 0, 7) ? s.l.a : 2, z: !!s.l.z };
+  if (['correr', 'nadar', 'escalar', 'voar', 'mergulhar'].includes(s.m)) { out.m = s.m; out.z = Number.isFinite(s.z) ? Math.max(0, Math.min(120, s.z)) : 0; out.u = !!s.u; } // montaria (src/world/mounts.js)
   return out;
 }

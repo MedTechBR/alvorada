@@ -63,7 +63,7 @@ export class Minimap {
   #draw() {
     const g = this.g, p = g.player, ctx = this.ctx, S = this.cv.width, R = S / 2, z = 3 * this.dpr;
     const room = this.map.interiorAt(p.x, p.y);
-    const zoom = room ? z * 2.2 : z;
+    const zoom = room ? z * 2.2 : z * (g.mount?.flying ? 0.6 : 1); // voando, o minimapa mostra mais longe
     ctx.save(); ctx.clearRect(0, 0, S, S);
     ctx.beginPath(); ctx.arc(R, R, R, 0, 7); ctx.clip();
     ctx.fillStyle = '#1b2a1e'; ctx.fillRect(0, 0, S, S);

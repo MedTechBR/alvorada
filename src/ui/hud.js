@@ -145,7 +145,7 @@ export class Hud {
   moves() {
     const g = this.g, m = g.party[g.leadIdx];
     const trainer = g.mode !== 'pokemon';
-    const ids = (trainer ? 'T:' + (m?.name ?? '') : 'P:') + (m ? m.moves.join(',') : '');
+    const ids = (trainer ? 'T:' + (m?.name ?? '') : 'P:') + (m ? m.moves.join(',') : '') + '|' + (g.mount?.hint()?.key ?? '');
     if (ids === this.v.moves) return;
     this.v.moves = ids;
     this.v.cds = null;
@@ -155,7 +155,8 @@ export class Hud {
         `<div class="mv hint"><b>Enviar ${esc(m.name)}</b><small>joga a Poké Bola dele</small><kbd>Q</kbd></div>` +
         `<div class="mv hint"><b>Capturar</b><small>Poké Bola de captura</small><kbd>B</kbd></div>` +
         `<div class="mv hint"><b>Escolher</b><small>próximo da equipe</small><kbd>Tab</kbd></div>` +
-        `<div class="mv hint"><b>Zoom</b><small>roda do mouse</small><kbd>+ −</kbd></div>`;
+        `<div class="mv hint"><b>Zoom</b><small>roda do mouse</small><kbd>+ −</kbd></div>` +
+        (g.mount?.hint() ? `<div class="mv hint"><b>${esc(g.mount.hint().title)}</b><small>${esc(g.mount.hint().sub)}</small><kbd>X</kbd></div>` : ''); // montaria (src/world/mounts.js)
       const labels = [m ? `Enviar<br>${esc(m.name)}` : '', 'Capturar', 'Escolher', ''];
       for (const b of document.querySelectorAll('.tb.move')) {
         const i = +b.dataset.slot;

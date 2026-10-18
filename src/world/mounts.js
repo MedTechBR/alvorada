@@ -18,9 +18,9 @@ import { dir4 } from '../sprites/characters.js';
 
 export const MOUNTS = {
   correr:    { dex: 749, name: 'Mudbray',     label: 'Correr',    h: 1.0, walk: 132, run: 190, acc: 7,   anim: 55, lift: 1, back: 4,  r: 7, lean: 150, bob: 1.5 },
-  nadar:     { dex: 131, name: 'Lapras',      label: 'Nadar',     h: 2.5, walk: 92,  run: 128, acc: 3,   anim: 40, lift: 5, back: 4,  r: 8, water: true, bob: 0.8 },
-  escalar:   { dex: 903, name: 'Sneasler',    label: 'Escalar',   h: 1.3, walk: 100, run: 145, climb: 60, acc: 8, anim: 50, lift: 3, back: 2, r: 6, lean: 140, bob: 1 },
-  voar:      { dex: 823, name: 'Corviknight', label: 'Voar',      h: 2.2, walk: 150, run: 215, acc: 2.6, anim: 70, lift: 3, back: 3,  r: 7, fly: true, bob: 1 },
+  nadar:     { dex: 131, name: 'Lapras',      label: 'Nadar',     h: 2.5, walk: 92,  run: 128, acc: 3,   anim: 40, lift: 5, back: 4,  backV: 12, r: 8, water: true, bob: 0.8 },
+  escalar:   { dex: 903, name: 'Sneasler',    label: 'Escalar',   h: 1.3, walk: 100, run: 145, climb: 60, acc: 8, anim: 50, lift: 0, back: 7, backV: 4, r: 6, lean: 140, bob: 1, behind: [0, 1, 2, 3, 4] },
+  voar:      { dex: 823, name: 'Corviknight', label: 'Voar',      h: 2.2, walk: 150, run: 215, acc: 2.6, anim: 70, lift: 3, back: 6,  backV: 8, r: 7, fly: true, bob: 1 },
   mergulhar: { dex: 226, name: 'Mantine',     label: 'Mergulhar', h: 2.1, walk: 88,  run: 124, acc: 3,   anim: 40, lift: 2, back: 2,  r: 8, water: true, bob: 0.8 },
 };
 export const MOUNT_KINDS = Object.keys(MOUNTS);
@@ -105,13 +105,13 @@ export class MountRig {
     sp_.visible = true; sp_.texture = f.tex; sp_.anchor.set(f.ax, f.ay); sp_.scale.set(s);
     sp_.x = ox; sp_.y = oy - z + (C.water ? bob * 0.5 : C.fly ? bob : 0);
     sp_.alpha = o.alpha ?? 1;
-    const tint = o.under ? 0x86c4ff : 0xffffff; sp_.tint = tint;
+    const tint = o.under ? 0xd0e8ff : 0xffffff; sp_.tint = tint;
     // ponto da sela: centro do corpo do quadro (offsets do PMD), um pouco acima e para trás
     const cx = Math.cos(this.angle), cy = Math.sin(this.angle);
-    const sx = ox + f.center.x * s - cx * C.back, sy = oy + f.center.y * s - C.lift - cy * C.back * 0.5 - z + bob;
+    const sx = ox + f.center.x * s - cx * C.back, sy = oy + f.center.y * s - C.lift - cy * (cy > 0 ? C.backV ?? C.back : C.back * 0.5) - z + bob;
     const k = o.k ?? 1, r4 = RIDER_DIR[this.dir];
     // de frente para a câmera, o treinador fica atrás do pescoço/cabeça da montaria
-    const behind = this.dir >= 1 && this.dir <= 3;
+    const behind = C.behind ? C.behind.includes(this.dir) : this.dir >= 1 && this.dir <= 3; // Sneasler leva nas costas: de lado, ele fica na frente
     const bi = this.view.getChildIndex(this.body), si = this.view.getChildIndex(sp_);
     if (behind !== bi < si) this.view.swapChildren(this.body, sp_);
     const b = this.body;
@@ -129,7 +129,7 @@ export class MountRig {
     const sh = this.shadow, hk = Math.max(0.35, 1 - z / 120);
     sh.visible = true; sh.x = Math.round(o.x + ox); sh.y = Math.round(o.y + oy);
     sh.scale.set(S.shadowScale[0] * this.scale * hk * 1.05, S.shadowScale[1] * this.scale * hk * 1.05);
-    sh.alpha = (o.alpha ?? 1) * (o.under ? 0.25 : 0.95 - Math.min(0.55, z / 110));
+    sh.alpha = (o.alpha ?? 1) * (o.under ? 0.25 : 1 - Math.min(0.35, z / 160));
     if (this.baseShadow) this.baseShadow.visible = k < 1 && Math.hypot(ox, oy) > 2;
     this.view.zIndex = z > 10 ? 1e6 + o.y : o.y;
     this.trail(dt, o, sp);
@@ -143,7 +143,7 @@ export class MountRig {
     if (C.fly && z > 8) {
       this.fxT = sp > 40 ? 0.06 : 0.18;
       const a = this.angle + Math.PI;
-      fx.emit(x + Math.cos(a) * 10 + (Math.random() - 0.5) * 20, y - z - 6 + (Math.random() - 0.5) * 12, { color: 0xffffff, n: 1, speed: 20 + sp * 0.4, dir: a, spread: 0.3, size: 2, life: 0.35, alpha: 0.55, stretch: 3, rot: 'dir' });
+      fx.emit(x + Math.cos(a) * 10 + (Math.random() - 0.5) * 20, y - z - 6 + (Math.random() - 0.5) * 12, { color: 0xffffff, n: 1, speed: 20 + sp * 0.4, dir: a, spread: 0.3, size: 1.5, life: 0.35, alpha: 0.5, stretch: 0.05 });
       return;
     }
     if (o.under) {
@@ -206,10 +206,10 @@ function whirlTex() {
     for (let k = 0; k < 3; k++) {
       x.strokeStyle = ['rgba(10,24,60,.55)', 'rgba(20,40,90,.45)', 'rgba(220,240,255,.55)'][k]; x.lineWidth = k === 2 ? 1 : 2;
       x.beginPath();
-      for (let t = 0; t < 14; t += 0.15) { const r = 2 + t * 1.25, a = t + k * 2.1; x.lineTo(20 + Math.cos(a) * r, 20 + Math.sin(a) * r * 0.62); }
+      for (let t = 0; t < 14; t += 0.15) { const r = 2 + t * 1.25, a = t + k * 2.1; x.lineTo(20 + Math.cos(a) * r, 20 + Math.sin(a) * r); }
       x.stroke();
     }
-    x.fillStyle = 'rgba(5,14,40,.6)'; x.beginPath(); x.ellipse(20, 20, 4, 2.6, 0, 0, 7); x.fill();
+    x.fillStyle = 'rgba(5,14,40,.6)'; x.beginPath(); x.arc(20, 20, 3.5, 0, 7); x.fill();
   });
   return WHIRL;
 }
@@ -256,6 +256,7 @@ export class Mounts {
   get active() { return !!this.kind; }
   get flying() { return this.kind === 'voar'; }
   get busy() { return !!(this.hop || this.flight); }
+  get camLift() { return this.z * 0.8; } // a câmera acompanha o voo (o sprite sobe, o ponto no chão fica)
   get ghost() { return this.flying || this.under || !!this.hop; } // não esbarra em ninguém
   get rig() { const p = this.g.player; if (!this.#rig && p) this.#rig = new MountRig(this.g, p.view, p.body, p.view.children[0]); return this.#rig; }
   #rig = null;
@@ -275,6 +276,7 @@ export class Mounts {
     g.flags.mounts = { ...(g.flags.mounts ?? {}), [kind]: true };
     (this.known ??= new Set()).add(kind);
     if (!already && !silent) this.announce(kind);
+    g.hudMoves?.();
     return true;
   }
   async announce(kind) {
@@ -291,9 +293,11 @@ export class Mounts {
   // flags ligadas por fora (motor de capítulos): avisa uma vez; a primeira leitura (save carregado) é silenciosa
   #scan(dt) {
     this.scanT -= dt; if (this.scanT > 0) return; this.scanT = 0.5;
+    // ?teste=1: todas liberadas também nas flags (a história não barra o lamaçal etc.)
+    if (this.teste && !this.known) { const f = this.g.flags; f.mounts = { ...(f.mounts ?? {}), ...Object.fromEntries(MOUNT_KINDS.map((k) => [k, true])) }; }
     const now = MOUNT_KINDS.filter((k) => this.has(k));
-    if (!this.known) { this.known = new Set(now); return; }
-    for (const k of now) if (!this.known.has(k)) { this.known.add(k); if (!this.teste) this.announce(k); }
+    if (!this.known) { this.known = new Set(now); this.g.hudMoves?.(); return; }
+    for (const k of now) if (!this.known.has(k)) { this.known.add(k); if (!this.teste) this.announce(k); this.g.hudMoves?.(); }
   }
 
   // ---------- terreno ----------
@@ -307,7 +311,7 @@ export class Mounts {
     const out = { water: null, land: null, climb: false };
     for (let d = 8; d <= 44; d += 4) {
       const x = p.x + f[0] * d, y = p.y + f[1] * d, t = this.#tileAt(x, y);
-      if (t === TILE.CLIMB && d <= 20) out.climb = true;
+      if (t === TILE.CLIMB && d <= 30) out.climb = true;
       if (!out.water && d >= 14 && this.#fits(x, y, 10, (a, b) => this.#swimmable(a, b))) out.water = { x, y };
       if (!out.land && d >= 10 && this.#fits(x, y, 5, (a, b) => this.#walkable(a, b))) out.land = { x, y };
     }
@@ -317,26 +321,26 @@ export class Mounts {
   }
   // redemoinhos (pontos de mergulho): água funda cercada de água funda, numa grade esparsa, e os pontos do mapa "mergulho_*"
   #findWhirls() {
-    const g = this.g, m = g.map, p = g.player, R = 18, out = [];
+    const g = this.g, m = g.map, p = g.player, R = 22, out = [];
     const ptx = Math.floor(p.x / T), pty = Math.floor(p.y / T);
     for (let y = pty - R; y <= pty + R; y++) for (let x = ptx - R; x <= ptx + R; x++) {
-      if (((x % 9) + 9) % 9 !== 4 || ((y % 9) + 9) % 9 !== 4) continue;
+      if (((x % 14) + 14) % 14 !== 6 || ((y % 14) + 14) % 14 !== 6) continue;
       let ok = true; for (let j = -1; j <= 1 && ok; j++) for (let i = -1; i <= 1 && ok; i++) if (m.at(x + i, y + j) !== TILE.DEEP) ok = false;
       if (ok) out.push({ x: x * T + 8, y: y * T + 8 });
     }
     for (const [k, s] of Object.entries(m.spots ?? {})) if (/^(mergulho|redemoinho)/.test(k) && Math.hypot(s.x - p.x, s.y - p.y) < R * T) out.push({ x: s.x, y: s.y });
     return out;
   }
-  #nearWhirl() { const p = this.g.player; return this.whirls.find((w) => Math.hypot(w.x - p.x, w.y - p.y) < 16) ?? null; }
+  #nearWhirl() { const p = this.g.player; return this.whirls.find((w) => Math.hypot(w.x - p.x, w.y - p.y) < 18) ?? null; }
   #drawWhirls(dt) {
     this.whirlT -= dt;
     if (this.whirlT <= 0) { this.whirlT = 0.6; this.whirls = this.has('mergulhar') && !this.g.map.isIndoor(this.g.player.x, this.g.player.y) ? this.#findWhirls() : []; }
     const layer = groundLayer(this.g);
     this.whirlSprites ??= [];
-    while (this.whirlSprites.length < this.whirls.length) { const s = new PIXI.Sprite(whirlTex()); s.anchor.set(0.5); layer.addChildAt(s, 0); this.whirlSprites.push(s); }
+    while (this.whirlSprites.length < this.whirls.length) { const c = new PIXI.Container(), s = new PIXI.Sprite(whirlTex()); s.anchor.set(0.5); c.addChild(s); c.spin = s; c.scale.set(0.75, 0.46); layer.addChildAt(c, 0); this.whirlSprites.push(c); }
     this.whirlSprites.forEach((s, i) => {
       const w = this.whirls[i]; s.visible = !!w && !this.under; if (!w) return;
-      s.x = w.x; s.y = w.y; s.rotation = -this.g.time * 1.6; s.scale.set(1, 1); s.alpha = 0.75 + Math.sin(this.g.time * 2 + i) * 0.15;
+      s.x = w.x; s.y = w.y; s.spin.rotation = -this.g.time * 1.6; s.alpha = 0.75 + Math.sin(this.g.time * 2 + i) * 0.15;
     });
   }
 
@@ -456,6 +460,7 @@ export class Mounts {
     this.kind = kind;
     this.btn?.classList.toggle('on', !!kind);
     if (!kind) { this.under = false; this.#underwater(false); }
+    this.g.hudMoves?.();
   }
   // fim do pulo de descida: some com a montaria
   #finishOff(h) {
@@ -537,7 +542,7 @@ export class Mounts {
     if (!this.has('mergulhar') || this.busy || this.under) return false;
     const w = this.#nearWhirl(); if (!w) { g.toast('Procure um redemoinho escuro para mergulhar.'); return false; }
     const go = () => {
-      this.under = true; this.#underwater(true);
+      this.under = true; this.#underwater(true); g.hudMoves?.();
       g.audio?.sfx('splash'); g.fx.ring(p.x, p.y, 0xffffff, 7, 0.6, { mult: 2.6 }); g.fx.emit(p.x, p.y - 4, { color: 0xd8f2ff, n: 16, speed: 60, size: 3, life: 0.6, grav: 240, vz: 90, add: false });
       g.toast('Mergulhou! (X volta à superfície)');
     };
@@ -548,7 +553,7 @@ export class Mounts {
   surface() {
     const g = this.g, p = g.player;
     if (!this.under) return false;
-    this.under = false; this.#underwater(false);
+    this.under = false; this.#underwater(false); g.hudMoves?.();
     g.audio?.sfx('splash'); g.fx.ring(p.x, p.y, 0xffffff, 7, 0.6, { mult: 2.6 });
     g.fx.emit(p.x, p.y - 4, { color: 0xd8f2ff, n: 16, speed: 60, size: 3, life: 0.6, grav: 240, vz: 90, add: false });
     if (this.has('nadar')) { this.#setKind(null); this.rig.setKind(null); this.call('nadar'); }
@@ -573,7 +578,7 @@ export class Mounts {
     for (const s of [this.seabed, this.caustic]) { s.x = w.x; s.y = w.y; s.width = w.width; s.height = w.height; }
     this.seabed.tilePosition.set(-w.x % 128, -w.y % 128);
     this.caustic.tilePosition.set(-w.x % 96 + g.time * 6, -w.y % 96 + Math.sin(g.time * 0.7) * 8);
-    this.caustic.alpha = 0.25 + Math.sin(g.time * 1.3) * 0.08;
+    this.caustic.alpha = 0.16 + Math.sin(g.time * 1.3) * 0.05;
     this.tintOver.width = innerWidth; this.tintOver.height = innerHeight;
   }
 
@@ -590,6 +595,10 @@ export class Mounts {
     if (this.kind && g.map.isIndoor(p.x, p.y)) { this.hop = null; this.flight = null; this.z = 0; this.#setKind(null); this.rig.setKind(null); }
     // treinador parado na água sem montaria (save antigo, teleporte): chama o Lapras
     if (!this.kind && !this.hop && !g.map.isIndoor(p.x, p.y) && this.#swimmable(p.x, p.y) && !this.#walkable(p.x, p.y) && (this.has('nadar') || this.has('mergulhar'))) this.call(this.has('nadar') ? 'nadar' : 'mergulhar');
+    // numa montaria de terra dentro d'água (teleporte da história): troca para o Lapras
+    if (this.kind && !this.busy && !this.jump && !MOUNTS[this.kind].water && !this.flying && this.#swimmable(p.x, p.y) && !this.#walkable(p.x, p.y) && this.has('nadar')) this.swap('nadar');
+    // montaria d'água em terra firme (teleporte): desce na hora
+    if (this.kind && !this.busy && MOUNTS[this.kind].water && !this.#swimmable(p.x, p.y) && this.#walkable(p.x, p.y)) { this.#fadeOut(this.kind, p.x, p.y); this.#setKind(null); this.rig.setKind(null); }
     if (!this.kind) return false;
     const C = MOUNTS[this.kind], rig = this.rig;
     let ox = 0, oy = 0, k = 1, arc = 0, alpha = 1, grow = 1;
@@ -658,16 +667,24 @@ export class Mounts {
     for (const d of [8, 12]) { const x = p.x + n[0] * d, y = p.y + n[1] * d, kk = Math.floor(x / T) + Math.floor(y / T) * m.w; const o = m.cellObj?.get(kk); if (o && !o.dead && (o.jump || JUMPABLE.has(o.kind))) { obj = o; break; } }
     if (!obj) { if (manual && !this.zHop) { this.zHop = { t: 0 }; g.audio?.sfx('dodge'); } return; }
     // primeiro ponto livre do outro lado (até 3 blocos)
-    for (let d = 16; d <= 52; d += 4) {
+    for (let d = 16; d <= 100; d += 4) {
       const x = p.x + n[0] * d, y = p.y + n[1] * d, kk = Math.floor(x / T) + Math.floor(y / T) * m.w;
       if (m.cellObj?.get(kk)) continue;
       if (this.#fits(x, y, 5, (a, b) => !m.solidAt(a, b))) {
-        this.jump = { x0: p.x, y0: p.y, x1: x, y1: y, t: 0, dur: 0.3 + d / 260, h: 10 + d * 0.2 };
+        this.jump = { x0: p.x, y0: p.y, x1: x, y1: y, t: 0, dur: 0.28 + d / 300, h: 10 + d * 0.16 };
         g.audio?.sfx('dodge');
         g.fx.emit(p.x, p.y - 1, { color: 0xc8ae84, n: 6, speed: 40, size: 4, life: 0.45, add: false, alpha: 0.6, end: 1.8 });
         return;
       }
     }
+  }
+  // dica do HUD (modo treinador, computador)
+  hint() {
+    const u = this.unlocked(); if (!u.length) return null;
+    const k = this.kind, fly = u.includes('voar');
+    if (!k) return { key: 'm' + u.join(','), title: 'Montaria', sub: fly ? 'segure para voar' : 'conforme o terreno' };
+    const name = MOUNTS[k].name;
+    return { key: k + (this.under ? 'u' : ''), title: k === 'voar' ? 'Pousar' : this.under ? 'Subir' : 'Descer', sub: `${name}${k === 'correr' ? ' · Espaço salta' : ''}` };
   }
   // estado para o online
   netState() { return this.kind ? { m: this.kind, z: Math.round(this.z), u: this.under ? 1 : 0 } : null; }

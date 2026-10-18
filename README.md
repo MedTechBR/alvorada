@@ -91,6 +91,28 @@ Interface e história (ramo `interface`):
   pegos, frutas colhidas, setores visitados).
 - **Montarias:** `map.setMount('correr' | 'nadar' | 'escalar', true)` libera lama, água e paredão com trepadeira.
   Toras da Mata dos Jequitibás têm `jump: true` (para a montaria Correr saltar).
+
+## Montarias do treinador (`src/world/mounts.js`)
+
+Como em Legends Arceus, na vista de cima. **X** (no celular, o botão de sela ao lado dos golpes; no controle, Select/Back)
+chama ou dispensa a montaria conforme o terreno; **segurar X** levanta voo. No modo Pokémon o X continua sendo o pulo do combate.
+
+| Tipo | Pokémon | Como chamar | O que faz |
+|---|---|---|---|
+| `correr` | Mudbray (749) | X em terra (padrão) | ~1,8x mais rápido, atravessa lama (Rota 2), salta toras (`jump: true`), tocos e cercas baixas (sozinho ou com Espaço) |
+| `nadar` | Lapras (131) | X de frente para a água | anda na água; X de frente para a margem desce |
+| `escalar` | Sneasler (903) | X de frente para o paredão com trepadeira | sobe pelo paredão (leva o treinador nas costas) |
+| `voar` | Corviknight (823) | segurar X | voa por cima de tudo (sem colisão, portas desligadas), sombra no chão, câmera e minimapa afastam; X pousa no lugar livre mais perto (na água vira Lapras) |
+| `mergulhar` | Mantine (226) | X navegando sobre um redemoinho escuro | mostra o fundo (areia, pedras, algas, luz da superfície); X volta à superfície |
+
+- **Desbloqueio:** flags `mounts.<tipo>` (ou `'mounts.<tipo>'`). `game.unlockMount('mudbray' | 'correr' | ...)` grava a flag e mostra o aviso
+  "Nova montaria"; flags ligadas por fora também ganham o aviso (uma vez). Com `?teste=1` todas ficam liberadas.
+- **Redemoinhos:** água funda (`W`) cercada de água funda, numa grade de 14 blocos, e os pontos do mapa `mergulho_*` / `redemoinho_*`.
+- **Q montado:** desce primeiro (no voo, pousa) e depois joga a Poké Bola do Pokémon.
+- **Desenho:** `MountRig` (sprite PMD na direção certa, Walk/Idle, escala real de `scale.js`) com o treinador sentado (pose `ride`
+  de `charart.js`) no ponto da sela calculado pelos offsets do PMD (`frameOf().center`/`box`); de frente para a câmera o treinador fica
+  atrás da cabeça da montaria. Poeira, lama, espirro, rastro na água, bolhas e vento.
+- **Online:** o estado de posição leva `m` (tipo), `z` (altura do voo) e `u` (mergulhado); os outros jogadores aparecem montados.
 - **Minimapa:** canto da tela; clique nele ou tecla N alterna "gira com você" / "norte para cima".
   Mapa completo para o menu: `game.mundo.renderRegionMap(canvas, { fog: true })` (setores visitados).
 - **Teste:** no console, `await import('/tools/mundo-teste.js')` dá `vista(nome, bx, by, zoom, hora)` e `mapaInteiro()`,

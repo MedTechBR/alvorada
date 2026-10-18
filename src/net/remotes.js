@@ -4,6 +4,7 @@ import { makeCharacterFrames, dir4, FH } from '../sprites/characters.js';
 const TAG_Y = -(FH + 1), BUBBLE_Y = -(FH + 11); // nome e balão acima da cabeça (quadro de FH px)
 import { PokeEntity } from '../entities/pokemon.js';
 import { validateMon, validateState, cleanLook } from './validate.js';
+import { MountRig } from '../world/mounts.js';
 
 // Os outros treinadores no seu mapa: boneco com o visual do criador de personagem (makeCharacterFrames), nome em cima, balão de fala,
 // emotes e o Pokémon que acompanha. A posição chega 10x/s (20x/s no duelo) e é interpolada:
@@ -138,6 +139,14 @@ class Remote {
     this.body.texture = anim[this.dir][step];
     v.x = Math.round(s.x); v.y = Math.round(s.y); v.zIndex = s.y;
     v.alpha = this.drop ? 0.45 : 1;
+    // montado: o mesmo desenho da montaria do jogador (Pokémon PMD + treinador sentado); nome e balão sobem junto
+    if (s.m || this.rig?.kind) {
+      this.rig ??= new MountRig(this.g, v, this.body, v.children[0]);
+      this.rig.setKind(s.m ?? null);
+      const on = this.rig.update(dt, { x: s.x, y: s.y, vx: s.vx, vy: s.vy, z: s.z ?? 0, frames: this.frames, dir4: this.dir, under: !!s.u, face: { down: Math.PI / 2, up: -Math.PI / 2, left: Math.PI, right: 0 }[this.dir] });
+      const lift = on ? this.rig.lift : 0;
+      this.tag.y = TAG_Y - lift; this.dot.y = -lift; if (v.bubble) v.bubble.y = BUBBLE_Y - lift;
+    }
     tickBubble(v, dt);
     // Pokémon que acompanha
     if (s.l?.u) this.ensureFollower(s.l.u); else if (this.leadKey) { this.leadKey = ''; this.dropFollower(); }
@@ -154,6 +163,7 @@ class Remote {
   }
   destroy() {
     this.gone = true;
+    this.rig?.destroy();
     this.dropFollower();
     this.view.destroy({ children: true });
   }

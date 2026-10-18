@@ -152,6 +152,7 @@ export class Online {
       const r1 = (v) => Math.round(v * 10) / 10;
       const st = { ts: Math.round(performance.now()), seq: ++this.seq, x: r1(p.x), y: r1(p.y), d: p.dir, r: p.speed > 100 };
       if (l?.alive) st.l = { x: r1(l.x), y: r1(l.y), u: l.mon.uid, a: l.dir };
+      const mt = this.g.mount?.netState(); if (mt) Object.assign(st, mt); // montaria: tipo, altura do voo, mergulho
       this.send('st', st);
       if (this.isHost) this.arbiter?.handle('st', st, this.selfId);
     }
