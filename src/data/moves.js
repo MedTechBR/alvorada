@@ -183,6 +183,9 @@ for (const [id, g] of Object.entries(GOLPES)) {
   MOVES[id] = m;
 }
 
+// grafias alternativas usadas no roteiro
+MOVES.watersport = MOVES.waterSport;
+
 export const KINDS = ['proj', 'melee', 'multi', 'cone', 'dash', 'wave', 'quake', 'cloud', 'rain', 'self'];
 
 export function moveInfo(id) { return MOVES[id]; }

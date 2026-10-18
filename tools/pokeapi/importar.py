@@ -13,7 +13,7 @@ tools/pokeapi/golpes_pt.tsv e habilidades_pt.tsv (a PokéAPI quase não tem pt-B
 
 Escolhas:
   - Pokédex regional: Lumiose (Legends Z-A, 232 espécies, gerações 1 a 7 misturadas, inclui os
-    iniciais de Kanto), mais as espécies que o jogo já usava, mais as linhas evolutivas completas.
+    iniciais de Kanto), mais as espécies que o jogo já usava, mais as do roteiro, mais as linhas evolutivas completas.
   - Golpes: Scarlet/Violet (grupo de versão 25); quem não está em SV usa a geração mais recente com
     dados: Sword/Shield (20), Brilliant Diamond/Shining Pearl (23) ou Ultra Sun/Ultra Moon (18).
   - MT = as 229 MTs de SV. Golpes que a espécie aprendia por máquina num jogo antigo e que não são MT
@@ -112,6 +112,35 @@ JA_USADAS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 20, 
              74, 79, 92, 95, 123, 129, 130, 133, 167, 179, 183, 194, 198, 200, 204, 214, 215, 216, 227, 228, 234, 246,
              278, 280, 283, 285, 349, 359, 396, 403, 406, 415, 417, 418, 422, 425, 427, 443, 447, 548, 550, 570, 590,
              607, 628, 656, 659, 664, 701, 708, 734, 744, 750, 821, 903, 915, 926]
+# espécies citadas no roteiro (src/story/script/cap01–12.js: equipes de líderes, Elite, chefes, montarias,
+# lendários) + montarias e lendários pedidos à parte (Mudbray, Lapras, Sneasler, Corviknight, Mantine, Solgaleo)
+HISTORIA = [13, 17, 41, 42, 48, 52, 54, 58, 59, 66, 67, 76, 79, 81, 82, 92, 93, 94, 95, 100, 123, 128, 129, 130, 133, 149,
+            164, 167, 168, 171, 180, 183, 196, 197, 198, 200, 208, 214, 216, 227, 228, 229, 230, 237, 261, 262, 277, 278,
+            282, 283, 290, 296, 302, 303, 304, 307, 309, 323, 324, 328, 330, 333, 334, 339, 353, 354, 355, 359, 376, 396,
+            397, 398, 401, 403, 404, 415, 417, 418, 425, 427, 429, 430, 434, 435, 437, 445, 447, 448, 453, 457, 461, 462,
+            468, 476, 510, 522, 524, 525, 532, 535, 546, 547, 550, 551, 571, 580, 593, 595, 600, 601, 607, 608, 612, 619,
+            627, 628, 635, 637, 659, 662, 663, 664, 671, 672, 694, 700, 701, 703, 706, 708, 714, 715, 731, 739, 744, 745,
+            792, 800, 819, 835, 837, 851, 861, 915, 921, 927, 932, 933, 936, 952, 959, 969, 970, 971,
+            749, 131, 903, 823, 226, 791]
+# golpes citados no roteiro (ids do jogo, camelCase)
+GOLPES_HISTORIA = '''absorb accelerock acidSpray acrobatics aerialAce agility airCutter airSlash amnesia ancientPower aquaJet
+armThrust armorCannon astonish attract auraSphere bide bind bite bodyPress boomburst braveBird brickBreak bubble bubbleBeam
+bugBite bugBuzz bulkUp bulldoze bulletPunch bulletSeed calmMind charge closeCombat confuseRay confusion cottonGuard
+cottonSpore counter crunch crushClaw curse darkPulse darkestLariat dazzlingGleam defenseCurl defog detect disable discharge
+doubleTeam dragonBreath dragonClaw dragonDance dragonPulse drainingKiss earthPower earthquake echoedVoice ember endeavor
+energyBall explosion extrasensory extremeSpeed fairyWind fakeOut feintAttack fieryDance fireLash flail flameBurst
+flameCharge flameWheel flamethrower flareBlitz flashCannon focusEnergy forcePalm foulPlay furyCutter furySwipes gearGrind
+gigaDrain gigatonHammer growl gust gyroBall harden haze headbutt heatWave hex hornAttack howl hurricane hyperVoice hypnosis
+iceFang iceShard ironDefense ironHead ironTail karateChop knockOff leechLife leechSeed leer lick lowKick magnetBomb meditate
+metalClaw meteorMash mirrorMove mirrorShot moonblast moongeistBeam moonlight morningSun mudSlap mysticalFire nastyPlot
+nightDaze nightShade nightSlash nuzzle ominousWind outrage parabolicCharge payback peck petalBlizzard photonGeyser playRough
+poisonGas poisonPowder poisonSting pound powerGem powerUpPunch psybeam psychic psychoCut psyshock pursuit quickAttack
+quiverDance rapidSpin razorLeaf recover reflect revenge roar rockBlast rockSlide rockThrow rockTomb rollout roost round
+saltCure sandAttack sandTomb scald scaryFace scratch screech selfDestruct shadowBall shadowClaw shadowPunch shadowSneak
+shiftGear sludgeBomb sludgeWave smog smokescreen snarl sonicBoom spark spikes spiritBreak splash stealthRock steelWing
+stoneEdge stringShot struggleBug suckerPunch sunsteelStrike superpower supersonic surf sweetKiss sweetScent swift
+swordsDance tackle tailWhip tailwind takeDown thunderShock thunderWave thunderbolt toxic triAttack trickRoom tripleKick
+twister uTurn waterGun waterPulse waterfall waterSport wildCharge willOWisp wingAttack yawn zenHeadbutt'''.split()
 # evoluções que dependem só de forma regional (Meowth de Galar, Wooper de Paldea, Basculin listrado)
 SO_FORMA = {863, 980, 902}
 
@@ -119,7 +148,7 @@ chain = defaultdict(list)
 for i, r in species.items():
     chain[r['evolution_chain_id']].append(i)
 SEL = set()
-for s in LUMIOSE + JA_USADAS:
+for s in LUMIOSE + JA_USADAS + HISTORIA:
     SEL |= set(chain[species[s]['evolution_chain_id']])
 SEL -= SO_FORMA
 SEL = sorted(SEL)
@@ -162,6 +191,12 @@ for s in SEL:
 # golpes que o jogo já usava continuam existindo (saves antigos)
 for ident in ['rage', 'twineedle', 'bubble', 'mud-sport', 'magnitude', 'pursuit', 'struggle', 'karate-chop']:
     used_moves.add(move_by_ident[ident])
+# e os do roteiro (camelCase -> identificador da PokéAPI)
+by_camel = {camel(k): v for k, v in move_by_ident.items()}
+for c in GOLPES_HISTORIA:
+    if c not in by_camel:
+        raise SystemExit(f'golpe do roteiro sem dados na PokéAPI: {c}')
+    used_moves.add(by_camel[c])
 
 # ---------------------------------------------------------------- evoluções
 evo_rows = defaultdict(list)
@@ -200,7 +235,10 @@ def evo_entry(to, r):
         e['partyType'] = types[r['party_type_id']]
     if r['turn_upside_down'] == '1':
         e['note'] = 'original: virar o aparelho de cabeça para baixo'
-    if trig == '3':
+    if trig == '4':  # Shedinja: surge junto quando Nincada evolui (com espaço na equipe e uma Poké Bola)
+        e['level'], e['shed'] = 20, True
+        e['note'] = 'aparece junto quando Nincada evolui para Ninjask'
+    elif trig == '3':
         e['item'] = item_id(r['trigger_item_id'])
     elif trig == '2':  # troca -> usar o item que ele seguraria, ou o Cordão de Ligação
         e['item'] = item_id(r['held_item_id']) or 'linkingCord'
@@ -240,6 +278,15 @@ for (frm, to), rows in sorted(evo_rows.items()):
                 seen.remove(twin)
                 e.pop('gender')
     evolutions[frm].extend(seen)
+
+# mesma condição para dois destinos (exclusivos de versão, ex.: Cosmoem → Solgaleo em Sun, Lunala em Moon):
+# adaptação para dia e noite
+for frm, evs in evolutions.items():
+    for i, e in enumerate(evs):
+        for f in evs[i + 1:]:
+            if e['to'] != f['to'] and {k: v for k, v in e.items() if k != 'to'} == {k: v for k, v in f.items() if k != 'to'} and 'time' not in e:
+                e['time'], f['time'] = 'day', 'night'
+                e['note'] = f['note'] = 'original: exclusivo de versão; aqui depende da hora do dia'
 
 # ---------------------------------------------------------------- habilidades
 pk_abil = defaultdict(list)

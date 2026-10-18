@@ -138,6 +138,10 @@ def baixar(stage):
     pre = pre_evolucoes()
     relatorio = {}
     lista = dex_do_species()
+    parte = os.environ.get('PMD_PARTE', '')  # ex.: PMD_PARTE=2/4 baixa só um quarto (vários em paralelo na mesma pasta)
+    if re.fullmatch(r'\d+/\d+', parte):
+        i, n = map(int, parte.split('/'))
+        lista = lista[i - 1::n]
     log(f'{len(lista)} espécies: {lista}')
     for dex in lista:
         pasta_dex = os.path.join(stage, f'{dex:04d}')

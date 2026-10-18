@@ -40,6 +40,23 @@ for (const d of dexes) {
 }
 for (const tab of [BIOME_ENCOUNTERS, NIGHT_ENCOUNTERS]) for (const [b, rows] of Object.entries(tab)) for (const [d] of rows) ok(SPECIES[d], `encontro ${b}: espécie ${d} não existe`);
 
+// ---------------------------------------------------------------- roteiro (equipes [dex, nível, [golpes]])
+try {
+  const roteiro = await import('../src/story/script/index.js');
+  let n = 0;
+  const walk = (o) => {
+    if (Array.isArray(o)) {
+      if (Number.isInteger(o[0]) && Number.isInteger(o[1]) && Array.isArray(o[2]) && o[2].every((x) => typeof x === 'string')) {
+        n++; ok(SPECIES[o[0]], `roteiro: espécie ${o[0]} não existe`);
+        for (const mv of o[2]) ok(MOVES[mv], `roteiro: golpe ${mv} não existe`);
+      }
+      o.forEach(walk);
+    } else if (o && typeof o === 'object') Object.values(o).forEach(walk);
+  };
+  walk(roteiro);
+  console.log(`roteiro: ${n} Pokémon de treinadores conferidos`);
+} catch (e) { avisos.push('roteiro não carregou: ' + e.message); }
+
 // ---------------------------------------------------------------- golpes
 for (const [id, m] of Object.entries(MOVES)) {
   const n = `golpe ${id}`;

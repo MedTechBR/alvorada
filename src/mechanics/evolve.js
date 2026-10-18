@@ -44,9 +44,15 @@ export function evolutionFor(mon, trigger = 'level', ctx = {}) {
       if (!e.trade || (e.item !== 'linkingCord' && itemId(mon.item) !== e.item)) continue;
       return { to: e.to, rule: e, consumeHeld: e.item !== 'linkingCord' };
     } else if (e.item) continue;
+    if (e.shed) continue; // Shedinja: o jogo cria um segundo Pokémon (veja shedFor)
     if (conditionsOk(mon, e, ctx)) return { to: e.to, rule: e };
   }
   return null;
+}
+
+// Nincada → Ninjask também deixa um Shedinja (se houver espaço e uma Poké Bola). Devolve o dex ou null.
+export function shedFor(dex) {
+  return SPECIES[dex]?.evo?.find((e) => e.shed)?.to ?? null;
 }
 
 // Texto curto da condição, para a Pokédex/menu

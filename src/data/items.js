@@ -198,6 +198,10 @@ export const ITEMS = {
   whippedDream: I('Chantili dos Sonhos', 'Whipped Dream', 'evolution', 2000, { desc: 'Faz Swirlix evoluir.' }),
   blackAugurite: I('Augurita Negra', 'Black Augurite', 'evolution', 0, { desc: 'Faz Scyther evoluir para Kleavor.' }),
   peatBlock: I('Bloco de Turfa', 'Peat Block', 'evolution', 0, { desc: 'Faz Ursaring evoluir em noite de lua cheia.' }),
+  dragonScale: I('Escama de Dragão', 'Dragon Scale', 'evolution', 2000, { desc: 'Faz Seadra evoluir (no lugar da troca).' }),
+  reaperCloth: I('Tecido Ceifador', 'Reaper Cloth', 'evolution', 2000, { desc: 'Faz Dusclops evoluir (no lugar da troca).' }),
+  auspiciousArmor: I('Armadura Auspiciosa', 'Auspicious Armor', 'evolution', 3000, { desc: 'Faz Charcadet evoluir para Armarouge.' }),
+  maliciousArmor: I('Armadura Maliciosa', 'Malicious Armor', 'evolution', 3000, { desc: 'Faz Charcadet evoluir para Ceruledge.' }),
 
   // ---------------- Vitaminas, doces e outros
   hpUp: I('Mais PS', 'HP Up', 'vitamin', 10000, { evs: [10, 0, 0, 0, 0, 0], desc: '+10 EVs de PS.' }),

@@ -3,7 +3,7 @@ import { MOVES } from './moves.js';
 import { NATURES, randomNature } from './natures.js';
 import { itemInfo } from './items.js';
 import { STAT_KEYS, calcStats, randomIvs, addEvs, expForLevel, expYield } from '../mechanics/stats.js';
-import { defaultMoves, movesAtLevel, learnMove } from '../mechanics/learn.js';
+import { defaultMoves, movesAtLevel, learnMove, canLearn } from '../mechanics/learn.js';
 import { evolutionFor } from '../mechanics/evolve.js';
 import { useItem } from '../mechanics/items.js';
 
@@ -141,6 +141,8 @@ export class Mon {
   }
 
   learn(id, replaceIndex = -1) { return learnMove(this, id, replaceIndex); }
+  // Pode aprender (por nível, MT ou ensino)? O menu usa isso para as MTs.
+  canLearn(id) { return canLearn(this, id); }
 
   // Usa um item da mochila neste Pokémon (src/mechanics/items.js). Evolução vem como evento { type: 'evolve' }.
   use(itemId, ctx = {}) { return useItem(this, itemId, ctx); }
