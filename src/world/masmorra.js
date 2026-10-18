@@ -621,6 +621,7 @@ export class Masmorra {
       }
       for (const [x, y, tex, r] of this.#tileLights(c)) add(x, y, r * (0.9 + Math.sin(this.t * 2 + x) * 0.1), tex, 0.8);
     }
+    for (const [x, y, r] of g.tocas?.luzes?.() ?? []) add(x, y, r * flick, SPR.glowPink ?? SPR.glow, 0.9); // Tocas de Luz (src/world/tocas.js)
     for (let i = n; i < L.pool.length; i++) L.pool[i].visible = false;
     g.app.renderer.render({ container: L.stage, target: L.rt, clear: true });
     void dt;

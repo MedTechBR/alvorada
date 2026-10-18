@@ -111,7 +111,6 @@ export class Poder {
   opcao() {
     const g = this.g, l = g.lead;
     if (g.mode !== 'pokemon' || !l?.alive || l.poderBusy || this.uso.mega || this.uso.dmax) return null;
-    if (g.tocas?.reide && !g.tocas.reide.podeDmax?.()) return null;
     const m = l.mon;
     const mega = this.temPulseira() && megaFormFor(m);
     const dmax = this.temBracelete() && this.lugarDynamax() && canDynamax(m) && !this.dmax.has(l);
@@ -153,7 +152,6 @@ export class Poder {
     this.uso[o.k] = true;
     if (o.k === 'mega') this.mega(l, o.form);
     else this.dynamax(l);
-    g.tocas?.reide?.onDmax?.(l, o.k);
     g.hudMoves();
     return true;
   }
@@ -192,7 +190,8 @@ export class Poder {
   }
 
   // ---------- Dynamax / Gigantamax ----------
-  async dynamax(e, { boss = false, quiet = false, dur = DMAX_S } = {}) {
+  // boss: chefe de reide (sem tempo); hpK: multiplicador de PS (o chefe do reide tem mais que o Dynamax normal)
+  async dynamax(e, { boss = false, quiet = false, dur = DMAX_S, hpK = DMAX_HP } = {}) {
     const g = this.g, m = e.mon;
     if (e.poderBusy || this.dmax.has(e) || !canDynamax(m)) return false;
     e.poderBusy = true;
@@ -208,7 +207,7 @@ export class Poder {
     this.anims.push({ t: 0, dur: DMAX_ANIM, e, kind: 'dmax', from, gf, swapAt: 0.35, swapped: false,
       swap: () => {
         if (gf) { m.setTempForm(gf); if (set) { e.setSprites(set); e.shownKey = `${m.dex}-${gf}`; } }
-        m.setDynamax(DMAX_HP);
+        m.setDynamax(hpK);
         e.dmaxT = boss ? Infinity : dur; e.dmaxMax = e.dmaxT; e.dmaxBoss = boss;
         e.maxMoves = [0, 1, 2, 3].map((i) => maxMoveFor(m, i));
         e.cds = [0, 0, 0, 0];
@@ -310,9 +309,11 @@ export class Poder {
     const g = this.g, mine = (x) => x && (x === g.lead || (x.side === 'ally' && !x.isTrainer));
     if ((mine(t) && by && by.side !== 'ally') || (mine(by) && t && t.side !== 'ally')) this.lastHit = g.time;
   }
-  #fainted(e) {
+  #fainted(e) { this.limpar(e); }
+  // desmaio: sem Dynamax e sem forma de batalha (Mega desfeita no desmaio)
+  limpar(e) {
     if (this.dmax.has(e)) this.endDynamax(e, true);
-    if (e.mon?.tempForm) e.mon.clearBattleForm(); // Mega desfeita no desmaio
+    if (e.mon?.tempForm) e.mon.clearBattleForm();
   }
   // entrou em campo: Reversão Primitiva sozinha (Groudon e Kyogre com o Orbe)
   #entrou(e) {
@@ -522,7 +523,8 @@ export class Poder {
     } else if (a.kind === 'pilar') {
       // coluna de luz do Max Golpe (vermelho/tipo) que cai no alvo
       const w = (a.low ? 10 : 16) * (1 - k * 0.5), h = 220 * Math.min(1, k * 4), al = k < 0.2 ? k / 0.2 : 1 - (k - 0.2) / 0.8;
-      this.gfxA.rect(a.x - w, a.y - h, w * 2, h).fill({ color: a.col, alpha: 0.35 * al });
+      this.gfx.rect(a.x - w, a.y - h, w * 2, h).fill({ color: a.col, alpha: 0.45 * al });
+      this.gfx.rect(a.x - w * 1.4, a.y - h, w * 0.4, h).fill({ color: 0xff2a3a, alpha: 0.35 * al }); this.gfx.rect(a.x + w, a.y - h, w * 0.4, h).fill({ color: 0xff2a3a, alpha: 0.35 * al });
       this.gfxA.rect(a.x - w * 0.35, a.y - h, w * 0.7, h).fill({ color: 0xffffff, alpha: 0.6 * al });
       this.gfx.ellipse(a.x, a.y, 30 + 30 * k, 12 + 12 * k).fill({ color: a.gmax ? 0xff3aa0 : 0xff2a3a, alpha: 0.25 * al });
       if (!a.low && Math.random() < dt * 40) g.fx.emit(a.x + (Math.random() - 0.5) * w * 2, a.y - Math.random() * h, { tex: 'spark', color: a.col, n: 1, speed: 40, life: 0.3, stretch: 0.01 });

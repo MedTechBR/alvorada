@@ -10,6 +10,7 @@ import { loadPokemonSprites } from './sprites/pmd.js';
 import { PokeEntity } from './entities/pokemon.js';
 import { Combat } from './combat/combat.js';
 import { Poder } from './combat/poder.js';
+import { Tocas } from './world/tocas.js';
 import { Mon } from './data/mon.js';
 import { SPECIES, BIOME_ENCOUNTERS, speciesKey, genderForm, formFromApi } from './data/species.js';
 import { MOVES } from './data/moves.js';
@@ -70,6 +71,7 @@ class Game {
     this.ui = new UI(this);        // HUD, menus, diálogo, título e save (src/ui)
     this.story = new Story(this);  // capítulo 1 (src/story)
     this.poder = new Poder(this);  // Mega Evolução, Dynamax e Gigantamax (src/combat/poder.js)
+    this.tocas = new Tocas(this);  // Tocas de Luz e Reides Max (src/world/tocas.js)
     window.__boot?.(0.92, 'Preparando a aventura…');
     this.available = await fetch('assets/pmd/index.json').then((r) => r.json()).catch(() => [1, 4, 6, 7, 9, 25, 130, 133]);
     this.spawnT = 0; this.wilds = [];
@@ -485,6 +487,7 @@ class Game {
     this.#updateWild(dt);
     this.combat.update(dt);
     this.poder.update(dt);
+    this.tocas.update(dt);
     this.#updateBalls(dt);
     this.#updateThrowMon(dt);
     for (const e of this.entities) { if (e.fadeIn) { e.alpha = Math.min(1, e.alpha + dt * 2); if (e.alpha >= 1) e.fadeIn = false; } if (e.dead) e.alpha = Math.max(0, e.alpha - dt * 2); e.update(dt); e.view.zIndex = e.y; }
@@ -521,7 +524,7 @@ class Game {
     if (inp.pressed('zoomOut')) this.setZoom(this.zoom - 1);
     const pk = this.mode === 'pokemon' && this.lead?.alive;
     // numa batalha de treinador da história, o seu Pokémon sai sozinho (como nos jogos)
-    if (!pk && this.story?.battle && !this.story.battle.done && !this.throwingMon && !(this.sendingOut > 0) && this.party.some((m) => !m.fainted)) {
+    if (!pk && ((this.story?.battle && !this.story.battle.done) || (this.tocas?.reide && !this.tocas.reide.done)) && !this.throwingMon && !(this.sendingOut > 0) && this.party.some((m) => !m.fainted)) {
       const i = this.party[this.leadIdx]?.fainted ? this.party.findIndex((m) => !m.fainted) : this.leadIdx;
       const a = this.#aimPoint(); this.throwMon(i, a.x, a.y);
     }
@@ -620,8 +623,9 @@ class Game {
 
   #camera(dt) {
     const p = this.player, c = this.cam, f = this.mode === 'pokemon' && this.lead?.alive ? this.lead : p;
-    const fy = f.y - (f === p ? this.mount?.camLift ?? 0 : 0); // voando, a câmera sobe com o treinador
-    c.x += (f.x - c.x) * Math.min(1, dt * 8); c.y += (fy - c.y) * Math.min(1, dt * 8);
+    let fx = f.x, fy = f.y - (f === p ? this.mount?.camLift ?? 0 : 0); // voando, a câmera sobe com o treinador
+    const foco = this.camFoco?.(fx, fy); if (foco) { fx = foco.x; fy = foco.y; } // reide: entre o Pokémon e o chefe (src/world/tocas.js)
+    c.x += (fx - c.x) * Math.min(1, dt * 8); c.y += (fy - c.y) * Math.min(1, dt * 8);
     let sx = 0, sy = 0;
     if (this.fx.shake > 0) { this.fx.shake -= dt; const k = this.fx.shake * 6; sx = (Math.random() - 0.5) * k; sy = (Math.random() - 0.5) * k; }
     const z = this.zoom * (this.camK ?? 1); // camK < 1: câmera afasta (Dynamax, reide; src/combat/poder.js)
