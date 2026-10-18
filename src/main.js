@@ -95,6 +95,7 @@ class Game {
       if (this.ui) this.ui.title = async () => { this.ui.state = 'play'; return 'test'; }; // sem conta: nada é gravado
     }
     const start = await this.ui.title();
+    if (teste) await this.viagem.parametroIr(); // ?ir=<lugar>: começa direto lá (docs/construir-regiao.md)
     this.net.autoStart(); // logado: entra sozinho num canal do mundo (src/net/world.js)
     for (const m of this.party) loadPokemonSprites(m.spriteKey).catch(() => {}); // já baixa a equipe enquanto a história começa
     this.mode = 'trainer';

@@ -138,6 +138,30 @@ export class Viagem {
   }
   resolver(dest) { return this.#resolver(dest); }
 
+  // ?ir=<lugar> (testes e agentes de região): leva o jogador direto a um ponto, área, sala ou bloco, em qualquer mundo.
+  // Formas: ?ir=porto_rubro_cais · ?ir=vila_geada (área) · ?ir=casa_jogador (sala) · ?ir=640,72 · ?ir=ocaso:640,300
+  async parametroIr() {
+    const q = new URLSearchParams(location.search).get('ir'); if (!q) return false;
+    let [mundo, alvo] = q.includes(':') ? q.split(':') : [null, q];
+    const destinoEm = (R, m) => {
+      if (/^\d+,\d+$/.test(alvo)) { const [x, y] = alvo.split(',').map(Number); return { x, y }; }
+      if (m ? m.spots[alvo] : R.spots?.[alvo]) return { spot: alvo };
+      if (R.areas?.some((a) => a.id === alvo)) return { area: alvo };
+      if (R.interiors?.some((r) => r.id === alvo)) return m ? { spot: 'dentro_' + alvo } : { sala: alvo };
+      return null;
+    };
+    const ordem = mundo ? [mundo] : [this.g.map.id, ...MUNDOS.map((w) => w.id).filter((id) => id !== this.g.map.id)];
+    for (const id of ordem) {
+      let d;
+      if (id === this.g.map.id) d = destinoEm(this.g.map.R, this.g.map);
+      else { try { d = destinoEm(await dadosDoMundo(id)); } catch { d = null; } }
+      if (d?.sala) { const R = await dadosDoMundo(id), r = R.interiors.find((x) => x.id === d.sala); let mx = 2, my = 2; r.rows.forEach((row, j) => { const i = row.indexOf('m'); if (i >= 0) { mx = i; my = j - 1; } }); d = { sala: d.sala, x: mx, y: my }; }
+      if (d) { console.info('?ir=', q, '→', id, d); return this.ir(id, d, { silencioso: true }); }
+    }
+    console.warn('?ir=: lugar não encontrado em nenhum mundo:', q);
+    return false;
+  }
+
   // passagem (warp) para outro mundo
   async passagem(w) {
     if (w.pergunta) { const r = await this.g.ui.say([w.pergunta], { choices: ['Ir', 'Ficar'] }); if (r !== 0) return; }
