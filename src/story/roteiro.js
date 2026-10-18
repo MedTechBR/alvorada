@@ -275,9 +275,10 @@ export class Roteiro {
 
   // ---------------- conversa ----------------
   // gatilho "falar": devolve true se alguma cena respondeu
-  async falar(quem) {
+  // semRepete: só cenas que tocam uma vez (as que repetem são conversa de enfeite e deixam as missões falarem antes)
+  async falar(quem, { semRepete = false } = {}) {
     if (!this.ativo || this.rodando) return false;
-    const c = this.#primeira('falar', (gt) => gt.alvo === quem);
+    const c = this.#primeira('falar', (gt, s) => gt.alvo === quem && !(semRepete && s.repete));
     if (!c) return false;
     await this.tocar(c[0], c[1]);
     return true;
@@ -293,8 +294,9 @@ export class Roteiro {
       if (e.visao && !vencido) { out.push({ o: n, r: 26, label: 'Batalhar', fn: () => this.#desafiar(n) }); continue; }
       out.push({ o: n, r: 26, label: 'Falar', fn: async () => {
         if (e.visao) return this.#dizer(n, e.apos ?? ['Boa batalha!']);
-        if (await this.falar(e.quem)) return;
+        if (await this.falar(e.quem, { semRepete: true })) return;
         if (await this.g.missoes?.conversar(n)) return; // missões secundárias (src/story/missoes)
+        if (await this.falar(e.quem)) return;
         return this.#dizer(n, n.padrao ?? ['…'], true);
       } });
     }

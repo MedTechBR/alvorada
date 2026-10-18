@@ -325,7 +325,7 @@ export class Story {
     const g = this.g, f = this.flags, out = [];
     const add = (o, r, label, fn) => { if (o && (o.visible ?? true)) out.push({ o, r, label, fn }); };
     // o roteiro (capítulo 2+) responde primeiro quando tem cena com "falar" para o personagem
-    const R = (quem, fn, n) => async () => { if (await this.roteiro.falar(quem)) return; if (n && (await g.missoes?.conversar(n))) return; return fn(); };
+    const R = (quem, fn, n) => async () => { if (await this.roteiro.falar(quem, { semRepete: true })) return; if (n && (await g.missoes?.conversar(n))) return; if (await this.roteiro.falar(quem)) return; return fn(); };
     add(this.npc('mom'), 24, 'Falar', R('mae', () => this.momTalk(), this.npc('mom')));
     add(this.npc('prof'), 26, 'Falar', R('prof', () => this.profTalk(), f.balls && this.npc('prof')));
     const rival = this.npc('rival');
