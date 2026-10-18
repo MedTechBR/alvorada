@@ -4,6 +4,7 @@ import { SPR, LEAVES, VARAL } from './art.js';
 import { KINDS } from './objects.js';
 import { Minimap } from './minimap.js';
 import { People } from './people.js';
+import { itemName } from '../data/items.js';
 
 // Vida do mundo: relógio de dia e noite (tingimento suave + luzes de janela), portas e escadas com fade,
 // bichinhos (borboletas, pássaros, peixes, folhas caindo, vaga-lumes), itens brilhando, árvores de frutas,
@@ -159,6 +160,7 @@ export class WorldLife {
     this.itemSprites = [];
     for (const it of this.map.items) {
       const s = new PIXI.Sprite(SPR.itemball); s.anchor.set(0.5, 1); s.x = it.x * T + 8; s.y = it.y * T + 13; s.zIndex = s.y - 2; s.it = it; s.key = `${it.x},${it.y}`;
+      if (it.hidden) s.alpha = 0; // item escondido: só um brilho de vez em quando, bem de perto
       const sp = new PIXI.Sprite(SPR.sparkle); sp.anchor.set(0.5); sp.blendMode = 'add'; s.sparkle = sp; sp.x = s.x + 3; sp.y = s.y - 9;
       this.itemSprites.push(s);
     }
@@ -172,10 +174,11 @@ export class WorldLife {
       if (!near && s.parent) { s.parent.removeChild(s); this.air.removeChild(s.sparkle); }
       if (!near) continue;
       const ph = (t * 0.9 + s.x * 0.013) % 2.2; s.sparkle.alpha = ph < 0.5 ? Math.sin(ph / 0.5 * Math.PI) : 0; s.sparkle.scale.set(0.6 + s.sparkle.alpha * 0.6);
+      if (s.it.hidden) { const d = Math.hypot(s.x - p.x, s.y - p.y); s.sparkle.alpha *= d < 56 ? 0.75 : 0; s.sparkle.y = s.y - 4; }
       if (Math.hypot(s.x - p.x, s.y - 4 - p.y) < 10) {
         this.taken.add(s.key);
-        const item = s.it.item; g.bag[item] = (g.bag[item] ?? 0) + (s.it.n ?? 1);
-        g.toast(`Você encontrou ${ITEM_PT[item] ?? item}!`); g.audio?.sfx?.('levelup');
+        const item = s.it.item, n = s.it.n ?? 1; g.bag[item] = (g.bag[item] ?? 0) + n;
+        g.toast(`Você encontrou ${s.it.hidden ? 'algo escondido: ' : ''}${(n === 1 && ITEM_PT[item]) || (n > 1 ? n + '× ' : '') + itemName(item)}!`); g.audio?.sfx?.('levelup');
         g.fx?.emit(s.x, s.y - 6, { color: 0xfff27a, n: 10, speed: 40, size: 3, life: 0.5, vz: 40 });
         g.hudMoves?.();
       }
