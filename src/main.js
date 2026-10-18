@@ -87,6 +87,7 @@ class Game {
       if (this.ui) this.ui.title = async () => { this.ui.state = 'play'; return 'test'; }; // sem conta: nada é gravado
     }
     const start = await this.ui.title();
+    this.net.autoStart(); // logado: entra sozinho num canal do mundo (src/net/world.js)
     for (const m of this.party) loadPokemonSprites(m.dex).catch(() => {}); // já baixa a equipe enquanto a história começa
     this.mode = 'trainer';
     this.leadIdx = Math.max(0, this.party.findIndex((m) => !m.fainted));
@@ -451,7 +452,7 @@ class Game {
     const inp = this.input; inp.poll();
     if (inp.pressed('perf')) $('perf').hidden = !$('perf').hidden;
     // título, menu e diálogo param o mundo (a câmera e o desenho continuam)
-    if (this.ui?.frame(rdt)) { this.net?.update(rdt); this.#camera(rdt); this.map.flushDirty(); this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // o online segue mesmo com o menu aberto
+    if (this.ui?.frame(rdt)) { this.net?.update(rdt, true); this.#camera(rdt); this.map.flushDirty(); this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // o online segue mesmo com o menu aberto
     // pausa no impacto: o mundo congela por alguns milissegundos
     let dt = rdt;
     if (this.fx.hitStop > 0) { this.fx.hitStop -= rdt; dt = rdt * 0.08; }

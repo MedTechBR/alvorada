@@ -169,7 +169,7 @@ const MAIN_ITEMS = [
   ['quests', 'Missões', 'Seu diário: missões ativas, concluídas e as jornadas.'],
   ['map', 'Mapa', 'O mapa da região Alvorada.'],
   ['card', 'Treinador', 'Seu cartão de treinador e as insígnias.'],
-  ['online', 'Online', 'Jogar com amigos: salas, troca e duelo (tecla O).'],
+  ['online', 'Online', 'Quem está no mundo, sala privada, troca e duelo (tecla O).'],
   ['options', 'Opções', 'Som, texto, controles e tela.'],
   ['save', 'Salvar', 'Grave o seu progresso.'],
   ['close', 'Fechar', 'Voltar à aventura.'],

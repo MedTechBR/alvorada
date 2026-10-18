@@ -25,6 +25,7 @@ const CSS = `
 #net-quick { position: absolute; left: 12px; top: 144px; display: flex; gap: 6px; pointer-events: auto; }
 #net-quick[hidden] { display: none; }
 #net-quick button { min-width: 50px; padding: 4px 10px; box-shadow: 0 3px 0 rgba(0,0,0,.25); }
+#net #net-chan { background: #20392a; color: #b8ffb0; border-color: #0e1a12; font-size: 12px; white-space: nowrap; }
 #net-emos { position: absolute; left: 12px; top: 196px; display: flex; flex-wrap: wrap; gap: 6px; max-width: 260px; pointer-events: auto; }
 #net-emos[hidden] { display: none; }
 #net-emos button { min-width: 48px; min-height: 48px; padding: 0; font-size: 18px; }
@@ -148,7 +149,7 @@ export class OnlineUI {
     if (!document.getElementById('net-css')) { const s = document.createElement('style'); s.id = 'net-css'; s.textContent = CSS; document.head.appendChild(s); }
     const root = this.root = el(`<div id="net">
       <button id="net-btn" class="pill">Online</button>
-      <div id="net-quick" hidden><button id="net-chat-b" title="Chat (T)">Chat</button><button id="net-emo-b" title="Emotes (5 a 0)">Emote</button></div>
+      <div id="net-quick" hidden><button id="net-chan" title="Jogadores online (O)"></button><button id="net-chat-b" title="Chat (T)">Chat</button><button id="net-emo-b" title="Emotes (5 a 0)">Emote</button></div>
       <div id="net-emos" hidden></div>
       <div id="net-log"></div>
       <div id="net-near" hidden></div>
@@ -164,10 +165,11 @@ export class OnlineUI {
     </div>`);
     document.body.appendChild(root);
     this.$ = (id) => root.querySelector('#' + id);
-    this.tab = 'create';
+    this.tab = null; this.sub = 'create';
     // o teclado digitado aqui não vai para o jogo (WASD no chat não anda)
     root.addEventListener('keydown', (e) => { if (e.target.tagName === 'INPUT') { e.stopPropagation(); if (e.key === 'Escape') { e.target.blur(); this.closeChat(); this.closeMenu(); } } });
     this.$('net-btn').onclick = () => this.toggleMenu();
+    this.$('net-chan').onclick = () => this.toggleMenu();
     this.$('net-chat-b').onclick = () => this.openChat();
     this.$('net-emo-b').onclick = () => { const e = this.$('net-emos'); e.hidden = !e.hidden; };
     this.$('net-emos').append(...Object.entries(EMOTES).map(([k, v]) => { const b = el(`<button title="${k}">${esc(v)}</button>`); b.onclick = () => { this.net.emote(k); this.$('net-emos').hidden = true; }; return b; }));
@@ -201,50 +203,100 @@ export class OnlineUI {
   closeChat() { this.$('net-chatbar').hidden = true; this.$('net-chat-in').blur(); }
 
   toggleMenu() { const m = this.$('net-menu'); m.hidden = !m.hidden; if (!m.hidden) this.render(); }
-  closeMenu() { this.$('net-menu').hidden = true; }
+  closeMenu() { this.$('net-menu').hidden = true; this.tab = null; }
 
   // ---------- menu principal ----------
+  // indicador no HUD: "Canal 1 · 5 online" no mundo, o código na sala privada
+  #badge() {
+    const net = this.net, on = net.on, room = net.room, btn = this.$('net-btn'), w = net.world;
+    btn.classList.toggle('on', on);
+    const live = on ? room.roster.filter((p) => !p.drop).length : 0;
+    const text = on ? (net.inWorld ? `● Canal ${w.channel} · ${live} online` : `● ${room.code} · ${room.players.size}`)
+      : w.running ? (w.state === 'offline' ? 'Offline' : 'Online…') : 'Online';
+    if (btn.textContent !== text) btn.textContent = text;
+    // o botão Online virou item do menu (style.css); o indicador discreto fica nos atalhos de cima, ao lado do Chat
+    const chip = this.$('net-chan'), ct = on ? (net.inWorld ? `Canal ${w.channel} · ${live} online` : `${room.code} · ${room.players.size}`) : '';
+    if (chip.textContent !== ct) chip.textContent = ct;
+    btn.title = on ? 'Jogadores online (O)' : w.running ? (w.state === 'offline' ? 'Sem conexão com o mundo; tentando de novo sozinho' : 'Procurando um canal do mundo…') : 'Jogar online (O)';
+  }
   render() {
     const net = this.net, on = net.on, room = net.room;
-    const btn = this.$('net-btn');
-    btn.classList.toggle('on', on);
-    btn.textContent = on ? `● ${room.code} · ${room.players.size}` : 'Online';
+    this.#badge();
     this.$('net-quick').hidden = !on;
     if (!on) this.$('net-emos').hidden = true;
     const m = this.$('net-menu');
     if (m.hidden) return;
-    if (!on) return this.#renderLobby(m);
+    if (!on || net.inWorld) {
+      if (this.tab === 'priv' || (!on && !net.world.running)) return this.#renderLobby(m);
+      return on ? this.#renderWorld(m) : this.#renderWorldWait(m);
+    }
     const me = net.selfId;
     const rows = room.roster.map((p) => `<div class="net-pl"><i style="background:${esc(p.color)}"></i>
       <span class="nm">${esc(p.name)}${p.id === me ? ' (você)' : ''}${p.host ? '<span class="tag">anfitrião</span>' : ''}${p.drop ? '<span class="tag drop">caiu…</span>' : ''}${p.ping != null && p.id !== me ? `<span class="net-small"> · ${p.ping} ms</span>` : ''}</span>
       ${p.id !== me && !p.drop ? `<button data-a="trade" data-id="${esc(p.id)}">Trocar</button><button data-a="duel" data-id="${esc(p.id)}" class="pri">Desafiar</button>` : ''}
       ${net.isHost && p.id !== me ? `<button data-a="kick" data-id="${esc(p.id)}" class="ghost" title="Remover da sala">✕</button>` : ''}</div>`).join('');
-    const hist = (this.chatHist ?? []).slice(-8).map((c) => `<div><b style="color:${esc(c.color)}">${esc(c.name)}:</b> ${esc(c.text)}</div>`).join('') || '<div class="net-small">Ninguém falou nada ainda.</div>';
     m.innerHTML = `<div class="net-card">
-      <h2><span>Sala online</span><button class="ghost" data-a="close">Fechar</button></h2>
+      <h2><span>Sala privada</span><button class="ghost" data-a="close">Fechar</button></h2>
       ${net.isHost ? `<div class="net-small">Passe o código e a senha para os amigos:</div>` : ''}
       <div class="net-code">${esc(room.code)}</div>
       <div class="net-small" style="margin-top:4px">${room.players.size}/${MAX_PLAYERS} jogadores · ${net.kind === 'local' ? 'rede local de teste (abas deste navegador)' : 'internet (WebRTC)'}</div>
       <h3>Jogadores</h3>${rows}
-      <h3>Chat</h3><div class="net-small" style="opacity:1">${hist}</div>
+      <h3>Chat</h3><div class="net-small" style="opacity:1">${this.#hist()}</div>
       <div class="net-row"><button data-a="chat">Escrever (T)</button><button data-a="leave" class="pri">${net.isHost ? 'Encerrar sala' : 'Sair da sala'}</button></div>
-      <div class="net-small" style="margin-top:10px">Perto de alguém, aperte E (ou o botão A) para trocar ou desafiar. Emotes: 5 a 0.</div>
+      <div class="net-small" style="margin-top:10px">Saindo da sala você volta para o mundo. Perto de alguém, aperte E (ou o botão A). Emotes: 5 a 0.</div>
     </div>`;
-    m.onclick = (e) => {
-      const b = e.target.closest('button'); if (!b) { if (e.target === m) this.closeMenu(); return; }
-      const a = b.dataset.a, id = b.dataset.id;
-      if (a === 'close') this.closeMenu();
-      if (a === 'chat') { this.closeMenu(); this.openChat(); }
-      if (a === 'leave') { this.closeMenu(); net.leave(); }
-      if (a === 'trade') { this.closeMenu(); net.trade.request(id); }
-      if (a === 'duel') { this.closeMenu(); net.duel.challenge(id); }
-      if (a === 'kick') net.room.kick(id);
-    };
+    m.onclick = (e) => this.#click(e, m);
+  }
+  #hist() { return (this.chatHist ?? []).slice(-8).map((c) => `<div><b style="color:${esc(c.color)}">${esc(c.name)}:</b> ${esc(c.text)}</div>`).join('') || '<div class="net-small">Ninguém falou nada ainda.</div>'; }
+  #click(e, m) {
+    const net = this.net;
+    const b = e.target.closest('button'); if (!b) { if (e.target === m) this.closeMenu(); return; }
+    const a = b.dataset.a, id = b.dataset.id;
+    if (a === 'close') this.closeMenu();
+    if (a === 'chat') { this.closeMenu(); this.openChat(); }
+    if (a === 'leave') { this.closeMenu(); net.leave(); }
+    if (a === 'trade') { this.closeMenu(); net.trade.request(id); }
+    if (a === 'duel') { this.closeMenu(); net.duel.challenge(id); }
+    if (a === 'wave') { net.emote('wave', id); }
+    if (a === 'kick') net.room.kick(id);
+    if (a === 'priv') { this.tab = 'priv'; this.render(); }
+    if (a === 'world-on') { net.setWorld(true); }
+    if (a === 'world-off') { this.closeMenu(); net.setWorld(false); this.toast('Você está offline. O mundo fica de fora até você voltar.'); }
+  }
+  // canal do mundo: quem está online, onde está e o que dá para fazer com cada um
+  #renderWorld(m) {
+    const net = this.net, list = net.players();
+    const live = list.filter((p) => !p.drop);
+    const rows = list.map((p) => `<div class="net-pl"><i style="background:${esc(p.color)}"></i>
+      <span class="nm">${esc(p.name)}${p.me ? ' (você)' : ''}${p.drop ? '<span class="tag drop">caiu…</span>' : ''}<br><span class="net-small">${esc(p.area)}${p.dist != null ? ` · ${p.dist} blocos` : ''}${p.near ? ' · aqui perto' : ''}</span></span>
+      ${!p.me && !p.drop ? `<button data-a="wave" data-id="${esc(p.id)}" class="ghost" title="Acenar">Acenar</button><button data-a="trade" data-id="${esc(p.id)}">Trocar</button><button data-a="duel" data-id="${esc(p.id)}" class="pri">Desafiar</button>` : ''}</div>`).join('');
+    m.innerHTML = `<div class="net-card">
+      <h2><span>Mundo · Canal ${net.world.channel}</span><button class="ghost" data-a="close">Fechar</button></h2>
+      <div class="net-small">${live.length} online neste canal (até ${net.world.max}). Ande pelo mapa para encontrar os outros: eles aparecem no minimapa.</div>
+      <h3>Jogadores online</h3>${rows}
+      <h3>Chat por perto</h3><div class="net-small" style="opacity:1">${this.#hist()}</div>
+      <div class="net-row"><button data-a="chat">Escrever (T)</button><button data-a="priv">Sala privada</button><button data-a="world-off" class="ghost">Ficar offline</button></div>
+      <div class="net-small" style="margin-top:10px">Perto de alguém, aperte E (ou o botão A) para desafiar, trocar ou acenar. Ninguém acerta ninguém fora de um duelo aceito.</div>
+    </div>`;
+    m.onclick = (e) => this.#click(e, m);
+  }
+  #renderWorldWait(m) {
+    const w = this.net.world, off = w.state === 'offline';
+    m.innerHTML = `<div class="net-card">
+      <h2><span>Mundo</span><button class="ghost" data-a="close">Fechar</button></h2>
+      <div>${off ? 'Sem conexão com o mundo agora. O jogo segue normal e tenta de novo sozinho.' : 'Procurando um canal do mundo…'}</div>
+      <div class="net-row"><button data-a="priv">Sala privada</button><button data-a="world-off" class="ghost">Ficar offline</button></div>
+    </div>`;
+    m.onclick = (e) => this.#click(e, m);
   }
   #renderLobby(m) {
-    const net = this.net, create = this.tab === 'create';
+    const net = this.net;
+    const create = this.sub !== 'join';
+    const back = net.world.running ? '<button class="ghost" data-a="back">Voltar ao mundo</button>' : '<button class="ghost" data-a="world-on">Entrar no mundo</button>';
     m.innerHTML = `<div class="net-card">
-      <h2><span>Jogar online</span><button class="ghost" data-a="close">Fechar</button></h2>
+      <h2><span>Sala privada</span><button class="ghost" data-a="close">Fechar</button></h2>
+      <div class="net-small">Só para quem tem o código e a senha. Enquanto estiver numa sala privada, você sai do mundo.</div>
+      <div class="net-row" style="margin-top:6px">${back}</div>
       <div class="net-tabs"><button data-a="tab-create" class="${create ? 'cur' : ''}">Criar sala</button><button data-a="tab-join" class="${create ? '' : 'cur'}">Entrar</button></div>
       <label>Seu nome</label><input id="net-name" maxlength="14" value="${esc(net.name)}" autocomplete="off">
       ${create ? '' : '<label>Código da sala</label><input id="net-code" maxlength="8" placeholder="ALV-0000" autocomplete="off" style="text-transform:uppercase">'}
@@ -259,7 +311,9 @@ export class OnlineUI {
       const b = e.target.closest('button'); if (!b) { if (e.target === m) this.closeMenu(); return; }
       const a = b.dataset.a;
       if (a === 'close') return this.closeMenu();
-      if (a === 'tab-create' || a === 'tab-join') { this.tab = a.slice(4); return this.render(); }
+      if (a === 'back') { this.tab = null; return this.render(); }
+      if (a === 'world-on') { this.tab = null; net.setWorld(true); return; }
+      if (a === 'tab-create' || a === 'tab-join') { this.sub = a.slice(4); return this.render(); }
       if (a !== 'create' && a !== 'join') return;
       const name = this.$('net-name').value, password = this.$('net-pass').value;
       net.setKind(this.$('net-local').checked ? 'local' : 'peer');
@@ -272,7 +326,7 @@ export class OnlineUI {
           if (!/^(ALV-)?\d{4}$/.test(code)) { b.disabled = false; return err('Código no formato ALV-1234.'); }
           await net.join({ code, name, password });
         }
-        this.render();
+        this.tab = null; this.render();
       } catch (ex) {
         b.disabled = false;
         err({ senha: 'Senha errada.', cheia: `Sala cheia (máximo ${MAX_PLAYERS}).`, 'not-found': 'Sala não encontrada. Confira o código.', versao: 'Versões diferentes do jogo. Atualize a página.', taken: 'Não deu para reservar um código. Tente de novo.', timeout: 'A rede demorou demais. Tente de novo.' }[ex.message] ?? `Não foi possível conectar (${ex.message}).`);
@@ -309,13 +363,15 @@ export class OnlineUI {
     if (!r || this.modalOpen) { if (!n.hidden) n.hidden = true; this.nearId = null; return; }
     if (this.nearId === r.id && !n.hidden) return;
     this.nearId = r.id;
-    n.innerHTML = `<span>${esc(r.name)}</span><button data-a="trade">Trocar</button><button data-a="duel" class="pri">Desafiar</button>`;
+    n.innerHTML = `<span>${esc(r.name)}</span><button data-a="wave">Acenar</button><button data-a="trade">Trocar</button><button data-a="duel" class="pri">Desafiar</button>`;
     n.hidden = false;
-    n.onclick = (e) => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.a === 'trade') this.net.trade.request(r.id); else this.net.duel.challenge(r.id); };
+    n.onclick = (e) => { const b = e.target.closest('button'); if (!b) return; const a = b.dataset.a; if (a === 'wave') this.net.emote('wave', r.id); else if (a === 'trade') this.net.trade.request(r.id); else this.net.duel.challenge(r.id); };
   }
+  closeNear() { this.$('net-near').hidden = true; this.nearId = null; }
   playerMenu(id) {
     const name = this.net.nameOf(id);
     this.message(name, 'O que você quer fazer?', [
+      { label: 'Acenar', fn: () => this.net.emote('wave', id) },
       { label: 'Trocar', fn: () => this.net.trade.request(id) },
       { label: 'Desafiar', cls: 'pri', fn: () => this.net.duel.challenge(id) },
       { label: 'Nada', cls: 'ghost' },

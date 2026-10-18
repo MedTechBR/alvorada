@@ -15,8 +15,13 @@ const STATUS = [null, 'par', 'psn', 'tox', 'brn', 'slp', 'frz'];
 const isInt = (v, lo, hi) => Number.isInteger(v) && v >= lo && v <= hi;
 const CTRL = /[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u2028-\u202e\u2066-\u2069]/g;
 
-export function cleanText(s, max = 80) { return String(s ?? '').replace(CTRL, '').replace(/\s+/g, ' ').trim().slice(0, max); }
-export function cleanName(s) { return cleanText(s, 14) || 'Treinador'; }
+// texto livre (chat): sem caracteres de controle nem empilhamento de acentos (o "texto zalgo" que cobre a tela)
+export function cleanText(s, max = 80) { return String(s ?? '').slice(0, max * 4).replace(CTRL, '').replace(/(\p{M}{2})\p{M}+/gu, '$1').replace(/\s+/g, ' ').trim().slice(0, max); }
+// nome de treinador: só letras (com acento), números, espaço e . - _ ' ; até 14
+export function cleanName(s) {
+  const n = String(s ?? '').normalize('NFC').slice(0, 64).replace(/[^\p{L}\p{N} ._'-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 14).trim();
+  return n || 'Treinador';
+}
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 // Devolve { ok: true, mon } com um Mon novo e limpo, ou { ok: false, why }
