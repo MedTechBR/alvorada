@@ -12,6 +12,7 @@ import { IS_TOUCH } from '../engine/input.js';
 import { curvaY } from './curva.js';
 import { CameraDinamica } from './camera.js';
 import { Tocas3D } from './tocas3d.js';
+import { HudBatalha } from '../ui/hud-batalha.js';
 
 // Visual 3D (HD-2D, estilo HeartGold/SoulSilver). Só desenha: a lógica do jogo é a mesma do 2D.
 // Liga-se ao jogo com ?visual=3d (main.js). Desenho completo em docs/visual-3d.md.
@@ -56,6 +57,7 @@ export class Visual3D {
     this.espelho = new Espelho(this);
     this.sobre = new Sobreposicao(this);
     this.tocas = new Tocas3D(this);
+    this.hudBatalha = new HudBatalha(g); // HUD de batalha no estilo do demo (src/ui/hud-batalha.js)
     this.pos = this.amb ? { u: this.amb.pos.u, tamanho: () => this.amb.tamanho(), render: (sc, cam) => this.amb.render(sc, cam), amb: true } : new Pos(this);
     this.t = 0;
     this.#luzDeGolpe();
@@ -202,7 +204,7 @@ export class Visual3D {
     try {
       this.ceu.update(dt); this.#luzUpdate(dt); marca('ceu');
       this.setores.update(dt); marca('setores');
-      this.espelho.update(dt); this.tocas.update(dt); marca('espelho');
+      this.espelho.update(dt); this.tocas.update(dt); this.hudBatalha.update(dt); marca('espelho');
       this.pos.render(this.scene, this.camera); marca('cena');
     } catch (e) { this.#erro(e); }
     try { this.sobre.render(); marca('sobre'); } catch (e) { this.#erro(e); }
