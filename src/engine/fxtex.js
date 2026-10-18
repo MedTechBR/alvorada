@@ -54,7 +54,7 @@ export function buildFxAtlas() {
 
   // --- luz e formas básicas (brancas, tingidas) ---
   add('glow', 16, 16, (g) => { const r = g.createRadialGradient(8, 8, 0, 8, 8, 8); r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(0.35, 'rgba(255,255,255,.55)'); r.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = r; g.fillRect(0, 0, 16, 16); });
-  add('light', 32, 32, (g) => { const r = g.createRadialGradient(16, 16, 0, 16, 16, 16); r.addColorStop(0, 'rgba(255,255,255,.9)'); r.addColorStop(0.5, 'rgba(255,255,255,.3)'); r.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = r; g.fillRect(0, 0, 32, 32); });
+  add('light', 32, 32, (g) => { const r = g.createRadialGradient(16, 16, 0, 16, 16, 16); r.addColorStop(0, 'rgba(255,255,255,.7)'); r.addColorStop(0.5, 'rgba(255,255,255,.2)'); r.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = r; g.fillRect(0, 0, 32, 32); });
   add('px', 1, 1, (g) => P(g, '#fff', 0, 0));
   add('sq', 2, 2, (g) => P(g, '#fff', 0, 0, 2, 2));
   add('dot', 3, 3, (g) => { P(g, '#fff', 1, 0, 1, 3); P(g, '#fff', 0, 1, 3, 1); });

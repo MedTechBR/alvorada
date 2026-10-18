@@ -23,7 +23,7 @@ export default {
     impact: IM.all(IM.type('water', 1), IM.ring(0x7ac8ff, 8, 3, 0.4)),
   },
   hydroPump: { // Hidro Bomba: dois canhões grossos
-    beam: { dur: 1.1, width: 9, speed: 620, tick: 0.1, share: 1.55, knock: 1.8, range: 8.5, colors: [0x1a5ad8, 0x5ab0ff, 0xffffff], style: 'water', double: 5 },
+    beam: { dur: 1.1, width: 7.5, speed: 620, tick: 0.1, share: 1.55, knock: 1.8, range: 8.5, colors: [0x1a5ad8, 0x5ab0ff, 0xffffff], style: 'water', double: 6 },
     charge: (v, u, k) => v.E(u.x, u.y - 10, { tex: 'drop', n: 1, speed: 30, life: 0.3, add: false, jitter: 8, vz: 20, grav: 200 }),
   },
   surf: { // Surf: onda que atravessa a tela

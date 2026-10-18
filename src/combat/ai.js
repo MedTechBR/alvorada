@@ -2,6 +2,7 @@ import { PokeEntity } from '../entities/pokemon.js';
 import { Mon } from '../data/mon.js';
 import { effectiveness } from '../data/types.js';
 import { MOVES } from '../data/moves.js';
+import { kindOf } from './anims/index.js';
 
 // IA dos selvagens:
 // - temperamentos: tímido foge, agressivo persegue, neutro revida;
@@ -13,8 +14,7 @@ import { MOVES } from '../data/moves.js';
 // - espécies rivais brigam entre si quando se encontram.
 
 const SIGHT = { aggressive: 92, neutral: 0, timid: 70 };
-const DODGE = { aggressive: 0.32, neutral: 0.45, timid: 0.6 };
-const RANGED = new Set(['proj', 'cone', 'wave', 'cloud', 'rain']);
+const DODGE = { aggressive: 0.25, neutral: 0.35, timid: 0.45 };
 
 export class WildAI {
   constructor(g, c) { this.g = g; this.c = c; this.scanT = 2; this.packs = 0; }
@@ -107,6 +107,13 @@ export class WildAI {
         else { ai.state = e.pack && e.pack.alpha !== e ? 'follow' : 'idle'; ai.t = 1; }
       }
     } else v = this.#roam(e, dt, dP);
+    // preso num obstáculo (árvore, pedra): contorna pelo lado
+    const want = Math.hypot(v.vx, v.vy);
+    if (want > 10) {
+      ai.stuckT = (ai.stuckT ?? 0) + dt;
+      if (ai.stuckT > 0.35) { const moved = Math.hypot(e.x - (ai.px ?? e.x), e.y - (ai.py ?? e.y)); if (moved < want * ai.stuckT * 0.3) { ai.unstick = 0.7; ai.uside = Math.random() < 0.5 ? 1 : -1; } ai.stuckT = 0; ai.px = e.x; ai.py = e.y; }
+    } else { ai.stuckT = 0; ai.px = e.x; ai.py = e.y; }
+    if (ai.unstick > 0) { ai.unstick -= dt; const l = want || 1; v = { vx: v.vx * 0.3 + (-v.vy / l) * want * ai.uside, vy: v.vy * 0.3 + (v.vx / l) * want * ai.uside }; }
     if (e.confused > 0) { e.confused -= dt; const a = g.time * 5 + e.x; v = { vx: v.vx * 0.4 + Math.cos(a) * 40, vy: v.vy * 0.4 + Math.sin(a) * 40 }; if (Math.random() < dt) g.fx.emit(e.x, e.y - 24, { tex: 'twinkle', color: 0xffe27a, n: 2, speed: 20, life: 0.5 }); }
     return v;
   }
@@ -173,7 +180,7 @@ export class WildAI {
         const sp = Math.hypot(p.vx, p.vy) || 1, ux = p.vx / sp, uy = p.vy / sp;
         const along = rx * ux + ry * uy, lat = Math.abs(rx * uy - ry * ux);
         if (along > 0 && lat < e.r + p.r + 6 && along / sp < 0.4) {
-          ai.dodgeCd = 1.4 + Math.random();
+          ai.dodgeCd = 2 + Math.random();
           if (Math.random() < DODGE[e.temper] + e.stat('spe') / 500) {
             const side = (rx * uy - ry * ux) > 0 ? 1 : -1;
             e.kx += uy * side * 250; e.ky += -ux * side * 250;
@@ -190,16 +197,22 @@ export class WildAI {
       let busy = 0; for (const o of g.wilds) if (o !== e && o.charging && o.aggroTarget === tg) busy++;
       const rate = (e.isAlpha ? 1.9 : 1.4) * (e.temper === 'aggressive' ? 1.2 : 1);
       if (busy < 2 && Math.random() < dt * rate) {
-        const opts = [];
-        e.mon.moves.forEach((id, i) => { const mv = MOVES[id]; if (mv && e.cds[i] <= 0 && c.inRange(e, mv, d, id) && !(mv.kind === 'self' && Math.random() < 0.6)) opts.push(i); });
-        if (opts.length) { const i = opts[Math.floor(Math.random() * opts.length)]; if (c.windup(e, i, tg)) ai.retreat = 0.5; }
+        // prefere golpes de dano; golpes de estado só de vez em quando
+        let tot = 0; const opts = [];
+        e.mon.moves.forEach((id, i) => { const mv = MOVES[id]; if (mv && e.cds[i] <= 0 && c.inRange(e, mv, d, id)) { const w = mv.cat === 'status' ? 0.3 : 1 + (mv.power ?? 40) / 100; opts.push([i, w]); tot += w; } });
+        if (opts.length) { let r = Math.random() * tot, i = opts[0][0]; for (const [k, w] of opts) { if ((r -= w) <= 0) { i = k; break; } } if (c.windup(e, i, tg)) ai.retreat = 0.5; }
       }
     }
     // movimento: distância certa, circula o alvo, recua depois de atacar
-    const ranged = e.mon.moves.some((id) => RANGED.has(MOVES[id]?.kind));
-    const melee = e.mon.moves.some((id) => ['melee', 'multi', 'dash'].includes(MOVES[id]?.kind));
+    // só conta golpes de dano: rosnado e afins não seguram ninguém de longe
+    const dmgMove = (id, set) => { const mv = MOVES[id]; return mv && mv.cat !== 'status' && set.includes(kindOf(id, mv)); };
+    const RK = ['proj', 'cone', 'wave', 'cloud', 'rain', 'bolt', 'sky', 'surf', 'target', 'line'];
+    const ranged = e.mon.moves.some((id) => dmgMove(id, RK));
+    const rangedReady = e.mon.moves.some((id, i) => e.cds[i] <= 0 && dmgMove(id, RK));
+    const melee = e.mon.moves.some((id) => dmgMove(id, ['melee', 'multi', 'dash']));
     ai.phaseT = (ai.phaseT ?? 0) - dt;
     if (ai.phaseT <= 0) { ai.phaseT = 2 + Math.random() * 2.5; ai.press = melee && (!ranged || Math.random() < 0.5); ai.side = Math.random() < 0.5 ? 1 : -1; }
+    if (melee && !rangedReady) ai.press = true;
     const want = ai.press ? e.r + (tg.r ?? 6) + 10 : 76 + (e.isAlpha ? 10 : 0);
     let vx = 0, vy = 0;
     ai.retreat = (ai.retreat ?? 0) - dt;

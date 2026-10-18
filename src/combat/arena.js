@@ -7,7 +7,7 @@ import { T, TILE } from '../world/tiles.js';
 const GRASSY = new Set([TILE.GRASS, TILE.GRASS2, TILE.FLOWERS]);
 
 export class Arena {
-  constructor(g) { this.g = g; this.fires = new Map(); this.shakes = []; this.changes = 0; }
+  constructor(g) { this.g = g; this.scorched = new Set(); this.fires = new Map(); this.shakes = []; this.changes = 0; }
   get fx() { return this.g.fx; }
   cell(x, y) { return Math.floor(x / T) + Math.floor(y / T) * this.g.map.w; }
   objAt(x, y) { const o = this.g.objSprites?.get(this.cell(x, y)); return o && !o.dead ? o : null; }
@@ -73,7 +73,7 @@ export class Arena {
     const tx = Math.floor(x / T), ty = Math.floor(y / T), k = tx + ty * this.g.map.w;
     const t = this.g.map.at(tx, ty);
     if (this.fires.has(k) || this.fires.size > 60) return;
-    if (t !== TILE.TALL && !GRASSY.has(t)) { if (t === TILE.PATH || t === TILE.SAND) this.fx.decal('scorch', tx * T + 8, ty * T + 9, { scale: 0.6, alpha: 0.8, life: 20 }); return; }
+    if (t !== TILE.TALL && !GRASSY.has(t)) { if ((t === TILE.PATH || t === TILE.SAND) && !this.scorched.has(k)) { this.scorched.add(k); if (this.scorched.size > 400) this.scorched.clear(); } else return; this.fx.decal('scorch', tx * T + 8, ty * T + 9, { scale: 0.45, alpha: 0.45, life: 20 }); return; }
     this.fires.set(k, { tx, ty, t: t === TILE.TALL ? 2.6 : 1.2, spread: t === TILE.TALL ? 0.7 : 0, depth });
   }
   burnLine(x0, y0, x1, y1) { const n = Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 12); for (let i = 1; i <= n; i++) if (Math.random() < 0.35) this.ignite(x0 + (x1 - x0) * i / n, y0 + (y1 - y0) * i / n); }
@@ -130,7 +130,7 @@ export class Arena {
     for (const [k, f] of this.fires) {
       f.t -= dt;
       const x = f.tx * T + 8, y = f.ty * T + 10;
-      if (Math.random() < dt * 22 * (fx.q ?? 1)) fx.emit(x, y, { frames: 'flame', n: 1, speed: 6, life: 0.5, scale: 0.9 + Math.random() * 0.6, end: 0.3, vz: 30, add: true, jitter: 6 });
+      if (Math.random() < dt * 22 * (fx.q ?? 1)) fx.emit(x, y, { frames: 'flame', n: 1, speed: 6, life: 0.5, scale: 0.9 + Math.random() * 0.6, end: 0.3, vz: 30, add: false, jitter: 6 });
       if (Math.random() < dt * 4) fx.emit(x, y - 4, { tex: 'smoke', n: 1, speed: 6, life: 1.2, scale: 0.6, end: 1.8, vz: 25, alpha: 0.35, add: false, color: 0x555555 });
       if (Math.random() < dt * 6) fx.light(x, y - 4, 0xff7a2a, 14, 0.15, 0.5);
       if (f.spread > 0 && f.depth < 3) { f.spread -= dt; if (f.spread <= 0) for (const [i, j] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) if (map.at(f.tx + i, f.ty + j) === TILE.TALL && Math.random() < 0.55) this.ignite((f.tx + i) * T + 8, (f.ty + j) * T + 8, f.depth + 1); }

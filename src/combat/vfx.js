@@ -62,7 +62,7 @@ export class Vfx {
     const t = mv.type, big = Math.max(1, (mv.power ?? 40) / 55);
     const H = { tex: 'ball', frames: null, scale: 1.2 * big, halo: typeHex(t), haloScale: 1.3 * big, add: true, orient: false, spin: 0, tint: 0xffffff };
     switch (t) {
-      case 'fire': Object.assign(H, { frames: 'flame', tex: null, scale: 1.5 * big, haloScale: 1.8 * big, add: true }); break;
+      case 'fire': Object.assign(H, { frames: 'flame', tex: null, scale: 1.5 * big, haloScale: 1.8 * big, add: false }); break;
       case 'water': Object.assign(H, id === 'bubble' ? { tex: 'bubble', scale: 1.4, add: false } : id === 'waterPulse' ? { tex: 'ring', scale: 1.1, tint: 0xbfe6ff } : { tex: 'drop', scale: 1.6 * big, orient: true, add: false, rotOff: -Math.PI / 2 }); break;
       case 'electric': Object.assign(H, id === 'thunderWave' ? { tex: 'ring', scale: 1.0, tint: 0xfff27a } : { tex: 'spark', scale: 1.7, spin: 14 }); break;
       case 'grass': Object.assign(H, id === 'leechSeed' ? { tex: 'ball', tint: 0x9a7a3a, scale: 0.9, add: false } : (id === 'absorb' || id === 'megaDrain') ? { tex: 'ball', tint: 0xb8ff9a, scale: 1.1 } : { tex: 'leaf', scale: 1.4, spin: 18, add: false }); break;
@@ -90,7 +90,7 @@ export class Vfx {
     const R = (rate) => Math.floor(step * rate + Math.random());
     switch (t) {
       case 'fire':
-        this.E(x, y, { frames: 'flame', n: R(70 * big), speed: 22, dir: back, spread: 1.2, scale: 1.1 * big, end: 0.3, life: 0.32, vz: 30, add: true, jitter: 3 });
+        this.E(x, y, { frames: 'flame', n: R(70 * big), speed: 22, dir: back, spread: 1.2, scale: 1.1 * big, end: 0.3, life: 0.32, vz: 30, add: false, jitter: 3 });
         this.E(x, y, { tex: 'ember', n: R(24), speed: 30, life: 0.5, vz: 40, grav: -20, add: true, jitter: 4 });
         this.E(x, y, { tex: 'smoke', n: R(5), speed: 8, life: 0.7, scale: 0.6, end: 1.6, vz: 18, alpha: 0.35, add: false, color: 0x777777 });
         break;
@@ -151,7 +151,7 @@ export class Vfx {
     const c = typeHex(type), k = Math.min(2, power / 50);
     this.fx.light(x, y, c, 14 + 8 * k, 0.14);
     this.E(x, y, { tex: 'spark', color: 0xffffff, n: 4, speed: 60, dir, spread: 1.2, life: 0.12, scale: 0.6 });
-    if (type === 'fire') this.E(x, y, { frames: 'flame', n: 6, speed: 50, dir, spread: 0.9, life: 0.2, scale: 1.1, end: 0.3, add: true });
+    if (type === 'fire') this.E(x, y, { frames: 'flame', n: 6, speed: 50, dir, spread: 0.9, life: 0.2, scale: 1.1, end: 0.3, add: false });
     if (type === 'water') this.E(x, y, { tex: 'drop', n: 5, speed: 60, dir, spread: 0.9, life: 0.3, grav: 260, vz: 40, add: false });
     if (type === 'electric') for (let i = 0; i < 2; i++) { const a = dir + (Math.random() - 0.5) * 1.6; this.fx.bolt(x, y, x + Math.cos(a) * 12, y + Math.sin(a) * 12, 0xffe23a, 0.08, { amp: 3 }); }
   }
@@ -160,12 +160,12 @@ export class Vfx {
   impact(type, x, y, dir = 0, power = 1, gy = null) {
     const fx = this.fx, c = typeHex(type), P = Math.min(2.4, power);
     const ground = gy ?? y + 8;
-    fx.light(x, y, c, 18 + 14 * P, 0.2, 0.9);
-    this.E(x, y, { tex: 'impact', color: 0xffffff, n: 1, speed: 0, scale: 0.9 + 0.5 * P, end: 1.8, life: 0.1, add: true });
+    fx.light(x, y, c, 14 + 10 * P, 0.18, 0.55);
+    this.E(x, y, { tex: 'impact', color: 0xffffff, n: 1, speed: 0, scale: 0.8 + 0.35 * P, end: 1.6, life: 0.09, add: true, alpha: 0.85 });
     this.E(x, y, { tex: 'spark', color: c, n: Math.round(6 + 6 * P), speed: 110 * P, life: 0.22, scale: 0.8, end: 0.2, stretch: 0.012, drag: 5 });
     switch (type) {
       case 'fire':
-        this.E(x, y, { frames: 'flame', n: Math.round(10 * P), speed: 60 * P, life: 0.45, scale: 1.2, end: 0.4, vz: 50, add: true, drag: 4 });
+        this.E(x, y, { frames: 'flame', n: Math.round(10 * P), speed: 60 * P, life: 0.45, scale: 1.2, end: 0.4, vz: 50, add: false, drag: 4 });
         this.E(x, y, { tex: 'ember', n: Math.round(14 * P), speed: 90, life: 0.7, vz: 80, grav: 120, add: true });
         this.E(x, y, { tex: 'smoke', n: Math.round(3 * P), speed: 15, life: 0.9, scale: 0.8, end: 2, vz: 20, alpha: 0.4, add: false, color: 0x666666 });
         break;
@@ -235,45 +235,78 @@ export class Vfx {
   }
 
   // ---------- corpo a corpo ----------
-  melee(user, mv, id, dx, dy, reach, i = 0) {
-    const fx = this.fx, c = typeHex(mv.type), style = meleeStyle(id);
+  melee(user, mv, id, dx, dy, reach, i = 0, cfg = null) {
+    const fx = this.fx, style = cfg?.style ?? meleeStyle(id), c = cfg?.color ?? typeHex(mv.type), tc = typeHex(mv.type);
     const a = Math.atan2(dy, dx), cy = user.y - (user.midH ?? 12);
     const x = user.x + dx * reach * 0.75, y = cy + dy * reach * 0.6;
-    const flip = i % 2 ? -1 : 1;
+    const flip = i % 2 ? -1 : 1, big = cfg?.big ? 1.4 : 1;
+    const glow = () => { if (cfg?.glow) this.E(x, y, cfg.glow === 'flame' ? { frames: 'flame', n: 8, speed: 50, dir: a, spread: 1.2, life: 0.3, add: false, scale: 1 } : { tex: cfg.glow, color: c, n: 8, speed: 60, dir: a, spread: 1.2, life: 0.3, add: cfg.glow !== 'drop' }); };
     switch (style) {
       case 'claw':
-        this.E(x, y, { tex: 'claw', color: 0xffffff, n: 1, speed: 0, scale: 1.3, end: 1.5, life: 0.16, rot: a + flip * 0.5, add: true });
-        this.E(x, y, { tex: 'claw', color: c, n: 1, speed: 0, scale: 1.8, end: 2, life: 0.2, rot: a + flip * 0.5, add: true, alpha: 0.6 });
+        this.E(x, y, { tex: 'claw', color: 0xffffff, n: 1, speed: 0, scale: 1.3 * big, end: 1.5 * big, life: 0.16, rot: a + flip * 0.5, add: true });
+        this.E(x, y, { tex: 'claw', color: c, n: 1, speed: 0, scale: 1.8 * big, end: 2 * big, life: 0.2, rot: a + flip * 0.5, add: true, alpha: 0.6 });
+        if (cfg?.metal) this.E(x, y, { tex: 'px', color: 0xfff2b0, n: 8, speed: 120, dir: a, spread: 1.4, life: 0.25, grav: 200, stretch: 0.03, scale: 1.4 });
         break;
-      case 'slash': case 'chop':
-        this.E(x, y, { tex: 'slash', color: style === 'chop' ? 0xffd0a0 : 0xffffff, n: 1, speed: 0, scale: 1.4, end: 1.9, life: 0.15, rot: a + Math.PI / 2 + flip * 0.3 });
-        this.E(x, y, { tex: 'slash', color: c, n: 1, speed: 0, scale: 2, end: 2.4, life: 0.2, rot: a + Math.PI / 2 + flip * 0.3, alpha: 0.6 });
+      case 'slash': case 'chop': case 'scythe':
+        this.E(x, y, { tex: 'slash', color: style === 'chop' ? 0xffd0a0 : cfg?.dark ? 0xff3a5a : 0xffffff, n: 1, speed: 0, scale: 1.4 * big, end: 1.9 * big, life: 0.15, rot: a + Math.PI / 2 + flip * (style === 'chop' ? 1.2 : 0.3) });
+        this.E(x, y, { tex: 'slash', color: c, n: 1, speed: 0, scale: 2 * big, end: 2.4 * big, life: 0.2, rot: a + Math.PI / 2 + flip * (style === 'chop' ? 1.2 : 0.3), alpha: 0.6 });
+        if (style === 'scythe') this.E(x, y, { tex: 'slash', color: c, n: 1, speed: 0, scale: 1.2, end: 1.6, life: 0.15, rot: a + Math.PI / 2 - flip * 0.6 });
         break;
-      case 'bite':
-        for (const s of [-1, 1]) this.E(x - dy * 7 * s, y + dx * 7 * s, { tex: 'slash', color: 0xffffff, n: 1, speed: 120, dir: Math.atan2(dx * s, -dy * s) + Math.PI, spread: 0, drag: 14, scale: 1.2, life: 0.14, rot: a + (s > 0 ? Math.PI : 0) + Math.PI / 2 });
-        this.E(x, y, { tex: 'impact', color: c, n: 1, speed: 0, scale: 0.8, end: 1.6, life: 0.12 });
+      case 'x':
+        for (const r of [0.8, -0.8]) this.E(x, y, { tex: 'slash', color: c, n: 1, speed: 0, scale: 2.2, end: 2.6, life: 0.2, rot: a + Math.PI / 2 + r });
+        break;
+      case 'bite': case 'fang':
+        for (const s of [-1, 1]) this.E(x - dy * 7 * s * big, y + dx * 7 * s * big, { tex: 'slash', color: style === 'fang' ? c : 0xffffff, n: 1, speed: 120, dir: Math.atan2(dx * s, -dy * s) + Math.PI, spread: 0, drag: 14, scale: 1.2 * big, life: 0.14, rot: a + (s > 0 ? Math.PI : 0) + Math.PI / 2 });
+        this.E(x, y, { tex: 'impact', color: c, n: 1, speed: 0, scale: 0.8 * big, end: 1.6 * big, life: 0.12 });
+        if (style === 'fang') glow();
         break;
       case 'stab':
-        this.E(user.x + dx * reach * 0.3, cy + dy * reach * 0.3, { tex: 'streak', color: c, n: 3, speed: 260, dir: a, spread: 0.15, drag: 10, life: 0.12, rot: 'dir', scale: 1.4, stretch: 0.004 });
+        this.E(user.x + dx * reach * 0.3, cy + dy * reach * 0.3, { tex: 'streak', color: c, n: cfg?.fast ? 2 : 3, speed: 260, dir: a + (Math.random() - 0.5) * (cfg?.fast ? 0.5 : 0), spread: 0.15, drag: 10, life: 0.12, rot: 'dir', scale: 1.4, stretch: 0.004 });
         break;
-      case 'whip': {
-        const ox = user.x + dx * 6, oy = cy, tx = user.x + dx * reach + (-dy) * 8 * flip, ty = cy + dy * reach + dx * 8 * flip;
-        fx.bolt(ox, oy, tx, ty, 0x3fa129, 0.16, { amp: 3, width: 2, seg: 8 });
-        this.E(tx, ty, { tex: 'leaf2', n: 4, speed: 40, life: 0.4, spin: 10, add: false });
+      case 'whip': case 'vine': {
+        const ox = user.x + dx * 6, oy = cy, tx = user.x + dx * reach + (-dy) * 10 * flip, ty = cy + dy * reach + dx * 10 * flip;
+        fx.bolt(ox, oy, (ox + tx) / 2 - dy * 8 * flip, (oy + ty) / 2 + dx * 8 * flip, c, 0.18, { amp: 2, width: 2.2, seg: 5 });
+        fx.bolt((ox + tx) / 2 - dy * 8 * flip, (oy + ty) / 2 + dx * 8 * flip, tx, ty, c, 0.18, { amp: 2, width: 2, seg: 5 });
+        this.E(tx, ty, { tex: 'spark', color: 0xffffff, n: 4, speed: 80, life: 0.12, scale: 0.7 });
+        if (style === 'vine' && tc === typeHex('grass')) this.E(tx, ty, { tex: 'leaf2', n: 3, speed: 40, life: 0.4, spin: 10, add: false });
         break;
       }
+      case 'tail': case 'sweep':
+        for (let k = 0; k < 7; k++) { const b = a + (k / 6 - 0.5) * 2.2 * flip; this.E(user.x + Math.cos(b) * reach * 0.8, cy + Math.sin(b) * reach * 0.55 + (style === 'sweep' ? 8 : 0), { tex: 'glow', color: c, n: 1, speed: 20, size: 4, life: 0.18 }); }
+        this.E(x, y, { tex: 'slash', color: c, n: 1, speed: 0, scale: 2.6, end: 3, life: 0.2, rot: a + Math.PI / 2 + flip * 0.2, alpha: 0.8 });
+        if (cfg?.metal) this.E(x, y, { tex: 'twinkle', color: 0xffffff, n: 4, speed: 30, life: 0.3 });
+        glow();
+        break;
+      case 'fist': case 'kick':
+        this.E(user.x + dx * reach * 0.4, cy + dy * reach * 0.3, { tex: 'streak', color: 0xffffff, n: 3, speed: 240, dir: a, spread: 0.3, drag: 12, life: 0.1, rot: 'dir', alpha: 0.8 });
+        this.E(x, y, { tex: 'impact', color: c, n: 1, speed: 0, scale: 1.1, end: 1.9, life: 0.12 });
+        glow();
+        break;
+      case 'lick':
+        this.E(x, y, { tex: 'slash', color: c, n: 1, speed: 0, scale: 1.5, end: 1.7, life: 0.18, rot: a + Math.PI / 2 });
+        this.E(x, y, { tex: 'goo', n: 3, speed: 30, life: 0.4, grav: 200, add: false, scale: 0.6 });
+        break;
       case 'ghost':
         this.E(x, y, { tex: 'wisp', color: 0xb08aff, n: 6, speed: 60, dir: a, spread: 1.4, life: 0.35, add: true, vz: 20 });
-        this.E(x, y, { tex: 'slash', color: 0x9a6ae0, n: 1, speed: 0, scale: 1.6, end: 2, life: 0.18, rot: a + Math.PI / 2 });
+        this.E(x, y, { tex: 'slash', color: c, n: 1, speed: 0, scale: 1.6, end: 2, life: 0.18, rot: a + Math.PI / 2 });
+        break;
+      case 'stomp':
+        fx.shock(x, user.y + dy * reach * 0.6, c, 22, 0.3);
+        this.E(x, user.y + dy * reach * 0.6, { tex: 'dust', n: 6, speed: 50, life: 0.5, scale: 0.7, end: 1.6, add: false, alpha: 0.7 });
+        break;
+      case 'tackle':
+        this.E(user.x, cy, { tex: 'streak', color: 0xffffff, n: 6, speed: 60, dir: a + Math.PI, spread: 0.6, life: 0.2, rot: 'dir', alpha: 0.7 });
+        this.afterimage(user, 0xffffff, 0.45, 0.18);
         break;
       default: // blunt
-        this.E(x, y, { tex: 'streak', color: 0xffffff, n: 4, speed: 200, dir: a, spread: 0.6, drag: 12, life: 0.12, rot: 'dir', alpha: 0.7 });
+        this.E(x, y, { tex: 'streak', color: cfg?.rage ? 0xff5a5a : 0xffffff, n: 4, speed: 200, dir: a, spread: 0.6, drag: 12, life: 0.12, rot: 'dir', alpha: 0.7 });
+        if (cfg?.rage) this.E(user.x, cy, { tex: 'glow', color: 0xff3a2a, n: 6, size: 5, speed: 30, life: 0.3 });
     }
     // arco de varredura
     for (let k = 0; k < 5; k++) { const b = a + (k / 4 - 0.5) * 1.5 * flip; this.E(user.x + Math.cos(b) * reach * 0.8, cy + Math.sin(b) * reach * 0.6, { tex: 'glow', color: c, n: 1, speed: 15, size: 3, life: 0.12 }); }
   }
   meleeHit(style, type, x, y, dir, P) {
-    if (style === 'blunt' || style === 'chop') { this.fx.shock(x, y + 6, 0xffffff, 10 * P, 0.22); }
+    if (style === 'blunt' || style === 'chop' || style === 'fist' || style === 'tackle' || style === 'kick') { this.fx.shock(x, y + 6, 0xffffff, 10 * P, 0.22); }
     this.impact(type, x, y, dir, P);
   }
 
@@ -321,7 +354,7 @@ export class Vfx {
     this.E(x, y - 4, { tex: up ? 'arrowUp' : 'arrowDn', color: up ? 0x7ad0ff : 0xff8a7a, n: 3, speed: 4, life: 0.8, vz: up ? 50 : -10, z: up ? 4 : 30, add: false, jitter: 8 });
     if (id === 'harden' || id === 'withdraw' || id === 'defenseCurl') this.E(x, y - 10, { tex: 'twinkle', color: 0xffffff, n: 6, speed: 30, life: 0.4 });
     if (id === 'growth') this.E(x, y, { tex: 'leaf', n: 8, speed: 20, life: 0.9, vz: 60, spin: 8, add: false, jitter: 8 });
-    if (id === 'focusEnergy') this.E(x, y, { frames: 'flame', n: 14, speed: 10, life: 0.6, vz: 50, add: true, jitter: 8, scale: 0.9 });
+    if (id === 'focusEnergy') this.E(x, y, { frames: 'flame', n: 14, speed: 10, life: 0.6, vz: 50, add: false, jitter: 8, scale: 0.9 });
     if (id === 'splash') this.E(x, y, { tex: 'drop', n: 10, speed: 40, life: 0.6, vz: 120, grav: 400, add: false });
   }
 
@@ -331,7 +364,7 @@ export class Vfx {
     const t = mv.type, c = typeHex(t), x = u.x, y = u.y - (u.midH ?? 12);
     if (u.ghostT <= 0) { u.ghostT = 0.03; this.afterimage(u, c, 0.5, 0.22); }
     const R = (rate) => Math.floor(dt * rate + Math.random());
-    if (t === 'fire') { for (let k = 0; k < R(80); k++) { const a = Math.random() * TAU; this.E(x + Math.cos(a) * u.r * 1.2, y + Math.sin(a) * u.r, { frames: 'flame', n: 1, speed: 10, life: 0.3, scale: 1, end: 0.3, add: true, vz: 20 }); } }
+    if (t === 'fire') { for (let k = 0; k < R(80); k++) { const a = Math.random() * TAU; this.E(x + Math.cos(a) * u.r * 1.2, y + Math.sin(a) * u.r, { frames: 'flame', n: 1, speed: 10, life: 0.3, scale: 1, end: 0.3, add: false, vz: 20 }); } }
     else if (t === 'electric') { if (Math.random() < dt * 30) { const a = Math.random() * TAU; this.fx.bolt(x, y, x + Math.cos(a) * 14, y + Math.sin(a) * 12, 0xffe23a, 0.08, { amp: 3 }); } this.E(x, y, { tex: 'spark', color: 0xfff27a, n: R(30), speed: 40, life: 0.15, scale: 0.6 }); }
     else if (t === 'water') this.E(x, y + 6, { tex: 'drop', n: R(50), speed: 50, life: 0.45, vz: 80, grav: 380, add: false });
     else if (t === 'ghost' || t === 'dark') this.E(x, y, { tex: 'wisp', color: t === 'dark' ? 0x3a1a2a : 0x8a5ad0, n: R(40), speed: 10, life: 0.4, vz: 20, add: t === 'ghost' });
@@ -340,11 +373,14 @@ export class Vfx {
   }
 
   // ---------- nuvens que ficam ----------
-  cloud(z, dt) {
+  cloud(z, dt, A = {}) {
     const id = z.id, R = (rate) => Math.floor(dt * rate + Math.random());
-    const col = { poisonPowder: 0xc070f0, sleepPowder: 0xa8f0c8, stunSpore: 0xffe86a, smokescreen: 0x9a9a9a, smog: 0x7a4a9a }[id] ?? z.color;
+    const col = A.cloudColor ?? { poisonPowder: 0xc070f0, sleepPowder: 0xa8f0c8, stunSpore: 0xffe86a, smokescreen: 0x9a9a9a, smog: 0x7a4a9a }[id] ?? z.color;
+    const dense = A.cloudDense ?? (id === 'smokescreen' || id === 'smog');
     const rx = () => z.x + (Math.random() - 0.5) * z.r * 2, ry = () => z.y + (Math.random() - 0.5) * z.r * 1.1;
-    this.E(rx(), ry(), { tex: 'smoke', color: col, n: R(id === 'smokescreen' ? 28 : 16), speed: 6, life: 1.1, scale: 0.9, end: 1.8, alpha: id === 'smokescreen' ? 0.8 : 0.55, add: false, vz: 4 });
-    if (id !== 'smokescreen') this.E(rx(), ry() - 6, { tex: 'twinkle', color: col, n: R(14), speed: 5, life: 0.9, vz: 10, scale: 0.7 });
+    this.E(rx(), ry(), { tex: 'smoke', color: col, n: R(dense ? 28 : 14), speed: 6, life: 1.1, scale: 0.9, end: 1.8, alpha: dense ? 0.75 : 0.5, add: false, vz: 4 });
+    const t = A.cloudTex ?? 'twinkle';
+    if (t !== 'smoke') this.E(rx(), ry() - 6, { tex: t, color: col, n: R(16), speed: 5, life: 0.9, vz: 10, scale: 0.8, spin: 3, add: !['feather', 'rock1', 'shard', 'puff', 'dust'].includes(t) });
   }
+
 }

@@ -5,7 +5,7 @@ import { TILE, T } from '../world/tiles.js';
 // fórmula oficial: a assinatura é computeDamage(user, target, mv, ctx) -> { dmg, eff, crit, mult, note }.
 // ctx: { g, power (substitui mv.power), scale (fração do golpe, p.ex. um tique de feixe) }
 
-export const DMG = 0.42; // ritmo do tempo real: lutas de 10 a 40 s contra selvagens do mesmo nível
+export const DMG = 0.34; // ritmo do tempo real: lutas de 10 a 40 s contra selvagens do mesmo nível
 
 export function computeDamage(user, target, mv, ctx = {}) {
   const L = user.mon.level, phys = mv.cat === 'phys';

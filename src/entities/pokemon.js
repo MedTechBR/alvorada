@@ -89,7 +89,7 @@ export class PokeEntity {
     // efeitos de estado contínuos
     if ((this.mon.status === 'brn' || this.mon.status === 'psn') && this.alive) {
       this.dot = (this.dot ?? 0) + dt;
-      if (this.dot > 1.5) { this.dot = 0; this.g.combat.hurt(this, Math.max(1, Math.round(this.mon.stats.hp / 16)), null, { silent: true }); this.g.fx.emit(this.x, this.y - 12, this.mon.status === 'brn' ? { frames: 'flame', n: 4, speed: 15, vz: 30, life: 0.5, add: true } : { tex: 'bubble', color: 0xd090ff, n: 4, speed: 12, vz: 20, life: 0.6, add: false, scale: 0.7 }); }
+      if (this.dot > 1.5) { this.dot = 0; this.g.combat.hurt(this, Math.max(1, Math.round(this.mon.stats.hp / 16)), null, { silent: true }); this.g.fx.emit(this.x, this.y - 12, this.mon.status === 'brn' ? { frames: 'flame', n: 4, speed: 15, vz: 30, life: 0.5, add: false } : { tex: 'bubble', color: 0xd090ff, n: 4, speed: 12, vz: 20, life: 0.6, add: false, scale: 0.7 }); }
     }
     // movimento (quem controla define vx/vy antes)
     if (this.dead) { this.vx *= 0.8; this.vy *= 0.8; }
@@ -148,7 +148,7 @@ export class PokeEntity {
     const want = white ? 1 : 0;
     if (want !== this.whiteOn) { this.body.filters = white ? [whiteFilter()] : null; this.whiteOn = want; }
     let tint = 0xffffff;
-    if (!white && this.flash > 0) tint = 0xff8a8a;
+    if (!white && this.flash > 0) tint = 0xffb4b4;
     else if (this.mon.status === 'par' && Math.sin(this.animT * 30) > 0.6) tint = 0xfff27a;
     else if (this.isAlpha && !this.dead) tint = 0xffe0e0;
     if (hide === 'dive') tint = 0x4a8ad8;

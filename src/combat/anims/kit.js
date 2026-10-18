@@ -17,7 +17,7 @@ export function D(name, type, cat, power, kind, extra = {}) {
 export const H = {
   orb: (tint, scale = 1.2, halo = tint, o = {}) => ({ tex: 'ball', tint, scale, halo, haloScale: scale * 1.25, add: true, ...o }),
   tex: (tex, o = {}) => ({ tex, scale: 1.3, tint: 0xffffff, halo: 0xffffff, haloScale: 1.1, add: false, ...o }),
-  flame: (scale = 1.5, o = {}) => ({ frames: 'flame', scale, halo: 0xff6a1a, haloScale: scale * 1.25, add: true, ...o }),
+  flame: (scale = 1.5, o = {}) => ({ frames: 'flame', scale, halo: 0xff6a1a, haloScale: scale * 1.25, add: false, ...o }),
   bflame: (scale = 1.5, o = {}) => ({ frames: 'bflame', scale, halo: 0x7a5aff, haloScale: scale * 1.25, add: true, ...o }),
   none: (halo = 0xffffff, haloScale = 1) => ({ tex: 'px', scale: 0.01, halo, haloScale, add: true }),
 };
@@ -81,17 +81,17 @@ export const IM = {
   // estrela de fogo em forma de 大 (Rajada de Fogo)
   kanji: () => (v, x, y) => {
     const arms = [[0, -1, 26], [-1, -0.15, 22], [1, -0.15, 22], [-0.75, 0.9, 24], [0.75, 0.9, 24]];
-    for (const [ax, ay, L] of arms) for (let s = 0; s <= L; s += 3) v.E(x + ax * s, y + ay * s, { frames: 'flame', n: 1, speed: 6, life: 0.55 + s / 80, scale: 1.4 - s / 50, end: 0.4, add: true, vz: 10 });
-    v.fx.light(x, y, 0xff8a2a, 70, 0.4, 1);
+    for (const [ax, ay, L] of arms) for (let s = 0; s <= L; s += 3) v.E(x + ax * s, y + ay * s, { frames: 'flame', n: 1, speed: 6, life: 0.55 + s / 80, scale: 1.4 - s / 50, end: 0.4, add: false, vz: 10 });
+    v.fx.light(x, y, 0xff8a2a, 44, 0.4, 0.5);
   },
   // explosão grande com fumaça (Investida Flamejante, Explosão, Giga Impacto)
   boom: (c, P0 = 1.6) => (v, x, y, dir, P, gy) => {
     const k = P0 * Math.max(1, P * 0.7);
     v.E(x, y, { tex: 'impact', color: 0xffffff, n: 1, speed: 0, scale: 1.6 * k, end: 3, life: 0.14 });
-    v.E(x, y, { tex: 'glow', color: c, n: Math.round(18 * k), speed: 140 * k, size: 6, life: 0.4, end: 0.3, drag: 4 });
+    v.E(x, y, { tex: 'glow', color: c, n: Math.round(9 * k), speed: 140 * k, size: 5, life: 0.35, end: 0.3, drag: 4, alpha: 0.7 });
     v.E(x, y, { tex: 'smoke', n: Math.round(6 * k), speed: 50 * k, life: 1.1, scale: 1, end: 2.6, alpha: 0.6, add: false, color: 0x777777, drag: 3, vz: 20 });
     v.E(x, y, { tex: 'spark', color: 0xffffff, n: 16, speed: 200 * k, life: 0.3, stretch: 0.012, drag: 4 });
-    v.fx.shock(x, gy ?? y + 8, c, 34 * k, 0.45); v.fx.light(x, y, c, 60 * k, 0.3, 1); v.fx.screenFlash(c, 0.25); v.fx.kick(0.45, 0.1);
+    v.fx.shock(x, gy ?? y + 8, c, 34 * k, 0.45); v.fx.light(x, y, c, 40 * k, 0.3, 0.55); v.fx.screenFlash(c, 0.1); v.fx.kick(0.45, 0.1);
   },
   pop: (c = 0xbfe6ff) => (v, x, y) => { v.fx.ring(x, y, c, 3, 0.18, { squash: 1, width: 1.5 }); v.E(x, y, { tex: 'drop', n: 5, speed: 50, life: 0.4, vz: 50, grav: 300, add: false, scale: 0.7 }); },
   frost: (k = 1) => (v, x, y, dir, P, gy) => { v.fx.decal('splat', x, gy ?? y + 8, { tint: 0xd8f8ff, alpha: 0.8, life: 10, scale: 0.8 * k }); v.E(x, gy ?? y + 8, { tex: 'ice', n: Math.round(5 * k), speed: 20, life: 1.2, add: false, vz: 40, grav: 300, fade: 'late' }); },

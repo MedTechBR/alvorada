@@ -35,7 +35,7 @@ export default {
   },
   discharge: { // Descarga: raios para todos os lados
     data: D('Descarga', 'electric', 'spec', 80, 'wave', { range: 5.5, eff: { status: 'par', chance: 0.3 } }),
-    wave: (v, u, R0) => { const y = u.y - 10; for (let i = 0; i < 12; i++) { const a = i / 12 * 6.28 + Math.random() * 0.3; v.fx.bolt(u.x, y, u.x + Math.cos(a) * R0, y + Math.sin(a) * R0 * 0.7, 0xffe23a, 0.25, { amp: 7, width: 1.6 }); } v.fx.shock(u.x, u.y, 0xffe23a, R0, 0.35); v.fx.screenFlash(0xfff6a0, 0.25); v.fx.light(u.x, y, 0xffe23a, R0 * 1.5, 0.3, 1); },
+    wave: (v, u, R0) => { const y = u.y - 10; for (let i = 0; i < 12; i++) { const a = i / 12 * 6.28 + Math.random() * 0.3; v.fx.bolt(u.x, y, u.x + Math.cos(a) * R0, y + Math.sin(a) * R0 * 0.7, 0xffe23a, 0.25, { amp: 7, width: 1.6 }); } v.fx.shock(u.x, u.y, 0xffe23a, R0, 0.35); v.fx.screenFlash(0xfff6a0, 0.15); v.fx.light(u.x, y, 0xffe23a, R0 * 0.7, 0.3, 0.6); },
   },
   chargeBeam: { data: D('Raio Carregado', 'electric', 'spec', 50, 'proj', { range: 9, eff: { stat: 'spa', by: 1, self: true, chance: 0.7 } }), beam: { dur: 0.55, width: 5, speed: 900, tick: 0.08, share: 1, range: 8, colors: [0xc8a000, 0xffe23a, 0xffffff], style: 'electric' } },
   electroBall: { data: D('Bola Elétrica', 'electric', 'spec', 80, 'proj', { speed: 15, range: 12 }), head: { ...H.none(0xffe23a, 1.6), draw: DRAW.electro(6) }, trail: TR.p({ tex: 'spark', color: 0xfff27a, speed: 40, life: 0.18, scale: 0.6 }, 40), impact: IM.all(IM.type('electric', 1.5), IM.bolts(7, 24), IM.shock(0xffe23a, 30)) },

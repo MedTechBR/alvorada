@@ -13,7 +13,7 @@ export class Altitude {
   constructor(g, c) { this.g = g; this.c = c; }
   canFly(e) { const sp = e.mon?.sp; return !!(e.mon?.types?.includes('flying') || sp?.body === 'bird' || sp?.body === 'flyer'); }
   isWaterType(e) { return !!e.mon?.types?.includes('water'); }
-  canDive(e) { return this.isWaterType(e) && (this.inWater(e) || nearWater(this.g, e, 1)); }
+  canDive(e) { return this.isWaterType(e) && (this.inWater(e) || nearWater(this.g, e, 2)); }
   inWater(e) { const t = this.g.map.at(Math.floor(e.x / T), Math.floor(e.y / T)); return t === TILE.WATER || t === TILE.DEEP; }
   hidden(e) { const m = e.alt?.mode; return m === 'dive' || m === 'dig'; }
 
@@ -49,6 +49,11 @@ export class Altitude {
     this.g.fx.emit(e.x, e.y, { tex: 'dust', n: 6, speed: 40, life: 0.45, scale: 0.6, end: 1.4, add: false, alpha: 0.7 });
   }
   dive(e, dur = 5) {
+    if (!this.inWater(e)) { // pula para a água mais perto
+      const tx = Math.floor(e.x / T), ty = Math.floor(e.y / T); let best = null, bd = 1e9;
+      for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) { const t = this.g.map.at(tx + i, ty + j); if (t !== TILE.WATER && t !== TILE.DEEP) continue; const cx = (tx + i) * T + 8, cy = (ty + j) * T + 8, d = Math.hypot(cx - e.x, cy - e.y); if (d < bd) { bd = d; best = [cx, cy]; } }
+      if (best) { e.x = best[0]; e.y = best[1]; }
+    }
     e.alt = { mode: 'dive', t: 0, dur };
     this.#splash(e.x, e.y, 1.2);
     this.c.sfx('splash');
@@ -128,7 +133,7 @@ export class Altitude {
     const src = info.src;
     const airborne = t.z > 12;
     if (airborne) {
-      if (src === 'quake' || (mv?.type === 'ground' && src !== 'proj')) return true;
+      if (src === 'quake' || src === 'line' || (mv?.type === 'ground' && src !== 'proj')) return true;
       if ((src === 'melee' || src === 'dash') && (attacker?.z ?? 0) < 8 && !this.canFly(attacker)) return true;
     }
     if (t.jumpT > 0 && t.z > 14 && m !== 'fly' && ['proj', 'melee', 'dash', 'cone', 'wave', 'zone'].includes(src)) return true;

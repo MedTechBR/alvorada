@@ -7,13 +7,14 @@ import { Arena } from './arena.js';
 import { WildAI } from './ai.js';
 import { Altitude } from './altitude.js';
 import { Pilot } from './pilot.js';
+import { animFor, kindOf } from './anims/index.js';
 
 // Combate contínuo no próprio mapa: qualquer Pokémon pode atacar qualquer alvo a qualquer momento.
 // Lados: 'ally' (seu time + você) e 'wild'. Selvagens de bandos/espécies rivais também brigam entre si.
 // Golpes de lados opostos se chocam no ar; feixes que se encontram disputam força.
 const M = 16;            // 1 m = 16 px
 const TAU = Math.PI * 2;
-const WARN = 0xff3b2f;
+const WARN_HIT = 0xff3b2f, WARN_SOFT = 0xffd84a;
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const angDiff = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
 function segDist(px, py, ax, ay, bx, by) {
@@ -39,7 +40,9 @@ export class Combat {
     this.headsN = new PIXI.Container();
     this.headsA = new PIXI.Container(); this.headsA.blendMode = 'add';
     this.gfx = new PIXI.Graphics(); this.gfx.blendMode = 'add';
-    this.layer.addChild(this.vfx.ghosts, this.headsN, this.gfx, this.headsA);
+    this.gfxN = new PIXI.Graphics();
+    this.layer.addChild(this.vfx.ghosts, this.gfxN, this.headsN, this.gfx, this.headsA);
+    this.surfs = []; this.skyMarks = [];
     this.groundG = new PIXI.Graphics();
     g.fx.ground.addChild(this.groundG);
     this.headPool = [];
@@ -52,10 +55,13 @@ export class Combat {
   move(id) { return MOVES[id]; }
   range(mv) { return (mv.range ?? 6) * M; }
   inRange(user, mv, d, id) {
-    if (mv.kind === 'self') return true;
-    if (mv.kind === 'melee' || mv.kind === 'multi') return d < (mv.range ?? 1.8) * M + 10 + user.r;
-    if (mv.kind === 'dash') return d < this.range(mv) * 0.75;
-    if (mv.kind === 'wave' || mv.kind === 'quake') return d < this.range(mv) * 0.85;
+    const k = kindOf(id, mv);
+    if (k === 'self' || k === 'shield') return true;
+    if (k === 'melee' || k === 'multi') return d < (mv.range ?? 1.8) * M + 10 + user.r;
+    if (k === 'dash') return d < this.range(mv) * 0.75;
+    if (k === 'wave' || k === 'quake') return d < this.range(mv) * 0.85;
+    if (k === 'bolt') return d < (animFor(id).bolt?.range ?? mv.range ?? 8) * M * 0.9;
+    if (k === 'surf' || k === 'line') return d < this.range(mv) * 0.8;
     const b = BEAMS[id]; if (b) return d < b.range * M * 0.9;
     return d < this.range(mv) * 0.9;
   }
@@ -99,14 +105,15 @@ export class Combat {
   windup(user, slot, target) {
     const id = user.mon.moves[slot], mv = MOVES[id];
     if (!mv || user.cds[slot] > 0 || user.lock > 0 || user.stun > 0 || user.charging || !user.alive) return false;
-    user.cds[slot] = mv.cd * 1.5;
-    const pw = mv.power ?? 40, melee = mv.kind === 'melee' || mv.kind === 'multi';
-    let W = (melee ? 0.36 : 0.5) + pw / 320 + (BEAMS[id] ? 0.25 : 0);
+    user.cds[slot] = mv.cd * 1.2;
+    const kind = kindOf(id, mv);
+    const pw = mv.power ?? 40, melee = kind === 'melee' || kind === 'multi';
+    let W = (melee ? 0.36 : 0.5) + pw / 320 + (BEAMS[id] ? 0.25 + (BEAMS[id].charge ?? 0) : 0) + (kind === 'sky' ? 0.2 : 0);
     if (user.temper === 'aggressive') W *= 0.88;
     if (user.isAlpha) W *= 1.1;
-    if (mv.kind === 'self') W = 0.25;
+    if (kind === 'self' || kind === 'shield') W = 0.25;
     const ang = Math.atan2(target.y - user.y, target.x - user.x);
-    user.charging = { slot, id, mv, t: 0, W, ang, tx: target.x, ty: target.y, target, lockAt: W * 0.62 };
+    user.charging = { slot, id, mv, kind, t: 0, W, ang, tx: target.x, ty: target.y, target, lockAt: W * 0.62, A: animFor(id) };
     user.lock = W + 0.05;
     user.play(this.pickAnim(user, ['Charge', 'Idle']), true);
     this.sfx('warn', mv.type, 0.15);
@@ -115,7 +122,9 @@ export class Combat {
   #updateCharging(e, dt) {
     const c = e.charging; c.t += dt;
     if (!e.alive || e.stun > 0) { e.charging = null; return; }
-    if (c.t < c.lockAt && c.target?.alive !== false) { c.ang = Math.atan2(c.target.y - e.y, c.target.x - e.x); c.tx = c.target.x; c.ty = c.target.y; }
+    if (c.ally) { const a = this.pilot.aimPoint(e); c.ang = Math.atan2(a.y - e.y, a.x - e.x); c.tx = a.x; c.ty = a.y; }
+    else if (c.t < c.lockAt && c.target && c.target.alive !== false) { c.ang = Math.atan2(c.target.y - e.y, c.target.x - e.x); c.tx = c.target.x; c.ty = c.target.y; }
+    c.A?.charge?.(this.vfx, e, Math.min(1, c.t / c.W), dt);
     e.face(Math.cos(c.ang), Math.sin(c.ang));
     // energia convergindo para o corpo
     const col = typeHex(c.mv.type), cy = this.centerY(e);
@@ -123,13 +132,14 @@ export class Combat {
     if (c.t >= c.W) {
       e.charging = null; e.lock = 0;
       const d = Math.max(30, Math.hypot(c.tx - e.x, c.ty - e.y));
-      this.use(e, c.slot, e.x + Math.cos(c.ang) * d, e.y + Math.sin(c.ang) * d, { forced: true });
+      this.use(e, c.slot, e.x + Math.cos(c.ang) * d, e.y + Math.sin(c.ang) * d, { forced: true, charged: true, moveId: c.moveId });
     }
   }
   #drawTelegraph(G, e) {
     const c = e.charging, mv = c.mv, k = c.t / c.W, x = e.x, y = e.y;
+    const WARN = mv.cat === 'status' ? WARN_SOFT : WARN_HIT; // amarelo = só efeito; vermelho = dano
     const pulse = k > 0.75 ? (Math.sin(this.g.time * 40) > 0 ? 1 : 0.55) : 1;
-    const a1 = (0.12 + 0.2 * k) * pulse, edge = { width: 1, color: WARN, alpha: 0.5 + 0.4 * k };
+    const a1 = (0.12 + 0.2 * k) * pulse * (mv.cat === 'status' ? 0.6 : 1), edge = { width: 1, color: WARN, alpha: 0.5 + 0.4 * k };
     const ca = Math.cos(c.ang), sa = Math.sin(c.ang);
     const lane = (len, w, prog) => {
       const nx = -sa * w / 2, ny = ca * w / 2;
@@ -142,8 +152,12 @@ export class Combat {
       G.moveTo(x, y).arc(x, y, Math.max(1, R * k), c.ang - half, c.ang + half).closePath().fill({ color: WARN, alpha: a1 });
     };
     const circle = (cx, cy, R) => { G.circle(cx, cy, R).fill({ color: WARN, alpha: a1 * 0.6 }).stroke(edge); G.circle(cx, cy, Math.max(1, R * k)).fill({ color: WARN, alpha: a1 }); };
-    switch (mv.kind) {
+    switch (c.kind) {
       case 'proj': { const b = BEAMS[c.id]; lane(b ? b.range * M : this.range(mv), b ? b.width + 8 : 10 + (mv.power ?? 40) / 12, k); break; }
+      case 'bolt': lane((c.A?.bolt?.range ?? mv.range ?? 8) * M, 8, k); break;
+      case 'line': lane(this.range(mv), 18, k); break;
+      case 'surf': lane(this.range(mv), 64, k); break;
+      case 'sky': case 'target': circle(c.tx, c.ty, c.kind === 'sky' ? 22 : 16); break;
       case 'melee': case 'multi': wedge((mv.range ?? 1.8) * M + e.r + 10, 0.85); break;
       case 'dash': lane(this.range(mv) * 0.62 + 16, e.r * 2 + 6, k); break;
       case 'cone': wedge(this.range(mv), 0.55); break;
@@ -164,36 +178,47 @@ export class Combat {
     if (user.alt?.mode === 'dive' || user.alt?.mode === 'dig') { this.alt.emerge(user, ax, ay); return true; }
     if (!opts.forced) {
       if (user.cds[slot] > 0 || user.lock > 0 || user.stun > 0 || user.charging) return false;
-      user.cds[slot] = mv.cd * (user.side === 'wild' ? 1.5 : 1);
+      user.cds[slot] = mv.cd * (user.side === 'wild' ? 1.2 : 1);
     }
     if (user.mon.status === 'par' && Math.random() < 0.15) { this.g.fx.number(user.x, user.y - 24, 'Paralisado!', '#fff27a'); user.lock = 0.5; return true; }
     let dx = ax - user.x, dy = ay - user.y; const d = Math.hypot(dx, dy) || 1; dx /= d; dy /= d;
     user.face(dx, dy);
-    const g = this.g, color = typeHex(mv.type);
-    const kind = opts.asDash ? 'dash' : mv.kind;
+    const g = this.g, color = typeHex(mv.type), A = animFor(id);
+    const kind = opts.asDash ? 'dash' : kindOf(id, mv);
+    // golpes que carregam antes (Raio Solar, Hiper-Raio): o jogador também espera a carga
+    if (BEAMS[id]?.charge && !opts.charged && !opts.forced) {
+      const W = BEAMS[id].charge;
+      user.charging = { slot, id, mv, kind, t: 0, W, ang: Math.atan2(dy, dx), tx: ax, ty: ay, target: null, lockAt: W, ally: true, A, moveId: opts.moveId };
+      user.lock = W + 0.05; user.play(this.pickAnim(user, ['Charge', 'Idle']), true); this.sfx('charge');
+      if (slot >= 0 && !opts.moveId) this.onUse?.(user, slot, ax, ay);
+      return true;
+    }
+    if (!opts.charged) A.charge?.(this.vfx, user, 1, 0.12);
     const melee = kind === 'melee' || kind === 'multi' || kind === 'dash';
     const style = melee ? (kind === 'dash' ? (id === 'flameWheel' ? 'spin' : 'dash') : meleeStyle(id)) : (BEAMS[id] ? 'beam' : mv.kind);
     user.play(this.pickAnim(user, ANIM_PREF[style] ?? ['Attack']));
     user.lock = melee ? 0.3 : 0.2;
     user.faceT = 0.5;
     this.sfx('move-' + kind, mv.type);
+    if (this.showNames && !opts.charged) g.fx.number(user.x, user.y - (user.topH ?? 20) - 14, mv.name ?? id, 0xffffff, false, 'banner');
     this.ai.noise(user.x, user.y, 50, user);
     const fire = (fn, delay) => g.later(delay, () => user.alive && !user.dead && fn());
     switch (kind) {
       case 'proj': {
-        if (BEAMS[id]) { fire(() => this.#beam(user, mv, id, Math.atan2(dy, dx), opts), 0.08); user.lock = BEAMS[id].dur; break; }
-        const n = mv.count ?? 1, aimT = this.#aimTarget(user, ax, ay);
+        if (BEAMS[id]) { fire(() => this.#beam(user, mv, id, Math.atan2(dy, dx), A), 0.08); user.lock = BEAMS[id].dur; break; }
+        const n = A.count ?? mv.count ?? 1, aimT = this.#aimTarget(user, ax, ay);
         for (let i = 0; i < n; i++) {
-          const spread = n > 1 ? (id === 'razorLeaf' ? (i - (n - 1) / 2) * 0.16 : id === 'bubble' ? (Math.random() - 0.5) * 0.3 : 0) : 0;
+          const spread = n > 1 ? (A.spread ? (i / (n - 1) - 0.5) * A.spread + (Math.random() - 0.5) * 0.04 : id === 'razorLeaf' ? (i - (n - 1) / 2) * 0.16 : id === 'bubble' ? (Math.random() - 0.5) * 0.3 : 0) : 0;
           const a = Math.atan2(dy, dx) + spread;
-          fire(() => this.#projectile(user, mv, id, Math.cos(a), Math.sin(a), color, aimT, i), 0.08 + i * (id === 'razorLeaf' ? 0.05 : 0.1));
+          fire(() => this.#projectile(user, mv, id, Math.cos(a), Math.sin(a), color, aimT, i, A), 0.08 + i * (A.gap ?? (id === 'razorLeaf' ? 0.05 : 0.1)));
         }
         break;
       }
       case 'melee': case 'multi': {
         const hits = mv.hits ?? (mv.kind === 'multi' ? 3 : 1);
         user.kx += dx * 150; user.ky += dy * 150;   // avança no golpe
-        for (let i = 0; i < hits; i++) fire(() => this.#arc(user, mv, id, dx, dy, (mv.range ?? 1.8) * M + user.r + 8, 0.9, i), 0.09 + i * 0.12);
+        const gap = A.melee?.fast ? 0.08 : 0.12;
+        for (let i = 0; i < hits; i++) fire(() => this.#arc(user, mv, id, dx, dy, (mv.range ?? 1.8) * M + user.r + 8, 0.9, i, A), 0.09 + i * gap);
         break;
       }
       case 'dash': {
@@ -201,25 +226,31 @@ export class Combat {
         const airborne = user.z > 10;
         fire(() => {
           const sp = this.range(mv) * (airborne ? 4.2 : 3.4);
-          user.kx += dx * sp; user.ky += dy * sp; user.dashing = { mv, id, t: airborne ? 0.36 : 0.3, color, dive: airborne };
+          user.kx += dx * sp; user.ky += dy * sp; user.dashing = { mv, id, t: airborne ? 0.36 : 0.3, color, dive: airborne, A };
+          A.dashStart?.(this.vfx, user);
           this.sfx('whoosh');
         }, 0.06);
         break;
       }
-      case 'cone': fire(() => this.#cone(user, mv, id, dx, dy), 0.08); break;
-      case 'wave': fire(() => this.#wave(user, mv, id, false), 0.1); break;
-      case 'quake': fire(() => this.#wave(user, mv, id, true), 0.16); break;
-      case 'cloud': case 'rain': {
+      case 'cone': fire(() => this.#cone(user, mv, id, dx, dy, A), 0.08); break;
+      case 'wave': fire(() => this.#wave(user, mv, id, false, A), 0.1); break;
+      case 'quake': fire(() => this.#wave(user, mv, id, true, A), 0.16); break;
+      case 'line': fire(() => this.#line(user, mv, id, dx, dy, A), 0.12); break;
+      case 'bolt': fire(() => this.#boltMove(user, mv, id, dx, dy, A), 0.06); break;
+      case 'surf': fire(() => this.#surf(user, mv, id, dx, dy, A), 0.12); user.lock = 0.45; break;
+      case 'cloud': case 'rain': case 'sky': {
         const r = Math.min(d, this.range(mv)), tx = user.x + dx * r, ty = user.y + dy * r;
-        fire(() => (mv.kind === 'rain' ? this.#rocks(user, mv, id, tx, ty) : this.#zone(user, mv, id, tx, ty, color)), 0.15); break;
+        fire(() => (kind === 'rain' ? this.#rocks(user, mv, id, tx, ty, A) : kind === 'sky' ? this.#sky(user, mv, id, tx, ty, A) : this.#zone(user, mv, id, tx, ty, color)), 0.15); break;
       }
-      case 'self': fire(() => this.#self(user, mv, id), 0.1); break;
+      case 'target': this.#targetMove(user, mv, id, ax, ay, A); break;
+      case 'shield': fire(() => this.#shield(user, mv, id, A), 0.04); break;
+      case 'self': fire(() => this.#self(user, mv, id, A), 0.1); break;
       case 'fly': this.alt.flyMove(user, mv, id, ax, ay); break;
       case 'dig': this.alt.digMove(user, mv, id, ax, ay); break;
       case 'dive': this.alt.diveMove(user, mv, id, ax, ay); break;
       default: fire(() => this.#projectile(user, mv, id, dx, dy, color, null, 0), 0.1);
     }
-    if (slot >= 0 && !opts.moveId) this.onUse?.(user, slot, ax, ay); // gancho do online: avisa os outros jogadores (src/net/online.js)
+    if (slot >= 0 && !opts.moveId && !opts.charged) this.onUse?.(user, slot, ax, ay); // gancho do online: avisa os outros jogadores (src/net/online.js)
     return true;
   }
   #aimTarget(user, ax, ay) {
@@ -231,21 +262,22 @@ export class Combat {
   // ---------- projéteis ----------
   #head(look) {
     const h = this.headPool.pop() ?? { halo: new PIXI.Sprite(), core: new PIXI.Sprite() };
-    h.halo.texture = this.g.fx.T.glow; h.halo.anchor.set(0.5); h.halo.tint = look.halo; h.halo.scale.set(look.haloScale); h.halo.visible = true; h.halo.alpha = 0.85;
+    h.halo.texture = this.g.fx.T.glow; h.halo.anchor.set(0.5); h.halo.tint = look.halo; h.halo.scale.set(look.haloScale); h.halo.visible = true; h.halo.alpha = h.ha = look.haloAlpha ?? 0.55;
     h.core.texture = look.frames ? this.g.fx.A.anim[look.frames][0] : this.g.fx.T[look.tex]; h.core.anchor.set(0.5); h.core.tint = look.tint; h.core.scale.set(look.scale); h.core.visible = true; h.core.rotation = 0; h.core.alpha = 1;
     this.headsA.addChild(h.halo); (look.add ? this.headsA : this.headsN).addChild(h.core);
     return h;
   }
   #freeHead(h) { h.halo.visible = false; h.core.visible = false; h.halo.parent?.removeChild(h.halo); h.core.parent?.removeChild(h.core); this.headPool.push(h); }
-  #projectile(user, mv, id, dx, dy, color, aimT, i) {
+  #projectile(user, mv, id, dx, dy, color, aimT, i, A = animFor(id)) {
     const big = Math.max(1, (mv.power ?? 40) / 55);
-    const look = this.vfx.head(mv, id);
+    const look = A.head ?? this.vfx.head(mv, id);
     const m = this.mouth(user, dx, dy, mv.cat === 'phys' ? 'hand' : 'mouth');
     const h0 = m.h;
     const sp = (mv.speed ?? 15) * M;
     const p = { user, side: user.side, mv, id, x: m.x, gy: m.gy, h: h0, hT: aimT ? (aimT.y - this.centerY(aimT)) : Math.max(6, h0 * 0.8),
       vx: dx * sp, vy: dy * sp, left: this.range(mv), color, r: 4 + 2 * big, power: mv.power ?? 30, big, look, head: this.#head(look), t: 0, i,
-      wob: id === 'bubble' ? Math.random() * TAU : id === 'razorLeaf' ? (i - 1) * 2.2 : 0 };
+      wob: id === 'bubble' ? Math.random() * TAU : id === 'razorLeaf' ? (i - 1) * 2.2 : 0,
+      A, draw: look.draw ?? null, hist: look.hist ? [] : null, histN: look.hist ?? 0, scale: A.power ?? 1, homing: !!A.homing, ox: m.x, oy: m.y };
     p.y = p.gy - p.h;
     this.projectiles.push(p);
     this.vfx.muzzle(mv.type, m.x, m.y, Math.atan2(dy, dx), mv.power ?? 40);
@@ -275,10 +307,13 @@ export class Combat {
     if (L.frames) hd.core.texture = g.fx.A.anim[L.frames][Math.floor(p.t * 14) % 4];
     if (L.orient) hd.core.rotation = Math.atan2(p.vy, p.vx) + (L.rotOff ?? 0);
     else if (L.spin) hd.core.rotation += L.spin * dt;
-    if (L.tex === 'ring') hd.core.scale.set(L.scale * (1 + 0.3 * Math.sin(p.t * 20)));
-    hd.halo.alpha = 0.7 + 0.3 * Math.sin(p.t * 30);
-    this.vfx.trail(p, dt);
-    if (p.left <= 0) { p.dead = true; this.vfx.impact(p.mv.type, p.x, p.y, 0, 0.5 * p.big, p.gy); this.arena.impact(p.x, p.gy, p.mv, 0.5); return; }
+    if (L.pulse || L.tex === 'ring') hd.core.scale.set(L.scale * (1 + (L.pulse ?? 0.3) * Math.sin(p.t * 20)));
+    hd.halo.alpha = hd.ha * (0.8 + 0.2 * Math.sin(p.t * 30));
+    if (p.hist) { p.hist.push({ x: p.x, y: p.y }); if (p.hist.length > p.histN) p.hist.shift(); }
+    if (p.homing && p.t > 0.12) { let best = null, bd = 120; for (const t of this.targetsOf(p.user)) { const dd = Math.hypot(t.x - p.x, t.y - p.gy); if (dd < bd) { bd = dd; best = t; } } if (best) { const a0 = Math.atan2(p.vy, p.vx), a1 = Math.atan2(best.y - p.gy, best.x - p.x), sp = Math.hypot(p.vx, p.vy), a = a0 + clamp(angDiff(a1, a0), -6 * dt, 6 * dt); p.vx = Math.cos(a) * sp; p.vy = Math.sin(a) * sp; } }
+    if (p.draw) p.draw(this.gfx, this.gfxN, p, p.t);
+    if (p.A.trail) p.A.trail(this.vfx, p, dt); else this.vfx.trail(p, dt);
+    if (p.left <= 0) { p.dead = true; this.#impact(p.A, p.mv.type, p.x, p.y, 0, 0.5 * p.big, p.gy); this.arena.impact(p.x, p.gy, p.mv, 0.5); return; }
     // choque com projéteis do outro lado
     for (const q of this.projectiles) {
       if (q === p || q.dead || q.grind || !this.hostile(p.user, q.user)) continue;
@@ -289,7 +324,7 @@ export class Combat {
       if (b.dead || !this.hostile(p.user, b.user) || b.len < 4) continue;
       if (segDist(p.x, p.y, b.ox, b.oy, b.hx, b.hy) < b.cfg.width / 2 + p.r) {
         const mx = p.x, my = p.y; p.dead = true;
-        this.vfx.impact(p.mv.type, mx, my, 0, 0.9, my + 10); this.vfx.impact(b.mv.type, mx, my, 0, 0.7, my + 10);
+        this.#impact(p.A, p.mv.type, mx, my, 0, 0.9, my + 10); this.vfx.impact(b.mv.type, mx, my, 0, 0.7, my + 10);
         g.fx.kick(0.18, 0.04); this.sfx('clash');
         if (p.power >= (b.mv.power ?? 90) * 0.6) b.t += 0.35;
         return;
@@ -299,14 +334,19 @@ export class Combat {
       const hz = t.isTrainer ? 10 : t.y - this.centerY(t);
       if (Math.hypot(t.x - p.x, t.y - p.gy) < t.r + p.r + 1 && Math.abs(p.h - hz) < 14 + t.r + (t.alt?.mode === 'fly' ? 40 : 0)) {
         const d = Math.hypot(p.vx, p.vy) || 1;
-        if (this.strike(p.user, t, p.mv, p.id, p.vx / d, p.vy / d, { src: 'proj' }) === 'miss') continue;
+        if (this.strike(p.user, t, p.mv, p.id, p.vx / d, p.vy / d, { src: 'proj', scale: p.scale }) === 'miss') continue;
         p.dead = true;
-        this.vfx.impact(p.mv.type, p.x, p.y, Math.atan2(p.vy, p.vx), p.big * 1.1, t.y);
+        this.#impact(p.A, p.mv.type, p.x, p.y, Math.atan2(p.vy, p.vx), p.big * 1.1, t.y);
         this.arena.impact(t.x, t.y, p.mv, 0.6);
         return;
       }
     }
-    if (this.arena.blockAt(p.x, p.gy, p.mv)) { p.dead = true; this.vfx.impact(p.mv.type, p.x, p.y, 0, 0.8 * p.big, p.gy); this.ai.noise(p.x, p.gy, 70, p.user); }
+    if (this.arena.blockAt(p.x, p.gy, p.mv)) { p.dead = true; this.#impact(p.A, p.mv.type, p.x, p.y, 0, 0.8 * p.big, p.gy); this.ai.noise(p.x, p.gy, 70, p.user); }
+  }
+  // impacto da receita do golpe (ou o do tipo) + o resto que fica no chão
+  #impact(A, type, x, y, dir, P, gy) {
+    if (A?.impact) A.impact(this.vfx, x, y, dir, P, gy); else this.vfx.impact(type, x, y, dir, P, gy);
+    A?.after?.(this.vfx, x, y, dir, P, gy);
   }
   #clashProj(p, q) {
     const g = this.g, mx = (p.x + q.x) / 2, my = (p.y + q.y) / 2;
@@ -319,7 +359,7 @@ export class Combat {
     }
     const [win, lose] = a > b ? [p, q] : [q, p];
     lose.dead = true; win.power -= lose.power * 0.8;
-    this.vfx.impact(lose.mv.type, mx, my, 0, 1, my + 10); this.vfx.impact(win.mv.type, mx, my, 0, 0.6, my + 10);
+    this.#impact(lose.A, lose.mv.type, mx, my, 0, 1, my + 10); this.vfx.impact(win.mv.type, mx, my, 0, 0.6, my + 10);
     this.ai.noise(mx, my, 110, p.user);
   }
   // explosão grande do choque de golpes
@@ -339,9 +379,9 @@ export class Combat {
   }
 
   // ---------- feixes contínuos ----------
-  #beam(user, mv, id, ang) {
+  #beam(user, mv, id, ang, A) {
     const cfg = BEAMS[id];
-    const b = { user, mv, id, cfg, ang, len: 0, t: 0, tick: 0, color: typeHex(mv.type), mash: 0, struggle: null, ox: user.x, oy: user.y, hx: user.x, hy: user.y, maxLen: cfg.range * M };
+    const b = { user, mv, id, cfg, ang, A, len: 0, t: 0, tick: 0, color: typeHex(mv.type), mash: 0, struggle: null, ox: user.x, oy: user.y, hx: user.x, hy: user.y, maxLen: cfg.range * M };
     this.beams.push(b);
     this.vfx.muzzle(mv.type, user.x, user.y - 10, ang, mv.power);
     this.g.fx.kick(0.12, 0);
@@ -388,34 +428,67 @@ export class Combat {
     if (!b.struggle && b.t >= b.cfg.dur) this.#endBeam(b);
   }
   #beamFx(b, dt, ca, sa) {
-    const g = this.g, G = this.gfx, t = b.mv.type, w = b.cfg.width, now = g.time;
-    const wob = Math.sin(now * 40) * 0.6;
-    const outer = t === 'fire' ? 0xff4a10 : t === 'water' ? 0x2a7aff : b.color, mid = t === 'fire' ? 0xff9a2a : t === 'water' ? 0x7ac8ff : b.color, core = t === 'fire' ? 0xfff0a0 : 0xffffff;
-    G.moveTo(b.ox, b.oy).lineTo(b.hx, b.hy).stroke({ width: w * 1.9 + wob, color: outer, alpha: 0.28, cap: 'round' });
-    G.moveTo(b.ox, b.oy).lineTo(b.hx, b.hy).stroke({ width: w + wob, color: mid, alpha: 0.65, cap: 'round' });
-    G.moveTo(b.ox, b.oy).lineTo(b.hx, b.hy).stroke({ width: w * 0.35, color: core, alpha: 0.95, cap: 'round' });
-    G.circle(b.hx, b.hy, w * 0.9 + Math.random() * 2).fill({ color: mid, alpha: 0.5 });
-    const R = (rate) => Math.floor(dt * rate + Math.random());
+    const g = this.g, G = this.gfx, cfg = b.cfg, w = cfg.width, now = g.time, st = cfg.style ?? b.mv.type;
+    const [outer, mid, core] = cfg.colors ?? [b.color, b.color, 0xffffff];
+    const nx = -sa, ny = ca;
+    // trilhos: um (normal) ou dois canhões paralelos (Hidro Bomba)
+    const rails = cfg.double ? [-cfg.double, cfg.double] : [0];
+    const wav = cfg.wavy ?? (st === 'psy' || st === 'aurora' ? 2 : 0);
+    const path = (off, phase) => {
+      const n = Math.max(2, Math.ceil(b.len / 6)), pts = [];
+      for (let i = 0; i <= n; i++) {
+        const s0 = b.len * i / n, k = s0 / Math.max(1, b.len);
+        const o = off + (wav ? Math.sin(s0 * 0.18 - now * 26 + phase) * wav * Math.min(1, k * 3) : 0);
+        pts.push(b.ox + ca * s0 + nx * o, b.oy + sa * s0 + ny * o);
+      }
+      return pts;
+    };
+    const pulse = 1 + Math.sin(now * 50) * 0.08;
+    const body = st === 'psy' || st === 'aurora' || st === 'signal' ? G : this.gfxN;
+    for (const off of rails) {
+      const pts = path(off, off);
+      if (st === 'aurora') { const cs = [0xff8fe0, 0x9ef0ff, 0xfff6a0]; for (let k = 0; k < 3; k++) G.poly(path(off + (k - 1) * 2.5, k * 2), false).stroke({ width: w * 0.7, color: cs[k], alpha: 0.55 }); }
+      else if (st === 'psy') { G.poly(path(off, 0), false).stroke({ width: w, color: outer, alpha: 0.5 }); G.poly(path(off, Math.PI), false).stroke({ width: w * 0.8, color: mid, alpha: 0.5 }); }
+      else if (st === 'signal') { G.poly(path(off, 0), false).stroke({ width: w, color: (Math.floor(now * 12) % 2) ? outer : mid, alpha: 0.7 }); }
+      else if (body !== G) { G.poly(pts, false).stroke({ width: (w * 1.8) * pulse, color: outer, alpha: 0.18, cap: 'round' }); body.poly(pts, false).stroke({ width: w * pulse, color: outer, alpha: 0.85, cap: 'round' }); body.poly(path(off + w * 0.18, off + 1), false).stroke({ width: w * 0.5, color: mid, alpha: 0.9, cap: 'round' }); }
+      else { G.poly(pts, false).stroke({ width: (w * 1.9) * pulse, color: outer, alpha: 0.28, cap: 'round' }); G.poly(pts, false).stroke({ width: w * pulse, color: mid, alpha: 0.65, cap: 'round' }); }
+      G.poly(pts, false).stroke({ width: Math.max(1, w * (st === 'fire' ? 0.25 : body !== G ? 0.18 : 0.35)), color: core, alpha: st === 'fire' ? 0.7 : body !== G ? 0.6 : 0.95, cap: 'round' });
+      G.circle(b.hx + nx * off, b.hy + ny * off, w * 0.9 + Math.random() * 2).fill({ color: mid, alpha: 0.5 });
+      G.circle(b.ox + nx * off, b.oy + ny * off, w * 0.45 * pulse).fill({ color: core, alpha: 0.7 });
+    }
+    const R = (rate) => Math.floor(dt * rate * (cfg.thin ? 0.4 : 1) + Math.random());
     const along = () => Math.random() * b.len;
-    if (t === 'fire') {
-      for (let i = R(150); i > 0; i--) { const s = along(); g.fx.emit(b.ox + ca * s, b.oy + sa * s, { frames: 'flame', n: 1, speed: 40 + s * 0.6, dir: b.ang, spread: 0.5, life: 0.22, scale: 0.8 + s / b.maxLen, end: 0.4, add: true, jitter: w * 0.4, vz: 20 }); }
-      g.fx.emit(b.hx, b.hy, { frames: 'flame', n: R(60), speed: 50, life: 0.35, scale: 1.3, end: 0.3, add: true, vz: 40 });
+    const at = (s0) => [b.ox + ca * s0, b.oy + sa * s0];
+    if (st === 'fire') {
+      for (let i = R(170); i > 0; i--) { const s0 = along(), [x, y] = at(s0), o = Math.sin(s0 * 0.18 - now * 26) * (wav || 0); g.fx.emit(x + nx * o, y + ny * o, { frames: 'flame', n: 1, speed: 40 + s0 * 0.6, dir: b.ang, spread: 0.5, life: 0.22, scale: 0.7 + s0 / b.maxLen * 0.9, end: 0.4, add: false, jitter: w * 0.4, vz: 20 }); }
+      g.fx.emit(b.hx, b.hy, { frames: 'flame', n: R(60), speed: 50, life: 0.35, scale: 1.3, end: 0.3, add: false, vz: 40 });
       g.fx.emit(b.hx, b.hy, { tex: 'ember', n: R(40), speed: 80, life: 0.6, vz: 50, grav: 60 });
       g.fx.emit(b.hx, b.hy, { tex: 'smoke', n: R(8), speed: 15, life: 0.9, scale: 0.8, end: 2, vz: 20, alpha: 0.3, add: false, color: 0x555555 });
-    } else if (t === 'water') {
-      for (let i = R(90); i > 0; i--) { const s = along(); g.fx.emit(b.ox + ca * s, b.oy + sa * s, { tex: Math.random() < 0.5 ? 'foam' : 'drop', n: 1, speed: 60, dir: b.ang, spread: 0.6, life: 0.25, add: false, jitter: w * 0.4, rot: 'rand' }); }
+    } else if (st === 'water') {
+      for (const off of rails) for (let i = R(90); i > 0; i--) { const s0 = along(), [x, y] = at(s0); g.fx.emit(x + nx * off, y + ny * off, { tex: Math.random() < 0.5 ? 'foam' : 'drop', n: 1, speed: 60, dir: b.ang, spread: 0.6, life: 0.25, add: false, jitter: w * 0.4, rot: 'rand' }); }
       g.fx.emit(b.hx, b.hy, { tex: 'drop', n: R(80), speed: 90, life: 0.55, vz: 90, grav: 420, add: false });
       g.fx.emit(b.hx, b.hy, { tex: 'foam', n: R(30), speed: 50, life: 0.3, add: false });
       if (Math.random() < dt * 10) g.fx.ring(b.hx, b.hy + 8, 0xbfe6ff, 5, 0.3, { width: 1.5 });
+    } else if (st === 'ice') {
+      for (let i = R(60); i > 0; i--) { const s0 = along(), [x, y] = at(s0); g.fx.emit(x, y, { tex: 'twinkle', color: 0xffffff, n: 1, speed: 20, life: 0.4, jitter: w * 0.5 }); }
+      g.fx.emit(b.hx, b.hy, { tex: 'ice', n: R(30), speed: 70, life: 0.6, spin: 10, grav: 200, vz: 40, add: false });
+      if (cfg.freeze && (b.frz = (b.frz ?? 0) - dt) <= 0) { b.frz = 0.06; const s0 = along(), [x, y] = at(s0); g.fx.decal('splat', x, y + (b.user.y - b.oy), { tint: 0xd8f8ff, alpha: 0.9, life: 14, scale: 0.7 }); g.fx.emit(x, y + (b.user.y - b.oy), { tex: 'ice', n: 2, speed: 5, life: 1.6, vz: 20, grav: 100, add: false, fade: 'late' }); }
+    } else if (st === 'solar' || st === 'hyper' || st === 'flash') {
+      for (let i = R(80); i > 0; i--) { const s0 = along(), [x, y] = at(s0); g.fx.emit(x, y, { tex: st === 'solar' ? 'twinkle' : 'glow', color: mid, n: 1, size: 4, speed: 60, dir: b.ang + (Math.random() < 0.5 ? 1.57 : -1.57), spread: 0.3, life: 0.25, jitter: w * 0.4 }); }
+      g.fx.emit(b.hx, b.hy, { tex: 'spark', color: core, n: R(50), speed: 150, life: 0.25, stretch: 0.01 });
+      g.fx.shake = Math.max(g.fx.shake, st === 'hyper' ? 0.2 : 0.1);
+      if (st === 'hyper' && Math.random() < dt * 8) g.fx.screenFlash(0xffe8a0, 0.06);
     } else {
-      for (let i = R(80); i > 0; i--) { const s = along(); g.fx.emit(b.ox + ca * s, b.oy + sa * s, { tex: 'glow', color: b.color, n: 1, size: 3, speed: 30, life: 0.2 }); }
+      for (let i = R(80); i > 0; i--) { const s0 = along(), [x, y] = at(s0); g.fx.emit(x, y, { tex: st === 'electric' ? 'spark' : 'glow', color: mid, n: 1, size: 3, speed: 30, life: 0.2 }); }
+      if (st === 'electric' && Math.random() < dt * 25) this.g.fx.bolt(b.ox, b.oy, b.hx, b.hy, 0xffe23a, 0.06, { amp: 5 });
     }
-    g.fx.light(b.ox, b.oy, mid, 16, 0.05, 0.6);
-    if (Math.random() < dt * 20) g.fx.light(b.hx, b.hy, mid, 26, 0.08, 0.7);
-    this.sfx('beam-' + t, null, 0.09);
+    if ((b.lt = (b.lt ?? 0) - dt) <= 0) { b.lt = 0.06; g.fx.light(b.ox, b.oy, mid, 12 + w * 0.6, 0.07, 0.5); g.fx.light(b.hx, b.hy, mid, 18 + w, 0.08, 0.55); }
+    this.sfx('beam-' + (st === 'solar' || st === 'hyper' || st === 'flash' ? 'fire' : st === 'psy' || st === 'aurora' || st === 'signal' ? 'ice' : st), null, 0.09);
   }
   #endBeam(b) {
+    if (b.dead) return;
     b.dead = true;
+    if (b.cfg.recharge && b.user.alive) { b.user.stun = Math.max(b.user.stun, b.cfg.recharge); this.g.fx.number(b.user.x, b.user.y - (b.user.topH ?? 20) - 12, 'Recarregando...', '#ffd0a0'); }
     if (b.struggle) b.struggle.done = true;
     this.g.fx.emit(b.hx, b.hy, { tex: 'glow', color: b.color, n: 8, speed: 40, size: 4, life: 0.3 });
   }
@@ -480,8 +553,8 @@ export class Combat {
   }
 
   // ---------- corpo a corpo ----------
-  #arc(user, mv, id, dx, dy, reach, spread, i) {
-    const g = this.g, style = meleeStyle(id);
+  #arc(user, mv, id, dx, dy, reach, spread, i, A = animFor(id)) {
+    const g = this.g, style = A.melee?.style ?? meleeStyle(id);
     // dois golpes corpo a corpo ao mesmo tempo, frente a frente: choque
     const now = g.time;
     this.swings = this.swings.filter((s) => now - s.t < 0.16);
@@ -491,7 +564,7 @@ export class Combat {
       if (d < reach + s.reach && (dx * s.dx + dy * s.dy) < -0.3) { this.#meleeClash(user, s.user); this.swings.splice(this.swings.indexOf(s), 1); return; }
     }
     this.swings.push({ user, mv, t: now, dx, dy, reach });
-    this.vfx.melee(user, mv, id, dx, dy, reach, i);
+    this.vfx.melee(user, mv, id, dx, dy, reach, i, A.melee);
     let any = false;
     for (const t of this.targetsOf(user)) {
       const ex = t.x - user.x, ey = t.y - user.y, d = Math.hypot(ex, ey);
@@ -499,8 +572,9 @@ export class Combat {
       if (Math.acos(clamp((ex * dx + ey * dy) / (d || 1), -1, 1)) > spread + 0.2 && d > t.r + 4) continue;
       if (this.strike(user, t, mv, id, dx, dy, { src: 'melee' }) === 'miss') continue;
       any = true;
-      const P = Math.min(2.2, 0.6 + (mv.power ?? 40) / 60);
-      this.vfx.meleeHit(style, mv.type, (t.x + user.x * 0.3) / 1.3, this.centerY(t), Math.atan2(dy, dx), P);
+      const P = Math.min(2.2, 0.6 + (mv.power ?? 40) / 60), hx = (t.x + user.x * 0.3) / 1.3, hy = this.centerY(t);
+      if (A.hit) { if (['blunt', 'fist', 'tackle', 'chop', 'kick'].includes(style)) this.g.fx.shock(hx, hy + 6, 0xffffff, 10 * P, 0.22); A.hit(this.vfx, hx, hy, Math.atan2(dy, dx), P, t.y); }
+      else this.vfx.meleeHit(style, mv.type, hx, hy, Math.atan2(dy, dx), P);
     }
     if (!any) this.arena.impact(user.x + dx * reach * 0.8, user.y + dy * reach * 0.8, mv, 0.7, true);
   }
@@ -515,22 +589,25 @@ export class Combat {
     this.ai.noise(x, y, 120, a);
   }
 
-  #cone(user, mv, id, dx, dy) {
+  #cone(user, mv, id, dx, dy, A = animFor(id)) {
     const g = this.g, R = this.range(mv), a0 = Math.atan2(dy, dx);
-    this.vfx.cone(user, mv, id, dx, dy, R);
+    if (A.cone) A.cone(this.vfx, user, dx, dy, R); else this.vfx.cone(user, mv, id, dx, dy, R);
     for (const t of this.targetsOf(user)) {
       const ex = t.x - user.x, ey = t.y - user.y, d = Math.hypot(ex, ey);
       if (d > R + t.r) continue;
       if (Math.abs(angDiff(Math.atan2(ey, ex), a0)) > 0.6) continue;
       g.later(d / (R * 2.4), () => this.strike(user, t, mv, id, dx, dy, { src: 'cone' }));
     }
-    for (let k = 1; k <= 4; k++) { const x = user.x + dx * R * k / 4, y = user.y + dy * R * k / 4; if (mv.type === 'fire' || id === 'dragonBreath') g.scorchTile(x, y); else if (mv.type === 'flying' || mv.type === 'dragon') this.arena.wind(x, y); }
+    for (let k = 1; k <= 4; k++) { const x = user.x + dx * R * k / 4, y = user.y + dy * R * k / 4; if (mv.type === 'fire' || id === 'dragonBreath') this.arena.ignite(x, y); else if (mv.type === 'ice') this.g.fx.decal('splat', x, y, { tint: 0xe8fbff, alpha: 0.6, life: 8, scale: 0.8 }); else if (mv.type === 'flying' || mv.type === 'dragon') this.arena.wind(x, y); }
   }
 
-  #wave(user, mv, id, ground) {
-    const R = this.range(mv);
-    if (ground) { this.vfx.quake(user, mv, R); this.g.fx.kick(0.5, 0.07); this.sfx('quake'); this.arena.blast(user.x, user.y, R * 0.45, mv); this.ai.noise(user.x, user.y, 220, user); }
-    else this.vfx.wave(user, mv, id, R);
+  #wave(user, mv, id, ground, A = animFor(id)) {
+    const R = this.range(mv), qk = A.quakeK ?? 1;
+    if (ground) {
+      if (A.wave) A.wave(this.vfx, user, R); else { this.vfx.quake(user, mv, R); if (qk > 1.2) { this.vfx.quake(user, mv, R * 0.6); for (let i = 0; i < 6; i++) this.g.fx.decal('crack', user.x + (Math.random() - 0.5) * R, user.y + (Math.random() - 0.5) * R * 0.6, { scale: 0.8 + Math.random() * 0.6, life: 25 }); } }
+      this.g.fx.kick(0.5 * qk, 0.07 * qk); this.sfx('quake'); this.arena.blast(user.x, user.y, R * 0.45 * qk, mv); this.ai.noise(user.x, user.y, 220 * qk, user);
+    } else if (A.wave) A.wave(this.vfx, user, R); else this.vfx.wave(user, mv, id, R);
+    if (mv.eff?.selfKO) this.g.later(0.05, () => this.hurt(user, user.mon.hp, null, { silent: true }));
     this.waves.push({ user, mv, id, x: user.x, y: user.y, R, t: 0, dur: ground ? 0.42 : 0.3, hit: new Set(), ground });
   }
   #updateWave(w, dt) {
@@ -550,22 +627,25 @@ export class Combat {
     this.g.fx.emit(x, y, { tex: 'smoke', color: 0xffffff, n: 8, speed: 50, life: 0.5, scale: 0.8, end: 1.6, add: false, alpha: 0.5 });
   }
   // pedras que caem do céu sobre a área (Lançamento de Rocha, Tumba de Rochas)
-  #rocks(user, mv, id, x, y) {
-    const n = id === 'rockTomb' ? 4 : 3;
+  #rocks(user, mv, id, x, y, A = animFor(id)) {
+    const ring = id === 'rockTomb', n = A.rainN ?? (ring ? 4 : 3), spr = A.rainSpread ?? 18, [tb, ts] = A.rainTex ?? ['boulder', 'rock2'];
     for (let i = 0; i < n; i++) {
-      const a = id === 'rockTomb' ? i / n * TAU : Math.random() * TAU, r = id === 'rockTomb' ? 14 : (i === 0 ? 0 : 10 + Math.random() * 8);
-      const bigOne = i === 0 && id !== 'rockTomb';
-      const look = { tex: bigOne ? 'boulder' : 'rock2', frames: null, scale: bigOne ? 1.2 : 1.6, halo: 0x000000, haloScale: 0.01, add: false, tint: 0xffffff };
-      this.falls.push({ user, mv, id, x: x + Math.cos(a) * r, y: y + Math.sin(a) * r * 0.7, z: 170 + i * 30, vz: -80, head: this.#head(look), big: bigOne ? 1.3 : 0.9, spin: (Math.random() - 0.5) * 6 });
+      const a = ring ? i / n * TAU : Math.random() * TAU, r = ring ? 14 : (i === 0 ? 0 : spr * (0.5 + Math.random() * 0.5));
+      const bigOne = i === 0 && !ring, tex = bigOne ? tb : ts, meteor = tex === 'meteor', ice = tex === 'ice';
+      const look = meteor ? { frames: 'bflame', scale: 2.2, halo: 0x7a5aff, haloScale: 2.4, add: true, tint: 0xffffff }
+        : { tex, frames: null, scale: (A.rainScale ?? (tex === 'boulder' ? 1.2 : 1.6)) * (ice ? 1 : 1), halo: ice ? 0x9ef0ff : 0x000000, haloScale: ice ? 1 : 0.01, add: false, tint: 0xffffff };
+      this.falls.push({ user, mv, id, A, x: x + Math.cos(a) * r, y: y + Math.sin(a) * r * 0.7, z: 170 + i * 30, vz: -80, head: this.#head(look), big: bigOne ? 1.3 : 0.9, spin: meteor ? 0 : (Math.random() - 0.5) * 6, meteor, ice, t: 0 });
     }
   }
   #updateFall(f, dt) {
-    f.vz -= 900 * dt; f.z += f.vz * dt;
-    f.head.core.x = f.x; f.head.core.y = f.y - f.z; f.head.core.rotation += f.spin * dt;
+    f.vz -= 900 * dt; f.z += f.vz * dt; f.t += dt;
+    f.head.core.x = f.head.halo.x = f.x; f.head.core.y = f.head.halo.y = f.y - f.z; f.head.core.rotation += f.spin * dt;
+    if (f.meteor) { f.head.core.texture = this.g.fx.A.anim.bflame[Math.floor(f.t * 14) % 4]; this.g.fx.emit(f.x, f.y - f.z, { frames: 'bflame', n: 2, speed: 20, life: 0.3, scale: 1.2, end: 0.3, add: true }); }
     if (f.z > 0) return true;
     const g = this.g;
     this.#freeHead(f.head);
-    this.vfx.impact('rock', f.x, f.y - 4, 0, 1.4 * f.big, f.y);
+    if (f.meteor) { this.vfx.impact('dragon', f.x, f.y - 4, 0, 1.8, f.y); g.fx.shock(f.x, f.y, 0x7a5aff, 40, 0.4); g.fx.screenFlash(0x7a5aff, 0.15); }
+    else this.vfx.impact(f.ice ? 'ice' : 'rock', f.x, f.y - 4, 0, 1.4 * f.big, f.y);
     g.fx.decal('crater', f.x, f.y + 2, { scale: 0.5 + 0.4 * f.big, life: 25 });
     g.fx.kick(0.25 * f.big, 0.03); this.sfx('thud');
     this.arena.blast(f.x, f.y, 12 * f.big, f.mv);
@@ -574,9 +654,10 @@ export class Combat {
     return false;
   }
 
-  #self(user, mv, id) {
+  #self(user, mv, id, A = animFor(id)) {
     const g = this.g, e = mv.eff ?? {};
-    this.vfx.aura(user, mv, id, (e.by ?? 1) > 0);
+    if (A.self) A.self(this.vfx, user); else this.vfx.aura(user, mv, id, (e.by ?? 1) > 0);
+    if (e.heal) { const hp = Math.round(user.mon.stats.hp * e.heal); user.mon.hp = Math.min(user.mon.stats.hp, user.mon.hp + hp); g.fx.number(user.x, user.y - 30, '+' + hp, '#7dff8a'); if (e.sleep) { user.stun = 2.5; user.sleepFx = 2.5; } }
     if (e.stat) { user.stages[e.stat] = clamp((user.stages[e.stat] ?? 0) + (e.by ?? 1), -6, 6); g.fx.number(user.x, user.y - 30, e.by > 0 ? 'Subiu!' : 'Caiu!', '#9ad0ff'); }
     if (e.crit) { user.critBoost = 20; g.fx.number(user.x, user.y - 30, 'Focado!', '#ffb347'); }
     if (e.splash) g.fx.number(user.x, user.y - 30, 'Nada aconteceu...', '#cccccc');
@@ -588,6 +669,105 @@ export class Combat {
     }
   }
 
+  // ---------- formas novas: raio direto, raio do céu, onda de surfe, golpe no alvo, linha, escudo ----------
+  #boltMove(user, mv, id, dx, dy, A) {
+    const g = this.g, B = A.bolt ?? {}, R = (B.range ?? mv.range ?? 8) * M, m = this.mouth(user, dx, dy);
+    let hit = null, L = R;
+    for (const t of this.targetsOf(user)) {
+      const cy = this.centerY(t), rx = t.x - m.x, ry = cy - m.y, along = rx * dx + ry * dy;
+      if (along < 0 || along > R) continue;
+      if (Math.abs(rx * dy - ry * dx) < t.r + 6 && along < L) { L = along; hit = t; }
+    }
+    for (let s0 = 8; s0 < L; s0 += 6) if (this.arena.solidAt(m.x + dx * s0, m.y + dy * s0 + m.h)) { L = s0; hit = null; break; }
+    const ex = m.x + dx * L, ey = m.y + dy * L;
+    const n = B.flickers ?? 2;
+    for (let k = 0; k < n; k++) g.later(k * (B.gap ?? 0.05), () => {
+      g.fx.bolt(m.x, m.y, ex, ey, 0xffe23a, 0.09, { amp: B.amp ?? 5, width: B.width ?? 1.5 });
+      for (let j = 0; j < (B.branch ?? 1); j++) { const t0 = Math.random(), bx = m.x + (ex - m.x) * t0, by = m.y + (ey - m.y) * t0, a = Math.atan2(dy, dx) + (Math.random() - 0.5) * 2; g.fx.bolt(bx, by, bx + Math.cos(a) * 14, by + Math.sin(a) * 14, 0xffe23a, 0.07, { amp: 3, width: 1 }); }
+      g.fx.light(ex, ey, 0xffe23a, 24 + (B.width ?? 1.5) * 8, 0.08, 0.9); g.fx.light(m.x, m.y, 0xfff6a0, 16, 0.06, 0.8);
+      this.sfx('beam-electric', null, 0.03);
+    });
+    if (hit) { const r = this.strike(user, hit, mv, id, dx, dy, { src: 'bolt' }); if (r !== 'miss') this.#impact(A, mv.type, ex, ey, Math.atan2(dy, dx), 1 + (mv.power ?? 40) / 90, hit.y); }
+    else this.#impact(A, mv.type, ex, ey, 0, 0.6, ey + m.h);
+    this.ai.noise(ex, ey, 90, user);
+  }
+  #sky(user, mv, id, x, y, A) {
+    const g = this.g, S = A.sky ?? {};
+    this.skyMarks.push({ x, y, t: 0.35, max: 0.35 });
+    g.fx.emit(x, y - 200, { tex: 'smoke', color: 0x3a3a4a, n: 8, speed: 40, life: 0.6, scale: 1.4, end: 2.4, alpha: 0.7, add: false, jitter: 20 });
+    g.later(0.35, () => {
+      for (let k = 0; k < 3; k++) g.later(k * 0.06, () => {
+        g.fx.bolt(x + (Math.random() - 0.5) * 30, y - 230, x, y - 4, S.color ?? 0xffe23a, 0.14, { amp: 12, width: S.width ?? 3, seg: 16 });
+        for (let j = 0; j < (S.branches ?? 4); j++) { const by = y - 40 - Math.random() * 160, bx = x + (Math.random() - 0.5) * 20; g.fx.bolt(bx, by, bx + (Math.random() - 0.5) * 50, by + 20 + Math.random() * 30, S.color ?? 0xffe23a, 0.1, { amp: 5, width: 1.2 }); }
+      });
+      g.fx.screenFlash(0xfff6c0, 0.35); g.fx.kick(0.5, 0.1); this.sfx('thunder');
+      g.fx.light(x, y, 0xfff6a0, 50, 0.4, 0.8); g.fx.shock(x, y, 0xffe23a, 40, 0.4);
+      this.vfx.impact('electric', x, y - 6, 0, 1.8, y);
+      g.fx.decal('scorch', x, y, { scale: 1.1, alpha: 0.9, life: 30 });
+      this.arena.blast(x, y, 14, mv); this.ai.noise(x, y, 220, user);
+      for (const t of this.targetsOf(user)) { const d = Math.hypot(t.x - x, t.y - y); if (d < 22 + t.r) this.strike(user, t, mv, id, (t.x - x) / (d || 1), (t.y - y) / (d || 1), { src: 'sky' }); }
+    });
+  }
+  #surf(user, mv, id, dx, dy, A) {
+    this.surfs.push({ user, mv, id, A, x: user.x - dx * 10, y: user.y - dy * 10, dx, dy, d: 0, max: this.range(mv) + 14, w: 66, hit: new Set(), col: A.surfColor ?? [0x2a7aff, 0xbfe6ff] });
+    this.sfx('splash');
+  }
+  #updateSurf(sf, dt) {
+    const g = this.g, G = this.gfxN, GA = this.gfx;
+    sf.d += 230 * dt;
+    const { dx, dy } = sf, nx = -dy, ny = dx, cx = sf.x + dx * sf.d, cy = sf.y + dy * sf.d, h = sf.w / 2;
+    const back = 26, pts = [];
+    for (let i = 0; i <= 10; i++) { const k = i / 10 - 0.5, bulge = Math.cos(k * Math.PI) * 6; pts.push(cx + nx * k * sf.w + dx * bulge, cy + ny * k * sf.w + dy * bulge - 10 * Math.cos(k * Math.PI)); }
+    for (let i = 10; i >= 0; i--) { const k = i / 10 - 0.5; pts.push(cx + nx * k * sf.w - dx * back, cy + ny * k * sf.w - dy * back); }
+    G.poly(pts).fill({ color: sf.col[0], alpha: 0.38 });
+    for (let k = 1; k <= 3; k++) { const o = k * 6; const line = []; for (let i = 0; i <= 10; i++) { const kk = i / 10 - 0.5; line.push(cx + nx * kk * sf.w * 0.95 - dx * o, cy + ny * kk * sf.w * 0.95 - dy * o + Math.sin(i + g.time * 12 + k) * 1.5 - 8 * Math.cos(kk * Math.PI) * (1 - k / 4)); } G.poly(line, false).stroke({ width: 2, color: k % 2 ? 0x1a5ad8 : 0x7ac8ff, alpha: 0.5 }); }
+    G.poly(pts.slice(0, 22), false).stroke({ width: 4, color: 0xffffff, alpha: 0.9 });
+    GA.poly(pts.slice(0, 22), false).stroke({ width: 7, color: sf.col[1], alpha: 0.35 });
+    const R = (rate) => Math.floor(dt * rate + Math.random());
+    for (let i = R(90); i > 0; i--) { const k = Math.random() - 0.5; g.fx.emit(cx + nx * k * sf.w, cy + ny * k * sf.w - 10 * Math.cos(k * Math.PI), { tex: Math.random() < 0.5 ? 'foam' : 'drop', n: 1, speed: 40, dir: Math.atan2(dy, dx) + (Math.random() - 0.5), spread: 0.4, life: 0.4, vz: 60, grav: 300, add: false }); }
+    if (Math.random() < dt * 12) this.arena.soak(cx, cy);
+    for (const t of this.targetsOf(sf.user)) {
+      if (sf.hit.has(t)) continue;
+      const rx = t.x - sf.x, ry = t.y - sf.y, along = rx * dx + ry * dy, lat = Math.abs(rx * nx + ry * ny);
+      if (lat < h + t.r && Math.abs(along - sf.d) < 16) { sf.hit.add(t); this.strike(sf.user, t, sf.mv, sf.id, dx, dy, { src: 'surf', knock: 1.5 }); this.vfx.impact('water', t.x, this.centerY(t), 0, 1.2, t.y); }
+    }
+    if (sf.d >= sf.max) { this.vfx.impact('water', cx, cy - 6, 0, 2, cy); g.fx.ring(cx, cy, sf.col[1], 14, 0.5, { width: 2 }); return false; }
+    return true;
+  }
+  #targetMove(user, mv, id, ax, ay, A) {
+    const g = this.g, R = this.range(mv);
+    let tg = this.#aimTarget(user, ax, ay);
+    if (!tg) { let bs = 1e9; const a0 = Math.atan2(ay - user.y, ax - user.x); for (const t of this.targetsOf(user)) { if (t.isTrainer) continue; const d = Math.hypot(t.x - user.x, t.y - user.y); if (d > R) continue; const da = Math.abs(angDiff(Math.atan2(t.y - user.y, t.x - user.x), a0)); if (da < 0.7 && d * (1 + da) < bs) { bs = d * (1 + da); tg = t; } } }
+    if (tg && Math.hypot(tg.x - user.x, tg.y - user.y) > R + 20) tg = null;
+    const d = Math.min(Math.hypot(ax - user.x, ay - user.y), R), a = Math.atan2(ay - user.y, ax - user.x);
+    const x = tg ? tg.x : user.x + Math.cos(a) * d, y = tg ? this.centerY(tg) : user.y + Math.sin(a) * d - 8;
+    g.later(0.08, () => {
+      if (A.target) A.target(this.vfx, tg ?? { x, y, wobble: 0 }, x, y); else this.vfx.impact(mv.type, x, y, 0, 1, y + 8);
+      g.later(A.hitDelay ?? 0.15, () => {
+        if (tg && tg.alive !== false && user.alive) { const r = this.strike(user, tg, mv, id, Math.cos(a), Math.sin(a), { src: 'target' }); if (r !== 'miss' && A.impact) A.impact(this.vfx, tg.x, this.centerY(tg), a, 1.2, tg.y); }
+        this.ai.noise(x, y, 100, user);
+      });
+    });
+  }
+  #line(user, mv, id, dx, dy, A) {
+    const R = this.range(mv);
+    user.face(dx, dy);
+    if (A.wave) A.wave(this.vfx, user, R); else this.vfx.quake(user, mv, R * 0.5);
+    for (const t of this.targetsOf(user)) {
+      const rx = t.x - user.x, ry = t.y - user.y, along = rx * dx + ry * dy, lat = Math.abs(rx * dy - ry * dx);
+      if (along > 0 && along < R + t.r && lat < 12 + t.r) this.g.later(along / 330, () => this.strike(user, t, mv, id, dx, dy, { src: 'line', knock: 1.2 }));
+    }
+    for (let k = 1; k <= 5; k++) this.g.later(k * 0.04, () => this.arena.shakeAt(user.x + dx * R * k / 5, user.y + dy * R * k / 5, mv));
+  }
+  #shield(user, mv, id, A) {
+    const sh = A.shield ?? { color: 0x5aff8a, dur: 1 };
+    user.shield = sh; user.shieldT = sh.dur;
+    const e = mv.eff ?? {}; if (e.stat) user.stages[e.stat] = clamp((user.stages[e.stat] ?? 0) + (e.by ?? 1), -6, 6);
+    this.g.fx.ring(user.x, this.centerY(user), sh.color, 8, 0.4, { squash: 1, width: 2 });
+    this.g.fx.light(user.x, this.centerY(user), sh.color, 34, 0.3);
+    this.sfx('shield');
+  }
+
   // ---------- acerto: esquiva, altura, precisão e dano ----------
   // devolve 'miss' se não acertou
   strike(user, t, mv, id, dx = 0, dy = 0, info = {}) {
@@ -595,6 +775,7 @@ export class Combat {
     const g = this.g;
     if (!info.force) {
       if (this.alt.dodges(t, mv, info, user)) { this.#missText(t, 'Errou!'); return 'miss'; }
+      if (t.shieldT > 0) { this.#missText(t, 'Protegido!'); this.g.fx.emit(t.x, this.centerY(t), { tex: 'spark', color: t.shield.color, n: 8, speed: 90, life: 0.2, stretch: 0.01 }); this.sfx('shield', null, 0.1); return 'miss'; }
       if (t.iframes > 0) { if (t.side === 'ally' || t.isTrainer) this.#missText(t, 'Esquivou!'); return 'miss'; }
     }
     if (t.isTrainer) { t.knock(dx * 220, dy * 220); g.fx.kick(0.2, 0.04); this.vfx.impact(mv.type, t.x, t.y - 10, 0, 0.6, t.y); return 'hit'; }
@@ -635,7 +816,7 @@ export class Combat {
       const pw = mv?.power ?? 40;
       const power = Math.min(2.4, 0.55 + pw / 70) * (eff > 1 ? 1.3 : 1) * (crit ? 1.25 : 1);
       const mass = clamp(9 / (t.r + 3), 0.55, 1.4);
-      const K = 150 * power * mass * knock;
+      const K = 115 * power * mass * knock;
       t.kx += dx * K; t.ky += dy * K;
       t.react?.({ power: power * knock, eff, crit, quiet, dx, dy });
       if (!quiet) {
@@ -710,17 +891,27 @@ export class Combat {
   }
 
   // ---------- quadro ----------
+  // compila shaders e sobe texturas antes do primeiro golpe (evita engasgo no primeiro impacto)
+  #prewarm() {
+    const g = this.g, l = g.lead; if (!l?.set) return;
+    this.warm = true;
+    g.fx.emit(l.x, l.y - 400, { tex: 'glow', n: 1, life: 0.05 }); g.fx.emit(l.x, l.y - 400, { tex: 'spark', add: false, n: 1, life: 0.05 });
+    g.fx.emit(l.x, l.y - 400, { tex: 'dust', ground: true, n: 1, life: 0.05 }); g.fx.number(l.x, l.y - 400, '0', 0xffffff);
+    g.fx.ring(l.x, l.y - 400, 0xffffff, 1, 0.05); l.flashW = 0.02;
+  }
+
   update(dt) {
     const g = this.g;
+    if (!this.warm) this.#prewarm();
     this.pilot.hud(dt);
     this.alt.update(dt);
     this.ai.update(dt);
     this.vfx.update(dt);
     const G = this.groundG; G.clear();
-    this.gfx.clear();
+    this.gfx.clear(); this.gfxN.clear();
     this.pilot.drawWorld(G);
     for (const e of g.entities) {
-      if (e.charging) { this.#updateCharging(e, dt); if (e.charging) this.#drawTelegraph(G, e); }
+      if (e.charging) { this.#updateCharging(e, dt); if (e.charging && !e.charging.ally && e.side !== 'ally') this.#drawTelegraph(G, e); }
       if (e.critBoost > 0) e.critBoost -= dt;
       if (e.seeded && e.alive) {
         const s = e.seeded; s.t -= dt; s.tick -= dt;
@@ -731,20 +922,21 @@ export class Combat {
     // investidas acertam o primeiro no caminho
     for (const u of g.entities) if (u.dashing) {
       const dsh = u.dashing; dsh.t -= dt;
-      this.vfx.dash(u, dsh.mv, dsh.id, dt);
+      if (dsh.A?.dash) dsh.A.dash(this.vfx, u, dt); else this.vfx.dash(u, dsh.mv, dsh.id, dt);
       if (dsh.dive) u.vz = Math.min(u.vz, -260);
       for (const t of this.targetsOf(u)) if (!u.dashHit.has(t) && Math.hypot(t.x - u.x, t.y - u.y) < t.r + u.r + 4) {
         // duas investidas se cruzando: choque
         if (t.dashing && this.hostile(t, u)) { u.dashHit.add(t); t.dashHit?.add(u); this.#meleeClash(u, t); u.dashing = t.dashing = null; break; }
         u.dashHit.add(t); const d = Math.hypot(u.kx, u.ky) || 1;
         if (this.strike(u, t, dsh.mv, dsh.id, u.kx / d, u.ky / d, { src: 'dash', knock: dsh.dive ? 1.4 : 1 }) !== 'miss') {
-          this.vfx.impact(dsh.mv.type, (t.x + u.x) / 2, this.centerY(t), Math.atan2(u.ky, u.kx), 1.2 + (dsh.dive ? 0.6 : 0), t.y);
+          this.#impact(dsh.A, dsh.mv.type, (t.x + u.x) / 2, this.centerY(t), Math.atan2(u.ky, u.kx), 1.2 + (dsh.dive ? 0.6 : 0), t.y);
+          if (dsh.A?.bounceBack) { u.kx = -u.kx; u.ky = -u.ky; }
           if (dsh.dive) { g.fx.shock(t.x, t.y, 0xffffff, 30, 0.3); this.arena.blast(t.x, t.y, 12, dsh.mv); }
           u.kx *= 0.25; u.ky *= 0.25;
         }
       }
       if (!u.dashing) continue;
-      if (dsh.t <= 0) { u.dashing = null; if (dsh.dive) g.fx.emit(u.x, u.y, { tex: 'dust', n: 8, speed: 50, life: 0.5, scale: 0.7, end: 1.6, add: false, alpha: 0.7 }); }
+      if (dsh.t <= 0) { u.dashing = null; if (dsh.A?.recharge) { u.stun = Math.max(u.stun, dsh.A.recharge); g.fx.number(u.x, u.y - (u.topH ?? 20) - 12, 'Recarregando...', '#ffd0a0'); } if (dsh.dive) g.fx.emit(u.x, u.y, { tex: 'dust', n: 8, speed: 50, life: 0.5, scale: 0.7, end: 1.6, add: false, alpha: 0.7 }); }
       if (dsh.mv?.type === 'fire') g.scorchTile(u.x, u.y);
       else this.arena.trample(u.x, u.y, dsh.mv);
     }
@@ -759,10 +951,20 @@ export class Combat {
     this.falls = this.falls.filter((f) => this.#updateFall(f, dt));
     // sombra das pedras caindo (aviso no chão)
     for (const f of this.falls) { const k = clamp(1 - f.z / 220, 0.1, 1); G.ellipse(f.x, f.y, 10 * f.big * k + 2, 5 * f.big * k + 1).fill({ color: 0x000000, alpha: 0.25 + 0.25 * k }); }
+    this.surfs = this.surfs.filter((sf) => this.#updateSurf(sf, dt));
+    for (const m of this.skyMarks) { m.t -= dt; const k = 1 - m.t / m.max; G.ellipse(m.x, m.y, 8 + 14 * k, 4 + 7 * k).fill({ color: 0x000000, alpha: 0.2 + 0.25 * k }); G.circle(m.x, m.y, 22).stroke({ width: 1, color: 0xffe23a, alpha: 0.6 * k }); }
+    this.skyMarks = this.skyMarks.filter((m) => m.t > 0);
+    // escudos (Proteger, Reflexo)
+    for (const e of g.entities) if (e.shieldT > 0) {
+      e.shieldT -= dt; const sh = e.shield, k = Math.min(1, e.shieldT * 4), cy = this.centerY(e), r = (e.topH ?? 20) * 0.7 + 6;
+      this.gfx.circle(e.x, cy, r).fill({ color: sh.color, alpha: 0.12 * k }).stroke({ width: 1.5, color: sh.color, alpha: 0.8 * k });
+      if (sh.hex) for (let i = 0; i < 6; i++) { const a = i / 6 * TAU + g.time; this.gfx.circle(e.x + Math.cos(a) * r * 0.55, cy + Math.sin(a) * r * 0.55, r * 0.35).stroke({ width: 1, color: sh.color, alpha: 0.4 * k }); }
+      else this.gfx.arc(e.x, cy, r - 2, g.time * 3, g.time * 3 + 1.2).stroke({ width: 2, color: 0xffffff, alpha: 0.7 * k });
+    }
     // áreas que ficam (nuvem venenosa, pó do sono)
     for (const z of this.zones) {
       z.t -= dt; z.tick -= dt;
-      this.vfx.cloud(z, dt);
+      this.vfx.cloud(z, dt, animFor(z.id));
       if (z.tick <= 0) {
         z.tick = 0.6;
         for (const t of this.targetsOf(z.user)) if (Math.hypot(t.x - z.x, t.y - z.y) < z.r + t.r) {

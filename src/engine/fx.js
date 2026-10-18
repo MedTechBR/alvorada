@@ -87,6 +87,7 @@ export class Fx {
     this.ring(x, y, color, 14 * power);
   }
   light(x, y, color = 0xffffff, r = 24, life = 0.2, alpha = 0.8) {
+    alpha *= r > 40 ? 0.6 : 0.75; // luz grande demais estoura a cena
     this.emit(x, y, { tex: 'light', color, n: 1, speed: 0, scale: r / 16, end: 1.2, life, alpha, drag: 0 });
   }
 
@@ -137,7 +138,7 @@ export class Fx {
     this.dirty.add(this.pcT);
     const life = st === 'banner' ? 1.05 : st === 'dmg' ? 0.95 : 0.9;
     const t = { glyphs, x, y, vx: st === 'dmg' ? (Math.random() - 0.5) * 50 : 0, vy: st === 'dmg' ? -95 - (big ? 25 : 0) : st === 'banner' ? -8 : -26,
-      life, max: life, big, st, base: big || st === 'banner' ? 4 / 3 : 1 };
+      life, max: life, big, st, base: big && st === 'dmg' ? 1 : 2 / 3 };
     this.texts.push(t);
     this.#layoutText(t, 1);
     return t;
@@ -146,8 +147,8 @@ export class Fx {
     const z = this.g.zoom || 3;
     const age = t.max - t.life;
     let s = t.base;
-    if (t.st === 'dmg') s *= 1 + Math.max(0, 0.18 - age) / 0.18 * (t.big ? 1.2 : 0.7);
-    else if (t.st === 'banner') s *= 1 + Math.max(0, 0.14 - age) / 0.14 * 1.4;
+    if (t.st === 'dmg') s *= 1 + Math.max(0, 0.16 - age) / 0.16 * (t.big ? 0.6 : 0.4);
+    else if (t.st === 'banner') s *= 1 + Math.max(0, 0.12 - age) / 0.12 * 1;
     s = Math.max(1 / z, Math.round(s * z) / z); // escala inteira na tela: fonte sempre nítida
     const n = t.glyphs.length, w = GLYPH_ADV * s;
     const shake = t.st === 'banner' && age < 0.35 ? (Math.random() - 0.5) * 2.5 : 0;
@@ -167,7 +168,7 @@ export class Fx {
 
   // ---------- câmera ----------
   kick(shake = 0.2, stop = 0.05) { this.shake = Math.max(this.shake, shake); this.hitStop = Math.max(this.hitStop, stop); }
-  screenFlash(color = 0xffffff, a = 0.35) { this.flashColor = color; this.flash = Math.max(this.flash, a); }
+  screenFlash(color = 0xffffff, a = 0.35) { this.flashColor = color; this.flash = Math.max(this.flash, Math.min(0.28, a * 0.6)); }
 
   // ---------- quadro ----------
   update(dt) {
