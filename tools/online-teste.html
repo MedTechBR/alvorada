@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teste online: dois jogadores</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #111; }
+  body { display: flex; gap: 4px; }
+  iframe { flex: 1; border: 0; height: 100%; min-width: 0; }
+</style>
+</head>
+<body>
+<!-- Dois jogos independentes lado a lado, cada um com o próprio perfil (como duas abas). -->
+<iframe id="A" src="../index.html?perfil=a"></iframe>
+<iframe id="B" src="../index.html?perfil=b"></iframe>
+<script>
+  const W = (id) => document.getElementById(id).contentWindow;
+  window.A = () => W('A'); window.B = () => W('B');
+  // avança quadros nos dois (o painel oculto não roda requestAnimationFrame)
+  window.step = (n = 1, dt = 1 / 60) => { for (let i = 0; i < n; i++) for (const w of [W('A'), W('B')]) w.game?.frame(dt); };
+  // espera tempo real avançando quadros
+  window.run = (ms) => new Promise((res) => { const t0 = performance.now(); const tick = () => { step(1); if (performance.now() - t0 < ms) setTimeout(tick, 16); else res(); }; tick(); });
+  window.shot = async (name) => {
+    for (const [k, w] of [['a', W('A')], ['b', W('B')]]) {
+      const g = w.game; g.app.renderer.render(g.app.stage);
+      const blob = await new Promise((r) => g.app.canvas.toBlob(r, 'image/jpeg', 0.9));
+      await fetch('/__shot?n=' + name + '-' + k, { method: 'POST', body: blob });
+    }
+  };
+</script>
+</body>
+</html>
