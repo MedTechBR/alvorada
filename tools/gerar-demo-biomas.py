@@ -239,7 +239,7 @@ T1 = [
     'HHHHHHHHHHHHHHHYYHHHHHHHHHHHHHHHHH',
     '_______________YY_________________',
 ]
-r1 = room('templo_1', 'Templo de Ará', 2, 78, T1, biome='templo', abaixo='templo_2',
+r1 = room('templo_1', 'Templo de Ará', 2, 96, T1, biome='templo', abaixo='templo_2',
     objects=[
         # salão: a pedra de Força na placa abre as duas portas de pedra
         {'kind': 'plate', 'x': 12, 'y': 13, 'id': 'placaSalao', 'abre': ['portaSalaoA', 'portaSalaoB'], 'trava': True},
@@ -297,7 +297,7 @@ T2 = [
     'HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH',
     'HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH',
 ]
-r2 = room('templo_2', 'Cripta de Ará', 40, 78, T2, biome='templo', escuro=True,
+r2 = room('templo_2', 'Cripta de Ará', 60, 96, T2, biome='templo', escuro=True,
     objects=[
         {'kind': 'brazier', 'x': 6, 'y': 2}, {'kind': 'brazier', 'x': 20, 'y': 2},
         {'kind': 'crystal', 'x': 2, 'y': 5}, {'kind': 'crystalPink', 'x': 31, 'y': 5},
@@ -316,7 +316,7 @@ r2 = room('templo_2', 'Cripta de Ará', 40, 78, T2, biome='templo', escuro=True,
     ],
     mecanismos=[{'id': 'ponteLava', 'tipo': 'ponte', 't': 'bridge', 'pts': [[15, 17], [16, 17], [17, 17]], 'msg': 'Uma ponte desceu sobre a lava!'}])
 
-room('caverna_gelo', 'Caverna de Gelo', 78, 78, [
+room('caverna_gelo', 'Caverna de Gelo', 118, 96, [
     'GGGGGGGGGGGGGGGGGGGGGGGG',
     'GGGGGGGGGGGGGGGGGGGGGGGG',
     'GGeeeeeeeeGGGGeeeeeeeeGG',
@@ -331,7 +331,7 @@ room('caverna_gelo', 'Caverna de Gelo', 78, 78, [
 ], biome='caverna', clima={'tinta': 0xe8f2ff, 'neve': 0.15},
     objects=[{'kind': 'stalagmiteIce', 'x': 3, 'y': 2}, {'kind': 'stalagmiteIce', 'x': 20, 'y': 7}, {'kind': 'crackedIce', 'x': 12, 'y': 8, 'chao': 'icefloor'},
              {'kind': 'crystal', 'x': 15, 'y': 2}])
-room('caverna_lava', 'Caverna de Lava', 106, 78, [
+room('caverna_lava', 'Caverna de Lava', 2, 140, [
     'UUUUUUUUUUUUUUUUUUUUUU',
     'UUUUUUUUUUUUUUUUUUUUUU',
     'UUuuuuuulllluuuuuuuuUU',
@@ -346,7 +346,7 @@ room('caverna_lava', 'Caverna de Lava', 106, 78, [
     objects=[{'kind': 'lavaRock', 'x': 3, 'y': 2}, {'kind': 'lavaRock', 'x': 15, 'y': 6}, {'kind': 'plate', 'x': 4, 'y': 7, 'abre': ['ponteLavaC']},
              {'kind': 'strengthRock', 'x': 6, 'y': 6}, {'kind': 'fumarola', 'x': 18, 'y': 3}],
     mecanismos=[{'id': 'ponteLavaC', 'tipo': 'ponte', 't': 'bridge', 'pts': [[8, 3], [9, 3], [10, 3], [11, 3]]}])
-room('caverna_cristal', 'Gruta de Cristal', 2, 104, [
+room('caverna_cristal', 'Gruta de Cristal', 48, 140, [
     '$$$$$$$$$$$$$$$$$$$$$$$$',
     '$$$$$$$$$$$$$$$$$$$$$$$$',
     '$$ZZZZZZSSSSSSSSZZZZZZ$$',
@@ -360,7 +360,7 @@ room('caverna_cristal', 'Gruta de Cristal', 2, 104, [
 ], biome='cristal', escuro=0.85,
     objects=[{'kind': 'crystal', 'x': 3, 'y': 2}, {'kind': 'crystalPink', 'x': 20, 'y': 3}, {'kind': 'crystal', 'x': 9, 'y': 6}, {'kind': 'crystalPink', 'x': 15, 'y': 6},
              {'kind': 'crystal', 'x': 12, 'y': 3}, {'kind': 'stalagmite', 'x': 5, 'y': 5}])
-room('mina', 'Mina Velha', 30, 104, [
+room('mina', 'Mina Velha', 96, 140, [
     'rrrrrrrrrrrrrrrrrrrrrrrrrrrr',
     'rrrrrrrrrrrrrrrrrrrrrrrrrrrr',
     'rrSSSSSSSSSSSSSSSSSSSSrrSSrr',
@@ -399,10 +399,10 @@ warps = uw
 warps.append({'x': r2['x'] + 30, 'y': r2['y'] + 2, 'dir': 'up', 'to': [r1['x'] + 29, r1['y'] + 9], 'face': 'down', 'label': 'escada'})
 warps.append({'x': r1['x'] + 28, 'y': r1['y'] + 5, 'dir': 'any', 'to': [r2['x'] + 29, r2['y'] + 3], 'face': 'down', 'label': 'escada', 'requer': 'grupo:sinos', 'msg': 'Só pedra aqui.'})
 for (r, x, y, it) in items_rooms: items.append({'x': r['x'] + x, 'y': r['y'] + y, 'item': it})
-items.append({'x': 78 + 14, 'y': 78 + 8, 'item': 'neverMeltIce'})
-items.append({'x': 40 + 28, 'y': 78 + 12, 'item': 'ultraBall', 'n': 3})
+items.append({'x': by['caverna_gelo']['x'] + 14, 'y': by['caverna_gelo']['y'] + 8, 'item': 'neverMeltIce'})
+items.append({'x': r2['x'] + 28, 'y': r2['y'] + 12, 'item': 'ultraBall', 'n': 3})
 
-H = 116
+H = 156
 rows = [''.join(r) for r in g]
 J = {
     'name': 'Demo dos biomas', 'comment': 'SÓ PARA TESTE (?mapa=demo-biomas). Gerado por tools/gerar-demo-biomas.py; não faz parte da aventura.',

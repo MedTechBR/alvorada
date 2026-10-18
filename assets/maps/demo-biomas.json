@@ -2,7 +2,7 @@
  "name": "Demo dos biomas",
  "comment": "SÓ PARA TESTE (?mapa=demo-biomas). Gerado por tools/gerar-demo-biomas.py; não faz parte da aventura.",
  "w": 170,
- "h": 116,
+ "h": 156,
  "outdoorH": 74,
  "base": "void",
  "teste": {
@@ -653,7 +653,7 @@
    "id": "templo_1",
    "name": "Templo de Ará",
    "x": 2,
-   "y": 78,
+   "y": 96,
    "rows": [
     "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
     "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
@@ -869,8 +869,8 @@
   {
    "id": "templo_2",
    "name": "Cripta de Ará",
-   "x": 40,
-   "y": 78,
+   "x": 60,
+   "y": 96,
    "rows": [
     "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
     "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
@@ -1018,8 +1018,8 @@
   {
    "id": "caverna_gelo",
    "name": "Caverna de Gelo",
-   "x": 78,
-   "y": 78,
+   "x": 118,
+   "y": 96,
    "rows": [
     "GGGGGGGGGGGGGGGGGGGGGGGG",
     "GGGGGGGGGGGGGGGGGGGGGGGG",
@@ -1065,8 +1065,8 @@
   {
    "id": "caverna_lava",
    "name": "Caverna de Lava",
-   "x": 106,
-   "y": 78,
+   "x": 2,
+   "y": 140,
    "rows": [
     "UUUUUUUUUUUUUUUUUUUUUU",
     "UUUUUUUUUUUUUUUUUUUUUU",
@@ -1146,8 +1146,8 @@
   {
    "id": "caverna_cristal",
    "name": "Gruta de Cristal",
-   "x": 2,
-   "y": 104,
+   "x": 48,
+   "y": 140,
    "rows": [
     "$$$$$$$$$$$$$$$$$$$$$$$$",
     "$$$$$$$$$$$$$$$$$$$$$$$$",
@@ -1198,8 +1198,8 @@
   {
    "id": "mina",
    "name": "Mina Velha",
-   "x": 30,
-   "y": 104,
+   "x": 96,
+   "y": 140,
    "rows": [
     "rrrrrrrrrrrrrrrrrrrrrrrrrrrr",
     "rrrrrrrrrrrrrrrrrrrrrrrrrrrr",
@@ -1290,8 +1290,8 @@
    "y": 2,
    "dir": "up",
    "to": [
-    88,
-    87
+    128,
+    105
    ],
    "face": "up",
    "label": "Caverna de Gelo"
@@ -1301,8 +1301,8 @@
    "y": 2,
    "dir": "up",
    "to": [
-    115,
-    86
+    11,
+    148
    ],
    "face": "up",
    "label": "Caverna de Lava"
@@ -1313,7 +1313,7 @@
    "dir": "up",
    "to": [
     17,
-    98
+    116
    ],
    "face": "up",
    "label": "Templo"
@@ -1324,7 +1324,7 @@
    "dir": "up",
    "to": [
     18,
-    98
+    116
    ],
    "face": "up",
    "label": "Templo"
@@ -1334,8 +1334,8 @@
    "y": 65,
    "dir": "up",
    "to": [
-    12,
-    112
+    58,
+    148
    ],
    "face": "up",
    "label": "Gruta de Cristal"
@@ -1345,15 +1345,15 @@
    "y": 65,
    "dir": "up",
    "to": [
-    42,
-    112
+    108,
+    148
    ],
    "face": "up",
    "label": "Mina"
   },
   {
-   "x": 88,
-   "y": 88,
+   "x": 128,
+   "y": 106,
    "dir": "down",
    "to": [
     20,
@@ -1363,8 +1363,8 @@
    "label": "saída"
   },
   {
-   "x": 89,
-   "y": 88,
+   "x": 129,
+   "y": 106,
    "dir": "down",
    "to": [
     20,
@@ -1374,8 +1374,8 @@
    "label": "saída"
   },
   {
-   "x": 115,
-   "y": 87,
+   "x": 11,
+   "y": 149,
    "dir": "down",
    "to": [
     96,
@@ -1385,8 +1385,8 @@
    "label": "saída"
   },
   {
-   "x": 116,
-   "y": 87,
+   "x": 12,
+   "y": 149,
    "dir": "down",
    "to": [
     96,
@@ -1397,7 +1397,7 @@
   },
   {
    "x": 17,
-   "y": 98,
+   "y": 116,
    "dir": "down",
    "to": [
     63,
@@ -1408,7 +1408,7 @@
   },
   {
    "x": 18,
-   "y": 98,
+   "y": 116,
    "dir": "down",
    "to": [
     63,
@@ -1418,8 +1418,8 @@
    "label": "saída"
   },
   {
-   "x": 12,
-   "y": 113,
+   "x": 58,
+   "y": 149,
    "dir": "down",
    "to": [
     56,
@@ -1429,8 +1429,8 @@
    "label": "saída"
   },
   {
-   "x": 13,
-   "y": 113,
+   "x": 59,
+   "y": 149,
    "dir": "down",
    "to": [
     56,
@@ -1440,8 +1440,8 @@
    "label": "saída"
   },
   {
-   "x": 14,
-   "y": 113,
+   "x": 60,
+   "y": 149,
    "dir": "down",
    "to": [
     56,
@@ -1451,8 +1451,8 @@
    "label": "saída"
   },
   {
-   "x": 15,
-   "y": 113,
+   "x": 61,
+   "y": 149,
    "dir": "down",
    "to": [
     56,
@@ -1462,8 +1462,8 @@
    "label": "saída"
   },
   {
-   "x": 42,
-   "y": 113,
+   "x": 108,
+   "y": 149,
    "dir": "down",
    "to": [
     72,
@@ -1473,8 +1473,8 @@
    "label": "saída"
   },
   {
-   "x": 43,
-   "y": 113,
+   "x": 109,
+   "y": 149,
    "dir": "down",
    "to": [
     72,
@@ -1484,8 +1484,8 @@
    "label": "saída"
   },
   {
-   "x": 44,
-   "y": 113,
+   "x": 110,
+   "y": 149,
    "dir": "down",
    "to": [
     72,
@@ -1495,8 +1495,8 @@
    "label": "saída"
   },
   {
-   "x": 45,
-   "y": 113,
+   "x": 111,
+   "y": 149,
    "dir": "down",
    "to": [
     72,
@@ -1506,23 +1506,23 @@
    "label": "saída"
   },
   {
-   "x": 70,
-   "y": 80,
+   "x": 90,
+   "y": 98,
    "dir": "up",
    "to": [
     31,
-    87
+    105
    ],
    "face": "down",
    "label": "escada"
   },
   {
    "x": 30,
-   "y": 83,
+   "y": 101,
    "dir": "any",
    "to": [
-    69,
-    81
+    89,
+    99
    ],
    "face": "down",
    "label": "escada",
@@ -1553,22 +1553,22 @@
   },
   {
    "x": 24,
-   "y": 92,
+   "y": 110,
    "item": "rareCandy"
   },
   {
    "x": 7,
-   "y": 80,
+   "y": 98,
    "item": "superPotion"
   },
   {
-   "x": 92,
-   "y": 86,
+   "x": 132,
+   "y": 104,
    "item": "neverMeltIce"
   },
   {
-   "x": 68,
-   "y": 90,
+   "x": 88,
+   "y": 108,
    "item": "ultraBall",
    "n": 3
   }
