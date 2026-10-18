@@ -486,7 +486,7 @@ export class Roteiro {
   // ---------------- Pokémon de presente ----------------
   #presente([dex, nivel, apelido]) {
     const g = this.g, mon = new Mon(dex, nivel ?? 10);
-    if (apelido) mon.nickname = apelido;
+    if (apelido) mon.nick = apelido;
     if (g.party.length < 6) g.party.push(mon); else g.box.push(mon);
     dexMark(g, dex, 2);
     g.audio?.sfx?.('caught');
