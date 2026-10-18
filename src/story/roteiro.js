@@ -294,6 +294,7 @@ export class Roteiro {
       out.push({ o: n, r: 26, label: 'Falar', fn: async () => {
         if (e.visao) return this.#dizer(n, e.apos ?? ['Boa batalha!']);
         if (await this.falar(e.quem)) return;
+        if (await this.g.missoes?.conversar(n)) return; // missões secundárias (src/story/missoes)
         return this.#dizer(n, n.padrao ?? ['…'], true);
       } });
     }

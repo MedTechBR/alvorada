@@ -1,0 +1,52 @@
+/* Missões: diário no menu (src/ui/missoes.js) e o aviso "Missão aceita / concluída". Mesmo visual do menu clássico. */
+
+/* ---- aviso ---- */
+.mq-aviso { position: absolute; left: 50%; top: calc(var(--st, 0px) + 17%); transform: translateX(-50%); pointer-events: none !important; z-index: 6;
+  min-width: 240px; max-width: min(460px, calc(100vw - 32px)); padding: 9px 26px 11px; text-align: center; color: var(--ink, #1d2340);
+  background: linear-gradient(#ffffff, #f6f8fd); border: 3px solid #36426b; border-radius: 16px;
+  box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 5px var(--mc), 0 5px 0 rgba(29,35,64,.25); animation: mqin 2.7s ease-out forwards; }
+.mq-aviso small { display: block; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #36426b; }
+.mq-aviso small::before, .mq-aviso small::after { content: '★'; color: var(--mc); margin: 0 8px; -webkit-text-stroke: 1px #36426b; }
+.mq-aviso b { display: block; font-size: 20px; line-height: 1.2; margin-top: 2px; }
+@keyframes mqin { 0% { transform: translate(-50%, -14px) scale(.9); opacity: 0; } 10% { transform: translate(-50%, 0) scale(1.03); opacity: 1; } 16%, 84% { transform: translate(-50%, 0) scale(1); opacity: 1; } 100% { transform: translate(-50%, -8px); opacity: 0; } }
+body:not(.touch) .mq-aviso { zoom: var(--k, 1); }
+@media (max-height: 430px) { .mq-aviso { top: calc(var(--st, 0px) + 12px); padding: 6px 18px 8px; } .mq-aviso b { font-size: 16px; } .mq-aviso small { font-size: 10px; } }
+@media (max-width: 520px) { .mq-aviso { top: calc(var(--st, 0px) + 150px); } }
+
+/* ---- diário ---- */
+.mq-body { flex: 1; min-height: 0; display: flex; gap: 12px; }
+.mq-list { width: 42%; flex: none; }
+.mq-info { flex: 1; min-width: 0; padding: 14px 20px; }
+.mq-row .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mq-ic { flex: none; width: 22px; height: 22px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px;
+  background: #ffd23f; color: #1d2340; border: 2px solid #36426b; }
+.mq-ic.j { background: #ffb24a; }
+.mq-row.ok .mq-ic { background: #7fd67a; }
+.mq-row.ok .nm { color: var(--ink-soft); }
+.mq-meta { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0 2px; }
+.mq-meta .gm-chip { font-size: 12px; padding: 2px 10px; }
+.mq-step { font-size: 15px; line-height: 1.35; padding: 4px 0 4px 2px; color: var(--ink-soft); }
+.mq-step.atual { color: var(--ink); }
+.mq-step.atual b { color: #36426b; }
+.mq-step.feita { text-decoration: line-through; text-decoration-color: rgba(54,66,107,.35); }
+.mq-rec { display: flex; flex-wrap: wrap; gap: 6px; }
+.mq-rec span { background: #fff6cc; border: 2px solid #efc54a; border-radius: 99px; padding: 2px 12px; font-size: 14px; }
+.mq-dica { padding: 10px 2px; line-height: 1.45; }
+@media (max-height: 520px) {
+  .mq-info { padding: 8px 14px; }
+  .mq-step { font-size: 13px; padding: 2px 0; }
+  .mq-rec span { font-size: 12px; }
+  .gm-quests .gm-desc { margin: 6px 0 2px; }
+}
+@media (max-width: 700px) {
+  .mq-body { flex-direction: column; }
+  .mq-list { width: auto; max-height: 40%; flex: none; }
+}
+/* menu principal com muitas entradas: cabe no celular deitado */
+@media (max-height: 430px) {
+  .gm-side { max-height: calc(100% - 16px); overflow-y: auto; }
+  .gm-main { padding-top: 3px; padding-bottom: 3px; }
+}
+
+/* ---- marcador de missão no mapa da região ---- */
+.lg-quest { background: #4aa3ff; border-radius: 50%; box-shadow: 0 0 0 2px #fff; }

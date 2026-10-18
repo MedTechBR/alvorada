@@ -90,6 +90,14 @@ export class Minimap {
       const u = this.dpr; ctx.fillStyle = '#fff3c8'; ctx.strokeStyle = '#3a2a1a'; ctx.lineWidth = u;
       ctx.beginPath(); ctx.moveTo(x - 3 * u, y); ctx.lineTo(x, y - 3.5 * u); ctx.lineTo(x + 3 * u, y); ctx.lineTo(x + 3 * u, y + 3 * u); ctx.lineTo(x - 3 * u, y + 3 * u); ctx.closePath(); ctx.fill(); ctx.stroke();
     }
+    // missões ativas (src/story/missoes): bolinha azul com "!" (a acompanhada fica presa na borda quando está longe)
+    for (const q of g.missoes?.marcadores?.() ?? []) {
+      let [qx, qy] = toS(q.x, q.y); const dx = qx - R, dy = qy - R, dd = Math.hypot(dx, dy), lim = R - 8 * this.dpr;
+      if (dd > lim) { if (!q.acomp) continue; qx = R + dx / dd * lim; qy = R + dy / dd * lim; }
+      const u = this.dpr, r = (q.acomp ? 4.6 : 3.6) * u; ctx.fillStyle = '#4aa3ff'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.3 * u;
+      ctx.beginPath(); ctx.arc(qx, qy, r, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#fff'; ctx.font = `900 ${Math.round(r * 1.6)}px system-ui`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('!', qx, qy + 0.3 * u);
+    }
     // objetivo da história: losango (preso na borda quando está longe)
     const tg = g.ui?.hud?.obj?.target;
     if (tg && Number.isFinite(tg.x)) {
