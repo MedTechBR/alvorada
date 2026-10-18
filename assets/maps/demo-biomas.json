@@ -1254,6 +1254,32 @@
      "x": 8,
      "y": 2,
      "text": "Empurre o vagonete: ele corre até o fim dos trilhos."
+    },
+    {
+     "kind": "raioGate",
+     "x": 12,
+     "y": 8,
+     "periodo": 2
+    },
+    {
+     "kind": "raioGate",
+     "x": 13,
+     "y": 8,
+     "periodo": 2
+    },
+    {
+     "kind": "raioGate",
+     "x": 14,
+     "y": 7,
+     "periodo": 2,
+     "fase": 1
+    },
+    {
+     "kind": "raioGate",
+     "x": 15,
+     "y": 7,
+     "periodo": 2,
+     "fase": 1
     }
    ]
   }

@@ -404,6 +404,8 @@ export class Masmorra {
       const K = KINDS[o.kind]; if (!K.gate || st.gone[o.id]) continue;
       let open = !!o.aberto || !!st.on[o.id] || !!want.get(o.id) || (o.flag && this.flag(o.flag));
       if (xor.get(o.id)) open = !open;
+      // "periodo": abre e fecha sozinho a cada N segundos ("fase" 0 ou 1); com "liga", só depois que o alvo/flag liga
+      if (o.periodo && (!o.liga || want.get(o.liga) || st.on[o.liga] || this.flag(o.liga))) open = (Math.floor(this.t / o.periodo) + (o.fase ?? 0)) % 2 === 0;
       this.#gate(o, open, init);
     }
     // pontes / blocos que aparecem
@@ -425,7 +427,8 @@ export class Masmorra {
     else { m.block[k] = 1; m.cellObj.set(k, o); this.#eject([[o.tx, o.ty]]); }
     const s = o.sprite;
     if (s) { if (init) { s.visible = !open; s.alpha = 1; } else { s.visible = true; this.anims ??= []; this.anims.push({ dur: 0.45, t: 0, step: (q) => { s.alpha = open ? 1 - q : q; s.y = o.y + (open ? -q * 6 : (q - 1) * 6); }, done: () => { s.visible = !open; s.y = o.y; } }); } }
-    if (!init) { g.audio?.sfx?.(open ? 'quake' : 'thud'); if (open && this.#near(o, 12)) g.toast(o.msg ?? 'Um portão se abriu!'); }
+    if (!init && o.periodo) { if (this.#near(o, 10)) g.audio?.sfx?.('beam-electric'); }
+    else if (!init) { g.audio?.sfx?.(open ? 'quake' : 'thud'); if (open && this.#near(o, 12)) g.toast(o.msg ?? 'Um portão se abriu!'); }
   }
   #near(o, tiles) { const p = this.g.player; return Math.hypot(o.x - p.x, o.y - p.y) < tiles * T; }
   // alguém preso num bloco que fechou: vai para o lado livre (como os portões de enigmas.js)
@@ -458,6 +461,7 @@ export class Masmorra {
       o.sprite.texture = lit ? SPR[K.fire][(f + (o.tx & 1)) % 3] : SPR[K.tex];
       if (lit && Math.random() < dt * 3) this.g.fx?.emit(o.x + (Math.random() - 0.5) * 4, o.y - 26, { tex: 'ember', n: 1, speed: 6, life: 0.8, vz: 25, add: true });
     }
+    for (const o of this.objs.values()) if (KINDS[o.kind].raio && o.sprite && !o.open) o.sprite.texture = SPR.raioGate[Math.floor(this.t * 10) & 1];
     for (const a of (this.anims ?? []).slice()) { a.t += dt; const k = Math.min(1, a.t / a.dur); a.step(k); if (k >= 1) { this.anims.splice(this.anims.indexOf(a), 1); a.done?.(); } }
   }
 

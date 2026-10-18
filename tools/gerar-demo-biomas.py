@@ -374,7 +374,9 @@ room('mina', 'Mina Velha', 30, 104, [
 ], biome='mina', escuro=0.5,
     objects=[{'kind': 'cart', 'x': 6, 'y': 3}, {'kind': 'crackedRock', 'x': 24, 'y': 3, 'chao': 'darkcave', 'msg': 'O vagonete arrebentou a parede rachada!'},
              {'kind': 'torch', 'x': 2, 'y': 2, 'acesa': True}, {'kind': 'torch', 'x': 20, 'y': 7, 'acesa': True}, {'kind': 'barrel', 'x': 3, 'y': 7}, {'kind': 'barrel', 'x': 22, 'y': 7},
-             {'kind': 'sign', 'x': 8, 'y': 2, 'text': 'Empurre o vagonete: ele corre até o fim dos trilhos.'}])
+             {'kind': 'sign', 'x': 8, 'y': 2, 'text': 'Empurre o vagonete: ele corre até o fim dos trilhos.'},
+             {'kind': 'raioGate', 'x': 12, 'y': 8, 'periodo': 2}, {'kind': 'raioGate', 'x': 13, 'y': 8, 'periodo': 2},
+             {'kind': 'raioGate', 'x': 14, 'y': 7, 'periodo': 2, 'fase': 1}, {'kind': 'raioGate', 'x': 15, 'y': 7, 'periodo': 2, 'fase': 1}])
 
 # entradas e saídas: liga as portas de fora às salas (entrada = 1 bloco acima da saída de baixo)
 by = {r['id']: r for r in rooms}

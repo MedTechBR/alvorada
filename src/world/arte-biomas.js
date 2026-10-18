@@ -970,3 +970,12 @@ SPR.sucata = art(32, 22, (x) => {
   poly(x, '#6a6e78', [[2, 20], [4, 8], [14, 4], [22, 9], [20, 20]]); px(x, '#8a8e98', 5, 8, 9, 2); px(x, '#b86a3a', 8, 12, 4, 3); px(x, '#b86a3a', 15, 14, 3, 2);
   px(x, '#4a4e58', 20, 12, 10, 8); px(x, '#9aa4b0', 21, 13, 8, 2); blob(x, 25, 17, 1.6, '#5ae8a0'); x.strokeStyle = '#3a3e48'; x.beginPath(); x.moveTo(14, 4); x.lineTo(18, 0); x.stroke();
 });
+
+// portão de raio (como os do Farol Coral em enigmas.js): dois quadros que cintilam
+SPR.raioGate = [0, 1].map((f) => texOf(canvas(16, 24, (x) => {
+  px(x, '#3a4048', 0, 6, 16, 3); px(x, '#3a4048', 0, 20, 16, 3); px(x, '#5a6470', 0, 6, 16, 1);
+  x.strokeStyle = 'rgba(154,255,244,0.95)'; x.lineWidth = 1; x.beginPath();
+  for (let k = 0; k < 3; k++) { const y0 = 10 + k * 3; x.moveTo(0, y0); for (let X = 2; X <= 16; X += 2) x.lineTo(X, y0 + (((X / 2 + k + f) % 2) ? 1.5 : -1.5)); }
+  x.stroke(); x.fillStyle = 'rgba(255,255,255,0.9)'; x.fillRect(f ? 5 : 11, 12, 1, 1);
+})));
+SPR.raioGateA = SPR.raioGate[0];

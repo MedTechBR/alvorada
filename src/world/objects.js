@@ -66,6 +66,7 @@ export const KINDS = {
   plate: { tex: 'plate', fw: 1, fh: 1, oy: 0, flat: true, solidCells: [] }, lever: { tex: 'lever', fw: 1, fh: 1, oy: 0, lever: true },
   stoneDoor: { tex: 'stoneDoor', fw: 1, fh: 1, oy: 0, gate: true }, barsGate: { tex: 'barsGate', fw: 1, fh: 1, oy: 0, gate: true },
   lockedDoor: { tex: 'lockedDoor', fw: 1, fh: 1, oy: 0, gate: true, locked: true },
+  raioGate: { tex: 'raioGateA', fw: 1, fh: 1, oy: 0, gate: true, raio: true },
   crackedWall: { tex: 'crackedWall', fw: 1, fh: 1, oy: 0, cracked: true }, crackedRock: { tex: 'crackedRock', fw: 1, fh: 1, oy: 0, cracked: true },
   crackedIce: { tex: 'crackedIce', fw: 1, fh: 1, oy: 0, cracked: true }, crackedLava: { tex: 'crackedLava', fw: 1, fh: 1, oy: 0, cracked: true },
   crackedCanyon: { tex: 'crackedCanyon', fw: 1, fh: 1, oy: 0, cracked: true },
