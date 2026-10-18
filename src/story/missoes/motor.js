@@ -536,13 +536,14 @@ export class Missoes {
     const g = this.g, ui = g.ui;
     return ui?.state === 'play' && !ui.blocking && !g.story?.busy && !g.story?.battle && !g.mundo?.warping;
   }
+  // um erro nas missões nunca pode parar o laço do jogo: avisa uma vez no console e segue
   update(dt) {
     if (!this.g.flags) return;
-    const s = this.s;
-    if ((this.checkT -= dt) <= 0) { this.checkT = 0.25; this.#checar(); this._pronto = true; }
-    this.mundo.update(dt);
-    if (this.fila.length && this.livre()) { const job = this.fila.shift(); this.g.story.cut(job).catch((e) => console.warn('missões', e)); }
-    void s;
+    try {
+      if ((this.checkT -= dt) <= 0) { this.checkT = 0.25; this.#checar(); this._pronto = true; }
+      this.mundo.update(dt);
+      if (this.fila.length && this.livre()) { const job = this.fila.shift(); this.g.story.cut(job).catch((e) => console.warn('missões', e)); }
+    } catch (e) { if (!this.erro) { this.erro = true; console.warn('missões: update', e); } }
   }
   #checar() {
     this.#sincronizar();

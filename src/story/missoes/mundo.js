@@ -104,8 +104,9 @@ export class MundoMissoes {
       if (d >= 11) continue;
       M.s.achados[k] = 1;
       const a = M.estado(s.m.id); if (a) a.c++;
+      const sx = s.x, sy = s.y;
       s.sparkle.destroy(); s.destroy(); this.itens.delete(k);
-      g.fx?.emit(s.x, s.y - 6, { color: 0xfff27a, n: 10, speed: 40, size: 3, life: 0.5, vz: 40 });
+      g.fx?.emit(sx, sy - 6, { color: 0xfff27a, n: 10, speed: 40, size: 3, life: 0.5, vz: 40 });
       g.audio?.sfx?.('levelup');
       const e = s.e, item = e.item, nItem = e.nItem ?? 1;
       if (item) { g.bag[item] = (g.bag[item] ?? 0) + nItem; g.toast(`Você encontrou ${nItem > 1 ? nItem + '× ' : ''}${itemName(item)}!`); }
