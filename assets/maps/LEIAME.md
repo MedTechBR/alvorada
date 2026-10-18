@@ -27,6 +27,12 @@ Depois de editar à mão, `python3 tools/formatar-mapa.py assets/maps/alvorada.j
 - `areas`: nome e bioma (`vila`, `campo`, `floresta`, `margem`, `praia`, `planalto`) por `rect` ou `ellipse`;
   a última que contém o ponto vence. Bioma `vila` não tem selvagens.
 - `items`: Poké Bolas no chão `{x,y,item}` (brilham; pegar ao passar por cima).
+- `people`: moradores `{id,name,look,x,y,dir,wander,kid?,lines,heal?,all?}` (também dentro de cada interior, em
+  coordenadas da sala). `look` é uma predefinição de `src/sprites/charart.js` (`menino`, `menina`, `professor`, `mae`,
+  `rival`, `treinador`, `treinadora`, `montanhista`) ou `{preset, ...cores}`. Cada conversa mostra a próxima fala.
+- `pets`: Pokémon passivos `{dex,x,y,wander,perch?,sleep?,say}`; `perch: true` = parado num telhado.
+- Objetos com `text` (placas e móveis) mostram o texto com E. `noTrees`: retângulos `[x,y,w,h]` sem árvores soltas.
+- `include`: arquivos desenhados antes deste (o esboço da região).
 
 ## Tipos de bloco (caracteres dos carimbos)
 
@@ -41,3 +47,6 @@ Depois de editar à mão, `python3 tools/formatar-mapa.py assets/maps/alvorada.j
 | `:` | sand | | `c` | court (quadra) |
 | `*` | flowers | | `f` / `t` / `w` / `m` | floor / tilefloor / wall / mat (interiores) |
 | `_` | void | | `k` / `r` / `O` | cave / rock / cavedoor (gruta) |
+| `g` | gold (campo dourado) | | `L` | mud (lamaçal: Correr) |
+| `M` | corn (milharal, sólido) | | `V` | climb (paredão com trepadeira: Escalar) |
+| `y` / `x` | fio dourado / prateado (Estufa-Teia) | | `s` / `D` | snow / dock (píer) |

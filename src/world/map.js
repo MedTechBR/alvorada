@@ -175,13 +175,24 @@ export class GameMap {
   // Liga o mapa à cena: objetos e mato alto entram no contêiner com y-sort do jogo
   attach(g) { this.g = g; this.ents = g.ents; return this.cellObj; }
 
+  // montagem de um setor: pode ser feita de uma vez (visível) ou em fatias ao longo de vários quadros (pré-carga)
   #buildChunk(c) {
+    if (!c.img) this.#startChunk(c);
+    this.#rowsChunk(c, c.row ?? 0, CH);
+    this.#finishChunk(c);
+  }
+  #startChunk(c) {
     const cv = document.createElement('canvas'); cv.width = CPX; cv.height = CPX;
-    const ctx = cv.getContext('2d'); const img = ctx.createImageData(CPX, CPX);
-    const ox = c.cx * CH, oy = c.cy * CH;
-    renderTiles(this, img, ox, oy, ox, oy, Math.min(CH, this.w - ox), Math.min(CH, this.h - oy));
+    const ctx = cv.getContext('2d'); c.canvas = cv; c.ctx = ctx; c.img = ctx.createImageData(CPX, CPX); c.row = 0;
+  }
+  #rowsChunk(c, r0, r1) {
+    const ox = c.cx * CH, oy = c.cy * CH, th = Math.min(r1, this.h - oy) - r0;
+    if (th > 0) renderTiles(this, c.img, ox, oy, ox, oy + r0, Math.min(CH, this.w - ox), th);
+    c.row = r1;
+  }
+  #finishChunk(c) {
+    const ox = c.cx * CH, oy = c.cy * CH, cv = c.canvas, ctx = c.ctx, img = c.img;
     ctx.putImageData(img, 0, 0);
-    c.canvas = cv; c.ctx = ctx; c.img = img;
     c.tex = PIXI.Texture.from(cv); c.tex.source.scaleMode = 'nearest';
     c.sprite = new PIXI.Sprite(c.tex); c.sprite.x = c.x; c.sprite.y = c.y; c.sprite.visible = false;
     this.groundLayer.addChild(c.sprite);
@@ -262,11 +273,16 @@ export class GameMap {
     for (const c of this.visible) if (!now.has(c)) this.#showChunk(c, false);
     this.visible = now;
     // pré-carrega um setor por quadro em volta da tela
-    let pre = this.frameK % 2 ? 0 : 1; // no máximo um setor a cada dois quadros
-    for (let cy = cy0 - 1; cy <= cy1 + 1 && pre; cy++) for (let cx = cx0 - 1; cx <= cx1 + 1 && pre; cx++) {
-      if (cx < 0 || cy < 0 || cx >= this.CW || cy >= this.CHh) continue;
-      const c = this.chunks[cx + cy * this.CW]; if (!c.built) { this.#buildChunk(c); c.seen = this.frameK; pre--; }
+    // pré-carga em fatias de 4 linhas por quadro (sem engasgo ao entrar numa área nova)
+    if (this.pending && (this.pending.built || !this.pending.img)) this.pending = null;
+    if (!this.pending) {
+      for (let cy = cy0 - 1; cy <= cy1 + 1 && !this.pending; cy++) for (let cx = cx0 - 1; cx <= cx1 + 1 && !this.pending; cx++) {
+        if (cx < 0 || cy < 0 || cx >= this.CW || cy >= this.CHh) continue;
+        const c = this.chunks[cx + cy * this.CW]; if (!c.built) { this.#startChunk(c); this.pending = c; }
+      }
     }
+    const pc = this.pending;
+    if (pc) { if (pc.row < CH) this.#rowsChunk(pc, pc.row, Math.min(CH, pc.row + 4)); else { this.#finishChunk(pc); pc.seen = this.frameK; this.pending = null; } }
     // descarta setores longe (memória de vídeo do celular)
     if (this.frameK % 60 === 0) {
       const built = this.chunks.filter((c) => c.built && !c.shown);

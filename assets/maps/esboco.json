@@ -580,6 +580,23 @@
 },
 {
 "op": "comment",
+"_": "campos abertos do sul: árvores soltas e manchas de mato alto"
+},
+{
+"op": "blobs",
+"t": "tall",
+"x": 0,
+"y": 144,
+"w": 600,
+"h": 252,
+"scale": 0.12,
+"th": 0.66,
+"on": [
+"grass"
+]
+},
+{
+"op": "comment",
 "_": "cidades esboçadas (detalhar nas próximas rodadas)"
 },
 {
@@ -588,7 +605,19 @@
 "x": 432,
 "y": 312,
 "w": 42,
-"h": 24
+"h": 24,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
 },
 {
 "op": "rect",
@@ -651,7 +680,19 @@
 "x": 324,
 "y": 408,
 "w": 48,
-"h": 24
+"h": 24,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
 },
 {
 "op": "rect",
@@ -675,7 +716,19 @@
 "x": 324,
 "y": 216,
 "w": 36,
-"h": 30
+"h": 30,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
 },
 {
 "op": "rect",
@@ -699,7 +752,19 @@
 "x": 480,
 "y": 168,
 "w": 60,
-"h": 36
+"h": 36,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
 },
 {
 "op": "rect",
@@ -723,7 +788,19 @@
 "x": 264,
 "y": 156,
 "w": 42,
-"h": 24
+"h": 24,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
 },
 {
 "op": "rect",
@@ -773,7 +850,19 @@
 "x": 132,
 "y": 84,
 "w": 42,
-"h": 30
+"h": 30,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
 },
 {
 "op": "rect",
@@ -797,7 +886,19 @@
 "x": 516,
 "y": 24,
 "w": 42,
-"h": 24
+"h": 24,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
 },
 {
 "op": "rect",
@@ -821,7 +922,19 @@
 "x": 288,
 "y": 0,
 "w": 36,
-"h": 18
+"h": 18,
+"on": [
+"grass",
+"grass2",
+"tall",
+"flowers",
+"forest",
+"dark",
+"gold",
+"rock",
+"snow",
+"path"
+]
 },
 {
 "op": "rect",
@@ -1501,23 +1614,6 @@
 "y": 36,
 "w": 24,
 "h": 18
-},
-{
-"op": "comment",
-"_": "campos abertos do sul: árvores soltas e manchas de mato alto"
-},
-{
-"op": "blobs",
-"t": "tall",
-"x": 0,
-"y": 144,
-"w": 600,
-"h": 252,
-"scale": 0.12,
-"th": 0.66,
-"on": [
-"grass"
-]
 },
 {
 "op": "comment",

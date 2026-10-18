@@ -105,6 +105,9 @@ op(op='path', t='path', pts=[[center(P['vila_lamparina'])[0], center(P['vila_lam
 op(op='blobs', t='tall', x=r6x, y=r6y, w=r6w, h=r6h, scale=0.15, th=0.6)
 trees.append({'x': r6x, 'y': r6y, 'w': r6w, 'h': r6h, 'p': 0.01, 'kinds': ['tree2', 'pine'], 'on': ['grass']})
 
+note('campos abertos do sul: árvores soltas e manchas de mato alto')
+op(op='blobs', t='tall', x=0, y=u(24), w=W, h=u(42), scale=0.12, th=0.66, on=['grass'])
+trees.append({'x': 0, 'y': u(24), 'w': W, 'h': u(42), 'p': 0.006, 'kinds': ['bigtree', 'tree', 'tree2', 'bush'], 'on': ['grass']})
 note('cidades esboçadas (detalhar nas próximas rodadas)')
 EXTRA = {
     'porto_espelho': 'Palafitas, píer comprido, barcos a vela.', 'cidade_coral': 'Calçadão, coqueiros e o Farol Coral.',
@@ -115,7 +118,7 @@ EXTRA = {
 for pid, txt in EXTRA.items():
     p = P[pid]; x, y, w, h = box(p); cx, cy = x + w // 2, y + h // 2
     base = {'cidade_aurora': 'plaza', 'liga_zenite': 'snow'}.get(pid, 'grass')
-    op(op='rect', t=base, x=x, y=y, w=w, h=h)
+    op(op='rect', t=base, x=x, y=y, w=w, h=h, on=['grass', 'grass2', 'tall', 'flowers', 'forest', 'dark', 'gold', 'rock', 'snow', 'path'])
     op(op='rect', t='plaza', x=cx - 7, y=cy - 1, w=14, h=6)
     op(op='rect', t='path', x=x, y=cy + 5, w=w, h=2)
     objects += [{'kind': 'center', 'x': cx - 16, 'y': cy - 4}, {'kind': 'mart', 'x': cx + 8, 'y': cy - 4},
@@ -156,9 +159,6 @@ rv = P['ruinas_vigias']; rvx, rvy, rvw, rvh = box(rv)
 op(op='rect', t='plaza', x=rvx, y=rvy, w=rvw, h=rvh)
 for k in range(5): objects.append({'kind': 'column', 'x': rvx + 2 + k * 4, 'y': rvy + 4 + (k % 2) * 6})
 
-note('campos abertos do sul: árvores soltas e manchas de mato alto')
-op(op='blobs', t='tall', x=0, y=u(24), w=W, h=u(42), scale=0.12, th=0.66, on=['grass'])
-trees.append({'x': 0, 'y': u(24), 'w': W, 'h': u(42), 'p': 0.006, 'kinds': ['bigtree', 'tree', 'tree2', 'bush'], 'on': ['grass']})
 note('fim do esboço')
 # áreas: maiores primeiro (as menores, desenhadas depois, vencem)
 BIOMA = {'cidade': 'vila', 'rota': 'campo', 'floresta': 'floresta', 'lago': 'margem', 'praia': 'praia', 'planalto': 'planalto',
