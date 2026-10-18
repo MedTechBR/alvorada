@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="../">
+  <title>Vitrine 3D</title>
+  <script type="importmap">
+    { "imports": { "pixi.js": "https://cdn.jsdelivr.net/npm/pixi.js@8.6.6/dist/pixi.min.mjs", "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }
+  </script>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #1b2a1e; color: #f4f0e6; font: 12px/1.3 system-ui, sans-serif; }
+    canvas { display: block; }
+    #painel { position: fixed; left: 8px; top: 8px; background: rgba(20, 24, 30, .78); padding: 8px 10px; border-radius: 8px; max-width: 360px; }
+    #painel b { color: #ffd86a; }
+    #rotulos { position: fixed; inset: 0; pointer-events: none; }
+    .rot { position: absolute; transform: translate(-50%, 0); white-space: nowrap; font-size: 11px; color: #fff; text-shadow: 0 1px 2px #000, 0 0 3px #000; text-align: center; }
+    .rot i { color: #9fe; font-style: normal; }
+    .rot.caro i { color: #f88; }
+  </style>
+</head>
+<body>
+<!-- Vitrine do kit de modelos 3D (src/visual3d/kit): todos os modelos numa grade, com a câmera do jogo.
+     Abrir em http://127.0.0.1:PORTA/tools/vitrine-3d.html
+     ?f=texto (filtra pelo nome)  ?cat=natureza|objetos|predios|interior  ?noite=1  ?zoom=2  ?pegada=0  ?rotulos=0
+     Teclas: setas/WASD andam, +/- zoom, N dia/noite, P pegadas. Arrastar com o mouse também anda. -->
+<div id="painel">carregando…</div>
+<div id="rotulos"></div>
+<script type="module" src="tools/vitrine-3d.js"></script>
+</body>
+</html>
