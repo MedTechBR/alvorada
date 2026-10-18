@@ -16,7 +16,7 @@ export class Sobreposicao {
     this.rt = RenderTexture.create({ width: 512, height: 512 });
     this.rt.source.scaleMode = 'linear';
     // malha em grade: cada vértice vai para a projeção 3D do seu ponto no chão (com perspectiva e mundo curvo)
-    this.N = 9; this.mRT = new Matrix(); this.mTela = new Matrix();
+    this.N = 9; this.mRT = new Matrix(); this.mTela = new Matrix(); this.mClima = new Matrix();
     this.mesh = new MeshPlane({ texture: this.rt, verticesX: this.N, verticesY: this.N });
     app.stage.addChildAt(this.mesh, Math.max(0, app.stage.getChildIndex(g.world)));
     this.temTela = new WeakMap(); // filho de ents -> tem algo que não é sprite (barra, nome, balão)?
@@ -40,12 +40,17 @@ export class Sobreposicao {
     const k = Math.min(zoom * 1.1, this.max / ww, this.max / hh);
     const rw = Math.min(this.max, Math.ceil(ww * k)), rh = Math.min(this.max, Math.ceil(hh * k));
     if (Math.abs(this.rt.width - rw) > 32 || Math.abs(this.rt.height - rh) > 32 || this.rt.width < rw || this.rt.height < rh) this.rt.resize(rw + 16, rh + 16);
-    const root = g.map.root, ents = g.ents;
+    const root = g.map.root, ents = g.ents, cl = g.mundo?.clima;
+    // clima (chuva, neve, cinzas, areia, névoa): fica no ar em volta da câmera, então vai em espaço de tela
+    // como no 2D, e não deitado no chão
+    const climas = cl ? [cl.layer, cl.add].filter((c) => c?.visible) : [];
     const vr = root?.visible, ve = ents.visible;
     if (root) root.visible = false; ents.visible = false;
+    for (const c of climas) c.visible = false;
     this.mRT.set(k, 0, 0, k, -p.x0 * k, -p.y0 * k);
     R.render({ container: W, target: this.rt, clear: true, clearColor: [0, 0, 0, 0], transform: this.mRT });
     if (root) root.visible = vr; ents.visible = ve;
+    for (const c of climas) c.visible = true;
     // a grade: posição = projeção do ponto do chão; uv = a parte usada da textura
     const fu = (ww * k) / this.rt.width, fv = (hh * k) / this.rt.height, N = this.N;
     const geo = this.mesh.geometry, pb = geo.getBuffer('aPosition'), ub = geo.getBuffer('aUV'), P = pb.data, U = ub.data, tmp = (this.tmp ??= {});
@@ -62,6 +67,8 @@ export class Sobreposicao {
     R.render({ container: stage });
     for (const c of escTela) c.visible = true;
     W.visible = vw;
+    // clima com a câmera do 2D (as partículas estão em volta dela)
+    if (climas.length) { this.mClima.set(W.scale.x, 0, 0, W.scale.y, W.x, W.y); for (const c of climas) R.render({ container: c, clear: false, transform: this.mClima }); }
     // 3) barras de PS, nomes, balões e marcas das entidades: cada uma no seu ponto projetado, sem os sprites
     this.#rotulos(R, ents);
     pf.rt += t1 - t0; pf.tela += performance.now() - t1; pf.n++;
