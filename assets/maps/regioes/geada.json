@@ -395,48 +395,6 @@
    "wobble": 1.2
   },
   {
-   "op": "path",
-   "t": "path",
-   "pts": [
-    [
-     644,
-     68
-    ],
-    [
-     638,
-     52
-    ],
-    [
-     630,
-     38
-    ],
-    [
-     628,
-     24
-    ]
-   ],
-   "width": 2,
-   "wobble": 1.0
-  },
-  {
-   "op": "ellipse",
-   "t": "snowfield",
-   "cx": 626,
-   "cy": 15,
-   "rx": 11,
-   "ry": 8,
-   "noise": 0.7
-  },
-  {
-   "op": "ellipse",
-   "t": "path",
-   "cx": 626,
-   "cy": 16,
-   "rx": 3,
-   "ry": 2,
-   "noise": 0.4
-  },
-  {
    "op": "comment",
    "_": "lago_congelado: Lago Congelado (gelo)"
   },
@@ -549,51 +507,6 @@
    ],
    "width": 2,
    "wobble": 0.8
-  },
-  {
-   "op": "ellipse",
-   "t": "snowfield",
-   "cx": 648,
-   "cy": 156,
-   "rx": 14,
-   "ry": 11,
-   "noise": 0.7
-  },
-  {
-   "op": "ellipse",
-   "t": "deepsnow",
-   "cx": 648,
-   "cy": 156,
-   "rx": 8,
-   "ry": 6,
-   "noise": 0.6
-  },
-  {
-   "op": "path",
-   "t": "snowfield",
-   "pts": [
-    [
-     648,
-     146
-    ],
-    [
-     652,
-     134
-    ],
-    [
-     662,
-     126
-    ],
-    [
-     676,
-     122
-    ]
-   ],
-   "width": 2,
-   "wobble": 0.8,
-   "on": [
-    "forest"
-   ]
   },
   {
    "op": "comment",
@@ -1043,55 +956,6 @@
     "deepsnow",
     "ice"
    ]
-  },
-  {
-   "op": "path",
-   "t": "snowfield",
-   "pts": [
-    [
-     746,
-     86
-    ],
-    [
-     772,
-     80
-    ],
-    [
-     800,
-     76
-    ],
-    [
-     830,
-     74
-    ],
-    [
-     852,
-     76
-    ],
-    [
-     870,
-     78
-    ],
-    [
-     870,
-     100
-    ]
-   ],
-   "width": 2,
-   "wobble": 1.2,
-   "on": [
-    "forest",
-    "cliff"
-   ]
-  },
-  {
-   "op": "ellipse",
-   "t": "snowfield",
-   "cx": 800,
-   "cy": 79,
-   "rx": 6,
-   "ry": 4,
-   "noise": 0.4
   },
   {
    "op": "path",
@@ -1627,6 +1491,313 @@
   },
   {
    "op": "comment",
+   "_": "vale do vento: bosques, lagoas congeladas e o Mirante do Gelo Azul, ao norte do atalho do Lenhador"
+  },
+  {
+   "op": "blobs",
+   "t": "forest",
+   "x": 742,
+   "y": 26,
+   "w": 236,
+   "h": 34,
+   "scale": 0.08,
+   "th": 0.5,
+   "on": [
+    "snowfield",
+    "tallsnow",
+    "deepsnow"
+   ]
+  },
+  {
+   "op": "ellipse",
+   "t": "frozen",
+   "cx": 790,
+   "cy": 40,
+   "rx": 14,
+   "ry": 8,
+   "noise": 0.7
+  },
+  {
+   "op": "ellipse",
+   "t": "frozen",
+   "cx": 870,
+   "cy": 46,
+   "rx": 10,
+   "ry": 6,
+   "noise": 0.7
+  },
+  {
+   "op": "ellipse",
+   "t": "frozen",
+   "cx": 944,
+   "cy": 38,
+   "rx": 12,
+   "ry": 7,
+   "noise": 0.7
+  },
+  {
+   "op": "ellipse",
+   "t": "snowfield",
+   "cx": 790,
+   "cy": 40,
+   "rx": 17,
+   "ry": 10,
+   "noise": 0.5,
+   "on": [
+    "forest"
+   ]
+  },
+  {
+   "op": "ellipse",
+   "t": "snowfield",
+   "cx": 944,
+   "cy": 38,
+   "rx": 15,
+   "ry": 9,
+   "noise": 0.5,
+   "on": [
+    "forest"
+   ]
+  },
+  {
+   "op": "ellipse",
+   "t": "frozen",
+   "cx": 790,
+   "cy": 40,
+   "rx": 14,
+   "ry": 8,
+   "noise": 0.7
+  },
+  {
+   "op": "ellipse",
+   "t": "frozen",
+   "cx": 944,
+   "cy": 38,
+   "rx": 12,
+   "ry": 7,
+   "noise": 0.7
+  },
+  {
+   "op": "blobs",
+   "t": "tallsnow",
+   "x": 742,
+   "y": 26,
+   "w": 236,
+   "h": 34,
+   "scale": 0.12,
+   "th": 0.62,
+   "on": [
+    "snowfield"
+   ]
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     870,
+     78
+    ],
+    [
+     869,
+     64
+    ],
+    [
+     878,
+     50
+    ],
+    [
+     892,
+     40
+    ],
+    [
+     904,
+     33
+    ]
+   ],
+   "width": 2,
+   "wobble": 1.0,
+   "on": [
+    "snowfield",
+    "tallsnow",
+    "forest",
+    "cliff",
+    "deepsnow",
+    "ice"
+   ]
+  },
+  {
+   "op": "ellipse",
+   "t": "snowfield",
+   "cx": 906,
+   "cy": 31,
+   "rx": 9,
+   "ry": 6,
+   "noise": 0.6
+  },
+  {
+   "op": "ellipse",
+   "t": "path",
+   "cx": 906,
+   "cy": 33,
+   "rx": 3,
+   "ry": 2,
+   "noise": 0.4
+  },
+  {
+   "op": "comment",
+   "_": "vale escondido: o corredor ao sul da crista da Rota 16, com a Cabana do Eremita"
+  },
+  {
+   "op": "ellipse",
+   "t": "frozen",
+   "cx": 802,
+   "cy": 184,
+   "rx": 18,
+   "ry": 7,
+   "noise": 0.7
+  },
+  {
+   "op": "ellipse",
+   "t": "frozen",
+   "cx": 936,
+   "cy": 183,
+   "rx": 16,
+   "ry": 6,
+   "noise": 0.7
+  },
+  {
+   "op": "blobs",
+   "t": "forest",
+   "x": 762,
+   "y": 174,
+   "w": 214,
+   "h": 14,
+   "scale": 0.09,
+   "th": 0.55,
+   "on": [
+    "snowfield",
+    "tallsnow"
+   ]
+  },
+  {
+   "op": "blobs",
+   "t": "deepsnow",
+   "x": 762,
+   "y": 174,
+   "w": 214,
+   "h": 14,
+   "scale": 0.1,
+   "th": 0.62,
+   "on": [
+    "snowfield"
+   ]
+  },
+  {
+   "op": "set",
+   "t": "snowfield",
+   "pts": [
+    [
+     868,
+     171
+    ],
+    [
+     869,
+     171
+    ],
+    [
+     870,
+     171
+    ],
+    [
+     868,
+     172
+    ],
+    [
+     869,
+     172
+    ],
+    [
+     870,
+     172
+    ],
+    [
+     868,
+     173
+    ],
+    [
+     869,
+     173
+    ],
+    [
+     870,
+     173
+    ],
+    [
+     868,
+     174
+    ],
+    [
+     869,
+     174
+    ],
+    [
+     870,
+     174
+    ]
+   ]
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     869,
+     168
+    ],
+    [
+     869,
+     180
+    ],
+    [
+     900,
+     183
+    ],
+    [
+     926,
+     181
+    ]
+   ],
+   "width": 2,
+   "wobble": 1.0,
+   "on": [
+    "snowfield",
+    "tallsnow",
+    "forest",
+    "deepsnow",
+    "ice"
+   ]
+  },
+  {
+   "op": "ellipse",
+   "t": "snowfield",
+   "cx": 926,
+   "cy": 178,
+   "rx": 8,
+   "ry": 5,
+   "noise": 0.5
+  },
+  {
+   "op": "ellipse",
+   "t": "path",
+   "cx": 928,
+   "cy": 180,
+   "rx": 3,
+   "ry": 2,
+   "noise": 0.4
+  },
+  {
+   "op": "comment",
    "_": "cordilheira ao norte (y 0 a 24)"
   },
   {
@@ -1904,6 +2075,153 @@
    "y": 117,
    "w": 4,
    "h": 8
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     644,
+     68
+    ],
+    [
+     638,
+     52
+    ],
+    [
+     630,
+     38
+    ],
+    [
+     628,
+     24
+    ]
+   ],
+   "width": 2,
+   "wobble": 1.0,
+   "on": [
+    "grass",
+    "grass2",
+    "tall",
+    "flowers",
+    "snowfield",
+    "tallsnow",
+    "forest",
+    "cliff"
+   ]
+  },
+  {
+   "op": "ellipse",
+   "t": "snowfield",
+   "cx": 626,
+   "cy": 15,
+   "rx": 11,
+   "ry": 8,
+   "noise": 0.7
+  },
+  {
+   "op": "ellipse",
+   "t": "path",
+   "cx": 626,
+   "cy": 16,
+   "rx": 3,
+   "ry": 2,
+   "noise": 0.4
+  },
+  {
+   "op": "ellipse",
+   "t": "snowfield",
+   "cx": 648,
+   "cy": 156,
+   "rx": 14,
+   "ry": 11,
+   "noise": 0.7
+  },
+  {
+   "op": "ellipse",
+   "t": "deepsnow",
+   "cx": 648,
+   "cy": 156,
+   "rx": 8,
+   "ry": 6,
+   "noise": 0.6
+  },
+  {
+   "op": "path",
+   "t": "snowfield",
+   "pts": [
+    [
+     648,
+     146
+    ],
+    [
+     652,
+     134
+    ],
+    [
+     662,
+     126
+    ],
+    [
+     676,
+     122
+    ]
+   ],
+   "width": 2,
+   "wobble": 0.8,
+   "on": [
+    "forest",
+    "cliff"
+   ]
+  },
+  {
+   "op": "path",
+   "t": "snowfield",
+   "pts": [
+    [
+     746,
+     86
+    ],
+    [
+     772,
+     80
+    ],
+    [
+     800,
+     76
+    ],
+    [
+     830,
+     74
+    ],
+    [
+     852,
+     76
+    ],
+    [
+     870,
+     78
+    ],
+    [
+     870,
+     100
+    ]
+   ],
+   "width": 2,
+   "wobble": 1.2,
+   "on": [
+    "forest",
+    "cliff"
+   ]
+  },
+  {
+   "op": "ellipse",
+   "t": "snowfield",
+   "cx": 800,
+   "cy": 79,
+   "rx": 6,
+   "ry": 4,
+   "noise": 0.4
   },
   {
    "op": "comment",
@@ -2301,6 +2619,3458 @@
   {
    "op": "comment",
    "_": "fiorde: ilhotas, cais e o Aldo"
+  },
+  {
+   "op": "comment",
+   "_": "vale do vento: mirante e baú"
+  },
+  {
+   "op": "comment",
+   "_": "vale escondido: cabana do eremita e tesouros"
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 762,
+   "y": 108,
+   "w": 3,
+   "h": 2,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 766,
+   "y": 107,
+   "w": 9,
+   "h": 3,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 777,
+   "y": 107,
+   "w": 7,
+   "h": 3,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 786,
+   "y": 108,
+   "w": 3,
+   "h": 2,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 795,
+   "y": 107,
+   "w": 8,
+   "h": 3,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 806,
+   "y": 107,
+   "w": 7,
+   "h": 3,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 764,
+   "y": 131,
+   "w": 5,
+   "h": 3,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 772,
+   "y": 131,
+   "w": 5,
+   "h": 3,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 782,
+   "y": 132,
+   "w": 3,
+   "h": 2,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 794,
+   "y": 132,
+   "w": 3,
+   "h": 2,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 797,
+   "y": 131,
+   "w": 7,
+   "h": 3,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 808,
+   "y": 132,
+   "w": 3,
+   "h": 2,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 812,
+   "y": 118,
+   "w": 3,
+   "h": 2,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 760,
+   "y": 142,
+   "w": 3,
+   "h": 2,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 761,
+   "y": 123,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 817,
+   "y": 125,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 766,
+   "y": 137,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 763,
+   "y": 112,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 775,
+   "y": 112,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 784,
+   "y": 112,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 802,
+   "y": 112,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 813,
+   "y": 112,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 763,
+   "y": 136,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 777,
+   "y": 136,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 801,
+   "y": 136,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 813,
+   "y": 136,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 785,
+   "y": 120,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 793,
+   "y": 120,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 785,
+   "y": 127,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 793,
+   "y": 127,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 768,
+   "y": 126,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 810,
+   "y": 120,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 779,
+   "y": 127,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 804,
+   "y": 126,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 757,
+   "y": 117,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 761,
+   "y": 133,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 762,
+   "y": 133,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 782,
+   "y": 109,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 783,
+   "y": 109,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 786,
+   "y": 117,
+   "w": 4,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 791,
+   "y": 117,
+   "w": 4,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 799,
+   "y": 125,
+   "w": 4,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 607,
+   "y": 69,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 644,
+   "y": 65,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 738,
+   "y": 97,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 656,
+   "y": 58,
+   "w": 3,
+   "h": 2,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 700,
+   "y": 90,
+   "w": 3,
+   "h": 2,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 722,
+   "y": 62,
+   "w": 3,
+   "h": 2,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 680,
+   "y": 100,
+   "w": 3,
+   "h": 2,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 623,
+   "y": 16,
+   "w": 4,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 629,
+   "y": 16,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 618,
+   "y": 13,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 619,
+   "y": 39,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 633,
+   "y": 43,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 650,
+   "y": 48,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 609,
+   "y": 97,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 702,
+   "y": 99,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 740,
+   "y": 87,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 689,
+   "y": 111,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 645,
+   "y": 153,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 649,
+   "y": 153,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 646,
+   "y": 157,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 734,
+   "y": 117,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 711,
+   "y": 123,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 703,
+   "y": 117,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 704,
+   "y": 117,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 705,
+   "y": 117,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 695,
+   "y": 119,
+   "w": 4,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 689,
+   "y": 147,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 725,
+   "y": 183,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 824,
+   "y": 121,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 961,
+   "y": 118,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 837,
+   "y": 111,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 891,
+   "y": 111,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 914,
+   "y": 117,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 929,
+   "y": 111,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 844,
+   "y": 127,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 899,
+   "y": 129,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 955,
+   "y": 119,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 869,
+   "y": 127,
+   "w": 4,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 933,
+   "y": 111,
+   "w": 4,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 903,
+   "y": 108,
+   "w": 5,
+   "h": 3,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 981,
+   "y": 119,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 997,
+   "y": 65,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1065,
+   "y": 53,
+   "w": 4,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1069,
+   "y": 55,
+   "w": 4,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1110,
+   "y": 97,
+   "w": 4,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1020,
+   "y": 149,
+   "w": 4,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1009,
+   "y": 111,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1097,
+   "y": 35,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 989,
+   "y": 89,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1013,
+   "y": 69,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1043,
+   "y": 73,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1061,
+   "y": 123,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1099,
+   "y": 89,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1027,
+   "y": 139,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1081,
+   "y": 159,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1119,
+   "y": 109,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1099,
+   "y": 69,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 995,
+   "y": 99,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1039,
+   "y": 99,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1079,
+   "y": 107,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1059,
+   "y": 61,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1117,
+   "y": 69,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1099,
+   "y": 129,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1009,
+   "y": 123,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1049,
+   "y": 133,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 999,
+   "y": 117,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1051,
+   "y": 79,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1091,
+   "y": 99,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1031,
+   "y": 125,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1045,
+   "y": 117,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1047,
+   "y": 123,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1107,
+   "y": 148,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1103,
+   "y": 149,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1095,
+   "y": 5,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1087,
+   "y": 2,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1091,
+   "y": 2,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1099,
+   "y": 7,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1079,
+   "y": 8,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1088,
+   "y": 3,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1085,
+   "y": 10,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1123,
+   "y": 96,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1117,
+   "y": 37,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 901,
+   "y": 30,
+   "w": 4,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 907,
+   "y": 30,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 910,
+   "y": 32,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 899,
+   "y": 28,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 911,
+   "y": 29,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 904,
+   "y": 26,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 924,
+   "y": 175,
+   "w": 5,
+   "h": 3,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 865,
+   "y": 167,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 911,
+   "y": 180,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 897,
+   "y": 183,
+   "w": 4,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 803,
+   "y": 181,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 937,
+   "y": 181,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 789,
+   "y": 179,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 949,
+   "y": 179,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 839,
+   "y": 181,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 879,
+   "y": 183,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 800,
+   "y": 137,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 802,
+   "y": 138,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 777,
+   "y": 125,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 805,
+   "y": 121,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 769,
+   "y": 119,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 757,
+   "y": 125,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1067,
+   "y": 52,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1111,
+   "y": 96,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1021,
+   "y": 148,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1170,
+   "y": 97,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 631,
+   "y": 66,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 663,
+   "y": 79,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 693,
+   "y": 70,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 713,
+   "y": 87,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 728,
+   "y": 95,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 701,
+   "y": 141,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 734,
+   "y": 159,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 716,
+   "y": 177,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 645,
+   "y": 149,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 845,
+   "y": 118,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 870,
+   "y": 113,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 894,
+   "y": 126,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 917,
+   "y": 121,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 943,
+   "y": 123,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 955,
+   "y": 116,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 967,
+   "y": 125,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 799,
+   "y": 77,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 991,
+   "y": 109,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1003,
+   "y": 83,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1029,
+   "y": 105,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1059,
+   "y": 110,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1086,
+   "y": 69,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1019,
+   "y": 161,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1093,
+   "y": 151,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1089,
+   "y": 8,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1149,
+   "y": 90,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1165,
+   "y": 147,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 897,
+   "y": 37,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 883,
+   "y": 57,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 885,
+   "y": 180,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 844,
+   "y": 180,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 800,
+   "y": 133,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 771,
+   "y": 123,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 811,
+   "y": 125,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 779,
+   "y": 117,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 649,
+   "y": 157,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 644,
+   "y": 155,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 725,
+   "y": 157,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 711,
+   "y": 167,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 859,
+   "y": 117,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 933,
+   "y": 123,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 883,
+   "y": 107,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1039,
+   "y": 107,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1095,
+   "y": 119,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1019,
+   "y": 99,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1167,
+   "y": 148,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1164,
+   "y": 150,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1169,
+   "y": 46,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 905,
+   "y": 33,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 875,
+   "y": 51,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 829,
+   "y": 180,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 803,
+   "y": 183,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 947,
+   "y": 179,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 699,
+   "y": 61,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 667,
+   "y": 65,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 611,
+   "y": 55,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 715,
+   "y": 93,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 744,
+   "y": 107,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 634,
+   "y": 28,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 651,
+   "y": 127,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 699,
+   "y": 159,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 733,
+   "y": 139,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 716,
+   "y": 176,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 689,
+   "y": 171,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 852,
+   "y": 116,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 879,
+   "y": 129,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 905,
+   "y": 115,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 921,
+   "y": 130,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 939,
+   "y": 111,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 862,
+   "y": 135,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 957,
+   "y": 123,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 802,
+   "y": 78,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 859,
+   "y": 149,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 999,
+   "y": 85,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1045,
+   "y": 103,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1085,
+   "y": 53,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1117,
+   "y": 87,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1059,
+   "y": 139,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1029,
+   "y": 151,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1119,
+   "y": 141,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1003,
+   "y": 129,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1071,
+   "y": 45,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1099,
+   "y": 9,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1079,
+   "y": 7,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1111,
+   "y": 149,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1115,
+   "y": 69,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1119,
+   "y": 39,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 1113,
+   "y": 39,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 895,
+   "y": 35,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 883,
+   "y": 45,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 789,
+   "y": 37,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 943,
+   "y": 35,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 819,
+   "y": 179,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 959,
+   "y": 180,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 849,
+   "y": 183,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
+  },
+  {
+   "op": "rect",
+   "t": "snowfield",
+   "x": 775,
+   "y": 181,
+   "w": 3,
+   "h": 4,
+   "on": [
+    "forest",
+    "cliff",
+    "icewall",
+    "climb"
+   ]
   }
  ],
  "trees": [
@@ -3130,6 +6900,114 @@
    "x": 1118,
    "y": 38,
    "text": "MIRANTE DO LEVANTE\nO fiorde inteiro, de ponta a ponta. A água é fria o suficiente para parar o coração."
+  },
+  {
+   "kind": "bench",
+   "x": 902,
+   "y": 31
+  },
+  {
+   "kind": "sign",
+   "x": 908,
+   "y": 31,
+   "text": "MIRANTE DO GELO AZUL\nDaqui se vê a Geleira do Uivo inteira, brilhando.\nNas noites de aurora, o céu dança aqui primeiro."
+  },
+  {
+   "kind": "chest",
+   "x": 911,
+   "y": 33,
+   "item": "maxElixir",
+   "id": "geada_bau_mirante_azul"
+  },
+  {
+   "kind": "crystal",
+   "x": 900,
+   "y": 29
+  },
+  {
+   "kind": "crystal",
+   "x": 912,
+   "y": 30
+  },
+  {
+   "kind": "crystal",
+   "x": 905,
+   "y": 27
+  },
+  {
+   "kind": "cabin",
+   "x": 924,
+   "y": 175,
+   "interior": {
+    "nome": "Cabana do Eremita",
+    "npc": {
+     "id": "eremita_gelo",
+     "name": "Eremita Valério",
+     "look": {
+      "preset": "montanhista",
+      "hair": "#e8e8f0",
+      "hat": null,
+      "top": "#7a8a9a",
+      "trim": "#ffffff",
+      "pants": "#4a4a5a"
+     },
+     "lines": [
+      "Vim para cá para me esconder do mundo. Você achou o meu vale.",
+      "Eu ensino golpes de gelo a quem sabe pagar. Sem pressa."
+     ]
+    }
+   }
+  },
+  {
+   "kind": "sign",
+   "x": 866,
+   "y": 168,
+   "text": "VALE ESCONDIDO\nDo outro lado da crista, ninguém vem. Só o eremita e o vento."
+  },
+  {
+   "kind": "snowman",
+   "x": 912,
+   "y": 181
+  },
+  {
+   "kind": "log",
+   "x": 898,
+   "y": 184
+  },
+  {
+   "kind": "chest",
+   "x": 804,
+   "y": 182,
+   "item": "rareCandy",
+   "id": "geada_bau_vale1"
+  },
+  {
+   "kind": "chest",
+   "x": 938,
+   "y": 182,
+   "item": "maxRevive",
+   "n": 2,
+   "id": "geada_bau_vale2"
+  },
+  {
+   "kind": "stalagmiteIce",
+   "x": 790,
+   "y": 180
+  },
+  {
+   "kind": "stalagmiteIce",
+   "x": 950,
+   "y": 180
+  },
+  {
+   "kind": "stalagmiteIce",
+   "x": 840,
+   "y": 182
+  },
+  {
+   "kind": "stalagmiteIce",
+   "x": 880,
+   "y": 184
   }
  ],
  "decor": [],
@@ -5689,6 +9567,90 @@
    "lines": [
     "Quer batalhar?"
    ]
+  },
+  {
+   "id": "gt_astro",
+   "name": "Astrônomo Cássio",
+   "look": {
+    "preset": "professor",
+    "hair": "#3a3a4a",
+    "skin": "#efc19b",
+    "outfit": "coat",
+    "top": "#f4f4f0",
+    "trim": "#9ad8f0",
+    "pants": "#4a5a7a"
+   },
+   "x": 898,
+   "y": 38,
+   "dir": "right",
+   "lines": [
+    "Quer batalhar?"
+   ]
+  },
+  {
+   "id": "gt_esq6",
+   "name": "Esquiadora Rosa",
+   "look": {
+    "preset": "treinadora",
+    "hairStyle": "ponytail",
+    "hair": "#e8c060",
+    "hat": "beanie",
+    "cap": "#f2f2f2",
+    "capLogo": "#3a8ad8",
+    "outfit": "jacket",
+    "top": "#f2f2f2",
+    "trim": "#3a8ad8",
+    "pants": "#4a5a8a"
+   },
+   "x": 884,
+   "y": 58,
+   "dir": "down",
+   "lines": [
+    "Quer batalhar?"
+   ]
+  },
+  {
+   "id": "gt_hermit1",
+   "name": "Montanhista Geraldo",
+   "look": {
+    "preset": "montanhista",
+    "hat": "cap",
+    "cap": "#f2782e",
+    "capLogo": "#ffffff",
+    "top": "#f2782e",
+    "trim": "#ffffff",
+    "pants": "#3a4a6a",
+    "bagStyle": "big",
+    "bag": "#5a4a3a"
+   },
+   "x": 886,
+   "y": 181,
+   "dir": "left",
+   "lines": [
+    "Quer batalhar?"
+   ]
+  },
+  {
+   "id": "gt_hermit2",
+   "name": "Esquiadora Lia",
+   "look": {
+    "preset": "treinadora",
+    "hairStyle": "ponytail",
+    "hair": "#e8c060",
+    "hat": "beanie",
+    "cap": "#f2f2f2",
+    "capLogo": "#3a8ad8",
+    "outfit": "jacket",
+    "top": "#f2f2f2",
+    "trim": "#3a8ad8",
+    "pants": "#4a5a8a"
+   },
+   "x": 845,
+   "y": 181,
+   "dir": "right",
+   "lines": [
+    "Quer batalhar?"
+   ]
   }
  ],
  "pets": [
@@ -5811,6 +9773,41 @@
    "y": 47,
    "wander": 1,
    "say": "Cloy."
+  },
+  {
+   "dex": 459,
+   "x": 906,
+   "y": 34,
+   "wander": 2,
+   "say": "Sno!"
+  },
+  {
+   "dex": 215,
+   "x": 876,
+   "y": 52,
+   "wander": 3,
+   "say": "Snea!"
+  },
+  {
+   "dex": 361,
+   "x": 830,
+   "y": 181,
+   "wander": 3,
+   "say": "Snorunt!"
+  },
+  {
+   "dex": 87,
+   "x": 804,
+   "y": 184,
+   "wander": 1,
+   "say": "Dugong!"
+  },
+  {
+   "dex": 713,
+   "x": 948,
+   "y": 180,
+   "wander": 2,
+   "say": "Avalu!"
   }
  ],
  "warps": [
@@ -5870,8 +9867,8 @@
    "n": 3
   },
   {
-   "x": 634,
-   "y": 30,
+   "x": 635,
+   "y": 29,
    "item": "stardust",
    "hidden": true
   },
@@ -6051,6 +10048,55 @@
    "x": 1114,
    "y": 40,
    "item": "maxElixir",
+   "hidden": true
+  },
+  {
+   "x": 896,
+   "y": 36,
+   "item": "hyperPotion",
+   "n": 2
+  },
+  {
+   "x": 884,
+   "y": 46,
+   "item": "nugget",
+   "hidden": true
+  },
+  {
+   "x": 790,
+   "y": 38,
+   "item": "pearl",
+   "hidden": true
+  },
+  {
+   "x": 944,
+   "y": 36,
+   "item": "bigPearl",
+   "hidden": true
+  },
+  {
+   "x": 820,
+   "y": 180,
+   "item": "ultraBall",
+   "n": 4
+  },
+  {
+   "x": 960,
+   "y": 181,
+   "item": "bigPearl",
+   "hidden": true
+  },
+  {
+   "x": 850,
+   "y": 184,
+   "item": "maxElixir",
+   "hidden": true
+  },
+  {
+   "x": 776,
+   "y": 182,
+   "item": "pearl",
+   "n": 2,
    "hidden": true
   }
  ],
