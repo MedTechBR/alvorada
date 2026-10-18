@@ -63,6 +63,8 @@ export class ArenaGinasio {
     // camadas: chão (abaixo de todos) e topo (acima de todos)
     this.G0 = new PIXI.Graphics(); g.fx.ground.addChild(this.G0);
     this.G1 = new PIXI.Graphics(); g.combat.layer.addChild(this.G1);
+    // avisos por cima de tudo, inclusive da sombra das salas escuras e do mapa de luz: perigo sempre legível
+    this.topo = new PIXI.Container(); this.GA = new PIXI.Graphics(); this.topo.addChild(this.GA); g.app.stage.addChild(this.topo);
     this.pecas = []; this.porId = new Map();
     for (const def of cfg.pecas ?? []) {
       const K = PECAS[def.tipo]; if (!K) { console.warn('peça desconhecida', def.tipo); continue; }
@@ -397,7 +399,7 @@ export class ArenaGinasio {
     for (const a of this.ajudantes) this.#some(a);
     for (const e of g.entities) { e.arenaVel = 1; if (e.alpha < 1 && !e.dead && !e.fadeIn) e.alpha = 1; e.cargaArena = null; e.noRitmo = null; }
     if (this.room) this.room.escuro = this.antes?.escuro;
-    this.G0.destroy(); this.G1.destroy();
+    this.G0.destroy(); this.G1.destroy(); this.topo.destroy({ children: true });
     for (const G of this.gfxs) G.destroy();
     if (g.camFocus) g.camFocus = null;
     if (g.arenaGinasio === this) g.arenaGinasio = null;
@@ -427,14 +429,16 @@ export class ArenaGinasio {
 
   // ---------------------------------------------------------------- desenho
   #desenhar() {
-    const G0 = this.G0, G1 = this.G1, t = this.g.time;
-    G0.clear(); G1.clear();
+    const G0 = this.G0, G1 = this.G1, GA = this.GA, t = this.g.time, W = this.g.world;
+    G0.clear(); G1.clear(); GA.clear();
+    this.topo.position.copyFrom(W.position); this.topo.scale.copyFrom(W.scale);
+    if (this.topo.parent && this.topo.parent.children[this.topo.parent.children.length - 1] !== this.topo) this.topo.parent.addChild(this.topo);
     for (const p of this.pecas) if (p.ativo || p.sempreDesenha) p.desenhar?.(G0, G1);
-    for (const av of this.avisos) this.#desenharAviso(G0, G1, av, t);
+    for (const av of this.avisos) this.#desenharAviso(GA, G1, av, t);
   }
   #desenharAviso(G, G1, av, t) {
     const k = av.t / av.dur, blink = k > 0.72 ? (Math.sin(t * 38) > 0 ? 1 : 0.45) : 1;
-    const cor = av.cor, a1 = (0.14 + 0.24 * k) * blink, edge = { width: 1.2, color: cor, alpha: 0.55 + 0.4 * k };
+    const cor = av.cor, a1 = (0.12 + 0.22 * k) * blink, edge = { width: 1.2, color: cor, alpha: 0.55 + 0.4 * k };
     const stripes = (x0, y0, x1, y1) => { // listras de "perigo" correndo (distinguem os perigos da arena dos golpes)
       const off = (t * 22) % 10;
       for (let s = x0 - (y1 - y0) + off; s < x1; s += 10) { const ax = Math.max(x0, s), ay = y1 - (ax - s), bx = Math.min(x1, s + (y1 - y0)), by = y1 - (bx - s); if (bx > ax) G.moveTo(ax, ay).lineTo(bx, by); }
