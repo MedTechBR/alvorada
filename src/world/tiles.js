@@ -19,6 +19,8 @@ export const TILE = {
   TEMPLEFLOOR: 61, MOSAIC: 62, OLDSTONE: 63, TEMPLEWALL: 64, STAIRUP: 65, STAIRDOWN: 66, HOLE: 67, CRACK: 68,
   // cavernas
   DARKCAVE: 69, CRYSTALFLOOR: 70, CRYSTALWALL: 71, RAIL: 72,
+  // salar, cânion, brejo (docs/mundo-expandido.md, seção 6)
+  SALT: 73, SALTMIRROR: 74, REDROCK: 75, DRYRIVER: 76, SHALLOW: 77, REED: 78,
 };
 export const SOLID = new Set([TILE.WATER, TILE.DEEP, TILE.CLIFF, TILE.VOID, TILE.WALL, TILE.FOREST, TILE.ROCK, TILE.MUD, TILE.CORN, TILE.CLIMB,
   TILE.ICEWALL, TILE.LAVA, TILE.LAVAWALL, TILE.CANYON, TILE.ROOTS, TILE.TEMPLEWALL, TILE.CRYSTALWALL, TILE.CUR_E, TILE.CUR_W, TILE.CUR_N, TILE.CUR_S]);
@@ -28,12 +30,12 @@ export const SWIMMABLE = new Set([TILE.WATER, TILE.DEEP, TILE.CUR_E, TILE.CUR_W,
 MOUNT_PASS.nadar.push(TILE.CUR_E, TILE.CUR_W, TILE.CUR_N, TILE.CUR_S);
 // Terrenos dos biomas (comportamento em src/world/masmorra.js):
 // velocidade de quem anda por cima (1 = normal)
-export const SLOW = { [TILE.DEEPSNOW]: 0.55, [TILE.QUICKSAND]: 0.45, [TILE.MANGMUD]: 0.75, [TILE.HOTSPRING]: 0.6, [TILE.REEF]: 0.62, [TILE.TIDE]: 0.82, [TILE.DUNE]: 0.88, [TILE.SNOWFIELD]: 0.94, [TILE.ASH]: 0.95, [TILE.TALLSNOW]: 0.85 };
+export const SLOW = { [TILE.DEEPSNOW]: 0.55, [TILE.QUICKSAND]: 0.45, [TILE.MANGMUD]: 0.75, [TILE.HOTSPRING]: 0.6, [TILE.REEF]: 0.62, [TILE.TIDE]: 0.82, [TILE.DUNE]: 0.88, [TILE.SNOWFIELD]: 0.94, [TILE.ASH]: 0.95, [TILE.TALLSNOW]: 0.85, [TILE.SALTMIRROR]: 0.85, [TILE.SHALLOW]: 0.72, [TILE.REED]: 0.65 };
 export const SLIDE = new Set([TILE.ICE, TILE.FROZEN]);              // escorrega até bater
 export const CURRENT = { [TILE.CUR_E]: [1, 0], [TILE.CUR_W]: [-1, 0], [TILE.CUR_N]: [0, -1], [TILE.CUR_S]: [0, 1] };
 // mato alto de outros biomas (selvagens aparecem, balança, esconde o pé) e o chão que fica quando é cortado
-export const TALLS = new Set([TILE.TALL, TILE.TALLSNOW, TILE.TALLDRY]);
-export const TALL_BASE = { [TILE.TALL]: TILE.GRASS, [TILE.TALLSNOW]: TILE.SNOWFIELD, [TILE.TALLDRY]: TILE.CAATINGA };
+export const TALLS = new Set([TILE.TALL, TILE.TALLSNOW, TILE.TALLDRY, TILE.REED]);
+export const TALL_BASE = { [TILE.TALL]: TILE.GRASS, [TILE.TALLSNOW]: TILE.SNOWFIELD, [TILE.TALLDRY]: TILE.CAATINGA, [TILE.REED]: TILE.SHALLOW };
 // paredes com face e topo (desenho em ground.js) e pisos que ganham sombra embaixo delas
 export const WALLS = new Set([TILE.WALL, TILE.ROCK, TILE.ICEWALL, TILE.LAVAWALL, TILE.CANYON, TILE.TEMPLEWALL, TILE.CRYSTALWALL]);
 // Caracteres do formato de mapa em texto (assets/maps/alvorada.json, campo "rows" dos carimbos)
@@ -49,6 +51,7 @@ export const CHARS = {
   'A': TILE.WETSAND, 'T': TILE.TIDE, 'R': TILE.ROOTS, 'p': TILE.MANGMUD, '%': TILE.REEF, '→': TILE.CUR_E, '←': TILE.CUR_W, '↑': TILE.CUR_N, '↓': TILE.CUR_S,
   'E': TILE.TEMPLEFLOOR, 'Y': TILE.MOSAIC, 'X': TILE.OLDSTONE, 'H': TILE.TEMPLEWALL, '<': TILE.STAIRUP, '>': TILE.STAIRDOWN, '0': TILE.HOLE, '!': TILE.CRACK,
   'S': TILE.DARKCAVE, 'Z': TILE.CRYSTALFLOOR, '$': TILE.CRYSTALWALL, '+': TILE.RAIL,
+  ';': TILE.SALT, '?': TILE.SALTMIRROR, '&': TILE.REDROCK, '-': TILE.DRYRIVER, '/': TILE.SHALLOW, '|': TILE.REED,
 };
 export const NAMES = Object.fromEntries(Object.entries(TILE).map(([k, v]) => [k.toLowerCase(), v]));
 

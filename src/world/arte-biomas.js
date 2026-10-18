@@ -232,6 +232,55 @@ F.reef = fam('reef', 0, {
   },
 });
 
+// salar: crosta de sal em placas, espelho d'água que reflete o céu
+F.salt = fam('salt', 1, {
+  rim: [176, 180, 190], foam: [255, 255, 255],
+  px(x, y) {
+    const v = vor(x, y, 11, 151);
+    if (v.edge < 0.9) return [255, 255, 255];
+    if (v.edge < 1.8) return v.cy > 0 ? [206, 208, 216] : [248, 248, 250];
+    return mix([228, 228, 232], [240, 240, 242], v.id * 0.6 + fbm(x, y, 5, 152) * 0.4);
+  },
+});
+F.saltmirror = fam('saltmirror', 0, {
+  shore: [[0.42, [250, 250, 252]], [0.36, [214, 218, 226]]],
+  px(x, y) {
+    const n = fbm(x, y, 20, 161), c = mix([170, 206, 236], [206, 228, 248], clamp01(n * 1.4 - 0.2));
+    if (fbm(x * 0.5, y * 2, 12, 162) > 0.68) return mix(c, [255, 255, 255], 0.65); // nuvens refletidas
+    if (Math.sin(y * W(48) + fbm(x, y, 8, 163) * 4) > 0.94) return mix(c, [255, 255, 255], 0.35);
+    return c;
+  },
+});
+// cânion: rocha vermelha em camadas e leito de rio seco
+F.redrock = fam('redrock', 3, {
+  rim: [120, 52, 34], hi: [232, 150, 104],
+  px(x, y) {
+    const band = Math.sin(y * W(20) + fbm(x, y, 16, 171) * 3), base = band > 0.4 ? [196, 98, 64] : band < -0.5 ? [168, 80, 54] : [184, 90, 60];
+    const v = vor(x, y, 7, 172); if (v.edge < 0.7 && v.id > 0.4) return mul(base, 0.72);
+    if (hp(x, y, 173) > 0.985) return [226, 160, 120];
+    return mul(base, 0.92 + fbm(x, y, 4, 174) * 0.16);
+  },
+});
+F.dryriver = fam('dryriver', 2, {
+  rim: [120, 100, 80], hi: [214, 200, 176],
+  px(x, y) {
+    const v = vor(x, y, 4.5, 181);
+    if (v.id > 0.45 && v.d < 1.4 + v.id * 1.4) { const c = v.id > 0.8 ? [168, 160, 150] : v.id > 0.62 ? [196, 182, 160] : [150, 140, 128]; return v.cy > 0.1 ? mix(c, [255, 255, 255], 0.25) : c; }
+    const m = vor(x, y, 9, 182); if (m.edge < 0.6) return [124, 98, 72];
+    return mix([176, 150, 116], [190, 164, 128], fbm(x, y, 6, 183));
+  },
+});
+// água rasa andável (mangue, brejo) e junco: água clara por cima do fundo animado
+F.shallow = fam('shallow', 0, {
+  shore: [[0.42, [150, 140, 100, 170]], [0.36, [120, 150, 120, 120]]], clear: true,
+  px(x, y) {
+    const n = fbm(x, y, 10, 191);
+    if (n > 0.66) return [118, 102, 72, 150]; // lodo no fundo
+    if (hp(x, y, 192) > 0.992) return [220, 240, 230, 160];
+    return [96, 170, 150, 95];
+  },
+});
+
 // ---------------------------------------------------------------- blocos "duros"
 // cada função de piso devolve a cor do pixel global (gx, gy); as paredes usam face (pixel local) e topo
 const FLOOR = {};
@@ -474,7 +523,7 @@ export function drawBiomeHard(t, at, tx, ty, put) {
 // "rank" e família que cada bloco duro novo empresta aos vizinhos macios (o compositor mistura as bordas)
 export const BLEED = {
   [TILE.ICEWALL]: ['snow', 3], [TILE.ICEFLOOR]: ['snow', 3], [TILE.LAVAWALL]: ['basalt', 2], [TILE.LAVAFLOOR]: ['basalt', 2],
-  [TILE.CANYON]: ['dune', 3], [TILE.ROOTS]: ['mangmud', 2], [TILE.CRYSTALWALL]: ['basalt', 2],
+  [TILE.CANYON]: ['redrock', 3], [TILE.ROOTS]: ['mangmud', 2], [TILE.CRYSTALWALL]: ['basalt', 2],
   [TILE.CRYSTALFLOOR]: ['basalt', 2], [TILE.DARKCAVE]: ['basalt', 2], [TILE.RAIL]: ['basalt', 2],
   [TILE.TEMPLEFLOOR]: ['stone', 2], [TILE.MOSAIC]: ['stone', 2], [TILE.OLDSTONE]: ['stone', 2], [TILE.TEMPLEWALL]: ['stone', 2],
   [TILE.STAIRUP]: ['stone', 2], [TILE.STAIRDOWN]: ['stone', 2], [TILE.HOLE]: ['stone', 2], [TILE.CRACK]: ['stone', 2],
@@ -483,6 +532,7 @@ export const BLEED = {
 export const SOFT = {
   [TILE.SNOWFIELD]: 'snow', [TILE.TALLSNOW]: 'snow', [TILE.DEEPSNOW]: 'deepsnow', [TILE.ASH]: 'ash', [TILE.DUNE]: 'dune', [TILE.CAATINGA]: 'caatinga', [TILE.TALLDRY]: 'caatinga',
   [TILE.BASALT]: 'basalt', [TILE.CRACKED]: 'cracked', [TILE.MANGMUD]: 'mangmud', [TILE.WETSAND]: 'wetsand', [TILE.TIDE]: 'tide', [TILE.ICE]: 'ice', [TILE.QUICKSAND]: 'quicksand',
+  [TILE.SALT]: 'salt', [TILE.SALTMIRROR]: 'saltmirror', [TILE.REDROCK]: 'redrock', [TILE.DRYRIVER]: 'dryriver', [TILE.SHALLOW]: 'shallow', [TILE.REED]: 'shallow',
   [TILE.OBSIDIAN]: 'obsidian', [TILE.LAVA]: 'lava', [TILE.FROZEN]: 'frozen', [TILE.HOTSPRING]: 'hotspring', [TILE.REEF]: 'reef',
 };
 
@@ -829,3 +879,94 @@ function recolor(tex, f) {
 }
 export const TALL_SNOW = TALL.map((t) => recolor(t, (l, x, y) => (l < 0.2 ? [58, 92, 104] : y < 7 && l > 0.45 ? [250, 252, 255] : l > 0.55 ? [214, 232, 244] : mix([84, 132, 128], [150, 196, 196], l * 1.4))));
 export const TALL_DRY = TALL.map((t) => recolor(t, (l) => (l < 0.2 ? [92, 64, 30] : l > 0.6 ? [246, 222, 140] : mix([170, 128, 56], [226, 190, 104], l * 1.3))));
+
+// junco do brejo: hastes altas e finas com pendão marrom (três quadros, como o mato alto)
+function reed(lean) {
+  return canvas(16, 24, (x) => {
+    for (const [cx, h, dk] of [[3, 18, 1], [7, 22, 0], [11, 19, 1], [14, 15, 0], [5, 14, 0], [9, 16, 1]]) {
+      const k = lean * (h / 22), top = 24 - h;
+      x.strokeStyle = dk ? '#3e7a3a' : '#5aa04a'; x.lineWidth = 1; x.beginPath(); x.moveTo(cx, 24); x.quadraticCurveTo(cx, top + 6, cx + k, top); x.stroke();
+      if (h > 16) { x.fillStyle = '#7a5232'; x.fillRect(Math.round(cx + k) - 1, top, 2, 5); x.fillStyle = '#9a7048'; x.fillRect(Math.round(cx + k) - 1, top, 1, 3); }
+    }
+  });
+}
+export const TALL_REED = [0, 1.5, -1.5].map((l) => texOf(outline(reed(l), [24, 56, 30])));
+
+// ---------------------------------------------------------------- objetos dos biomas do plano do mundo (seção 6)
+// xique-xique (cacto rasteiro do sertão), juazeiro (copa verde no meio da seca), umbu (árvore solitária do pampa),
+// araucária, bambu e lanterna de pedra (termal), folha gigante e árvore da selva, boia (mar), mural (ruína),
+// cerca de vara (sertão) e sucata (cratera)
+const treeArt = (w, h, f, col) => art(w, h, f, col);
+SPR.xiquexique = art(26, 20, (x) => {
+  shadow(x, 13, 18, 11);
+  const g = '#4a8a5a', l = '#8ad09a', d = '#2e5e3e';
+  for (const [X, Y, w, h] of [[2, 10, 8, 4], [9, 5, 4, 12], [13, 8, 9, 4], [5, 3, 3, 8], [18, 4, 3, 7]]) { px(x, g, X, Y, w, h); px(x, l, X, Y, w, 1); px(x, d, X, Y + h - 1, w, 1); }
+  for (let i = 0; i < 9; i++) px(x, '#f2f0c8', 3 + i * 2.4 | 0, 4 + (i * 5) % 10, 1, 1);
+  blob(x, 6.5, 3, 1.5, '#ff8ac0');
+}, [20, 48, 30]);
+SPR.juazeiro = treeArt(52, 56, (x) => {
+  shadow(x, 26, 53, 18, 3);
+  px(x, '#6a4a32', 23, 30, 6, 24); px(x, '#8a6648', 24, 30, 2, 24); x.strokeStyle = '#6a4a32'; x.lineWidth = 3; x.beginPath(); x.moveTo(26, 34); x.lineTo(14, 24); x.moveTo(26, 32); x.lineTo(38, 22); x.stroke();
+  const g = ['#2e6a2e', '#3e8a3a', '#5aaa48', '#9ad46a'];
+  [[26, 18, 16], [12, 22, 10], [40, 22, 10], [18, 10, 9], [34, 10, 9]].forEach(([a, b, r]) => blob(x, a, b, r, g[0]));
+  [[26, 16, 13], [14, 20, 7], [38, 20, 7], [20, 9, 6], [32, 9, 6]].forEach(([a, b, r]) => blob(x, a, b, r, g[1]));
+  [[22, 10, 5], [32, 8, 4], [15, 17, 3]].forEach(([a, b, r]) => blob(x, a, b, r, g[2]));
+  for (const [a, b] of [[18, 22], [30, 14], [36, 22], [24, 26]]) blob(x, a, b, 1.6, '#f2d24c');
+});
+SPR.umbu = treeArt(60, 58, (x) => {
+  shadow(x, 30, 55, 24, 3.5);
+  px(x, '#5a4030', 26, 34, 8, 22); px(x, '#7a5a42', 27, 34, 2, 22); px(x, '#5a4030', 20, 52, 20, 4);
+  const g = ['#2a5a2e', '#3a7a3a', '#56a04a'];
+  ell(x, 30, 22, 28, 15, g[0]); ell(x, 30, 19, 25, 12, g[1]); ell(x, 24, 14, 12, 6, g[2]); px(x, '#8ad06a', 18, 10, 6, 2);
+});
+SPR.araucaria = treeArt(40, 66, (x) => {
+  shadow(x, 20, 63, 12, 3);
+  px(x, '#6a4a32', 18, 14, 4, 50); px(x, '#8a6648', 18, 14, 1, 50);
+  for (const [y, w] of [[8, 18], [18, 16], [27, 12], [35, 8]]) { x.strokeStyle = '#4a3a2a'; x.lineWidth = 1.5; x.beginPath(); x.moveTo(20, y + 4); x.quadraticCurveTo(20 - w * 0.6, y - 4, 20 - w, y + 2); x.moveTo(20, y + 4); x.quadraticCurveTo(20 + w * 0.6, y - 4, 20 + w, y + 2); x.stroke(); ell(x, 20 - w, y + 1, 5, 3, '#2a5a3a'); ell(x, 20 + w, y + 1, 5, 3, '#2a5a3a'); ell(x, 20 - w + 1, y, 3, 1.5, '#4a8a5a'); ell(x, 20 + w - 1, y, 3, 1.5, '#4a8a5a'); }
+  ell(x, 20, 6, 12, 5, '#2a5a3a'); ell(x, 20, 5, 9, 3, '#4a8a5a');
+});
+SPR.bambu = art(26, 50, (x) => {
+  shadow(x, 13, 48, 10, 2);
+  for (const [X, h, c] of [[4, 44, '#6aa84a'], [10, 48, '#7ab85a'], [16, 40, '#5a9a3e'], [21, 46, '#6aa84a']]) {
+    px(x, c, X, 48 - h, 3, h); px(x, '#a8d87a', X, 48 - h, 1, h); for (let y = 48 - h + 6; y < 48; y += 8) px(x, '#3e6a2a', X, y, 3, 1);
+    ell(x, X + 5, 52 - h, 5, 1.5, '#4a8a3a'); ell(x, X - 2, 56 - h, 4, 1.4, '#5a9a3e');
+  }
+});
+SPR.lanternaPedra = art(16, 28, (x) => {
+  shadow(x, 8, 26, 6, 2);
+  px(x, '#8a8478', 5, 18, 6, 8); px(x, '#6a645a', 2, 24, 12, 3); px(x, '#a8a294', 3, 11, 10, 7); px(x, '#ffe39a', 5, 12, 6, 4); px(x, '#6a645a', 7, 12, 2, 4);
+  poly(x, '#7a746a', [[0, 11], [8, 4], [16, 11]]); px(x, '#a8a294', 7, 1, 2, 4);
+});
+SPR.folhaGigante = art(36, 30, (x) => {
+  shadow(x, 18, 28, 14);
+  const leaf = (cx, cy, rx, ry, a, c, v) => { x.save(); x.translate(cx, cy); x.rotate(a); ell(x, 0, 0, rx, ry, c); x.strokeStyle = v; x.lineWidth = 1; x.beginPath(); x.moveTo(-rx + 2, 0); x.lineTo(rx - 2, 0); x.stroke(); x.restore(); };
+  px(x, '#3e7a2e', 17, 14, 2, 14);
+  leaf(10, 16, 10, 5, -0.5, '#2e7a3a', '#6ac06a'); leaf(26, 16, 10, 5, 0.5, '#2e7a3a', '#6ac06a'); leaf(18, 8, 9, 6, -1.4, '#3e9a46', '#8ad87a');
+});
+SPR.arvoreSelva = treeArt(64, 80, (x) => {
+  shadow(x, 32, 77, 26, 4);
+  px(x, '#5a3e2a', 27, 36, 10, 42); px(x, '#7a5a3e', 28, 36, 3, 42);
+  for (const [a, w] of [[14, 13], [37, 14]]) { poly(x, '#5a3e2a', [[a, 78], [32, 48], [a + w, 78]]); } // raízes tabulares
+  x.strokeStyle = '#3e8a3a'; x.lineWidth = 1; for (const X of [16, 46]) { x.beginPath(); x.moveTo(X, 20); x.quadraticCurveTo(X + 2, 44, X - 1, 66); x.stroke(); }
+  const g = ['#1a4a26', '#25683a', '#3a8e46', '#6cc05a'];
+  [[32, 24, 24], [12, 30, 13], [52, 30, 13], [20, 12, 13], [44, 12, 13]].forEach(([a, b, r]) => blob(x, a, b, r, g[0]));
+  [[32, 22, 19], [14, 28, 9], [50, 28, 9], [22, 12, 9], [42, 11, 9]].forEach(([a, b, r]) => blob(x, a, b, r, g[1]));
+  [[26, 14, 8], [40, 10, 6], [16, 24, 4]].forEach(([a, b, r]) => blob(x, a, b, r, g[2]));
+  [[24, 10, 3], [38, 7, 2]].forEach(([a, b, r]) => blob(x, a, b, r, g[3]));
+});
+SPR.boia = art(14, 20, (x) => { ell(x, 7, 17, 6, 2, 'rgba(0,40,80,.3)'); px(x, '#e8584a', 3, 6, 8, 10); px(x, '#ffffff', 3, 9, 8, 3); px(x, '#c83a30', 9, 6, 2, 10); px(x, '#5a5a62', 6, 1, 2, 5); blob(x, 7, 1.5, 1.5, '#f2d24c'); });
+SPR.mural = art(48, 34, (x) => {
+  px(x, '#a89a84', 0, 0, 48, 34); px(x, '#c8bca4', 1, 1, 46, 2); px(x, '#7a6e5c', 0, 32, 48, 2);
+  px(x, '#8a7e6a', 3, 5, 42, 24); px(x, '#b4a68e', 4, 6, 40, 22);
+  // desenho entalhado: sol, montanha, dois Pokémon e ondas
+  blob(x, 12, 12, 4, '#d8a040'); for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; px(x, '#d8a040', Math.round(12 + Math.cos(a) * 6), Math.round(12 + Math.sin(a) * 6), 1, 1); }
+  poly(x, '#6a7a8a', [[18, 26], [28, 10], [38, 26]]); px(x, '#f4f0e8', 26, 11, 4, 3);
+  for (let i = 0; i < 5; i++) px(x, '#4a8ab0', 6 + i * 8, 24 + (i & 1), 6, 1);
+  ell(x, 40, 20, 3, 2.5, '#7a4a3a'); px(x, '#7a4a3a', 38, 15, 1, 3); px(x, '#7a4a3a', 41, 15, 1, 3);
+}, [40, 34, 28]);
+SPR.cercaVara = art(16, 20, (x) => { for (const X of [1, 5, 9, 13]) { px(x, '#8a6a48', X, 4 + (X % 3), 2, 16 - (X % 3)); px(x, '#a8845a', X, 4 + (X % 3), 1, 14); } px(x, '#6a4a30', 0, 9, 16, 1); px(x, '#6a4a30', 0, 14, 16, 1); });
+SPR.sucata = art(32, 22, (x) => {
+  shadow(x, 16, 20, 14);
+  poly(x, '#6a6e78', [[2, 20], [4, 8], [14, 4], [22, 9], [20, 20]]); px(x, '#8a8e98', 5, 8, 9, 2); px(x, '#b86a3a', 8, 12, 4, 3); px(x, '#b86a3a', 15, 14, 3, 2);
+  px(x, '#4a4e58', 20, 12, 10, 8); px(x, '#9aa4b0', 21, 13, 8, 2); blob(x, 25, 17, 1.6, '#5ae8a0'); x.strokeStyle = '#3a3e48'; x.beginPath(); x.moveTo(14, 4); x.lineTo(18, 0); x.stroke();
+});

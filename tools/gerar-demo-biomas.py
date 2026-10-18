@@ -3,7 +3,7 @@
 # Uso: python3 tools/gerar-demo-biomas.py
 import json, math, os, random
 
-W, OUT_H = 128, 74
+W, OUT_H = 170, 74
 random.seed(7)
 g = [['.'] * W for _ in range(OUT_H)]
 
@@ -164,7 +164,7 @@ obj('statue', 58, 14); obj('statue', 69, 14)
 obj('brazier', 61, 12, acesa=True); obj('brazier', 66, 12, acesa=True)
 obj('brokenColumn', 52, 20); obj('brokenColumn', 76, 22); obj('obelisk', 50, 14); obj('pot', 74, 18); obj('pot', 54, 24)
 signs.append({'kind': 'sign', 'x': 62, 'y': 18, 'text': 'TEMPLO DE ARÁ. Os antigos deixaram enigmas: força, fogo, chave e sinos.'})
-areas.append({'name': 'Ruínas de Ará', 'biome': 'ruinas', 'rect': [46, 0, 36, 30]})
+areas.append({'name': 'Ruínas de Ará', 'biome': 'ruina', 'rect': [46, 0, 36, 30]})
 
 # ---------------- serra das cavernas (sul, no meio) ----------------
 ell(64, 62, 16, 9, 'r', 0.15, 21)
@@ -175,6 +175,32 @@ warps.append({'x': 56, 'y': 65, 'dir': 'up', 'to': None, 'room': 'caverna_crista
 warps.append({'x': 72, 'y': 65, 'dir': 'up', 'to': None, 'room': 'mina', 'face': 'up', 'label': 'Mina'})
 signs.append({'kind': 'sign', 'x': 62, 'y': 67, 'text': 'À esquerda, a Gruta de Cristal. À direita, a mina velha (o vagonete ainda corre nos trilhos).'})
 areas.append({'name': 'Serra Oca', 'biome': 'campo', 'rect': [46, 52, 36, 22]})
+
+# ---------------- faixa leste: biomas do plano do mundo (salar, cânion, brejo, selva, termal, pampa) ----------------
+rect(128, 0, 42, 74, '.')
+rect(128, 0, 42, 12, ';'); ell(150, 6, 8, 3.5, '?', 0.2, 30)
+rect(128, 12, 42, 14, '&'); rect(134, 14, 2, 10, 'C'); rect(146, 14, 2, 10, 'C'); rect(158, 13, 3, 9, 'C')
+path([(128, 24), (140, 20), (152, 25), (169, 22)], '-', 3)
+rect(128, 26, 42, 14, '/'); blobs(128, 26, 42, 14, '|', 0.15, 31, ['/']); ell(146, 33, 4, 2.5, '.', 0.2, 32); ell(160, 30, 3, 2, '.', 0.2, 33)
+path([(130, 32), (142, 32), (150, 33), (166, 32)], 'B', 1)
+rect(128, 40, 42, 16, '.'); blobs(128, 40, 42, 16, '"', 0.25, 34, ['.']); blobs(128, 40, 42, 16, 'd', 0.0, 35, ['.'])
+rect(128, 56, 20, 18, 'X'); for_ = [(134, 62, 3, 2), (141, 66, 2.5, 1.8), (136, 69, 2, 1.5)]
+for (cx, cy, rx, ry) in for_: ell(cx, cy, rx, ry, 'q', 0.1, cx)
+rect(148, 56, 22, 18, '.'); blobs(148, 56, 22, 18, ',', 0.1, 36, ['.'])
+path([(110, 36), (128, 36), (148, 36), (148, 40)], 'B', 2)
+for y in range(35, 38):
+    for x in range(110, 130):
+        if g[y][x] not in ('~', 'W', 'B'): pass
+obj('mural', 140, 9); obj('xiquexique', 131, 18); obj('xiquexique', 163, 17); obj('juazeiro', 150, 16)
+for (x, y) in [(130, 44), (150, 46), (160, 52), (138, 50)]: obj('arvoreSelva', x, y)
+for (x, y) in [(136, 44), (146, 52), (157, 43), (165, 48)]: obj('folhaGigante', x, y)
+for (x, y) in [(130, 58), (144, 60), (131, 71)]: obj('bambu', x, y)
+for (x, y) in [(138, 60), (139, 70), (145, 64)]: obj('lanternaPedra', x, y)
+obj('umbu', 156, 62); obj('araucaria', 165, 58); obj('araucaria', 152, 70); obj('cercaVara', 150, 66); obj('cercaVara', 151, 66); obj('cercaVara', 152, 66)
+obj('sucata', 162, 70); obj('boia', 116, 40)
+for nm, bio, r in [('Salar Branco', 'salar', [128, 0, 42, 12]), ('Cânion Rubro', 'canion', [128, 12, 42, 14]), ('Brejo das Garças', 'brejo', [128, 26, 42, 14]),
+                   ('Selva Funda', 'selva', [128, 40, 42, 16]), ('Fontes Termais', 'termal', [128, 56, 20, 18]), ('Pampa', 'pampa', [148, 56, 22, 18])]:
+    areas.append({'name': nm, 'biome': bio, 'rect': r})
 
 # ---------------- praça no meio e caminhos ----------------
 rect(58, 33, 12, 7, 'P')

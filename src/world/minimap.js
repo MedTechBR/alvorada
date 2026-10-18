@@ -19,6 +19,7 @@ const COLORS = {
   [TILE.CUR_E]: '#5aa8e8', [TILE.CUR_W]: '#5aa8e8', [TILE.CUR_N]: '#5aa8e8', [TILE.CUR_S]: '#5aa8e8',
   [TILE.TEMPLEFLOOR]: '#d8c49a', [TILE.MOSAIC]: '#b8865a', [TILE.OLDSTONE]: '#9a9686', [TILE.TEMPLEWALL]: '#7a6450', [TILE.STAIRUP]: '#e0d0b0', [TILE.STAIRDOWN]: '#6a5a4a',
   [TILE.HOLE]: '#0c0a0e', [TILE.CRACK]: '#b8a07a', [TILE.DARKCAVE]: '#3a3238', [TILE.CRYSTALFLOOR]: '#4a3e6a', [TILE.CRYSTALWALL]: '#2e2442', [TILE.RAIL]: '#6a5a50',
+  [TILE.SALT]: '#eceef2', [TILE.SALTMIRROR]: '#bcdcf4', [TILE.REDROCK]: '#b85a3c', [TILE.DRYRIVER]: '#b8a080', [TILE.SHALLOW]: '#6ab4b0', [TILE.REED]: '#5a9a5a',
 };
 const ROOF = { houseA: '#9a5a3a', houseB: '#c84a3c', houseC: '#6a8a5a', houseBlue: '#3a6ad8', lab: '#8a94a4', center: '#e8483a', mart: '#3a7ae8', barn: '#b8402e', treeCenter: '#277a38', treeHouse: '#277a38', greenhouse: '#bfe8d0', radioStation: '#d8902a', portico: '#c84a3c', stands: '#5a6a8a' };
 const DIR_ANGLE = { up: 0, right: Math.PI / 2, down: Math.PI, left: -Math.PI / 2 };

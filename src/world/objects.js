@@ -69,6 +69,11 @@ export const KINDS = {
   crackedWall: { tex: 'crackedWall', fw: 1, fh: 1, oy: 0, cracked: true }, crackedRock: { tex: 'crackedRock', fw: 1, fh: 1, oy: 0, cracked: true },
   crackedIce: { tex: 'crackedIce', fw: 1, fh: 1, oy: 0, cracked: true }, crackedLava: { tex: 'crackedLava', fw: 1, fh: 1, oy: 0, cracked: true },
   crackedCanyon: { tex: 'crackedCanyon', fw: 1, fh: 1, oy: 0, cracked: true },
+  // biomas do plano do mundo (docs/mundo-expandido.md, seção 6)
+  xiquexique: { tex: 'xiquexique', fw: 2, fh: 1, oy: 1 }, juazeiro: { tex: 'juazeiro', fw: 3, fh: 1, oy: 2 }, umbu: { tex: 'umbu', fw: 3, fh: 1, oy: 2 },
+  araucaria: { tex: 'araucaria', fw: 2, fh: 1, oy: 2 }, bambu: { tex: 'bambu', fw: 2, fh: 1, oy: 1 }, lanternaPedra: { tex: 'lanternaPedra', fw: 1, fh: 1, oy: 1, lights: [[8, 14, 0.8]] },
+  folhaGigante: { tex: 'folhaGigante', fw: 2, fh: 1, oy: 1 }, arvoreSelva: { tex: 'arvoreSelva', fw: 4, fh: 1, oy: 2 }, boia: { tex: 'boia', fw: 1, fh: 1, oy: 2 },
+  mural: { tex: 'mural', fw: 3, fh: 1, oy: 0 }, cercaVara: { tex: 'cercaVara', fw: 1, fh: 1, oy: 2 }, sucata: { tex: 'sucata', fw: 2, fh: 1, oy: 1 },
 };
 // decoração plana (sem colisão, sem y-sort): fica na camada logo acima do chão
 export const DECOR = { rug: 'rug', courtlines: 'courtlines', window: 'window', pebble: 'pebble', pebble2: 'pebble2', mush: 'mush', mush2: 'mush2', wheat: 'wheat' };

@@ -4,7 +4,7 @@ import { WATER_FRAMES, FLOWERS, LILY, TALL, CORN, SPR } from './art.js';
 import { KINDS, DECOR } from './objects.js';
 import { buildRegion } from './build.js';
 import { renderTiles, prewarm } from './ground.js';
-import { ANIM, TALL_SNOW, TALL_DRY } from './arte-biomas.js';
+import { ANIM, TALL_SNOW, TALL_DRY, TALL_REED } from './arte-biomas.js';
 
 // Mapa da região de Alvorada, desenhado à mão em assets/maps/alvorada.json.
 // - Camadas: água animada < chão em pedaços (cache) < decoração plana < entidades/objetos/mato alto com y-sort.
@@ -36,7 +36,7 @@ export const AREAS = (() => {
 const CH = 16, CPX = CH * T; // setor: 16x16 blocos = 256 px
 // chão dos biomas onde um selvagem pode aparecer mesmo sem mato alto (cavernas, neve, deserto...)
 const WILD_GROUND = new Set([TILE.CAVE, TILE.SNOWFIELD, TILE.ASH, TILE.BASALT, TILE.DUNE, TILE.CAATINGA, TILE.CRACKED, TILE.WETSAND, TILE.MANGMUD, TILE.ICEFLOOR, TILE.LAVAFLOOR,
-  TILE.DARKCAVE, TILE.CRYSTALFLOOR, TILE.OLDSTONE, TILE.TEMPLEFLOOR, TILE.SNOW, TILE.RAIL]);
+  TILE.DARKCAVE, TILE.CRYSTALFLOOR, TILE.OLDSTONE, TILE.TEMPLEFLOOR, TILE.SNOW, TILE.RAIL, TILE.SALT, TILE.REDROCK, TILE.DRYRIVER, TILE.SHALLOW]);
 const hash = (x, y, s = 0) => { let h = (x * 374761393 + y * 668265263 + s * 1442695041) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; };
 
 export class GameMap {
@@ -243,7 +243,7 @@ export class GameMap {
   #near(x, y, t) { for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) if (this.at(x + i, y + j) === t) return true; return false; }
   #nearLand(x, y) { for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) { const t = this.at(x + i, y + j); if (t !== TILE.WATER && t !== TILE.DEEP) return true; } return false; }
   #addTall(c, tx, ty, t = TILE.TALL) {
-    const set = t === TILE.CORN ? CORN : t === TILE.TALLSNOW ? TALL_SNOW : t === TILE.TALLDRY ? TALL_DRY : TALL;
+    const set = t === TILE.CORN ? CORN : t === TILE.TALLSNOW ? TALL_SNOW : t === TILE.TALLDRY ? TALL_DRY : t === TILE.REED ? TALL_REED : TALL;
     const s = new PIXI.Sprite(set[0]); s.anchor.set(0.5, 1); s.frames = set;
     s.x = tx * T + 8; s.y = ty * T + 17; s.zIndex = ty * T + 15;
     if (t === TILE.TALL && this.#near(tx, ty, TILE.MANGMUD)) s.tint = 0x9ac08a; // mato do mangue

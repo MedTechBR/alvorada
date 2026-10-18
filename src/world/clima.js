@@ -11,20 +11,33 @@ import { IS_TOUCH } from '../engine/input.js';
 // Um bioma vem da área ou do interior ("biome" no mapa); a área pode ajustar com "clima": {"neve": 0.5, ...}
 // ou trocar por outro preset ("clima": "gelo"). Exposto como game.mundo.clima.
 
+// ids = os de docs/mundo-expandido.md (seção 6) + os das masmorras (templo, mina)
 export const CLIMA = {
-  gelo:    { neve: 1, vento: 0.5, tinta: 0xeef4ff, som: 'vento', musica: 'snow' },
-  neve:    { neve: 0.6, vento: 0.2, tinta: 0xf2f6ff, som: 'vento', musica: 'snow' },
+  neve:    { neve: 0.8, vento: 0.3, tinta: 0xf0f6ff, som: 'vento', musica: 'snow' },
+  gelo:    { neve: 0.4, brilhos: 0.6, tinta: 0xe8f2ff, som: 'vento', musica: 'snow' },
+  pico:    { neve: 0.5, vento: 1, tinta: 0xeef2fa, som: 'vento', musica: 'snow' },
   vulcao:  { cinzas: 0.8, brasas: 1, calor: 1, tinta: 0xffe6d6, som: 'lava', musica: 'volcano' },
-  deserto: { tempestade: 1, miragem: 1, calor: 0.7, tinta: 0xfff2dc, som: 'vento', musica: 'desert' },
+  cratera: { cinzas: 0.2, calor: 0.4, tinta: 0xf2fae6, som: 'mangue', musica: 'forest' },
+  termal:  { tinta: 0xfff6ee, som: 'gotas', musica: 'temple' },
   sertao:  { poeira: 0.5, miragem: 0.6, calor: 0.8, tinta: 0xfff0dc, som: 'vento', musica: 'desert' },
-  mangue:  { nevoa: 1, tinta: 0xe6f2e2, som: 'mangue', musica: 'mangrove' },
+  canion:  { poeira: 0.6, vento: 0.3, calor: 0.4, eco: true, tinta: 0xffeee2, som: 'vento', musica: 'desert' },
+  deserto: { tempestade: 1, miragem: 1, calor: 0.7, tinta: 0xfff2dc, som: 'vento', musica: 'desert' },
+  salar:   { miragem: 0.7, brilhos: 0.8, calor: 0.4, tinta: 0xf6f8ff, som: 'vento', musica: 'desert' },
+  mangue:  { nevoa: 0.7, tinta: 0xe6f2e2, som: 'mangue', musica: 'mangrove' },
+  brejo:   { nevoa: 1, tinta: 0xdde8da, som: 'mangue', musica: 'mangrove' },
+  selva:   { chuva: 1, nevoa: 0.3, tinta: 0xe4f2e0, som: 'mangue', musica: 'forest' },
   praia:   { som: 'mar' },
+  mar:     { som: 'mar' },
+  recife:  { brilhos: 0.4, tinta: 0xdcf0ff, som: 'mar' },
+  abismo:  { escuro: 1, tinta: 0xc8d8f0, som: 'gotas', musica: 'cave' },
   caverna: { gotas: 1, eco: true, som: 'gotas', musica: 'cave' },
   cristal: { gotas: 0.5, brilhos: 1, eco: true, som: 'gotas', musica: 'cave' },
   mina:    { gotas: 0.6, poeira: 0.4, eco: true, som: 'gotas', musica: 'cave' },
+  ruina:   { poeira: 0.6, eco: true, som: 'templo', musica: 'temple' },
   templo:  { poeira: 0.7, eco: true, som: 'templo', musica: 'temple' },
-  ruinas:  { poeira: 0.5, musica: 'temple' },
+  pampa:   { vento: 0.15, som: 'vento' },
 };
+CLIMA.ruinas = CLIMA.ruina; // nome antigo da demo
 // música de cada bioma (a história escolhe a faixa; vila e floresta seguem como antes)
 export const BIOME_TRACK = Object.fromEntries(Object.entries(CLIMA).filter(([, c]) => c.musica).map(([k, c]) => [k, c.musica]));
 
@@ -37,6 +50,7 @@ const TEX = {
   sand: dotTex(9, 2, (x) => { x.fillStyle = 'rgba(255,246,222,0.95)'; x.fillRect(0, 0, 9, 1); x.fillStyle = 'rgba(150,104,52,0.8)'; x.fillRect(3, 1, 6, 1); }),
   dust: dotTex(2, 2, (x) => { x.fillStyle = 'rgba(255,244,214,0.9)'; x.fillRect(0, 0, 2, 2); }),
   drop: dotTex(1, 3, (x) => { x.fillStyle = '#bfe4ff'; x.fillRect(0, 0, 1, 3); }),
+  rain: dotTex(2, 7, (x) => { x.fillStyle = 'rgba(210,230,255,0.75)'; x.fillRect(1, 0, 1, 5); x.fillRect(0, 4, 1, 3); }),
   mirage: dotTex(48, 12, (x) => {
     const g = x.createRadialGradient(24, 6, 0, 24, 6, 24); g.addColorStop(0, 'rgba(170,220,255,0.9)'); g.addColorStop(1, 'rgba(170,220,255,0)');
     x.fillStyle = g; x.save(); x.scale(1, 0.25); x.fillRect(0, 0, 48, 48); x.restore();
@@ -73,7 +87,7 @@ export class Clima {
     this.t += dt;
     const c = this.conf(room), K = this.k;
     // intensidades sobem e descem devagar (troca de área sem corte seco)
-    for (const key of ['neve', 'vento', 'cinzas', 'brasas', 'calor', 'tempestade', 'miragem', 'poeira', 'nevoa', 'gotas', 'brilhos']) K[key] = (K[key] ?? 0) + ((+c[key] || 0) - (K[key] ?? 0)) * Math.min(1, dt * 0.8);
+    for (const key of ['neve', 'vento', 'cinzas', 'brasas', 'calor', 'tempestade', 'miragem', 'poeira', 'nevoa', 'gotas', 'brilhos', 'chuva']) K[key] = (K[key] ?? 0) + ((+c[key] || 0) - (K[key] ?? 0)) * Math.min(1, dt * 0.8);
     this.#air(dt, c);
     this.#storm(dt);
     this.#particles(dt);
@@ -87,7 +101,7 @@ export class Clima {
 
   // cor do ar
   #air(dt, c) {
-    const want = c.tinta ?? 0xffffff, w = [(want >> 16) & 255, (want >> 8) & 255, want & 255], a = this.tintC, k = Math.min(1, dt * 1.2);
+    const want = c.tinta ?? 0xffffff, rk = (this.rainK ?? 0) * 0.35, w = [((want >> 16) & 255) * (1 - rk) + 176 * rk, ((want >> 8) & 255) * (1 - rk) + 188 * rk, (want & 255) * (1 - rk) + 204 * rk], a = this.tintC, k = Math.min(1, dt * 1.2);
     for (let i = 0; i < 3; i++) a[i] += (w[i] - a[i]) * k;
     const col = (Math.round(a[0]) << 16) | (Math.round(a[1]) << 8) | Math.round(a[2]);
     this.tint.tint = col; this.tint.visible = col !== 0xffffff; this.tint.width = innerWidth; this.tint.height = innerHeight;
@@ -101,6 +115,9 @@ export class Clima {
       if (this.stormT <= 0) { if (this.storm > 0.5) { this.storm = 0; this.stormT = 25 + Math.random() * 30; } else { this.storm = 1; this.stormT = 10 + Math.random() * 8; this.g.toast?.('Uma tempestade de areia se aproxima!'); } }
     } else this.storm = 0;
     this.stormK = (this.stormK ?? 0) + (this.storm * K.tempestade - (this.stormK ?? 0)) * Math.min(1, dt * 0.5);
+    // pancadas de chuva (selva): vêm e vão
+    if (K.chuva > 0.3) { this.rainT = (this.rainT ?? 8) - dt; if (this.rainT <= 0) { this.rain = this.rain ? 0 : 1; this.rainT = this.rain ? 12 + Math.random() * 10 : 18 + Math.random() * 25; if (this.rain) this.g.toast?.('Começou a chover!'); } } else this.rain = 0;
+    this.rainK = (this.rainK ?? 0) + ((this.rain ?? 0) * K.chuva - (this.rainK ?? 0)) * Math.min(1, dt * 0.6);
     // rajadas de vento na neve
     this.gust += ((Math.sin(this.t * 0.37) * 0.5 + Math.sin(this.t * 1.1) * 0.5 > 0.55 ? 1 : 0) - this.gust) * Math.min(1, dt * 1.5);
     const v = this.veil; v.alpha = this.stormK * 0.55; v.visible = v.alpha > 0.01; v.width = innerWidth; v.height = innerHeight;
@@ -112,7 +129,7 @@ export class Clima {
     const W = view.x1 - view.x0, H = view.y1 - view.y0, area = (W * H) / (400 * 300);
     const want = {
       flake: Math.round(110 * K.neve * area * q * (1 + this.gust * 0.6)), ash: Math.round(60 * K.cinzas * area * q), ember: Math.round(26 * K.brasas * area * q),
-      sand: Math.round(220 * (this.stormK ?? 0) * area * q + 18 * K.poeira * area * q), cloud: Math.round(14 * (this.stormK ?? 0) * area * q), dust: Math.round(14 * (K.poeira + K.brilhos * 0.5) * area * q), drop: K.gotas > 0.05 ? 1 : 0,
+      sand: Math.round(220 * (this.stormK ?? 0) * area * q + 18 * K.poeira * area * q), cloud: Math.round(14 * (this.stormK ?? 0) * area * q), rain: Math.round(180 * (this.rainK ?? 0) * area * q), dust: Math.round(14 * (K.poeira + K.brilhos * 0.5) * area * q), drop: K.gotas > 0.05 ? 1 : 0,
     };
     const have = {}; for (const s of this.parts) have[s.kind] = (have[s.kind] ?? 0) + 1;
     for (const [kind, n] of Object.entries(want)) for (let i = have[kind] ?? 0; i < n; i++) this.#spawn(kind, view, true);
@@ -124,6 +141,7 @@ export class Clima {
         case 'ash': s.wx += (8 + Math.sin(s.age + s.ph) * 6) * dt; s.wy += s.vy * dt; s.rotation += dt; break;
         case 'ember': s.wx += Math.sin(s.age * 2 + s.ph) * 10 * dt; s.wy -= s.vy * dt; s.alpha = Math.max(0, Math.sin(Math.min(1, s.age / s.life) * Math.PI)) * (0.6 + Math.sin(s.age * 14) * 0.3); break;
         case 'sand': s.wx += s.vx * (0.4 + (this.stormK ?? 0)) * dt; s.wy += Math.sin(s.age * 3 + s.ph) * 6 * dt; break;
+        case 'rain': s.wx += 40 * dt; s.wy += 340 * dt; if (s.wy > s.floor) { if (Math.random() < 0.3) this.g.fx?.emit(s.wx, s.floor, { color: 0xd8ecff, n: 1, speed: 15, size: 1.5, life: 0.2, vz: 20, grav: 200, add: false }); this.#place(s, view, true); } break;
         case 'cloud': s.wx += s.vx * dt; s.wy += Math.sin(s.age + s.ph) * 4 * dt; s.alpha = Math.min(1, (this.stormK ?? 0) * 1.5) * 0.5; break;
         case 'dust': s.wx += Math.sin(s.age * 0.5 + s.ph) * 4 * dt; s.wy += Math.cos(s.age * 0.4 + s.ph) * 3 * dt; s.alpha = 0.25 + Math.sin(s.age * 1.3 + s.ph) * 0.2; break;
         case 'drop': {
@@ -134,7 +152,7 @@ export class Clima {
         }
       }
       s.x = s.wx; s.y = s.wy;
-      const out = s.wy > view.y1 + 10 || s.wy < view.y0 - 30 || s.wx < view.x0 - 40 || s.wx > view.x1 + 40 || (s.kind === 'ember' && s.age > s.life);
+      const out = s.wy > view.y1 + 10 || (s.wy < view.y0 - 30 && s.kind !== 'rain') || s.wy < view.y0 - 400 || s.wx < view.x0 - 40 || s.wx > view.x1 + 40 || (s.kind === 'ember' && s.age > s.life);
       if (out) { if ((want[s.kind] ?? 0) < (have[s.kind] ?? 0)) { s.dead = true; have[s.kind]--; } else this.#place(s, view, s.kind !== 'ember' && s.kind !== 'dust'); }
     }
     if (this.parts.some((s) => s.dead)) { for (const s of this.parts) if (s.dead) s.destroy(); this.parts = this.parts.filter((s) => !s.dead); }
@@ -153,6 +171,7 @@ export class Clima {
       case 'flake': s.vy = 16 + r() * 18; if (edge || !scatter) { s.wy = view.y0 - 10; if (this.k.vento > 0.2 && r() < 0.4) { s.wx = view.x0 - 20; s.wy = view.y0 + r() * H; } } s.alpha = 0.7 + r() * 0.3; break;
       case 'ash': s.vy = 8 + r() * 8; if (edge || !scatter) s.wy = view.y0 - 10; s.alpha = 0.7; break;
       case 'ember': s.vy = 14 + r() * 16; s.life = 1.5 + r() * 2; s.wy = view.y0 + H * (0.4 + r() * 0.6); break;
+      case 'rain': s.wy = view.y0 - 20 - r() * H * 0.3; s.floor = view.y0 + r() * H; s.rotation = -0.12; s.alpha = 0.6 + r() * 0.3; break;
       case 'cloud': s.vx = 90 + r() * 50; if (edge || !scatter) s.wx = view.x0 - 40; s.scale.set(1 + r() * 0.8, 0.5 + r() * 0.4); s.tint = 0xa87a44; break;
       case 'sand': s.vx = 160 + r() * 120; if (edge || !scatter) s.wx = view.x0 - 20; s.alpha = 0.5 + r() * 0.4; s.scale.set(1 + r(), 1); break;
       case 'dust': break;

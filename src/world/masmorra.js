@@ -4,6 +4,7 @@ import { SPR } from './art.js';
 import { KINDS } from './objects.js';
 import { REGION } from './map.js';
 import { FLOORS } from './arte-biomas.js';
+import { CLIMA } from './clima.js';
 import { ITEMS, ITEM_INFO } from '../data/items.js';
 
 // itens-chave das masmorras (mesmo jeito de src/story/itens.js: só entram se o id ainda não existir)
@@ -574,7 +575,9 @@ export class Masmorra {
   darkZone() {
     const p = this.g.player; if (!p) return null;
     const z = this.map.interiorAt(p.x, p.y) ?? this.map.areaAt(p.x, p.y);
-    return z?.escuro ? z : null;
+    if (z?.escuro) return z;
+    const c = CLIMA[z?.biome]; // bioma sempre escuro (abismo)
+    return c?.escuro ? { escuro: c.escuro } : null;
   }
   #lightmap(dt) {
     const z = this.darkZone(), g = this.g;
