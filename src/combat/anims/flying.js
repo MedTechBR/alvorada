@@ -7,7 +7,7 @@ export default {
   gust: {},
   peck: { melee: ME('stab', { color: 0xffffff }), hit: IM.all(IM.type('flying', 0.8), IM.p({ tex: 'impact', color: 0xffffff, n: 1, speed: 0, scale: 0.9, end: 1.4, life: 0.08 })) },
   wingAttack: { dash: featherDash(), impact: IM.all(IM.type('flying', 1.2), IM.x(0xe8f6ff, 1.8)) },
-  aerialAce: { data: D('Ás dos Ares', 'flying', 'phys', 60, 'dash', { range: 6 }), dash: featherDash(0xffffff), impact: IM.all(IM.type('flying'), IM.p({ tex: 'slash', color: 0xffffff, n: 1, speed: 0, scale: 2.8, end: 3.2, life: 0.18, rot: 0.6 })) },
+  aerialAce: { data: D('Ás Aéreo', 'flying', 'phys', 60, 'dash', { range: 6 }), dash: featherDash(0xffffff), impact: IM.all(IM.type('flying'), IM.p({ tex: 'slash', color: 0xffffff, n: 1, speed: 0, scale: 2.8, end: 3.2, life: 0.18, rot: 0.6 })) },
   airSlash: { // Lâmina de Ar: lâminas de vento em X
     head: { ...H.none(0xbfe0ff, 1.2), draw: DRAW.cross(0xd8f0ff, 8) },
     trail: TR.p({ tex: 'streak', color: 0xd8f0ff, speed: 30, life: 0.15, rot: 'dir', alpha: 0.7 }, 40),
@@ -21,5 +21,5 @@ export default {
   whirlwind: {}, roar: {},
   featherDance: { data: D('Dança das Penas', 'flying', 'status', 0, 'cloud', { eff: { stat: 'atk', by: -2 } }), cloudColor: 0xffffff, cloudTex: 'feather' },
   steelWing: { data: D('Asa de Aço', 'steel', 'phys', 70, 'dash', { range: 6, eff: { stat: 'def', by: 1, self: true, chance: 0.1 } }), dash: featherDash(0xc8e0f0), impact: IM.all(IM.type('steel', 1.2), IM.p({ tex: 'slash', color: 0xc8e0f0, n: 1, speed: 0, scale: 2.2, end: 2.6, life: 0.15 })) },
-  roost: { data: D('Poleiro', 'flying', 'status', 0, 'self', { eff: { heal: 0.5, self: true } }), self: SELF.rise(0xbfe0ff, 'feather', true) },
+  roost: { data: D('Pouso', 'flying', 'status', 0, 'self', { eff: { heal: 0.5, self: true } }), self: SELF.rise(0xbfe0ff, 'feather', true) },
 };

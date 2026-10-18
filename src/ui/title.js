@@ -28,7 +28,7 @@ export class TitleScreen {
   run() { return new Promise((res) => { this.done = res; this.home(); }); }
   finish(r) { this.ui.enterFullscreen(); this.el.classList.add('out'); setTimeout(() => this.el.remove(), 600); clearInterval(this.anim); this.done(r); }
 
-  #show(html, after) { this.panel.innerHTML = html; this.panel.classList.remove('pop'); void this.panel.offsetWidth; this.panel.classList.add('pop'); after?.(); this.panel.querySelector('input')?.focus({ preventScroll: true }); }
+  #show(html, after) { this.el.classList.toggle('creating', /class="cc"/.test(html)); this.panel.innerHTML = html; this.panel.classList.remove('pop'); void this.panel.offsetWidth; this.panel.classList.add('pop'); after?.(); this.panel.querySelector('input')?.focus({ preventScroll: true }); }
   #err(msg) { const e = this.panel.querySelector('.tt-err'); if (e) { e.textContent = msg; e.hidden = !msg; } }
   #busy(on, label = 'Aguarde…') { const b = this.panel.querySelector('.tt-go'); if (b) { b.disabled = on; if (on) { b.dataset.l = b.textContent; b.textContent = label; } else if (b.dataset.l) b.textContent = b.dataset.l; } }
 
@@ -87,7 +87,7 @@ export class TitleScreen {
   create(imported = null) {
     const suggested = imported?.account?.name ?? imported?.save?.flags?.playerName ?? '';
     this.#show(`<div class="tt-h">${imported ? 'Conta para o jogo importado' : 'Criar conta de treinador'}</div>
-      <label class="tt-f"><span>Nome de treinador</span><input class="nm" maxlength="12" autocomplete="username" value="${esc(suggested)}" placeholder="Até 12 letras"></label>
+      <label class="tt-f"><span>Nome de treinador</span><input class="nm" maxlength="12" autocomplete="username" value="${esc(suggested)}" placeholder="Até 12 caracteres"></label>
       <label class="tt-f"><span>Senha</span><input class="p1" type="password" autocomplete="new-password" maxlength="64" placeholder="Pelo menos 4 caracteres"></label>
       <label class="tt-f"><span>Repita a senha</span><input class="p2" type="password" autocomplete="new-password" maxlength="64"></label>
       <div class="tt-err" hidden></div>

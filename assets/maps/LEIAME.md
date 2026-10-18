@@ -31,7 +31,7 @@ Depois de editar à mão, `python3 tools/formatar-mapa.py assets/maps/alvorada.j
 - Pontos para o roteiro (`src/story/roteiro.js`): zonas de `pisar` são pontos com o mesmo nome (ou `<nome>__<acesso>`
   quando há mais de uma entrada), raio padrão de 3 blocos (ou `radius`). Treinadores e personagens dos capítulos 2+
   ficam nos pontos citados em `src/story/elenco.js`.
-- `items`: Poké Bolas no chão `{x,y,item}` (brilham; pegar ao passar por cima).
+- `items`: Poké Bolas no chão `{x,y,item,n?}` (brilham; pegar ao passar por cima). Com `hidden: true` o item fica escondido: só um brilho fraco de perto (tesouros e pedras pela região).
 - `people`: moradores `{id,name,look,x,y,dir,wander,kid?,lines,heal?,all?}` (também dentro de cada interior, em
   coordenadas da sala). `look` é uma predefinição de `src/sprites/charart.js` (`menino`, `menina`, `professor`, `mae`,
   `rival`, `treinador`, `treinadora`, `montanhista`) ou `{preset, ...cores}`. Cada conversa mostra a próxima fala.

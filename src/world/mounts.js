@@ -268,7 +268,7 @@ const CSS = `
 body.mode-pokemon #t-mount { display: none; }
 #t-mount svg { width: 26px; height: 26px; }
 #t-mount.on { background: #ffd23f; }
-.mt-unlock { position: fixed; left: 50%; top: 16%; transform: translate(-50%, -20px) scale(.92); opacity: 0; z-index: 60; pointer-events: none;
+.mt-unlock { position: fixed; left: 50%; top: 26%; transform: translate(-50%, -20px) scale(.92); opacity: 0; z-index: 60; pointer-events: none;
   display: flex; align-items: center; gap: 14px; padding: 12px 22px 12px 14px; border-radius: 18px; min-width: 260px; max-width: min(92vw, 460px);
   background: linear-gradient(180deg, rgba(28,40,60,.96), rgba(16,24,40,.96)); border: 3px solid #ffd23f; box-shadow: 0 8px 0 rgba(0,0,0,.35), 0 0 0 6px rgba(255,210,63,.18);
   color: #fff; font-family: 'Avenir Next', Nunito, system-ui, sans-serif; transition: opacity .35s, transform .45s cubic-bezier(.2,1.6,.4,1); }
@@ -278,6 +278,7 @@ body.mode-pokemon #t-mount { display: none; }
 .mt-unlock small { display: block; font-size: 11px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; color: #ffd23f; }
 .mt-unlock b { display: block; font-size: 22px; font-weight: 900; line-height: 1.1; }
 .mt-unlock span { display: block; font-size: 12.5px; font-weight: 700; opacity: .88; margin-top: 3px; line-height: 1.3; }
+.mt-unlock kbd.sela { padding: 1px 3px; vertical-align: -4px; } .mt-unlock kbd.sela svg { width: 15px; height: 15px; display: block; }
 .mt-unlock kbd { display: inline-block; min-width: 18px; padding: 0 5px; border-radius: 5px; background: #ffd23f; color: #1c2a20; font: 900 12px system-ui; text-align: center; }
 `;
 const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20V11a6 6 0 0 1 12 0v9"/><path d="M4 20h4M16 20h4"/><path d="M9 7.5l-1-2M15 7.5l1-2"/></svg>';
@@ -331,7 +332,9 @@ export class Mounts {
   async announce(kind) {
     const C = MOUNTS[kind]; if (!C) return;
     const el = document.createElement('div'); el.className = 'mt-unlock';
-    el.innerHTML = `<div class="ic"><img alt=""></div><div><small>Nova montaria</small><b>${C.name}</b><span>${C.label}. ${HINT[kind].replace(/\bX\b/g, '<kbd>X</kbd>')}</span></div>`;
+    // no celular o X é o botão de sela: mostra o ícone dele no lugar da tecla
+    const key = IS_TOUCH ? `<kbd class="sela">${ICON}</kbd>` : '<kbd>X</kbd>';
+    el.innerHTML = `<div class="ic"><img alt=""></div><div><small>Nova montaria</small><b>${C.name}</b><span>${C.label}. ${HINT[kind].replace(/\bX\b/g, key)}</span></div>`;
     document.body.appendChild(el);
     portraitOf(C.dex, 3).then((p) => { if (p?.url) el.querySelector('img').src = p.url; }).catch(() => {});
     this.g.audio?.sfx('caught');

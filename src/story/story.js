@@ -333,7 +333,7 @@ export class Story {
       const quem = t.def.id === 'leader_tome' ? 'tome' : t.def.id;
       add(t, 26, done ? 'Falar' : t.def.badge ? 'Desafiar' : 'Batalhar', done ? R(quem, () => this.#afterTalk(t)) : () => this.#challenge(t));
     }
-    add(this.npc('nurse'), 28, 'Centro Pokémon', () => this.#nurseTalk());
+    add(this.npc('nurse'), 38, 'Centro Pokémon', () => this.#nurseTalk());
     out.push(...this.roteiro.interactions());
     const n = this.spots.get('nurse');
     add({ x: n.x + 22, y: n.y - 6, h: 26 }, 16, 'Usar o PC', () => { g.ui.openPC(); });
@@ -407,7 +407,7 @@ export class Story {
     if (this.battle) return;
     const p = g.player, c = this.spots.get('campina'), v = this.spots.get('village');
     const town = (v && Math.hypot(p.x - v.x, p.y - v.y) < v.r + 2 * T) || (c && Math.hypot(p.x - c.x, p.y - c.y) < c.r + 4 * T) || g.map.biome?.(p.x, p.y) === 'vila';
-    const want = town ? 'town' : 'route';
+    const want = town ? 'town' : g.map.biome?.(p.x, p.y) === 'floresta' ? 'forest' : 'route';
     if (this.music !== want) { this.music = want; g.audio?.music?.(want); }
   }
 

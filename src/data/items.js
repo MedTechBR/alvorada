@@ -19,13 +19,13 @@ export const ITEMS = {
   duskBall: I('Bola do Crepúsculo', 'Dusk Ball', 'ball', 1000, { ball: 'dusk', desc: '×3 à noite ou em cavernas.' }),
   netBall: I('Bola de Rede', 'Net Ball', 'ball', 1000, { ball: 'net', desc: '×3,5 em Pokémon de Água ou Inseto.' }),
   nestBall: I('Bola Ninho', 'Nest Ball', 'ball', 1000, { ball: 'nest', desc: 'Melhor quanto mais baixo o nível do alvo: (41 − nível)/10, até nível 30.' }),
-  timerBall: I('Bola Cronômetro', 'Timer Ball', 'ball', 1000, { ball: 'timer', desc: 'Fica melhor com o tempo de luta: +0,3 a cada turno, até ×4.' }),
+  timerBall: I('Bola Cronômetro', 'Timer Ball', 'ball', 1000, { ball: 'timer', desc: 'Fica melhor quanto mais a luta dura: +0,3 a cada turno, até ×4.' }),
   healBall: I('Bola de Cura', 'Heal Ball', 'ball', 300, { ball: 1, onCatch: 'heal', desc: 'Cura totalmente o Pokémon capturado.' }),
   luxuryBall: I('Bola de Luxo', 'Luxury Ball', 'ball', 3000, { ball: 1, onCatch: 'luxury', desc: 'O Pokémon capturado ganha amizade mais rápido.' }),
   premierBall: I('Bola Premier', 'Premier Ball', 'ball', 20, { ball: 1, desc: 'Bola comemorativa rara.' }),
   repeatBall: I('Bola Repetida', 'Repeat Ball', 'ball', 1000, { ball: 'repeat', desc: '×3,5 em espécies que você já capturou.' }),
-  levelBall: I('Bola de Nível', 'Level Ball', 'ball', 0, { ball: 'level', desc: '×2, ×4 ou ×8 conforme seu Pokémon tem nível maior que o alvo.' }),
-  loveBall: I('Bola do Amor', 'Love Ball', 'ball', 0, { ball: 'love', desc: '×8 se o alvo for da mesma espécie e de gênero oposto ao seu.' }),
+  levelBall: I('Bola de Nível', 'Level Ball', 'ball', 0, { ball: 'level', desc: '×2, ×4 ou ×8, conforme o nível do seu Pokémon supera o do alvo.' }),
+  loveBall: I('Bola do Amor', 'Love Ball', 'ball', 0, { ball: 'love', desc: '×8 se o alvo for da mesma espécie do seu Pokémon e do gênero oposto.' }),
   heavyBall: I('Bola Pesada', 'Heavy Ball', 'ball', 0, { ball: 'heavy', desc: 'Melhor em Pokémon pesados (soma à taxa de captura).' }),
   lureBall: I('Bola Isca', 'Lure Ball', 'ball', 0, { ball: 'lure', desc: '×4 em Pokémon fisgados com vara.' }),
   moonBall: I('Bola Lua', 'Moon Ball', 'ball', 0, { ball: 'moon', desc: '×4 em Pokémon que evoluem com a Pedra da Lua.' }),
@@ -53,9 +53,9 @@ export const ITEMS = {
   fullHeal: I('Cura Total', 'Full Heal', 'medicine', 400, { cure: 'all', desc: 'Cura qualquer problema de estado e a confusão.' }),
   // Sem PP no tempo real: Éter e Elixir mexem na recarga dos golpes
   ether: I('Éter', 'Ether', 'medicine', 1200, { cdReset: 1, desc: 'Zera a recarga de um golpe (o mais demorado).' }),
-  maxEther: I('Éter Máximo', 'Max Ether', 'medicine', 2000, { cdReset: 1, cdBoost: 10, desc: 'Zera a recarga de um golpe e acelera a dele por 10 s.' }),
+  maxEther: I('Éter Máximo', 'Max Ether', 'medicine', 2000, { cdReset: 1, cdBoost: 10, desc: 'Zera a recarga de um golpe e a deixa mais rápida por 10 s.' }),
   elixir: I('Elixir', 'Elixir', 'medicine', 3000, { cdReset: 4, desc: 'Zera a recarga de todos os golpes.' }),
-  maxElixir: I('Elixir Máximo', 'Max Elixir', 'medicine', 4500, { cdReset: 4, cdBoost: 10, desc: 'Zera a recarga de todos os golpes e acelera tudo por 10 s.' }),
+  maxElixir: I('Elixir Máximo', 'Max Elixir', 'medicine', 4500, { cdReset: 4, cdBoost: 10, desc: 'Zera a recarga de todos os golpes e as deixa mais rápidas por 10 s.' }),
   freshWater: I('Água Fresca', 'Fresh Water', 'medicine', 200, { heal: 30, desc: 'Recupera 30 PS.' }),
   sodaPop: I('Refrigerante', 'Soda Pop', 'medicine', 300, { heal: 50, desc: 'Recupera 50 PS.' }),
   lemonade: I('Limonada', 'Lemonade', 'medicine', 400, { heal: 70, desc: 'Recupera 70 PS.' }),
@@ -69,10 +69,10 @@ export const ITEMS = {
   oranBerry: I('Fruta Oran', 'Oran Berry', 'berry', 80, { hold: true, berry: { when: 'hp50', heal: 10 }, desc: 'Equipada: com metade dos PS ou menos, recupera 10 PS.' }),
   sitrusBerry: I('Fruta Sitrus', 'Sitrus Berry', 'berry', 80, { hold: true, berry: { when: 'hp50', healFrac: 0.25 }, desc: 'Equipada: com metade dos PS ou menos, recupera 1/4 dos PS.' }),
   cheriBerry: I('Fruta Cheri', 'Cheri Berry', 'berry', 80, { hold: true, berry: { when: 'status', cure: ['par'] }, desc: 'Equipada: cura a paralisia.' }),
-  chestoBerry: I('Fruta Chesto', 'Chesto Berry', 'berry', 80, { hold: true, berry: { when: 'status', cure: ['slp'] }, desc: 'Equipada: acorda na hora.' }),
+  chestoBerry: I('Fruta Chesto', 'Chesto Berry', 'berry', 80, { hold: true, berry: { when: 'status', cure: ['slp'] }, desc: 'Equipada: acorda o Pokémon na hora.' }),
   pechaBerry: I('Fruta Pecha', 'Pecha Berry', 'berry', 80, { hold: true, berry: { when: 'status', cure: ['psn', 'tox'] }, desc: 'Equipada: cura o envenenamento.' }),
   rawstBerry: I('Fruta Rawst', 'Rawst Berry', 'berry', 80, { hold: true, berry: { when: 'status', cure: ['brn'] }, desc: 'Equipada: cura a queimadura.' }),
-  aspearBerry: I('Fruta Aspear', 'Aspear Berry', 'berry', 80, { hold: true, berry: { when: 'status', cure: ['frz'] }, desc: 'Equipada: descongela.' }),
+  aspearBerry: I('Fruta Aspear', 'Aspear Berry', 'berry', 80, { hold: true, berry: { when: 'status', cure: ['frz'] }, desc: 'Equipada: descongela o Pokémon.' }),
   persimBerry: I('Fruta Persim', 'Persim Berry', 'berry', 80, { hold: true, berry: { when: 'confused', cure: ['confusion'] }, desc: 'Equipada: cura a confusão.' }),
   lumBerry: I('Fruta Lum', 'Lum Berry', 'berry', 80, { hold: true, berry: { when: 'status', cure: 'all' }, desc: 'Equipada: cura qualquer problema de estado e a confusão.' }),
   leppaBerry: I('Fruta Leppa', 'Leppa Berry', 'berry', 80, { hold: true, berry: { when: 'cooldown', cdReset: 1 }, desc: 'Equipada: zera a recarga do golpe mais demorado (no lugar de recuperar PP).' }),
@@ -94,7 +94,7 @@ export const ITEMS = {
   yacheBerry: I('Fruta Yache', 'Yache Berry', 'berry', 80, { hold: true, berry: { when: 'hit', resist: 'ice' }, desc: 'Equipada: reduz à metade um golpe de Gelo super efetivo.' }),
   chopleBerry: I('Fruta Chople', 'Chople Berry', 'berry', 80, { hold: true, berry: { when: 'hit', resist: 'fighting' }, desc: 'Equipada: reduz à metade um golpe Lutador super efetivo.' }),
   kebiaBerry: I('Fruta Kebia', 'Kebia Berry', 'berry', 80, { hold: true, berry: { when: 'hit', resist: 'poison' }, desc: 'Equipada: reduz à metade um golpe Venenoso super efetivo.' }),
-  shucaBerry: I('Fruta Shuca', 'Shuca Berry', 'berry', 80, { hold: true, berry: { when: 'hit', resist: 'ground' }, desc: 'Equipada: reduz à metade um golpe de Terra super efetivo.' }),
+  shucaBerry: I('Fruta Shuca', 'Shuca Berry', 'berry', 80, { hold: true, berry: { when: 'hit', resist: 'ground' }, desc: 'Equipada: reduz à metade um golpe Terrestre super efetivo.' }),
   cobaBerry: I('Fruta Coba', 'Coba Berry', 'berry', 80, { hold: true, berry: { when: 'hit', resist: 'flying' }, desc: 'Equipada: reduz à metade um golpe Voador super efetivo.' }),
   payapaBerry: I('Fruta Payapa', 'Payapa Berry', 'berry', 80, { hold: true, berry: { when: 'hit', resist: 'psychic' }, desc: 'Equipada: reduz à metade um golpe Psíquico super efetivo.' }),
   tangaBerry: I('Fruta Tanga', 'Tanga Berry', 'berry', 80, { hold: true, berry: { when: 'hit', resist: 'bug' }, desc: 'Equipada: reduz à metade um golpe de Inseto super efetivo.' }),
@@ -115,7 +115,7 @@ export const ITEMS = {
 
   // ---------------- Itens para segurar (hold: true)
   leftovers: I('Sobras', 'Leftovers', 'held', 4000, { hold: true, tickHeal: 1 / 16, desc: 'Recupera 1/16 dos PS a cada turno (a cada poucos segundos).' }),
-  blackSludge: I('Lodo Negro', 'Black Sludge', 'held', 4000, { hold: true, tickHeal: 1 / 16, poisonOnly: true, desc: 'Venenosos recuperam 1/16 dos PS por turno; os outros perdem 1/8.' }),
+  blackSludge: I('Lodo Negro', 'Black Sludge', 'held', 4000, { hold: true, tickHeal: 1 / 16, poisonOnly: true, desc: 'Pokémon Venenosos recuperam 1/16 dos PS por turno; os outros perdem 1/8.' }),
   choiceBand: I('Faixa Escolhida', 'Choice Band', 'held', 4000, { hold: true, statMult: { atk: 1.5 }, choice: true, desc: 'Ataque ×1,5, mas os outros golpes demoram mais para recarregar depois que ele escolhe um.' }),
   choiceSpecs: I('Óculos Escolhidos', 'Choice Specs', 'held', 4000, { hold: true, statMult: { spa: 1.5 }, choice: true, desc: 'Ataque Especial ×1,5, com a mesma restrição da Faixa Escolhida.' }),
   choiceScarf: I('Cachecol Escolhido', 'Choice Scarf', 'held', 4000, { hold: true, statMult: { spe: 1.5 }, choice: true, desc: 'Velocidade ×1,5, com a mesma restrição da Faixa Escolhida.' }),
@@ -136,7 +136,7 @@ export const ITEMS = {
   eviolite: I('Eviolita', 'Eviolite', 'held', 4000, { hold: true, eviolite: true, desc: 'Defesa e Defesa Especial ×1,5 em quem ainda pode evoluir.' }),
   assaultVest: I('Colete de Assalto', 'Assault Vest', 'held', 1000, { hold: true, statMult: { spd: 1.5 }, noStatus: true, desc: 'Defesa Especial ×1,5, mas só deixa usar golpes de dano.' }),
   rockyHelmet: I('Capacete Rochoso', 'Rocky Helmet', 'held', 4000, { hold: true, contactDamage: 1 / 6, desc: 'Quem toca em quem segura perde 1/6 dos PS.' }),
-  airBalloon: I('Balão de Ar', 'Air Balloon', 'held', 4000, { hold: true, balloon: true, desc: 'Imune a golpes de Terra até levar um golpe (aí estoura).' }),
+  airBalloon: I('Balão de Ar', 'Air Balloon', 'held', 4000, { hold: true, balloon: true, desc: 'Imune a golpes Terrestres até levar um golpe (aí estoura).' }),
   scopeLens: I('Lente de Mira', 'Scope Lens', 'held', 4000, { hold: true, critUp: 1, desc: 'Acerto crítico mais fácil.' }),
   razorClaw: I('Garra Afiada', 'Razor Claw', 'held', 5000, { hold: true, critUp: 1, desc: 'Acerto crítico mais fácil. Faz Sneasel evoluir.' }),
   wideLens: I('Lente Ampla', 'Wide Lens', 'held', 4000, { hold: true, accMult: 1.1, desc: 'Precisão ×1,1 (mira mais firme).' }),
@@ -169,12 +169,12 @@ export const ITEMS = {
   neverMeltIce: I('Gelo Eterno', 'Never-Melt Ice', 'held', 1000, { hold: true, typeBoost: 'ice', desc: 'Golpes de Gelo ×1,2.' }),
   blackBelt: I('Faixa Preta', 'Black Belt', 'held', 1000, { hold: true, typeBoost: 'fighting', desc: 'Golpes Lutadores ×1,2.' }),
   poisonBarb: I('Farpa Venenosa', 'Poison Barb', 'held', 1000, { hold: true, typeBoost: 'poison', desc: 'Golpes Venenosos ×1,2.' }),
-  softSand: I('Areia Macia', 'Soft Sand', 'held', 1000, { hold: true, typeBoost: 'ground', desc: 'Golpes de Terra ×1,2.' }),
+  softSand: I('Areia Macia', 'Soft Sand', 'held', 1000, { hold: true, typeBoost: 'ground', desc: 'Golpes Terrestres ×1,2.' }),
   sharpBeak: I('Bico Afiado', 'Sharp Beak', 'held', 1000, { hold: true, typeBoost: 'flying', desc: 'Golpes Voadores ×1,2.' }),
   twistedSpoon: I('Colher Torta', 'Twisted Spoon', 'held', 1000, { hold: true, typeBoost: 'psychic', desc: 'Golpes Psíquicos ×1,2.' }),
   silverPowder: I('Pó Prateado', 'Silver Powder', 'held', 1000, { hold: true, typeBoost: 'bug', desc: 'Golpes de Inseto ×1,2.' }),
   hardStone: I('Pedra Dura', 'Hard Stone', 'held', 1000, { hold: true, typeBoost: 'rock', desc: 'Golpes de Pedra ×1,2.' }),
-  spellTag: I('Etiqueta Enfeitiçada', 'Spell Tag', 'held', 1000, { hold: true, typeBoost: 'ghost', desc: 'Golpes Fantasmas ×1,2.' }),
+  spellTag: I('Etiqueta Enfeitiçada', 'Spell Tag', 'held', 1000, { hold: true, typeBoost: 'ghost', desc: 'Golpes do tipo Fantasma ×1,2.' }),
   dragonFang: I('Presa de Dragão', 'Dragon Fang', 'held', 1000, { hold: true, typeBoost: 'dragon', desc: 'Golpes de Dragão ×1,2.' }),
   blackGlasses: I('Óculos Escuros', 'Black Glasses', 'held', 1000, { hold: true, typeBoost: 'dark', desc: 'Golpes Sombrios ×1,2.' }),
   metalCoat: I('Revestimento Metálico', 'Metal Coat', 'held', 2000, { hold: true, typeBoost: 'steel', desc: 'Golpes de Aço ×1,2. Faz Onix e Scyther evoluírem.' }),
@@ -190,7 +190,7 @@ export const ITEMS = {
   sunStone: I('Pedra do Sol', 'Sun Stone', 'evolution', 3000, { desc: 'Faz certos Pokémon evoluírem.' }),
   shinyStone: I('Pedra Brilhante', 'Shiny Stone', 'evolution', 3000, { desc: 'Faz certos Pokémon evoluírem.' }),
   duskStone: I('Pedra do Anoitecer', 'Dusk Stone', 'evolution', 3000, { desc: 'Faz certos Pokémon evoluírem.' }),
-  dawnStone: I('Pedra da Alvorada', 'Dawn Stone', 'evolution', 3000, { desc: 'Faz certos Pokémon evoluírem (Kirlia macho, Snorunt fêmea).' }),
+  dawnStone: I('Pedra da Alvorada', 'Dawn Stone', 'evolution', 3000, { desc: 'Faz certos Pokémon evoluírem (Kirlia macho e Snorunt fêmea).' }),
   iceStone: I('Pedra de Gelo', 'Ice Stone', 'evolution', 3000, { desc: 'Faz certos Pokémon evoluírem.' }),
   linkingCord: I('Cordão de Ligação', 'Linking Cord', 'evolution', 8000, { desc: 'Faz evoluir quem nos jogos só evolui por troca.' }),
   prismScale: I('Escama Prisma', 'Prism Scale', 'evolution', 2000, { desc: 'Faz Feebas evoluir.' }),
@@ -216,6 +216,13 @@ export const ITEMS = {
   expCandyM: I('Doce de Exp. M', 'Exp. Candy M', 'candy', 1000, { exp: 3000, desc: 'Dá 3.000 pontos de experiência.' }),
   expCandyL: I('Doce de Exp. G', 'Exp. Candy L', 'candy', 3000, { exp: 10000, desc: 'Dá 10.000 pontos de experiência.' }),
   expCandyXl: I('Doce de Exp. GG', 'Exp. Candy XL', 'candy', 10000, { exp: 30000, desc: 'Dá 30.000 pontos de experiência.' }),
+  // Tesouros: não servem para nada além de vender no Mercado (metade do preço). Alfas e esconderijos deixam cair.
+  tinyMushroom: I('Cogumelo Pequeno', 'Tiny Mushroom', 'treasure', 1000, { desc: 'Um cogumelo pequeno e raro. Vale ₽500 no Mercado.' }),
+  pearl: I('Pérola', 'Pearl', 'treasure', 2000, { desc: 'Uma pérola pequena e brilhante. Vale ₽1.000 no Mercado.' }),
+  stardust: I('Pó Estelar', 'Stardust', 'treasure', 3000, { desc: 'Areia vermelha e bonita, lisa ao toque. Vale ₽1.500 no Mercado.' }),
+  bigMushroom: I('Cogumelo Grande', 'Big Mushroom', 'treasure', 5000, { desc: 'Um cogumelo grande e raro. Vale ₽2.500 no Mercado.' }),
+  bigPearl: I('Pérola Grande', 'Big Pearl', 'treasure', 8000, { desc: 'Uma pérola grande e brilhante. Vale ₽4.000 no Mercado.' }),
+  nugget: I('Pepita', 'Nugget', 'treasure', 10000, { desc: 'Uma pepita de ouro puro. Vale ₽5.000 no Mercado.' }),
   abilityCapsule: I('Cápsula de Habilidade', 'Ability Capsule', 'misc', 10000, { abilitySwap: true, desc: 'Troca a habilidade pela outra comum da espécie.' }),
 };
 
@@ -269,7 +276,7 @@ const COLOR = {
   cheriBerry: '#d8344a', rawstBerry: '#4cae8a', sitrusBerry: '#f2d04c', lumBerry: '#6cc04a', silkScarf: '#f4f0e0', charcoal: '#3a3a3a',
   miracleSeed: '#5ab84a', mysticWater: '#4aa0e8', leftovers: '#c98a4a', pokedex: '#e5383b', townMap: '#9fd67a',
 };
-const CAT_COLOR = { ball: '#e5383b', medicine: '#9b59d6', berry: '#d8344a', held: '#c0c0c0', evolution: '#7ad0e0', tm: '#7a8aa0', vitamin: '#e08a3a', candy: '#5ad0a0', key: '#9fd67a', misc: '#bbbbbb' };
+const CAT_COLOR = { treasure: '#f2c94c', ball: '#e5383b', medicine: '#9b59d6', berry: '#d8344a', held: '#c0c0c0', evolution: '#7ad0e0', tm: '#7a8aa0', vitamin: '#e08a3a', candy: '#5ad0a0', key: '#9fd67a', misc: '#bbbbbb' };
 
 function view(id) {
   const it = ITEMS[id];
@@ -291,16 +298,24 @@ for (const [old, id] of Object.entries(ITEM_ALIAS)) if (ITEMS[id]) ITEM_INFO[old
 
 export const usableOnMon = (key) => !!ITEM_INFO[key]?.usable;
 export const holdable = (key) => !!ITEM_INFO[key]?.hold;
+// Preço de venda no Mercado: metade do preço (0 = não se vende: itens-chave e MTs)
+export const sellPrice = (key) => { const it = itemInfo(key); return !it || it.key || it.cat === 'tm' ? 0 : Math.floor((it.price ?? 0) / 2); };
+export const buyPrice = (key) => itemInfo(key)?.price ?? 0;
 export const itemName = (key) => ITEM_INFO[key]?.name ?? itemInfo(key)?.name ?? (key ? String(key) : '');
 
 // Usa um item da mochila num Pokémon da equipe. Gasta da mochila se der certo. Devolve { ok, text, events }.
 // A lógica fica em src/mechanics/items.js (via mon.use); evolução vem em events ({ type: 'evolve', to }) e,
 // se o jogo tiver g.evolve(mon, to), já é disparada.
+const it_cat = (key) => itemInfo(key)?.cat;
 export function useItemOn(g, key, m, ctx = {}) {
   if (!ITEM_INFO[key] || !(g.bag?.[key] > 0)) return { ok: false, text: 'Você não tem esse item.', events: [] };
   const r = m.use(itemId(key), { entity: g.lead?.mon === m ? g.lead : null, ...ctx });
   if (r.ok && r.consumed) g.bag[key]--;
-  for (const e of r.events ?? []) if (e.type === 'evolve' && typeof g.evolve === 'function') g.evolve(m, e.to);
+  // Doce Raro / Doce de Exp.: golpes novos passam pela tela de "aprender" (g.teach); evolução pela cena (fila da interface)
+  for (const e of r.events ?? []) {
+    if (e.type === 'learn' && it_cat(key) !== 'tm' && typeof g.teach === 'function') g.teach(m, e.move);
+    if (e.type === 'evolve' && typeof g.evolve === 'function') { if (g.ui?.queue) g.ui.queue(() => g.evolve(m, e.to)); else g.evolve(m, e.to); }
+  }
   const text = typeof r.msg === 'string' ? r.msg : r.ok ? 'Funcionou!' : 'Isso não pode ser usado agora.';
   return { ok: r.ok, text, events: r.events ?? [] };
 }

@@ -21,6 +21,9 @@ export class UI {
     g.flags ??= {}; g.money ??= 0;
     this.state = 'title';
     if (IS_TOUCH) document.body.classList.add('touch');
+    // telas grandes do computador: a interface cresce junto (zoom do CSS em #ui, #hud, menu e minimapa)
+    const fitK = () => { const k = IS_TOUCH ? 1 : Math.max(1, Math.min(1.75, innerWidth / 1280, innerHeight / 720)); document.documentElement.style.setProperty('--k', k.toFixed(3)); this.k = k; };
+    fitK(); addEventListener('resize', fitK);
     this.hud = new Hud(g, this);
     this.dialog = new Dialog(this);
     this.menu = new GameMenu(this);
@@ -33,12 +36,13 @@ export class UI {
   }
   get story() { return this.g.story; }
   // o mundo para: título, menu, diálogo ou aviso de girar o aparelho
-  get blocking() { return this.state !== 'play' || this.menu.isOpen || this.dialog.open || this.rotateOn; }
+  get blocking() { return this.state !== 'play' || this.menu.isOpen || this.dialog.open || this.rotateOn || this.sceneOn; }
 
   // ---------- começo ----------
   async title() {
     this.state = 'title';
     document.body.classList.add('at-title');
+    this.g.audio?.music?.('title'); // toca assim que o navegador liberar o som (primeiro toque/tecla)
     const r = await new TitleScreen(this).run();
     document.body.classList.remove('at-title');
     const g = this.g, acc = r.account;
@@ -73,7 +77,7 @@ export class UI {
     if (this.state !== 'play') return true;
     g.flags.playTime = (g.flags.playTime ?? 0) + dt;
     if (!this.audioOk) this.audioOk = applyOpts(g);
-    if (this.rotateOn) { inp.taps.clear(); return true; }
+    if (this.rotateOn || this.sceneOn) { inp.taps.clear(); return true; }
     if (this.menu.isOpen) { this.menu.update(dt); inp.taps.clear(); return true; }
     if (this.dialog.open) { this.dialog.update(dt); this.#lock(); return true; }
     if (g.net?.ui?.modalOpen) { this.#lock(); return false; } // janela do online aberta: o mundo segue, o jogador não anda
@@ -101,10 +105,13 @@ export class UI {
   // ---------- atalhos ----------
   say(lines, opts) { this.g.input?.taps.clear(); return this.dialog.say(lines, opts); }
   toast(t) { this.hud.toast(t); }
-  openMenu() { if (this.state !== 'play' || this.menu.isOpen) return; this.menu.open(); document.body.classList.add('menu-open'); }
+  openMenu() { if (this.state !== 'play' || this.menu.isOpen || this.dialog.open) return; this.menu.open(); document.body.classList.add('menu-open'); this.g.audio?.duck?.(0.45); }
   openOnline() { this.menu.close(); const u = this.g.net?.ui; if (u && !u.modalOpen) u.toggleMenu(); }
-  openPC() { this.menu.openPC(); document.body.classList.add('menu-open'); }
-  onMenuClosed() { document.body.classList.remove('menu-open'); this.hud.v = {}; this.hud.t = 0; }
+  openPC() { this.menu.openPC(); document.body.classList.add('menu-open'); this.g.audio?.duck?.(0.45); }
+  openShop(stock, opts) { this.g.audio?.duck?.(0.45); return this.menu.openShop(stock, opts); }
+  // Fila de avisos que param o jogo (aprender golpe, evolução): um de cada vez, na ordem em que chegaram
+  queue(fn) { const run = async () => { try { while (this.dialog.open || this.state !== 'play') await sleep(120); await fn(); } catch (e) { console.warn('fila da interface', e); } }; this.fila = (this.fila ?? Promise.resolve()).then(run); return this.fila; }
+  onMenuClosed() { document.body.classList.remove('menu-open'); this.g.audio?.duck?.(1); this.hud.v = {}; this.hud.t = 0; }
   partyChanged() { this.hud.v.party = null; this.hud.t = 0; this.hud.lead(); this.hud.moves(); }
 
   save(reason = 'auto') {
@@ -125,7 +132,9 @@ export class UI {
   }
   async chapterCard(title, sub = 'REGIÃO ALVORADA') {
     const el = document.createElement('div'); el.className = 'chapter';
-    el.innerHTML = `<small>${sub}</small><b>${title}</b>`;
+    // "Capítulo 2 — Sussurros no bosque" vira número pequeno em cima e o nome grande embaixo
+    const m = /^Cap[ií]tulo\s+(\d+)\s*[—–:-]\s*(.+)$/.exec(String(title));
+    el.innerHTML = m ? `<small>${sub}</small><em>Capítulo ${m[1]}</em><b>${m[2]}</b><i></i>` : `<small>${sub}</small><b>${title}</b><i></i>`;
     $('ui').appendChild(el);
     await sleep(1700); el.classList.add('out'); await sleep(1300); el.remove();
   }
@@ -180,4 +189,12 @@ function registerServiceWorker() {
   if (!('serviceWorker' in navigator) || !/^https?:$/.test(location.protocol)) return;
   if (new URLSearchParams(location.search).has('nosw')) return;
   navigator.serviceWorker.register('sw.js').catch(() => {});
+  // primeira visita: o service worker ainda não via as requisições; manda a lista do que já foi carregado
+  // (código, mapa, sprites em uso) para ele guardar e o jogo abrir offline na próxima vez
+  const send = () => navigator.serviceWorker.ready.then((reg) => {
+    const urls = [...new Set(performance.getEntriesByType('resource').map((r) => r.name.split('#')[0]))];
+    reg.active?.postMessage({ type: 'guardar', urls: [location.href.split('?')[0], ...urls] });
+  }).catch(() => {});
+  setTimeout(send, 8000);
+  setTimeout(send, 60000);
 }

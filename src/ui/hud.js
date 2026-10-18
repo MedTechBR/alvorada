@@ -1,14 +1,16 @@
+import { itemName } from '../data/items.js';
 import * as PIXI from 'pixi.js';
 import { MOVES } from '../data/moves.js';
 import { TYPE_PT, TYPE_COLOR } from '../data/types.js';
 import { IS_TOUCH } from '../engine/input.js';
+import { portraitURL } from './portrait.js';
 
 // HUD leve: o DOM é montado uma vez e só recebe escrita quando um valor muda,
 // no máximo 10 vezes por segundo. Marcador de objetivo, balão de interação e "!" ficam no PixiJS
 // (desenhados junto com o mundo, sem custo de DOM).
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const STATUS = { par: ['PAR', '#d4b000'], slp: ['DOR', '#7d7d9c'], psn: ['ENV', '#a040a0'], brn: ['QUE', '#e0662c'] };
+const STATUS = { par: ['PAR', '#d4b000'], slp: ['DOR', '#7d7d9c'], psn: ['ENV', '#a040a0'], tox: ['ENV', '#7a1f8a'], brn: ['QUE', '#e0662c'], frz: ['CON', '#58b8e0'] };
 const hpCls = (k) => (k < 0.2 ? 'low' : k < 0.5 ? 'mid' : '');
 
 export const ICONS = {
@@ -24,10 +26,10 @@ export class Hud {
     this.t = 0; this.v = {};
     // painel do Pokémon que está em campo
     const lead = $('lead');
-    lead.innerHTML = `<div class="ld-top"><b class="ld-nm"></b><span class="ld-st"></span><span class="ld-lv"></span></div>
+    lead.innerHTML = `<div class="ld-top"><span class="ld-pic"></span><b class="ld-nm"></b><span class="ld-st"></span><span class="ld-lv"></span></div>
       <div class="bar hp"><i></i></div><div class="ld-mid"><div class="bar xp"><i></i></div><span class="ld-hpt"></span></div><div class="ld-party"></div>`;
     this.el = {
-      lead, nm: lead.querySelector('.ld-nm'), lv: lead.querySelector('.ld-lv'), st: lead.querySelector('.ld-st'),
+      lead, pic: lead.querySelector('.ld-pic'), nm: lead.querySelector('.ld-nm'), lv: lead.querySelector('.ld-lv'), st: lead.querySelector('.ld-st'),
       hp: lead.querySelector('.hp i'), hpt: lead.querySelector('.ld-hpt'), xp: lead.querySelector('.xp i'), party: lead.querySelector('.ld-party'),
     };
     // botões de toque: ícones e menu
@@ -38,10 +40,23 @@ export class Hud {
     const open = (e) => { e.preventDefault(); e.stopPropagation(); this.ui.openMenu(); };
     mb.addEventListener('touchstart', open, { passive: false });
     mb.addEventListener('click', open);
+    // botões de zoom (+ e −) sempre à vista, ao lado do minimapa; a roda do mouse, a pinça e as teclas + e − também valem
+    const zm = document.createElement('div'); zm.id = 'zoom';
+    zm.innerHTML = '<button data-z="1" aria-label="Aproximar">+</button><button data-z="-1" aria-label="Afastar">−</button>';
+    for (const b of zm.querySelectorAll('button')) {
+      b.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); if (this.ui.state === 'play' && !this.ui.blocking) this.g.setZoom(this.g.zoom + +b.dataset.z); });
+    }
+    document.body.appendChild(zm);
     // painel da batalha contra treinador e objetivo
     this.trainerEl = $('foe');
     this.objEl = $('objective');
-    this.objEl.innerHTML = '<div class="ok"></div><div class="ot"></div><div class="os"></div>';
+    this.objEl.innerHTML = '<div class="ok"></div><div class="ot"></div><div class="os"></div><span class="otg"><svg viewBox="0 0 16 16"><path d="M4 10l4-4 4 4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+    // objetivo recolhível: toque/clique alterna; no celular fica recolhido e abre sozinho por alguns segundos quando muda
+    try { this.objPref = localStorage.getItem('alvorada.objetivo'); } catch { this.objPref = null; }
+    const toggle = (e) => { e.preventDefault(); e.stopPropagation(); this.#objMin(!this.objEl.classList.contains('min'), true); };
+    this.objEl.addEventListener('pointerdown', toggle);
+    addEventListener('keydown', (e) => { if (e.code === 'KeyJ' && this.ui.state === 'play' && !this.ui.blocking) this.#objMin(!this.objEl.classList.contains('min'), true); });
+    this.#objMin(this.#objDefaultMin());
     this.#pixi();
   }
 
@@ -122,6 +137,7 @@ export class Hud {
     if (!m) return;
     const k = m.hp / m.stats.hp;
     this.#set('nm', m.name, (v) => { E.nm.textContent = v; });
+    this.#set('pic', m.dex, (dex) => { E.pic.innerHTML = ''; portraitURL(dex).then((src) => { if (src && this.v.pic === dex) E.pic.innerHTML = `<img src="${src}" alt="">`; }); });
     this.#set('lv', m.level, (v) => { E.lv.textContent = 'Nv. ' + v; });
     this.#set('hpw', Math.round(k * 200), (v) => { E.hp.style.width = v / 2 + '%'; });
     this.#set('hpc', hpCls(k), (v) => { E.hp.className = v; });
@@ -145,23 +161,28 @@ export class Hud {
   moves() {
     const g = this.g, m = g.party[g.leadIdx];
     const trainer = g.mode !== 'pokemon';
-    const ids = (trainer ? 'T:' + (m?.name ?? '') : 'P:') + (m ? m.moves.join(',') : '') + '|' + (g.mount?.hint()?.key ?? '');
+    const bk = trainer ? g.currentBall?.() : null, balls = bk ? g.bag[bk] : 0;
+    const ids = (trainer ? 'T:' + (m?.name ?? '') + ':' + bk + balls : 'P:') + (m ? m.moves.join(',') : '') + '|' + (g.mount?.hint()?.key ?? '');
     if (ids === this.v.moves) return;
     this.v.moves = ids;
     this.v.cds = null;
+    const mb = $('t-mount'); if (mb) mb.hidden = !g.mount?.hint();
     // modo treinador: ações de enviar, capturar e escolher (no celular os botões de golpe viram essas ações)
     if (trainer) {
+      const hint = (t, sub, k) => `<div class="mv hint"><kbd>${k}</kbd><span><b>${esc(t)}</b><small>${esc(sub)}</small></span></div>`;
       $('moves').innerHTML = IS_TOUCH || !m ? '' :
-        `<div class="mv hint"><b>Enviar ${esc(m.name)}</b><small>joga a Poké Bola dele</small><kbd>Q</kbd></div>` +
-        `<div class="mv hint"><b>Capturar</b><small>Poké Bola de captura</small><kbd>B</kbd></div>` +
-        `<div class="mv hint"><b>Escolher</b><small>próximo da equipe</small><kbd>Tab</kbd></div>` +
-        `<div class="mv hint"><b>Zoom</b><small>roda do mouse</small><kbd>+ −</kbd></div>` +
-        (g.mount?.hint() ? `<div class="mv hint"><b>${esc(g.mount.hint().title)}</b><small>${esc(g.mount.hint().sub)}</small><kbd>X</kbd></div>` : ''); // montaria (src/world/mounts.js)
-      const labels = [m ? `Enviar<br>${esc(m.name)}` : '', 'Capturar', 'Escolher', ''];
+        hint(`Enviar ${m.name}`, 'sai da Poké Bola', 'Q') +
+        hint('Capturar', bk ? `${itemName(bk)} ×${balls} · G troca` : 'sem Poké Bolas', 'B') +
+        hint('Escolher', 'próximo da equipe', 'Tab') +
+        hint('Zoom', 'roda do mouse', '+ −') +
+        (g.mount?.hint() ? hint(g.mount.hint().title, g.mount.hint().sub, 'X') : ''); // montaria (src/world/mounts.js)
+      // no celular: rótulo curto com ícone (o nome do Pokémon vai pequeno embaixo); o 4º botão troca o tipo de bola
+      const labels = m ? [`${ICONS.ball}Enviar<i>${esc(m.name)}</i>`, `${ICONS.ball}Capturar<i>${balls}×</i>`, g.party.length > 1 ? `${ICONS.swap}Escolher` : '', bk && g.ballKeys().length > 1 ? `${ICONS.ball}Bola<i>${esc(itemName(bk))}</i>` : ''] : ['', '', '', ''];
       for (const b of document.querySelectorAll('.tb.move')) {
         const i = +b.dataset.slot;
         b.innerHTML = labels[i] ? `<span>${labels[i]}</span>` : '';
-        b.style.setProperty('--tc', i === 0 ? '#e8584a' : i === 1 ? '#3a8ad8' : '#8a8a8a');
+        b.style.setProperty('--tc', i === 0 ? '#e8584a' : i === 1 ? '#3a8ad8' : '#7a8296');
+        b.style.setProperty('--cd', '0');
         b.style.visibility = labels[i] ? 'visible' : 'hidden';
       }
       this.cdEls = null;
@@ -170,15 +191,15 @@ export class Hud {
     const keys = ['1', '2', '3', '4'];
     $('moves').innerHTML = IS_TOUCH || !m ? '' : m.moves.map((id, i) => {
       const mv = MOVES[id];
-      return `<div class="mv" style="--tc:${TYPE_COLOR[mv?.type] ?? '#999'}"><b>${esc(mv?.name ?? id)}</b><small>${TYPE_PT[mv?.type] ?? ''} · ${mv?.power ?? '—'}</small><kbd>${keys[i]}</kbd><div class="cd"></div></div>`;
+      return `<div class="mv" style="--tc:${TYPE_COLOR[mv?.type] ?? '#999'}"><kbd>${keys[i]}</kbd><span><b>${esc(mv?.name ?? id)}</b><small>${TYPE_PT[mv?.type] ?? ''} · ${mv?.power || '—'}</small></span><div class="cd"></div></div>`;
     }).join('');
     for (const b of document.querySelectorAll('.tb.move')) {
       const mv = m && MOVES[m.moves[+b.dataset.slot]];
-      b.innerHTML = mv ? `<span>${esc(mv.name)}</span>` : '';
+      b.innerHTML = mv ? `<span class="${mv.name.length > 11 ? 'long' : ''}">${esc(mv.name)}</span>` : '';
       b.style.setProperty('--tc', TYPE_COLOR[mv?.type] ?? '#999');
       b.style.visibility = mv ? 'visible' : 'hidden';
     }
-    this.cdEls = [...document.querySelectorAll(IS_TOUCH ? '.tb.move' : '#moves .mv .cd')];
+    this.cdEls = IS_TOUCH ? null : [...document.querySelectorAll('#moves .mv .cd')];
   }
 
   // chamado todo quadro; trabalha no máximo 10 vezes por segundo
@@ -196,8 +217,7 @@ export class Hud {
         this.v.cds = key;
         ks.forEach((k, i) => {
           const el = this.cdEls[i]; if (!el) return;
-          if (IS_TOUCH) { el.style.setProperty('--cd', (k * 5) + '%'); el.classList.toggle('cool', k > 0); }
-          else el.style.transform = `scaleX(${k / 20})`;
+          el.style.transform = `scaleX(${k / 20})`;
         });
       }
     }
@@ -219,9 +239,17 @@ export class Hud {
       el.innerHTML = `<div class="fo-top"><b>${esc(b.def.name)}</b><span class="fo-balls">${[...balls].map((c) => `<i class="${c === 'k' ? 'ko' : c === 'o' ? 'out' : ''}"></i>`).join('')}</span></div>` +
         b.active.filter((e) => e.alive).map((e) => {
           const k = e.mon.hp / e.mon.stats.hp, st = e.mon.status ? STATUS[e.mon.status] : null;
-          return `<div class="fo-mon"><div class="fo-l"><span>${esc(e.mon.name)}</span>${st ? `<em style="background:${st[1]}">${st[0]}</em>` : ''}<small>Nv. ${e.mon.level}</small></div><div class="bar hp"><i class="${hpCls(k)}" style="width:${k * 100}%"></i></div></div>`;
+          return `<div class="fo-mon"><div class="fo-l"><i class="fo-pic" data-dex="${e.mon.dex}"></i><span>${esc(e.mon.name)}</span>${st ? `<em style="background:${st[1]}">${st[0]}</em>` : ''}<small>Nv. ${e.mon.level}</small></div><div class="bar hp"><i class="${hpCls(k)}" style="width:${k * 100}%"></i></div></div>`;
         }).join('');
+      el.querySelectorAll('.fo-pic[data-dex]').forEach((i) => portraitURL(+i.dataset.dex).then((src) => { if (src && i.isConnected) i.innerHTML = `<img src="${src}" alt="">`; }));
     });
+  }
+
+  #objDefaultMin() { return this.objPref ? this.objPref === 'min' : IS_TOUCH; }
+  #objMin(min, user = false) {
+    clearTimeout(this.objT);
+    this.objEl.classList.toggle('min', min);
+    if (user) { this.objPref = min ? 'min' : 'max'; try { localStorage.setItem('alvorada.objetivo', this.objPref); } catch { /* sem armazenamento */ } }
   }
 
   setObjective(o) {
@@ -236,7 +264,11 @@ export class Hud {
     el.querySelector('.ot').textContent = o.text;
     const sub = el.querySelector('.os'); sub.textContent = o.sub ?? ''; sub.hidden = !o.sub;
     el.hidden = false;
-    if (changed) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+    if (changed) {
+      el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+      // objetivo novo: mostra inteiro por um tempo e volta a recolher (se o jogador prefere recolhido)
+      if (this.#objDefaultMin()) { this.#objMin(false); this.objT = setTimeout(() => this.#objMin(true), 6000); }
+    }
   }
 
   toast(text) {

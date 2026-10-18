@@ -4,6 +4,7 @@ import { Npc } from '../story/npc.js';
 import { loadPokemonSprites, frameOf, dir8 } from '../sprites/pmd.js';
 import { speciesScale } from '../sprites/scale.js';
 import { SPECIES } from '../data/species.js';
+import { LOJAS, estoque } from './lojas.js';
 
 // Moradores e Pokémon das cidades: andam pela vizinhança, falam (dicas e humor) e dão vida às vilas.
 // Dados em assets/maps/alvorada.json: "people" (moradores) e "pets" (Pokémon passivos), também dentro dos interiores.
@@ -105,6 +106,15 @@ export class People {
     }
     const n = it.o;
     n.talking = true; n.walk?.res?.(); n.walk = null; n.faceTo(g.player.x, g.player.y);
+    // balconista do Mercado: comprar e vender
+    if (LOJAS[n.def.id] && g.ui?.openShop) {
+      try {
+        await g.ui.say(['Bem-vindo ao Mercado Pokémon! Em que posso ajudar?'], { name: n.def.name ?? '' });
+        await g.ui.openShop(estoque(n.def.id, (g.flags?.badges ?? []).length), { name: LOJAS[n.def.id].nome });
+        await g.ui.say(['Volte sempre!'], { name: n.def.name ?? '' });
+      } finally { n.talking = false; n.wanderT = 2; }
+      return;
+    }
     const lines = n.def.lines?.length ? n.def.lines : ['…'];
     // fala em sequência: cada conversa mostra a próxima frase (ou todas, se forem curtas)
     const all = n.def.all ?? lines.length <= 2;

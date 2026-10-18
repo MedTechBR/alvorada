@@ -10,11 +10,15 @@ import { kindOf } from './anims/index.js';
 // - quem dorme acorda com barulho (golpes, choques, explosões);
 // - em luta: circula o alvo, mantém a distância certa para os golpes, esquiva de projéteis
 //   e avisa antes de atacar (telegrafia, em combat.windup);
-// - no máximo 2 selvagens preparando golpe contra o mesmo alvo ao mesmo tempo (dá para ler a luta);
+// - um selvagem por vez preparando golpe contra o mesmo alvo (dois num bando com alfa): dá para ler a luta;
 // - espécies rivais brigam entre si quando se encontram.
 
 const SIGHT = { aggressive: 92, neutral: 0, timid: 70 };
 const DODGE = { aggressive: 0.25, neutral: 0.35, timid: 0.45 };
+
+// Chance de um selvagem nascer como alfa de um bando (raro: ~1 em 14). Alfa: +3 níveis, PS ×1,5, bate 25% mais forte,
+// não foge; vencido dá XP em dobro e deixa cair um item (main.js). Capturar é mais difícil (combat.catchChance).
+export const ALPHA_ODDS = 0.07;
 
 export class WildAI {
   constructor(g, c) { this.g = g; this.c = c; this.scanT = 2; this.packs = 0; }
@@ -65,7 +69,7 @@ export class WildAI {
   // ---------- bandos com alfa ----------
   async onSpawn(w) {
     const g = this.g;
-    if (w.ai.state === 'sleep' || Math.random() > 0.2 || (g.wilds?.filter((o) => o.alive).length ?? 0) > 8) return;
+    if (w.ai.state === 'sleep' || Math.random() > ALPHA_ODDS || (g.wilds?.filter((o) => o.alive).length ?? 0) > 8) return;
     const pack = { id: ++this.packs, alpha: w, members: new Set([w]), called: false };
     w.pack = pack; this.makeAlpha(w);
     const n = 2 + (Math.random() < 0.4 ? 1 : 0);
@@ -82,7 +86,7 @@ export class WildAI {
     w.isAlpha = true;
     const m = w.mon; m.level = Math.min(100, m.level + 3); m.calc(); m.stats.hp = Math.round(m.stats.hp * 1.5); m.hp = m.stats.hp;
     w.scale = 1.38; w.r = Math.min(28, w.r * 1.3);
-    if (w.temper === 'timid') w.temper = 'neutral';
+    w.temper = 'aggressive'; // alfa não foge: defende o território
   }
 
   // ---------- decisão por quadro ----------
@@ -192,11 +196,12 @@ export class WildAI {
         }
       }
     }
-    // escolhe golpe (com fichas: no máximo 2 preparando contra o mesmo alvo)
+    // escolhe golpe (com fichas: um por vez contra o mesmo alvo, dois num bando)
     if (e.lock <= 0 && e.stun <= 0 && ai.react <= 0) {
       let busy = 0; for (const o of g.wilds) if (o !== e && o.charging && o.aggroTarget === tg) busy++;
       const rate = (e.isAlpha ? 1.9 : 1.4) * (e.temper === 'aggressive' ? 1.2 : 1);
-      if (busy < 2 && Math.random() < dt * rate) {
+      // fichas de ataque: só um selvagem de cada vez prepara golpe contra o mesmo alvo (bando com alfa: dois)
+      if (busy < (e.pack ? 2 : 1) && Math.random() < dt * rate) {
         // prefere golpes de dano; golpes de estado só de vez em quando
         let tot = 0; const opts = [];
         e.mon.moves.forEach((id, i) => { const mv = MOVES[id]; if (mv && e.cds[i] <= 0 && c.inRange(e, mv, d, id)) { const w = mv.cat === 'status' ? 0.3 : 1 + (mv.power ?? 40) / 100; opts.push([i, w]); tot += w; } });

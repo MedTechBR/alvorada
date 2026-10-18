@@ -4,6 +4,7 @@ import { SPR, LEAVES, VARAL } from './art.js';
 import { KINDS } from './objects.js';
 import { Minimap } from './minimap.js';
 import { People } from './people.js';
+import { itemName } from '../data/items.js';
 
 // Vida do mundo: relógio de dia e noite (tingimento suave + luzes de janela), portas e escadas com fade,
 // bichinhos (borboletas, pássaros, peixes, folhas caindo, vaga-lumes), itens brilhando, árvores de frutas,
@@ -58,6 +59,7 @@ export class WorldLife {
     // tingimento: fora segue o céu; dentro de casa fica claro; na gruta é escuro
     const sky = room ? (room.dark ? 0x4a4250 : 0xfff6ea) : this.skyColor();
     this.shade.tint = sky; this.shade.width = innerWidth; this.shade.height = innerHeight;
+    this.shade.visible = sky !== 0xffffff; // de dia não desenha a camada de tela cheia à toa
     this.shade.visible = sky !== 0xffffff;
     this.fade.width = innerWidth; this.fade.height = innerHeight;
     this.lights.position.copyFrom(g.world.position); this.lights.scale.copyFrom(g.world.scale);
@@ -94,8 +96,9 @@ export class WorldLife {
         const sp = o.sprite; if (!sp) continue;
         const left = sp.x - sp.width / 2, top = sp.y - sp.height;
         for (const [lx, ly, big] of K.lights) {
-          if (big) use(left + lx, top + ly, SPR.glow, 1.1 * big, 0.9);
-          else { use(left + lx, top + ly, SPR.winlight, 1, 0.95); use(left + lx, top + ly + 6, SPR.glow, 0.65, 0.5); }
+          // qualidade baixa: só a janela acesa, sem o halo grande (src/engine/quality.js)
+          if (big) { if (!this.lowLights) use(left + lx, top + ly, SPR.glow, 1.1 * big, 0.9); else use(left + lx, top + ly, SPR.glow, 0.7 * big, 0.7); }
+          else { use(left + lx, top + ly, SPR.winlight, 1, 0.95); if (!this.lowLights) use(left + lx, top + ly + 6, SPR.glow, 0.65, 0.5); }
         }
       }
       for (let i = n; i < this.lightPool.length; i++) this.lightPool[i].visible = false;
@@ -159,6 +162,7 @@ export class WorldLife {
     this.itemSprites = [];
     for (const it of this.map.items) {
       const s = new PIXI.Sprite(SPR.itemball); s.anchor.set(0.5, 1); s.x = it.x * T + 8; s.y = it.y * T + 13; s.zIndex = s.y - 2; s.it = it; s.key = `${it.x},${it.y}`;
+      if (it.hidden) s.alpha = 0; // item escondido: só um brilho de vez em quando, bem de perto
       const sp = new PIXI.Sprite(SPR.sparkle); sp.anchor.set(0.5); sp.blendMode = 'add'; s.sparkle = sp; sp.x = s.x + 3; sp.y = s.y - 9;
       this.itemSprites.push(s);
     }
@@ -172,10 +176,11 @@ export class WorldLife {
       if (!near && s.parent) { s.parent.removeChild(s); this.air.removeChild(s.sparkle); }
       if (!near) continue;
       const ph = (t * 0.9 + s.x * 0.013) % 2.2; s.sparkle.alpha = ph < 0.5 ? Math.sin(ph / 0.5 * Math.PI) : 0; s.sparkle.scale.set(0.6 + s.sparkle.alpha * 0.6);
+      if (s.it.hidden) { const d = Math.hypot(s.x - p.x, s.y - p.y); s.sparkle.alpha *= d < 56 ? 0.75 : 0; s.sparkle.y = s.y - 4; }
       if (Math.hypot(s.x - p.x, s.y - 4 - p.y) < 10) {
         this.taken.add(s.key);
-        const item = s.it.item; g.bag[item] = (g.bag[item] ?? 0) + (s.it.n ?? 1);
-        g.toast(`Você encontrou ${ITEM_PT[item] ?? item}!`); g.audio?.sfx?.('levelup');
+        const item = s.it.item, n = s.it.n ?? 1; g.bag[item] = (g.bag[item] ?? 0) + n;
+        g.toast(`Você encontrou ${s.it.hidden ? 'algo escondido: ' : ''}${(n === 1 && ITEM_PT[item]) || (n > 1 ? n + '× ' : '') + itemName(item)}!`); g.audio?.sfx?.('levelup');
         g.fx?.emit(s.x, s.y - 6, { color: 0xfff27a, n: 10, speed: 40, size: 3, life: 0.5, vz: 40 });
         g.hudMoves?.();
       }
@@ -219,7 +224,7 @@ export class WorldLife {
     const ax = p.x + f[0] * 14, ay = p.y - 4 + f[1] * 14;
     let best = null, bd = 22;
     for (const c of this.map.visible) for (const o of c.objs) {
-      if (o.dead || !(o.text || o.berry)) continue;
+      if (o.dead || !(o.text || o.berry || o.kind === 'pc')) continue;
       const d = Math.hypot(o.x - ax, o.y - 8 - ay); if (d < bd + (o.berry ? 10 : 0)) { bd = d; best = o; }
     }
     const who = this.people.nearest(p.x, p.y, p.dir);
@@ -227,7 +232,7 @@ export class WorldLife {
     // balão "E · Falar" (só quando a história não mostrou o dela neste quadro)
     if (hud?.setPrompt && (!hud.bubble?.visible || this.ownPrompt)) {
       if (who) hud.setPrompt({ x: who.o.x, y: who.o.y, h: 30 }, who.kind === 'pet' ? 'Brincar' : 'Falar');
-      else if (best) hud.setPrompt({ x: best.x, y: best.y - 8, h: 24 }, best.berry ? 'Sacudir' : best.kind === 'sign' ? 'Ler' : 'Ver');
+      else if (best) hud.setPrompt({ x: best.x, y: best.y - 8, h: 24 }, best.berry ? 'Sacudir' : best.kind === 'pc' ? 'Usar o PC' : best.kind === 'sign' ? 'Ler' : 'Ver');
       else if (this.ownPrompt) hud.setPrompt(null);
       this.ownPrompt = !!(who || best);
     }
@@ -235,6 +240,7 @@ export class WorldLife {
     if (who) { inp.taps.delete('act'); this.people.talk(who); return; }
     if (!best) return;
     inp.taps.delete('act');
+    if (best.kind === 'pc' && !best.text) { g.audio?.sfx?.('blip'); g.ui?.openPC?.(); return; }
     if (best.berry) this.#shake(best);
     else this.showSign(best.text, best.x, best.y, best.kind === 'sign' ? 'Placa' : '');
   }

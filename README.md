@@ -7,7 +7,7 @@ Jogo de fã, pessoal e não comercial. 2D com sprites, roda no navegador (comput
 - Rodar: `python3 tools/serve.py 8700` e abrir http://127.0.0.1:8700
 
 Controles (computador): WASD anda, Shift corre, mouse mira, 1–4 / clique esquerdo / direito = golpes,
-Espaço = esquiva, Q = Poké Bola, Tab = trocar Pokémon, E/Enter = falar, M/Esc = menu, F3 = medidor de FPS.
+Espaço = esquiva, Q = enviar/chamar de volta o Pokémon (R também chama), B = Poké Bola de captura (G troca o tipo de bola), Tab = trocar Pokémon, E/Enter = falar, M/Esc = menu, F3 = medidor de FPS.
 Celular: analógico à esquerda; botões de golpe à direita (toque = mira automática, arrastar = mirar); A fala, ☰ abre o menu.
 Controle: Start abre o menu.
 
@@ -136,7 +136,7 @@ da água) ou cava (os demais); **X** pula; **Espaço** esquiva com invencibilida
   existem em `src/data/moves.js` entram com dados mínimos da receita (os oficiais, quando chegarem, têm prioridade).
   Formas: `proj`, `melee`, `multi`, `dash`, `cone`, `wave`, `quake`, `cloud`, `rain` e as novas `bolt` (raio direto),
   `sky` (raio do céu), `surf` (onda), `target` (efeito no alvo), `line` (pedras em linha), `shield` (escudo), além de
-  feixes contínuos (`beam` na receita: Lança-Chamas, Hidro Bomba, Raio de Gelo, Raio Solar, Hiper-Raio…).
+  feixes contínuos (`beam` na receita: Lança-Chamas, Hidro Bomba, Raio Congelante, Raio Solar, Hiper-Raio…).
 - **Efeitos** (`src/engine/fx.js` + `fxtex.js`): atlas único desenhado por código (chamas, gotas, folhas, pedras,
   estilhaços, fumaça, marcas no chão e uma fonte pixel com acentos), partículas em `ParticleContainer` com pool,
   anéis de choque, raios, luzes aditivas, clarão de tela, tremor e pausa no impacto.
@@ -145,9 +145,47 @@ da água) ou cava (os demais); **X** pula; **Espaço** esquiva com invencibilida
 - **Leitura do perigo:** o selvagem telegrafa (faixa, leque ou círculo no chão; vermelho = dano, amarelo = só efeito)
   e pisca antes de soltar o golpe. Esquiva perfeita (perto do acerto) dá câmera lenta curta.
 - **IA** (`src/combat/ai.js`): temperamentos, bandos com alfa (maior, olhos vermelhos, chama o bando), acordar com
-  barulho, esquiva de projéteis, circular o alvo, no máximo 2 preparando golpe contra o mesmo alvo, rivais que brigam.
+  barulho, esquiva de projéteis, circular o alvo, um selvagem por vez preparando golpe contra o mesmo alvo (dois num bando), rivais que brigam.
 - **Arena** (`src/combat/arena.js`): crateras, terra revirada, mato cortado, fogo que se espalha pelo mato alto e deixa
   chão queimado, arbustos e pedras que quebram em detritos, árvores que tremem e soltam folhas.
 - **Dano:** ponto único em `src/combat/damage.js` (`computeDamage`; `calcDamage` em combat.js é a versão pura do PvP).
   Relevo: Água mais forte na água, Planta no mato alto, Elétrico em alvo molhado, Fogo fraco em alvo na água.
 - **Testes:** `combat.showNames = true` mostra o nome do golpe ao usar.
+
+## Equilíbrio, economia e captura (ramo `qa-jogo`)
+
+- **Ritmo do dano** (`src/combat/damage.js`): `DMG = 0.34` para todos e `FOE_DMG = 1.5` a mais quando um selvagem
+  ou Pokémon de treinador acerta o seu (eles telegrafam e você pode esquivar; o PvP online não usa esse peso).
+  Alfa bate ×1,25. Estágios de status se desfazem 1 nível a cada 6 s (`STAGE_DECAY` em combat.js). Um selvagem por
+  vez prepara golpe contra o mesmo alvo (dois num bando com alfa). Medido com um robô no combate real: selvagem do
+  mesmo nível cai em 3 a 30 s (mediana ~10 s); jogando parado sem esquivar, perde-se 0 a 70% do HP por luta.
+- **XP**: quem lutou ganha tudo; o resto da equipe ganha metade (`XP_SHARE` em main.js). Com 4 golpes, aprender um
+  novo abre a tela clássica de esquecer (`menu.askLearn`). Evolução com a cena clássica (`src/ui/evolucao.js`),
+  inclusive por pedra; avisos que param o jogo passam pela fila `ui.queue`.
+- **Encontros**: tabela da área (`encounters`), a da área de mesmo nome no esboço ou a da área vizinha (até 24
+  blocos); à noite entram os noturnos do bioma no nível da área. Alfa: 7% dos selvagens (`ALPHA_ODDS` em ai.js),
+  +3 níveis, PS ×1,5, não foge; vencido dá XP em dobro e deixa cair um item (`ALPHA_DROPS` em main.js).
+- **Captura**: a bola escolhida (Mochila → Preparar, ou G) entra na fórmula oficial; sacudidas seguidas; "Capturado!",
+  registro na Pokédex, Bola de Cura e Bola Amiga funcionam. Dormindo, distraído e com pouco HP ajudam.
+- **Mercado** (`src/world/lojas.js`): falar com o balconista abre comprar/vender; o estoque cresce com as insígnias
+  (Grande Bola e Superpoção com 1, Reviver com 2, Ultra Bola com 3…), cada cidade tem extras. Vender = metade do
+  preço. Tesouros (Pérola, Pepita, Cogumelos, Pó Estelar) só servem para vender. O PC de qualquer Centro abre a caixa.
+- **Itens escondidos**: `hidden: true` nos `items` do mapa (só um brilho fraco de perto).
+
+
+## Acabamento (ramo `acabamento`)
+
+- **Qualidade gráfica** (`src/engine/quality.js`, opção em Opções): Automática, Alta ou Baixa. A automática começa em
+  baixa em aparelho de toque fraco (≤ 3 GB ou ≤ 4 núcleos) e cai para baixa se ficar abaixo de 45 FPS (celular) ou
+  50 FPS (computador) por 6 s. Baixa = 40% das partículas, sem luzes grandes/halos de janela, desenho a 75%.
+- **F3** mostra FPS, tempo de lógica, partículas e o nível de qualidade.
+- **Carregamento:** barra real em `index.html` (conta os arquivos; o total da última visita fica em
+  `localStorage['alvorada.boot.n']`) e etapas do `main.js` via `window.__boot(fração, texto)` / `window.__bootDone()`.
+- **Service worker** (`sw.js`): código em rede primeiro (6 s de limite, depois a cópia guardada); sprites em cache
+  próprio (`alvorada-sprites-v1`), cache primeiro e só do que aparece. Na primeira visita a página manda ao SW a
+  lista do que já carregou (`{ type: 'guardar', urls }`) para o jogo abrir offline na visita seguinte. Ao mudar a
+  estrutura do cache, troque o nome em `CODE`/`SPR`.
+- **HUD:** objetivo recolhível (toque/clique ou J; no celular fica recolhido e abre 6 s quando muda); minimapa com
+  tamanho e posição no CSS (`#minimapa`); no computador com tela grande a interface cresce pelo `--k` (zoom do CSS).
+- **Som:** faixas `title` (tela de título) e `forest` (bosques) além de `town`, `route` e `battle`; o menu abaixa a
+  música (`audio.duck(k)`); compressor no fim da cadeia.

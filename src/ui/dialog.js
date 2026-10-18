@@ -45,7 +45,7 @@ export class Dialog {
     if (this.d) this.#close(-1);
     return new Promise((res) => {
       this.d = { lines: lines.slice(), name, choices, res, i: 0, shown: 0, sel: 0, t: 0 };
-      this.el.hidden = false;
+      this.el.hidden = false; document.body.classList.add('dlg-open');
       const nm = this.el.querySelector('.dlg-name'); nm.textContent = name; nm.hidden = !name;
       const face = this.el.querySelector('.dlg-face');
       face.hidden = !portrait; face.innerHTML = '';
@@ -91,7 +91,7 @@ export class Dialog {
   #close(r) {
     const d = this.d; if (!d) return;
     this.d = null;
-    this.el.hidden = true;
+    this.el.hidden = true; document.body.classList.remove('dlg-open');
     this.ui.g.input?.taps.clear();
     d.res(r);
   }
