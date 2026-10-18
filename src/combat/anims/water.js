@@ -12,7 +12,7 @@ export default {
     impact: IM.all(IM.pop(0xbfe6ff), IM.p({ tex: 'bubble', n: 5, speed: 40, life: 0.3, scale: 0.6, add: false })),
   },
   bubbleBeam: { // Raio de Bolhas: rajada de muitas bolhas
-    data: D('Raio de Bolhas', 'water', 'spec', 65, 'proj', { speed: 13, range: 11, eff: { stat: 'spe', by: -1, chance: 0.1 } }),
+    data: D('Jato de Bolhas', 'water', 'spec', 65, 'proj', { speed: 13, range: 11, eff: { stat: 'spe', by: -1, chance: 0.1 } }),
     count: 7, spread: 0.32, gap: 0.05, power: 0.3,
     head: H.tex('bubble', { scale: 1.1, halo: 0x8fd0ff, haloScale: 0.6 }),
     impact: IM.pop(0xbfe6ff),
@@ -33,7 +33,7 @@ export default {
     dash: (v, u, dt) => { const y = u.y - 8; v.E(u.x, y, { tex: 'drop', n: R(dt, 80), speed: 60, life: 0.5, vz: 80, grav: 400, add: false }); v.E(u.x, y, { tex: 'foam', n: R(dt, 40), speed: 20, life: 0.3, add: false, jitter: u.r }); if ((u.ghostT = (u.ghostT ?? 0) - dt) <= 0) { u.ghostT = 0.03; v.afterimage(u, 0x5ab0ff, 0.6, 0.25); } },
     impact: IM.all(IM.type('water', 1), IM.pop()),
   },
-  aquaTail: { data: D('Cauda d\'Água', 'water', 'phys', 90, 'melee', { range: 2.4 }), melee: ME('tail', { color: 0x5ab0ff, glow: 'drop' }), hit: IM.all(IM.type('water', 1.4), IM.ring(0x8fd0ff, 10, 2)) },
+  aquaTail: { data: D('Cauda Aquática', 'water', 'phys', 90, 'melee', { range: 2.4 }), melee: ME('tail', { color: 0x5ab0ff, glow: 'drop' }), hit: IM.all(IM.type('water', 1.4), IM.ring(0x8fd0ff, 10, 2)) },
   waterfall: { // Cachoeira: coluna de água que sobe sob o alvo
     data: D('Cachoeira', 'water', 'phys', 80, 'dash', { range: 6, eff: { flinch: 0.2 } }),
     dash: (v, u, dt) => { v.E(u.x, u.y - 4, { tex: 'drop', n: R(dt, 120), speed: 20, life: 0.5, vz: 220, grav: 500, add: false, jitter: u.r }); if ((u.ghostT = (u.ghostT ?? 0) - dt) <= 0) { u.ghostT = 0.035; v.afterimage(u, 0x7ac8ff, 0.5, 0.25); } },

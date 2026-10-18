@@ -136,7 +136,7 @@ da água) ou cava (os demais); **X** pula; **Espaço** esquiva com invencibilida
   existem em `src/data/moves.js` entram com dados mínimos da receita (os oficiais, quando chegarem, têm prioridade).
   Formas: `proj`, `melee`, `multi`, `dash`, `cone`, `wave`, `quake`, `cloud`, `rain` e as novas `bolt` (raio direto),
   `sky` (raio do céu), `surf` (onda), `target` (efeito no alvo), `line` (pedras em linha), `shield` (escudo), além de
-  feixes contínuos (`beam` na receita: Lança-Chamas, Hidro Bomba, Raio de Gelo, Raio Solar, Hiper-Raio…).
+  feixes contínuos (`beam` na receita: Lança-Chamas, Hidro Bomba, Raio Congelante, Raio Solar, Hiper-Raio…).
 - **Efeitos** (`src/engine/fx.js` + `fxtex.js`): atlas único desenhado por código (chamas, gotas, folhas, pedras,
   estilhaços, fumaça, marcas no chão e uma fonte pixel com acentos), partículas em `ParticleContainer` com pool,
   anéis de choque, raios, luzes aditivas, clarão de tela, tremor e pausa no impacto.
