@@ -95,13 +95,13 @@ class Game {
       if (this.ui) this.ui.title = async () => { this.ui.state = 'play'; return 'test'; }; // sem conta: nada é gravado
     }
     const start = await this.ui.title();
-    if (teste) await this.viagem.parametroIr(); // ?ir=<lugar>: começa direto lá (docs/construir-regiao.md)
     this.net.autoStart(); // logado: entra sozinho num canal do mundo (src/net/world.js)
     for (const m of this.party) loadPokemonSprites(m.spriteKey).catch(() => {}); // já baixa a equipe enquanto a história começa
     this.mode = 'trainer';
     this.leadIdx = Math.max(0, this.party.findIndex((m) => !m.fainted));
     this.hudInit();
     this.story.begin(start === 'new');
+    if (teste) setTimeout(() => this.viagem.parametroIr(), 1500); // ?ir=<lugar>: começa direto lá, depois da cena de abertura do teste (docs/construir-regiao.md)
   }
 
   #resize() {
