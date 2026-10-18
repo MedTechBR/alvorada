@@ -15,8 +15,13 @@ const STATUS = [null, 'par', 'psn', 'tox', 'brn', 'slp', 'frz'];
 const isInt = (v, lo, hi) => Number.isInteger(v) && v >= lo && v <= hi;
 const CTRL = /[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u2028-\u202e\u2066-\u2069]/g;
 
-export function cleanText(s, max = 80) { return String(s ?? '').replace(CTRL, '').replace(/\s+/g, ' ').trim().slice(0, max); }
-export function cleanName(s) { return cleanText(s, 14) || 'Treinador'; }
+// texto livre (chat): sem caracteres de controle nem empilhamento de acentos (o "texto zalgo" que cobre a tela)
+export function cleanText(s, max = 80) { return String(s ?? '').slice(0, max * 4).replace(CTRL, '').replace(/(\p{M}{2})\p{M}+/gu, '$1').replace(/\s+/g, ' ').trim().slice(0, max); }
+// nome de treinador: só letras (com acento), números, espaço e . - _ ' ; até 14
+export function cleanName(s) {
+  const n = String(s ?? '').normalize('NFC').slice(0, 64).replace(/[^\p{L}\p{N} ._'-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 14).trim();
+  return n || 'Treinador';
+}
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 // Devolve { ok: true, mon } com um Mon novo e limpo, ou { ok: false, why }
@@ -87,6 +92,9 @@ export function validateState(s) {
   if (!num(s.x) || !num(s.y)) return null;
   const out = { x: s.x, y: s.y, d: ['down', 'up', 'left', 'right'].includes(s.d) ? s.d : 'down', r: !!s.r, seq: isInt(s.seq, 0, 1e9) ? s.seq : 0 };
   if (s.l && num(s.l.x) && num(s.l.y) && typeof s.l.u === 'string') out.l = { x: s.l.x, y: s.l.y, u: s.l.u.slice(0, 16), a: isInt(s.l.a, 0, 7) ? s.l.a : 2, z: !!s.l.z };
-  if (['correr', 'nadar', 'escalar', 'voar', 'mergulhar'].includes(s.m)) { out.m = s.m; out.z = Number.isFinite(s.z) ? Math.max(0, Math.min(120, s.z)) : 0; out.u = !!s.u; } // montaria (src/world/mounts.js)
+  if (['correr', 'nadar', 'escalar', 'voar', 'mergulhar'].includes(s.m)) {
+    out.m = s.m; out.z = Number.isFinite(s.z) ? Math.max(0, Math.min(120, s.z)) : 0; out.u = !!s.u; // montaria (src/world/mounts.js)
+    if (isInt(s.mountDex, 1, 2000) && SPECIES[s.mountDex]) out.mountDex = s.mountDex; // espécie montada, se o jogo mandar
+  }
   return out;
 }
