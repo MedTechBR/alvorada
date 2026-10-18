@@ -47,6 +47,9 @@ export function mundo(M, C, J) {
   C.poe('bench', 199, 728); P(203, 724, 'TOPO DA CACHOEIRA\nO paredão de cipó vem do poço. Quem subiu até aqui merece sentar.');
   C.poe('chest', 205, 728, { item: 'nugget', itemNome: 'Pepita', id: 'bau_topo_cachoeira' }, { aviso: true });
 
+  // fachada do templo: estátuas e braseiros ao lado da escadaria, colunas quebradas e raízes
+  C.poe('statue', 118, 751); C.poe('statue', 128, 751); C.poe('brazier', 120, 751, { acesa: true }); C.poe('brazier', 126, 751, { acesa: true });
+  C.poe('brokenColumn', 114, 751); C.poe('brokenColumn', 131, 750); C.poe('column', 116, 752); C.poe('column', 130, 752);
   // ============ Cachoeira do Véu Verde ============
   C.espalha('rock', 5, [186, 740, 50, 40], { tipos: ['grass', 'flowers', 'sand'], dist: 5 });
   C.espalha('bush', 8, [186, 740, 50, 40], { tipos: ['grass', 'flowers'], dist: 4 });
@@ -96,6 +99,16 @@ export function mundo(M, C, J) {
   J.spots.altar_koko = [146, 599, 'down'];
 
   // ============ Toca de Luz (Reide Max) ============
-  J.tocas = [{ id: 'toca_jandaia', x: 126, y: 628, gmax: ['meowth-gmax'] }];
+  // o centro da toca precisa de chão livre num raio de 2 blocos e arena de ~7 em volta (sem água nem penhasco)
+  const OK = ['grass', 'grass2', 'sand', 'tall', 'flowers', 'path', 'plaza', 'dark', 'wetsand'];
+  let toca = null;
+  for (let r = 0; r < 20 && !toca; r++) for (let j = -r; j <= r && !toca; j++) for (let i = -r; i <= r && !toca; i++) {
+    if (Math.max(Math.abs(i), Math.abs(j)) !== r) continue;
+    const x = 126 + i, y = 628 + j;
+    let bom = true;
+    for (let b = -7; b <= 7 && bom; b++) for (let a = -7; a <= 7 && bom; a++) if (Math.hypot(a, b) <= 7 && !OK.includes(M.nome(x + a, y + b))) bom = false;
+    if (bom && C.objects.every((o) => Math.abs(o.x - x) > 3 || Math.abs(o.y - y) > 3)) toca = [x, y];
+  }
+  J.tocas = [{ id: 'toca_jandaia', x: toca[0], y: toca[1], gmax: ['meowth-gmax'] }];
   J.forestZones = [{ x: 40, y: 700, w: 250, h: 190, kinds: ['bigtree', 'tree2', 'ipe', 'paineira', 'bigtree', 'tree2'] }];
 }

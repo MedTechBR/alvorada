@@ -104,11 +104,13 @@ export function detalhes(M) {
   trilha([[153, 745], [132, 741], [113, 735]], 2);                              // trilha estreita ao mirante noroeste
   M.comment('cachoeira_veu_verde: clareira, poço, queda d’água e o rio até o mar');
   M.ellipse('grass', 210, 750, 25, 20, 0.5, ['forest', 'dark', 'path', 'tall']);
-  M.ellipse('flowers', 210, 752, 22, 16, 1.2, ['grass']);
-  M.rect_('cliff', 198, 733, 25, 6, ['forest', 'dark', 'grass', 'flowers']);            // a queda
+  M.scatter('flowers', 186, 735, 50, 40, 0.07, ['grass']);
+  M.rect_('cliff', 198, 733, 25, 6, ['forest', 'dark', 'grass', 'flowers']);            // a parede da queda
+  M.rect_('water', 208, 733, 5, 6, ['cliff']);                                          // a água que cai
+  M.rect_('water', 209, 739, 3, 5, ['grass', 'flowers', 'sand']);                       // e o riacho que a leva ao poço
   M.ellipse('sand', 210, 752, 14, 9, 0.5, ['grass', 'flowers', 'path']);
   M.ellipse('water', 210, 752, 11, 6.5, 0.5);
-  M.path('water', [[212, 758], [219, 780], [233, 806], [244, 836], [252, 868], [254, 884]], 3, 1.5, ['forest', 'dark', 'tall', 'path', 'sand', 'grass', 'cliff']);
+  M.path('water', [[212, 758], [219, 780], [233, 806], [244, 836], [250, 862]], 3, 1.5, ['forest', 'dark', 'tall', 'path', 'grass']);
   M.rect_('bridge', 222, 791, 9, 3, ['water']);                                             // ponte da trilha leste
   M.comment('pontes de tábua e o mirante da cachoeira (paredão de cipó de x 200 a 202)');
   trepadeira(M, 201, 722, 201, 740, 3);
@@ -135,8 +137,7 @@ export function detalhes(M) {
   M.comment('praia_cipo: toda de areia, com uma língua de areia ligando à saída sul da selva');
   M.poly('sand', blob(225, 903, 70, 18, { seed: 41, jit: 0.1, n: 30 }), 0.9);
   M.path('sand', [[203, 868], [204, 892]], 9, 1, ['water', 'deep', 'grass', 'sand', 'dark']);
-  M.ellipse('grass', 225, 900, 22, 5, 0.8, ['sand']);
-  M.blobs('wetsand', 160, 880, 140, 40, 0.18, 0.55, ['sand']);
+  M.blobs('wetsand', 160, 880, 140, 40, 0.12, 0.64, ['sand']);
   M.scatter('flowers', 165, 886, 120, 24, 0.02, ['grass']);
 
   // ===================== ILHA MIRAGEM =====================
