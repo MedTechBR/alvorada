@@ -1,5 +1,4 @@
 // Driver mínimo de teste (ver mundo.mjs). Abre o Google Chrome do macOS sem interface.
-// Driver mínimo de Chrome sem interface via CDP (para testar vários clientes do jogo)
 import { spawn } from 'node:child_process';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';

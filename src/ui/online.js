@@ -25,6 +25,7 @@ const CSS = `
 #net-quick { position: absolute; left: 12px; top: 144px; display: flex; gap: 6px; pointer-events: auto; }
 #net-quick[hidden] { display: none; }
 #net-quick button { min-width: 50px; padding: 4px 10px; box-shadow: 0 3px 0 rgba(0,0,0,.25); }
+#net #net-chan { background: #20392a; color: #b8ffb0; border-color: #0e1a12; font-size: 12px; white-space: nowrap; }
 #net-emos { position: absolute; left: 12px; top: 196px; display: flex; flex-wrap: wrap; gap: 6px; max-width: 260px; pointer-events: auto; }
 #net-emos[hidden] { display: none; }
 #net-emos button { min-width: 48px; min-height: 48px; padding: 0; font-size: 18px; }
@@ -148,7 +149,7 @@ export class OnlineUI {
     if (!document.getElementById('net-css')) { const s = document.createElement('style'); s.id = 'net-css'; s.textContent = CSS; document.head.appendChild(s); }
     const root = this.root = el(`<div id="net">
       <button id="net-btn" class="pill">Online</button>
-      <div id="net-quick" hidden><button id="net-chat-b" title="Chat (T)">Chat</button><button id="net-emo-b" title="Emotes (5 a 0)">Emote</button></div>
+      <div id="net-quick" hidden><button id="net-chan" title="Jogadores online (O)"></button><button id="net-chat-b" title="Chat (T)">Chat</button><button id="net-emo-b" title="Emotes (5 a 0)">Emote</button></div>
       <div id="net-emos" hidden></div>
       <div id="net-log"></div>
       <div id="net-near" hidden></div>
@@ -168,6 +169,7 @@ export class OnlineUI {
     // o teclado digitado aqui não vai para o jogo (WASD no chat não anda)
     root.addEventListener('keydown', (e) => { if (e.target.tagName === 'INPUT') { e.stopPropagation(); if (e.key === 'Escape') { e.target.blur(); this.closeChat(); this.closeMenu(); } } });
     this.$('net-btn').onclick = () => this.toggleMenu();
+    this.$('net-chan').onclick = () => this.toggleMenu();
     this.$('net-chat-b').onclick = () => this.openChat();
     this.$('net-emo-b').onclick = () => { const e = this.$('net-emos'); e.hidden = !e.hidden; };
     this.$('net-emos').append(...Object.entries(EMOTES).map(([k, v]) => { const b = el(`<button title="${k}">${esc(v)}</button>`); b.onclick = () => { this.net.emote(k); this.$('net-emos').hidden = true; }; return b; }));
@@ -212,6 +214,9 @@ export class OnlineUI {
     const text = on ? (net.inWorld ? `● Canal ${w.channel} · ${live} online` : `● ${room.code} · ${room.players.size}`)
       : w.running ? (w.state === 'offline' ? 'Offline' : 'Online…') : 'Online';
     if (btn.textContent !== text) btn.textContent = text;
+    // o botão Online virou item do menu (style.css); o indicador discreto fica nos atalhos de cima, ao lado do Chat
+    const chip = this.$('net-chan'), ct = on ? (net.inWorld ? `Canal ${w.channel} · ${live} online` : `${room.code} · ${room.players.size}`) : '';
+    if (chip.textContent !== ct) chip.textContent = ct;
     btn.title = on ? 'Jogadores online (O)' : w.running ? (w.state === 'offline' ? 'Sem conexão com o mundo; tentando de novo sozinho' : 'Procurando um canal do mundo…') : 'Jogar online (O)';
   }
   render() {

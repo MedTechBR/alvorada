@@ -10,7 +10,6 @@ try {
   for (const p of Object.values(P)) { await until(() => p.ev('!!window.game?.net'), 30000); await p.ev(`(window.__pump ??= setInterval(() => { if (document.hidden) game.frame(1 / 30); }, 33), 1)`); }
   await until(async () => (await Promise.all(Object.values(P).map((p) => p.ev('game.net.room?.players.size ?? 0')))).every((n) => n === 3), 60000, 500);
   const id = {}; for (const [k, p] of Object.entries(P)) id[k] = await p.ev('game.net.selfId');
-  const host = Object.keys(P).find((k) => 0) ; 
   const hosts = {}; for (const [k, p] of Object.entries(P)) hosts[k] = await p.ev('game.net.isHost');
   log('ids', id, 'anfitrião', hosts);
   const pos = await P.a.ev('({ x: game.player.x, y: game.player.y })');
