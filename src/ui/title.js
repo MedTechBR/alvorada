@@ -1,6 +1,6 @@
 import { Auth, normName, importCode } from '../net/auth.js';
 import { readSlot, describe, clearSlot } from '../save.js';
-import { LOOK_OPTIONS, FW, FH, toCharLook, drawLook } from './looks.js';
+import { LOOK_OPTIONS, FW, FH, toCharLook, drawLook, ESTILO_HGSS, MOCHILAS } from './looks.js';
 import { IS_TOUCH } from '../engine/input.js';
 
 // Tela inicial: Entrar / Criar conta → (conta nova) criador de personagem → jogo.
@@ -144,16 +144,17 @@ export class TitleScreen {
     const sw = (k, list) => `<div class="tt-sw" data-k="${k}">${list.map((c) => `<button data-v="${c}" style="--c:${c}" aria-label="${c}"></button>`).join('')}</div>`;
     const seg = (k, list) => `<div class="tt-seg" data-k="${k}">${opt(list).map(([v, t]) => `<button data-v="${v}">${esc(t)}</button>`).join('')}</div>`;
     this.#show(`<div class="tt-h">Crie seu personagem</div>
-      <div class="cc"><div class="cc-prev"><canvas width="${FW}" height="${FH}"></canvas><div class="cc-floor"></div><small>Girando nas 4 direções</small></div>
+      <div class="cc"><div class="cc-prev"><canvas width="${ESTILO_HGSS ? 32 : FW}" height="${ESTILO_HGSS ? 32 : FH}"${ESTILO_HGSS ? ' style="width:132px;height:132px"' : ''}></canvas><div class="cc-floor"></div><small>Girando nas 4 direções</small></div>
       <div class="cc-opts">
         <div class="cc-row"><span>Visual</span>${seg('sexo', O.sexo)}</div>
         <div class="cc-row"><span>Pele</span>${sw('pele', O.pele)}</div>
-        <div class="cc-row"><span>Cabelo</span>${seg('cabelo', O.cabelo)}</div>
+        ${ESTILO_HGSS ? '' : `<div class="cc-row"><span>Cabelo</span>${seg('cabelo', O.cabelo)}</div>`}
         <div class="cc-row"><span>Cor do cabelo</span>${sw('corCabelo', O.corCabelo)}</div>
         <div class="cc-row"><span>Roupa</span>${sw('roupa', O.roupa)}</div>
         <div class="cc-row"><span>Calça / saia</span>${sw('calca', O.calca)}</div>
-        <div class="cc-row"><span>Chapéu</span>${seg('chapeu', O.chapeu)}</div>
-        <div class="cc-row"><span>Cor do chapéu</span>${sw('bone', O.bone)}</div>
+        ${ESTILO_HGSS ? '' : `<div class="cc-row"><span>Chapéu</span>${seg('chapeu', O.chapeu)}</div>`}
+        <div class="cc-row"><span>${ESTILO_HGSS ? 'Boné / chapéu' : 'Cor do chapéu'}</span>${sw('bone', O.bone)}</div>
+        ${ESTILO_HGSS ? `<div class="cc-row"><span>Mochila</span>${sw('mochila', MOCHILAS)}</div>` : ''}
         <label class="cc-row"><span>Nome</span><input class="cc-name" maxlength="12" value="${esc(look.name)}"></label>
       </div></div>
       <div class="tt-err" hidden></div>
@@ -173,7 +174,7 @@ export class TitleScreen {
       }; });
       this.panel.querySelector('[data-a=rand]').onclick = () => {
         const r = (a) => { const v = a[Math.floor(Math.random() * a.length)]; return typeof v === 'string' ? v : v.id; };
-        Object.assign(look, { sexo: r(O.sexo), pele: r(O.pele), cabelo: r(O.cabelo), corCabelo: r(O.corCabelo), roupa: r(O.roupa), calca: r(O.calca), chapeu: r(O.chapeu), bone: r(O.bone) });
+        Object.assign(look, { sexo: r(O.sexo), pele: r(O.pele), cabelo: r(O.cabelo), corCabelo: r(O.corCabelo), roupa: r(O.roupa), calca: r(O.calca), chapeu: r(O.chapeu), bone: r(O.bone), mochila: r(MOCHILAS) });
         sync(); paint();
       };
       this.panel.querySelector('.tt-go').onclick = async () => {

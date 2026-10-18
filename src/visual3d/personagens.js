@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { screenHeight } from '../sprites/scale.js';
+import { folhaTreinador, folhaPronta, chaveDe } from '../sprites/treinador-hgss.js';
 
 // Personagens no estilo FireRed/HeartGold (folhas do ramo assets-hgss, assets/hgss/personagens): no 3D o corpo
 // do treinador, dos moradores, dos personagens da história e dos outros jogadores é desenhado com a folha HGSS
@@ -67,18 +68,31 @@ export class Personagens {
     }
     return t;
   }
-  // look do jogo (texto do mapa ou objeto do criador de personagem) -> folha HGSS
-  idDe(look) {
+  // look de um NPC -> folha HGSS. Nunca a folha do jogador (frlg_trainer, frlg_trainer_green, as de correr):
+  // cada pessoa tem sempre a mesma (sorteio estável pelo id/nome), dentro do grupo do look quando há um.
+  idDe(look, quem = '') {
     const J = this.J; if (!J) return null;
-    if (look && typeof look === 'object') {
-      const f = look.sexo === 'f' || look.sexo === 'menina' || look.gender === 'f';
-      return J.jogador[f ? 'f' : 'm'].frlg;
+    const PROIBIDO = /^frlg_trainer/;
+    let id = typeof look === 'string' ? (J.personagens[look] ? look : J.looks[look]) : null;
+    if (look === 'rival') id = 'frlg_rival';
+    if (id && !PROIBIDO.test(id)) {
+      // looks genéricos (menino, menina, treinador...) variam por pessoa dentro de folhas parecidas
+      if (!/^(menino|menina|treinador|treinadora|garoto|moca|youngster)$/.test(look) || !quem) return id;
     }
-    if (J.personagens[look]) return look;
-    if (J.looks[look]) return J.looks[look];
-    const pool = ['frlg_youngster', 'frlg_lass', 'frlg_woman', 'frlg_oldman', 'frlg_camper', 'frlg_kid', 'npc_036_gentleman', 'npc_043_lady'];
-    let h = 0; for (const c of String(look ?? '')) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-    return pool[h % pool.length];
+    this.pool ??= Object.keys(J.personagens).filter((k) => !PROIBIDO.test(k) && !/_run$|_bike|_surf|_fishing|_heal|_save|_poketch|_watering|_ladder|_shake|_hm|_vsseeker|_contest|_rocket|running|gym_leader|elite_four|champion|boss|commander|executive|prof_|npc_19[89]|npc_20[0-8]/.test(k));
+    let h = 2166136261; for (const c of String(quem || look || '')) h = Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0;
+    return this.pool[h % this.pool.length];
+  }
+  // folha recolorida do jogador (ou de outro jogador) pelo criador de personagem; null enquanto carrega
+  #texJogador(look, correndo) {
+    const k = chaveDe(look, correndo);
+    let t = this.texs.get('J:' + k);
+    if (t) return t.image ? t : null;
+    const cv = folhaPronta(look, correndo);
+    if (!cv) { folhaTreinador(look, correndo); return null; }
+    t = new THREE.CanvasTexture(cv); t.magFilter = t.minFilter = THREE.NearestFilter; t.generateMipmaps = false; t.flipY = false; t.colorSpace = THREE.SRGBColorSpace;
+    t.uid = 100000 + this.texs.size; this.texs.set('J:' + k, t);
+    return t;
   }
   // a cada quadro: corpo (sprite do Pixi) -> { tex, u0, v0, u1, v1, pe, fw, fh }
   update() {
@@ -86,22 +100,27 @@ export class Personagens {
     if (!this.ok && !this.P) return C;
     const g = this.v.g, t = this.v.t, J = this.J;
     if (this.P) for (const e of g.entities ?? []) { if (!e.body || e.alt?.mode === 'dig') continue; const r = this.#pokemon(e); if (r) C.set(e.body, r); }
-    const por = (body, look, dir, andando, correndo) => {
+    const quadro = (dir, andando, correndo) => { const lin = DIRS[dir] ?? 0, col = andando ? J.andar[Math.floor(t * (correndo ? 11 : 7.5)) % J.andar.length] : J.parado, W = J.fw * J.colunas, H = J.fh * 4; return { u0: (col * J.fw) / W, u1: ((col + 1) * J.fw) / W, v0: (lin * J.fh) / H, v1: ((lin + 1) * J.fh) / H }; };
+    const por = (body, look, dir, andando, correndo, quem) => {
       if (!body) return;
-      let id = this.idDe(look); if (!id) return;
+      let id = this.idDe(look, quem); if (!id) return;
       if (correndo && J.personagens[id + '_run']) id += '_run';
       const info = J.personagens[id]; if (!info) return;
-      const lin = DIRS[dir] ?? 0, col = andando ? J.andar[Math.floor(t * (correndo ? 11 : 7.5)) % J.andar.length] : J.parado;
-      const W = J.fw * J.colunas, H = J.fh * 4;
-      C.set(body, { tex: this.#tex(id), u0: (col * J.fw) / W, u1: ((col + 1) * J.fw) / W, v0: (lin * J.fh) / H, v1: ((lin + 1) * J.fh) / H, pe: info.pe ?? 31, fw: J.fw, fh: J.fh });
+      C.set(body, { tex: this.#tex(id), ...quadro(dir, andando, correndo), pe: info.pe ?? 31, fw: J.fw, fh: J.fh });
+    };
+    // treinadores (o jogador e os outros jogadores): a folha FireRed recolorida pelo criador de personagem
+    const treinador = (body, look, dir, andando, correndo) => {
+      if (!body) return;
+      const tx = this.#texJogador(look, correndo) ?? this.#texJogador(look, false); if (!tx) return;
+      C.set(body, { tex: tx, ...quadro(dir, andando, correndo), pe: 31, fw: J.fw, fh: J.fh });
     };
     const p = g.player;
     if (!this.ok) return C;
-    if (p && !g.mount?.active) por(p.body, p.frames?.look ?? 'menino', p.dir, (p.speed ?? 0) > 10, (p.speed ?? 0) > 95);
-    for (const n of g.mundo?.people?.list ?? []) por(n.body, n.look ?? n.def?.look, n.dir, !!n.walk || (n.speed ?? 0) > 5, false);
-    for (const n of g.story?.roteiro?.atores?.values?.() ?? []) por(n.body, n.look, n.dir, !!n.walk, false);
-    for (const n of g.story?.npcs?.values?.() ?? []) por(n.body, n.look, n.dir, !!n.walk, false);
-    for (const r of g.net?.remotes?.map?.values?.() ?? []) { let lk = null; try { lk = r.lookKey ? JSON.parse(r.lookKey) : null; } catch { /* */ } por(r.body, lk, r.dir, Math.hypot(r.vx ?? 0, r.vy ?? 0) > 10, false); }
+    if (p && !g.mount?.active) treinador(p.body, g.look ?? p.look ?? { sexo: 'menino' }, p.dir, (p.speed ?? 0) > 10, (p.speed ?? 0) > 95);
+    for (const n of g.mundo?.people?.list ?? []) por(n.body, n.look ?? n.def?.look, n.dir, !!n.walk || (n.speed ?? 0) > 5, false, n.def?.id ?? n.id ?? n.name);
+    for (const n of g.story?.roteiro?.atores?.values?.() ?? []) por(n.body, n.look, n.dir, !!n.walk, false, n.id ?? n.name);
+    for (const n of g.story?.npcs?.values?.() ?? []) por(n.body, n.look, n.dir, !!n.walk, false, n.id ?? n.name);
+    for (const r of g.net?.remotes?.map?.values?.() ?? []) { let lk = null; try { lk = r.lookKey ? JSON.parse(r.lookKey) : null; } catch { /* */ } treinador(r.body, lk ?? { sexo: 'menino' }, r.dir, Math.hypot(r.vx ?? 0, r.vy ?? 0) > 10, false); }
     return C;
   }
 }

@@ -83,6 +83,7 @@ export function cleanLook(o) {
     sexo, pele: color(o.pele, LOOK_OPTIONS.pele, d.pele), cabelo: id(o.cabelo, LOOK_OPTIONS.cabelo, d.cabelo),
     corCabelo: color(o.corCabelo, LOOK_OPTIONS.corCabelo, d.corCabelo), roupa: color(o.roupa, LOOK_OPTIONS.roupa, d.roupa),
     calca: color(o.calca, LOOK_OPTIONS.calca, d.calca), bone: color(o.bone, LOOK_OPTIONS.bone, d.bone), chapeu: id(o.chapeu, LOOK_OPTIONS.chapeu, d.chapeu),
+    ...(typeof o.mochila === 'string' && HEX.test(o.mochila) ? { mochila: o.mochila.toLowerCase() } : {}), // cor da mochila (treinador FireRed do 3D)
   };
 }
 
