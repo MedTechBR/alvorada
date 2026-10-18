@@ -793,34 +793,6 @@
    "noise": 0.6
   },
   {
-   "op": "scatter",
-   "t": "grass",
-   "x": 764,
-   "y": 104,
-   "w": 52,
-   "h": 44,
-   "p": 0.12,
-   "on": [
-    "snowfield"
-   ]
-  },
-  {
-   "op": "rect",
-   "t": "plaza",
-   "x": 786,
-   "y": 121,
-   "w": 9,
-   "h": 7
-  },
-  {
-   "op": "rect",
-   "t": "plaza",
-   "x": 788,
-   "y": 119,
-   "w": 5,
-   "h": 2
-  },
-  {
    "op": "path",
    "t": "path",
    "pts": [
@@ -1911,6 +1883,302 @@
    "y": 195,
    "w": 60,
    "h": 5
+  },
+  {
+   "op": "comment",
+   "_": "ruas da Vila Geada: rua do norte (y 112), avenida (y 124), rua do sul (y 136), praça"
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     759,
+     112
+    ],
+    [
+     821,
+     112
+    ]
+   ],
+   "width": 3,
+   "wobble": 0.0
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     790,
+     112
+    ],
+    [
+     790,
+     136
+    ]
+   ],
+   "width": 3,
+   "wobble": 0.0
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     759,
+     136
+    ],
+    [
+     821,
+     136
+    ]
+   ],
+   "width": 3,
+   "wobble": 0.0
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     763,
+     110
+    ],
+    [
+     763,
+     112
+    ]
+   ],
+   "width": 1,
+   "wobble": 0.0
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     770,
+     110
+    ],
+    [
+     770,
+     112
+    ]
+   ],
+   "width": 1,
+   "wobble": 0.0
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     780,
+     110
+    ],
+    [
+     780,
+     112
+    ]
+   ],
+   "width": 1,
+   "wobble": 0.0
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     787,
+     110
+    ],
+    [
+     787,
+     112
+    ]
+   ],
+   "width": 1,
+   "wobble": 0.0
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     799,
+     110
+    ],
+    [
+     799,
+     112
+    ]
+   ],
+   "width": 1,
+   "wobble": 0.0
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     809,
+     110
+    ],
+    [
+     809,
+     112
+    ]
+   ],
+   "width": 1,
+   "wobble": 0.0
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     766,
+     134
+    ],
+    [
+     766,
+     136
+    ]
+   ],
+   "width": 1,
+   "wobble": 0.0
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     774,
+     134
+    ],
+    [
+     774,
+     136
+    ]
+   ],
+   "width": 1,
+   "wobble": 0.0
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     783,
+     134
+    ],
+    [
+     783,
+     136
+    ]
+   ],
+   "width": 1,
+   "wobble": 0.0
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     795,
+     134
+    ],
+    [
+     795,
+     136
+    ]
+   ],
+   "width": 1,
+   "wobble": 0.0
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     800,
+     134
+    ],
+    [
+     800,
+     136
+    ]
+   ],
+   "width": 1,
+   "wobble": 0.0
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     809,
+     134
+    ],
+    [
+     809,
+     136
+    ]
+   ],
+   "width": 1,
+   "wobble": 0.0
+  },
+  {
+   "op": "rect",
+   "t": "plaza",
+   "x": 785,
+   "y": 121,
+   "w": 11,
+   "h": 7
+  },
+  {
+   "op": "rect",
+   "t": "plaza",
+   "x": 788,
+   "y": 119,
+   "w": 5,
+   "h": 2
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     813,
+     120
+    ],
+    [
+     813,
+     124
+    ]
+   ],
+   "width": 1,
+   "wobble": 0.0
+  },
+  {
+   "op": "path",
+   "t": "path",
+   "pts": [
+    [
+     761,
+     144
+    ],
+    [
+     761,
+     148
+    ],
+    [
+     766,
+     150
+    ]
+   ],
+   "width": 1,
+   "wobble": 0.3
   }
  ],
  "trees": [
@@ -2023,9 +2291,256 @@
    100,
    34,
    36
+  ],
+  [
+   758,
+   104,
+   66,
+   50
   ]
  ],
- "objects": [],
+ "objects": [
+  {
+   "kind": "igloo",
+   "x": 762,
+   "y": 108,
+   "interior": {
+    "npc": {
+     "id": "vovo_neve",
+     "name": "Vó Neve",
+     "look": "mae",
+     "lines": [
+      "Esse frio nem me incomoda mais. Faz setenta invernos que moro neste iglu."
+     ]
+    }
+   }
+  },
+  {
+   "kind": "center",
+   "x": 766,
+   "y": 107,
+   "predio": "centro_geada"
+  },
+  {
+   "kind": "mart",
+   "x": 777,
+   "y": 107,
+   "predio": "loja_geada"
+  },
+  {
+   "kind": "igloo",
+   "x": 786,
+   "y": 108
+  },
+  {
+   "kind": "torre",
+   "x": 795,
+   "y": 107,
+   "to": "observatorio_boreal"
+  },
+  {
+   "kind": "houseStone",
+   "x": 806,
+   "y": 107,
+   "to": "estalagem_uivo"
+  },
+  {
+   "kind": "cabin",
+   "x": 764,
+   "y": 131,
+   "to": "casa_olavo"
+  },
+  {
+   "kind": "cabin",
+   "x": 772,
+   "y": 131,
+   "to": "casa_nev"
+  },
+  {
+   "kind": "igloo",
+   "x": 782,
+   "y": 132
+  },
+  {
+   "kind": "igloo",
+   "x": 794,
+   "y": 132,
+   "interior": {
+    "npc": {
+     "id": "sr_inuk",
+     "name": "Seu Inuk",
+     "look": "montanhista",
+     "lines": [
+      "Sou da vila há quarenta anos e nunca vi a geleira gemer como nas últimas luas."
+     ]
+    }
+   }
+  },
+  {
+   "kind": "houseBlue",
+   "x": 797,
+   "y": 131,
+   "to": "sorveteria_geada"
+  },
+  {
+   "kind": "igloo",
+   "x": 808,
+   "y": 132
+  },
+  {
+   "kind": "igloo",
+   "x": 812,
+   "y": 118
+  },
+  {
+   "kind": "igloo",
+   "x": 760,
+   "y": 142
+  },
+  {
+   "kind": "sign",
+   "x": 762,
+   "y": 124,
+   "text": "VILA GEADA\nPescadores de gelo e alpinistas desde sempre.\nCentro Pokémon e Mercado na rua do norte."
+  },
+  {
+   "kind": "sign",
+   "x": 818,
+   "y": 126,
+   "text": "ROTA 16, CAMPOS NEVADOS\nGeleira do Uivo a leste. Leve agasalho e Pokémon de fôlego."
+  },
+  {
+   "kind": "sign",
+   "x": 767,
+   "y": 138,
+   "text": "LAGO CONGELADO\nGelo fino perto das frestas. Quem cair paga a sopa."
+  },
+  {
+   "kind": "lamp",
+   "x": 764,
+   "y": 113
+  },
+  {
+   "kind": "lamp",
+   "x": 776,
+   "y": 113
+  },
+  {
+   "kind": "lamp",
+   "x": 785,
+   "y": 113
+  },
+  {
+   "kind": "lamp",
+   "x": 803,
+   "y": 113
+  },
+  {
+   "kind": "lamp",
+   "x": 814,
+   "y": 113
+  },
+  {
+   "kind": "lamp",
+   "x": 764,
+   "y": 137
+  },
+  {
+   "kind": "lamp",
+   "x": 778,
+   "y": 137
+  },
+  {
+   "kind": "lamp",
+   "x": 802,
+   "y": 137
+  },
+  {
+   "kind": "lamp",
+   "x": 814,
+   "y": 137
+  },
+  {
+   "kind": "lamp",
+   "x": 786,
+   "y": 121
+  },
+  {
+   "kind": "lamp",
+   "x": 794,
+   "y": 121
+  },
+  {
+   "kind": "lamp",
+   "x": 786,
+   "y": 128
+  },
+  {
+   "kind": "lamp",
+   "x": 794,
+   "y": 128
+  },
+  {
+   "kind": "snowman",
+   "x": 769,
+   "y": 127
+  },
+  {
+   "kind": "snowman",
+   "x": 811,
+   "y": 121
+  },
+  {
+   "kind": "snowman",
+   "x": 780,
+   "y": 128
+  },
+  {
+   "kind": "snowman",
+   "x": 805,
+   "y": 127
+  },
+  {
+   "kind": "snowman",
+   "x": 758,
+   "y": 118
+  },
+  {
+   "kind": "barrel",
+   "x": 762,
+   "y": 134
+  },
+  {
+   "kind": "barrel",
+   "x": 763,
+   "y": 134
+  },
+  {
+   "kind": "crate",
+   "x": 783,
+   "y": 110
+  },
+  {
+   "kind": "crate",
+   "x": 784,
+   "y": 110
+  },
+  {
+   "kind": "bench",
+   "x": 787,
+   "y": 118
+  },
+  {
+   "kind": "bench",
+   "x": 792,
+   "y": 118
+  },
+  {
+   "kind": "well",
+   "x": 800,
+   "y": 126
+  }
+ ],
  "decor": [],
  "areas": [
   {
@@ -2194,16 +2709,1585 @@
    ]
   }
  ],
- "spots": {},
+ "spots": {
+  "ninho_vila_geada": [
+   790,
+   125,
+   "down"
+  ],
+  "geada_entrada_oeste": [
+   762,
+   124,
+   "right"
+  ],
+  "geada_lago_buraco": [
+   722,
+   154,
+   "down"
+  ],
+  "geada_caverna_porta": [
+   1000.5,
+   61.5,
+   "down"
+  ]
+ },
  "signs": [],
- "ninhos": [],
+ "ninhos": [
+  {
+   "id": "vila_geada",
+   "nome": "Vila Geada",
+   "spot": "ninho_vila_geada"
+  }
+ ],
  "tocas": [],
  "mecanismos": [],
  "buracos": [],
- "interiors": [],
- "people": [],
- "pets": [],
- "warps": [],
+ "interiors": [
+  {
+   "id": "casa_olavo",
+   "name": "Casa do Seu Olavo",
+   "rows": [
+    "wwwwwwwwwwwwwww",
+    "wwwwwwwwwwwwwww",
+    "wfffffffffffffw",
+    "wfffffffffffffw",
+    "wfffffffffffffw",
+    "wfffffffffffffw",
+    "wffffffffffSSfw",
+    "wffffffffffSSfw",
+    "wffffffmffffffw",
+    "wwwwwwwwwwwwwww"
+   ],
+   "objects": [
+    {
+     "kind": "fogao",
+     "x": 1,
+     "y": 2,
+     "text": "O fogão a lenha. A sopa de peixe do Seu Olavo ferve o dia todo."
+    },
+    {
+     "kind": "table",
+     "x": 5,
+     "y": 4,
+     "text": "Um prato fundo com sopa e uma colher de pau. O Seu Olavo come em pé."
+    },
+    {
+     "kind": "shelf",
+     "x": 4,
+     "y": 2,
+     "text": "Varas curtas de pesca no gelo, enfileiradas por tamanho."
+    },
+    {
+     "kind": "shelf",
+     "x": 5,
+     "y": 2,
+     "text": "Uma serra de gelo, longa e dentada. Com ela se abre o buraco de pesca."
+    },
+    {
+     "kind": "bed",
+     "x": 12,
+     "y": 2
+    },
+    {
+     "kind": "barrel",
+     "x": 1,
+     "y": 6
+    },
+    {
+     "kind": "crate",
+     "x": 13,
+     "y": 6,
+     "text": "Iscas congeladas. Não abra: fede mesmo gelada."
+    },
+    {
+     "kind": "plant",
+     "x": 10,
+     "y": 2
+    },
+    {
+     "kind": "lampiao",
+     "x": 9,
+     "y": 6
+    },
+    {
+     "kind": "sign",
+     "x": 10,
+     "y": 6,
+     "text": "PERIGO: o buraco da cozinha dá no lago.\nPule por sua conta e risco. (Assinado: a esposa do Olavo)"
+    }
+   ],
+   "decor": [
+    {
+     "kind": "rug",
+     "x": 5,
+     "y": 5
+    }
+   ],
+   "people": [
+    {
+     "id": "olavo",
+     "name": "Seu Olavo",
+     "look": "pescador",
+     "x": 8,
+     "y": 4,
+     "dir": "down",
+     "wander": 1,
+     "lines": [
+      "Sou o Olavo. Pesco no buraco desde antes de você nascer.",
+      "Aquele buraco no chão da cozinha liga direto com o lago. Pulo nele e já estou no gelo. É o meu atalho.",
+      "Peixe de gelo é o mais saboroso, e o mais difícil de achar."
+     ]
+    }
+   ],
+   "spots": {
+    "olavo": [
+     8,
+     5,
+     "up"
+    ]
+   },
+   "warps": [
+    {
+     "x": 11,
+     "y": 7,
+     "dir": "any",
+     "to": "geada_lago_buraco",
+     "face": "down",
+     "label": "Buraco de pesca"
+    },
+    {
+     "x": 12,
+     "y": 7,
+     "dir": "any",
+     "to": "geada_lago_buraco",
+     "face": "down",
+     "label": "Buraco de pesca"
+    }
+   ]
+  },
+  {
+   "id": "observatorio_boreal",
+   "name": "Observatório Boreal",
+   "rows": [
+    "wwwwwwwwwwwwwwww",
+    "wwwwwwwwwwwwwwww",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wfffffffmffffffw",
+    "wwwwwwwwwwwwwwww"
+   ],
+   "objects": [
+    {
+     "kind": "maquete",
+     "x": 6,
+     "y": 2,
+     "text": "Uma maquete do céu com os caminhos das auroras traçados em fio de prata."
+    },
+    {
+     "kind": "machine",
+     "x": 12,
+     "y": 2,
+     "text": "O telescópio da Dra. Hanna. Apontado para o norte, onde a aurora dança. Pela lente, o céu vibra em verde e azul."
+    },
+    {
+     "kind": "painel",
+     "x": 2,
+     "y": 2,
+     "text": "Painel de leituras de luz: Cume, Pico Geada, Geleira. As agulhas oscilam como se algo respirasse lá embaixo."
+    },
+    {
+     "kind": "estante",
+     "x": 1,
+     "y": 5,
+     "text": "Cadernos de campo: 'A luz que dança', 'O Coração respira', 'Auroras e Pokémon de gelo'."
+    },
+    {
+     "kind": "estante",
+     "x": 1,
+     "y": 6,
+     "text": "Fotos de auroras sobre a geleira, uma por noite, durante onze anos."
+    },
+    {
+     "kind": "table",
+     "x": 11,
+     "y": 6,
+     "text": "Xícaras de chá frio e mapas do céu cheios de anotações em vermelho."
+    },
+    {
+     "kind": "plant",
+     "x": 14,
+     "y": 4
+    },
+    {
+     "kind": "lampiao",
+     "x": 4,
+     "y": 8
+    },
+    {
+     "kind": "lampiao",
+     "x": 13,
+     "y": 8
+    },
+    {
+     "kind": "pc",
+     "x": 9,
+     "y": 2,
+     "text": "O computador de Hanna mostra um gráfico: a luz do Coração sobe e desce a cada três minutos, como um pulmão."
+    }
+   ],
+   "decor": [
+    {
+     "kind": "rug",
+     "x": 6,
+     "y": 6
+    }
+   ],
+   "people": [
+    {
+     "id": "hanna",
+     "name": "Dra. Hanna",
+     "look": {
+      "preset": "professor",
+      "hair": "#c8c8d8",
+      "skin": "#efc19b",
+      "outfit": "coat",
+      "top": "#3a4a7a",
+      "trim": "#9ad8f0",
+      "pants": "#2a2a44"
+     },
+     "x": 7,
+     "y": 5,
+     "dir": "down",
+     "lines": [
+      "Sou a Dra. Hanna. Estudo as auroras e o que as faz dançar.",
+      "Algo lá embaixo da geleira respira em ciclos. Eu chamo de Coração."
+     ]
+    }
+   ],
+   "spots": {
+    "hanna": [
+     7,
+     6,
+     "up"
+    ]
+   }
+  },
+  {
+   "id": "casa_nev",
+   "name": "Casa da Família Nev",
+   "rows": [
+    "wwwwwwwwwwwwww",
+    "wwwwwwwwwwwwww",
+    "wffffffffffffw",
+    "wffffffffffffw",
+    "wffffffffffffw",
+    "wffffffffffffw",
+    "wffffffffffffw",
+    "wffffffffffffw",
+    "wfffffmffffffw",
+    "wwwwwwwwwwwwww"
+   ],
+   "objects": [
+    {
+     "kind": "bed",
+     "x": 1,
+     "y": 2
+    },
+    {
+     "kind": "bed",
+     "x": 3,
+     "y": 2
+    },
+    {
+     "kind": "table",
+     "x": 6,
+     "y": 4,
+     "text": "Um tabuleiro de dama com peças de gelo e pedrinhas. O Tor e a Tora brigam por causa dele."
+    },
+    {
+     "kind": "shelf",
+     "x": 8,
+     "y": 2,
+     "text": "Troféus de 'Batalha na Neve': todos dados por eles mesmos."
+    },
+    {
+     "kind": "fogao",
+     "x": 10,
+     "y": 2,
+     "text": "Chocolate quente borbulhando. A mãe dos gêmeos não deixa esfriar."
+    },
+    {
+     "kind": "plant",
+     "x": 12,
+     "y": 6
+    },
+    {
+     "kind": "lampiao",
+     "x": 1,
+     "y": 6
+    },
+    {
+     "kind": "tv",
+     "x": 12,
+     "y": 2,
+     "text": "Passando um desenho de Vanillite brincando de esconde-esconde."
+    }
+   ],
+   "decor": [
+    {
+     "kind": "rug",
+     "x": 5,
+     "y": 5
+    }
+   ],
+   "people": [
+    {
+     "id": "mae_nev",
+     "name": "Dona Lívia Nev",
+     "look": "mae",
+     "x": 9,
+     "y": 5,
+     "dir": "left",
+     "lines": [
+      "Meus gêmeos vivem lá fora, na neve. Eu só sei que estão vivos pela quantidade de lenço sujo.",
+      "Se encontrar o Tor e a Tora, mande-os para casa antes de escurecer."
+     ]
+    },
+    {
+     "id": "pai_nev",
+     "name": "Seu Hélio Nev",
+     "look": "montanhista",
+     "x": 3,
+     "y": 6,
+     "dir": "right",
+     "lines": [
+      "Eu lidero as caravanas até a Geleira. Os gêmeos acham que vão me herdar o ofício. Tomara."
+     ]
+    }
+   ],
+   "spots": {}
+  },
+  {
+   "id": "sorveteria_geada",
+   "name": "Sorveteria da Dona Branca",
+   "rows": [
+    "wwwwwwwwwwwww",
+    "wwwwwwwwwwwww",
+    "wfffffffffffw",
+    "wfffffffffffw",
+    "wfffffffffffw",
+    "wfffffffffffw",
+    "wfffffffffffw",
+    "wfffffmfffffw",
+    "wwwwwwwwwwwww"
+   ],
+   "objects": [
+    {
+     "kind": "counter",
+     "x": 4,
+     "y": 3,
+     "text": "O balcão gelado. Em cada taça, uma bolinha de sorvete que ainda parece respirar."
+    },
+    {
+     "kind": "machine",
+     "x": 1,
+     "y": 2,
+     "text": "A máquina de sorvete: dentro dela, três Vanillite trabalham de olhos fechados."
+    },
+    {
+     "kind": "table",
+     "x": 9,
+     "y": 4,
+     "text": "Mesas de ferro, taças vazias, colherinhas por todo lado."
+    },
+    {
+     "kind": "table",
+     "x": 9,
+     "y": 6,
+     "text": "Um cardápio escrito a giz: 'Fruta Oran', 'Pecha', 'Cacau do Passo', 'Neve pura'."
+    },
+    {
+     "kind": "plant",
+     "x": 11,
+     "y": 2
+    },
+    {
+     "kind": "lampiao",
+     "x": 1,
+     "y": 6
+    }
+   ],
+   "decor": [
+    {
+     "kind": "rug",
+     "x": 5,
+     "y": 5
+    }
+   ],
+   "people": [
+    {
+     "id": "dona_branca",
+     "name": "Dona Branca",
+     "look": {
+      "preset": "mae",
+      "hair": "#f4f4f8",
+      "hairStyle": "bun",
+      "skin": "#efc19b",
+      "top": "#a8d8f0",
+      "trim": "#ffffff",
+      "pants": "#6a8ab8"
+     },
+     "x": 6,
+     "y": 2,
+     "dir": "down",
+     "lines": [
+      "Bem-vindo à Sorveteria! O sorvete é feito por Vanillite, e só por eles.",
+      "Tenho um sorvetinho de graça por dia para quem aparece."
+     ]
+    }
+   ],
+   "spots": {},
+   "pets": [
+    {
+     "dex": 582,
+     "x": 3,
+     "y": 4,
+     "wander": 1,
+     "say": "Vani!"
+    },
+    {
+     "dex": 583,
+     "x": 5,
+     "y": 6,
+     "wander": 1,
+     "say": "Vanillish!"
+    }
+   ]
+  },
+  {
+   "id": "estalagem_uivo",
+   "name": "Estalagem do Uivo",
+   "rows": [
+    "wwwwwwwwwwwwwwwwwwww",
+    "wwwwwwwwwwwwwwwwwwww",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffmfffffffffw",
+    "wwwwwwwwwwwwwwwwwwww"
+   ],
+   "objects": [
+    {
+     "kind": "mural",
+     "x": 8,
+     "y": 2,
+     "text": "MURAL DOS ALPINISTAS\nTrês nomes recentes com a data de hoje riscada:\nBruno Tavares, Clara Meirelles e o jovem Josué.\nSubiram a Geleira do Uivo e não desceram. Quem os achar, avise o balcão."
+    },
+    {
+     "kind": "table",
+     "x": 13,
+     "y": 5,
+     "text": "A mesa da sopa: panelão de sopa de cevada, pão duro e queijo. Come-se à vontade."
+    },
+    {
+     "kind": "table",
+     "x": 15,
+     "y": 7
+    },
+    {
+     "kind": "fogao",
+     "x": 16,
+     "y": 2,
+     "text": "A lareira da estalagem, onde cabe um Vulpix inteiro. Está acesa."
+    },
+    {
+     "kind": "bed",
+     "x": 1,
+     "y": 2
+    },
+    {
+     "kind": "bed",
+     "x": 3,
+     "y": 2
+    },
+    {
+     "kind": "bed",
+     "x": 5,
+     "y": 2
+    },
+    {
+     "kind": "counter",
+     "x": 9,
+     "y": 6,
+     "text": "O balcão da recepção. Um sino de cobre e um livro de registro."
+    },
+    {
+     "kind": "shelf",
+     "x": 12,
+     "y": 2,
+     "text": "Diários dos hóspedes: 'Cheguei com sol, fiquei três dias na nevasca.'"
+    },
+    {
+     "kind": "plant",
+     "x": 18,
+     "y": 9
+    },
+    {
+     "kind": "lampiao",
+     "x": 1,
+     "y": 8
+    },
+    {
+     "kind": "lampiao",
+     "x": 18,
+     "y": 5
+    }
+   ],
+   "decor": [
+    {
+     "kind": "rug",
+     "x": 3,
+     "y": 4
+    },
+    {
+     "kind": "rug",
+     "x": 14,
+     "y": 8
+    }
+   ],
+   "people": [
+    {
+     "id": "estalajadeira",
+     "name": "Dona Inês",
+     "look": "mae",
+     "x": 11,
+     "y": 7,
+     "dir": "down",
+     "lines": [
+      "Bem-vindo à Estalagem do Uivo. Quer sopa? A de cevada é por conta da casa.",
+      "O mural está cheio de nomes. Há um mês eram dois; hoje são três. Minha esperança está acabando."
+     ]
+    },
+    {
+     "id": "alpinista_veterano",
+     "name": "Veterano Teodoro",
+     "look": {
+      "preset": "montanhista",
+      "hair": "#d8d8e0",
+      "hat": "cap",
+      "cap": "#3a5a8a",
+      "capLogo": "#ffffff",
+      "top": "#3a5a8a",
+      "trim": "#ffffff",
+      "pants": "#2a3a5a"
+     },
+     "x": 14,
+     "y": 6,
+     "dir": "left",
+     "lines": [
+      "Eu subi o Cume do Vento Branco quando ainda tinha joelho.",
+      "No pico, onde a neve engole a perna, mora uma ave de cristal. Dizem que o vento vira gelo quando ela bate as asas."
+     ]
+    },
+    {
+     "id": "hospede_geada",
+     "name": "Turista Lara",
+     "look": "turista",
+     "x": 3,
+     "y": 7,
+     "dir": "right",
+     "lines": [
+      "Vim ver a aurora e fiquei por causa da sopa."
+     ]
+    }
+   ],
+   "spots": {
+    "estalagem_balcao": [
+     11,
+     6,
+     "up"
+    ]
+   }
+  },
+  {
+   "id": "caverna_gelo_1",
+   "name": "Caverna de Gelo Cristalino: Saguão",
+   "rows": [
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGZZZZZZGG",
+    "GGGGGGGGGGGGGGGGGGGZZZGGGGGGGGGGGGGGGGZZZZ>ZGG",
+    "GGGGGGGGGGGGGGGGGGGZZZGGGGGGGGGGGGGGGGZZZZZZGG",
+    "GGGGGGGGGGGGGGGGGGGZeZGGGGGGGGGGeeeeeZZZZZZZGG",
+    "GGGGGGGGGiiiiiGiGiiieiiiiGiiiGiieeeeeZZZZZZZGG",
+    "GGGGGGGGGiiiiiGiiiiiiGiiiGiiiiiieeeeeGZZZZZZGG",
+    "GGGGGGGGGiiiiiiiiiiiGiiGiiiiiiiieeeeeGGGGGGGGG",
+    "GGGGGGGGGiiiiGiGiiiiiiiiiGiiiiiiGGGGGGGGGGGGGG",
+    "GGGGGGGGGiiiiiGiiiiiiiiiiGiiiGiiGGGGGGGGGGGGGG",
+    "GGGGGGGGGiGiiiiiiiiGiiiiiiiiiiiiGGGGGGGGGGGGGG",
+    "GGGGGGGGGGiiiiiiiiiiiiGiiiiiGiiiGGGGGGGGGGGGGG",
+    "GGGGGGGGGiiiiiiiiiiiiGiiGGiiiiiiGGGGGGGGGGGGGG",
+    "GGGGGGGGGiiiiiiiiiiiiiiiiiiiiiiiGGGGGGGGGGGGGG",
+    "GGGGGGGGGiiiiGiiGiiiGiiiiiiiiiiGGGGGGGGGGGGGGG",
+    "GGGGGGGGGiiiiiiiiiiiGiiiiiiiGGiiGGGGGGGGGGGGGG",
+    "GGGGGGGGGiiiiiiiGGGiiiiiiiiiiiiiGGGGGGGGGGGGGG",
+    "GGGGGGGGGiiiiiiiiiiiiiiiGiGiiGiiGGGGGGGGGGGGGG",
+    "GGGGGGGGGiiiiGiiiiiGiiiiiiiiiiiiGGGGGGGGGGGGGG",
+    "GGGGGGGGGiiiiiiGiiiiiiiiiiiiiiiiGGGGGGGGGGGGGG",
+    "GGGGGGGGGiiiiiGGGiiGiiiiiiGiiiiiGGGGGGGGGGGGGG",
+    "GGeeeeeeeiiiGiiiiiiiiiGiiiiiiiiiGGGGGGGGGGGGGG",
+    "GGeeeeeeeiiiiiiiiiiGiiiiiiiiiiiiGGGGGGGGGGGGGG",
+    "GGeeeeeeeiiiiiiiiiiGiGiiGiGiiGiiGGGGGGGGGGGGGG",
+    "GGeeeeeeeiiiGeiiiiiiiiiGGiiiiiiiGGGGGGGGGGGGGG",
+    "GGeeeeeeeGGGZZZGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGeeeeeeeGGGZZZGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGOGGGGGGGZZZGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
+   ],
+   "objects": [
+    {
+     "kind": "crystal",
+     "x": 3,
+     "y": 23
+    },
+    {
+     "kind": "crystal",
+     "x": 6,
+     "y": 23
+    },
+    {
+     "kind": "crystal",
+     "x": 3,
+     "y": 26
+    },
+    {
+     "kind": "crystal",
+     "x": 36,
+     "y": 4
+    },
+    {
+     "kind": "crystal",
+     "x": 36,
+     "y": 8
+    },
+    {
+     "kind": "crystal",
+     "x": 40,
+     "y": 7
+    },
+    {
+     "kind": "crystal",
+     "x": 43,
+     "y": 7
+    },
+    {
+     "kind": "crystal",
+     "x": 39,
+     "y": 3
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 2,
+     "y": 22
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 8,
+     "y": 22
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 7,
+     "y": 27
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 40,
+     "y": 5
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 43,
+     "y": 4
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 33,
+     "y": 5
+    },
+    {
+     "kind": "chest",
+     "x": 20,
+     "y": 3,
+     "item": "iceStone",
+     "id": "gelo1_bau_20_3"
+    },
+    {
+     "kind": "chest",
+     "x": 13,
+     "y": 27,
+     "item": "hyperPotion",
+     "id": "gelo1_bau_13_27",
+     "n": 2
+    },
+    {
+     "kind": "sign",
+     "x": 5,
+     "y": 26,
+     "text": "CAVERNA DE GELO CRISTALINO\nO chão escorrega até bater em algo.\nAs colunas de gelo servem de parada."
+    },
+    {
+     "kind": "sign",
+     "x": 35,
+     "y": 4,
+     "text": "Escada para o Rio Congelado."
+    }
+   ],
+   "decor": [],
+   "people": [],
+   "spots": {
+    "gelo1_chegada": [
+     4,
+     27,
+     "up"
+    ],
+    "gelo1_escada": [
+     42,
+     4,
+     "down"
+    ]
+   },
+   "biome": "cristal",
+   "wild": true,
+   "warps": [
+    {
+     "x": 4,
+     "y": 28,
+     "dir": "down",
+     "to": "geada_caverna_porta",
+     "face": "down",
+     "label": "Saída da caverna"
+    },
+    {
+     "x": 42,
+     "y": 3,
+     "dir": "any",
+     "to": [
+      "caverna_gelo_2",
+      3,
+      4
+     ],
+     "face": "down",
+     "label": "Escada para o Rio Congelado"
+    }
+   ]
+  },
+  {
+   "id": "caverna_gelo_2",
+   "name": "Caverna de Gelo Cristalino: Rio Congelado",
+   "rows": [
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGeeeeeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGZZZZZZG",
+    "GGe<eeeeeIIIIIIIIII~~IIIIIIIIIIIIIeeGGGZZZ>ZZG",
+    "GGeeeeeeeIIIII~~~II~~IIIIIIIIIIIIIeeGGGZZZZZZG",
+    "GGeeeeeeeIIIII~~~IIIIIII~~~IIIIIIIeeGGGZZZZZZG",
+    "GGeeeeeeeIIIIIIIIIIIIIII~~~IIIIIIIeeGeeeeeeeeG",
+    "GGGeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGeeeeeeeeG",
+    "GGGeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGeeeeeeeeG",
+    "GGGeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGeeeeeeeeG",
+    "GGGeeeeiiiiiiiiiiiiiiiiiieGGGGGGGGGGGeeeeeeeeG",
+    "GGGeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGeeeGGGGGG",
+    "GGGeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGeeeGGGGGG",
+    "GGGeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGeeeGGGGGG",
+    "GGGeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGeeeGGGGGG",
+    "GGGeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGeeeGGGGGG",
+    "GGGeeeeiiiiiiiiiiiiiiiiiiiiiiiieGGGGGeeeGGGGGG",
+    "GGGeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGeeeGGGGGG",
+    "GGGeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGeeeGZZZZZ",
+    "GGGeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGeeeGZZZZZ",
+    "GGGeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGeeeGZZZZZ",
+    "GGGeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGeeeGZZZZZ",
+    "GGGeeeeiiiiiiiiiiiiiieGGGGGGGGGGGGGGGeeeGZZZZZ",
+    "GGGeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGeeeGZZZZZ",
+    "GGGeeeGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGeeeGGGGGG",
+    "GGGeeeeeeeeeee!!eeeeeeee!!!eeeeeeeeeeeeeeGGGGG",
+    "GGGeeeeeeeeeeeeeeeeeeeee!!!eeeeeeeeeeeeeeGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
+   ],
+   "objects": [
+    {
+     "kind": "iceBlock",
+     "x": 6,
+     "y": 10,
+     "id": "gelo2_bloco_10"
+    },
+    {
+     "kind": "iceBlock",
+     "x": 6,
+     "y": 16,
+     "id": "gelo2_bloco_16"
+    },
+    {
+     "kind": "iceBlock",
+     "x": 6,
+     "y": 22,
+     "id": "gelo2_bloco_22"
+    },
+    {
+     "kind": "plate",
+     "x": 25,
+     "y": 10,
+     "id": "gelo2_placa_a",
+     "abre": [
+      "g2a"
+     ],
+     "trava": true
+    },
+    {
+     "kind": "plate",
+     "x": 31,
+     "y": 16,
+     "id": "gelo2_placa_b",
+     "abre": [
+      "g2b"
+     ],
+     "trava": true
+    },
+    {
+     "kind": "plate",
+     "x": 21,
+     "y": 22,
+     "id": "gelo2_placa_c",
+     "abre": [
+      "g2c"
+     ],
+     "trava": true
+    },
+    {
+     "kind": "barsGate",
+     "x": 37,
+     "y": 11,
+     "id": "g2a",
+     "aberto": false,
+     "msg": "A grade não cede. Três placas de pressão esperam um bloco de gelo cada."
+    },
+    {
+     "kind": "barsGate",
+     "x": 38,
+     "y": 11,
+     "id": "g2b",
+     "aberto": false,
+     "msg": "A grade não cede. Três placas de pressão esperam um bloco de gelo cada."
+    },
+    {
+     "kind": "barsGate",
+     "x": 39,
+     "y": 11,
+     "id": "g2c",
+     "aberto": false,
+     "msg": "A grade não cede. Três placas de pressão esperam um bloco de gelo cada."
+    },
+    {
+     "kind": "crystal",
+     "x": 4,
+     "y": 4
+    },
+    {
+     "kind": "crystal",
+     "x": 7,
+     "y": 3
+    },
+    {
+     "kind": "crystal",
+     "x": 12,
+     "y": 7
+    },
+    {
+     "kind": "crystal",
+     "x": 30,
+     "y": 7
+    },
+    {
+     "kind": "crystal",
+     "x": 38,
+     "y": 8
+    },
+    {
+     "kind": "crystal",
+     "x": 42,
+     "y": 9
+    },
+    {
+     "kind": "crystal",
+     "x": 43,
+     "y": 14
+    },
+    {
+     "kind": "crystal",
+     "x": 43,
+     "y": 22
+    },
+    {
+     "kind": "crystal",
+     "x": 4,
+     "y": 20
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 5,
+     "y": 6
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 35,
+     "y": 5
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 9,
+     "y": 26
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 21,
+     "y": 26
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 31,
+     "y": 26
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 44,
+     "y": 7
+    },
+    {
+     "kind": "sign",
+     "x": 6,
+     "y": 5,
+     "text": "RIO CONGELADO\nEmpurre cada bloco de gelo pela raia:\nele desliza até a placa do fundo.\nCuidado com as rachaduras do corredor sul."
+    },
+    {
+     "kind": "chest",
+     "x": 44,
+     "y": 20,
+     "item": "fossil_vela",
+     "id": "gelo2_bau_fossil"
+    },
+    {
+     "kind": "chest",
+     "x": 43,
+     "y": 19,
+     "item": "tm143",
+     "id": "gelo2_bau_tm"
+    },
+    {
+     "kind": "chest",
+     "x": 35,
+     "y": 4,
+     "item": "maxRevive",
+     "id": "gelo2_bau_revive"
+    },
+    {
+     "kind": "chest",
+     "x": 4,
+     "y": 14,
+     "item": "iceStone",
+     "id": "gelo2_bau_pedra"
+    },
+    {
+     "kind": "crackedIce",
+     "x": 40,
+     "y": 21,
+     "id": "gelo2_parede",
+     "chao": "crystalfloor",
+     "msg": "A parede de gelo desabou: há uma câmara cintilante."
+    }
+   ],
+   "decor": [],
+   "people": [],
+   "spots": {
+    "gelo2_chegada": [
+     3,
+     4,
+     "down"
+    ]
+   },
+   "biome": "cristal",
+   "wild": true,
+   "abaixo": "caverna_gelo_3",
+   "warps": [
+    {
+     "x": 3,
+     "y": 3,
+     "dir": "any",
+     "to": [
+      "caverna_gelo_1",
+      42,
+      4
+     ],
+     "face": "down",
+     "label": "Escada para o Saguão"
+    },
+    {
+     "x": 42,
+     "y": 3,
+     "dir": "any",
+     "to": [
+      "caverna_gelo_3",
+      3,
+      4
+     ],
+     "face": "down",
+     "label": "Escada para o Coração Azul"
+    }
+   ]
+  },
+  {
+   "id": "caverna_gelo_3",
+   "name": "Caverna de Gelo Cristalino: Coração Azul",
+   "rows": [
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGZZZZZZZZZZGGGGGG",
+    "GGZZZZZZZGGGGGGGGGGGGGGGGGGGGGGGGGZZZZZZZZZZGGGGGG",
+    "GGZ<ZZZZZGGGGGGGGGGGGGGGGGGGGGGGGGZZZZZZZZZZGGGGGG",
+    "GGZZZZZZZGGGGGGGGGGGGGGGGGGGGGGGGGGGGGZGGGGGGGGGGG",
+    "GGZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZGGGGGG",
+    "GGZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZGGGGGG",
+    "GGGGGGGGZZZZZZZZZZZZZZZZZiiiiZZZZZZZZZZZZZZZGGGGGG",
+    "GGGGGGGGZZZZZZZZZZZZZZ$$ZiiiiZZZZZZZZZZZZZZZGGGGGG",
+    "GGGGGGGGZZZZ$$$ZZZZZZZ$$ZiiiiZZZZZZZZZZZ$$ZZGGGGGG",
+    "GGGGGGGGZZZZ$$$ZZZZZZZ$$ZiiiiZZZZZZZZZZZ$$ZZGGGGGG",
+    "GGGGGGGGZZZZZZZZZZZZZZ$$ZZZZZZZZZZZZZZZZ$$ZZGGGGGG",
+    "GGGGGGGGZZZZZZZZZZZZZZZZZZZZZZ$$$ZZZZZZZZZZZGGGGGG",
+    "GGGGGGGGZZZZZZZZZZ$$ZZZZZZZZZZ$$$ZZZZZZZZZZZGGGGGG",
+    "GGGGGGGGZZZZZZZZZZIIIIIIZZZZZZZZZZZZZZZZZZZZGGGGGG",
+    "GGGGGGGGZZZZZZZZZZIIIIIIZZZZZZZZZZZZZZZZZZZZGGGZZG",
+    "GGGGGGGGZZZZZZZZZZIIIIIIZZZZ$$ZZZZZZZZZZZZZZGGGZ>G",
+    "GGGGGGGGZZZZZZZZZZZZZZZZZZZZ$$ZZZZZZZZZZZZZZGGGZZG",
+    "GGGGGGGGZZZZZZ$$ZZZZZZZZZZZZZZZZZZZZZZZZZZZZGGGGGG",
+    "GGGGGGGGZZZZZZ$$ZZZZZZZZZZZZZZZZZZ$$ZZZZZZZZGGGGGG",
+    "GGGGGGGGZZZZZZ$$ZZZZZZZZ$$$ZZZZZZZ$$ZZZZZZZZGGGGGG",
+    "GGGGGGGGZZZZZZZZZZZZZZZZ$$$ZZZZZZZ$$ZZZZZZZZGGGGGG",
+    "GGGGGGGGZZ$$ZZZZiiiiiZZZZZZZZZZZZZZZiiiiiZZZGGGGGG",
+    "GGGGGGGGZZ$$ZZZZiiiiiZZZZZZZZZZZZZZZiiiiiZZZGGGGGG",
+    "GGGGGGGGZZZZZZZZiiiiiZZZZZZZZZZZZZZZiiiiiZZZGGGGGG",
+    "GGGGGGGGZZZZZZZZiiiiiZZZZZZZZZZZZZZZZZZZZZZZGGGGGG",
+    "GGGGGGGGZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
+   ],
+   "objects": [
+    {
+     "kind": "brazier",
+     "x": 11,
+     "y": 7,
+     "grupo": "vela",
+     "id": "gelo3_braseiro_0",
+     "abre": [
+      "g3_altar"
+     ],
+     "msg": "A chama azul acende e a luz sobe pelos cristais."
+    },
+    {
+     "kind": "brazier",
+     "x": 25,
+     "y": 13,
+     "grupo": "vela",
+     "id": "gelo3_braseiro_1",
+     "abre": [
+      "g3_altar"
+     ],
+     "msg": "A chama azul acende e a luz sobe pelos cristais."
+    },
+    {
+     "kind": "brazier",
+     "x": 41,
+     "y": 25,
+     "grupo": "vela",
+     "id": "gelo3_braseiro_2",
+     "abre": [
+      "g3_altar"
+     ],
+     "msg": "A chama azul acende e a luz sobe pelos cristais."
+    },
+    {
+     "kind": "stoneDoor",
+     "x": 38,
+     "y": 4,
+     "id": "g3_altar",
+     "aberto": false,
+     "msg": "A porta de gelo grosso não cede. Três braseiros no salão esperam uma chama."
+    },
+    {
+     "kind": "altar",
+     "x": 38,
+     "y": 1,
+     "text": [
+      "O altar do Coração Azul. A luz que sobe daqui é a mesma que vaza das Tocas de Luz.",
+      "Dizem que a Vela Eterna se reflete nele."
+     ]
+    },
+    {
+     "kind": "chest",
+     "x": 35,
+     "y": 2,
+     "item": "abomasite",
+     "id": "gelo3_bau_a"
+    },
+    {
+     "kind": "chest",
+     "x": 42,
+     "y": 2,
+     "item": "froslassite",
+     "id": "gelo3_bau_b"
+    },
+    {
+     "kind": "chest",
+     "x": 36,
+     "y": 3,
+     "item": "glalitite",
+     "id": "gelo3_bau_c"
+    },
+    {
+     "kind": "chest",
+     "x": 41,
+     "y": 3,
+     "item": "lasca_prisma_gelo",
+     "id": "gelo3_bau_d"
+    },
+    {
+     "kind": "chest",
+     "x": 5,
+     "y": 5,
+     "item": "iceStone",
+     "id": "gelo3_bau_e"
+    },
+    {
+     "kind": "crackedIce",
+     "x": 44,
+     "y": 16,
+     "id": "gelo3_zero_a",
+     "chao": "crystalfloor",
+     "abre": [],
+     "msg": "O gelo grosso rachou. Mais duas camadas…"
+    },
+    {
+     "kind": "crackedIce",
+     "x": 45,
+     "y": 16,
+     "id": "gelo3_zero_b",
+     "chao": "crystalfloor",
+     "abre": [],
+     "msg": "Mais uma camada."
+    },
+    {
+     "kind": "crackedIce",
+     "x": 46,
+     "y": 16,
+     "id": "gelo3_zero_c",
+     "chao": "crystalfloor",
+     "abre": [],
+     "msg": "O gelo grosso cedeu: a Câmara do Zero Absoluto respira frio."
+    },
+    {
+     "kind": "crystal",
+     "x": 4,
+     "y": 4
+    },
+    {
+     "kind": "crystalPink",
+     "x": 9,
+     "y": 6
+    },
+    {
+     "kind": "crystal",
+     "x": 11,
+     "y": 12
+    },
+    {
+     "kind": "crystal",
+     "x": 20,
+     "y": 6
+    },
+    {
+     "kind": "crystal",
+     "x": 27,
+     "y": 6
+    },
+    {
+     "kind": "crystal",
+     "x": 33,
+     "y": 10
+    },
+    {
+     "kind": "crystal",
+     "x": 37,
+     "y": 14
+    },
+    {
+     "kind": "crystal",
+     "x": 27,
+     "y": 24
+    },
+    {
+     "kind": "crystal",
+     "x": 13,
+     "y": 25
+    },
+    {
+     "kind": "crystal",
+     "x": 36,
+     "y": 18
+    },
+    {
+     "kind": "crystal",
+     "x": 42,
+     "y": 22
+    },
+    {
+     "kind": "crystal",
+     "x": 9,
+     "y": 20
+    },
+    {
+     "kind": "crystal",
+     "x": 31,
+     "y": 6
+    },
+    {
+     "kind": "crystalPink",
+     "x": 43,
+     "y": 7
+    },
+    {
+     "kind": "crystalPink",
+     "x": 37,
+     "y": 3
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 9,
+     "y": 9
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 19,
+     "y": 20
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 32,
+     "y": 17
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 23,
+     "y": 15
+    },
+    {
+     "kind": "sign",
+     "x": 6,
+     "y": 6,
+     "text": "CORAÇÃO AZUL\nOs três braseiros acendem a porta do altar.\nPara a Câmara do Zero Absoluto, só um golpe de peso."
+    }
+   ],
+   "decor": [],
+   "people": [],
+   "spots": {
+    "gelo3_chegada": [
+     3,
+     4,
+     "down"
+    ],
+    "gelo3_altar": [
+     38,
+     3,
+     "down"
+    ]
+   },
+   "biome": "cristal",
+   "wild": true,
+   "escuro": 0.5,
+   "warps": [
+    {
+     "x": 3,
+     "y": 3,
+     "dir": "any",
+     "to": [
+      "caverna_gelo_2",
+      42,
+      4
+     ],
+     "face": "down",
+     "label": "Escada para o Rio Congelado"
+    },
+    {
+     "x": 48,
+     "y": 16,
+     "dir": "any",
+     "to": [
+      "camara_zero",
+      4,
+      15
+     ],
+     "face": "up",
+     "label": "Câmara do Zero Absoluto"
+    }
+   ]
+  },
+  {
+   "id": "camara_zero",
+   "name": "Câmara do Zero Absoluto",
+   "rows": [
+    "GGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGeeeeeeeeeeeeeeeeeeeeGG",
+    "GGeeeeeeeeeeeeeeeeeeeeGG",
+    "GGeee$$eeeeeeeeee$$eeeGG",
+    "GGeee$$eeeeeeeeee$$eeeGG",
+    "GGeeeeeeeiiiiiieeeeeeeGG",
+    "GGeeeeeeeiiiiiieeeeeeeGG",
+    "GGeeeeeeeiiiiiieeeeeeeGG",
+    "GGeeeeeeeiiiiiieeeeeeeGG",
+    "GGeee$$eeiiiiiiee$$eeeGG",
+    "GGeee$$eeeeeeeeee$$eeeGG",
+    "GGeeeeeeeeeeeeeeeeeeeeGG",
+    "GGeeeeeeeeeeeeeeeeeeeeGG",
+    "GGeeeeeeeeeeeeeeeeeeeeGG",
+    "GGeeeeeeeeeeeeeeeeeeeeGG",
+    "GGGGOGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGG"
+   ],
+   "objects": [
+    {
+     "kind": "crystal",
+     "x": 3,
+     "y": 3
+    },
+    {
+     "kind": "crystal",
+     "x": 20,
+     "y": 3
+    },
+    {
+     "kind": "crystal",
+     "x": 3,
+     "y": 14
+    },
+    {
+     "kind": "crystal",
+     "x": 20,
+     "y": 14
+    },
+    {
+     "kind": "crystal",
+     "x": 12,
+     "y": 3
+    },
+    {
+     "kind": "crystal",
+     "x": 12,
+     "y": 14
+    },
+    {
+     "kind": "crystalPink",
+     "x": 11,
+     "y": 8
+    },
+    {
+     "kind": "sign",
+     "x": 6,
+     "y": 14,
+     "text": "CÂMARA DO ZERO ABSOLUTO\nNada se move aqui, nem o tempo."
+    }
+   ],
+   "decor": [],
+   "people": [],
+   "spots": {
+    "zero_chegada": [
+     4,
+     15,
+     "up"
+    ],
+    "zero_kyurem": [
+     12,
+     4,
+     "down"
+    ]
+   },
+   "biome": "cristal",
+   "wild": false,
+   "escuro": 0.3,
+   "warps": [
+    {
+     "x": 4,
+     "y": 16,
+     "dir": "down",
+     "to": [
+      "caverna_gelo_3",
+      47,
+      16
+     ],
+     "face": "left",
+     "label": "Voltar ao Coração Azul"
+    }
+   ]
+  }
+ ],
+ "people": [
+  {
+   "id": "tor",
+   "name": "Tor Nev",
+   "look": "menino",
+   "x": 801,
+   "y": 138,
+   "dir": "left",
+   "lines": [
+    "Eu sou o Tor! Eu e a Tora vivemos batalhando na neve.",
+    "Quando o gelo racha, a gente corre. Quem corre mais devagar paga o sorvete!"
+   ],
+   "wander": 3,
+   "kid": true
+  },
+  {
+   "id": "tora",
+   "name": "Tora Nev",
+   "look": "menina",
+   "x": 803,
+   "y": 139,
+   "dir": "right",
+   "lines": [
+    "Eu sou a Tora! O Tor perdeu de novo, mas fala que foi o vento.",
+    "A Dona Branca faz o melhor sorvete do mundo. Eu provei todos!"
+   ],
+   "wander": 3,
+   "kid": true
+  },
+  {
+   "id": "geada_aldeao1",
+   "name": "Dona Alzira",
+   "look": "mae",
+   "x": 778,
+   "y": 126,
+   "dir": "down",
+   "lines": [
+    "Aqui o inverno dura mais do que o ano. A gente aprende a gostar de sopa.",
+    "Quando a aurora dança no céu, a vila inteira sai para ver."
+   ],
+   "wander": 4
+  },
+  {
+   "id": "geada_aldeao2",
+   "name": "Seu Nilton",
+   "look": "montanhista",
+   "x": 806,
+   "y": 122,
+   "dir": "left",
+   "lines": [
+    "O vento do Passo do Uivo canta quando vem tempestade. É assobio de verdade.",
+    "A Rota 16 é bonita, mas o riacho congelado escorrega até a gente bater numa árvore."
+   ],
+   "wander": 3
+  },
+  {
+   "id": "geada_menino",
+   "name": "Pedrinho",
+   "look": "menino",
+   "x": 770,
+   "y": 120,
+   "dir": "down",
+   "lines": [
+    "Eu vi um Snover gigante ontem! Falaram que era mentira, mas eu vi!"
+   ],
+   "wander": 4,
+   "kid": true
+  },
+  {
+   "id": "geada_guarda",
+   "name": "Guarda-florestal Dora",
+   "look": "treinadora",
+   "x": 758,
+   "y": 126,
+   "dir": "right",
+   "lines": [
+    "Cuidado ao subir a Geleira: a pedra de gelo muda de lugar com o calor do dia.",
+    "Quem entra na Caverna de Gelo Cristalino sem casaco não volta falando."
+   ]
+  }
+ ],
+ "pets": [
+  {
+   "dex": 582,
+   "x": 801,
+   "y": 134,
+   "wander": 3,
+   "say": "Vani!"
+  },
+  {
+   "dex": 225,
+   "x": 772,
+   "y": 124,
+   "wander": 4,
+   "say": "Deli!"
+  },
+  {
+   "dex": 459,
+   "x": 812,
+   "y": 126,
+   "wander": 4,
+   "say": "Sno!"
+  },
+  {
+   "dex": 215,
+   "x": 780,
+   "y": 118,
+   "wander": 3,
+   "say": "Snea!"
+  }
+ ],
+ "warps": [
+  {
+   "x": 1000,
+   "y": 60,
+   "dir": "up",
+   "to": [
+    "caverna_gelo_1",
+    4,
+    27
+   ],
+   "face": "up",
+   "label": "Caverna de Gelo Cristalino"
+  },
+  {
+   "x": 1001,
+   "y": 60,
+   "dir": "up",
+   "to": [
+    "caverna_gelo_1",
+    4,
+    27
+   ],
+   "face": "up",
+   "label": "Caverna de Gelo Cristalino"
+  }
+ ],
  "items": [],
  "viagens": []
 }
