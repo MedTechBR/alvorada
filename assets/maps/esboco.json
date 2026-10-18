@@ -641,22 +641,6 @@
 },
 {
 "op": "rect",
-"t": "plaza",
-"x": 341,
-"y": 419,
-"w": 14,
-"h": 6
-},
-{
-"op": "rect",
-"t": "path",
-"x": 324,
-"y": 425,
-"w": 48,
-"h": 2
-},
-{
-"op": "rect",
 "t": "grass",
 "x": 324,
 "y": 216,
@@ -678,22 +662,6 @@
 {
 "op": "rect",
 "t": "plaza",
-"x": 335,
-"y": 230,
-"w": 14,
-"h": 6
-},
-{
-"op": "rect",
-"t": "path",
-"x": 324,
-"y": 236,
-"w": 36,
-"h": 2
-},
-{
-"op": "rect",
-"t": "plaza",
 "x": 480,
 "y": 168,
 "w": 60,
@@ -710,22 +678,6 @@
 "snow",
 "path"
 ]
-},
-{
-"op": "rect",
-"t": "plaza",
-"x": 503,
-"y": 185,
-"w": 14,
-"h": 6
-},
-{
-"op": "rect",
-"t": "path",
-"x": 480,
-"y": 191,
-"w": 60,
-"h": 2
 },
 {
 "op": "rect",
@@ -1615,104 +1567,6 @@
 },
 {
 "kind": "center",
-"x": 332,
-"y": 416
-},
-{
-"kind": "mart",
-"x": 356,
-"y": 416
-},
-{
-"kind": "sign",
-"x": 347,
-"y": 423,
-"text": "CIDADE CORAL\nCalçadão, coqueiros e o Farol Coral.\n(esboço: cidade em construção)"
-},
-{
-"kind": "lamp",
-"x": 340,
-"y": 421
-},
-{
-"kind": "lamp",
-"x": 355,
-"y": 421
-},
-{
-"kind": "houseA",
-"x": 326,
-"y": 428
-},
-{
-"kind": "houseB",
-"x": 362,
-"y": 428
-},
-{
-"kind": "center",
-"x": 326,
-"y": 227
-},
-{
-"kind": "mart",
-"x": 350,
-"y": 227
-},
-{
-"kind": "sign",
-"x": 341,
-"y": 234,
-"text": "VILA LAMPARINA\nPedra escura e lampiões. O ginásio só abre de noite.\n(esboço: cidade em construção)"
-},
-{
-"kind": "lamp",
-"x": 334,
-"y": 232
-},
-{
-"kind": "lamp",
-"x": 349,
-"y": 232
-},
-{
-"kind": "center",
-"x": 494,
-"y": 182
-},
-{
-"kind": "mart",
-"x": 518,
-"y": 182
-},
-{
-"kind": "sign",
-"x": 509,
-"y": 189,
-"text": "CIDADE AURORA\nA cidade da luzita.\n(esboço: cidade em construção)"
-},
-{
-"kind": "lamp",
-"x": 502,
-"y": 187
-},
-{
-"kind": "lamp",
-"x": 517,
-"y": 187
-},
-{
-"kind": "houseA",
-"x": 482,
-"y": 194
-},
-{
-"kind": "houseB",
-"x": 530,
-"y": 194
-},
-{
-"kind": "center",
 "x": 269,
 "y": 164
 },
@@ -2155,17 +2009,6 @@
 "id": "rota5"
 },
 {
-"name": "Praia dos Corais",
-"biome": "praia",
-"rect": [
-240,
-384,
-180,
-24
-],
-"id": "praia_corais"
-},
-{
 "name": "Rota 8, Escalada do Paredão",
 "biome": "campo",
 "rect": [
@@ -2197,17 +2040,6 @@
 18
 ],
 "id": "rota1"
-},
-{
-"name": "Cidade Aurora",
-"biome": "vila",
-"rect": [
-480,
-168,
-60,
-36
-],
-"id": "cidade_aurora"
 },
 {
 "name": "Rota 3, Margem das Garças",
@@ -2287,17 +2119,6 @@
 "id": "cidade_escarpa"
 },
 {
-"name": "Cidade Coral",
-"biome": "vila",
-"rect": [
-324,
-408,
-48,
-24
-],
-"id": "cidade_coral"
-},
-{
 "name": "Vila Alvorada",
 "biome": "vila",
 "rect": [
@@ -2318,17 +2139,6 @@
 30
 ],
 "id": "vila_sussurro"
-},
-{
-"name": "Vila Lamparina",
-"biome": "vila",
-"rect": [
-324,
-216,
-36,
-30
-],
-"id": "vila_lamparina"
 },
 {
 "name": "Porto Espelho",

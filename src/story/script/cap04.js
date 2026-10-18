@@ -1,5 +1,9 @@
 // Capítulo 4: Faísca na Costa Coral
 // Rota 4 (Rio Lúmen de Lapras, Restinga) → Cidade Coral (inauguração da Aurora) → Téo → Farol Coral (ginásio) → Praia dos Corais.
+// Jogável pelo motor src/story/roteiro.js. Níveis: selvagens 22–28, treinadores 23–26, Téo 25–28, Jonas 25–29, Ébano 27–28.
+// Quebra-cabeça do farol (circuitos, portões de raio e os três geradores): src/story/enigmas.js.
+
+const FAROL = { farol_coral: 'escada_f1', farol_coral_2: 'escada_f2', farol_topo: 'jonas' };
 
 export default {
   id: 'cap04',
@@ -11,7 +15,7 @@ export default {
       local: 'rota4',
       gatilho: { tipo: 'inicio', requer: ['ch3Done'] },
       falas: [['narrador', 'Capítulo 4: Faísca na Costa Coral']],
-      depois: { flags: { chapter: 4 } },
+      depois: { flags: { chapter: 4 }, objetivo: { texto: 'Desça o Rio Lúmen de Lapras até Cidade Coral', alvo: 'rio_lumen_inicio', sub: 'Na margem, de frente para a água, X chama o Lapras' } },
     },
     {
       id: 'radio',
@@ -20,6 +24,7 @@ export default {
       falas: [
         ['radio', 'Bom dia, Alvorada! Seis e quarenta. Seis e quarenta, gente. O galo do Seu Zé desistiu de cantar e agora só suspira.'],
         ['radio', 'Hoje tem festa em Cidade Coral: o Farol ganha holofotes novos da Companhia Aurora. O próprio Augusto Solano vai fazer discurso!'],
+        ['radio', 'E atenção: a escadaria do Mirante, que desce da Vila Alvorada para a praia, segue fechada para obra. Quem quiser a festa, que desça o rio!'],
       ],
     },
     {
@@ -30,7 +35,7 @@ export default {
         ['narrador', 'O Rio Lúmen se alarga entre manguezais. Os Buizel apostam corrida com o Lapras e perdem de propósito, só para rir.'],
         ['narrador', 'Mais adiante, o rio encontra as dunas e o mar. Dá para sentir o cheiro de sal.'],
       ],
-      depois: { flags: { desceuRio: true } },
+      depois: { flags: { desceuRio: true }, objetivo: { texto: 'Siga o rio até a foz e atravesse a Restinga até Cidade Coral', alvo: 'cidade_coral' } },
     },
     {
       id: 'surfista',
@@ -39,15 +44,23 @@ export default {
       falas: [
         ['kaua', 'E aí, brother! Kauã, da Escola de Surfe. Tá descendo o rio de Lapras? Que onda!'],
         ['kaua', 'Bora uma batalha de boa? Se eu perder, te dou aula grátis. Se eu ganhar, te dou aula grátis também, porque eu sou gente boa.'],
+        ['kaua', 'Encosta o Lapras aqui no banco de areia, desce e manda o teu Pokémon. Na água é covardia!'],
       ],
-      depois: { batalha: { id: 'r4_kaua', nome: 'Surfista Kauã', dinheiro: 800, equipe: [[278, 20, ['waterGun', 'wingAttack', 'quickAttack']], [418, 21, ['aquaJet', 'swift', 'quickAttack']]] } },
+      depois: { batalha: { id: 'r4_kaua', nome: 'Surfista Kauã', dinheiro: 900, equipe: [[278, 23, ['waterGun', 'wingAttack', 'quickAttack']], [418, 24, ['aquaJet', 'swift', 'quickAttack']], [279, 25, ['waterGun', 'wingAttack', 'protect']]] } },
+    },
+    {
+      id: 'kaua_perdeu',
+      local: 'rota4',
+      gatilho: { tipo: 'vencer', alvo: 'r4_kaua' },
+      falas: [['kaua', 'Caí da prancha! Mas caí com estilo. Toma, presente da escola: quem cai muito precisa disso.']],
+      depois: { itens: [['superPotion', 2]] },
     },
     {
       id: 'restinga',
       local: 'rota4',
       gatilho: { tipo: 'avistar', alvo: 'r4_sandra' },
       falas: [['treinador', 'A areia aqui esconde Sandile! Esconde Trapinch! Esconde até o meu chinelo, que eu perdi ontem!']],
-      depois: { batalha: { id: 'r4_sandra', nome: 'Turista Sandra', dinheiro: 820, equipe: [[551, 21, ['bite', 'sandTomb', 'leer']], [328, 21, ['bite', 'sandAttack', 'bulldoze']]] } },
+      depois: { batalha: { id: 'r4_sandra', nome: 'Turista Sandra', dinheiro: 920, equipe: [[551, 24, ['bite', 'sandTomb', 'leer']], [328, 24, ['bite', 'sandAttack', 'bulldoze']], [449, 25, ['bite', 'sandTomb', 'yawn']]] } },
     },
     {
       id: 'coral_chegada',
@@ -57,12 +70,12 @@ export default {
         ['narrador', 'Cidade Coral: calçadão de ondas pretas e brancas, coqueiros, barracas de água de coco. No alto do morro, o Farol Coral, listrado de vermelho.'],
         ['narrador', 'A praça está lotada. Bandeirinhas douradas, banda de música e um palco com o logo da Companhia Aurora: um sol nascendo de um cristal.'],
       ],
-      depois: { flags: { coral: true } },
+      depois: { flags: { coral: true }, objetivo: { texto: 'Vá até a praça: o discurso já vai começar', alvo: 'praca_coral' } },
     },
     {
       id: 'discurso_solano',
       local: 'cidade_coral',
-      gatilho: { tipo: 'apos', cena: 'coral_chegada' },
+      gatilho: { tipo: 'pisar', alvo: 'praca_coral', requer: ['coral'], semFlag: ['discursoSolano'] },
       falas: [
         ['solano', 'Boa tarde, Cidade Coral!'],
         ['solano', 'Eu nasci em Vila Lamparina. Numa casa sem luz. Quando eu tinha onze anos, meu irmão caçula, o Tiago, teve febre num inverno escuro.'],
@@ -73,8 +86,9 @@ export default {
         ['iracema', 'Pisca errado.'],
         ['jogador', 'O quê?'],
         ['iracema', 'O farol. Pisca errado. Trinta anos eu cuidei daquela luz. Ela pisca errado agora. Ninguém me escuta, porque eu sou velha.'],
+        ['iracema', 'Moro na casa azul, na rua de cima. Se um dia quiser ouvir uma velha, aparece.'],
       ],
-      depois: { flags: { discursoSolano: true, sq_farol: 'disponivel' } },
+      depois: { flags: { discursoSolano: true, sq_farol: 'disponivel' }, objetivo: { texto: 'Dê uma volta pelo calçadão', alvo: 'calcadao' } },
     },
     {
       id: 'teo_calcadao',
@@ -87,12 +101,12 @@ export default {
       ],
       depois: {
         batalha: {
-          id: 'rival2', nome: 'Rival Téo', dinheiro: 2000,
+          id: 'rival2', nome: 'Rival Téo', dinheiro: 2400,
           equipe: [
-            [397, 22, ['wingAttack', 'quickAttack', 'doubleTeam']],
-            [58, 22, ['ember', 'bite', 'roar']],
-            [133, 23, ['quickAttack', 'bite', 'sandAttack']],
-            ['rival:2', 25, []],
+            [397, 25, ['wingAttack', 'quickAttack', 'doubleTeam']],
+            [58, 25, ['ember', 'bite', 'roar']],
+            [133, 26, ['quickAttack', 'bite', 'sandAttack']],
+            ['rival:2', 28, []],
           ],
         },
         flags: { rival2: true },
@@ -104,14 +118,15 @@ export default {
       gatilho: { tipo: 'apos', cena: 'teo_calcadao' },
       falas: [
         ['teo', 'Boa batalha. Muito boa. Ele ia ter gostado.'],
-        ['narrador', 'Téo olha para a estrada que desce do morro. Ninguém vem.'],
+        ['narrador', 'Téo olha para a escadaria fechada do Mirante, lá no alto. Ninguém vem.'],
         ['teo', 'Deve ter tido problema na mina. Sempre tem problema na mina. Fala que tá tudo bem e manda dinheiro. E manda luzita de presente. A gente tem luzita em casa até no banheiro.'],
       ],
       escolhas: [
-        { texto: 'Ele deve estar com saudade de você.', falas: [['teo', '…É. Deve. Valeu, {jogador}.']], flags: { teoAfeto: 1 } },
-        { texto: 'Quer comer um acarajé?', falas: [['teo', 'Quero. Mas você paga, que você ganhou o dinheiro da batalha. Ou perdeu. Paga do mesmo jeito.']], flags: { teoAfeto: 1 } },
+        { texto: 'Ele deve estar com saudade de você.', falas: [['teo', '…É. Deve. Valeu, {jogador}.']], flags: { teoAfeto: '+1' } },
+        { texto: 'Quer comer um acarajé?', falas: [['teo', 'Quero. Mas você paga, que você ganhou o dinheiro da batalha. Ou perdeu. Paga do mesmo jeito.']], flags: { teoAfeto: '+1' } },
         { texto: 'Bora treinar em vez de esperar.', falas: [['teo', 'É isso aí. Esperar é pra quem não tem Pokémon.']] },
       ],
+      depois: { objetivo: { texto: 'Desafie o Líder Jonas no Farol Coral, no alto do morro', alvo: 'farol_coral', sub: 'Suba pela escadinha de pedra da praia' } },
     },
     {
       id: 'farol_entrada',
@@ -122,12 +137,12 @@ export default {
         ['jonas', '(pelo alto-falante) Bem-vindo ao ginásio mais iluminado da costa! Que, no momento, está no escuro. Porque a luz nova queimou o meu circuito velho.'],
         ['jonas', 'Gire as peças para ligar a fonte ao gerador de cada andar. No topo, ligue os três geradores na ordem certa. A ordem? Pergunte para quem pisca.'],
       ],
-      depois: { flags: { farolDentro: true }, objetivo: 'Religue os geradores do Farol Coral' },
+      depois: { flags: { farolDentro: true }, objetivo: { texto: 'Religue os geradores do Farol Coral e suba até o Jonas', porSala: FAROL, treinadores: ['g4_saulo', 'g4_duda'], rotulo: 'Técnicos' } },
     },
     {
       id: 'iracema_morse',
       local: 'casa_iracema',
-      gatilho: { tipo: 'falar', alvo: 'iracema', requer: ['farolDentro'] },
+      gatilho: { tipo: 'falar', alvo: 'iracema', requer: ['farolDentro'], semFlag: ['geradoresLigados'] },
       repete: true,
       falas: [
         ['iracema', 'A ordem dos geradores? O Jonas sempre usa a mesma: curto, longo, curto. Código de farol antigo. A letra R. De "retorno".'],
@@ -135,22 +150,34 @@ export default {
       ],
     },
     {
+      id: 'iracema_casa',
+      local: 'casa_iracema',
+      gatilho: { tipo: 'falar', alvo: 'iracema', requer: ['discursoSolano'], semFlag: ['farolDentro', 'conheceuIracema'] },
+      falas: [
+        ['iracema', 'Veio ouvir a velha? Senta. Cuidado com o rádio, ele morde.'],
+        ['iracema', 'Trinta anos subindo aqueles degraus. Toda noite. Eu conhecia aquela luz como conheço o meu nome. Aí veio a Aurora e disse: "agora é automático".'],
+        ['iracema', 'Automático. A luz gira sozinha e ninguém olha. E sabe para onde ela aponta? Para o norte. O mar fica ao sul, menino.'],
+        ['iracema', 'Se for desafiar o Jonas, lembra: lá dentro tudo tem ordem. Até a luz.'],
+      ],
+      depois: { flags: { conheceuIracema: true } },
+    },
+    {
       id: 'aprendiz_jonas1',
       local: 'farol_coral',
       gatilho: { tipo: 'avistar', alvo: 'g4_saulo' },
-      falas: [['aprendiz', 'Cuidado com o portão de raio! Ele abre e fecha a cada dois segundos. Eu já levei três choques hoje. Meu cabelo nunca mais abaixou.']],
-      depois: { batalha: { id: 'g4_saulo', nome: 'Técnico Saulo', dinheiro: 880, equipe: [[81, 21, ['thunderShock', 'sonicBoom', 'supersonic']], [100, 22, ['spark', 'rollout', 'screech']]] } },
+      falas: [['aprendiz', 'Cuidado com o portão de raio do andar de cima! Ele abre e fecha a cada dois segundos. Eu já levei três choques hoje. Meu cabelo nunca mais abaixou.']],
+      depois: { batalha: { id: 'g4_saulo', nome: 'Técnico Saulo', dinheiro: 960, equipe: [[81, 24, ['thunderShock', 'sonicBoom', 'supersonic']], [100, 25, ['spark', 'rollout', 'screech']]] } },
     },
     {
       id: 'aprendiz_jonas2',
-      local: 'farol_coral',
+      local: 'farol_coral_2',
       gatilho: { tipo: 'avistar', alvo: 'g4_duda' },
       falas: [['aprendiz', 'Último andar antes do Jonas! Ninguém passa sem carga total!']],
-      depois: { batalha: { id: 'g4_duda', nome: 'Técnica Duda', dinheiro: 920, equipe: [[309, 22, ['spark', 'howl', 'quickAttack']], [694, 23, ['thunderShock', 'quickAttack', 'parabolicCharge']]] } },
+      depois: { batalha: { id: 'g4_duda', nome: 'Técnica Duda', dinheiro: 1000, equipe: [[309, 25, ['spark', 'howl', 'quickAttack']], [694, 26, ['thunderShock', 'quickAttack', 'parabolicCharge']]] } },
     },
     {
       id: 'jonas_desafio',
-      local: 'farol_coral',
+      local: 'farol_topo',
       gatilho: { tipo: 'falar', alvo: 'jonas', requer: ['trainers.g4_saulo', 'trainers.g4_duda', 'geradoresLigados'], semFlag: ['badges.coral'] },
       falas: [
         ['jonas', 'Você religou o farol inteiro! Até eu estava com preguiça. Eu sou o Jonas, engenheiro deste farol e líder do ginásio.'],
@@ -159,26 +186,33 @@ export default {
       ],
       depois: {
         batalha: {
-          id: 'leader_jonas', nome: 'Líder Jonas', dinheiro: 2700,
+          id: 'leader_jonas', nome: 'Líder Jonas', dinheiro: 2900,
           equipe: [
-            [81, 23, ['thunderShock', 'sonicBoom', 'thunderWave']],
-            [180, 24, ['thunderShock', 'cottonSpore', 'takeDown']],
-            [417, 24, ['spark', 'quickAttack', 'sweetKiss']],
-            [404, 25, ['spark', 'bite', 'leer']],
-            [171, 27, ['spark', 'waterGun', 'confuseRay', 'bubbleBeam']],
+            [81, 25, ['thunderShock', 'sonicBoom', 'thunderWave']],
+            [180, 26, ['thunderShock', 'cottonSpore', 'takeDown']],
+            [417, 26, ['spark', 'quickAttack', 'sweetKiss']],
+            [404, 27, ['spark', 'bite', 'leer']],
+            [171, 29, ['spark', 'waterGun', 'confuseRay', 'bubbleBeam']],
           ],
         },
       },
     },
     {
+      id: 'jonas_espera',
+      local: 'farol_topo',
+      gatilho: { tipo: 'falar', alvo: 'jonas', requer: ['farolDentro'], semFlag: ['badges.coral'] },
+      repete: true,
+      falas: [['jonas', 'Ainda falta luz aqui! Vença os meus técnicos e ligue os três geradores, na ordem. Aí sim a gente conversa.']],
+    },
+    {
       id: 'jonas_perdeu_jogador',
-      local: 'farol_coral',
+      local: 'farol_topo',
       gatilho: { tipo: 'perder', alvo: 'leader_jonas' },
       falas: [['jonas', 'Curto-circuito! Volte com mais carga.']],
     },
     {
       id: 'jonas_vencido',
-      local: 'farol_coral',
+      local: 'farol_topo',
       gatilho: { tipo: 'vencer', alvo: 'leader_jonas' },
       falas: [
         ['jonas', 'Você acendeu o farol e a mim também! A Insígnia Faísca é sua.'],
@@ -186,18 +220,29 @@ export default {
         ['jonas', 'E a MT Faísca. Pequena, rápida, irritante. Como o meu Pachirisu.'],
         ['jonas', 'Cuidado com essa luz nova, viu? Ela não pisca direito. A Iracema tem razão, e eu tenho vergonha de não ter dito antes.'],
       ],
-      depois: { insignia: 'coral', mt: 'spark', flags: { 'badges.coral': true }, objetivo: 'Descanse em Cidade Coral até a noite' },
+      depois: { insignia: 'coral', mt: 'spark', flags: { 'badges.coral': true }, objetivo: { texto: 'Descanse em Cidade Coral até a noite', alvo: 'iracema', sub: 'A Iracema mora na casa azul' } },
+    },
+    {
+      id: 'esperar_noite',
+      local: 'casa_iracema',
+      gatilho: { tipo: 'falar', alvo: 'iracema', requer: ['badges.coral'], semFlag: ['defendeuPraia'] },
+      repete: true,
+      falas: [['iracema', 'Ganhou do Jonas? Então senta. Fica pra janta. De noite a gente olha aquela luz junto, que de dia ela disfarça.']],
+      escolhas: [
+        { texto: 'Ficar até a noite.', falas: [['iracema', 'Peixe frito e farofa. E silêncio, que eu gosto de ouvir o mar.']], depois: { hora: 20, objetivo: { texto: 'Lanternas roxas na Praia dos Corais!', alvo: 'casa_maquinas' } } },
+        { texto: 'Agora não, obrigado.', falas: [['iracema', 'Vai, vai. A noite não foge. Ela só demora cada dia mais pra ir embora.']] },
+      ],
     },
     {
       id: 'praia_ataque',
       local: 'praia_corais',
       gatilho: { tipo: 'entrar', alvo: 'praia_corais', hora: 'noite', requer: ['badges.coral'], semFlag: ['defendeuPraia'] },
       falas: [
-        ['narrador', 'De noite, a praia está quieta. Quieta demais. Na areia, perto do Farol, lanternas roxas se movem.'],
+        ['narrador', 'De noite, a praia está quieta. Quieta demais. Na areia, perto do farol, lanternas roxas se movem.'],
         ['jonas', '{jogador}! Eles estão na casa de máquinas! O meu fragmento fica lá!'],
         ['recruta', 'Ih, o moleque de novo. Esse moleque é praga.'],
       ],
-      depois: { batalha: { id: 'c4_recruta', nome: 'Recruta Crepúsculo', dinheiro: 900, equipe: [[261, 23, ['bite', 'howl', 'sandAttack']], [434, 23, ['poisonGas', 'feintAttack', 'screech']]] } },
+      depois: { batalha: { id: 'c4_recruta', nome: 'Recruta Crepúsculo', dinheiro: 1000, equipe: [[261, 26, ['bite', 'howl', 'sandAttack']], [434, 26, ['poisonGas', 'feintAttack', 'screech']], [41, 26, ['bite', 'supersonic', 'wingAttack']]] } },
     },
     {
       id: 'praia_ebano',
@@ -209,7 +254,7 @@ export default {
         ['jogador', 'Por que vocês estão roubando os fragmentos?'],
         ['ebano', 'Porque se a gente não pegar, outro pega. E esse outro tem mais dinheiro que a gente e menos vergonha. Agora chega de papo.'],
       ],
-      depois: { batalha: { id: 'c4_ebano', nome: 'Admin Ébano', dinheiro: 2000, equipe: [[198, 24, ['wingAttack', 'pursuit', 'haze']], [228, 24, ['ember', 'bite', 'smog']], [302, 26, ['shadowSneak', 'feintAttack', 'furySwipes', 'detect']]] } },
+      depois: { batalha: { id: 'c4_ebano', nome: 'Admin Ébano', dinheiro: 2200, equipe: [[198, 27, ['wingAttack', 'pursuit', 'haze']], [228, 27, ['ember', 'bite', 'smog']], [302, 28, ['shadowSneak', 'feintAttack', 'furySwipes', 'detect']]] } },
     },
     {
       id: 'praia_recupera',
@@ -223,6 +268,7 @@ export default {
         ['jonas', 'Toma isto. É a Lente Prisma. Eu fiz pra estudar a luzita. Com ela dá pra ver rastros de luz que o olho não vê.'],
         ['jonas', 'Eu olhei a luz do farol com ela ontem. Sabe o que eu vi? A luz não vai pro mar. Ela vai pro norte. Pro Paredão.'],
         ['narrador', '{jogador} recebeu a Lente Prisma!'],
+        ['jonas', 'Ah, e a obra da escadaria do Mirante acabou hoje. Pela escada você chega na Vila Alvorada num pulo.'],
       ],
       depois: { flags: { defendeuPraia: true, fragmentoCoral: 'jonas' }, itens: [['lente_prisma', 1], ['isca_luz', 3]] },
     },
@@ -233,11 +279,41 @@ export default {
       falas: [
         ['pokedex', 'Bzzz…'],
         ['bia', '{jogador}! Você é famoso! A Pipa do "O Farol" ligou aqui perguntando quem é o menino que recuperou um fragmento.'],
-        ['bia', 'O Professor quer que você vá para Vila Lamparina, a nordeste. A Dona Zélia guarda o quinto fragmento. E sua avó mora lá!'],
+        ['bia', 'O Professor quer que você vá para Vila Lamparina, ao norte, depois do Brejo das Lamparinas. A Dona Zélia guarda o quinto fragmento. E sua avó mora lá!'],
         ['bia', 'Ah, o ginásio de lá só abre de noite. A Dona Zélia diz que fantasma não trabalha de dia. Sindicato.'],
         ['narrador', 'Fim do Capítulo 4'],
       ],
       depois: { flags: { ch4Done: true, chapter: 5 }, objetivo: 'Vá a Vila Lamparina pelo Brejo das Lamparinas', fimCapitulo: true },
+    },
+
+    // ---------------- missão secundária: O farol pisca errado (sq_farol) ----------------
+    {
+      id: 'sq_farol_morse',
+      local: 'casa_iracema',
+      gatilho: { tipo: 'falar', alvo: 'iracema', hora: 'noite', requer: ['defendeuPraia', 'sq_farol=disponivel'] },
+      falas: [
+        ['iracema', 'Chegou na hora. Olha pela janela. Olha o farol. Conta comigo.'],
+        ['narrador', 'A luz dourada gira e pisca. Três curtas. Três longas. Três curtas. Depois um padrão mais comprido, de novo e de novo.'],
+        ['iracema', 'Ponto, ponto, ponto. Traço, traço, traço… Eu anotei a noite inteira ontem. Dá isto aqui: S-O-C-O-R-R-O.'],
+        ['iracema', 'Máquina não pede socorro, menino. Quem pede socorro é bicho. Tem alguém preso lá em cima, dentro daquela luz.'],
+        ['narrador', '{jogador} recebeu o Bilhete da Iracema!'],
+        ['iracema', 'Sobe lá no topo do farol e encosta a orelha na máquina nova. Eu subiria, mas meus joelhos já se aposentaram também.'],
+      ],
+      depois: { flags: { sq_farol: 'ativa' }, itens: [['bilhete_morse', 1]] },
+    },
+    {
+      id: 'sq_farol_maquina',
+      local: 'farol_topo',
+      gatilho: { tipo: 'pisar', alvo: 'maquina_luzita', requer: ['sq_farol=ativa'] },
+      falas: [
+        ['narrador', 'Você encosta a orelha na máquina de luzita. Lá dentro, um zumbido triste, no mesmo ritmo do farol: ponto, ponto, ponto…'],
+        ['jonas', 'Socorro em Morse? Na MINHA máquina? Me dá essa chave de fenda.'],
+        ['narrador', 'Jonas abre a tampa. Preso entre os cristais, um Tynamo pisca fraquinho, enroscado nos fios.'],
+        ['jonas', 'Ele estava fazendo a luz piscar pra pedir ajuda. Esse tempo todo. E a gente achando que era defeito.'],
+        ['narrador', 'O Tynamo escorrega dos fios direto para o seu braço e não quer mais soltar.'],
+        ['jonas', 'Acho que ele escolheu. Leva. Eu conserto a máquina. E conto pra Iracema que ela tinha razão. De novo.'],
+      ],
+      depois: { pokemon: [602, 25], flags: { sq_farol: 'completa', sq_farol_completa: true } },
     },
   ],
 };
