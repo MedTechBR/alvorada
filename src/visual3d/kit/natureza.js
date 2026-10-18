@@ -1,4 +1,8 @@
 import { tom } from './construtor.js';
+import { SPR } from '../../world/art.js';
+
+// fruta colhida: o 2D troca a textura da árvore pela sem frutas (SPR.berryless)
+const semFruta = (o) => (o?.semFruta || (o?.sprite && o.sprite.texture === SPR.berryless) ? 'sem' : '');
 
 // Natureza: árvores, arbustos, palmeiras, cactos, pedras, cristais (kit de modelos, ver docs/visual-3d-kit.md).
 // Cada função recebe (m, c): m = Malha, c = { K (ficha do catálogo 2D), o (objeto), v (variante), fw, fh,
@@ -53,7 +57,7 @@ function redonda({ h, R, pal, tr = 3.2, cs = CASCA, fruta, n }) {
     const cz = -8, cy = h - R * 0.95;
     tronco(m, 0, cz, tr, cy, cs);
     const rx = R * (0.95 + c.v * 0.05), top = copa(m, 0, cy, cz, rx, R * 0.85, R * 0.72, pal, { n });
-    if (fruta && !c.o?.semFruta) frutas(m, 0, cy, cz, rx, R * 0.8, R * 0.72, fruta);
+    if (fruta && c.estado !== 'sem') frutas(m, 0, cy, cz, rx, R * 0.8, R * 0.72, fruta);
     return topoDe(top, R * 0.7, cz);
   };
 }
@@ -177,8 +181,8 @@ export const NATUREZA = {
   ipe: { f: redonda({ h: 66, R: 22, pal: PAL.ipe, tr: 4.5, n: 8 }), var: 3 },
   paineira: { f: redonda({ h: 66, R: 22, pal: PAL.paineira, tr: 4.5, n: 8, cs: ['#4e3a2a', '#7a6a4a', '#9a8a5a'] }), var: 3 },
   jequitiba: { f: redonda({ h: 100, R: 34, pal: PAL.jeq, tr: 8, n: 9, cs: ['#3e2616', '#5a3a22', '#7a5236'] }), var: 2 },
-  oran: { f: redonda({ h: 64, R: 21, pal: PAL.big, tr: 4.5, fruta: '#3a6ee8' }), var: 2, estado: (o) => (o?.semFruta ? 'sem' : '') },
-  pecha: { f: redonda({ h: 64, R: 21, pal: PAL.big, tr: 4.5, fruta: '#ff7aa8' }), var: 2, estado: (o) => (o?.semFruta ? 'sem' : '') },
+  oran: { f: redonda({ h: 64, R: 21, pal: PAL.big, tr: 4.5, fruta: '#3a6ee8' }), var: 2, estado: semFruta },
+  pecha: { f: redonda({ h: 64, R: 21, pal: PAL.big, tr: 4.5, fruta: '#ff7aa8' }), var: 2, estado: semFruta },
   juazeiro: { f: redonda({ h: 56, R: 22, pal: ['#2e6a2e', '#3e8a3a', '#5aaa48', '#9ad46a'], tr: 3.5, fruta: '#f2d24c', cs: ['#4a3222', '#6a4a32', '#8a6648'] }), var: 2 },
   umbu: { f: (m, c) => { // copa larga e achatada
     tronco(m, 0, -8, 4.5, 30, ['#3e2a20', '#5a4030', '#7a5a42']);
@@ -298,4 +302,3 @@ export const NATUREZA = {
   snowman: { f: (m) => { m.bloco(0, 0, -8, 13, 12, 12, '#f4f8ff'); m.bloco(0, 12, -8, 9, 9, 9, '#ffffff'); m.bloco(0, 12, -8, 11, 2, 11, '#e8584a'); m.bloco(0, 16, -3, 1.6, 1.6, 3, '#ff8a2a'); m.bloco(-2, 18, -3.4, 1, 1, 0.4, '#2a2a2a'); m.bloco(2, 18, -3.4, 1, 1, 0.4, '#2a2a2a'); m.bloco(0, 21, -8, 10, 1.5, 10, '#2a2a2a'); m.bloco(0, 22.5, -8, 6.5, 5, 6.5, '#2a2a2a'); return topoDe(27, 3); } },
 };
 export { copa, tronco, arbusto, pedra, PAL, CASCA, topoDe };
-void tom;
