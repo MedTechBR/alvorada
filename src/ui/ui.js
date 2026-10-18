@@ -98,8 +98,12 @@ export class UI {
   #lock() {
     const inp = this.g.input;
     inp.move.x = inp.move.y = 0; inp.taps.clear(); inp.held.delete('run');
-    inp.releasedAim = null; inp.aimStick = null;
-    if (this.story?.autoMove) { const a = this.story.autoMove, p = this.g.player, dx = a.x - p.x, dy = a.y - p.y, d = Math.hypot(dx, dy); if (d > 3) { inp.move.x = dx / d; inp.move.y = dy / d; } }
+    inp.releasedAim = null; inp.aimStick = null; inp.gridDir = null;
+    if (this.story?.autoMove) {
+      const a = this.story.autoMove, p = this.g.player, dx = a.x - p.x, dy = a.y - p.y, d = Math.hypot(dx, dy);
+      if (this.g.grade?.ativo && !p.pouso) inp.gridDir = this.g.grade.rota(p, a.x, a.y, !!this.g.mount?.kind && !!this.g.mount.cfg?.water); // anda pela grade, contornando o que for sólido
+      else if (d > 3) { inp.move.x = dx / d; inp.move.y = dy / d; }
+    }
   }
 
   // ---------- atalhos ----------

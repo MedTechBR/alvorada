@@ -1,11 +1,12 @@
 import * as PIXI from 'pixi.js';
-import { T, TILE, SOLID, SWIMMABLE } from './tiles.js';
+import { T, TILE, SOLID, SWIMMABLE, CURRENT } from './tiles.js';
 import { frameOf, loadPokemonSprites, portraitOf } from '../sprites/pmd.js';
 import { speciesScale } from '../sprites/scale.js';
 import { SPECIES, speciesOfKey, parseKey } from '../data/species.js';
 import { MONTARIAS } from '../data/montarias.js';
 import { IS_TOUCH } from '../engine/input.js';
 import { dir4 } from '../sprites/characters.js';
+import { DIRV, ancoraX, ancoraY, blocoX, blocoY } from './grade.js';
 
 // Montarias do treinador (como em Legends Arceus, na vista de cima).
 // X (botão de toque ao lado do analógico de golpes, botão Select/Back do controle) chama ou dispensa conforme o terreno:
@@ -718,8 +719,12 @@ export class Mounts {
       const j = this.jump; j.t += dt / j.dur; const e = Math.min(1, j.t);
       p.x = lerp(j.x0, j.x1, e); p.y = lerp(j.y0, j.y1, e); this.z = Math.sin(e * Math.PI) * j.h;
       if (e >= 1) { this.jump = null; this.z = 0; g.audio?.sfx('thud'); g.fx.emit(p.x, p.y - 1, { color: 0xc8ae84, n: 8, speed: 40, size: 4, life: 0.5, add: false, alpha: 0.6, end: 1.8 }); }
+    } else if (g.grade?.ativo && !this.flying) {
+      // movimento clássico: de bloco em bloco, mais rápido que a pé (src/world/grade.js)
+      this.#gradePasso(dt, pk, run, C, climb);
     } else {
       // movimento
+      g.grade?.soltar(p);
       const stop = pk || p.stun > 0;
       let want = stop ? 0 : run ? C.run : C.walk;
       if (climb) want = stop ? 0 : C.climb;
@@ -760,8 +765,54 @@ export class Mounts {
     if (!this.flying && !this.under && !C.water && g.map.tallAt(p.x, p.y) && p.speed > 20) g.map.rustle(p.x, p.y, 0.8);
     return true;
   }
-  #tryJump(manual) {
+  // Movimento clássico da montaria: velocidades em blocos/s tiradas da tabela de cada uma (Mudbray 8 / 10, Lapras ~5,6 / 6,7…)
+  #gradePasso(dt, pk, run, C, climb) {
+    const g = this.g, p = g.player, inp = g.input, m = g.map, swim = !!C.water;
+    let dir = pk || p.stun > 0 || g.mundo?.warping ? null : inp.gridDir;
+    const anda = (C.walk ?? 100) / T * 0.97, corre = Math.min((C.run ?? 140) / T * 0.84, anda * 1.3);
+    let vel = (climb ? Math.min(anda, (C.climb ?? 60) / T * 1.0) : run ? corre : anda) * T;
+    if (this.under) vel *= 0.85;
+    if (!swim) vel *= g.mundo?.masmorra?.mountK(p) ?? 1; // neve funda, areia movediça
+    const parado = !p.gr?.s;
+    let auto = false;
+    // correnteza: sem ordem do jogador, a água leva a montaria, bloco a bloco
+    if (parado && swim && !dir) {
+      const c = CURRENT[m.at(blocoX(p), blocoY(p))];
+      if (c) { dir = c[0] ? (c[0] > 0 ? 'right' : 'left') : (c[1] > 0 ? 'down' : 'up'); vel = 4.5 * T; auto = true; }
+    }
+    // Mudbray: contra tora ou cerca baixa à frente, salta para o primeiro bloco livre do outro lado
+    if (this.kind === 'correr' && this.z <= 0 && parado) {
+      if (inp.pressed('dodge')) this.#tryJump(true);
+      else if (dir && p.dir === dir && !this.jump) this.#tryJump(false, dir);
+      if (this.jump) { p.vx = p.vy = 0; this.vx = this.vy = 0; return; }
+    }
+    if (this.kind === 'correr' && this.zHop) { this.zHop.t += dt; this.z = Math.max(0, Math.sin(this.zHop.t / 0.45 * Math.PI) * 12); if (this.zHop.t >= 0.45) { this.zHop = null; this.z = 0; } }
+    g.grade.passo(p, dt, {
+      dir, vel, auto, swim,
+      pode: (tx, ty) => g.grade.pode(tx, ty, swim),
+      inicio: (tx, ty) => { if (!swim && m.tallAt(ancoraX(tx), ancoraY(ty))) m.rustle(ancoraX(tx), ancoraY(ty), 0.8); },
+      esbarra: () => g.audio?.sfx('bump'),
+    });
+    p.kx = p.ky = 0;
+    this.vx = p.vx; this.vy = p.vy;
+  }
+  #tryJump(manual, dir = null) {
     const g = this.g, p = g.player, m = g.map;
+    if (g.grade?.ativo) {
+      // em grade: só o bloco à frente conta; cai no primeiro bloco livre a até 4 blocos dali
+      const [dx, dy] = DIRV[dir ?? p.dir], tx = blocoX(p), ty = blocoY(p);
+      const o = m.cellObj?.get(tx + dx + (ty + dy) * m.w);
+      if (!o || o.dead || !(o.jump || JUMPABLE.has(o.kind))) { if (manual && !this.zHop) { this.zHop = { t: 0 }; g.audio?.sfx('dodge'); } return; }
+      for (let n = 2; n <= 4; n++) {
+        const x = tx + dx * n, y = ty + dy * n;
+        if (m.cellObj?.get(x + y * m.w) || m.solidAt(x * T + 8, y * T + 8) || g.grade.ocupado(x, y)) continue;
+        this.jump = { x0: p.x, y0: p.y, x1: ancoraX(x), y1: ancoraY(y), t: 0, dur: 0.28 + n * T / 300, h: 10 + n * T * 0.16 };
+        g.audio?.sfx('dodge');
+        g.fx.emit(p.x, p.y - 1, { color: 0xc8ae84, n: 6, speed: 40, size: 4, life: 0.45, add: false, alpha: 0.6, end: 1.8 });
+        return;
+      }
+      return;
+    }
     const sp = Math.hypot(this.vx, this.vy);
     const n = sp > 20 ? [this.vx / sp, this.vy / sp] : FACE[p.dir];
     // obstáculo saltável logo à frente?

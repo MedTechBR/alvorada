@@ -69,6 +69,7 @@ export class Npc {
       w.t += dt;
       if (d < 2 || w.t > 12 || w.stuck > 1.2) {
         if (d >= 2 && !g.map.solidAt(w.x, w.y)) { this.x = w.x; this.y = w.y; }
+        if (w.exato) { this.x = w.x; this.y = w.y; } // passo em grade (src/world/people.js): termina no centro do bloco
         this.walk = null; w.res();
       } else {
         const st = Math.min(d, w.speed * dt);

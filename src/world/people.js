@@ -51,14 +51,32 @@ export class People {
         n.wanderT -= dt;
         if (n.wanderT <= 0 && !n.walk) {
           n.wanderT = (n.def.kid ? 1 : 2.5) + Math.random() * 3;
-          const R = n.def.wander * T, a = Math.random() * Math.PI * 2, r = Math.random() * R;
-          const tx = n.home.x + Math.cos(a) * r, ty = n.home.y + Math.sin(a) * r;
-          if (!this.map.solidAt(tx, ty) && Math.hypot(tx - pl.x, ty - pl.y) > 14) n.walkTo(tx, ty, n.def.kid ? 70 : 34);
+          if (g.grade?.ativo) this.#passoGrade(n);
+          else {
+            const R = n.def.wander * T, a = Math.random() * Math.PI * 2, r = Math.random() * R;
+            const tx = n.home.x + Math.cos(a) * r, ty = n.home.y + Math.sin(a) * r;
+            if (!this.map.solidAt(tx, ty) && Math.hypot(tx - pl.x, ty - pl.y) > 14) n.walkTo(tx, ty, n.def.kid ? 70 : 34);
+          }
         }
       }
       n.update(dt);
     }
     for (const p of this.pets) this.#updatePet(p, dt, paused);
+  }
+
+  // Movimento clássico: o morador dá um passo de um bloco (4 direções), sem sair da vizinhança nem entrar em quem está parado
+  #passoGrade(n) {
+    const g = this.g, gr = g.grade, R = n.def.wander;
+    const bx = Math.floor(n.x / T), by = Math.floor((n.y - 2) / T), hx = Math.floor(n.home.x / T), hy = Math.floor((n.home.y - 2) / T);
+    const dirs = [[0, -1], [0, 1], [-1, 0], [1, 0]].sort(() => Math.random() - 0.5);
+    for (const [dx, dy] of dirs) {
+      const tx = bx + dx, ty = by + dy;
+      if (Math.abs(tx - hx) > R || Math.abs(ty - hy) > R || !gr.pode(tx, ty, false, n) || gr.jogadorEm(tx, ty)) continue;
+      n.walkTo(tx * T + 8, ty * T + 10, n.def.kid ? 64 : 32);
+      if (n.walk) n.walk.exato = true;
+      return;
+    }
+    n.dir = ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)]; // sem lugar para andar: só olha em volta
   }
 
   #updatePet(p, dt, paused) {

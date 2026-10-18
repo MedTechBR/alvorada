@@ -358,7 +358,7 @@ export class Story {
     for (const n of this.npcs.values()) {
       n.update(dt);
       // ninguém atravessa as pessoas
-      if (n.visible) { const dx = p.x - n.x, dy = p.y - n.y, d = Math.hypot(dx, dy), m = n.r + (p.r ?? 5); if (d > 0.01 && d < m) { p.x = n.x + dx / d * m; p.y = n.y + dy / d * m; } }
+      if (n.visible && !g.grade?.ativo) { const dx = p.x - n.x, dy = p.y - n.y, d = Math.hypot(dx, dy), m = n.r + (p.r ?? 5); if (d > 0.01 && d < m) { p.x = n.x + dx / d * m; p.y = n.y + dy / d * m; } }
     }
     this.battle?.update(dt);
     const demo = MAP_ID !== 'alvorada'; // mapa de teste (?mapa=demo-biomas): sem cenas do roteiro nem missões
@@ -370,7 +370,12 @@ export class Story {
 
     // interação mais perto
     let best = null, bd = 1e9;
-    if (!this.battle) for (const it of this.interactions()) { const d = Math.hypot(it.o.x - p.x, it.o.y - p.y); if (d < it.r && d < bd) { bd = d; best = it; } }
+    const frente = g.grade?.ativo && !p.pouso ? { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] }[p.dir] : null; // em grade, só o que está à frente do treinador
+    if (!this.battle) for (const it of this.interactions()) {
+      const ox = it.o.x - p.x, oy = it.o.y - p.y, d = Math.hypot(ox, oy);
+      if (frente && d > 6) { const along = ox * frente[0] + oy * frente[1], perp = Math.abs(ox * frente[1] - oy * frente[0]); if (along < 0 || perp > along * 0.55 + 7) continue; }
+      if (d < it.r && d < bd) { bd = d; best = it; }
+    }
     g.ui.hud.setPrompt(best ? { x: best.o.x, y: best.o.y, h: best.o.h } : null, best?.label);
     if (best && g.input.pressed('act')) { g.input.taps.delete('act'); this.#cut(best.fn); return; }
     if (demo) return;

@@ -241,7 +241,7 @@ export class Roteiro {
       if (!n.visible) continue;
       n.update(dt);
       const dx = p.x - n.x, dy = p.y - n.y, d = Math.hypot(dx, dy), mm = n.r + (p.r ?? 5);
-      if (d > 0.01 && d < mm) { p.x = n.x + dx / d * mm; p.y = n.y + dy / d * mm; }
+      if (d > 0.01 && d < mm && !g.grade?.ativo) { p.x = n.x + dx / d * mm; p.y = n.y + dy / d * mm; }
     }
     this.#absol(dt);
     for (const a of this.atoresPk) a.update(dt);

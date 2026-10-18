@@ -108,7 +108,7 @@ export class Personagens {
     if (!this.ok && !this.P) return C;
     const g = this.v.g, t = this.v.t, J = this.J;
     if (this.P) for (const e of g.entities ?? []) { if (!e.body || e.alt?.mode === 'dig') continue; const r = this.#pokemon(e); if (r) C.set(e.body, r); }
-    const quadro = (dir, andando, correndo) => { const lin = DIRS[dir] ?? 0, col = andando ? J.andar[Math.floor(t * (correndo ? 11 : 7.5)) % J.andar.length] : J.parado, W = J.fw * J.colunas, H = J.fh * 4; return { u0: (col * J.fw) / W, u1: ((col + 1) * J.fw) / W, v0: (lin * J.fh) / H, v1: ((lin + 1) * J.fh) / H }; };
+    const quadro = (dir, andando, correndo, idx) => { const lin = DIRS[dir] ?? 0, col = andando ? J.andar[idx != null ? idx % J.andar.length : Math.floor(t * (correndo ? 11 : 7.5)) % J.andar.length] : J.parado, W = J.fw * J.colunas, H = J.fh * 4; return { u0: (col * J.fw) / W, u1: ((col + 1) * J.fw) / W, v0: (lin * J.fh) / H, v1: ((lin + 1) * J.fh) / H }; };
     const por = (body, look, dir, andando, correndo, quem) => {
       if (!body || !body.parent?.visible) return; // só quem está na cena (a lista de moradores é do mundo inteiro)
       let id = this.idDe(look, quem); if (!id) return;
@@ -117,14 +117,18 @@ export class Personagens {
       C.set(body, { tex: this.#tex(id), ...quadro(dir, andando, correndo), pe: info.pe ?? 31, fw: J.fw, fh: J.fh });
     };
     // treinadores (o jogador e os outros jogadores): a folha FireRed recolorida pelo criador de personagem
-    const treinador = (body, look, dir, andando, correndo) => {
+    const treinador = (body, look, dir, andando, correndo, idx) => {
       if (!body) return;
       const tx = this.#texJogador(look, correndo) ?? this.#texJogador(look, false); if (!tx) return;
-      C.set(body, { tex: tx, ...quadro(dir, andando, correndo), pe: 31, fw: J.fw, fh: J.fh });
+      C.set(body, { tex: tx, ...quadro(dir, andando, correndo, idx), pe: 31, fw: J.fw, fh: J.fh });
     };
     const p = g.player;
     if (!this.ok) return C;
-    if (p && !g.mount?.active) treinador(p.body, toCharLook(g.look ?? p.look ?? g.flags?.look), p.dir, (p.speed ?? 0) > 10, (p.speed ?? 0) > 95);
+    if (p && !g.mount?.active) {
+      // movimento clássico: o quadro vem do passo (ciclo de 4 quadros por 2 passos; andar no lugar contra a parede)
+      const grade = p.animIdx != null && g.grade?.ativo;
+      treinador(p.body, toCharLook(g.look ?? p.look ?? g.flags?.look), p.dir, grade ? !!p.andando : (p.speed ?? 0) > 10, grade ? !!p.correndo : (p.speed ?? 0) > 95, grade ? p.animIdx : null);
+    }
     for (const n of g.mundo?.people?.list ?? []) por(n.body, n.look ?? n.def?.look, n.dir, !!n.walk || (n.speed ?? 0) > 5, false, n.def?.id ?? n.id ?? n.name);
     for (const n of g.story?.roteiro?.atores?.values?.() ?? []) por(n.body, n.look, n.dir, !!n.walk, false, n.id ?? n.name);
     for (const n of g.story?.npcs?.values?.() ?? []) por(n.body, n.look, n.dir, !!n.walk, false, n.id ?? n.name);
