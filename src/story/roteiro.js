@@ -255,6 +255,9 @@ export class Roteiro {
   // chamado pelo story.update quando nada mais está acontecendo; devolve true se começou uma cena
   tick() {
     if (!this.ativo || this.rodando || this.s.battle || this.g.mundo?.warping) return false;
+    // desempenho: a procura de gatilhos roda 10 vezes por segundo (ninguém atravessa uma zona em 0,1 s);
+    // antes rodava todo quadro e pesava ~9% da CPU no celular
+    const tms = performance.now(); if (tms - (this.tickMs ?? 0) < 100) return false; this.tickMs = tms;
     const g = this.g, p = g.player;
     // zonas: só dispara ao entrar
     const agora = new Set();

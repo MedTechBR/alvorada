@@ -3,7 +3,7 @@ import { launch, open, sleep, until } from './chrome.mjs';
 const [qs = 'visual=3d', seg = '8'] = process.argv.slice(2);
 const b = await launch();
 try {
-  const P = await open(b, `http://127.0.0.1:8750/index.html?teste=1&${qs}`, 'p');
+  const P = await open(b, `http://127.0.0.1:${process.env.PORT ?? 8750}/index.html?teste=1&${qs}`, 'p');
   await P.raw('Page.enable'); await P.raw('Page.bringToFront'); await P.raw('Emulation.setFocusEmulationEnabled', { enabled: true });
   await P.raw('Emulation.setDeviceMetricsOverride', { width: 740, height: 360, deviceScaleFactor: 2, mobile: true });
   await until(() => P.ev('!!(window.game && game.ui && game.ui.state === "play")'), 90000, 300);

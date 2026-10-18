@@ -73,6 +73,12 @@ export class Personagens {
   // cada pessoa tem sempre a mesma (sorteio estável pelo id/nome), dentro do grupo do look quando há um.
   idDe(look, quem = '') {
     const J = this.J; if (!J) return null;
+    const ck = (typeof look === 'string' ? look : '') + '|' + quem, m = (this.idCache ??= new Map());
+    if (m.has(ck)) return m.get(ck);
+    const r = this.#idDe(look, quem); m.set(ck, r); return r;
+  }
+  #idDe(look, quem) {
+    const J = this.J;
     const PROIBIDO = /^frlg_trainer/;
     let id = typeof look === 'string' ? (J.personagens[look] ? look : J.looks[look]) : null;
     if (look === 'rival') id = 'frlg_rival';
@@ -103,7 +109,7 @@ export class Personagens {
     if (this.P) for (const e of g.entities ?? []) { if (!e.body || e.alt?.mode === 'dig') continue; const r = this.#pokemon(e); if (r) C.set(e.body, r); }
     const quadro = (dir, andando, correndo) => { const lin = DIRS[dir] ?? 0, col = andando ? J.andar[Math.floor(t * (correndo ? 11 : 7.5)) % J.andar.length] : J.parado, W = J.fw * J.colunas, H = J.fh * 4; return { u0: (col * J.fw) / W, u1: ((col + 1) * J.fw) / W, v0: (lin * J.fh) / H, v1: ((lin + 1) * J.fh) / H }; };
     const por = (body, look, dir, andando, correndo, quem) => {
-      if (!body) return;
+      if (!body || !body.parent?.visible) return; // só quem está na cena (a lista de moradores é do mundo inteiro)
       let id = this.idDe(look, quem); if (!id) return;
       if (correndo && J.personagens[id + '_run']) id += '_run';
       const info = J.personagens[id]; if (!info) return;
