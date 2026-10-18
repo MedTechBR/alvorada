@@ -260,7 +260,7 @@ export class Hud {
     const changed = this.v.obj && o && this.v.obj.split('|')[0] !== o.id;
     this.v.obj = key;
     if (!o) { el.hidden = true; return; }
-    el.querySelector('.ok').textContent = o.title ? `Objetivo · ${o.title}` : 'Objetivo';
+    el.querySelector('.ok').textContent = o.label ?? (o.title ? `Objetivo · ${o.title}` : 'Objetivo'); // label: missão acompanhada
     el.querySelector('.ot').textContent = o.text;
     const sub = el.querySelector('.os'); sub.textContent = o.sub ?? ''; sub.hidden = !o.sub;
     el.hidden = false;

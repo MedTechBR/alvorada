@@ -18,6 +18,7 @@ import { serialize, writeSave } from '../save.js';
 import { drawLook, FW, FH } from './looks.js';
 import { MOUNTS, MOUNT_KINDS, mountModes, mountConfig } from '../world/mounts.js';
 import { MONTARIAS } from '../data/montarias.js';
+import { telaMissoes } from './missoes.js';
 
 // Menu do jogo no estilo clássico (portado do 3D): lista vertical com cursor de seta,
 // caixas claras de borda arredondada dupla. Navega com mouse, teclado (setas/Enter/Esc), controle e toque.
@@ -113,6 +114,7 @@ const ICON = {
   bag: '<svg viewBox="0 0 24 24"><path d="M8 7V5.5a4 4 0 0 1 8 0V7" fill="none" stroke="#6b4423" stroke-width="1.8"/><rect x="4" y="7" width="16" height="14" rx="4" fill="#f0a73c" stroke="#6b4423" stroke-width="1.5"/><rect x="8" y="12" width="8" height="5" rx="1.5" fill="#ffd27a" stroke="#6b4423" stroke-width="1.2"/></svg>',
   map: '<svg viewBox="0 0 24 24"><path d="M3 5l6-2 6 2 6-2v16l-6 2-6-2-6 2z" fill="#9fd67a" stroke="#2d5d34" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 3v16M15 5v16" stroke="#2d5d34" stroke-width="1.2"/><circle cx="12" cy="10" r="2" fill="#e5383b"/></svg>',
   card: '<svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2.5" fill="#5aa6ff" stroke="#1d3f7a" stroke-width="1.4"/><circle cx="8" cy="11" r="2.4" fill="#fff"/><path d="M4.5 16.5c.8-2 2-3 3.5-3s2.7 1 3.5 3" fill="#fff"/><rect x="13" y="9" width="6.5" height="1.6" rx=".8" fill="#fff"/><rect x="13" y="12.5" width="5" height="1.6" rx=".8" fill="#fff"/></svg>',
+  quests: '<svg viewBox="0 0 24 24"><path d="M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6z" fill="#f4e2b0" stroke="#6b4423" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2" fill="#c98a4b" stroke="#6b4423" stroke-width="1.4"/><circle cx="12.5" cy="12" r="5" fill="#ffd23f" stroke="#1d2340" stroke-width="1.3"/><path d="M12.5 9v3.4" stroke="#1d2340" stroke-width="1.8" stroke-linecap="round"/><circle cx="12.5" cy="14.6" r=".95" fill="#1d2340"/></svg>',
   mounts: '<svg viewBox="0 0 24 24"><path d="M3 15c0-4 3-7 7-7h3c3 0 5 2 6 4l2 1v3h-3l-1-1H6l-1 2H3z" fill="#c98a4b" stroke="#5a3418" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 8c0-2 1-3.5 3-3.5S15 6 15 8" fill="#e5383b" stroke="#7a1418" stroke-width="1.3"/><circle cx="18" cy="12" r="1" fill="#1d2340"/><path d="M6 17v3M16 17v3" stroke="#5a3418" stroke-width="1.6" stroke-linecap="round"/></svg>',
   online: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="#7fd6ff" stroke="#1d3f7a" stroke-width="1.4"/><path d="M2.5 12h19M12 2.5c3 3 3 16 0 19M12 2.5c-3 3-3 16 0 19" fill="none" stroke="#1d3f7a" stroke-width="1.3"/></svg>',
   options: '<svg viewBox="0 0 24 24"><path d="M12 2.5l1.6 2.3 2.7-.6.6 2.7 2.3 1.6-1.2 2.5 1.2 2.5-2.3 1.6-.6 2.7-2.7-.6L12 21.5l-1.6-2.3-2.7.6-.6-2.7-2.3-1.6L6 13 4.8 10.5l2.3-1.6.6-2.7 2.7.6z" fill="#9aa4bf" stroke="#3a4363" stroke-width="1.3" stroke-linejoin="round"/><circle cx="12" cy="12" r="3.2" fill="#fff" stroke="#3a4363" stroke-width="1.3"/></svg>',
@@ -164,9 +166,10 @@ const MAIN_ITEMS = [
   ['party', 'Pokémon', 'Sua equipe: resumo, ordem e itens.'],
   ['mounts', 'Montarias', 'Quem leva você em cada modo (X): correr, nadar, escalar, voar e mergulhar.'],
   ['bag', 'Mochila', 'Poké Bolas, remédios e frutas.'],
+  ['quests', 'Missões', 'Seu diário: missões ativas, concluídas e as jornadas.'],
   ['map', 'Mapa', 'O mapa da região Alvorada.'],
   ['card', 'Treinador', 'Seu cartão de treinador e as insígnias.'],
-  ['online', 'Online', 'Jogar com amigos: salas, troca e duelo (tecla O).'],
+  ['online', 'Online', 'Quem está no mundo, sala privada, troca e duelo (tecla O).'],
   ['options', 'Opções', 'Som, texto, controles e tela.'],
   ['save', 'Salvar', 'Grave o seu progresso.'],
   ['close', 'Fechar', 'Voltar à aventura.'],
@@ -435,7 +438,8 @@ export class GameMenu {
     if (id === 'party' && !g.party.length) return this.#msg('Você ainda não tem Pokémon. Fale com o Prof. Jatobá!');
     if (id === 'online') { if (this.ui.g.net?.ui) this.ui.openOnline(); else this.#msg('O modo online não está disponível nesta versão.'); return; }
     ({ dex: () => this.#dex(), party: () => this.#party(), bag: () => this.#bag(), map: () => this.#map(), card: () => this.#card(),
-      options: () => this.#options(), save: () => this.#save(), mounts: () => this.#mounts() })[id]?.();
+      options: () => this.#options(), save: () => this.#save(), mounts: () => this.#mounts(),
+      quests: () => telaMissoes(this, { screen: (o) => this.#screen(o), push: (l) => this.#push(l), choose: (t, o) => this.#choose(t, o), msg: (t) => this.#msg(t), refresh: () => this.refresh() }) })[id]?.();
   }
   #trainerName() { return this.g.flags.playerName ?? 'Ravi'; }
 
@@ -893,7 +897,7 @@ export class GameMenu {
           const ev = sp.evolve && SPECIES[sp.evolve.to];
           const next = sp.learn.filter(([lv, id]) => lv > m.level && !m.moves.includes(id))[0];
           const rows = [
-            ['Espécie', esc(sp.name)], ['Tipo', typePills(m.types)], ['Treinador', esc(this.#trainerName())],
+            ['Espécie', esc(sp.name)], ['Tipo', typePills(m.types)], ['Treinador', esc(m.ot ?? this.#trainerName())],
             ['Natureza', esc(monNature(m)?.name ?? '—')],
             ['Habilidade', monAbility(m) ? `<b>${esc(monAbility(m).name)}</b>${monAbility(m).desc ? `<div class="gm-soft">${esc(monAbility(m).desc)}</div>` : ''}` : '—'],
             ['Item', heldKey(m) ? `<span class="gm-ic sm">${itemIcon(heldKey(m))}</span> ${esc(itemName(heldKey(m)))}` : 'Nenhum'],
@@ -1019,7 +1023,7 @@ export class GameMenu {
       draw: (body) => {
         body.innerHTML = `<div class="gm-box gm-mapbox"><canvas class="gm-mapcv"></canvas></div>
           <div class="gm-box gm-areas"><div class="gm-scroll gm-arealist">${areas.map((a) => `<div class="nav gm-row" data-k="${esc(a.name)}"><span class="gm-cur">▶</span><span>${esc(a.name)}${a.name === here ? ' <span class="gm-tag">Você</span>' : ''}</span></div>`).join('') || '<div class="gm-empty">Explore para descobrir a região.</div>'}</div>
-          <div class="gm-legend"><span><i class="lg-you"></i>Você</span><span><i class="lg-obj"></i>Objetivo</span><span><i class="lg-house"></i>Construções</span></div></div>`;
+          <div class="gm-legend"><span><i class="lg-you"></i>Você</span><span><i class="lg-obj"></i>Objetivo</span><span><i class="lg-quest"></i>Missão</span><span><i class="lg-house"></i>Construções</span></div></div>`;
         body.querySelectorAll('.nav').forEach((n) => { n._act = () => {}; });
         L.focus = areas.find((a) => a.name === here)?.name;
         requestAnimationFrame(() => this.#drawMap(L));
@@ -1068,6 +1072,7 @@ export class GameMenu {
     const fa = (World.AREAS ?? []).find((a) => a.name === L.focus);
     const ot = this.ui.hud.obj?.target;
     if (ot && Number.isFinite(ot.x) && ot.y / 16 < H) { x0 = Math.min(x0, ot.x / 16 - 6); y0 = Math.min(y0, ot.y / 16 - 6); x1 = Math.max(x1, ot.x / 16 + 6); y1 = Math.max(y1, ot.y / 16 + 6); }
+    for (const q of g.missoes?.marcadores?.({ regiao: true }) ?? []) if (q.acomp && q.y / 16 < H) { x0 = Math.min(x0, q.x / 16 - 6); y0 = Math.min(y0, q.y / 16 - 6); x1 = Math.max(x1, q.x / 16 + 6); y1 = Math.max(y1, q.y / 16 + 6); }
     if (fa) { x0 = Math.min(x0, fa.x - 8); y0 = Math.min(y0, fa.y - 8); x1 = Math.max(x1, fa.x + 8); y1 = Math.max(y1, fa.y + 8); }
     x0 -= 16; y0 -= 16; x1 += 16; y1 += 16;
     let vw = Math.max(88, x1 - x0), vh = Math.max(66, y1 - y0);
@@ -1094,6 +1099,12 @@ export class GameMenu {
       placed.push(r);
       c.lineWidth = 4 * dpr; c.lineJoin = 'round'; c.strokeStyle = on ? '#1d2340' : 'rgba(255,255,255,.95)'; c.strokeText(a.name, x, y);
       c.fillStyle = on ? '#ffd23f' : '#1d2340'; c.fillText(a.name, x, y);
+    }
+    // missões ativas com lugar alvo (src/story/missoes): círculo azul com "!"; a acompanhada é maior
+    for (const q of g.missoes?.marcadores?.({ regiao: true }) ?? []) {
+      const [qx, qy] = S(q.x / 16, q.y / 16), r = (q.acomp ? 8 : 6) * dpr;
+      c.beginPath(); c.arc(qx, qy, r, 0, Math.PI * 2); c.fillStyle = '#4aa3ff'; c.fill(); c.lineWidth = 2 * dpr; c.strokeStyle = '#fff'; c.stroke();
+      c.fillStyle = '#fff'; c.font = `900 ${Math.round(r * 1.5)}px Nunito, system-ui, sans-serif`; c.fillText('!', qx, qy + 0.5 * dpr);
     }
     const obj = this.ui.hud.obj?.target;
     if (obj && Number.isFinite(obj.x)) { const [ox, oy] = S(obj.x / 16, obj.y / 16), r = 7 * dpr; c.beginPath(); c.moveTo(ox, oy - r); c.lineTo(ox + r, oy); c.lineTo(ox, oy + r); c.lineTo(ox - r, oy); c.closePath(); c.fillStyle = '#f2b705'; c.fill(); c.lineWidth = 2 * dpr; c.strokeStyle = '#fff'; c.stroke(); }
