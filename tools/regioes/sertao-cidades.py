@@ -119,33 +119,35 @@ R.spots['sertao_praca_buriti'] = [1039, 268, 'down']
 
 # ================================================================ VILA SIRI [690,370,50,30] (palafitas sobre o mangue)
 R.c('vila_siri: Vila Siri (palafitas)')
-R.ell('sand', 715, 384, 34, 18, 0.6)
-R.ell('shallow', 715, 390, 30, 12, 0.6, ['sand'])
-R.ell('dock', 715, 384, 28, 14, 0.5)
-R.rect('dock', 688, 375, 54, 3)
-R.rect('dock', 694, 388, 42, 3)
-R.rect('dock', 714, 377, 3, 22)
-R.rect('dock', 708, 380, 15, 8)
-R.rect('dock', 726, 390, 18, 9)      # píer do Barco das Brasas
+R.ell('sand', 715, 383, 36, 16, 0.5, ['caatinga', 'cracked', 'talldry', 'dune', 'mangmud', 'shallow'])
+R.ell('shallow', 715, 391, 33, 13, 0.5, ['sand', 'mangmud', 'shallow'])
+R.ell('water', 715, 391, 27, 10, 0.5)
+R.rect('dock', 688, 375, 55, 2)           # calçadão da frente dos prédios
+R.rect('dock', 714, 377, 3, 18)           # passarela norte-sul
+R.rect('dock', 707, 381, 17, 6)           # praça sobre as estacas
+R.rect('dock', 695, 384, 9, 5)            # palafita da Rendeira
+R.rect('dock', 703, 387, 12, 2)
+R.rect('dock', 726, 387, 10, 6)           # palafita do cais
+R.rect('dock', 714, 391, 32, 2)           # píer do Barco das Brasas
 predio('center', 690, 371, 'centro_siri', interior={'nome': 'Centro Pokémon (palafita)'})
 predio('mart', 701, 371, 'loja_siri')
 predio('taipa', 710, 371, 'casa_mare', interior={'tipo': 'casa', 'nome': 'Casa da Marisqueira Dona Maré', 'npc': {'id': 'dona_mare', 'name': 'Dona Maré', 'look': LOOK_SERT_F, 'lines': ['Caranguejo bom é o que sai quando a maré vira. Eu leio na tábua.', 'A tábua de maré diz tudo: hora de enchente, hora de vazante. Quem não lê, molha o pé.']}})
 predio('houseC', 718, 371, 'escola_canoa', interior={'tipo': 'oficina', 'nome': 'Escola de Canoa', 'npc': {'id': 'mestre_iraci', 'name': 'Mestre Iraci', 'look': {'preset': 'montanhista', 'hat': 'cap', 'cap': '#4a7a3a', 'capLogo': '#4a7a3a', 'hair': '#b9b4ae', 'skin': '#a06a44', 'top': '#e8e0d0', 'trim': '#3a8ad8', 'pants': '#3a5a9a', 'shoes': '#5a3a24', 'bagStyle': None}, 'lines': ['Remo na água é como pé na terra: tem que ter ritmo.', 'A corrida até o farol é de quem sabe a hora da maré. Vento a favor ajuda, mas não ganha por você.']}})
 predio('taipa', 697, 384, 'casa_rendeira', interior={'tipo': 'casa', 'nome': 'Casa da Rendeira', 'npc': {'id': 'lia_rosa', 'name': 'Dona Lia-Rosa', 'look': {**LOOK_SERT_F, 'top': '#f2e6cc', 'hair': '#e8e4dc'}, 'lines': ['Cada renda leva uma semana. Cada ponto, uma história.', 'Os bilros fazem barulhinho de chuva. Meu marido dizia que é por isso que a gente nunca dorme mal.']}})
 predio('taipa', 728, 387, 'cais_siri', interior={'tipo': 'escritorio', 'nome': 'Cais do Barco das Brasas'})
-R.obj('barrel', 705, 380); R.obj('crate', 706, 380); R.obj('barrel', 724, 389)
-R.obj('lampiao', 709, 379); R.obj('lampiao', 722, 379)
-R.obj('jangada', 700, 392); R.obj('jangada', 734, 394)
-R.obj('boia', 740, 398); R.obj('boia', 692, 396)
+R.obj('barrel', 708, 382); R.obj('crate', 709, 382); R.obj('barrel', 721, 385)
+R.obj('lampiao', 712, 376); R.obj('lampiao', 718, 376)
+R.obj('jangada', 702, 396); R.obj('jangada', 726, 397)
+R.obj('boia', 744, 398); R.obj('boia', 690, 395)
 R.sign(692, 378, 'VILA SIRI\n"Palafita é casa que aprendeu a dançar com a maré."')
-R.sign(738, 389, 'BARCO DAS BRASAS → VILA TERMAS\nSaídas: 7h e 15h · ₽500')
-R.pets += [{'dex': 98, 'x': 712, 'y': 392, 'wander': 3, 'say': 'Krabby sai de baixo da tábua e levanta a garra.'},
-           {'dex': 99, 'x': 719, 'y': 391, 'wander': 3, 'say': 'Kingler segura um caranguejinho de brinquedo.'},
-           {'dex': 278, 'x': 698, 'y': 380, 'wander': 3, 'perch': False, 'say': 'Wingull grasna, de olho nas redes de pesca.'}]
+R.sign(735, 390, 'BARCO DAS BRASAS → VILA TERMAS\nSaídas: 7h e 15h · ₽500')
+R.pets += [{'dex': 98, 'x': 710, 'y': 384, 'wander': 3, 'say': 'Krabby sai de baixo da tábua e levanta a garra.'},
+           {'dex': 99, 'x': 719, 'y': 384, 'wander': 3, 'say': 'Kingler segura um caranguejinho de brinquedo.'},
+           {'dex': 278, 'x': 699, 'y': 376, 'wander': 3, 'perch': False, 'say': 'Wingull grasna, de olho nas redes de pesca.'}]
 R.person('siri_barqueiro', 'Capitão Tonho', {'preset': 'montanhista', 'hat': 'cap', 'cap': '#f2f2f2', 'capLogo': '#3a8ad8', 'hair': '#e8e4dc', 'skin': '#c98d62', 'top': '#3a6ad8', 'trim': '#f2f2f2', 'pants': '#f2f2f2', 'shoes': '#5a3a24', 'bagStyle': None}, 735, 392, ['O Barco das Brasas sai às sete e às três.'], 'down', 0, viagem='barco_brasas')
 R.person('siri_menina', 'Naiara', 'menina', 713, 386, ['Eu remo mais rápido que o Iraci! Quase.', 'Se escutar um barulho de sapo gigante no mangue, não vá lá. É o Alfa. Ele afunda canoa.'], 'down', 4, kid=True)
-R.person('siri_pescador', 'Pescador Zeca', LOOK_VAQ, 692, 392, ['A pesca no mangue é paciência e botas altas.', 'De noite o mangue brilha. Dizem que é vaga-lume. Eu acho que é Chinchou.'], 'right', 0)
-R.spots['sertao_cais_siri'] = [735, 393, 'down']
+R.person('siri_pescador', 'Pescador Zeca', LOOK_VAQ, 700, 376, ['A pesca no mangue é paciência e botas altas.', 'De noite o mangue brilha. Dizem que é vaga-lume. Eu acho que é Chinchou.'], 'right', 0)
+R.spots['sertao_cais_siri'] = [733, 392, 'right']
 R.viagens.append({'id': 'barco_brasas', 'nome': 'O Barco das Brasas', 'fala': ['O Barco das Brasas faz a travessia para Vila Termas, nas Brasas. São ₽500 e uma parada na Ilha do Basalto.', 'Embarca?'],
                   'destinos': [{'nome': 'Vila Termas (Arquipélago das Brasas)', 'destino': 'ninho_vila_termas', 'preco': 500, 'horarios': [7, 15], 'cena': 'O barco sai do mangue e pega a Rota Marítima 19, com o vulcão fumegando no horizonte…'}]})
 

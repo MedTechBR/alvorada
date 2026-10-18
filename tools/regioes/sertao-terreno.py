@@ -133,7 +133,6 @@ R.ell('sand', 660, 432, 4, 3, 0.3)
 
 # ---------------------------------------------------------------- CAATINGA: Rota 14 e Rota 20
 R.c('rota14: Rota 14 — Estrada do Sertão')
-R.ell('talldry', 650, 232, 38, 20, 0.7, ['caatinga', 'cracked'])
 R.ell('cracked', 700, 250, 28, 8, 0.7, ['caatinga', 'talldry'])
 R.c('rota20: Rota 20 — Caatinga do Lajedo')
 # lajedos: lajes de pedra lisa
