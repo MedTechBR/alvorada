@@ -1,27 +1,21 @@
-import { effectiveness } from '../data/types.js';
+import { calcDamage as officialDamage, resolveHit } from '../mechanics/damage.js';
 import { TILE, T } from '../world/tiles.js';
 
-// Ponto ÚNICO de cálculo de dano. O ramo `mecanicas` pode trocar esta função inteira pela
-// fórmula oficial: a assinatura é computeDamage(user, target, mv, ctx) -> { dmg, eff, crit, mult, note }.
-// ctx: { g, power (substitui mv.power), scale (fração do golpe, p.ex. um tique de feixe) }
+// Ponto ÚNICO de cálculo de dano: a fórmula oficial (src/mechanics/damage.js, sem PixiJS, a mesma do árbitro do
+// PvP) × o ritmo do tempo real (DMG) × o relevo (terrainMod) × a fração do golpe (ctx.scale, ex.: um tique de feixe).
+// computeDamage(user, target, mv, ctx) -> { dmg, eff, crit, mult, note, r }  (r = resultado completo da mecânica)
+// ctx: { g, power (substitui mv.power), scale, noCrit, rnd }. Com ctx.g (combate local) também gasta itens e frutas.
 
 export const DMG = 0.34; // ritmo do tempo real: lutas de 10 a 40 s contra selvagens do mesmo nível
 
 export function computeDamage(user, target, mv, ctx = {}) {
-  const L = user.mon.level, phys = mv.cat === 'phys';
-  const A = phys ? user.stat('atk') : user.stat('spa'), D = phys ? target.stat('def') : target.stat('spd');
-  const power = ctx.power ?? mv.power ?? 40;
-  const critStage = (mv.critUp ?? 0) + ((user.critBoost ?? 0) > 0 ? 2 : 0);
-  const rnd = ctx.rnd ?? Math.random;
-  const crit = !ctx.noCrit && rnd() < [1 / 16, 1 / 8, 1 / 2, 1][Math.min(3, critStage)];
-  let dmg = Math.floor(Math.floor((Math.floor((2 * L) / 5 + 2) * power * A) / D) / 50) + 2;
-  const eff = effectiveness(mv.type, target.mon.types);
-  if (user.mon.types.includes(mv.type)) dmg *= 1.5;
   const tm = terrainMod(user, target, mv, ctx.g);
-  dmg *= eff * (crit ? 1.5 : 1) * (0.85 + rnd() * 0.15) * DMG * tm.mult * (ctx.scale ?? 1);
-  if (phys && user.mon.status === 'brn') dmg *= 0.5;
-  dmg = eff === 0 ? 0 : Math.max(1, Math.round(dmg));
-  return { dmg, eff, crit, mult: tm.mult, note: tm.note };
+  const m = ctx.power != null ? { ...mv, power: ctx.power, count: 1, hits: 1 } : mv;
+  const opts = { rng: ctx.rnd ?? Math.random, pace: DMG * tm.mult * (ctx.scale ?? 1) };
+  if (ctx.noCrit) opts.crit = false;
+  const r = (ctx.g ? resolveHit : officialDamage)(user, target, m, opts);
+  const dmg = r.immune ? 0 : r.damage;
+  return { dmg, eff: r.eff, crit: r.crit, mult: tm.mult, note: tm.note ?? r.notes[0] ?? null, r };
 }
 
 // Relevo: água fortalece golpes de Água (e Elétrico em quem está molhado), mato alto fortalece Planta,

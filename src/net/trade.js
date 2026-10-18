@@ -1,4 +1,5 @@
 import { SPECIES } from '../data/species.js';
+import { evolutionFor } from '../mechanics/evolve.js';
 import { validateMon, monWire } from './validate.js';
 
 // Troca entre dois jogadores.
@@ -13,11 +14,11 @@ import { validateMon, monWire } from './validate.js';
 // Gancho para as mecânicas (src/data, src/mechanics): o que acontece com um Pokémon recebido por troca.
 // Devolve { evolve: dex } para evoluir (ex.: Kadabra -> Alakazam) ou null. Para trocar a regra:
 //   import { tradeHooks } from './net/trade.js'; tradeHooks.onTraded = (mon) => ...;
-// ou defina game.onTraded(mon). Padrão: SPECIES[dex].evolve com { trade: true } ou { method: 'trade' }.
+// ou defina game.onTraded(mon). Padrão: as evoluções por troca de SPECIES[dex].evo (com item segurado, se pedir).
 export const tradeHooks = {
   onTraded(mon) {
-    const ev = mon.sp?.evolve;
-    if (ev && (ev.trade || ev.method === 'trade') && SPECIES[ev.to]) return { evolve: ev.to };
+    const ev = evolutionFor(mon, 'trade'); // evoluções por troca dos jogos (src/mechanics/evolve.js)
+    if (ev) { if (ev.consumeHeld) mon.item = null; return { evolve: ev.to }; }
     return null;
   },
 };

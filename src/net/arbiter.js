@@ -46,7 +46,7 @@ export class Arbiter {
   #ent(d, uid) {
     const m = this.#mon(d, uid)?.m; if (!m) return null;
     const st = d.st[uid];
-    return { mon: m, stat: (k) => m.stats[k] * stageMul(st.stages[k] ?? 0) };
+    return { mon: m, stages: st.stages, stat: (k) => m.stats[k] * stageMul(st.stages[k] ?? 0) };
   }
 
   handle(type, data, from) {

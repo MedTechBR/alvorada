@@ -132,6 +132,14 @@
   ],
   "origem": "0017"
  },
+ "18": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0018"
+ },
  "19": {
   "faltou": [
    "Faint",
@@ -156,6 +164,29 @@
   ],
   "origem": "0021"
  },
+ "22": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0022"
+ },
+ "23": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0023"
+ },
+ "24": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0024"
+ },
  "25": {
   "faltou": [
    "Strike",
@@ -163,6 +194,32 @@
    "Special"
   ],
   "origem": "0025"
+ },
+ "26": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0026"
+ },
+ "35": {
+  "faltou": [
+   "Shoot",
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0035"
+ },
+ "36": {
+  "faltou": [
+   "Shoot",
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0036"
  },
  "41": {
   "faltou": [
@@ -172,6 +229,14 @@
   ],
   "origem": "0041"
  },
+ "42": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0042"
+ },
  "48": {
   "faltou": [
    "Pound",
@@ -179,12 +244,28 @@
   ],
   "origem": "0048"
  },
+ "49": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0049"
+ },
  "52": {
   "faltou": [
    "Pound",
    "Special"
   ],
   "origem": "0052"
+ },
+ "53": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0053"
  },
  "54": {
   "faltou": [
@@ -195,6 +276,15 @@
   ],
   "origem": "0054"
  },
+ "55": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0055"
+ },
  "56": {
   "faltou": [
    "Faint",
@@ -203,6 +293,22 @@
    "Special"
   ],
   "origem": "0056"
+ },
+ "57": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0057"
+ },
+ "58": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0058"
  },
  "59": {
   "faltou": [
@@ -220,12 +326,71 @@
   ],
   "origem": "0063"
  },
+ "64": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0064"
+ },
+ "65": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0065"
+ },
  "66": {
   "faltou": [
    "Pound",
    "Special"
   ],
   "origem": "0066"
+ },
+ "67": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0067"
+ },
+ "68": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0068"
+ },
+ "69": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0069"
+ },
+ "70": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0070"
+ },
+ "71": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0071"
  },
  "74": {
   "faltou": [
@@ -236,6 +401,23 @@
   ],
   "origem": "0074"
  },
+ "75": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0075"
+ },
+ "76": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0076"
+ },
  "79": {
   "faltou": [
    "Faint",
@@ -244,6 +426,30 @@
   ],
   "origem": "0079"
  },
+ "80": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0080"
+ },
+ "81": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0081"
+ },
+ "82": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0082"
+ },
  "92": {
   "faltou": [
    "Faint",
@@ -251,6 +457,22 @@
    "Special"
   ],
   "origem": "0092"
+ },
+ "93": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0093"
+ },
+ "94": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0094"
  },
  "95": {
   "faltou": [
@@ -261,6 +483,79 @@
   ],
   "origem": "0095"
  },
+ "100": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0100"
+ },
+ "101": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0101"
+ },
+ "106": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0106"
+ },
+ "107": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0107"
+ },
+ "115": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0115"
+ },
+ "116": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0116"
+ },
+ "117": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0117"
+ },
+ "120": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0120"
+ },
+ "121": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0121"
+ },
  "123": {
   "faltou": [
    "Faint",
@@ -269,6 +564,24 @@
    "Special"
   ],
   "origem": "0123"
+ },
+ "127": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0127"
+ },
+ "128": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0128"
  },
  "129": {
   "faltou": [
@@ -286,12 +599,145 @@
   ],
   "origem": "0130"
  },
+ "131": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0131"
+ },
  "133": {
   "faltou": [
    "Pound",
    "Special"
   ],
   "origem": "0133"
+ },
+ "134": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0134"
+ },
+ "135": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0135"
+ },
+ "136": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0136"
+ },
+ "142": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0142"
+ },
+ "147": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0147"
+ },
+ "148": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0148"
+ },
+ "149": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0149"
+ },
+ "150": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0150"
+ },
+ "152": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0152"
+ },
+ "153": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0153"
+ },
+ "154": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0154"
+ },
+ "158": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0158"
+ },
+ "159": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0159"
+ },
+ "160": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0160"
+ },
+ "163": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0163"
+ },
+ "164": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0164"
  },
  "167": {
   "faltou": [
@@ -301,12 +747,92 @@
   ],
   "origem": "0167"
  },
+ "168": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0168"
+ },
+ "169": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0169"
+ },
+ "170": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0170"
+ },
+ "171": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0171"
+ },
+ "172": {
+  "faltou": [
+   "Shoot",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0172"
+ },
+ "173": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0173"
+ },
+ "175": {
+  "faltou": [
+   "Shoot",
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0175"
+ },
+ "176": {
+  "faltou": [
+   "Shoot",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0176"
+ },
  "179": {
   "faltou": [
    "Pound",
    "Special"
   ],
   "origem": "0179"
+ },
+ "180": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0180"
+ },
+ "181": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0181"
  },
  "183": {
   "faltou": [
@@ -315,6 +841,14 @@
   ],
   "origem": "0183"
  },
+ "184": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0184"
+ },
  "194": {
   "faltou": [
    "Pound",
@@ -322,12 +856,43 @@
   ],
   "origem": "0194"
  },
+ "195": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0195"
+ },
+ "196": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0196"
+ },
+ "197": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0197"
+ },
  "198": {
   "faltou": [
    "Pound",
    "Special"
   ],
   "origem": "0198"
+ },
+ "199": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0199"
  },
  "200": {
   "faltou": [
@@ -344,6 +909,32 @@
    "Special"
   ],
   "origem": "0204"
+ },
+ "205": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0205"
+ },
+ "208": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0208"
+ },
+ "212": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0212"
  },
  "214": {
   "faltou": [
@@ -370,6 +961,30 @@
   ],
   "origem": "0216"
  },
+ "217": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0217"
+ },
+ "225": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0225"
+ },
+ "226": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0226"
+ },
  "227": {
   "faltou": [
    "Faint",
@@ -385,6 +1000,22 @@
   ],
   "origem": "0228"
  },
+ "229": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0229"
+ },
+ "230": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0230"
+ },
  "234": {
   "faltou": [
    "Faint",
@@ -393,12 +1024,78 @@
   ],
   "origem": "0234"
  },
+ "236": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0236"
+ },
+ "237": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0237"
+ },
  "246": {
   "faltou": [
    "Pound",
    "Special"
   ],
   "origem": "0246"
+ },
+ "247": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0247"
+ },
+ "248": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0248"
+ },
+ "261": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0261"
+ },
+ "262": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0262"
+ },
+ "276": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0276"
+ },
+ "277": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0277"
  },
  "278": {
   "faltou": [
@@ -409,12 +1106,36 @@
   ],
   "origem": "0278"
  },
+ "279": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0279"
+ },
  "280": {
   "faltou": [
    "Pound",
    "Special"
   ],
   "origem": "0280"
+ },
+ "281": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0281"
+ },
+ "282": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0282"
  },
  "283": {
   "faltou": [
@@ -425,6 +1146,15 @@
   ],
   "origem": "0283"
  },
+ "284": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0284"
+ },
  "285": {
   "faltou": [
    "Faint",
@@ -432,6 +1162,251 @@
    "Special"
   ],
   "origem": "0285"
+ },
+ "286": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0286"
+ },
+ "290": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0290"
+ },
+ "291": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0291"
+ },
+ "292": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0292"
+ },
+ "296": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0296"
+ },
+ "297": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0297"
+ },
+ "298": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0298"
+ },
+ "299": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0299"
+ },
+ "302": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0302"
+ },
+ "303": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0303"
+ },
+ "304": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0304"
+ },
+ "305": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0305"
+ },
+ "306": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0306"
+ },
+ "307": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0307"
+ },
+ "308": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0308"
+ },
+ "309": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0309"
+ },
+ "310": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0310"
+ },
+ "315": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0315"
+ },
+ "318": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0318"
+ },
+ "319": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0319"
+ },
+ "322": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0322"
+ },
+ "323": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0323"
+ },
+ "324": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0324"
+ },
+ "328": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0328"
+ },
+ "329": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0329"
+ },
+ "330": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0330"
+ },
+ "333": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0333"
+ },
+ "334": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0334"
+ },
+ "339": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0339"
+ },
+ "340": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0340"
  },
  "349": {
   "faltou": [
@@ -441,6 +1416,46 @@
   ],
   "origem": "0349"
  },
+ "350": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0350"
+ },
+ "353": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0353"
+ },
+ "354": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0354"
+ },
+ "355": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0355"
+ },
+ "356": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0356"
+ },
  "359": {
   "faltou": [
    "Strike",
@@ -448,6 +1463,71 @@
    "Special"
   ],
   "origem": "0359"
+ },
+ "361": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0361"
+ },
+ "362": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0362"
+ },
+ "371": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0371"
+ },
+ "372": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0372"
+ },
+ "373": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0373"
+ },
+ "374": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0374"
+ },
+ "375": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0375"
+ },
+ "376": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0376"
  },
  "396": {
   "faltou": [
@@ -457,12 +1537,61 @@
   ],
   "origem": "0396"
  },
+ "397": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0397"
+ },
+ "398": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0398"
+ },
+ "401": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0401"
+ },
+ "402": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0402"
+ },
  "403": {
   "faltou": [
    "Pound",
    "Special"
   ],
   "origem": "0403"
+ },
+ "404": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0404"
+ },
+ "405": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0405"
  },
  "406": {
   "faltou": [
@@ -471,6 +1600,14 @@
   ],
   "origem": "0406"
  },
+ "407": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0407"
+ },
  "415": {
   "faltou": [
    "Faint",
@@ -478,6 +1615,14 @@
    "Special"
   ],
   "origem": "0415"
+ },
+ "416": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0416"
  },
  "417": {
   "faltou": [
@@ -495,6 +1640,15 @@
   ],
   "origem": "0418"
  },
+ "419": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0419"
+ },
  "422": {
   "faltou": [
    "Faint",
@@ -502,6 +1656,14 @@
    "Special"
   ],
   "origem": "0422"
+ },
+ "423": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0423"
  },
  "425": {
   "faltou": [
@@ -511,6 +1673,14 @@
   ],
   "origem": "0425"
  },
+ "426": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0426"
+ },
  "427": {
   "faltou": [
    "Strike",
@@ -518,6 +1688,64 @@
    "Special"
   ],
   "origem": "0427"
+ },
+ "428": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0428"
+ },
+ "429": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0429"
+ },
+ "430": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0430"
+ },
+ "434": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0434"
+ },
+ "435": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0435"
+ },
+ "436": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0436"
+ },
+ "437": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0437"
  },
  "443": {
   "faltou": [
@@ -527,6 +1755,22 @@
   ],
   "origem": "0443"
  },
+ "444": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0444"
+ },
+ "445": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0445"
+ },
  "447": {
   "faltou": [
    "Shoot",
@@ -535,12 +1779,423 @@
   ],
   "origem": "0447"
  },
+ "448": {
+  "faltou": [
+   "Shoot",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0448"
+ },
+ "449": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0449"
+ },
+ "450": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0450"
+ },
+ "453": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0453"
+ },
+ "454": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0454"
+ },
+ "456": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0456"
+ },
+ "457": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0457"
+ },
+ "458": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0458"
+ },
+ "459": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0459"
+ },
+ "460": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0460"
+ },
+ "461": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0461"
+ },
+ "462": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0462"
+ },
+ "468": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0468"
+ },
+ "470": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0470"
+ },
+ "471": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0471"
+ },
+ "475": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0475"
+ },
+ "476": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0476"
+ },
+ "477": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0477"
+ },
+ "478": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0478"
+ },
+ "498": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0498"
+ },
+ "499": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0499"
+ },
+ "500": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0500"
+ },
+ "504": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0504"
+ },
+ "505": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0505"
+ },
+ "509": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0509"
+ },
+ "510": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0510"
+ },
+ "511": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0511"
+ },
+ "512": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0512"
+ },
+ "513": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0513"
+ },
+ "514": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0513"
+ },
+ "515": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0515"
+ },
+ "516": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0515"
+ },
+ "522": {
+  "faltou": [],
+  "origem": null
+ },
+ "523": {
+  "faltou": [],
+  "origem": null
+ },
+ "524": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0524"
+ },
+ "525": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0525"
+ },
+ "526": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0526"
+ },
+ "529": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0529"
+ },
+ "530": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0530"
+ },
+ "531": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0531"
+ },
+ "532": {
+  "faltou": [
+   "Shoot",
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0532"
+ },
+ "533": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0533"
+ },
+ "534": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0534"
+ },
+ "535": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0535"
+ },
+ "536": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0536"
+ },
+ "537": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0537"
+ },
+ "543": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0543"
+ },
+ "544": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0544"
+ },
+ "545": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0545"
+ },
+ "546": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0546"
+ },
+ "547": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0547"
+ },
  "548": {
   "faltou": [
    "Pound",
    "Special"
   ],
   "origem": "0548"
+ },
+ "549": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0549"
  },
  "550": {
   "faltou": [
@@ -551,12 +2206,123 @@
   ],
   "origem": "0550"
  },
+ "551": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0551"
+ },
+ "552": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0552"
+ },
+ "553": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0553"
+ },
+ "559": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0559"
+ },
+ "560": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0560"
+ },
+ "568": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0568"
+ },
+ "569": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0569"
+ },
  "570": {
   "faltou": [
    "Pound",
    "Special"
   ],
   "origem": "0570"
+ },
+ "571": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0571"
+ },
+ "580": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0580"
+ },
+ "581": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0581"
+ },
+ "582": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0582"
+ },
+ "583": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0583"
+ },
+ "584": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0584"
+ },
+ "587": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0587"
  },
  "590": {
   "faltou": [
@@ -566,12 +2332,182 @@
   ],
   "origem": "0590"
  },
+ "591": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0590"
+ },
+ "592": {
+  "faltou": [],
+  "origem": null
+ },
+ "593": {
+  "faltou": [
+   "Attack",
+   "Shoot",
+   "Charge",
+   "Hurt",
+   "Faint",
+   "Hop",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0593"
+ },
+ "595": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0595"
+ },
+ "596": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0596"
+ },
+ "599": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0599"
+ },
+ "600": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0600"
+ },
+ "601": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0601"
+ },
+ "602": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0602"
+ },
+ "603": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0603"
+ },
+ "604": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0604"
+ },
  "607": {
   "faltou": [
    "Pound",
    "Special"
   ],
   "origem": "0607"
+ },
+ "608": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0608"
+ },
+ "609": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0609"
+ },
+ "610": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0610"
+ },
+ "611": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0611"
+ },
+ "612": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0612"
+ },
+ "618": {
+  "faltou": [
+   "Walk",
+   "Attack",
+   "Shoot",
+   "Charge",
+   "Hurt",
+   "Sleep",
+   "Faint",
+   "Hop",
+   "Strike",
+   "Swing",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0618"
+ },
+ "619": {
+  "faltou": [
+   "Shoot",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0619"
+ },
+ "620": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0620"
+ },
+ "627": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0627"
  },
  "628": {
   "faltou": [
@@ -582,12 +2518,117 @@
   ],
   "origem": "0628"
  },
+ "633": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0633"
+ },
+ "634": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0634"
+ },
+ "635": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0635"
+ },
+ "636": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0636"
+ },
+ "637": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0637"
+ },
+ "650": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0650"
+ },
+ "651": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0651"
+ },
+ "652": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0652"
+ },
+ "653": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0653"
+ },
+ "654": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0654"
+ },
+ "655": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0655"
+ },
  "656": {
   "faltou": [
    "Pound",
    "Special"
   ],
   "origem": "0656"
+ },
+ "657": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0657"
+ },
+ "658": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0658"
  },
  "659": {
   "faltou": [
@@ -598,6 +2639,38 @@
   ],
   "origem": "0659"
  },
+ "660": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0660"
+ },
+ "661": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0661"
+ },
+ "662": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0662"
+ },
+ "663": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0663"
+ },
  "664": {
   "faltou": [
    "Faint",
@@ -605,6 +2678,306 @@
    "Special"
   ],
   "origem": "0664"
+ },
+ "665": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0665"
+ },
+ "666": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0666"
+ },
+ "667": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0667"
+ },
+ "668": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0667"
+ },
+ "669": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0669"
+ },
+ "670": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0670"
+ },
+ "671": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0671"
+ },
+ "672": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0672"
+ },
+ "673": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0673"
+ },
+ "674": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0674"
+ },
+ "675": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0675"
+ },
+ "676": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0676"
+ },
+ "677": {
+  "faltou": [
+   "Shoot",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0677"
+ },
+ "678": {
+  "faltou": [
+   "Shoot",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0678"
+ },
+ "679": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0679"
+ },
+ "680": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0680"
+ },
+ "681": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0681"
+ },
+ "682": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0682"
+ },
+ "683": {
+  "faltou": [
+   "Walk",
+   "Attack",
+   "Shoot",
+   "Charge",
+   "Hurt",
+   "Sleep",
+   "Faint",
+   "Hop",
+   "Strike",
+   "Swing",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0683"
+ },
+ "684": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0684"
+ },
+ "685": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0685"
+ },
+ "686": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0686"
+ },
+ "687": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0687"
+ },
+ "688": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0688"
+ },
+ "689": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0689"
+ },
+ "690": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0690"
+ },
+ "691": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0691"
+ },
+ "692": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0692"
+ },
+ "693": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0693"
+ },
+ "694": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0694"
+ },
+ "695": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0695"
+ },
+ "696": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0696"
+ },
+ "697": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0697"
+ },
+ "698": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0698"
+ },
+ "699": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0699"
+ },
+ "700": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0700"
  },
  "701": {
   "faltou": [
@@ -614,6 +2987,58 @@
   ],
   "origem": "0701"
  },
+ "702": {
+  "faltou": [
+   "Shoot",
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0702"
+ },
+ "703": {
+  "faltou": [
+   "Shoot",
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0703"
+ },
+ "704": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0704"
+ },
+ "705": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0705"
+ },
+ "706": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0706"
+ },
+ "707": {
+  "faltou": [
+   "Shoot",
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0707"
+ },
  "708": {
   "faltou": [
    "Faint",
@@ -621,6 +3046,125 @@
    "Special"
   ],
   "origem": "0708"
+ },
+ "709": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0709"
+ },
+ "710": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0710"
+ },
+ "711": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0711"
+ },
+ "712": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0712"
+ },
+ "713": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0713"
+ },
+ "714": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0714"
+ },
+ "715": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0715"
+ },
+ "716": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0716"
+ },
+ "717": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0717"
+ },
+ "718": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0718"
+ },
+ "719": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0719"
+ },
+ "731": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0731"
+ },
+ "732": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0731"
+ },
+ "733": {
+  "faltou": [
+   "Walk",
+   "Attack",
+   "Shoot",
+   "Charge",
+   "Hurt",
+   "Sleep",
+   "Faint",
+   "Hop",
+   "Strike",
+   "Swing",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0733"
  },
  "734": {
   "faltou": [
@@ -631,12 +3175,52 @@
   ],
   "origem": "0734"
  },
+ "735": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0734"
+ },
+ "739": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0739"
+ },
+ "740": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0740"
+ },
  "744": {
   "faltou": [
    "Pound",
    "Special"
   ],
   "origem": "0744"
+ },
+ "745": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0745"
+ },
+ "749": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0749"
  },
  "750": {
   "faltou": [
@@ -647,6 +3231,73 @@
   ],
   "origem": "0750"
  },
+ "780": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0780"
+ },
+ "789": {
+  "faltou": [
+   "Shoot",
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0789"
+ },
+ "790": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0790"
+ },
+ "791": {
+  "faltou": [
+   "Shoot",
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0791"
+ },
+ "792": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0792"
+ },
+ "800": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0800"
+ },
+ "819": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0819"
+ },
+ "820": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0820"
+ },
  "821": {
   "faltou": [
    "Faint",
@@ -654,6 +3305,119 @@
    "Special"
   ],
   "origem": "0821"
+ },
+ "822": {
+  "faltou": [
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0822"
+ },
+ "823": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0823"
+ },
+ "835": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0835"
+ },
+ "836": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0836"
+ },
+ "837": {
+  "faltou": [],
+  "origem": null
+ },
+ "838": {
+  "faltou": [],
+  "origem": null
+ },
+ "839": {
+  "faltou": [],
+  "origem": null
+ },
+ "850": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0850"
+ },
+ "851": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0851"
+ },
+ "859": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0859"
+ },
+ "860": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0860"
+ },
+ "861": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0861"
+ },
+ "870": {
+  "faltou": [],
+  "origem": null
+ },
+ "899": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0899"
+ },
+ "900": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0900"
+ },
+ "901": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0901"
  },
  "903": {
   "faltou": [
@@ -671,11 +3435,183 @@
   ],
   "origem": "0915"
  },
+ "916": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0916"
+ },
+ "921": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0921"
+ },
+ "922": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0922"
+ },
+ "923": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0923"
+ },
  "926": {
   "faltou": [
    "Pound",
    "Special"
   ],
   "origem": "0926"
+ },
+ "927": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0927"
+ },
+ "932": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0932"
+ },
+ "933": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0933"
+ },
+ "934": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0934"
+ },
+ "935": {
+  "faltou": [
+   "Pound",
+   "Special"
+  ],
+  "origem": "0935"
+ },
+ "936": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0936"
+ },
+ "937": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0937"
+ },
+ "951": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0951"
+ },
+ "952": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0952"
+ },
+ "957": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0957"
+ },
+ "958": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0958"
+ },
+ "959": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0959"
+ },
+ "969": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0969"
+ },
+ "970": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0970"
+ },
+ "971": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0971"
+ },
+ "972": {
+  "faltou": [
+   "Faint",
+   "Strike",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0972"
+ },
+ "979": {
+  "faltou": [
+   "Faint",
+   "Pound",
+   "Special"
+  ],
+  "origem": "0979"
  }
 }

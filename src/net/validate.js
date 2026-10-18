@@ -1,14 +1,17 @@
 import { SPECIES, expForLevel } from '../data/species.js';
 import { MOVES } from '../data/moves.js';
 import { Mon } from '../data/mon.js';
+import { NATURES as NATURE_DATA } from '../data/natures.js';
+import { ITEMS, itemInfo } from '../data/items.js';
+import { EV_STAT_MAX, EV_TOTAL_MAX } from '../mechanics/stats.js';
 import { LOOK_OPTIONS, DEFAULT_LOOK } from '../sprites/charart.js';
 
 // Tudo que chega pela rede é suspeito. Aqui se confere e se reconstrói: nada de usar o objeto
 // recebido direto. Os status (HP máx., Ataque…) são RECALCULADOS a partir de espécie, nível e IVs,
 // então mandar "atk: 9999" não adianta.
 
-const NATURES = ['hardy', 'lonely', 'brave', 'adamant', 'naughty', 'bold', 'docile', 'relaxed', 'impish', 'lax', 'timid', 'hasty', 'serious', 'jolly', 'naive', 'modest', 'mild', 'quiet', 'bashful', 'rash', 'calm', 'gentle', 'sassy', 'careful', 'quirky'];
-const STATUS = [null, 'par', 'psn', 'brn', 'slp'];
+const NATURES = Object.keys(NATURE_DATA);
+const STATUS = [null, 'par', 'psn', 'tox', 'brn', 'slp', 'frz'];
 const isInt = (v, lo, hi) => Number.isInteger(v) && v >= lo && v <= hi;
 const CTRL = /[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u2028-\u202e\u2066-\u2069]/g;
 
@@ -29,12 +32,24 @@ export function validateMon(o) {
   if (o.status != null && !STATUS.includes(o.status)) return { ok: false, why: 'estado inválido' };
   if (o.nick != null && typeof o.nick !== 'string') return { ok: false, why: 'apelido inválido' };
   const sp = SPECIES[o.dex];
+  if (o.evs != null && (!Array.isArray(o.evs) || o.evs.length !== 6 || o.evs.some((v) => !isInt(v, 0, EV_STAT_MAX)) || o.evs.reduce((a, b) => a + b, 0) > EV_TOTAL_MAX)) return { ok: false, why: 'EVs fora do limite (252 por status, 510 no total)' };
+  if (o.ability != null && !(sp.abilities.includes(o.ability) || sp.hidden === o.ability)) return { ok: false, why: 'habilidade que a espécie não tem' };
+  if (o.item != null && !(typeof o.item === 'string' && itemInfo(o.item)?.hold)) return { ok: false, why: 'item equipado inválido' };
+  if (o.gender != null && !['m', 'f'].includes(o.gender)) return { ok: false, why: 'gênero inválido' };
+  if (sp.genderRate < 0 ? o.gender != null : (sp.genderRate === 0 && o.gender === 'f') || (sp.genderRate === 8 && o.gender === 'm')) return { ok: false, why: 'gênero impossível para a espécie' };
+  if (o.friendship != null && !isInt(o.friendship, 0, 255)) return { ok: false, why: 'amizade fora de 0–255' };
+  if (o.ball != null && !(typeof o.ball === 'string' && itemInfo(o.ball)?.cat === 'ball')) return { ok: false, why: 'Poké Bola inválida' };
   const lo = expForLevel(sp.growth, o.level), hi = o.level >= 100 ? lo : expForLevel(sp.growth, o.level + 1) - 1;
   const xp = Number.isFinite(o.xp) ? Math.max(lo, Math.min(hi, Math.floor(o.xp))) : lo;
   const uid = typeof o.uid === 'string' && /^[a-z0-9]{4,16}$/i.test(o.uid) ? o.uid : undefined;
-  const mon = new Mon(o.dex, o.level, { ivs: o.ivs ? o.ivs.slice() : [0, 0, 0, 0, 0, 0], nick: o.nick ? cleanText(o.nick, 12) || null : null, xp, moves: o.moves.slice(), status: o.status ?? null, uid });
-  if (o.nature != null) mon.nature = String(o.nature).toLowerCase();
-  if (o.shiny === true) mon.shiny = true;
+  // tudo passa pelo construtor, que recalcula os status com IVs, EVs e natureza
+  const mon = new Mon(o.dex, o.level, {
+    ivs: o.ivs ? o.ivs.slice() : [0, 0, 0, 0, 0, 0], evs: o.evs ? o.evs.slice() : [0, 0, 0, 0, 0, 0],
+    nature: o.nature != null ? String(o.nature).toLowerCase() : 'hardy', ability: o.ability ?? undefined,
+    gender: o.gender !== undefined ? o.gender : undefined, shiny: o.shiny === true, friendship: o.friendship ?? undefined,
+    item: o.item ?? null, ball: o.ball ?? 'pokeBall', metLevel: isInt(o.metLevel, 1, 100) ? o.metLevel : undefined,
+    nick: o.nick ? cleanText(o.nick, 12) || null : null, xp, moves: o.moves.slice(), status: o.status ?? null, uid,
+  });
   // HP: inteiro entre 0 e o máximo recalculado
   mon.hp = Number.isInteger(o.hp) ? Math.max(0, Math.min(mon.stats.hp, o.hp)) : mon.stats.hp;
   return { ok: true, mon };

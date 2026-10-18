@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import { MOVES } from '../data/moves.js';
 import { BEAMS } from './specialmoves.js';
 import { computeDamage } from './damage.js';
+import { catchChance as officialCatch } from '../mechanics/capture.js';
 import { Vfx, typeHex, meleeStyle, ANIM_PREF } from './vfx.js';
 import { Arena } from './arena.js';
 import { WildAI } from './ai.js';
@@ -792,8 +793,12 @@ export class Combat {
     if (mv.cat === 'status') { this.#status(user, t, mv); return 'hit'; }
     const r = computeDamage(user, t, mv, { g, scale: info.scale ?? 1, noCrit: info.src === 'beam' && !info.force });
     this.hurt(t, r.dmg, user, { eff: r.eff, crit: r.crit, mv, dx, dy, knock: info.knock ?? 1, quiet: info.quiet, note: r.note, src: info.src });
+    // Orbe da Vida, Pele Áspera, Capacete Rochoso (recuo), Sino Concha (cura), Rocha do Rei (hesitar): src/mechanics
+    if (r.r?.recoil) this.hurt(user, r.r.recoil, null, { silent: true });
+    if (r.r?.heal) user.mon.hp = Math.min(user.mon.stats.hp, user.mon.hp + r.r.heal);
+    if (r.r?.flinch) t.stun = Math.max(t.stun, 0.35);
     if (user.side === 'wild' && t.side === 'wild') t.aggroTarget = user; // revida o rival
-    const e = mv.eff ?? {};
+    const e = r.r?.secondary ?? mv.eff ?? {}; // Força Bruta e Pó Protetor tiram os efeitos extras
     if (!info.quiet || Math.random() < 0.15) {
       if (e.status && !t.mon.status && Math.random() < (e.chance ?? 0.1)) this.#applyStatus(t, e.status);
       if (e.flinch && Math.random() < e.flinch) t.stun = Math.max(t.stun, 0.35);
@@ -985,14 +990,10 @@ export class Combat {
     this.arena.update(dt);
   }
 
-  // Poké Bola: chance pela vida restante, estado e se o alvo estava distraído
-  catchChance(e) {
-    const m = e.mon, max = m.stats.hp;
-    const rate = m.sp.catchRate ?? 45;
-    let a = ((3 * max - 2 * m.hp) * rate) / (3 * max);
-    if (m.status || e.stun > 0 || e.ai.state === 'sleep') a *= 2;
-    if (e.ai.state !== 'aggro' && e.ai.state !== 'flee') a *= 1.6; // não percebeu você
-    if (e.isAlpha) a *= 0.5;
-    return Math.min(1, a / 255);
+  // Poké Bola: fórmula oficial (src/mechanics/capture.js) com o tipo de bola; pegar distraído ajuda; alfa é mais difícil
+  catchChance(e, ball = 'pokeBall') {
+    const unaware = e.ai.state !== 'aggro' && e.ai.state !== 'flee';
+    const c = officialCatch(e.mon, ball, { unaware, asleep: e.ai.state === 'sleep', stunned: e.stun > 0, seconds: e.battleT, leadLevel: this.g.lead?.mon.level }).chance;
+    return e.isAlpha ? c * 0.5 : c;
   }
 }

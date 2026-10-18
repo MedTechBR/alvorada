@@ -2,6 +2,8 @@ import * as PIXI from 'pixi.js';
 import { frameOf, dir8, loadPokemonSprites } from '../sprites/pmd.js';
 import { TEMPER } from '../data/species.js';
 import { speciesScale } from '../sprites/scale.js';
+import { heldTick, statusTick } from '../mechanics/items.js';
+import { TURNO_S } from '../mechanics/tempo.js';
 
 // silhueta branca para o clarão de acerto (um filtro só, compartilhado)
 let WHITE = null;
@@ -87,9 +89,25 @@ export class PokeEntity {
     const cds = this.cds; for (let i = 0; i < cds.length; i++) if (cds[i] > 0) cds[i] = Math.max(0, cds[i] - dt);
     this.lock -= dt; this.iframes -= dt; this.stun -= dt; this.flash -= dt; this.hpShow -= dt; this.flashW -= dt;
     // efeitos de estado contínuos
-    if ((this.mon.status === 'brn' || this.mon.status === 'psn') && this.alive) {
-      this.dot = (this.dot ?? 0) + dt;
-      if (this.dot > 1.5) { this.dot = 0; this.g.combat.hurt(this, Math.max(1, Math.round(this.mon.stats.hp / 16)), null, { silent: true }); this.g.fx.emit(this.x, this.y - 12, this.mon.status === 'brn' ? { frames: 'flame', n: 4, speed: 15, vz: 30, life: 0.5, add: false } : { tex: 'bubble', color: 0xd090ff, n: 4, speed: 12, vz: 20, life: 0.6, add: false, scale: 0.7 }); }
+    // estados e itens equipados (regras dos jogos: veneno, queimadura, Sobras, frutas, orbes; 1 turno = 3 s)
+    if (this.alive && !this.pvp) {
+      const g = this.g;
+      if (this.mon.status === 'brn' || this.mon.status === 'psn' || this.mon.status === 'tox') {
+        this.dot = (this.dot ?? 0) + dt;
+        if (this.dot >= TURNO_S) {
+          this.dot = 0;
+          const d = statusTick(this.mon, this);
+          if (d > 0) { g.combat.hurt(this, d, null, { silent: true }); g.fx.number(this.x, this.y - (this.h ?? 20) - 8, String(d), '#d090ff'); }
+          g.fx.emit(this.x, this.y - 12, this.mon.status === 'brn' ? { frames: 'flame', n: 4, speed: 15, vz: 30, life: 0.5, add: false } : { tex: 'bubble', color: 0xd090ff, n: 4, speed: 12, vz: 20, life: 0.6, add: false, scale: 0.7 });
+        }
+      }
+      if (this.mon.item || this.mon.ability) {
+        for (const ev of heldTick(this.mon, dt, { entity: this })) {
+          if (ev.kind === 'heal' || (ev.kind === 'berry' && ev.amount)) g.fx.number(this.x, this.y - (this.h ?? 20) - 8, '+' + ev.amount, '#7dff8a');
+          if (ev.note && this.side === 'ally') g.toast?.(`${this.mon.name}: ${ev.note}`);
+          if (ev.kind === 'hurt' && this.mon.hp <= 0) g.onFaint(this, null);
+        }
+      }
     }
     // movimento (quem controla define vx/vy antes)
     if (this.dead) { this.vx *= 0.8; this.vy *= 0.8; }

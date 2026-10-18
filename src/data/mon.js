@@ -1,18 +1,51 @@
-import { SPECIES, expForLevel } from '../data/species.js';
-import { MOVES } from '../data/moves.js';
+import { SPECIES } from './species.js';
+import { MOVES } from './moves.js';
+import { NATURES, randomNature } from './natures.js';
+import { itemInfo } from './items.js';
+import { STAT_KEYS, calcStats, randomIvs, addEvs, expForLevel, expYield } from '../mechanics/stats.js';
+import { defaultMoves, movesAtLevel, learnMove, canLearn } from '../mechanics/learn.js';
+import { evolutionFor } from '../mechanics/evolve.js';
+import { useItem } from '../mechanics/items.js';
 
-const STAT_KEYS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
+export const SHINY_ODDS = 1 / 4096;
+export const HIDDEN_ABILITY_ODDS = 1 / 50; // selvagens com habilidade oculta (adaptação: raro, não impossível)
+export const SAVE_VERSION = 2;
 
-// Um Pokémon da equipe ou selvagem. Fórmulas de status, XP e evolução das gerações 3+.
+function rollGender(rate, rng = Math.random) {
+  if (rate == null || rate < 0) return null;
+  if (rate === 0) return 'm';
+  if (rate === 8) return 'f';
+  return rng() * 8 < rate ? 'f' : 'm';
+}
+function rollAbility(sp, rng = Math.random) {
+  if (sp.hidden && rng() < HIDDEN_ABILITY_ODDS) return sp.hidden;
+  const a = sp.abilities ?? [];
+  return a[Math.floor(rng() * a.length)] ?? sp.hidden ?? null;
+}
+
+// Um Pokémon da equipe ou selvagem: IVs, EVs, natureza, habilidade, gênero, shiny, amizade, item equipado.
+// Status pela fórmula das gerações 3+; XP, EVs e evolução como nos jogos.
 export class Mon {
   constructor(dex, level, opts = {}) {
+    const sp = SPECIES[dex];
+    if (!sp) throw new Error(`Espécie desconhecida: ${dex}`);
+    const rng = opts.rng ?? Math.random;
     this.dex = dex;
-    this.level = level;
-    this.ivs = opts.ivs ?? STAT_KEYS.map(() => Math.floor(Math.random() * 32));
+    this.level = Math.max(1, Math.min(100, level | 0));
+    this.ivs = opts.ivs ?? randomIvs(rng);
+    this.evs = opts.evs ?? [0, 0, 0, 0, 0, 0];
+    this.nature = NATURES[opts.nature] ? opts.nature : randomNature(rng);
+    this.ability = opts.ability ?? rollAbility(sp, rng);
+    this.gender = opts.gender !== undefined ? opts.gender : rollGender(sp.genderRate, rng);
+    this.shiny = opts.shiny ?? rng() < SHINY_ODDS;
+    this.friendship = opts.friendship ?? sp.friendship ?? 50;
+    this.item = opts.item ?? null;
+    this.ball = opts.ball ?? 'pokeBall';
+    this.metLevel = opts.metLevel ?? this.level;
     this.nick = opts.nick ?? null;
-    this.xp = opts.xp ?? expForLevel(this.sp.growth, level);
-    this.moves = opts.moves ?? Mon.defaultMoves(dex, level);
-    this.status = opts.status ?? null; // par | slp | psn | brn
+    this.xp = opts.xp ?? expForLevel(sp.growth, this.level);
+    this.moves = opts.moves ?? Mon.defaultMoves(dex, this.level);
+    this.status = opts.status ?? null; // par | slp | psn | tox | brn | frz
     this.calc();
     this.hp = opts.hp ?? this.stats.hp;
     this.uid = opts.uid ?? Math.random().toString(36).slice(2, 10);
@@ -22,71 +55,129 @@ export class Mon {
   get name() { return this.nick || this.sp.name; }
   get types() { return this.sp.types; }
   get fainted() { return this.hp <= 0; }
+  get natureName() { return NATURES[this.nature]?.name ?? this.nature; }
 
-  static defaultMoves(dex, level) {
-    const learned = SPECIES[dex].learn.filter(([lv]) => lv <= level).map(([, id]) => id);
-    return [...new Set(learned)].slice(-4);
-  }
+  static defaultMoves(dex, level) { return defaultMoves(dex, level); }
 
   calc() {
-    const b = this.sp.base, L = this.level;
-    const s = {};
-    STAT_KEYS.forEach((k, i) => {
-      const core = Math.floor(((2 * b[i] + this.ivs[i]) * L) / 100);
-      s[k] = i === 0 ? core + L + 10 : core + 5;
-    });
     const oldMax = this.stats?.hp;
-    this.stats = s;
-    if (oldMax != null) this.hp = Math.min(s.hp, this.hp + (s.hp - oldMax));
+    this.stats = calcStats(this.sp.base, this.ivs, this.evs, this.level, this.nature);
+    if (oldMax != null && this.hp != null) this.hp = Math.max(this.hp > 0 ? 1 : 0, Math.min(this.stats.hp, this.hp + (this.stats.hp - oldMax)));
   }
 
   xpToNext() { return expForLevel(this.sp.growth, this.level + 1); }
   xpFloor() { return expForLevel(this.sp.growth, this.level); }
 
-  // Ganha XP; devolve a lista de eventos (subiu de nível, novo golpe, evolução pronta).
-  gainXp(amount) {
+  // EVs ganhos (Bracelete Macho dobra; itens do Poder somam 8). Devolve o que entrou.
+  gainEvs(gain) {
+    const it = itemInfo(this.item);
+    const g = gain.map((v, i) => v * (it?.evMult ?? 1) + (it?.evBonus?.[i] ?? 0));
+    const got = addEvs(this.evs, g);
+    if (got.some((v) => v)) this.calc();
+    return got;
+  }
+
+  addFriendship(n) {
+    const it = itemInfo(this.item);
+    let k = n;
+    if (n > 0) { if (it?.friendshipMult) k *= it.friendshipMult; if (this.ball === 'luxuryBall') k += 1; }
+    this.friendship = Math.max(0, Math.min(255, Math.round(this.friendship + k)));
+    return this.friendship;
+  }
+
+  // Ganha XP; devolve a lista de eventos: { type: 'level' | 'learn' | 'evolve' }.
+  // ctx (opcional): { time, weather, partyTypes } para evoluções por hora, chuva e equipe.
+  gainXp(amount, ctx = {}) {
     const events = [];
     if (this.level >= 100) return events;
-    this.xp += amount;
+    this.xp += Math.max(0, Math.floor(amount));
     while (this.level < 100 && this.xp >= this.xpToNext()) {
       this.level++;
       this.calc();
+      this.addFriendship(this.friendship < 100 ? 5 : this.friendship < 200 ? 3 : 2);
       events.push({ type: 'level', level: this.level });
-      for (const [lv, id] of this.sp.learn) {
-        if (lv === this.level && !this.moves.includes(id)) events.push({ type: 'learn', move: id });
-      }
-      const ev = this.sp.evolve;
-      if (ev && this.level >= ev.level && SPECIES[ev.to]) events.push({ type: 'evolve', to: ev.to });
+      for (const id of movesAtLevel(this.dex, this.level)) if (!this.moves.includes(id) && MOVES[id]) events.push({ type: 'learn', move: id });
+    }
+    if (events.length) {
+      const ev = evolutionFor(this, 'level', ctx);
+      if (ev) events.push({ type: 'evolve', to: ev.to });
     }
     return events;
   }
 
+  // XP que este Pokémon dá ao ser derrotado. Sem `victor`: fórmula da geração 3 (compatível com o jogo antigo).
+  // Com `victor` (o Mon que venceu): fórmula escalonada das gerações 7+, com Ovo da Sorte.
+  xpYield(trainer = false, victor = null, { share = 1 } = {}) {
+    return expYield(this.sp.baseExp, this.level, {
+      trainer, victorLevel: victor?.level ?? null, share,
+      luckyEgg: itemInfo(victor?.item)?.expMult > 1,
+    });
+  }
+
+  // Tudo o que acontece quando este Pokémon derrota `foe`: XP, EVs e amizade. Devolve { xp, evs, events }.
+  defeat(foe, ctx = {}) {
+    const xp = foe.xpYield(!!ctx.trainer, this, ctx);
+    const evs = this.gainEvs(foe.sp.evs ?? [0, 0, 0, 0, 0, 0]);
+    this.addFriendship(1);
+    const events = this.gainXp(xp, ctx);
+    return { xp, evs, events };
+  }
+
   evolveTo(dex) {
-    const ratio = this.hp / this.stats.hp;
+    if (!SPECIES[dex]) return [];
+    const oldSp = this.sp, ratio = this.stats.hp ? this.hp / this.stats.hp : 1;
+    const slot = oldSp.abilities.indexOf(this.ability);
     this.dex = dex;
+    const sp = this.sp;
+    if (this.ability === oldSp.hidden && sp.hidden) this.ability = sp.hidden;
+    else if (slot >= 0) this.ability = sp.abilities[Math.min(slot, sp.abilities.length - 1)] ?? this.ability;
     this.stats = null;
     this.calc();
     this.hp = Math.max(1, Math.round(this.stats.hp * ratio));
+    // golpes aprendidos ao evoluir (nível 0) e no nível atual
+    const events = [];
+    for (const id of [...movesAtLevel(dex, 0), ...movesAtLevel(dex, this.level)]) if (!this.moves.includes(id) && MOVES[id]) events.push({ type: 'learn', move: id });
+    return events;
   }
 
-  learn(id, replaceIndex = -1) {
-    if (this.moves.includes(id)) return;
-    if (this.moves.length < 4) this.moves.push(id);
-    else if (replaceIndex >= 0) this.moves[replaceIndex] = id;
-  }
+  learn(id, replaceIndex = -1) { return learnMove(this, id, replaceIndex); }
+  // Pode aprender (por nível, MT ou ensino)? O menu usa isso para as MTs.
+  canLearn(id) { return canLearn(this, id); }
+
+  // Usa um item da mochila neste Pokémon (src/mechanics/items.js). Evolução vem como evento { type: 'evolve' }.
+  use(itemId, ctx = {}) { return useItem(this, itemId, ctx); }
 
   heal() { this.hp = this.stats.hp; this.status = null; }
 
-  // XP de derrotar este Pokémon (fórmula da geração 3).
-  xpYield(trainer = false) {
-    return Math.floor((this.sp.baseExp * this.level * (trainer ? 1.5 : 1)) / 7);
+  toJSON() {
+    return { v: SAVE_VERSION, dex: this.dex, level: this.level, ivs: this.ivs, evs: this.evs, nature: this.nature,
+      ability: this.ability, gender: this.gender, shiny: this.shiny, friendship: this.friendship, item: this.item,
+      ball: this.ball, metLevel: this.metLevel, nick: this.nick, xp: this.xp, moves: this.moves, status: this.status,
+      hp: this.hp, uid: this.uid };
   }
 
-  toJSON() {
-    return { dex: this.dex, level: this.level, ivs: this.ivs, nick: this.nick, xp: this.xp,
-      moves: this.moves, status: this.status, hp: this.hp, uid: this.uid };
+  // Lê um save. Saves antigos (sem `v`): mantém nível, IVs, XP, golpes, PS e uid; sorteia natureza/gênero/
+  // habilidade uma vez; EVs zerados; nunca vira shiny por migração; golpes que não existem mais são trocados.
+  static from(o) {
+    const sp = SPECIES[o.dex];
+    if (!sp) throw new Error(`Espécie desconhecida no save: ${o.dex}`);
+    const opts = { ...o };
+    if (!o.v) {
+      opts.evs = [0, 0, 0, 0, 0, 0];
+      opts.shiny = false;
+      opts.friendship = sp.friendship ?? 50;
+      opts.item = null;
+    }
+    if (!Array.isArray(opts.ivs) || opts.ivs.length !== 6) opts.ivs = undefined;
+    if (!Array.isArray(opts.evs) || opts.evs.length !== 6) opts.evs = undefined;
+    const moves = (o.moves ?? []).filter((id) => MOVES[id]);
+    opts.moves = moves.length ? [...new Set(moves)].slice(0, 4) : undefined;
+    if (o.ability && !(sp.abilities.includes(o.ability) || sp.hidden === o.ability)) opts.ability = undefined;
+    const m = new Mon(o.dex, o.level, opts);
+    if (o.hp != null) m.hp = Math.max(0, Math.min(m.stats.hp, o.hp));
+    return m;
   }
-  static from(o) { return new Mon(o.dex, o.level, o); }
 }
 
 export function moveInfo(id) { return MOVES[id]; }
+export { STAT_KEYS };
