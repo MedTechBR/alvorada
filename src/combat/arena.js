@@ -136,8 +136,8 @@ export class Arena {
       if (f.spread > 0 && f.depth < 3) { f.spread -= dt; if (f.spread <= 0) for (const [i, j] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) if (map.at(f.tx + i, f.ty + j) === TILE.TALL && Math.random() < 0.55) this.ignite((f.tx + i) * T + 8, (f.ty + j) * T + 8, f.depth + 1); }
       if (f.t <= 0) {
         this.fires.delete(k);
-        map.setTile(f.tx, f.ty, TILE.PATH);
-        fx.decal('scorch', x, y - 1, { scale: 0.8, alpha: 0.9, life: 40 });
+        map.setTile(f.tx, f.ty, TILE.GRASS2); // mato queimado vira grama rasteira chamuscada
+        fx.decal('scorch', x + (Math.random() - 0.5) * 4, y - 1 + (Math.random() - 0.5) * 3, { scale: 0.7 + Math.random() * 0.25, alpha: 0.45, life: 40 });
         fx.emit(x, y - 4, { tex: 'ember', n: 4, speed: 20, life: 0.8, vz: 30, grav: 40, add: true });
       }
     }

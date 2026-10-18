@@ -500,11 +500,13 @@ export class Combat {
     for (let i = 0; i < B.length; i++) for (let j = i + 1; j < B.length; j++) {
       const a = B[i], b = B[j];
       if (a.dead || b.dead || a.struggle || b.struggle || !this.hostile(a.user, b.user)) continue;
-      const close = Math.hypot(a.hx - b.hx, a.hy - b.hy) < (a.cfg.width + b.cfg.width) / 2 + 6
-        || segDist(a.hx, a.hy, b.ox, b.oy, b.hx, b.hy) < b.cfg.width / 2 + 2 || segDist(b.hx, b.hy, a.ox, a.oy, a.hx, a.hy) < a.cfg.width / 2 + 2;
-      if (!close) continue;
+      // os jatos se tocam em algum ponto (inclusive frente a frente, sobrepostos)
+      const lim = (a.cfg.width + b.cfg.width) / 2 + 3;
+      let close = false;
+      for (let k = 0; k <= 8 && !close; k++) { const t = k / 8; if (segDist(a.ox + (a.hx - a.ox) * t, a.oy + (a.hy - a.oy) * t, b.ox, b.oy, b.hx, b.hy) < lim) close = true; }
+      if (!close || a.len < 10 || b.len < 10) continue;
       const d = Math.hypot(b.ox - a.ox, b.oy - a.oy) || 1;
-      const s = { a, b, k: clamp(Math.hypot(a.hx - a.ox, a.hy - a.oy) / d, 0.2, 0.8), t: 0, max: 3.2, ring: 0, mx: (a.hx + b.hx) / 2, my: (a.hy + b.hy) / 2 };
+      const s = { a, b, k: clamp(Math.hypot(a.hx - a.ox, a.hy - a.oy) / d, 0.38, 0.62), t: 0, max: 3.2, ring: 0, mx: (a.hx + b.hx) / 2, my: (a.hy + b.hy) / 2 };
       a.struggle = b.struggle = s; this.struggles.push(s);
       this.g.fx.number(s.mx, s.my - 22, a.user.side === 'ally' || b.user.side === 'ally' ? 'Aperte o golpe!' : 'Disputa!', '#ffe27a', true, 'banner');
       this.g.fx.kick(0.3, 0.1); this.sfx('clash');
@@ -518,7 +520,7 @@ export class Combat {
     // o selvagem também "aperta"
     for (const bm of [a, b]) { if (bm.user.side === 'wild' && Math.random() < dt * 3.5) bm.mash = Math.min(1.6, bm.mash + 0.3); bm.mash *= 1 - Math.min(1, dt * 1.6); }
     const fa = force(a), fb = force(b);
-    s.k = clamp(s.k + (fa - fb) / (fa + fb) * 0.55 * dt, 0, 1);
+    s.k = clamp(s.k + (fa - fb) / (fa + fb) * 0.4 * dt, 0, 1);
     // apontam um para o outro
     a.ang = Math.atan2(b.oy - a.oy, b.ox - a.ox); b.ang = Math.atan2(a.oy - b.oy, a.ox - b.ox);
     s.mx = a.ox + (b.ox - a.ox) * s.k; s.my = a.oy + (b.oy - a.oy) * s.k;
