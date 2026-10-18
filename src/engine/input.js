@@ -5,7 +5,7 @@ const KEYS = {
   KeyW: 'up', ArrowUp: 'up', KeyS: 'down', ArrowDown: 'down', KeyA: 'left', ArrowLeft: 'left', KeyD: 'right', ArrowRight: 'right',
   ShiftLeft: 'run', ShiftRight: 'run', Space: 'dodge', KeyE: 'act', Enter: 'act', KeyQ: 'ball', Tab: 'swap', KeyF: 'feed',
   Digit1: 'm0', Digit2: 'm1', Digit3: 'm2', Digit4: 'm3', Escape: 'menu', KeyM: 'menu', F3: 'perf',
-  KeyB: 'catch', KeyR: 'recall', KeyC: 'alt', KeyX: 'jump', Equal: 'zoomIn', NumpadAdd: 'zoomIn', Minus: 'zoomOut', NumpadSubtract: 'zoomOut',
+  KeyB: 'catch', KeyG: 'ballNext', KeyR: 'recall', KeyC: 'alt', KeyX: 'jump', Equal: 'zoomIn', NumpadAdd: 'zoomIn', Minus: 'zoomOut', NumpadSubtract: 'zoomOut',
 };
 
 export class Input {
@@ -36,7 +36,7 @@ export class Input {
     canvas.addEventListener('touchmove', (e) => {
       if (e.touches.length !== 2 || !pinch) return;
       const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-      if (d > pinch * 1.25) { this.zoomDelta += 1; pinch = d; } else if (d < pinch / 1.25) { this.zoomDelta -= 1; pinch = d; }
+      if (d > pinch * 1.4) { this.zoomDelta += 1; pinch = d; } else if (d < pinch / 1.4) { this.zoomDelta -= 1; pinch = d; } // 1,4: um passo de zoom a cada abertura razoável dos dedos
     }, { passive: true });
     canvas.addEventListener('touchend', () => { pinch = null; }, { passive: true });
     if (IS_TOUCH) this.#touch();

@@ -187,6 +187,12 @@ for (const [id, g] of Object.entries(GOLPES)) {
   MOVES[id] = m;
 }
 
+// Correções de efeito (a importação pôs a mudança de status no alvo, ou não trouxe o efeito): quem muda é o usuário
+const ALL5 = ['atk', 'def', 'spa', 'spd', 'spe'].map((stat) => ({ stat, by: 1 }));
+Object.assign(MOVES.trailblaze?.eff ?? {}, { self: true }); // Desbravar: +1 Velocidade de quem usa
+if (MOVES.scaleShot) MOVES.scaleShot.eff = { stat: 'spe', by: 1, stats: [{ stat: 'def', by: -1 }, { stat: 'spe', by: 1 }], self: true, chance: 1 };
+if (MOVES.silverWind) MOVES.silverWind.eff = { stat: 'atk', by: 1, stats: ALL5, self: true, chance: 0.1 };
+
 // grafias alternativas usadas no roteiro
 MOVES.watersport = MOVES.waterSport;
 

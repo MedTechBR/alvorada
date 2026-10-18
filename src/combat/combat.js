@@ -16,6 +16,7 @@ import { animFor, kindOf } from './anims/index.js';
 const M = 16;            // 1 m = 16 px
 const TAU = Math.PI * 2;
 const WARN_HIT = 0xff3b2f, WARN_SOFT = 0xffd84a;
+const STAGE_DECAY = 6; // segundos para um estágio (+1/−1) se desfazer
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const angDiff = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
 function segDist(px, py, ax, ay, bx, by) {
@@ -119,7 +120,7 @@ export class Combat {
     user.charging = { slot, id, mv, kind, t: 0, W, ang, tx: target.x, ty: target.y, target, lockAt: W * 0.62, A: animFor(id) };
     user.lock = W + 0.05;
     user.play(this.pickAnim(user, ['Charge', 'Idle']), true);
-    this.sfx('warn', mv.type, 0.15);
+    this.sfx('warn', null, 0.35); // vários selvagens avisando juntos não viram um apito contínuo
     return true;
   }
   #updateCharging(e, dt) {
@@ -663,7 +664,7 @@ export class Combat {
     const g = this.g, e = mv.eff ?? {};
     if (A.self) A.self(this.vfx, user); else this.vfx.aura(user, mv, id, (e.by ?? 1) > 0);
     if (e.heal) { const hp = Math.round(user.mon.stats.hp * e.heal); user.mon.hp = Math.min(user.mon.stats.hp, user.mon.hp + hp); g.fx.number(user.x, user.y - 30, '+' + hp, '#7dff8a'); if (e.sleep) { user.stun = 2.5; user.sleepFx = 2.5; } }
-    if (e.stat) { user.stages[e.stat] = clamp((user.stages[e.stat] ?? 0) + (e.by ?? 1), -6, 6); g.fx.number(user.x, user.y - 30, e.by > 0 ? 'Subiu!' : 'Caiu!', '#9ad0ff'); }
+    if (e.stat || e.stats) this.stages(user, e, 1);
     if (e.crit) { user.critBoost = 20; g.fx.number(user.x, user.y - 30, 'Focado!', '#ffb347'); }
     if (e.splash) g.fx.number(user.x, user.y - 30, 'Nada aconteceu...', '#cccccc');
     if (id === 'doubleTeam') for (let i = 0; i < 6; i++) g.later(i * 0.04, () => { const s = (i % 2 ? 1 : -1) * (6 + i * 2); const ox = user.view.x; user.view.x += s; this.vfx.afterimage(user, 0xffffff, 0.6, 0.5); user.view.x = ox; });
@@ -672,6 +673,16 @@ export class Combat {
       const a = Math.random() * TAU; user.x += Math.cos(a) * 90; user.y += Math.sin(a) * 90; g.map.resolve(user, user.r);
       this.vfx.impact('psychic', user.x, this.centerY(user), 0, 1, user.y); this.sfx('teleport');
     }
+  }
+
+  // Muda os estágios de `e.stats` (vários status, ex.: Dança do Dragão, Combate Corpo a Corpo) ou de `e.stat` em `ent`.
+  // Antes só o primeiro status mudava: Quebra-Casca só baixava a Defesa, Dança do Dragão só subia o Ataque.
+  stages(ent, e, sign = 1) {
+    const list = e.stats?.length ? e.stats : e.stat ? [{ stat: e.stat, by: e.by ?? sign }] : [];
+    let up = false, down = false;
+    for (const { stat, by } of list) { ent.stages[stat] = clamp((ent.stages[stat] ?? 0) + by, -6, 6); if (by > 0) up = true; else down = true; }
+    if (list.length) { ent.stageT = 6; this.g.fx.number(ent.x, ent.y - 30, up && down ? 'Mudou!' : up ? 'Subiu!' : 'Caiu!', '#9ad0ff'); }
+    return list.length > 0;
   }
 
   // ---------- formas novas: raio direto, raio do céu, onda de surfe, golpe no alvo, linha, escudo ----------
@@ -767,7 +778,7 @@ export class Combat {
   #shield(user, mv, id, A) {
     const sh = A.shield ?? { color: 0x5aff8a, dur: 1 };
     user.shield = sh; user.shieldT = sh.dur;
-    const e = mv.eff ?? {}; if (e.stat) user.stages[e.stat] = clamp((user.stages[e.stat] ?? 0) + (e.by ?? 1), -6, 6);
+    const e = mv.eff ?? {}; if (e.stat || e.stats) this.stages(user, e, 1);
     this.g.fx.ring(user.x, this.centerY(user), sh.color, 8, 0.4, { squash: 1, width: 2 });
     this.g.fx.light(user.x, this.centerY(user), sh.color, 34, 0.3);
     this.sfx('shield');
@@ -802,8 +813,9 @@ export class Combat {
     if (!info.quiet || Math.random() < 0.15) {
       if (e.status && !t.mon.status && Math.random() < (e.chance ?? 0.1)) this.#applyStatus(t, e.status);
       if (e.flinch && Math.random() < e.flinch) t.stun = Math.max(t.stun, 0.35);
-      if (e.stat && !e.self && Math.random() < (e.chance ?? 1)) { t.stages[e.stat] = clamp((t.stages[e.stat] ?? 0) + (e.by ?? -1), -6, 6); g.fx.number(t.x, t.y - 30, 'Caiu!', '#9ad0ff'); }
-      if (e.stat && e.self && Math.random() < (e.chance ?? 1)) { user.stages[e.stat] = clamp((user.stages[e.stat] ?? 0) + (e.by ?? 1), -6, 6); }
+      if (e.stat && !e.self && Math.random() < (e.chance ?? 1)) this.stages(t, e, -1);
+      // no próprio usuário: uma vez por uso (golpes de vários acertos não somam −3 de Defesa no Combate Corpo a Corpo)
+      if (e.stat && e.self && (user.selfStatAt?.id !== id || g.time - user.selfStatAt.t > 0.8)) { user.selfStatAt = { id, t: g.time }; if (Math.random() < (e.chance ?? 1)) this.stages(user, e, 1); }
       if (e.confuse && Math.random() < e.confuse) t.confused = 3;
       if (e.bind) { t.stun = Math.max(t.stun, e.bind * 0.5); g.fx.ring(t.x, t.y - 6, typeHex(mv.type), 5, 0.6, { squash: 0.5, width: 2 }); }
     }
@@ -867,7 +879,7 @@ export class Combat {
   #status(user, t, mv) {
     const e = mv.eff ?? {};
     if (e.status && !t.mon.status && Math.random() < (e.chance ?? 1)) this.#applyStatus(t, e.status);
-    if (e.stat && !e.self) { t.stages[e.stat] = Math.max(-6, (t.stages[e.stat] ?? 0) + (e.by ?? -1)); this.g.fx.number(t.x, t.y - 30, 'Caiu!', '#9ad0ff'); this.vfx.aura(t, mv, null, false); }
+    if (e.stat && !e.self) { this.stages(t, e, -1); this.vfx.aura(t, mv, null, (e.by ?? -1) > 0); }
     if (e.confuse) { t.confused = 4; this.g.fx.number(t.x, t.y - 34, 'Confuso!', '#ff9adf'); }
     if (e.seed) { t.seeded = { by: user, t: 8, tick: 1 }; this.g.fx.number(t.x, t.y - 34, 'Semeado!', '#7dff8a'); }
     if (e.knock) { const d = Math.hypot(t.x - user.x, t.y - user.y) || 1; t.kx += (t.x - user.x) / d * e.knock * 34; t.ky += (t.y - user.y) / d * e.knock * 34; t.react?.({ power: 1.4, eff: 1, quiet: true, dx: (t.x - user.x) / d, dy: (t.y - user.y) / d }); }
@@ -924,6 +936,9 @@ export class Combat {
     this.gfx.clear(); this.gfxN.clear();
     this.pilot.drawWorld(G);
     for (const e of g.entities) {
+      // estágios de status voltam ao normal aos poucos (1 nível a cada STAGE_DECAY s): numa luta de 30 s, Rosnado e
+      // Chicote em sequência levavam a Defesa a −6 e um Tackle tirava metade da vida
+      if (e.stages && (e.stageT = (e.stageT ?? STAGE_DECAY) - dt) <= 0) { e.stageT = STAGE_DECAY; for (const k in e.stages) if (e.stages[k]) e.stages[k] -= Math.sign(e.stages[k]); }
       if (e.charging) { this.#updateCharging(e, dt); if (e.charging && !e.charging.ally && e.side !== 'ally') this.#drawTelegraph(G, e); }
       if (e.critBoost > 0) e.critBoost -= dt;
       if (e.seeded && e.alive) {

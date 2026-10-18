@@ -10,14 +10,14 @@ import { MAX_PLAYERS } from '../net/room.js';
 // (não mexe no style.css da interface).
 
 const CSS = `
-#net { position: fixed; inset: 0; pointer-events: none; z-index: 30; font: 600 14px/1.3 "Avenir Next", "Nunito", system-ui, sans-serif; color: #1c2a20; }
-#net button { font: inherit; font-weight: 800; cursor: pointer; border-radius: 10px; border: 3px solid #3a4a3e; background: #f7f3e6; color: #1c2a20; min-height: 44px; padding: 6px 14px; }
+#net { position: fixed; inset: 0; pointer-events: none; z-index: 30; font: 700 14px/1.3 "Nunito", "Avenir Next", system-ui, sans-serif; color: #1d2340; }
+#net button { font: inherit; font-weight: 800; cursor: pointer; border-radius: 999px; border: 3px solid #36426b; background: #fff; color: #1d2340; min-height: 44px; padding: 6px 14px; }
 #net button:active { transform: translateY(1px); }
 #net button.pri { background: #e8584a; color: #fff; border-color: #8e2a22; }
 #net button.ok { background: #4cb86a; color: #fff; border-color: #24603a; }
-#net button.ghost { background: transparent; border-color: rgba(58,74,62,.35); }
+#net button.ghost { background: transparent; border-color: rgba(54,66,107,.35); }
 #net button:disabled { opacity: .45; cursor: default; }
-#net input { font: inherit; font-weight: 700; width: 100%; min-height: 44px; padding: 8px 11px; border-radius: 9px; border: 3px solid #3a4a3e; background: #fff; color: #1c2a20; user-select: text; -webkit-user-select: text; }
+#net input { font: inherit; font-weight: 700; width: 100%; min-height: 44px; padding: 8px 11px; border-radius: 9px; border: 3px solid #36426b; background: #fff; color: #1d2340; user-select: text; -webkit-user-select: text; }
 #net label { display: block; font-size: 12px; font-weight: 800; opacity: .75; margin: 8px 0 3px; }
 #net .pill { pointer-events: auto; position: absolute; }
 #net-btn { left: 12px; top: 92px; min-width: 96px; box-shadow: 0 3px 0 rgba(0,0,0,.25); }
@@ -37,9 +37,9 @@ const CSS = `
 #net-near { position: absolute; left: 50%; bottom: 84px; transform: translateX(-50%); display: flex; gap: 6px; align-items: center; pointer-events: auto; background: rgba(20,30,24,.82); color: #fff; padding: 6px 8px 6px 12px; border-radius: 12px; }
 #net-near[hidden] { display: none; }
 #net-near button { min-height: 40px; }
-.net-modal { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(10,16,12,.45); pointer-events: auto; padding: 12px; }
+.net-modal { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(20,28,60,.42); pointer-events: auto; padding: 12px; }
 .net-modal[hidden] { display: none; }
-.net-card { background: #f7f3e6; border: 3px solid #3a4a3e; border-radius: 14px; box-shadow: 0 5px 0 rgba(0,0,0,.3); width: min(460px, 100%); max-height: 88vh; overflow: auto; padding: 14px 16px 16px; }
+.net-card { background: linear-gradient(#ffffff, #f6f8fd); border: 3px solid #36426b; border-radius: 16px; box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 5px #d3ddf2, 0 5px 0 rgba(29,35,64,.25); width: min(460px, 100%); max-height: 88vh; overflow: auto; padding: 14px 16px 16px; }
 .net-card h2 { margin: 0 0 8px; font-size: 19px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .net-card h3 { margin: 14px 0 4px; font-size: 14px; text-transform: uppercase; letter-spacing: .6px; opacity: .7; }
 .net-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
@@ -47,27 +47,27 @@ const CSS = `
 .net-code { font: 900 30px ui-monospace, Menlo, monospace; letter-spacing: 2px; background: #20392a; color: #b8ffb0; border-radius: 10px; padding: 6px 12px; text-align: center; user-select: text; -webkit-user-select: text; }
 .net-small { font-size: 12px; opacity: .7; }
 .net-err { color: #b3261e; font-weight: 800; min-height: 1.2em; margin-top: 8px; }
-.net-pl { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 2px dashed rgba(58,74,62,.2); flex-wrap: wrap; }
-.net-pl i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #3a4a3e; flex: none; }
+.net-pl { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 2px dashed rgba(54,66,107,.2); flex-wrap: wrap; }
+.net-pl i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #36426b; flex: none; }
 .net-pl .nm { flex: 1 1 120px; font-weight: 800; }
-.net-pl .tag { font-size: 11px; background: #3a4a3e; color: #fff; border-radius: 6px; padding: 1px 6px; margin-left: 4px; }
+.net-pl .tag { font-size: 11px; background: #36426b; color: #fff; border-radius: 6px; padding: 1px 6px; margin-left: 4px; }
 .net-pl .tag.drop { background: #b3261e; }
 #net .net-pl button { min-height: 40px; padding: 4px 10px; }
 .net-tabs { display: flex; gap: 6px; margin-bottom: 4px; }
 .net-tabs button { flex: 1; }
-#net .net-tabs button.cur { background: #3a4a3e; color: #fff; }
+#net .net-tabs button.cur { background: #36426b; color: #fff; }
 .net-check { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 13px; }
 #net .net-check input { width: 22px; min-height: 22px; flex: none; }
 #net-ask { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); width: min(440px, 94vw); pointer-events: auto; }
 #net-ask[hidden] { display: none; }
 #net-ask .net-card { padding: 12px 14px; }
 .net-mons { display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 8px; margin-top: 8px; }
-#net .net-mon { border: 3px solid #3a4a3e; border-radius: 11px; background: #fff; padding: 6px; display: flex; gap: 6px; align-items: center; cursor: pointer; min-height: 56px; text-align: left; font-weight: 700; }
+#net .net-mon { border: 3px solid #36426b; border-radius: 11px; background: #fff; padding: 6px; display: flex; gap: 6px; align-items: center; cursor: pointer; min-height: 56px; text-align: left; font-weight: 700; }
 #net .net-mon.sel { background: #ffe39a; border-color: #b0791a; }
 #net .net-mon.ko { opacity: .55; }
 .net-mon canvas { width: 44px; height: 44px; image-rendering: pixelated; flex: none; }
 .net-mon small { display: block; opacity: .65; font-size: 11px; }
-.net-sum { display: flex; gap: 10px; align-items: flex-start; background: #fff; border: 3px solid #3a4a3e; border-radius: 11px; padding: 8px; min-height: 92px; }
+.net-sum { display: flex; gap: 10px; align-items: flex-start; background: #fff; border: 3px solid #36426b; border-radius: 11px; padding: 8px; min-height: 92px; }
 .net-sum canvas { width: 72px; height: 72px; image-rendering: pixelated; flex: none; }
 .net-sum .who { font-size: 11px; font-weight: 800; opacity: .6; text-transform: uppercase; letter-spacing: .5px; }
 .net-sum ul { margin: 4px 0 0; padding-left: 16px; font-size: 12px; }
@@ -100,11 +100,11 @@ const CSS = `
 @keyframes cp { from { transform: scale(1.8); opacity: 0; } 30% { opacity: 1; } }
 #net-duel { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); display: flex; gap: 10px; pointer-events: auto; align-items: stretch; }
 #net-duel[hidden] { display: none; }
-#net-duel .side { background: #f7f3e6; border: 3px solid #3a4a3e; border-radius: 10px; padding: 5px 9px; min-width: 150px; }
+#net-duel .side { background: #f7f3e6; border: 3px solid #36426b; border-radius: 10px; padding: 5px 9px; min-width: 150px; }
 #net-duel .side.foe { border-color: #8e2a22; }
 #net-duel .bar { height: 7px; background: #5b6b5e; border-radius: 4px; overflow: hidden; margin-top: 4px; }
 #net-duel .bar i { display: block; height: 100%; background: #4cd06a; transition: width .25s; }
-#net-duel .dots { display: flex; gap: 3px; margin-top: 4px; } #net-duel .dots b { width: 9px; height: 9px; border-radius: 50%; background: #e8584a; border: 2px solid #3a4a3e; } #net-duel .dots b.ko { background: #777; }
+#net-duel .dots { display: flex; gap: 3px; margin-top: 4px; } #net-duel .dots b { width: 9px; height: 9px; border-radius: 50%; background: #e8584a; border: 2px solid #36426b; } #net-duel .dots b.ko { background: #777; }
 #net-duel .vs { color: #fff; font-weight: 900; align-self: center; text-shadow: 0 2px 0 rgba(0,0,0,.5); }
 #net-duel button { min-height: 36px; padding: 2px 10px; align-self: center; }
 @media (max-width: 760px) {
@@ -379,7 +379,7 @@ export class OnlineUI {
     const types = mon.types.map((x) => TYPE_PT[x] ?? x).join('/');
     return `<div class="net-sum"><canvas data-dex="${mon.dex}"></canvas><div style="flex:1">
       <div class="who">${esc(who)}</div><b>${esc(mon.name)}</b> <span class="net-small">${esc(mon.sp.name)} · Nv. ${mon.level} · ${esc(types)}</span>
-      <div class="net-small" style="opacity:.85">HP ${mon.hp}/${mon.stats.hp} · ${ivs}${nat}</div>
+      <div class="net-small" style="opacity:.85">PS ${mon.hp}/${mon.stats.hp} · ${ivs}${nat}</div>
       <ul>${mon.moves.map((id) => `<li>${esc(MOVES[id]?.name ?? id)} <span class="net-small">${esc(TYPE_PT[MOVES[id]?.type] ?? '')} · ${MOVES[id]?.power ?? '—'}</span></li>`).join('')}</ul></div></div>`;
   }
   async tradeRender(t) {

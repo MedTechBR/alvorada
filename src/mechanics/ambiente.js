@@ -24,4 +24,4 @@ export const isNight = () => timeOfDay() === 'night';
 export const weather = () => estado.clima;       // 'rain' | 'sun' | 'sand' | 'snow' | null
 export const terrain = () => estado.campo;       // 'electric' | 'grassy' | 'misty' | 'psychic' | null
 export const fullMoon = () => !!estado.luaCheia;
-export const inCave = () => !!estado.caverna;
+export const inCave = () => !!(typeof estado.caverna === 'function' ? estado.caverna() : estado.caverna);
