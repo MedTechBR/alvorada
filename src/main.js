@@ -10,7 +10,7 @@ import { loadPokemonSprites } from './sprites/pmd.js';
 import { PokeEntity } from './entities/pokemon.js';
 import { Combat } from './combat/combat.js';
 import { Mon } from './data/mon.js';
-import { SPECIES, BIOME_ENCOUNTERS, speciesKey, genderForm } from './data/species.js';
+import { SPECIES, BIOME_ENCOUNTERS, speciesKey, genderForm, formFromApi } from './data/species.js';
 import { MOVES } from './data/moves.js';
 import { TYPE_PT } from './data/types.js';
 import { Audio } from './audio/audio.js';
@@ -213,8 +213,10 @@ class Game {
       const table = this.#encounterTable(own, biome, !room && nightNow(), zone, room ? null : x, room ? null : y).filter((e) => this.available.includes(e[0]) && SPECIES[e[0]]);
       const pool = table.length ? table : this.available.filter((d) => SPECIES[d] && d !== 130).map((d) => [d, 3, 8, 1]);
       let r = Math.random() * pool.reduce((s, e) => s + e[3], 0); const entry = pool.find((e) => (r -= e[3]) < 0) ?? pool[0];
-      // [dex, nívelMín, nívelMáx, peso, forma?]: a 5ª posição (opcional) é a forma ('alola', 'galar', 'hisui'…)
-      const [dex, lo, hi, , form] = entry;
+      // [dex, nívelMín, nívelMáx, peso, forma?]: a 5ª posição (opcional) é a forma: o id do jogo ('alola') ou
+      // { forma: '<id da PokéAPI>' } como em src/data/habitats.js ({ forma: 'vulpix-alola' })
+      const [dex, lo, hi, , f5] = entry;
+      const form = typeof f5 === 'string' ? f5 : f5?.forma ? formFromApi(f5.forma)?.form : null;
       const mon = new Mon(dex, lo + Math.floor(Math.random() * (hi - lo + 1)), { form: form ?? null });
       const w = new PokeEntity(this, mon, 'wild', x, y);
       await w.ready;

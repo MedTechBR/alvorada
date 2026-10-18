@@ -42,6 +42,16 @@ function byLevel(evo) {
   return e ? { level: e.level, to: e.to, form: e.form ?? null } : undefined;
 }
 
+// Id da forma na PokéAPI ("vulpix-alola", "charizard-mega-x", "tauros-paldea-blaze-breed", usado em
+// src/data/habitats.js) → { dex, form }. Aceita também a chave do jogo ("37-alola").
+const FORM_BY_API = {};
+for (const s of Object.values(SPECIES)) for (const f of Object.values(s.forms)) if (f.api) FORM_BY_API[f.api] = { dex: s.dex, form: f.form };
+export function formFromApi(id) {
+  if (FORM_BY_API[id]) return FORM_BY_API[id];
+  const { dex, form } = parseKey(id);
+  return SPECIES[dex]?.forms[form] ? { dex, form } : null;
+}
+
 // Espécie de uma forma: speciesOf(26) = Raichu; speciesOf(26, 'alola') = Raichu de Alola. Forma que não existe → a padrão.
 export function speciesOf(dex, form = null) {
   const s = SPECIES[dex];

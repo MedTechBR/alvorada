@@ -1,9 +1,9 @@
 {
  "especies": 1025,
- "formas": 391,
+ "formas": 392,
  "formas_por_tipo": {
   "mega": 97,
-  "gmax": 33,
+  "gmax": 34,
   "regional": 57,
   "visual": 108,
   "battle": 22,

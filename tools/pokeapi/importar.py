@@ -135,7 +135,7 @@ twister uTurn waterGun waterPulse waterfall waterSport wildCharge willOWisp wing
 # Pikachu de boné e fantasia, os "starter" de Let's Go, Zygarde/Greninja que só mudam a habilidade, as cores de
 # meteoro do Minior (iguais à padrão), os modos de passeio de Koraidon/Miraidon e as 63 coberturas de Alcremie.
 EXCLUI = re.compile(r'(totem|-cap$|^pikachu-(rock-star|belle|pop-star|phd|libre|cosplay|starter)$|^eevee-starter$|'
-                    r'power-construct|battle-bond|^koraidon-|^miraidon-|^minior-.*-meteor$|^alcremie-|^arceus-unknown$)')
+                    r'power-construct|battle-bond|^koraidon-|^miraidon-|^minior-.*-meteor$|^alcremie-(?!gmax$)|^arceus-unknown$)')
 REGIOES = ('alola', 'galar', 'hisui', 'paldea')
 pforms = rd('pokemon_forms')
 form_row = {int(r['id']): r for r in pforms}
@@ -1114,7 +1114,7 @@ for s in SEL:
             continue
         kind = f['kind']
         name, short = form_pt(s, key, kind, o['name'])
-        fo = {'name': name, 'formName': short, 'kind': kind}
+        fo = {'name': name, 'formName': short, 'kind': kind, 'api': f['ident']}  # api: id da PokéAPI (vulpix-alola)
         if f['pk']:
             sf, ab_ids = stat_fields(f['pk'], r, o)
             used_abil |= ab_ids
