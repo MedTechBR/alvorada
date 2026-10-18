@@ -365,7 +365,7 @@ WALL[TILE.LAVAWALL] = { top: [30, 22, 24], edge: [84, 70, 72], faces: [0, 1].map
   if (y >= 14) c = mul(c, 0.7);
   return c;
 })) };
-WALL[TILE.CANYON] = { top: [196, 136, 90], edge: [150, 92, 58], faces: [0, 1].map((v) => faceFrom((x, y) => {
+WALL[TILE.CANYON] = { top: [190, 98, 64], edge: [236, 158, 108], faces: [0, 1].map((v) => faceFrom((x, y) => {
   const band = Math.floor((y + Math.round(Math.sin(x * 0.5 + v) * 0.8)) / 3);
   const C = [[204, 116, 72], [222, 148, 96], [184, 98, 62], [232, 176, 116], [196, 124, 80]];
   let c = C[(((band + v) % C.length) + C.length) % C.length];
