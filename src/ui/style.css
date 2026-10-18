@@ -364,3 +364,12 @@ body.touch #zoom { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) + 40p
   body #net label { margin: 4px 0 2px; }
   body #net .net-row { margin-top: 6px; }
 }
+
+/* tela limpa (pedido do dono): dicas de tecla só nos primeiros minutos; ações raras do toque atrás do "…" */
+body.dicas-vistas #moves .mv.hint, body.sem-dicas #moves .mv.hint { display: none; }
+#t-mais { display: none; right: 172px; bottom: 154px; }
+#t-mais b { font-size: 22px; line-height: 0.6; }
+body.touch #t-mais { display: flex; }
+body.touch:not(.mais-on) #t-swap, body.touch:not(.mais-on) #t-alt, body.touch:not(.mais-on) #t-jump { visibility: hidden; }
+body.touch.mais-on #t-mais { background: #ffd23f; }
+body.touch.hb-on #t-mais { right: 268px; bottom: 174px; }

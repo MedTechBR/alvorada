@@ -8,6 +8,7 @@ const out = new URL('../shots/', import.meta.url); mkdirSync(out, { recursive: t
 const CENAS = {
   interior: `const s = g.map.spots['dentro_casa_jogador']; g.player.x = s.x; g.player.y = s.y + 24; g.cam.x = s.x; g.cam.y = s.y;`,
   centro: `const s = g.map.spots['dentro_centro_campina'] ?? Object.entries(g.map.spots).find(([k]) => k.startsWith('dentro_centro'))[1]; g.player.x = s.x; g.player.y = s.y; g.cam.x = s.x; g.cam.y = s.y;`,
+  vila: `const s = g.map.spots.inicio; g.player.x = s.x; g.player.y = s.y + 20; g.cam.x = g.player.x; g.cam.y = g.player.y; g.mundo.setHour(10);`,
   noite: `g.mundo.setHour(21.5); const s = g.map.spots.inicio; g.player.x = s.x + 20; g.player.y = s.y + 30; g.cam.x = g.player.x; g.cam.y = g.player.y;`,
   tarde: `g.mundo.setHour(17.4); g.player.x = 297 * 16; g.player.y = 347 * 16;`,
   batalha: `g.player.x = 318 * 16; g.player.y = 292 * 16; g.cam.x = g.player.x; g.cam.y = g.player.y;

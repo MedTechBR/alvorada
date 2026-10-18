@@ -60,7 +60,7 @@ export class Online {
   get inWorld() { return this.mode === 'world'; }
   get selfId() { return this.room?.selfId ?? this.lastSelf; }
   get isHost() { return !!this.room?.isHost; }
-  get worldOn() { return store.get('alv-net-mundo') !== '0'; }
+  get worldOn() { return store.get('alv-net-mundo') === '1'; } // desligado por padrão (Opções → Jogar online)
   nameOf(id) { return this.room?.players.get(id)?.name ?? this.names.get(id) ?? 'Treinador'; }
   // visual escolhido no criador de personagem: game.look (ou game.player.look); senão o padrão
   get look() { return cleanLook(this.g.look ?? this.g.player?.look ?? 'menino'); }

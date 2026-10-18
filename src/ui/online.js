@@ -222,7 +222,7 @@ export class OnlineUI {
   render() {
     const net = this.net, on = net.on, room = net.room;
     this.#badge();
-    this.$('net-quick').hidden = !on;
+    this.$('net-quick').hidden = true; // tela limpa: canal, chat e emote ficam no menu Online (e nas teclas O, T, 5–0)
     if (!on) this.$('net-emos').hidden = true;
     const m = this.$('net-menu');
     if (m.hidden) return;

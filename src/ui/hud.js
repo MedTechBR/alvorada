@@ -35,6 +35,14 @@ export class Hud {
     // botões de toque: ícones e menu
     for (const [id, ic] of [['t-ball', ICONS.ball], ['t-dodge', ICONS.dodge], ['t-swap', ICONS.swap]]) { const b = $(id); if (b) b.innerHTML = ic; }
     const act = $('t-act'); if (act) act.innerHTML = '<b>A</b>';
+    // ações raras (trocar, voar/mergulhar, pular) ficam num botão "…" (menos botões na tela ao mesmo tempo)
+    const tb = $('tbtns');
+    if (tb && !$('t-mais')) {
+      const m = document.createElement('button'); m.className = 'tb small'; m.id = 't-mais'; m.setAttribute('aria-label', 'Mais ações'); m.innerHTML = '<b>…</b>';
+      const alterna = (e) => { e.preventDefault(); e.stopPropagation(); document.body.classList.toggle('mais-on'); clearTimeout(this.maisT); if (document.body.classList.contains('mais-on')) this.maisT = setTimeout(() => document.body.classList.remove('mais-on'), 5000); };
+      m.addEventListener('touchstart', alterna, { passive: false }); m.addEventListener('click', alterna);
+      tb.appendChild(m);
+    }
     const mb = $('menu-btn');
     mb.innerHTML = ICONS.menu + (IS_TOUCH ? '' : '<span>Menu <kbd>M</kbd></span>');
     const open = (e) => { e.preventDefault(); e.stopPropagation(); this.ui.openMenu(); };
@@ -228,6 +236,9 @@ export class Hud {
         });
       }
     }
+    // dicas de tecla da barra de baixo: só nos primeiros 3 minutos de jogo (ou sempre, se a opção pedir)
+    this.tJogo = (this.tJogo ?? 0) + 0.1;
+    this.#set('dicas', this.tJogo > 180, (v) => document.body.classList.toggle('dicas-vistas', v));
     // botão A acende quando há com quem falar
     const ready = !!this.promptKey;
     this.#set('act', ready, (v) => $('t-act')?.classList.toggle('ready', v));
@@ -255,7 +266,7 @@ export class Hud {
     });
   }
 
-  #objDefaultMin() { return this.objPref ? this.objPref === 'min' : IS_TOUCH; }
+  #objDefaultMin() { return this.objPref ? this.objPref === 'min' : true; } // recolhido por padrão (tela limpa)
   #objMin(min, user = false) {
     clearTimeout(this.objT);
     this.objEl.classList.toggle('min', min);
@@ -282,6 +293,10 @@ export class Hud {
   }
 
   toast(text) {
+    // sem textos repetidos: o mesmo aviso não volta antes de 12 s
+    const agora = performance.now(), ult = (this.toastsVistos ??= new Map());
+    if (agora - (ult.get(text) ?? -1e9) < 12000) return;
+    ult.set(text, agora); if (ult.size > 60) ult.delete(ult.keys().next().value);
     const box = $('toasts');
     const el = document.createElement('div'); el.textContent = text; box.prepend(el);
     setTimeout(() => el.remove(), 3400);
