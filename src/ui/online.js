@@ -384,9 +384,9 @@ export class OnlineUI {
     const draw = () => {
       m.innerHTML = `<div class="net-card"><h2><span>Escolha até 3</span><span class="net-small">${sel.length}/3</span></h2>
         <div class="net-small">No duelo todos começam com a vida cheia, e ninguém ganha XP. Sua equipe volta como estava no fim.</div>
-        <div class="net-mons">${party.map((p, i) => `<button class="net-mon ${sel.includes(i) ? 'sel' : ''}" data-i="${i}"><canvas data-dex="${p.dex}"></canvas><span>${esc(p.name)}<small>Nv. ${p.level}${sel.includes(i) ? ` · ${sel.indexOf(i) + 1}º` : ''}</small></span></button>`).join('')}</div>
+        <div class="net-mons">${party.map((p, i) => `<button class="net-mon ${sel.includes(i) ? 'sel' : ''}" data-i="${i}"><canvas data-dex="${p.spriteKey ?? p.dex}"></canvas><span>${esc(p.name)}<small>Nv. ${p.level}${sel.includes(i) ? ` · ${sel.indexOf(i) + 1}º` : ''}</small></span></button>`).join('')}</div>
         <div class="net-row"><button class="pri" data-a="go" ${sel.length ? '' : 'disabled'}>Pronto</button><button data-a="no">Desistir</button></div></div>`;
-      for (const c of m.querySelectorAll('canvas[data-dex]')) portrait(+c.dataset.dex, 48).then((p) => c.replaceWith(p));
+      for (const c of m.querySelectorAll('canvas[data-dex]')) portrait(/^\d+$/.test(c.dataset.dex) ? +c.dataset.dex : c.dataset.dex, 48).then((p) => c.replaceWith(p));
     };
     m.onclick = (e) => {
       const b = e.target.closest('button'); if (!b) return;
@@ -433,7 +433,7 @@ export class OnlineUI {
     const ivs = mon.ivs ? `IVs ${mon.ivs.join('/')}` : '';
     const nat = mon.nature ? ` · natureza ${esc(mon.nature)}` : '';
     const types = mon.types.map((x) => TYPE_PT[x] ?? x).join('/');
-    return `<div class="net-sum"><canvas data-dex="${mon.dex}"></canvas><div style="flex:1">
+    return `<div class="net-sum"><canvas data-dex="${mon.spriteKey ?? mon.dex}"></canvas><div style="flex:1">
       <div class="who">${esc(who)}</div><b>${esc(mon.name)}</b> <span class="net-small">${esc(mon.sp.name)} · Nv. ${mon.level} · ${esc(types)}</span>
       <div class="net-small" style="opacity:.85">PS ${mon.hp}/${mon.stats.hp} · ${ivs}${nat}</div>
       <ul>${mon.moves.map((id) => `<li>${esc(MOVES[id]?.name ?? id)} <span class="net-small">${esc(TYPE_PT[MOVES[id]?.type] ?? '')} · ${MOVES[id]?.power ?? '—'}</span></li>`).join('')}</ul></div></div>`;
@@ -451,11 +451,11 @@ export class OnlineUI {
       ${thSum}${t.bad ? `<div class="net-err">Oferta recusada: ${esc(t.bad)}.</div>` : ''}
       <div class="net-conf ${theyConf ? 'y' : 'n'}">${theyConf ? `${esc(other)} confirmou.` : `${esc(other)} ainda não confirmou.`}</div>
       <h3>Seu Pokémon</h3>
-      <div class="net-mons">${list.map(([ref, p]) => `<button class="net-mon ${String(ref) === String(t.mineIdx) ? 'sel' : ''} ${p.fainted ? 'ko' : ''}" data-ref="${ref}" ${lockd ? 'disabled' : ''}><canvas data-dex="${p.dex}"></canvas><span>${esc(p.name)}<small>Nv. ${p.level}${typeof ref === 'string' ? ' · PC' : ''}</small></span></button>`).join('')}</div>
+      <div class="net-mons">${list.map(([ref, p]) => `<button class="net-mon ${String(ref) === String(t.mineIdx) ? 'sel' : ''} ${p.fainted ? 'ko' : ''}" data-ref="${ref}" ${lockd ? 'disabled' : ''}><canvas data-dex="${p.spriteKey ?? p.dex}"></canvas><span>${esc(p.name)}<small>Nv. ${p.level}${typeof ref === 'string' ? ' · PC' : ''}</small></span></button>`).join('')}</div>
       <div style="margin-top:8px">${mySum}</div>
       <div class="net-conf ${t.myConf ? 'y' : 'n'}">${t.myConf ? 'Você confirmou.' : ''}</div>
       <div class="net-row"><button class="ok" data-a="ok" ${!t.mine || !t.theirs || t.myConf || lockd ? 'disabled' : ''}>Confirmar troca</button><button data-a="no" ${lockd ? 'disabled' : ''}>Cancelar</button></div></div>`;
-    for (const c of m.querySelectorAll('canvas[data-dex]')) portrait(+c.dataset.dex, c.closest('.net-sum') ? 72 : 48).then((p) => c.replaceWith(p));
+    for (const c of m.querySelectorAll('canvas[data-dex]')) portrait(/^\d+$/.test(c.dataset.dex) ? +c.dataset.dex : c.dataset.dex, c.closest('.net-sum') ? 72 : 48).then((p) => c.replaceWith(p));
     m.onclick = (e) => {
       const b = e.target.closest('button'); if (!b || b.disabled) return;
       if (b.dataset.ref != null) { const r = b.dataset.ref; net.trade.offer(r[0] === 'b' ? r : +r); return; }
@@ -466,7 +466,7 @@ export class OnlineUI {
   async tradeAnim(gave, got, done) {
     this.tradeClose();
     const a = this.$('net-anim');
-    const [p1, p2, p3] = await Promise.all([portrait(gave.dex, 120), portrait(got.dex, 120), portrait(got.dex, 140)]);
+    const [p1, p2, p3] = await Promise.all([portrait(gave.spriteKey ?? gave.dex, 120), portrait(got.spriteKey ?? got.dex, 120), portrait(got.spriteKey ?? got.dex, 140)]);
     a.innerHTML = `<div class="stage"><div class="side l"><span class="slot"></span>${esc(gave.name)}</div><div class="side r"><span class="slot"></span>${esc(got.name)}</div>
       <div class="ball b1"></div><div class="ball b2"></div><div class="got"><span class="slot"></span>${esc(got.name)} chegou!</div><div class="msg">Troca concluída</div></div><div class="flash"></div>`;
     const slots = a.querySelectorAll('.slot'); slots[0].replaceWith(p1); slots[1].replaceWith(p2); slots[2].replaceWith(p3);

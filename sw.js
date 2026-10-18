@@ -1,18 +1,19 @@
 // Service worker do Pokémon Alvorada.
 // - Código, mapa e telas: REDE PRIMEIRO (nunca prende uma versão velha do jogo). Se a rede falhar ou demorar
 //   demais, usa a cópia guardada (jogar offline depois da primeira visita).
-// - Sprites dos Pokémon (assets/pmd, ~135 MB no total): CACHE PRIMEIRO e SOB DEMANDA. Cada espécie só é
-//   guardada quando aparece no jogo; nada é baixado de uma vez.
+// - Sprites dos Pokémon (assets/pmd: 1025 espécies e as formas, centenas de MB no total): CACHE PRIMEIRO e SOB
+//   DEMANDA. Cada espécie só é guardada quando aparece no jogo; nada é baixado de uma vez. As listas da raiz de
+//   assets/pmd (index.json, substitutos.json) mudam quando entram sprites novos: essas vão pela rede primeiro.
 // - Na primeira visita a página ainda não passa pelo service worker; por isso ela manda a lista do que já
 //   carregou ({ type: 'guardar', urls }) e ele guarda esses arquivos, para o modo offline funcionar logo.
 const CODE = 'alvorada-codigo-v2';
-const SPR = 'alvorada-sprites-v1';
+const SPR = 'alvorada-sprites-v2'; // v2: todas as espécies e formas, só as animações usadas
 const KEEP = [CODE, SPR];
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'src/main.js', 'src/ui/style.css', 'src/ui/menu.css', 'assets/icons/icon-192.png',
   'https://cdn.jsdelivr.net/npm/pixi.js@8.6.6/dist/pixi.min.mjs'];
 const NET_TIMEOUT = 6000; // ms: rede lenta demais = usa a cópia guardada
 
-const isSprite = (url) => url.origin === location.origin && url.pathname.includes('/assets/pmd/');
+const isSprite = (url) => url.origin === location.origin && url.pathname.includes('/assets/pmd/') && !/\/assets\/pmd\/[^/]+\.json$/.test(url.pathname);
 const cacheable = (url) => (url.origin === location.origin && !url.pathname.startsWith('/__')) || url.hostname === 'cdn.jsdelivr.net';
 
 self.addEventListener('install', (e) => {

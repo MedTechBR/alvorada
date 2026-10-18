@@ -10,7 +10,7 @@ import { loadPokemonSprites } from './sprites/pmd.js';
 import { PokeEntity } from './entities/pokemon.js';
 import { Combat } from './combat/combat.js';
 import { Mon } from './data/mon.js';
-import { SPECIES, BIOME_ENCOUNTERS } from './data/species.js';
+import { SPECIES, BIOME_ENCOUNTERS, speciesKey, genderForm, formFromApi } from './data/species.js';
 import { MOVES } from './data/moves.js';
 import { TYPE_PT } from './data/types.js';
 import { Audio } from './audio/audio.js';
@@ -92,7 +92,7 @@ class Game {
     }
     const start = await this.ui.title();
     this.net.autoStart(); // logado: entra sozinho num canal do mundo (src/net/world.js)
-    for (const m of this.party) loadPokemonSprites(m.dex).catch(() => {}); // já baixa a equipe enquanto a história começa
+    for (const m of this.party) loadPokemonSprites(m.spriteKey).catch(() => {}); // já baixa a equipe enquanto a história começa
     this.mode = 'trainer';
     this.leadIdx = Math.max(0, this.party.findIndex((m) => !m.fainted));
     this.hudInit();
@@ -216,8 +216,11 @@ class Game {
       const table = this.#encounterTable(own, biome, !room && nightNow(), zone, room ? null : x, room ? null : y).filter((e) => this.available.includes(e[0]) && SPECIES[e[0]]);
       const pool = table.length ? table : this.available.filter((d) => SPECIES[d] && d !== 130).map((d) => [d, 3, 8, 1]);
       let r = Math.random() * pool.reduce((s, e) => s + e[3], 0); const entry = pool.find((e) => (r -= e[3]) < 0) ?? pool[0];
-      const [dex, lo, hi] = entry;
-      const mon = new Mon(dex, lo + Math.floor(Math.random() * (hi - lo + 1)));
+      // [dex, nívelMín, nívelMáx, peso, forma?]: a 5ª posição (opcional) é a forma: o id do jogo ('alola') ou
+      // { forma: '<id da PokéAPI>' } como em src/data/habitats.js ({ forma: 'vulpix-alola' })
+      const [dex, lo, hi, , f5] = entry;
+      const form = typeof f5 === 'string' ? f5 : f5?.forma ? formFromApi(f5.forma)?.form : null;
+      const mon = new Mon(dex, lo + Math.floor(Math.random() * (hi - lo + 1)), { form: form ?? null });
       const w = new PokeEntity(this, mon, 'wild', x, y);
       await w.ready;
       // sem internet: só aparecem espécies cujos sprites já estão guardados (nada de bolinha no lugar do Pokémon)
@@ -314,7 +317,7 @@ class Game {
     if (share) for (const m of this.party) if (m !== mon && !m.fainted && m.level < 100) this.#xpEvents(m, m.gainXp(Math.max(1, Math.floor(xp * XP_SHARE)), this.#evoCtx()), false);
     this.hudLead(); this.hudMoves();
   }
-  #evoCtx() { return { partyTypes: this.party.flatMap((m) => m.types) }; }
+  #evoCtx() { return { partyTypes: this.party.flatMap((m) => m.types), partySpecies: this.party.map((m) => m.dex) }; }
   #xpEvents(mon, ev, main) {
     for (const v of ev) {
       if (v.type === 'level') {
@@ -322,7 +325,7 @@ class Game {
         if (this.lead?.mon === mon) this.fx.ring(this.lead.x, this.lead.y - 8, 0xffe27a, 16, 0.6);
       }
       if (v.type === 'learn') this.teach(mon, v.move);
-      if (v.type === 'evolve') this.ui.queue(() => this.evolve(mon, v.to));
+      if (v.type === 'evolve') this.ui.queue(() => this.evolve(mon, v.to, v.form));
     }
     void main;
   }
@@ -333,20 +336,31 @@ class Game {
     this.ui.queue(async () => { if (!mon.moves.includes(id)) await this.ui.menu.askLearn(mon, id); this.hudMoves(); });
   }
   // Evolução com a cena clássica (o mundo para); depois troca o sprite se ele estiver em campo
-  async evolve(mon, to) {
+  // form: forma de destino (Rattata de Alola → Raticate de Alola); sem ela, a padrão ou a do gênero
+  async evolve(mon, to, form = null) {
     if (!SPECIES[to] || mon.dex === to) return;
-    const old = mon.name, from = mon.dex;
-    await evolutionScene(this.ui, old, from, to);
-    const learned = mon.evolveTo(to);
+    const old = mon.name, from = mon.spriteKey;
+    await evolutionScene(this.ui, old, from, speciesKey(to, form ?? genderForm(to, mon.gender)));
+    const learned = mon.evolveTo(to, form);
     const e = this.lead;
     if (e?.mon === mon) {
-      const set = await loadPokemonSprites(to).catch(() => null);
+      const set = await loadPokemonSprites(mon.spriteKey).catch(() => null);
       if (set) e.setSprites(set);
       this.fx.burst(e.x, e.y - 10, 0xffffff, 2);
     }
     dexMark(this, to, 2);
     this.toast(`${old} evoluiu para ${mon.name}!`);
     for (const v of learned ?? []) if (v.type === 'learn') this.teach(mon, v.move);
+    this.hudLead(); this.hudMoves(); this.ui.partyChanged?.();
+  }
+  // Mudou de forma fora da luta (item de forma, como o Catálogo Rotom): troca o sprite se ele estiver em campo
+  async formChanged(mon) {
+    const e = this.lead;
+    if (e?.mon === mon) {
+      const set = await loadPokemonSprites(mon.spriteKey).catch(() => null);
+      if (set) e.setSprites(set);
+      this.fx.burst(e.x, e.y - 10, 0xffffff, 1);
+    }
     this.hudLead(); this.hudMoves(); this.ui.partyChanged?.();
   }
   blackout() {

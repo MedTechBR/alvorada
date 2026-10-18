@@ -1,4 +1,4 @@
-import { SPECIES } from './species.js';
+import { SPECIES, speciesOf, genderForm, isBattleForm } from './species.js';
 import { MOVES } from './moves.js';
 import { NATURES, randomNature } from './natures.js';
 import { itemInfo } from './items.js';
@@ -25,18 +25,26 @@ function rollAbility(sp, rng = Math.random) {
 
 // Um Pokémon da equipe ou selvagem: IVs, EVs, natureza, habilidade, gênero, shiny, amizade, item equipado.
 // Status pela fórmula das gerações 3+; XP, EVs e evolução como nos jogos.
+//
+// Formas: `form` é a forma permanente (null = padrão; 'alola', 'galar', 'hisui', 'paldea', 'heat', 'midnight'…), guardada
+// no save só quando existe (save antigo sem `form` = forma padrão). `tempForm` é a forma de batalha (Mega, Primitiva,
+// Gigantamax, Zen…): não é gravada; quem cuida da mecânica põe e tira com setTempForm(). `sp` já devolve a forma certa
+// (tipos, status, habilidades, golpes, evoluções) e `spriteKey` diz qual sprite usar (26 ou "26-alola").
 export class Mon {
   constructor(dex, level, opts = {}) {
-    const sp = SPECIES[dex];
-    if (!sp) throw new Error(`Espécie desconhecida: ${dex}`);
+    if (!SPECIES[dex]) throw new Error(`Espécie desconhecida: ${dex}`);
     const rng = opts.rng ?? Math.random;
     this.dex = dex;
+    this.form = opts.form && SPECIES[dex].forms[opts.form] && !isBattleForm(dex, opts.form) ? opts.form : null;
+    this.tempForm = null;
+    this.gender = opts.gender !== undefined ? opts.gender : rollGender(SPECIES[dex].genderRate, rng);
+    if (!this.form) this.form = genderForm(dex, this.gender);
+    const sp = this.sp;
     this.level = Math.max(1, Math.min(100, level | 0));
     this.ivs = opts.ivs ?? randomIvs(rng);
     this.evs = opts.evs ?? [0, 0, 0, 0, 0, 0];
     this.nature = NATURES[opts.nature] ? opts.nature : randomNature(rng);
     this.ability = opts.ability ?? rollAbility(sp, rng);
-    this.gender = opts.gender !== undefined ? opts.gender : rollGender(sp.genderRate, rng);
     this.shiny = opts.shiny ?? rng() < SHINY_ODDS;
     this.friendship = opts.friendship ?? sp.friendship ?? 50;
     this.item = opts.item ?? null;
@@ -45,20 +53,31 @@ export class Mon {
     this.nick = opts.nick ?? null;
     this.ot = opts.ot ?? null; // treinador original (Pokémon de troca); null = o jogador
     this.xp = opts.xp ?? expForLevel(sp.growth, this.level);
-    this.moves = opts.moves ?? Mon.defaultMoves(dex, this.level);
+    this.moves = opts.moves ?? Mon.defaultMoves(dex, this.level, this.form);
     this.status = opts.status ?? null; // par | slp | psn | tox | brn | frz
     this.calc();
     this.hp = opts.hp ?? this.stats.hp;
     this.uid = opts.uid ?? Math.random().toString(36).slice(2, 10);
   }
 
-  get sp() { return SPECIES[this.dex]; }
+  get sp() { return speciesOf(this.dex, this.tempForm ?? this.form); }
+  // chave do sprite (src/sprites/pmd.js): 26 ou "26-alola"; a forma de batalha vale enquanto estiver ativa
+  get spriteKey() { return this.sp.key; }
+  get formKind() { return this.sp.kind ?? null; }
+  // Põe (ou tira, com null) a forma de batalha. Mantém a fração de PS. Devolve true se mudou.
+  setTempForm(form) {
+    const f = form && SPECIES[this.dex].forms[form] ? form : null;
+    if (f === this.tempForm) return false;
+    this.tempForm = f;
+    this.calc();
+    return true;
+  }
   get name() { return this.nick || this.sp.name; }
   get types() { return this.sp.types; }
   get fainted() { return this.hp <= 0; }
   get natureName() { return NATURES[this.nature]?.name ?? this.nature; }
 
-  static defaultMoves(dex, level) { return defaultMoves(dex, level); }
+  static defaultMoves(dex, level, form = null) { return defaultMoves(dex, level, form); }
 
   calc() {
     const oldMax = this.stats?.hp;
@@ -97,11 +116,11 @@ export class Mon {
       this.calc();
       this.addFriendship(this.friendship < 100 ? 5 : this.friendship < 200 ? 3 : 2);
       events.push({ type: 'level', level: this.level });
-      for (const id of movesAtLevel(this.dex, this.level)) if (!this.moves.includes(id) && MOVES[id]) events.push({ type: 'learn', move: id });
+      for (const id of movesAtLevel(this.dex, this.level, this.form)) if (!this.moves.includes(id) && MOVES[id]) events.push({ type: 'learn', move: id });
     }
     if (events.length) {
       const ev = evolutionFor(this, 'level', ctx);
-      if (ev) events.push({ type: 'evolve', to: ev.to });
+      if (ev) events.push({ type: 'evolve', to: ev.to, form: ev.form });
     }
     return events;
   }
@@ -124,11 +143,15 @@ export class Mon {
     return { xp, evs, events };
   }
 
-  evolveTo(dex) {
+  // form: forma de destino (evo[].form, ex.: Rattata de Alola → Raticate de Alola); sem ela, a forma padrão
+  // (ou a do gênero, ex.: Espurr fêmea → Meowstic fêmea)
+  evolveTo(dex, form = null) {
     if (!SPECIES[dex]) return [];
+    this.tempForm = null;
     const oldSp = this.sp, ratio = this.stats.hp ? this.hp / this.stats.hp : 1;
     const slot = oldSp.abilities.indexOf(this.ability);
     this.dex = dex;
+    this.form = form && SPECIES[dex].forms[form] ? form : genderForm(dex, this.gender);
     const sp = this.sp;
     if (this.ability === oldSp.hidden && sp.hidden) this.ability = sp.hidden;
     else if (slot >= 0) this.ability = sp.abilities[Math.min(slot, sp.abilities.length - 1)] ?? this.ability;
@@ -137,7 +160,7 @@ export class Mon {
     this.hp = Math.max(1, Math.round(this.stats.hp * ratio));
     // golpes aprendidos ao evoluir (nível 0) e no nível atual
     const events = [];
-    for (const id of [...movesAtLevel(dex, 0), ...movesAtLevel(dex, this.level)]) if (!this.moves.includes(id) && MOVES[id]) events.push({ type: 'learn', move: id });
+    for (const id of [...movesAtLevel(dex, 0, this.form), ...movesAtLevel(dex, this.level, this.form)]) if (!this.moves.includes(id) && MOVES[id]) events.push({ type: 'learn', move: id });
     return events;
   }
 
@@ -150,19 +173,37 @@ export class Mon {
 
   heal() { this.hp = this.stats.hp; this.status = null; }
 
+  // Troca a forma permanente (itens de forma, como o Catálogo Rotom). Recalcula os status mantendo a fração de PS.
+  setForm(form) {
+    const f = form && SPECIES[this.dex].forms[form] && !isBattleForm(this.dex, form) ? form : null;
+    if (f === this.form) return false;
+    const ratio = this.stats.hp ? this.hp / this.stats.hp : 1;
+    this.form = f;
+    this.stats = null;
+    this.calc();
+    this.hp = this.hp <= 0 ? 0 : Math.max(1, Math.round(this.stats.hp * ratio));
+    const ab = this.sp.abilities;
+    if (!ab.includes(this.ability) && this.ability !== this.sp.hidden) this.ability = ab[0] ?? this.ability;
+    return true;
+  }
+
   toJSON() {
-    return { v: SAVE_VERSION, dex: this.dex, level: this.level, ivs: this.ivs, evs: this.evs, nature: this.nature,
+    const o = { v: SAVE_VERSION, dex: this.dex, level: this.level, ivs: this.ivs, evs: this.evs, nature: this.nature,
       ability: this.ability, gender: this.gender, shiny: this.shiny, friendship: this.friendship, item: this.item,
       ball: this.ball, metLevel: this.metLevel, nick: this.nick, ...(this.ot ? { ot: this.ot } : {}), xp: this.xp, moves: this.moves, status: this.status,
       hp: this.hp, uid: this.uid };
+    if (this.form) o.form = this.form; // só quando existe: o save de quem não tem forma fica igual ao antigo
+    return o;
   }
 
   // Lê um save. Saves antigos (sem `v`): mantém nível, IVs, XP, golpes, PS e uid; sorteia natureza/gênero/
   // habilidade uma vez; EVs zerados; nunca vira shiny por migração; golpes que não existem mais são trocados.
   static from(o) {
-    const sp = SPECIES[o.dex];
-    if (!sp) throw new Error(`Espécie desconhecida no save: ${o.dex}`);
+    if (!SPECIES[o.dex]) throw new Error(`Espécie desconhecida no save: ${o.dex}`);
     const opts = { ...o };
+    // forma: a gravada, se ainda existir (forma de batalha nunca fica gravada); sem forma = padrão ou a do gênero
+    opts.form = o.form && SPECIES[o.dex].forms[o.form] && !isBattleForm(o.dex, o.form) ? o.form : (o.gender != null ? genderForm(o.dex, o.gender) : null);
+    const sp = speciesOf(o.dex, opts.form);
     if (!o.v) {
       opts.evs = [0, 0, 0, 0, 0, 0];
       opts.shiny = false;

@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { TYPE_COLOR } from '../data/types.js';
+import { MOVES } from '../data/moves.js';
 
 // Visual de cada golpe e de cada tipo, tudo em pixel art/partículas desenhadas por código.
 // Funções puras de efeito: não mexem em dano nem em regras (isso fica em combat.js).
@@ -19,12 +20,28 @@ const MELEE_STYLE = {
   bite: 'bite', hyperFang: 'bite', bugBite: 'bite', peck: 'stab', poisonJab: 'stab', furyAttack: 'stab', vineWhip: 'whip', bind: 'whip',
   lowKick: 'chop', doubleKick: 'chop', rockSmash: 'blunt', lick: 'ghost', astonish: 'ghost', tackle: 'blunt', slam: 'blunt', pound: 'blunt', stomp: 'blunt', rage: 'blunt',
 };
-export const meleeStyle = (id) => MELEE_STYLE[id] ?? 'blunt';
+// Golpes sem estilo à mão (a maioria das 1025 espécies): estilo pelo nome em inglês, pelas marcas oficiais
+// (mordida, soco, corte) e pelo tipo, para cada um ter a cara certa sem receita própria.
+const STYLE_WORDS = [[/\bbite\b|fang|crunch|jaw|chomp/, 'bite'], [/punch|fist|hammer arm|arm thrust|palm|jab\b|uppercut/, 'fist'],
+  [/kick|stomp|step|foot/, 'kick'], [/claw|swipe|scratch|nail/, 'claw'], [/slash|cut|blade|sword|scythe|razor|edge|cutter|chop/, 'slash'],
+  [/whip|vine|lash|tentacle|wrap|bind|constrict/, 'whip'], [/tail|sweep/, 'tail'], [/horn|peck|drill|stab|spike|sting|lance|needle|pin/, 'stab'],
+  [/lick|tongue/, 'lick'], [/slam|press|crash|body|tackle|charge|headbutt|head/, 'tackle']];
+const STYLE_CACHE = {};
+export const meleeStyle = (id) => {
+  if (MELEE_STYLE[id]) return MELEE_STYLE[id];
+  if (STYLE_CACHE[id]) return STYLE_CACHE[id];
+  const mv = MOVES[id], en = (mv?.en ?? '').toLowerCase(), fl = mv?.flags ?? [];
+  let st = fl.includes('bite') ? 'bite' : fl.includes('punch') ? 'fist' : fl.includes('slicing') ? 'slash' : null;
+  if (!st) st = STYLE_WORDS.find(([re]) => re.test(en))?.[1] ?? null;
+  if (!st) st = mv?.type === 'ghost' ? 'ghost' : mv?.type === 'fighting' ? 'fist' : mv?.type === 'bug' ? 'stab' : mv?.type === 'grass' ? 'whip' : 'blunt';
+  return (STYLE_CACHE[id] = st);
+};
 
 // animação do PMD preferida para cada estilo (só usa se a espécie tiver)
 export const ANIM_PREF = {
   claw: ['Swing', 'Strike', 'Attack'], slash: ['Swing', 'Strike', 'Attack'], bite: ['Strike', 'Attack'], stab: ['Strike', 'Attack'],
-  whip: ['Swing', 'Attack'], chop: ['Strike', 'Pound', 'Attack'], blunt: ['Pound', 'Attack'], ghost: ['Strike', 'Attack'],
+  whip: ['Swing', 'Attack'], chop: ['Strike', 'Pound', 'Attack'], fist: ['Strike', 'Pound', 'Attack'], kick: ['Strike', 'Attack'],
+  tail: ['Swing', 'Rotate', 'Attack'], tackle: ['Attack', 'Strike'], lick: ['Strike', 'Attack'], blunt: ['Pound', 'Attack'], ghost: ['Strike', 'Attack'],
   dash: ['Attack', 'Strike'], spin: ['Rotate', 'Attack'], proj: ['Shoot', 'Charge', 'Attack'], beam: ['Shoot', 'Charge', 'Attack'],
   cone: ['Shoot', 'Attack'], wave: ['Charge', 'Shoot', 'Attack'], quake: ['Pound', 'Attack'], self: ['Charge', 'Shoot', 'Idle'], rain: ['Charge', 'Shoot', 'Attack'], cloud: ['Shoot', 'Attack'],
 };
@@ -77,6 +94,9 @@ export class Vfx {
       case 'flying': Object.assign(H, { tex: 'slash', tint: 0xe8f6ff, orient: true, scale: 1.3 * big, rotOff: Math.PI / 2 }); break;
       case 'ghost': case 'dark': Object.assign(H, { tex: 'wisp', tint: t === 'dark' ? 0xb05a6a : 0xc8a0ff, scale: 1.4, orient: true, rotOff: -Math.PI / 2 }); break;
       case 'normal': Object.assign(H, id === 'supersonic' ? { tex: 'ring', tint: 0xffffff, scale: 1.0 } : { tex: 'ball', scale: 1.1 }); break;
+      // tipos sem cabeça própria: Aço vira estilhaço metálico; Lutador, esfera de energia com anel
+      case 'steel': Object.assign(H, { tex: 'shard', tint: 0xe8f4ff, orient: true, scale: 1.5 * big, add: false, rotOff: Math.PI / 2 }); break;
+      case 'fighting': Object.assign(H, { tex: 'ball', tint: 0xffc08a, scale: 1.3 * big, haloScale: 1.7 * big }); break;
     }
     return H;
   }

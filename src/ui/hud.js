@@ -137,7 +137,7 @@ export class Hud {
     if (!m) return;
     const k = m.hp / m.stats.hp;
     this.#set('nm', m.name, (v) => { E.nm.textContent = v; });
-    this.#set('pic', m.dex, (dex) => { E.pic.innerHTML = ''; portraitURL(dex).then((src) => { if (src && this.v.pic === dex) E.pic.innerHTML = `<img src="${src}" alt="">`; }); });
+    this.#set('pic', m.spriteKey ?? m.dex, (dex) => { E.pic.innerHTML = ''; portraitURL(dex).then((src) => { if (src && this.v.pic === dex) E.pic.innerHTML = `<img src="${src}" alt="">`; }); });
     this.#set('lv', m.level, (v) => { E.lv.textContent = 'Nv. ' + v; });
     this.#set('hpw', Math.round(k * 200), (v) => { E.hp.style.width = v / 2 + '%'; });
     this.#set('hpc', hpCls(k), (v) => { E.hp.className = v; });
@@ -239,9 +239,9 @@ export class Hud {
       el.innerHTML = `<div class="fo-top"><b>${esc(b.def.name)}</b><span class="fo-balls">${[...balls].map((c) => `<i class="${c === 'k' ? 'ko' : c === 'o' ? 'out' : ''}"></i>`).join('')}</span></div>` +
         b.active.filter((e) => e.alive).map((e) => {
           const k = e.mon.hp / e.mon.stats.hp, st = e.mon.status ? STATUS[e.mon.status] : null;
-          return `<div class="fo-mon"><div class="fo-l"><i class="fo-pic" data-dex="${e.mon.dex}"></i><span>${esc(e.mon.name)}</span>${st ? `<em style="background:${st[1]}">${st[0]}</em>` : ''}<small>Nv. ${e.mon.level}</small></div><div class="bar hp"><i class="${hpCls(k)}" style="width:${k * 100}%"></i></div></div>`;
+          return `<div class="fo-mon"><div class="fo-l"><i class="fo-pic" data-dex="${e.mon.spriteKey ?? e.mon.dex}"></i><span>${esc(e.mon.name)}</span>${st ? `<em style="background:${st[1]}">${st[0]}</em>` : ''}<small>Nv. ${e.mon.level}</small></div><div class="bar hp"><i class="${hpCls(k)}" style="width:${k * 100}%"></i></div></div>`;
         }).join('');
-      el.querySelectorAll('.fo-pic[data-dex]').forEach((i) => portraitURL(+i.dataset.dex).then((src) => { if (src && i.isConnected) i.innerHTML = `<img src="${src}" alt="">`; }));
+      el.querySelectorAll('.fo-pic[data-dex]').forEach((i) => portraitURL(/^\d+$/.test(i.dataset.dex) ? +i.dataset.dex : i.dataset.dex).then((src) => { if (src && i.isConnected) i.innerHTML = `<img src="${src}" alt="">`; }));
     });
   }
 

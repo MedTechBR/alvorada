@@ -9,6 +9,8 @@ import * as amb from './ambiente.js';
 
 export const FRIENDSHIP_EVOLVE = 160;
 
+const splitOf = (mon) => { let h = 0; for (const c of String(mon.uid ?? '')) h = (h * 31 + c.charCodeAt(0)) | 0; return Math.abs(h) % 2; };
+
 function conditionsOk(mon, e, ctx) {
   const time = ctx.time ?? amb.timeOfDay();
   if (e.level && mon.level < e.level) return false;
@@ -23,16 +25,24 @@ function conditionsOk(mon, e, ctx) {
   if (e.moveType && !mon.moves.some((m) => MOVES[m]?.type === e.moveType)) return false;
   if (e.rain && (ctx.weather ?? amb.weather()) !== 'rain') return false;
   if (e.partyType && !(ctx.partyTypes ?? []).includes(e.partyType)) return false;
+  // novas condições (todas as espécies): Pokémon na equipe (Mantine), Ataque × Defesa (Tyrogue), natureza (Toxtricity),
+  // metade/metade pelo identificador (Wurmple) e região (formas regionais: só onde o mundo disser que é aquela região)
+  if (e.partySpecies && !(ctx.partySpecies ?? []).includes(e.partySpecies)) return false;
+  if (e.atkDef != null) { const d = Math.sign((mon.stats?.atk ?? 0) - (mon.stats?.def ?? 0)); if (d !== e.atkDef) return false; }
+  if (e.natures && !e.natures.includes(mon.nature)) return false;
+  if (e.split != null && splitOf(mon) !== e.split) return false;
+  if (e.region && e.region !== ctx.region) return false;
   return true;
 }
 
 /**
  * Para qual espécie `mon` evolui agora? trigger: 'level' (subiu de nível), 'item' (usou ctx.item) ou
  * 'trade' (foi trocado online; consumeHeld = gasta o item que segurava).
- * ctx: { item, time, weather, partyTypes, fullMoon }. Devolve { to, rule } ou null.
+ * ctx: { item, time, weather, partyTypes, partySpecies, fullMoon, region }. Devolve { to, form, rule } ou null
+ * (form = forma de destino, ex.: 'alola'; null = padrão).
  */
 export function evolutionFor(mon, trigger = 'level', ctx = {}) {
-  const sp = SPECIES[mon.dex];
+  const sp = mon.sp ?? SPECIES[mon.dex];
   if (!sp?.evo?.length || itemId(mon.item) === 'everstone') return null;
   const item = ctx.item ? itemId(ctx.item) : null;
   for (const e of sp.evo) {
@@ -42,10 +52,10 @@ export function evolutionFor(mon, trigger = 'level', ctx = {}) {
     } else if (trigger === 'trade') {
       // troca de verdade (online): evolui como nos jogos; com item segurado quando a regra pede
       if (!e.trade || (e.item !== 'linkingCord' && itemId(mon.item) !== e.item)) continue;
-      return { to: e.to, rule: e, consumeHeld: e.item !== 'linkingCord' };
+      return { to: e.to, form: e.form ?? null, rule: e, consumeHeld: e.item !== 'linkingCord' };
     } else if (e.item) continue;
     if (e.shed) continue; // Shedinja: o jogo cria um segundo Pokémon (veja shedFor)
-    if (conditionsOk(mon, e, ctx)) return { to: e.to, rule: e };
+    if (conditionsOk(mon, e, ctx)) return { to: e.to, form: e.form ?? null, rule: e };
   }
   return null;
 }
@@ -67,5 +77,9 @@ export function describeEvolution(e) {
   if (e.moveType) p.push(`sabendo um golpe do tipo ${e.moveType}`);
   if (e.rain) p.push('na chuva');
   if (e.partyType) p.push(`com um Pokémon do tipo ${e.partyType} na equipe`);
+  if (e.partySpecies) p.push(`com ${SPECIES[e.partySpecies]?.name ?? 'outro Pokémon'} na equipe`);
+  if (e.atkDef != null) p.push(e.atkDef > 0 ? 'Ataque maior que a Defesa' : e.atkDef < 0 ? 'Defesa maior que o Ataque' : 'Ataque igual à Defesa');
+  if (e.natures) p.push('conforme a natureza');
+  if (e.region) p.push(`na região de ${e.region[0].toUpperCase()}${e.region.slice(1)}`);
   return p.join(', ');
 }
