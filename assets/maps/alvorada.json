@@ -1591,7 +1591,7 @@
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
       ],
       "objects": [{"kind": "cristal", "x": 6, "y": 6}, {"kind": "cristal", "x": 11, "y": 4}, {"kind": "cristal", "x": 24, "y": 5}, {"kind": "cristal", "x": 28, "y": 13}, {"kind": "cristal", "x": 20, "y": 15}, {"kind": "cristal", "x": 9, "y": 13}, {"kind": "cristal", "x": 14, "y": 7}, {"kind": "cristal", "x": 30, "y": 9}, {"kind": "pedregulho", "x": 12, "y": 11}, {"kind": "pedregulho", "x": 22, "y": 9}, {"kind": "carrinhoParado", "x": 4, "y": 14}, {"kind": "sign", "x": 30, "y": 3, "text": "RAMPA ↓ NÍVEL 3"}],
-      "decor": [{"kind": "luzChao", "x": 15, "y": 8}, {"kind": "luzChao", "x": 16, "y": 12}, {"kind": "luzChao", "x": 19, "y": 10}, {"kind": "luzChao", "x": 23, "y": 7}, {"kind": "luzChao", "x": 10, "y": 9}],
+      "decor": [],
       "spots": {"mina_alfa": [17, 9, "down"], "teo_n2": [5, 15, "up"], "rampa_n2": [31, 2, "up"]},
       "biome": "planalto",
       "wild": true,
@@ -1625,7 +1625,7 @@
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
         "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
       ],
-      "objects": [{"kind": "carrinho", "x": 8, "y": 10}, {"kind": "carrinho", "x": 8, "y": 11}, {"kind": "carrinho", "x": 15, "y": 10}, {"kind": "vigaCaida", "x": 24, "y": 5}, {"kind": "cristal", "x": 21, "y": 2}, {"kind": "cristal", "x": 28, "y": 6}, {"kind": "lampiao", "x": 6, "y": 12}, {"kind": "sign", "x": 3, "y": 12, "text": "TÚNEL DOS CARRINHOS\nEmpurre os carrinhos para os desvios.\nTravou tudo? A alavanca de manobra devolve os carrinhos ao começo."}, {"kind": "pedregulho", "x": 26, "y": 3}],
+      "objects": [{"kind": "carrinho", "x": 8, "y": 10}, {"kind": "carrinho", "x": 8, "y": 11}, {"kind": "carrinho", "x": 15, "y": 10}, {"kind": "vigaCaida", "x": 24, "y": 5}, {"kind": "cristal", "x": 21, "y": 2}, {"kind": "cristal", "x": 28, "y": 6}, {"kind": "lampiao", "x": 6, "y": 12}, {"kind": "sign", "x": 3, "y": 12, "text": "TÚNEL DOS CARRINHOS\nEmpurre os carrinhos para os desvios.\nTravou tudo? A alavanca de manobra devolve os carrinhos ao começo."}, {"kind": "pedregulho", "x": 21, "y": 6}],
       "decor": [{"kind": "trilhoH", "x": 3, "y": 10}, {"kind": "trilhoH", "x": 4, "y": 10}, {"kind": "trilhoH", "x": 5, "y": 10}, {"kind": "trilhoH", "x": 6, "y": 10}, {"kind": "trilhoH", "x": 7, "y": 10}, {"kind": "trilhoH", "x": 8, "y": 10}, {"kind": "trilhoH", "x": 9, "y": 10}, {"kind": "trilhoH", "x": 10, "y": 10}, {"kind": "trilhoH", "x": 11, "y": 10}, {"kind": "trilhoH", "x": 12, "y": 10}, {"kind": "trilhoH", "x": 13, "y": 10}, {"kind": "trilhoH", "x": 14, "y": 10}, {"kind": "trilhoH", "x": 15, "y": 10}, {"kind": "trilhoH", "x": 16, "y": 10}, {"kind": "trilhoH", "x": 17, "y": 10}, {"kind": "trilhoH", "x": 18, "y": 10}, {"kind": "trilhoH", "x": 19, "y": 10}, {"kind": "trilhoH", "x": 20, "y": 10}, {"kind": "trilhoH", "x": 21, "y": 10}, {"kind": "trilhoH", "x": 22, "y": 10}, {"kind": "poeira", "x": 22, "y": 4}, {"kind": "poeira", "x": 25, "y": 6}, {"kind": "poeira", "x": 27, "y": 5}, {"kind": "poeira", "x": 23, "y": 7}],
       "spots": {"heitor_mina": [25.5, 4, "down"], "teo_n3": [4, 14, "up"], "poco_n3": [27, 2, "up"]},
       "biome": "planalto",
@@ -1659,7 +1659,7 @@
         "rrrrrrrrrrrrrkkkrrrrrrrrrrrrrr"
       ],
       "objects": [{"kind": "garra", "x": 11, "y": 3}, {"kind": "cristal", "x": 4, "y": 6}, {"kind": "cristal", "x": 6, "y": 3}, {"kind": "cristal", "x": 22, "y": 3}, {"kind": "cristal", "x": 24, "y": 7}, {"kind": "cristal", "x": 7, "y": 10}, {"kind": "cristal", "x": 21, "y": 10}, {"kind": "cristal", "x": 10, "y": 5}, {"kind": "cristal", "x": 19, "y": 5}],
-      "decor": [{"kind": "luzChao", "x": 5, "y": 6}, {"kind": "luzChao", "x": 5, "y": 9}, {"kind": "luzChao", "x": 5, "y": 11}, {"kind": "luzChao", "x": 8, "y": 6}, {"kind": "luzChao", "x": 8, "y": 9}, {"kind": "luzChao", "x": 8, "y": 11}, {"kind": "luzChao", "x": 11, "y": 6}, {"kind": "luzChao", "x": 11, "y": 9}, {"kind": "luzChao", "x": 11, "y": 11}, {"kind": "luzChao", "x": 14, "y": 6}, {"kind": "luzChao", "x": 14, "y": 9}, {"kind": "luzChao", "x": 14, "y": 11}, {"kind": "luzChao", "x": 17, "y": 6}, {"kind": "luzChao", "x": 17, "y": 9}, {"kind": "luzChao", "x": 17, "y": 11}, {"kind": "luzChao", "x": 20, "y": 6}, {"kind": "luzChao", "x": 20, "y": 9}, {"kind": "luzChao", "x": 20, "y": 11}, {"kind": "luzChao", "x": 23, "y": 6}, {"kind": "luzChao", "x": 23, "y": 9}, {"kind": "luzChao", "x": 23, "y": 11}],
+      "decor": [],
       "spots": {"steelix_alfa": [14, 8, "down"], "teo_n4": [12, 14, "up"]},
       "biome": "planalto",
       "wild": true,
