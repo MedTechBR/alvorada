@@ -14,6 +14,7 @@ import { TYPE_PT } from './data/types.js';
 import { Audio } from './audio/audio.js';
 import { UI } from './ui/ui.js';
 import { Story } from './story/story.js';
+import { Online } from './net/online.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -51,6 +52,7 @@ class Game {
     this.cam = { x: this.player.x, y: this.player.y };
     $('loading').remove();
     this.hudInit();
+    this.net = new Online(this); // modo online (src/net): salas, outros jogadores, troca e PvP
     this.app.ticker.maxFPS = 0;
     this.app.ticker.add((tk) => this.frame(Math.min(0.05, tk.deltaMS / 1000)));
     window.game = this;
@@ -60,7 +62,6 @@ class Game {
     this.hudInit();
     this.story.begin(start === 'new');
   }
-  sendOut(i) { return this.#sendOut(i); }
 
   #resize() {
     // escala inteira para o pixel art ficar nítido: ~15 a 20 blocos de altura na tela
@@ -102,6 +103,7 @@ class Game {
     this.fx.burst(e.x, e.y - 8, 0xffffff, 1); e.vz = 90;
     this.hudLead(); this.hudMoves();
   }
+  sendOut(i) { return this.#sendOut(i); } // público para o online (equipe do duelo, troca)
   swap() {
     const n = this.party.length;
     for (let k = 1; k <= n; k++) { const i = (this.leadIdx + k) % n; if (!this.party[i].fainted) { if (i !== this.leadIdx) { this.#sendOut(i); this.toast(`Vai, ${this.party[i].name}!`); } return; } }
@@ -132,6 +134,7 @@ class Game {
   onFaint(e, by) {
     if (e.dead) return;
     if (e.side === 'foe' && this.story?.onFoeFaint(e, by)) return; // Pokémon de treinador (batalha no mapa)
+    if (this.net?.onFaint(e, by)) return; // duelo online: quem decide o desmaio é o árbitro
     e.dead = true; e.play('Hurt');
     this.fx.burst(e.x, e.y - 8, 0xffffff, 1.2);
     if (e.side === 'wild') {
@@ -163,7 +166,7 @@ class Game {
     const e = this.lead; if (!e || e.mon !== mon) { mon.evolveTo(to); return; }
     for (let i = 0; i < 6; i++) this.later(i * 0.12, () => { e.flash = 0.08; this.fx.ring(e.x, e.y - 8, 0xffffff, 10 + i * 3, 0.3); });
     this.later(0.8, async () => {
-      mon.evolveTo(to); const set = await loadPokemonSprites(to); e.set = set; e.r = Math.max(5, Math.min(18, set.size * 0.22));
+      mon.evolveTo(to); const set = await loadPokemonSprites(to); e.setSprites(set);
       this.fx.burst(e.x, e.y - 10, 0xffffff, 2); this.toast(`${old} evoluiu para ${mon.name}!`); this.audio.sfx('caught'); this.hudLead();
     });
   }
@@ -251,13 +254,14 @@ class Game {
     const inp = this.input; inp.poll();
     if (inp.pressed('perf')) $('perf').hidden = !$('perf').hidden;
     // título, menu e diálogo param o mundo (a câmera e o desenho continuam)
-    if (this.ui?.frame(rdt)) { this.#camera(rdt); this.map.flushDirty(); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; }
+    if (this.ui?.frame(rdt)) { this.net?.update(rdt); this.#camera(rdt); this.map.flushDirty(); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // o online segue mesmo com o menu aberto
     // pausa no impacto: o mundo congela por alguns milissegundos
     let dt = rdt;
     if (this.fx.hitStop > 0) { this.fx.hitStop -= rdt; dt = rdt * 0.08; }
     this.time += dt;
     for (const tm of this.timers.slice()) if (tm.t <= this.time) { this.timers.splice(this.timers.indexOf(tm), 1); tm.fn(); }
     this.#control(dt, rdt);
+    this.net?.update(dt); // online: manda sua posição, mostra os outros, cuida do duelo
     this.#updateWild(dt);
     this.combat.update(dt);
     this.#updateBalls(dt);

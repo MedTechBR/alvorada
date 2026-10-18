@@ -101,6 +101,7 @@ const ICON = {
   bag: '<svg viewBox="0 0 24 24"><path d="M8 7V5.5a4 4 0 0 1 8 0V7" fill="none" stroke="#6b4423" stroke-width="1.8"/><rect x="4" y="7" width="16" height="14" rx="4" fill="#f0a73c" stroke="#6b4423" stroke-width="1.5"/><rect x="8" y="12" width="8" height="5" rx="1.5" fill="#ffd27a" stroke="#6b4423" stroke-width="1.2"/></svg>',
   map: '<svg viewBox="0 0 24 24"><path d="M3 5l6-2 6 2 6-2v16l-6 2-6-2-6 2z" fill="#9fd67a" stroke="#2d5d34" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 3v16M15 5v16" stroke="#2d5d34" stroke-width="1.2"/><circle cx="12" cy="10" r="2" fill="#e5383b"/></svg>',
   card: '<svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2.5" fill="#5aa6ff" stroke="#1d3f7a" stroke-width="1.4"/><circle cx="8" cy="11" r="2.4" fill="#fff"/><path d="M4.5 16.5c.8-2 2-3 3.5-3s2.7 1 3.5 3" fill="#fff"/><rect x="13" y="9" width="6.5" height="1.6" rx=".8" fill="#fff"/><rect x="13" y="12.5" width="5" height="1.6" rx=".8" fill="#fff"/></svg>',
+  online: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="#7fd6ff" stroke="#1d3f7a" stroke-width="1.4"/><path d="M2.5 12h19M12 2.5c3 3 3 16 0 19M12 2.5c-3 3-3 16 0 19" fill="none" stroke="#1d3f7a" stroke-width="1.3"/></svg>',
   options: '<svg viewBox="0 0 24 24"><path d="M12 2.5l1.6 2.3 2.7-.6.6 2.7 2.3 1.6-1.2 2.5 1.2 2.5-2.3 1.6-.6 2.7-2.7-.6L12 21.5l-1.6-2.3-2.7.6-.6-2.7-2.3-1.6L6 13 4.8 10.5l2.3-1.6.6-2.7 2.7.6z" fill="#9aa4bf" stroke="#3a4363" stroke-width="1.3" stroke-linejoin="round"/><circle cx="12" cy="12" r="3.2" fill="#fff" stroke="#3a4363" stroke-width="1.3"/></svg>',
   save: '<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2" fill="#7a5cd6" stroke="#36246e" stroke-width="1.4"/><rect x="7" y="3" width="10" height="6" fill="#fff" stroke="#36246e" stroke-width="1.2"/><rect x="7" y="13" width="10" height="8" rx="1" fill="#e9e3ff"/></svg>',
   close: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#eef2fa" stroke="#3a4363" stroke-width="1.4"/><path d="M8.5 8.5l7 7M15.5 8.5l-7 7" stroke="#3a4363" stroke-width="2" stroke-linecap="round"/></svg>',
@@ -147,6 +148,7 @@ const MAIN_ITEMS = [
   ['bag', 'Mochila', 'Poké Bolas, remédios e frutas.'],
   ['map', 'Mapa', 'O mapa da região Alvorada.'],
   ['card', 'Treinador', 'Seu cartão de treinador e as insígnias.'],
+  ['online', 'Online', 'Jogar com amigos: salas, troca e duelo (tecla O).'],
   ['options', 'Opções', 'Som, texto, controles e tela.'],
   ['save', 'Salvar', 'Grave o seu progresso.'],
   ['close', 'Fechar', 'Voltar à aventura.'],
@@ -410,6 +412,7 @@ export class GameMenu {
     const g = this.g;
     if (id === 'close') return this.close();
     if (id === 'party' && !g.party.length) return this.#msg('Você ainda não tem Pokémon. Fale com o Prof. Jatobá!');
+    if (id === 'online') { if (this.ui.g.net?.ui) this.ui.openOnline(); else this.#msg('O modo online não está disponível nesta versão.'); return; }
     ({ dex: () => this.#dex(), party: () => this.#party(), bag: () => this.#bag(), map: () => this.#map(), card: () => this.#card(),
       options: () => this.#options(), save: () => this.#save() })[id]?.();
   }
