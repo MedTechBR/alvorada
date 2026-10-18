@@ -407,7 +407,7 @@ export class WorldLife {
   saveState() { const vis = {}; for (const [k, v] of Object.entries(this.visitados)) vis[k] = [...v]; return { v: 2, hour: this.hour, totalHours: this.totalHours, taken: [...this.taken], visited: vis, picked: [...this.picked] }; }
   loadState(s) {
     if (!s) return;
-    this.hour = s.hour ?? this.hour; this.totalHours = s.totalHours ?? 0; this.taken = new Set(s.taken ?? []); this.picked = new Map(s.picked ?? []);
+    if (s.hour != null) this.hour = s.hour; this.totalHours = s.totalHours ?? 0; this.taken = new Set(s.taken ?? []); this.picked = new Map(s.picked ?? []);
     this.visitados = {};
     if (Array.isArray(s.visited)) this.visitados.alvorada = new Set(s.visited.map((i) => (i % 64) + Math.floor(i / 64) * Math.ceil(1200 / 16)));
     else for (const [k, v] of Object.entries(s.visited ?? {})) this.visitados[k] = new Set(v);

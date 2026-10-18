@@ -71,14 +71,37 @@ export class Viagem {
   quadro(dt) { this.t = (this.t ?? 0) + dt; if (this.aviso.style.display !== 'none') { const n = Math.floor(this.t * 3) % 4; const s = this.aviso.querySelector('.pts'); if (s) s.textContent = '.'.repeat(n); } }
   #mostrar(txt) { if (!txt) { this.aviso.style.display = 'none'; return; } this.aviso.innerHTML = `<div>${esc(txt).replace(/…$/, '')}<span class="pts"></span></div>`; this.aviso.style.display = 'flex'; }
   // antes de trocar: tudo o que está no mundo antigo sai de cena
+  // O que outros sistemas puseram na cena em coordenadas deste mundo (atores da história, quebra-cabeças, itens de
+  // missão) fica guardado e volta quando o jogador voltar a este mundo; o que o mapa recria (objetos, moradores) é
+  // destruído pelo próprio mapa e não volta.
   #limpar() {
-    const g = this.g;
+    const g = this.g, de = g.map.id;
     for (const w of [...(g.wilds ?? [])]) { w.dead = true; g.removeEntity?.(w); }
     for (const b of g.balls ?? []) b.s?.destroy(); g.balls = [];
+    const fica = new Set([g.player?.view, g.lead?.view, ...[...(g.net?.remotes?.map?.values?.() ?? [])].flatMap((r) => [r.view, r.follower?.view])].filter(Boolean));
+    const guarda = [];
+    for (const c of [...g.ents.children]) if (!fica.has(c)) { g.ents.removeChild(c); guarda.push(c); }
+    (this.guardados ??= {})[de] = guarda;
+    // quebra-cabeças da história (src/story/enigmas.js): só existem nas salas de Alvorada; longe dela ficam parados
+    const r = g.story?.roteiro;
+    if (r?.enigmas && !r.enigmas.parado) { this.enigmas = { de, e: r.enigmas }; r.enigmas = { parado: true, update() {}, interactions() { return []; }, aplicar() {} }; }
   }
   // depois de trocar: quem depende do mapa recomeça no mundo novo
   #depois() {
     const g = this.g;
+    for (const c of this.guardados?.[g.map.id] ?? []) if (!c.destroyed) g.ents.addChild(c);
+    if (this.guardados) this.guardados[g.map.id] = [];
+    // de volta ao mundo dos quebra-cabeças: religa (o mapa foi montado de novo, como ao carregar um save)
+    const r = g.story?.roteiro, E = this.enigmas;
+    if (r && E && E.de === g.map.id) {
+      r.enigmas = E.e; this.enigmas = null;
+      try {
+        if (E.e.floor) g.map.decorLayer.addChild(E.e.floor);
+        E.e.salas = Object.fromEntries(g.map.interiors.map((q) => [q.id, q]));
+        E.e.carrinhos = g.map.objects.filter((o) => o.kind === 'carrinho').map((o) => ({ o, tx: o.tx, ty: o.ty }));
+        E.e.aplicar?.();
+      } catch (e) { console.warn('enigmas depois da viagem', e); }
+    }
     g.mundo.trocarMapa();
     g.story?.spots?.cache?.clear?.();
     g.story?.roteiro?.trocouMapa?.();

@@ -101,6 +101,7 @@ export class Roteiro {
   }
   #visivel(e) {
     const f = this.f;
+    if ((e.mundo ?? 'alvorada') !== (this.g.map.id ?? 'alvorada')) return false; // outro continente (src/world/viagem.js)
     if (!e.sempre && !this.ativo) return false; // sempre: também antes do primeiro Pokémon
     if (e.mostrar && !this.#cond(e.mostrar)) return false;
     if (e.cena) return e.cena.some((id) => this.ativas.has(id));
@@ -241,7 +242,7 @@ export class Roteiro {
     this.#aliado(dt);
     this.enigmas.update(dt);
     const sala = g.map.interiorAt(p.x, p.y);
-    if (sala?.id?.startsWith('centro_')) this.f.ultimoCentro = sala.id;
+    if (sala?.id?.startsWith('centro_')) { this.f.ultimoCentro = sala.id; this.f.ultimoCentroMundo = g.map.id; }
   }
 
   // chamado pelo story.update quando nada mais está acontecendo; devolve true se começou uma cena
@@ -585,6 +586,13 @@ export class Roteiro {
     const g = this.g;
     g.party.forEach((m) => m.heal());
     g.ui.partyChanged?.();
+    // o último Centro (ou a casa) pode estar no outro continente: a viagem monta aquele mundo primeiro
+    const mundoC = this.f.ultimoCentro ? this.f.ultimoCentroMundo ?? 'alvorada' : 'alvorada';
+    if (mundoC !== g.map.id && g.viagem) {
+      g.toast('Sua equipe desmaiou! Você foi levado de volta.'); g.recall?.(true); g.leadIdx = 0;
+      g.viagem.ir(mundoC, this.f.ultimoCentro ? 'dentro_' + this.f.ultimoCentro : 'inicio', { texto: 'Você desmaiou… acordando', silencioso: true }); g.hudLead?.();
+      return true;
+    }
     const id = this.f.ultimoCentro, s = id && g.map.spots?.['dentro_' + id];
     const casa = this.s.spots.get('home');
     g.toast(s ? 'Sua equipe desmaiou! Você correu para o Centro Pokémon.' : 'Sua equipe desmaiou! Você voltou para casa.');

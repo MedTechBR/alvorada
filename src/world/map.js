@@ -178,7 +178,7 @@ export class GameMap {
     // cada ponto diz em que interior está (map: id) ou fica fora (map: 'mundo') e em que mundo (mundo: id)
     for (const s of Object.values(this.spots)) { const r = this.interiors.find((q) => s.tx >= q.x && s.ty >= q.y && s.tx < q.x + q.w && s.ty < q.y + q.h); s.map = r ? r.id : 'mundo'; s.mundo = this.id; }
     this.warpAt = new Map(this.warps.map((w) => [w.x + w.y * this.w, w]));
-    this.spawn = this.spots.inicio ?? { x: this.w * 8, y: this.h * 8 };
+    this.spawn = this.spots.inicio ?? this.spots.chegada ?? { x: this.w * 8, y: (this.outdoorH ?? this.h) * 8 };
   }
 
   // ---------- consultas ----------
