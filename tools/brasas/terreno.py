@@ -200,11 +200,13 @@ def construir():
     # ------------------------------------------------------------ transição entre zonas (cinza invade o capim e vice-versa)
     tr = fbm(230, (10, 5, 3), (0.5, 0.3, 0.2))
     borda_v = m_for & claro & (G == '.') & (d_f > 4)
-    perto_campos = exterior(Z['campos'], 7) <= 5
+    ex_c = exterior(Z['campos'], 7)
+    perto_campos = (ex_c >= 1) & (ex_c <= 5)
     G[borda_v & perto_campos & (tr > 0.62)] = 'a'
     G[borda_v & perto_campos & (tr > 0.78)] = 'o'
-    G[Z['campos'] & (exterior(claro & m_for, 7) <= 5) & (tr > 0.66) & (G == 'a')] = ','
-    G[Z['campos'] & (exterior(claro & m_for, 7) <= 3) & (tr > 0.72)] = '"'
+    ex_v = exterior(claro & m_for, 7)
+    G[Z['campos'] & (ex_v >= 1) & (ex_v <= 5) & (tr > 0.66) & (G == 'a')] = ','
+    G[Z['campos'] & (ex_v >= 1) & (ex_v <= 3) & (tr > 0.72)] = '"'
 
     # ------------------------------------------------------------ Vulcão Tição: terraços, cratera, rios de lava
     dn = eliptica_d(*CR)

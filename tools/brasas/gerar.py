@@ -108,4 +108,12 @@ if __name__ == '__main__':
     print('escrito', SAIDA, os.path.getsize(SAIDA) // 1024, 'KB')
     if '--previa' in sys.argv:
         sc = os.environ.get('RASCUNHO', '/private/tmp')
-        previa(G, os.path.join(sc, 'brasas_full.png'), k=2, objetos=ctx.get('previa_objs'))
+        from catalogo import TAM
+        objs = []
+        for o in R['objects']:
+            fw, fh = TAM.get(o['kind'], (1, 1))
+            cor = (255, 220, 60) if o['kind'] in ('center', 'mart') or o['kind'][:5] == 'house' or o['kind'] in ('cabin', 'taipa', 'casarao', 'farol') else (240, 120, 40)
+            objs.append({'x': o['x'], 'y': o['y'], '_fw': fw, '_fh': fh, '_cor': cor})
+        previa(G, os.path.join(sc, 'brasas_full.png'), k=2, objetos=objs)
+        previa(G, os.path.join(sc, 'brasas_vila.png'), k=10, objetos=objs, recorte=(955, 608, 80, 100))
+        previa(G, os.path.join(sc, 'brasas_fornalha.png'), k=5, objetos=objs, recorte=(925, 600, 230, 290))
