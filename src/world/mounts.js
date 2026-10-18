@@ -15,7 +15,11 @@ import { dir4 } from '../sprites/characters.js';
 //   voar       Corviknight (823)  segure X; voa por cima de tudo (sombra no chão, câmera afasta) e pousa em lugar livre
 //   mergulhar  Mantine (226)      X sobre um redemoinho (água funda marcada); mostra o fundo
 // Desbloqueio: flags.mounts.<tipo> (ou game.unlockMount('mudbray' | 'correr' ...)); com ?teste=1 todas ficam liberadas.
-// O desenho (montaria PMD + treinador sentado) fica em MountRig, usado também pelos outros jogadores do online.
+// Essas 5 são as padrão. Liberado o modo, qualquer Pokémon do jogador (equipe ou PC) que carregue gente serve no lugar
+// (src/data/montarias.js, gerado por tools/gerar_montarias.py): escolha no menu Montarias ou em "Usar como montaria",
+// gravada em flags.montaria.<tipo> = uid. Cada espécie usa o próprio sprite e a escala real, com pose e velocidade próprias.
+// O desenho (montaria PMD + treinador sentado) fica em MountRig, usado também pelos outros jogadores do online
+// (o estado leva o modo em m e a espécie em mountDex).
 
 export const MOUNTS = {
   correr:    { dex: 749, name: 'Mudbray',     label: 'Correr',    h: 1.0, walk: 132, run: 190, acc: 7,   anim: 55, lift: 1, back: 4,  r: 7, lean: 150, bob: 1.5 },

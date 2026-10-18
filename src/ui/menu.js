@@ -597,10 +597,11 @@ export class GameMenu {
     const on = ks.filter((k) => mt?.chosen(k).mon === m);
     return ks.map((k) => (on.includes(k) ? `<b>${MOUNTS[k].label}</b>` : MOUNTS[k].label)).join(' · ') + (on.length ? ' <span class="gm-soft">(em uso)</span>' : '');
   }
-  // barra de velocidade (corrida) relativa ao mais rápido possível do modo
+  // barra de velocidade (corrida) entre a mais lenta e a mais rápida possíveis do modo (limites de mountConfig)
   #mountSpeed(kind, dex) {
-    const c = mountConfig(kind, dex), top = { correr: 232, nadar: 174, escalar: 183, voar: 246, mergulhar: 165 }[kind];
-    return `<span class="gm-mtspd" title="Velocidade"><i style="width:${Math.min(100, Math.round(c.run / top * 100))}%"></i></span>`;
+    const c = mountConfig(kind, dex), [lo, hi] = { correr: [154, 232], nadar: [109, 174], escalar: [130, 183], voar: [179, 246], mergulhar: [104, 165] }[kind];
+    const k = Math.max(0, Math.min(1, (c.run - lo) / (hi - lo)));
+    return `<span class="gm-mtspd" title="Velocidade ${c.run}"><i style="width:${Math.round(12 + 88 * k)}%"></i></span>`;
   }
   #mounts() {
     const g = this.g, mt = g.mount;
