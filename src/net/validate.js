@@ -2,7 +2,7 @@ import { SPECIES, expForLevel } from '../data/species.js';
 import { MOVES } from '../data/moves.js';
 import { Mon } from '../data/mon.js';
 import { NATURES as NATURE_DATA } from '../data/natures.js';
-import { ITEMS } from '../data/items.js';
+import { ITEMS, itemInfo } from '../data/items.js';
 import { EV_STAT_MAX, EV_TOTAL_MAX } from '../mechanics/stats.js';
 import { LOOK_OPTIONS, DEFAULT_LOOK } from '../sprites/charart.js';
 
@@ -34,11 +34,11 @@ export function validateMon(o) {
   const sp = SPECIES[o.dex];
   if (o.evs != null && (!Array.isArray(o.evs) || o.evs.length !== 6 || o.evs.some((v) => !isInt(v, 0, EV_STAT_MAX)) || o.evs.reduce((a, b) => a + b, 0) > EV_TOTAL_MAX)) return { ok: false, why: 'EVs fora do limite (252 por status, 510 no total)' };
   if (o.ability != null && !(sp.abilities.includes(o.ability) || sp.hidden === o.ability)) return { ok: false, why: 'habilidade que a espécie não tem' };
-  if (o.item != null && !(typeof o.item === 'string' && Object.hasOwn(ITEMS, o.item) && (ITEMS[o.item].hold || ITEMS[o.item].cat === 'held'))) return { ok: false, why: 'item equipado inválido' };
+  if (o.item != null && !(typeof o.item === 'string' && itemInfo(o.item)?.hold)) return { ok: false, why: 'item equipado inválido' };
   if (o.gender != null && !['m', 'f'].includes(o.gender)) return { ok: false, why: 'gênero inválido' };
   if (sp.genderRate < 0 ? o.gender != null : (sp.genderRate === 0 && o.gender === 'f') || (sp.genderRate === 8 && o.gender === 'm')) return { ok: false, why: 'gênero impossível para a espécie' };
   if (o.friendship != null && !isInt(o.friendship, 0, 255)) return { ok: false, why: 'amizade fora de 0–255' };
-  if (o.ball != null && !(typeof o.ball === 'string' && ITEMS[o.ball]?.cat === 'ball')) return { ok: false, why: 'Poké Bola inválida' };
+  if (o.ball != null && !(typeof o.ball === 'string' && itemInfo(o.ball)?.cat === 'ball')) return { ok: false, why: 'Poké Bola inválida' };
   const lo = expForLevel(sp.growth, o.level), hi = o.level >= 100 ? lo : expForLevel(sp.growth, o.level + 1) - 1;
   const xp = Number.isFinite(o.xp) ? Math.max(lo, Math.min(hi, Math.floor(o.xp))) : lo;
   const uid = typeof o.uid === 'string' && /^[a-z0-9]{4,16}$/i.test(o.uid) ? o.uid : undefined;

@@ -49,7 +49,7 @@ export function learnMove(mon, moveId, replaceIndex = -1, { check = false, via =
 export function useTM(mon, tmId, replaceIndex = -1) {
   const it = ITEMS[itemId(tmId)];
   if (!it || it.cat !== 'tm') return { ok: false, reason: 'notTM' };
-  return { ...learnMove(mon, it.move, replaceIndex, { check: true, via: 'tm' }), move: it.move, consumed: false };
+  return { ...learnMove(mon, it.move, replaceIndex, { check: true, via: it.extra ? null : 'tm' }), move: it.move, consumed: false };
 }
 
 // MTs que esta espécie pode usar

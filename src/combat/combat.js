@@ -14,7 +14,9 @@ const typeColor = (t) => hex(TYPE_COLOR?.[t] ?? 0xffffff);
 
 // Quem pode acertar quem. Lados do online (src/net/*): 'rival' = Pokémon de outro jogador num
 // duelo PvP (inimigo do seu); 'peer' = Pokémon de outro jogador passeando (ninguém acerta nem é acertado).
-export const FOES = { ally: ['wild', 'rival'], wild: ['ally'], rival: ['ally'], peer: [] };
+// Quem pode acertar quem. ally = você e sua equipe; wild = selvagens; foe = Pokémon de treinador (história);
+// rival = Pokémon do outro jogador num duelo online; peer = do outro jogador passeando (ninguém acerta).
+export const FOES = { ally: ['wild', 'foe', 'rival'], wild: ['ally'], foe: ['ally'], rival: ['ally'], peer: [] };
 
 // Fórmula de dano (pura). Usada aqui e pelo árbitro do PvP online (src/net/arbiter.js), para os dois
 // lados de um duelo calcularem igual. user/t: qualquer objeto com .mon (e .stages, para os estágios).

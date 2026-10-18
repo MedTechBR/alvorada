@@ -226,9 +226,77 @@ for (const [n, move] of MTS) {
   TM_BY_MOVE[move] = id;
 }
 
-// Nomes antigos usados no jogo (mochila e saves)
-export const ITEM_ALIAS = { pokeball: 'pokeBall', greatball: 'greatBall', ultraball: 'ultraBall', masterball: 'masterBall' };
+// Itens-chave
+ITEMS.pokedex = I('Pokédex', 'Pokédex', 'key', 0, { key: true, desc: 'Registra os Pokémon que você vê e captura. Presente do Prof. Jatobá.' });
+ITEMS.townMap = I('Mapa da Região', 'Town Map', 'key', 0, { key: true, desc: 'Mapa dobrável da região Alvorada.' });
+
+// MTs extras da história, de golpes que não são MT em Scarlet/Violet (ensinam a quem aprende o golpe de qualquer jeito)
+for (const move of ['bite']) {
+  const id = 'tm_' + move, mv = MOVES[move];
+  ITEMS[id] = I(`MT ${mv.name}`, 'TM', 'tm', 0, { move, reusable: true, extra: true, type: mv.type, desc: `Ensina ${mv.name}. Pode ser usada quantas vezes quiser.` });
+}
+
+// Nomes antigos usados no jogo (mochila, história e saves) → id definitivo
+export const ITEM_ALIAS = {
+  pokeball: 'pokeBall', greatball: 'greatBall', ultraball: 'ultraBall', masterball: 'masterBall',
+  oran: 'oranBerry', pecha: 'pechaBerry', cheri: 'cheriBerry', rawst: 'rawstBerry', sitrus: 'sitrusBerry',
+  chesto: 'chestoBerry', aspear: 'aspearBerry', lum: 'lumBerry', leppa: 'leppaBerry', persim: 'persimBerry',
+  tm_rockTomb: 'tm036',
+};
 
 export function itemId(id) { return ITEM_ALIAS[id] ?? id; }
 export function itemInfo(id) { return ITEMS[itemId(id)]; }
 export const BALL_IDS = Object.keys(ITEMS).filter((k) => ITEMS[k].cat === 'ball');
+
+// ---------------- Visão para o menu (src/ui/menu.js): bolsos, cores e as funções de antes.
+// Inclui as chaves antigas da mochila (pokeball, oran, tm_bite…) e todos os itens definitivos.
+export const POCKETS = [
+  ['itens', 'Itens'],
+  ['remedios', 'Remédios'],
+  ['bolas', 'Poké Bolas'],
+  ['tms', 'MTs'],
+  ['frutas', 'Frutas'],
+  ['chave', 'Itens-chave'],
+];
+const POCKET_OF = { ball: 'bolas', medicine: 'remedios', berry: 'frutas', tm: 'tms', key: 'chave' };
+const COLOR = {
+  pokeBall: '#e5383b', greatBall: '#3a7be0', ultraBall: '#f2c94c', masterBall: '#8e44ad', potion: '#9b59d6', superPotion: '#e0662c',
+  hyperPotion: '#e05a9b', maxPotion: '#3fa1d8', fullRestore: '#f2c94c', revive: '#f2d04c', oranBerry: '#3f6fd8', pechaBerry: '#f2a6c4',
+  cheriBerry: '#d8344a', rawstBerry: '#4cae8a', sitrusBerry: '#f2d04c', lumBerry: '#6cc04a', silkScarf: '#f4f0e0', charcoal: '#3a3a3a',
+  miracleSeed: '#5ab84a', mysticWater: '#4aa0e8', leftovers: '#c98a4a', pokedex: '#e5383b', townMap: '#9fd67a',
+};
+const CAT_COLOR = { ball: '#e5383b', medicine: '#9b59d6', berry: '#d8344a', held: '#c0c0c0', evolution: '#7ad0e0', tm: '#7a8aa0', vitamin: '#e08a3a', candy: '#5ad0a0', key: '#9fd67a', misc: '#bbbbbb' };
+
+function view(id) {
+  const it = ITEMS[id];
+  const v = { id, name: it.name, pocket: POCKET_OF[it.cat] ?? 'itens', color: COLOR[id] ?? CAT_COLOR[it.cat], desc: it.desc, cat: it.cat };
+  if (typeof it.heal === 'number') v.heal = it.heal;
+  if (it.berry?.heal) v.heal = it.berry.heal;
+  const cure = it.cure ?? it.berry?.cure;
+  if (Array.isArray(cure) && cure.length) v.cures = cure[0];
+  if (it.hold) v.hold = true;
+  if (it.cat === 'tm') v.tm = it.move;
+  if (it.key) v.key = true;
+  if (it.ball != null) v.ball = it.ball;
+  if (['medicine', 'vitamin', 'candy', 'evolution', 'misc'].includes(it.cat) || it.evs || (it.berry && (it.berry.heal || it.berry.healFrac || it.berry.cure))) v.usable = true;
+  return v;
+}
+export const ITEM_INFO = {};
+for (const id of Object.keys(ITEMS)) ITEM_INFO[id] = view(id);
+for (const [old, id] of Object.entries(ITEM_ALIAS)) if (ITEMS[id]) ITEM_INFO[old] = { ...view(id), id };
+
+export const usableOnMon = (key) => !!ITEM_INFO[key]?.usable;
+export const holdable = (key) => !!ITEM_INFO[key]?.hold;
+export const itemName = (key) => ITEM_INFO[key]?.name ?? itemInfo(key)?.name ?? (key ? String(key) : '');
+
+// Usa um item da mochila num Pokémon da equipe. Gasta da mochila se der certo. Devolve { ok, text, events }.
+// A lógica fica em src/mechanics/items.js (via mon.use); evolução vem em events ({ type: 'evolve', to }) e,
+// se o jogo tiver g.evolve(mon, to), já é disparada.
+export function useItemOn(g, key, m, ctx = {}) {
+  if (!ITEM_INFO[key] || !(g.bag?.[key] > 0)) return { ok: false, text: 'Você não tem esse item.', events: [] };
+  const r = m.use(itemId(key), { entity: g.lead?.mon === m ? g.lead : null, ...ctx });
+  if (r.ok && r.consumed) g.bag[key]--;
+  for (const e of r.events ?? []) if (e.type === 'evolve' && typeof g.evolve === 'function') g.evolve(m, e.to);
+  const text = typeof r.msg === 'string' ? r.msg : r.ok ? 'Funcionou!' : 'Isso não pode ser usado agora.';
+  return { ok: r.ok, text, events: r.events ?? [] };
+}

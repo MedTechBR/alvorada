@@ -1,5 +1,5 @@
 // Usar itens e efeitos dos itens equipados no tempo real.
-import { ITEMS, itemId } from '../data/items.js';
+import { ITEMS, itemId, itemInfo } from '../data/items.js';
 import { SPECIES } from '../data/species.js';
 import { useTM } from './learn.js';
 import { evolutionFor } from './evolve.js';
@@ -35,6 +35,17 @@ export function useItem(mon, id, ctx = {}) {
     const ev = evolutionFor(mon, 'item', { ...ctx, item: id });
     if (!ev) return no('Não teve efeito.');
     return { ok: true, consumed: true, msg: `${mon.name} vai evoluir!`, events: [{ type: 'evolve', to: ev.to, item: id }] };
+  }
+  // frutas da mochila usadas direto (Oran, Sitrus, Pecha…)
+  if (it.cat === 'berry' && it.berry && !it.evs) {
+    const b = it.berry;
+    let did = false;
+    if (mon.fainted) return no('Não teve efeito.');
+    const h = b.heal ?? Math.floor(max * (b.healFrac ?? 0));
+    if (h && mon.hp < max) { mon.hp = Math.min(max, mon.hp + h); did = true; }
+    if (b.cure && mon.status && curesStatus(b.cure, mon.status)) { mon.status = null; did = true; }
+    if (!did) return no('Não teve efeito.');
+    return { ok: true, consumed: true, msg: `${mon.name} comeu a ${it.name}.`, events };
   }
   // reviver
   if (it.revive) {
@@ -108,7 +119,7 @@ export function giveItem(mon, id) {
 export function heldTick(mon, dt, ctx = {}) {
   const out = [];
   if (!mon || mon.fainted) return out;
-  const it = ITEMS[mon.item];
+  const it = itemInfo(mon.item);
   const max = mon.stats.hp;
   const t = (mon._tick ??= { turn: 0, orb: 0 });
   t.turn += dt;
