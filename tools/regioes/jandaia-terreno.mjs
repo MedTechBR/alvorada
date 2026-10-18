@@ -127,8 +127,9 @@ export function detalhes(M) {
     ' XHHHHHHHHHHHHHHHHHHX ',
     ' XHHHHHHHHEE^^EHHHHHX ',
     ' XXXXXXXXXXXYYXXXXXXX ',
-    '           YY         ',
+    '            YY        ',
   ]);
+  M.path('path', [[123, 751], [123, 758], [124, 766]], 3, 0.3, ['forest', 'dark', 'tall', 'path']);
 
   // ===================== PRAIA DO CIPÓ =====================
   M.comment('praia_cipo: toda de areia, com uma língua de areia ligando à saída sul da selva');

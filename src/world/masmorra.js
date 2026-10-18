@@ -470,7 +470,7 @@ export class Masmorra {
   hitObject(o, mv) {
     const K = KINDS[o.kind]; if (!K) return false;
     const g = this.g;
-    if (K.fire && mv?.type === 'fire') { this.#light(o); return true; }
+    if (K.fire && mv?.type === (o.acendeCom ?? 'fire')) { this.#light(o); return true; } // acendeCom: tipo do golpe que acende (raízes luminosas: 'grass')
     if (K.fire && (mv?.type === 'water' || mv?.type === 'ice') && o.litUntil) { o.litUntil = 0; return true; }
     if (K.light && mv?.type === 'fire') { // bloco de gelo derrete
       this.#remove(o, true); g.fx?.emit(o.x, o.y - 6, { tex: 'smoke', n: 6, speed: 20, life: 1, scale: 0.7, end: 2, vz: 30, alpha: 0.6, add: false, color: 0xdde8f0 }); g.audio?.sfx?.('splash'); this.#solve(false); return true;
@@ -547,8 +547,9 @@ export class Masmorra {
     this.#solve(false);
   }
   async #tryLight(o) {
-    const g = this.g, f = g.party.find((m) => !m.fainted && m.types.includes('fire'));
+    const tipo = o.acendeCom ?? 'fire', g = this.g, f = g.party.find((m) => !m.fainted && m.types.includes(tipo));
     if (f) { this.#light(o, f.name); return; }
+    if (tipo !== 'fire') { await g.ui.say(o.dica ?? ['A raiz está apagada.', 'Um golpe de Planta por perto poderia acordá-la.'], { name: '' }); return; }
     await g.ui.say(['A tocha está apagada.', 'Um Pokémon de Fogo poderia acendê-la (ou um golpe de Fogo).'], { name: '' });
   }
   async #unlock(o) {

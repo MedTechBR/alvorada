@@ -7,6 +7,7 @@ import { Mapa, raiz } from './lib.mjs';
 import { RECT, terreno, detalhes } from './jandaia-terreno.mjs';
 import { Colocador } from './jandaia-util.mjs';
 import { vila, salasVila } from './jandaia-vila.mjs';
+import { templo } from './jandaia-templo.mjs';
 
 const M = new Mapa('jandaia', RECT);
 terreno(M); detalhes(M);
@@ -29,12 +30,13 @@ J.areas = [
   { id: 'cachoeira_veu_verde', name: 'Cachoeira do Véu Verde', biome: 'margem', rect: [180, 720, 60, 60] },
   { id: 'ilha_miragem', name: 'Ilha Miragem', biome: 'praia', rect: [330, 880, 40, 40] },
 ];
-J.spots = { ninho_vila_jandaia: [85, 598, 'down'], cais_jandaia: [93, 565, 'down'] };
+J.spots = { ninho_vila_jandaia: [85, 598, 'down'], cais_jandaia: [93, 565, 'down'], templo_raizes_porta: [123, 751, 'down'] };
+J.warps.push({ x: 123, y: 748, dir: 'up', to: ['templo_raizes_1', 6, 20], face: 'up', label: 'Templo das Raízes' }, { x: 124, y: 748, dir: 'up', to: ['templo_raizes_1', 7, 20], face: 'up', label: 'Templo das Raízes' });
 J.ninhos = [{ id: 'vila_jandaia', nome: 'Vila Jandaia', spot: 'ninho_vila_jandaia' }];
 J.viagens = [{ id: 'balsa_coral', nome: 'A balsa', fala: ['Volta para a Costa Coral?'], destinos: [{ nome: 'Cidade Coral', destino: 'cais_coral', preco: 300, cena: 'A balsa balança devagar até a Costa Coral…' }] }];
 J.people = [{ id: 'barqueiro_jandaia', name: 'Barqueiro', look: { preset: 'montanhista', top: '#2a4a7a', pants: '#3a3a5a', hair: '#5a3a2a' }, x: 93, y: 566, dir: 'down', viagem: 'balsa_coral', lines: ['A balsa leva de volta para Cidade Coral.'] }];
 
-vila(M, C, J); salasVila(J);
+vila(M, C, J); salasVila(J); templo(J);
 J.objects = C.objects;
 if (C.avisos.length) console.log('AVISOS:\n  ' + C.avisos.join('\n  '));
 const saida = join(raiz, 'assets/maps/regioes/jandaia.json');
