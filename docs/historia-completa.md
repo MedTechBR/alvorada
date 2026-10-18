@@ -1000,6 +1000,18 @@ tela), `creditos: true`, `mt` (id do golpe), `montaria` (`mudbray`, `lapras`, `s
 `mantine`), `insignia` (id da lista `BADGES`), `dinheiro`, `objetivo` (texto do HUD), `fimCapitulo`.
 A flag `ceu` (`'noite_sem_fim'`, `'crepusculo_eterno'`, `'normal'`) diz ao `DayNight` como pintar o céu no cap. 11.
 
+**Motor (`src/story/roteiro.js`), detalhes que valem para os capítulos jogáveis:**
+- `objetivo` pode ser texto ou `{ texto, alvo, treinadores?, rotulo? }`: `alvo` é um ponto do mapa, um interior, uma
+  área ou um personagem do elenco (a seta do HUD aponta para ele, ou para a porta do prédio); `treinadores` mostra
+  "Aprendizes: 1/2" e aponta para o próximo que falta.
+- `depois.hora` (número) faz o tempo passar até aquela hora (ex.: esperar a noite na estufa da Lia).
+- `antes: { flags }` aplica flags no começo da cena. Escolhas aceitam `falas`, `flags` e `depois`.
+- `interrompe` numa batalha: depois de 2 Pokémon do treinador desmaiarem, a luta para e a cena do gatilho
+  `interromper` toca. `alfa: true` sem treinador: o Pokémon aparece no ponto `*alfa*` mais perto.
+- Uma cena com batalha só conta como feita se a batalha for vencida (ou com `perder: 'continua'`, que marca o
+  treinador como enfrentado). Perdendo, o jogador volta ao último Centro Pokémon e pode tentar de novo.
+- Falas de `treinador`/`aprendiz` saem com o nome do treinador da cena (do elenco).
+
 **Números do roteiro:** 12 capítulos, 270 cenas, cerca de 980 falas e 78 batalhas definidas. Para conferir a
 estrutura: todo `apos` aponta para uma cena do mesmo capítulo, todo `vencer`/`perder` aponta para uma batalha
 existente e todo `quem` existe em `personagens.js`.

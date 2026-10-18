@@ -1,5 +1,6 @@
 // Capítulo 3: O espelho partido
 // Vila Alvorada → Rota 3 (Margem das Garças) → Porto Espelho → Galpão de Barcos (ginásio) → assalto da Crepúsculo → Lapras.
+// Jogável pelo motor src/story/roteiro.js. Níveis do capítulo: selvagens 16–23, treinadores 17–21, Ébano 21–23, Marina 21–24.
 
 export default {
   id: 'cap03',
@@ -35,21 +36,21 @@ export default {
         ['narrador', 'Uma placa diz: "Reconstruída pela Companhia Aurora. A luz que Alvorada merece."'],
         ['narrador', 'Embaixo da ponte, um grupo de Psyduck segura a cabeça com as duas mãos. Mais do que o normal.'],
       ],
-      depois: { flags: { viuPonte: true } },
+      depois: { flags: { viuPonte: true }, objetivo: { texto: 'Siga a Margem das Garças até Porto Espelho', alvo: 'porto_espelho' } },
     },
     {
       id: 'pescador_rota3',
       local: 'rota3',
       gatilho: { tipo: 'avistar', alvo: 'r3_seu_bigode' },
       falas: [['treinador', 'Quarenta anos pescando aqui e nunca vi o lago tão quieto. Até o Magikarp anda triste. Vamos batalhar pra animar!']],
-      depois: { batalha: { id: 'r3_seu_bigode', nome: 'Pescador Bigode', dinheiro: 640, equipe: [[129, 15, ['splash', 'tackle']], [129, 15, ['splash', 'tackle']], [339, 17, ['mudSlap', 'waterGun', 'watersport']]] } },
+      depois: { batalha: { id: 'r3_seu_bigode', nome: 'Pescador Bigode', dinheiro: 640, equipe: [[129, 17, ['splash', 'tackle']], [129, 17, ['splash', 'tackle']], [339, 19, ['mudSlap', 'waterGun', 'watersport']]] } },
     },
     {
       id: 'nadadora_rota3',
       local: 'rota3',
       gatilho: { tipo: 'avistar', alvo: 'r3_carol' },
       falas: [['treinador', 'Sabe por que o lago se chama Espelho? Olha pra água. Olhou? Pronto, batalha!']],
-      depois: { batalha: { id: 'r3_carol', nome: 'Garota da Praia Carol', dinheiro: 660, equipe: [[283, 16, ['bubble', 'quickAttack', 'sweetScent']], [580, 17, ['waterGun', 'wingAttack', 'defog']]] } },
+      depois: { batalha: { id: 'r3_carol', nome: 'Garota da Praia Carol', dinheiro: 660, equipe: [[283, 18, ['bubble', 'quickAttack', 'sweetScent']], [580, 19, ['waterGun', 'wingAttack', 'defog']]] } },
     },
     {
       id: 'porto_chegada',
@@ -61,7 +62,7 @@ export default {
         ['jandira', 'Eu sou a Jandira. Esse aqui é o Doutor. É um Slowpoke. Ele está pensando numa resposta desde terça-feira.'],
         ['jandira', 'Se você veio pela Marina, ela está no galpão de barcos, no fim do píer. Mas cuidado, que hoje está cheio de gente estranha no porto.'],
       ],
-      depois: { flags: { espelho: true }, objetivo: 'Desafie a Líder Marina no galpão de barcos' },
+      depois: { flags: { espelho: true }, objetivo: { texto: 'Desafie a Líder Marina no galpão de barcos, no fim do píer', alvo: 'marina_galpao', treinadores: ['g3_zeca', 'g3_taina'], rotulo: 'Aprendizes' } },
     },
     {
       id: 'nestor_porto',
@@ -91,14 +92,14 @@ export default {
       local: 'galpao_barcos',
       gatilho: { tipo: 'avistar', alvo: 'g3_zeca' },
       falas: [['aprendiz', 'Peixe que nada contra a corrente fica forte! Peixe que nada a favor chega antes. Eu sou dos dois!']],
-      depois: { batalha: { id: 'g3_zeca', nome: 'Pescador Zeca', dinheiro: 700, equipe: [[129, 16, ['splash', 'tackle', 'flail']], [339, 18, ['mudSlap', 'waterGun', 'amnesia']]] } },
+      depois: { batalha: { id: 'g3_zeca', nome: 'Pescador Zeca', dinheiro: 700, equipe: [[129, 19, ['splash', 'tackle', 'flail']], [339, 20, ['mudSlap', 'waterGun', 'amnesia']]] } },
     },
     {
       id: 'aprendiz_marina2',
       local: 'galpao_barcos',
       gatilho: { tipo: 'avistar', alvo: 'g3_taina' },
       falas: [['aprendiz', 'Quer chegar na Marina? Primeiro aprende a ficar molhado!']],
-      depois: { batalha: { id: 'g3_taina', nome: 'Nadadora Tainá', dinheiro: 740, equipe: [[278, 17, ['waterGun', 'wingAttack', 'supersonic']], [183, 18, ['bubble', 'rollout', 'defenseCurl']]] } },
+      depois: { batalha: { id: 'g3_taina', nome: 'Nadadora Tainá', dinheiro: 740, equipe: [[278, 20, ['waterGun', 'wingAttack', 'supersonic']], [183, 21, ['bubble', 'rollout', 'defenseCurl']]] } },
     },
     {
       id: 'marina_desafio',
@@ -114,10 +115,10 @@ export default {
           id: 'leader_marina', nome: 'Líder Marina', dinheiro: 2200, perder: 'centro',
           interrompe: 'assalto', // depois do segundo Pokémon dela, a cena "assalto" interrompe a luta
           equipe: [
-            [54, 19, ['waterGun', 'confusion', 'scratch']],
-            [418, 20, ['aquaJet', 'quickAttack', 'waterGun']],
-            [79, 20, ['waterGun', 'confusion', 'yawn']],
-            [550, 22, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
+            [54, 21, ['waterGun', 'confusion', 'scratch']],
+            [418, 22, ['aquaJet', 'quickAttack', 'waterGun']],
+            [79, 22, ['waterGun', 'confusion', 'yawn']],
+            [550, 24, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
           ],
         },
       },
@@ -140,7 +141,7 @@ export default {
         ['vespera', 'Você está do lado certo pelas razões erradas, menino. Um dia vai entender. Ébano, segure-o.'],
       ],
       depois: {
-        batalha: { id: 'c3_ebano', nome: 'Admin Ébano', dinheiro: 1500, perder: 'continua', equipe: [[41, 19, ['bite', 'supersonic', 'wingAttack']], [228, 20, ['ember', 'bite', 'roar']], [302, 21, ['furySwipes', 'astonish', 'detect']]] },
+        batalha: { id: 'c3_ebano', nome: 'Admin Ébano', dinheiro: 1500, perder: 'continua', equipe: [[41, 21, ['bite', 'supersonic', 'wingAttack']], [228, 22, ['ember', 'bite', 'roar']], [302, 23, ['furySwipes', 'astonish', 'detect']]] },
       },
     },
     {
@@ -154,7 +155,7 @@ export default {
         ['marina', 'Tá. Respira, Marina. Respira.'],
         ['marina', 'A gente não terminou a nossa batalha. Vem pro píer. Batalha que começa tem que acabar, nem que seja no meio do caos.'],
       ],
-      depois: { objetivo: 'Termine a batalha com a Marina no píer' },
+      depois: { objetivo: { texto: 'Termine a batalha com a Marina no píer', alvo: 'marina_pier' } },
     },
     {
       id: 'marina_pier',
@@ -165,8 +166,8 @@ export default {
         batalha: {
           id: 'leader_marina_pier', nome: 'Líder Marina', dinheiro: 2200,
           equipe: [
-            [79, 20, ['waterGun', 'confusion', 'yawn']],
-            [550, 22, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
+            [79, 22, ['waterGun', 'confusion', 'yawn']],
+            [550, 24, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
           ],
         },
       },

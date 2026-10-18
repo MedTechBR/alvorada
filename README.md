@@ -70,6 +70,14 @@ Interface e história (ramo `interface`):
 - `src/ui/` título com contas locais e criador de personagem, HUD, diálogo clássico, menu (Pokédex, equipe, mochila, mapa, cartão, opções, salvar, PC).
 - `src/net/auth.js` contas locais (hash PBKDF2) e código de transferência do save; ponto de entrada para um servidor futuro.
 - `src/story/` capítulo 1 (Prof. Jatobá, Téo, treinadores, Cidade Campina, Líder Tomé). Posições por pontos nomeados: o mapa pode definir `map.spots` (ver `src/story/spots.js`).
+- **Motor de roteiro** (`src/story/roteiro.js`): executa os capítulos escritos em dados (`src/story/script/capNN.js`,
+  formato na seção 8 de `docs/historia-completa.md`). O capítulo 1 segue no `story.js`; quando ele termina
+  (`flags.ch1Done`), o motor toca o 2 e o 3 (`JOGAVEIS` em roteiro.js). Gatilhos de lugar, zona, fala, treinador
+  que avista, vitória, derrota, interrupção de batalha e flag; falas com escolhas; batalhas no mapa (`battle.js`,
+  com chefe Alfa sem treinador); insígnia, MT, itens, montaria (`game.unlockMount`, ou `map.setMount` se faltar),
+  hora do dia e objetivo do HUD com seta. Perdendo uma luta da história, volta ao último Centro Pokémon e a cena
+  pode ser tentada de novo. Quem aparece no mapa: `src/story/elenco.js`; itens-chave: `src/story/itens.js`.
+  Para jogar um capítulo novo: elenco + pontos no mapa + o id em `JOGAVEIS`.
 - `src/save.js` save por conta no localStorage, automático a cada 30 s.
 - PWA: `manifest.webmanifest`, `sw.js` (rede primeiro), ícones em `assets/icons` (`python3 tools/make_icons.py`).
 
@@ -79,7 +87,8 @@ Interface e história (ramo `interface`):
   gerado da planta `docs/mapa-alvorada.json` (`python3 -I tools/gerar-esboco.py` → `assets/maps/esboco.json`;
   1 unidade da planta = 6 blocos). 600x480 blocos de 16 px por fora + faixa isolada de interiores.
   Prontos: Vila Alvorada, Rota 1, Cidade Campina com o ginásio (milharal-labirinto), Fazenda do Tomé, Rota 2,
-  Bosque Sussurrante, Vila Sussurro e Toca do Absol, com interiores. O resto está esboçado (terreno, cidades, rotas).
+  Bosque Sussurrante, Vila Sussurro, Toca do Absol, Rota 3 (Margem das Garças) e Porto Espelho (Centro, Casa do Nestor e
+  o Galpão de Barcos, ginásio da Marina), com interiores. O resto está esboçado (terreno, cidades, rotas).
 - **Arte:** blocos e objetos do Tuxemon (CC BY-SA 4.0, `assets/CREDITOS.md`) + prédios, árvores e móveis desenhados por
   código (`src/world/art.js`, `buildings.js`). Bordas do chão por compositor (`ground.js`).
 - **Código:** `map.js` (GameMap: setores de 16x16 montados sob demanda, colisão, mato alto, `setTile`, `resolve`,
