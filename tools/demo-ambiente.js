@@ -52,7 +52,7 @@ const foco = new THREE.Vector3(40 * 16 + 8, 0, 64 * 16);
 function porCamera() {
   if (CAM === 'jogo') { const inc = 50 * Math.PI / 180, D = 520; camera.position.set(foco.x, foco.y + D * Math.sin(inc), foco.z + D * Math.cos(inc)); }
   else { camera.position.set(foco.x, 118, foco.z + 455); }
-  camera.lookAt(foco); camera.updateMatrixWorld();
+  camera.lookAt(foco.x, foco.y + +(P.get('olhar') ?? (CAM === 'jogo' ? 0 : 34)), foco.z); camera.updateMatrixWorld();
 }
 porCamera();
 const altura = () => 0;
@@ -84,6 +84,8 @@ function arvore(tx, ty, k = 1) {
 // fundo de árvores dos dois lados da trilha do norte
 for (let i = 0; i < 26; i++) { const lado = i % 2 ? 1 : -1, ty = 34 + (i >> 1) * 1.6 + hash(i, 2, 1) * 1.5, tx = 40 + lado * (4 + hash(i, 3, 1) * 9); arvore(Math.round(tx), Math.round(ty), 1 + hash(i, 4, 1) * 0.4); }
 for (const [tx, ty, k] of [[27, 54, 1.3], [12, 60, 1.4], [8, 54, 1.2], [56, 50, 1.25], [64, 54, 1.1], [72, 58, 1.35], [76, 50, 1.2], [20, 46, 1.2], [30, 44, 1.3], [52, 42, 1.3], [62, 40, 1.4]]) arvore(tx, ty, k);
+// mata ao fundo (linha de árvores até as colinas)
+for (let i = 0; i < 60; i++) { const tx = 2 + Math.round(hash(i, 21, 5) * 76), ty = 6 + Math.round(hash(i, 22, 5) * 26); if (Math.abs(tx - 40) > 3) arvore(tx, ty, 1.1 + hash(i, 23, 5) * 0.5); }
 // casinha (telhado verde de duas águas, à esquerda)
 {
   const x = 19 * 16, z = 52 * 16, w = 92, d = 64, h = 38;
@@ -97,7 +99,7 @@ for (const [tx, ty, k] of [[27, 54, 1.3], [12, 60, 1.4], [8, 54, 1.2], [56, 50, 
 }
 // poste de luz e um quiosque à direita
 caixa(3, 40, 3, 0x3a3a40, 51 * 16, 0, 60 * 16);
-const lamp = caixa(7, 8, 7, 0xfff2c0, 51 * 16, 40, 60 * 16); lamp.material = new THREE.MeshBasicMaterial({ color: 0xfff4c8 });
+const lamp = caixa(7, 8, 7, 0xfff2c0, 51 * 16, 40, 60 * 16); lamp.material = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xfff0b8).multiplyScalar(5) });
 { const x = 61 * 16, z = 57 * 16; caixa(56, 34, 30, 0xd6dee4, x, 0, z); caixa(64, 4, 38, 0x4a8ac0, x, 34, z); caixa(40, 18, 2, 0x5a7890, x, 8, z + 16); ocupa(59, 56, 63, 58); }
 // Charizard (billboard do sprite PMD, como o espelho do jogo faz)
 {

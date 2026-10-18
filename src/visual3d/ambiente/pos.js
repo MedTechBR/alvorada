@@ -43,7 +43,7 @@ const FINAL = `uniform sampler2D tCena, tD1, tD2, tD3, tD4, tR;
       c = c + ra * (1.0 - min(c, vec3(1.0))) * 0.9 + ra * 0.1;
       vec2 q = (uv - sol) * aspecto; float r = length(q); float ang = atan(q.y, q.x);
       float feixes = pow(max(0.0, sin(ang * 9.0 + tempo * 0.05)), 5.0) * 0.6 + pow(max(0.0, sin(ang * 23.0 - tempo * 0.08 + 1.3)), 9.0) * 0.5 + pow(max(0.0, sin(ang * 5.0 + 2.1)), 4.0) * 0.35;
-      vec3 fx = corRaio * (feixes * smoothstep(1.5, 0.05, r) * smoothstep(0.0, 0.1, r) * 0.55 + 0.07 * smoothstep(1.0, 0.0, r)) * raios;
+      vec3 fx = corRaio * (feixes * smoothstep(1.6, 0.05, r) * smoothstep(0.0, 0.1, r) * 0.9 + 0.09 * smoothstep(1.0, 0.0, r)) * raios;
       c = c + fx * (1.0 - min(c, vec3(1.0)));
     }
     c *= tinta * exposicao;
@@ -86,7 +86,7 @@ export class PosHD {
     this.mFinal = sm({
       tCena: { value: null }, tD1: { value: null }, tD2: { value: null }, tD3: { value: null }, tD4: { value: null }, tR: { value: null }, tempo,
       tilt: { value: 1 }, foco: { value: 0.5 }, faixa: { value: 0.1 }, bloomK: { value: 0.6 }, limiar: { value: 0.8 }, raios: { value: 0.3 }, raiosR: { value: 1.2 },
-      vinheta: { value: 0.4 }, sat: { value: 1.1 }, exposicao: { value: 1.25 }, contraste: { value: 1.04 }, quente: { value: 0.45 }, oliva: { value: 0.26 }, frio: { value: 0.4 },
+      vinheta: { value: 0.4 }, sat: { value: 1.1 }, exposicao: { value: 1.25 }, contraste: { value: 1.04 }, quente: { value: 0.7 }, oliva: { value: 0.26 }, frio: { value: 0.4 },
       tinta: { value: new THREE.Color(1, 1, 1) }, corRaio: { value: new THREE.Color(1, 0.86, 0.6) }, sol: { value: new THREE.Vector2(0.85, 1.05) },
       aspecto: { value: new THREE.Vector2(1, 1) }, simples: { value: 0 },
     }, FINAL);
