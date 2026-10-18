@@ -4,6 +4,17 @@ import { SPR } from './art.js';
 import { KINDS } from './objects.js';
 import { REGION } from './map.js';
 import { FLOORS } from './arte-biomas.js';
+import { ITEMS, ITEM_INFO } from '../data/items.js';
+
+// itens-chave das masmorras (mesmo jeito de src/story/itens.js: só entram se o id ainda não existir)
+const CHAVES = {
+  chave_pequena: { name: 'Chave Pequena', cat: 'key', color: '#c8a040', desc: 'Abre uma porta trancada da masmorra onde foi achada. Some ao ser usada.' },
+  chave_mestra: { name: 'Chave Mestra', cat: 'key', key: true, color: '#f2c94c', desc: 'Chave grande e antiga, com um sol gravado. Abre a porta do chefe da masmorra.' },
+};
+for (const [k, v] of Object.entries(CHAVES)) {
+  if (!ITEMS[k]) ITEMS[k] = { en: v.name, price: 0, ...v };
+  if (!ITEM_INFO[k]) ITEM_INFO[k] = { id: k, ...v, pocket: 'chave', usable: false };
+}
 
 // Mecânicas de terreno e de masmorra, genéricas e configuradas pelo JSON do mapa (guia em assets/maps/LEIAME.md).
 // Exposto como game.mundo.masmorra.

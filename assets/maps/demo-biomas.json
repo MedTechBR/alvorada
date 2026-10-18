@@ -1,0 +1,1538 @@
+{
+ "name": "Demo dos biomas",
+ "comment": "SÓ PARA TESTE (?mapa=demo-biomas). Gerado por tools/gerar-demo-biomas.py; não faz parte da aventura.",
+ "w": 128,
+ "h": 116,
+ "outdoorH": 74,
+ "base": "void",
+ "teste": {
+  "equipe": [
+   [
+    4,
+    18
+   ],
+   [
+    66,
+    18
+   ],
+   [
+    25,
+    16
+   ],
+   [
+    7,
+    16
+   ]
+  ]
+ },
+ "ops": [
+  {
+   "op": "stamp",
+   "x": 0,
+   "y": 0,
+   "rows": [
+    "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn........................................aaaaaaaaaaaaaaaallllaaaaaaaaaaaaavvvvvaaaaaa",
+    "nnnnGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGnnnnnn........................................aaUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUavvvvaaaaaaa",
+    "nnnnGGGGGGGGGGGGGGGGOGGGGGGGGGGGGGGGGGnnnnnn...............XXXXXXXX.................aaUUUUUUUUUUOUUUUUUUUUUUUUUUUUUUavvvvaaaaaaa",
+    "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn.............XXXXXXXXXXXXX..............aaaaaaaaaaaaaaaaallllaaaaaaaaaaavvvvvaaaaaaa",
+    "nnnnnnnnnnnnnnnnnnNNNNNNNnnnnnnnnnnnnnnnnnnn..........HHHHHHHHHHHHHHHHHHHH..........aaaaaaaaaaaaaaaaallllaaaaaaaaaavvvvvvaaaaaaa",
+    "nnnnnnnnnnnnnnnnnnnNNNNNnnnnnnnnnnnnnnnnnnnn..........HHHHHHHHHHHHHHHHHHHHX.........vaaaaaaaaaaaaaaaaalllaaaaaaaaavvvvvvvaaaaaaa",
+    "nnnnnnnnnnnnnnnnnnnNNNNnnnnnnnnnnnnnnnnnnnnn.........XHHHHHHHHHHHHHHHHHHHHXXX.......vvaaaaaaaaaaaaaaaalllaaaaaaaavvvvvvvvvaaaaaa",
+    "nnnnnnnnnnnnnnnnnnnnNnnnnnnnnnnnnnnnnnnnnnnn........XXHHHHHHHHHHHHHHHHHHHHXXXX......vvvaaaaaaaaaaaaaaallllaaaoooooovvvvvvvaaaaaa",
+    "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn........XXHHHHHHHHHHHHHHHHHHHHXXXXX.....vvvvaaaaaaaaaaaaaallllloooooooooovvvvvaaaaaa",
+    "nnnnnnnnnIIIIIIIIInnnnnnnnnnnnnnnnnnnnnnnnnn.......XXXHHHHHHHHE^^EHHHHHHHHXXXXXX....vvvvaaaaaaaaavvvvvvllllllllllllooovvvvaaaaaa",
+    "nnnnnnnnIIIIIIIIIIInnnnnnnnnnnnnnnnnnnnnnnnn......XXXXHHHHHHHHEYYEHHHHHHHHXXXXXX.....vvvaaaaaaaaavvvvvvvvlllllllllllooovvvaaaaaa",
+    "nnnnnnnIIIIIIIIIIIIInnnnnnnnnnnnnnnnnnnnnnnn......XXXXXXXXXXXXXYYXXXXXXXXXXXXXXX.....vvaaaaaaaaaavvvvvvvvollllllllllloovvvaaaaaa",
+    "nnnnnnnIIIIIIIIIIIIInnnnnnnnnnnnnnnnnnnNNNNN......XXXXXXXXXXXXXYYXXXXXXXXXXXXXXX.....vvaaaaaaaaaavvvvvvvooollllllllllooovaaaaaaa",
+    "nnnnnnnIIIIIIIIIIIIInnnnnnnnnnnnnnnnnNNNNNNN.....XXXXXXXXXXXXXXYYXXXXXXXXXXXXXXX.....vaaaaaaaaaaavvvvvvvooolllllllllloooaaaaaaaa",
+    "nnnNNnnIIIIIIIIIIIInnnnnnnnnnnnnnnnnNNNNNNNN.....XXXXXXXXXXXXXXYYXXXXXXXXXXXXXXX.....aaaaaaaaaaaaavvvvvvvooolllllllllooaaaaaaaaa",
+    "nNNNNNnnIIIIIIIIIInnnNNnnnnnnnnnnnnNNNNNNNNN....XXXXXXXXXXXXXXXYYXXXXXXXXXXXXXXX.....aaaaaaaaaaaaavvvvvvaaoooolllllooooaaaaaaaaa",
+    "NNNNNNnnnnIIIIInnnnnNNNnnnnnnnnnnnNNNNNNNNNN....XXXXXXXXXXXXXXXYYXXXXXXXXXXXXXXX....aaaaaaaaaaaaaaavvvvaaaaaooolllloooaaaaaaaaaa",
+    "NNNNNNNNnnnnnnnnnNNNNNnnnnnnnnnnnnNNNNNNNNNN....XXXXXXXXXXXXXXXYYXXXXXXXXXXXXXXX....aaaaaaaaaaaaaaavvvaaaaaaaaoollllaaaaaaaaaaaa",
+    "NNNNNNNNNNnnnnnnnNNNNnniiiiiiiiiiiNNNNNNNNNN....XXXXXXXXXXXXXXXYYXXXXXXXXXXXXXXX....aaaaaaaaaaaaaaavvvaaaaaaaaaaBBBBaaaaaaaaaaaa",
+    "NNNNNNNNNnnnnnnnnnnnnnniiiiiiiiiiiNNNNNNNNN.....XXXXXXXXXXXXXXXYYXXXXXXXXXXXXXXXvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvaaaaa",
+    "NNNNNNNnnnnnnnnnnnnnnnniiiiiiiiiiinNNNNNNNN.....XXXXXXXXXXXXXXXYYXXXXXXXXXXXXXXXvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvaaaaa",
+    "NNNNNNnnnnnnnnnnnnnnnnniiiiiiiiiiinNNNNNNNn......XXXXXXXXXXXXXXYYXXXXXXXXXXXXXXX....aaaaaaaaaaa==vvvvvvaaaaaaaaaaaBBBBaaaaaaaaaa",
+    "nNNNNnJJJJJJJnnnnnnnnnniiiiiiiiiiinnnNNNnnn........XXXXXXXXXXXXYYXXXXXXXXXXXXXX.....aaaaaaavv====vvvvvvaaaaaaaaaaaBBBBBaaaaaaaaa",
+    "nNNNnnnnnnnnnnnnnnnnnnniiiiiiiiiiinnnnnnnnnn.........XXXXXXXXXXYYXXXXXXXXXXXXX......aaaaavvv====vvvvvvvvaaaaaaaaaaalllllaaaaaaaa",
+    "nnnnnnnnnnnnnnnnnnnnnnniiiiiiiiiiinnnnnnnnnn..........XXXXXXXXXYYXXXXXXXXXXXX.......aaaaav====qqvvvvvvvvaaaaaaaaaaaalllllvvaaaaa",
+    "nnnnnnnnnnnnnnnnnnnnnnnnnnnnn====nnnnnnnnnnn............XXXXXXXYYXXXXXXXXXX.........aaaav====qqqqvvvvvvvaaaaaaaaaaaavlllllvvvvvv",
+    "nnnnnnnnnnnnnnnnnnnnnnnnnnnnn=======nnnnnnnn..............XXXXXYYXXXXXXX............aaa====qqqqqvvvvvvvvaaaaaaaaaaavvvlllllvvvvv",
+    "NNNnnnnnnnnnnnnnnnnnnnnnnnnnnnn=========nnnn...............XXXX==XXXX...............va====vvqqqvvvvvllvvaaaaaaaaaavvvvvlllllvvvv",
+    "NNNNnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn=========n...................==...................====aavvvvvvvvvvllvvaaaaaaaaaavvvvvvlllllvvv",
+    "NNNNnnnnnnnnnnnnnnnnnNNNnnnnnnnnnnnnnn========.................==.................=====aaavvvvvvvvvvllvaaaaaaaaaaavvvvvvvlllllva",
+    "NNNNnnnnnnnnnnnnnnnNNNNNNNnnnnnnnnnnnnnnn=======...............==...............=====vaaaaavvvvvvvvvllaaaaaaaaaaaavvvvvvvvllllaa",
+    "NNNNNnnnnnnnnnnnnnNNNNNNNNNnnnnnnnnnnnnnnnnn======.............==.............======vaaaaaaaavvvvvvvllaaaaaaaaaaaavvvvvvvvvllaaa",
+    "NNNNNnnnnnnnnnnnnNNNNNNNNNNNnnnnnnnnnnnnnnnn...======..........==..........======...aaaaaaaaaaaavvvaaaaaaaaaaaaaaavvvvvvvvvaaaaa",
+    "NNNNNnnnnnnnnnnnNNNNNNNNNNNNnnnnnnnnnnnnnnnn.....======...PPPPP==PPPPP...======.....aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaavvvvvvvaaaaaa",
+    "....................................................======PPPPPPPPPPPP======....................................................",
+    "......................................................=====PPPPPPPPPP=====......................................................",
+    "........................................................===PPPPPPPPPP===........................................................",
+    "......................................................=====PPPPPPPPPP=====......................................................",
+    "....................................................======PPPPPPPPPPPP======........::::::::::::::::::::AA~~~~~~~~~~WWWWWWWWWWWW",
+    "...............::.................................======..PPPPP==PPPPP..======......:::::::::::::::::::AA~~~~~~~~~~~WWWWWWWWWWWW",
+    "........zzzzzzz::zzz.........KKKKKKKKKKKKKKK....======.........==.........======....:::::::::::::::::::AA~~~~~~~~~~~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzzzz::zzzzzhhhhKKKKKKKKKKKKKKKKKK..======...........==...........======..:::::::::::::::::::AA~~~~~~~~~~~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzzzz::zzzzzhhhhKKKKKKKKKKKKKKKKKK======.............==.............======:::::::::::::::::::AA~~~~~~~~~~~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzzzz::zzzzzhhhKKKKKKKKKKKKKKKKK======...............==...............=====::::::::::::::::::AA~~~~~~~~~~~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzCCz::zCCzzhhhKKKKKKKKKKKKKKK======.................==.................=====::::::::::::::::AA~~~~~~~~~~~WWAAAAAWWWWW",
+    "zzzzzzzzzzzzCCz::zCCzzhhhKKKKKKKKKKKKK======...................==...................====:::::::::::::::AA~~~~~~~~~~~WA:::::AWWWW",
+    "zzzzzzzzzzzzCCz::zCCzzhhhKKKKKKKKKK======hhh...................==....................====::::::::::::::AA~TTTTTTTTTTTA:::::AAWWW",
+    "zzzzzzzzzzzzCCz::zCCzzhhhhKKKKKKK======hhhhh...................==.....................====::::::::::::::AATTTTTTTTTTTA:::::AWWWW",
+    "zzzzzzzzzzzzCCz::zCCzzhhhhKKKK======hhhhhhhh...................==.....................::====::::::::::::AA~~~~~~~~~~WWAAAAAWWWWW",
+    "zzzzzQQQzzzzCCz::zCCzzhhhhKKK=====Khhhhhhhhh...................==....................::::====:::::::::::AA~~~~~~~~~~WWWWWWWWWWWW",
+    "zzzzQQQQQzzzCCz::zCCzzhhhhhKK===KKhhhhhhhhhh...................==....................:::::====::::::::::AA~~~~~~~~~~WWWWWWWWWWWW",
+    "zzzzzQQQzzzzCCz::zCCzzhhhhhKKKKKKKhhhhhhhhhh...................==...................:::::::====:::::::::AA~~~~~~~~~~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzCCz::zCCzzhhhhhKKKKKKhhhhhhhhhhh...................==...................:::::::::==:::::::::AA~~%%%%%%%%WWWWWWWWWWWW",
+    "zzzzzzzzzzzzCCz::zCCzzhhhhKKKKKKKhhhhhhhhhhh...............rrr.==...................::::::::::::::::::::AA~~%%%%%%%%WWWWWWWWWWWW",
+    "zzzzzzzzzzzzCCz::zCCzzhhhKKKKKKKKhhhhhhhhhhh............rrrrrrr==r..................::::::::::::::::::::AA~%%%%%%%%%WWWWWWWWWWWW",
+    "zzzzzzzzzzzzCCz::zCCzzhhKKKKKKKKKKhhhhhhhhhh..........rrrrrrrrrrrrrrrrrrr...........::::::::::::::::::::AA~%%%%%%%%%WWWWWWWWWWWW",
+    "zzzzzzzzzzzzzzz::zzzzzKKKKKKKKKKKKhhhhhhhhhh.........rrrrrrrrrrrrrrrrrrrrrrrr.......pppppppppppppp::::::AA~%%%%%%%%%WWWWWWWWWWWW",
+    "zzzzzzzzzzzzzzz::zzzzzKKKKKKKKKKKKKhhhhhhhhh........rrrrrrrrrrrrrrrrrrrrrrrrrr......pppppppppppppp::::::AA~%%%%%%%%%WWWWWWWWWWWW",
+    "zzzzzzzzzzzzzzz::zzzzzKKKKKKKKKKKKKKhhhhhhhj.......rrrrrrrrrrrrrrrrrrrrrrrrrrrrr....pp\"\"\"ppppppppp::::::AA~~%%%%%%%~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzQQQQzzzzzzKKKKKKKKKKKKKKhhhhhhKK.....rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr....\"\"\"\"\"\"\"ppppppp::::::AA~~%%%%%%~~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzQQQQQzzzzzKKKKKKKKKKKKKKKhhhhKKK.....rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr...\"\"\"\"\"\"\"\"pppppp::::::AA~~~%%%%~~~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzQQQQzzzzzzKKKKKKKKKKKKKKKhhhKKKK....rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr...\"\"\"\"\"\"\"\"pppppp::::::AA~~~%%%~~~~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzzzzzzzzzzzhhhhKKKKKKKKKKKhhhKKKK...rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr...\"\"\"\"\"\"\"\"pppppp:::::::AA→→%%%~~~~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzzzzzzzzzzzhhhhhhhKKKKKKKhhhhhKKK....rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr...\"\"\"\"\"→→→→→→→→→→→→→→→→→→→→→→→~~~~~~~~~~~~~~~W",
+    "zzzzzzzzzzzzzzzzzzzzzzhhhhhhhhhKKKKhhhhhhhKK....rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr...\"→→→→→→→→→→→→→→→→→→→→→→→→→→→~~~~~~~~~~~~~~~W",
+    "zzzzzzzQQQzzzzzzzzzzzzhhhhhhhhhhhhhhhhhhhhhh.....rrrrrrrOrrrrrrrrrrrrrrrOrrrrrrr...~→→→→→→→RRRRRpp::::::AA%%%%%%%~~~WWWWWWWWWWWW",
+    "zzzzzzQQQQQzzzzzzzzzzzhhhhhhhhhhhhhhhhhhhhhh..........======================.......~→→→RRRRRRRRRRp::::::AA%%%%%%%~~~WWWWWWWWWWWW",
+    "zzzzzzzQQQzzzzzzzzzzzzhhhhhhhhhhhhhhhhhhhhhh........................................\"\"RRRRRRRRRRpp::::::AA%%%%%%%~~~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzzzzzzzzzzzhhhhhhhhhhhhhhhhhhhhhh........................................ppRRRRRRRRRppp::::::AA%%%%%%%%~~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzzzzzzzzzzzhhhhhhhhhjKKKhhhhhhhhh........................................ppRRRRRRRRpppp:::::AA%%%%%%%%%~~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzzzzzzzzzzzhhhhhhhhjjjKKKKhhhhhhh........................................ppRRRRRRRppppp:::::AA%%%%%%%%%~~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzzzzzzzzzzzhhhhhhhjjjjKKKKKhhhhhh........................................ppRRRRRRpppppp:::::AA%%%%%%%%~~~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzzzzzzzzzzzhhhhhhjjjjKKKKKKKhhhhh........................................pppRRRRppppppp:::::AA~~~~~~~~~~~WWWWWWWWWWWW",
+    "zzzzzzzzzzzzzzzzzzzzzzhhhhhjjjjjKKKKKKKhhhhh........................................ppppRRpppppppp:::::AA~~~~~~~~~~~WWWWWWWWWWWW"
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "kind": "stalagmiteIce",
+   "x": 23,
+   "y": 18
+  },
+  {
+   "kind": "stalagmiteIce",
+   "x": 33,
+   "y": 18
+  },
+  {
+   "kind": "stalagmiteIce",
+   "x": 27,
+   "y": 21
+  },
+  {
+   "kind": "stalagmiteIce",
+   "x": 23,
+   "y": 24
+  },
+  {
+   "kind": "stalagmiteIce",
+   "x": 31,
+   "y": 24
+  },
+  {
+   "kind": "stalagmiteIce",
+   "x": 29,
+   "y": 19
+  },
+  {
+   "kind": "igloo",
+   "x": 4,
+   "y": 26,
+   "text": "Iglu do Seu Gélio. Ele pesca no lago congelado de manhã."
+  },
+  {
+   "kind": "cabin",
+   "x": 30,
+   "y": 5,
+   "text": "Cabana do guarda-florestal. Lareira acesa, chocolate quente."
+  },
+  {
+   "kind": "snowman",
+   "x": 10,
+   "y": 20
+  },
+  {
+   "kind": "snowPineBig",
+   "x": 36,
+   "y": 26
+  },
+  {
+   "kind": "snowPine",
+   "x": 2,
+   "y": 6
+  },
+  {
+   "kind": "snowPine",
+   "x": 6,
+   "y": 8
+  },
+  {
+   "kind": "snowPine",
+   "x": 24,
+   "y": 9
+  },
+  {
+   "kind": "snowPine",
+   "x": 28,
+   "y": 12
+  },
+  {
+   "kind": "snowPine",
+   "x": 38,
+   "y": 14
+  },
+  {
+   "kind": "snowPine",
+   "x": 3,
+   "y": 16
+  },
+  {
+   "kind": "snowPine",
+   "x": 16,
+   "y": 30
+  },
+  {
+   "kind": "snowPine",
+   "x": 36,
+   "y": 31
+  },
+  {
+   "kind": "snowPine",
+   "x": 20,
+   "y": 6
+  },
+  {
+   "kind": "snowPine",
+   "x": 40,
+   "y": 22
+  },
+  {
+   "kind": "strengthRock",
+   "x": 99,
+   "y": 29
+  },
+  {
+   "kind": "lavaRock",
+   "x": 88,
+   "y": 8
+  },
+  {
+   "kind": "lavaRock",
+   "x": 106,
+   "y": 26
+  },
+  {
+   "kind": "lavaRock",
+   "x": 120,
+   "y": 6
+  },
+  {
+   "kind": "lavaRock",
+   "x": 90,
+   "y": 14
+  },
+  {
+   "kind": "lavaRock",
+   "x": 124,
+   "y": 16
+  },
+  {
+   "kind": "fumarola",
+   "x": 96,
+   "y": 24
+  },
+  {
+   "kind": "fumarola",
+   "x": 90,
+   "y": 26
+  },
+  {
+   "kind": "obsidianRock",
+   "x": 108,
+   "y": 9
+  },
+  {
+   "kind": "obsidianRock",
+   "x": 117,
+   "y": 15
+  },
+  {
+   "kind": "cactus",
+   "x": 3,
+   "y": 44
+  },
+  {
+   "kind": "cactus",
+   "x": 9,
+   "y": 56
+  },
+  {
+   "kind": "cactus",
+   "x": 2,
+   "y": 62
+  },
+  {
+   "kind": "cactus",
+   "x": 20,
+   "y": 68
+  },
+  {
+   "kind": "cactus",
+   "x": 11,
+   "y": 47
+  },
+  {
+   "kind": "mandacaru",
+   "x": 26,
+   "y": 48
+  },
+  {
+   "kind": "mandacaru",
+   "x": 34,
+   "y": 56
+  },
+  {
+   "kind": "mandacaru",
+   "x": 40,
+   "y": 64
+  },
+  {
+   "kind": "mandacaru",
+   "x": 28,
+   "y": 66
+  },
+  {
+   "kind": "taipa",
+   "x": 34,
+   "y": 44,
+   "text": "Casa de taipa. Na janela, um vaso de flor de mandacaru."
+  },
+  {
+   "kind": "skull",
+   "x": 6,
+   "y": 70
+  },
+  {
+   "kind": "skull",
+   "x": 38,
+   "y": 60
+  },
+  {
+   "kind": "coqueiro",
+   "x": 120,
+   "y": 45
+  },
+  {
+   "kind": "coqueiro",
+   "x": 90,
+   "y": 40
+  },
+  {
+   "kind": "coqueiro",
+   "x": 98,
+   "y": 44
+  },
+  {
+   "kind": "coqueiro",
+   "x": 94,
+   "y": 50
+  },
+  {
+   "kind": "palmeira",
+   "x": 86,
+   "y": 44
+  },
+  {
+   "kind": "palmeira",
+   "x": 102,
+   "y": 40
+  },
+  {
+   "kind": "beachStall",
+   "x": 90,
+   "y": 46,
+   "text": "Barraca da Dona Iara: água de coco, tapioca e protetor solar."
+  },
+  {
+   "kind": "surfboard",
+   "x": 96,
+   "y": 47
+  },
+  {
+   "kind": "jangada",
+   "x": 101,
+   "y": 58
+  },
+  {
+   "kind": "driftwood",
+   "x": 88,
+   "y": 52
+  },
+  {
+   "kind": "mangue",
+   "x": 86,
+   "y": 60
+  },
+  {
+   "kind": "mangue",
+   "x": 92,
+   "y": 66
+  },
+  {
+   "kind": "mangue",
+   "x": 95,
+   "y": 58
+  },
+  {
+   "kind": "column",
+   "x": 56,
+   "y": 12
+  },
+  {
+   "kind": "column",
+   "x": 60,
+   "y": 12
+  },
+  {
+   "kind": "column",
+   "x": 68,
+   "y": 12
+  },
+  {
+   "kind": "column",
+   "x": 72,
+   "y": 12
+  },
+  {
+   "kind": "statue",
+   "x": 58,
+   "y": 14
+  },
+  {
+   "kind": "statue",
+   "x": 69,
+   "y": 14
+  },
+  {
+   "kind": "brazier",
+   "x": 61,
+   "y": 12,
+   "acesa": true
+  },
+  {
+   "kind": "brazier",
+   "x": 66,
+   "y": 12,
+   "acesa": true
+  },
+  {
+   "kind": "brokenColumn",
+   "x": 52,
+   "y": 20
+  },
+  {
+   "kind": "brokenColumn",
+   "x": 76,
+   "y": 22
+  },
+  {
+   "kind": "obelisk",
+   "x": 50,
+   "y": 14
+  },
+  {
+   "kind": "pot",
+   "x": 74,
+   "y": 18
+  },
+  {
+   "kind": "pot",
+   "x": 54,
+   "y": 24
+  },
+  {
+   "kind": "tree",
+   "x": 50,
+   "y": 34
+  },
+  {
+   "kind": "tree",
+   "x": 78,
+   "y": 34
+  },
+  {
+   "kind": "tree",
+   "x": 52,
+   "y": 42
+  },
+  {
+   "kind": "tree",
+   "x": 76,
+   "y": 42
+  },
+  {
+   "kind": "sign",
+   "x": 22,
+   "y": 25,
+   "text": "Campo de gelo: quem pisa escorrega até bater em alguma coisa. Pense antes de andar!"
+  },
+  {
+   "kind": "sign",
+   "x": 92,
+   "y": 21,
+   "text": "Fonte termal: entre na água quente para a equipe descansar. Não encoste na lava!"
+  },
+  {
+   "kind": "sign",
+   "x": 8,
+   "y": 46,
+   "text": "CUIDADO: areia movediça! Parado, você afunda. Corra para sair."
+  },
+  {
+   "kind": "sign",
+   "x": 104,
+   "y": 44,
+   "text": "Maré baixa: dá para ir a pé até a ilhota. Maré alta (6 h e 18 h): só nadando."
+  },
+  {
+   "kind": "sign",
+   "x": 62,
+   "y": 18,
+   "text": "TEMPLO DE ARÁ. Os antigos deixaram enigmas: força, fogo, chave e sinos."
+  },
+  {
+   "kind": "sign",
+   "x": 62,
+   "y": 67,
+   "text": "À esquerda, a Gruta de Cristal. À direita, a mina velha (o vagonete ainda corre nos trilhos)."
+  },
+  {
+   "kind": "sign",
+   "x": 61,
+   "y": 33,
+   "text": "DEMO DOS BIOMAS (só para teste). Norte: templo. Noroeste: gelo. Nordeste: vulcão. Sudoeste: deserto. Sudeste: praia e mangue. Sul: cavernas."
+  }
+ ],
+ "interiors": [
+  {
+   "id": "templo_1",
+   "name": "Templo de Ará",
+   "x": 2,
+   "y": 78,
+   "rows": [
+    "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
+    "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
+    "HHEEEEEEEHHHHEEEEEEEEHHHHEEEEEEEHH",
+    "HH0000000HHHH!!!!!!!!HHHHEEEEEEEHH",
+    "HH0000000HHHH!!!!!!!!HHHHEEEEEEEHH",
+    "HHEEEEEEEHHHHEEEEEEEEHHHHEEEEEEEHH",
+    "HHHHEHHHHHHHHHHHEHHHHHHHHHHHEHHHHH",
+    "HHHHEHHHHHHHHHHHEHHHHHHHHHHHEHHHHH",
+    "HHYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYHH",
+    "HHYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYHH",
+    "HHHHHHHHHHHHHHHEEHHHHHHHHHHHHHHHHH",
+    "HHHHHHHHHHHHHHHEEHHHHHHHHHHHHHHHHH",
+    "HHHHHHHHHHHEEEEEEEEEEHHHHHHHHHHHHH",
+    "HHHHHHHHHHHEEEEEEEEEEHEEHHHHHHHHHH",
+    "HHHHHHHHHHHEEEEEEEEEEHEEHHHHHHHHHH",
+    "HHHHHHHHHHHEEEEEEEEEEHEEHHHHHHHHHH",
+    "HHHHHHHHHHHEEEEEEEEEEHHHHHHHHHHHHH",
+    "HHHHHHHHHHHEEEEEEEEEEHHHHHHHHHHHHH",
+    "HHHHHHHHHHHHHHHYYHHHHHHHHHHHHHHHHH",
+    "HHHHHHHHHHHHHHHYYHHHHHHHHHHHHHHHHH",
+    "_______________YY_________________"
+   ],
+   "biome": "templo",
+   "abaixo": "templo_2",
+   "objects": [
+    {
+     "kind": "plate",
+     "x": 12,
+     "y": 13,
+     "id": "placaSalao",
+     "abre": [
+      "portaSalaoA",
+      "portaSalaoB"
+     ],
+     "trava": true
+    },
+    {
+     "kind": "strengthRock",
+     "x": 12,
+     "y": 15,
+     "id": "pedraSalao"
+    },
+    {
+     "kind": "stoneDoor",
+     "x": 15,
+     "y": 11,
+     "id": "portaSalaoA",
+     "msg": "As portas de pedra se arrastaram para o lado!"
+    },
+    {
+     "kind": "stoneDoor",
+     "x": 16,
+     "y": 11,
+     "id": "portaSalaoB"
+    },
+    {
+     "kind": "brazier",
+     "x": 11,
+     "y": 17,
+     "acesa": true
+    },
+    {
+     "kind": "brazier",
+     "x": 20,
+     "y": 17,
+     "acesa": true
+    },
+    {
+     "kind": "statue",
+     "x": 17,
+     "y": 12
+    },
+    {
+     "kind": "crackedWall",
+     "x": 21,
+     "y": 14,
+     "id": "paredeSalao",
+     "chao": "templefloor"
+    },
+    {
+     "kind": "lever",
+     "x": 2,
+     "y": 9,
+     "id": "alavancaCorredor",
+     "alterna": [
+      "gradeOeste",
+      "gradeNorte"
+     ],
+     "nome": "Alavanca das grades"
+    },
+    {
+     "kind": "barsGate",
+     "x": 4,
+     "y": 7,
+     "id": "gradeOeste"
+    },
+    {
+     "kind": "barsGate",
+     "x": 16,
+     "y": 7,
+     "id": "gradeNorte",
+     "aberto": true
+    },
+    {
+     "kind": "lockedDoor",
+     "x": 28,
+     "y": 7,
+     "id": "portaLeste",
+     "chave": "chave_pequena",
+     "chaveNome": "Chave Pequena"
+    },
+    {
+     "kind": "torch",
+     "x": 2,
+     "y": 2,
+     "grupo": "oeste",
+     "abre": [
+      "ponteOeste"
+     ],
+     "msg": "As duas tochas arderam e uma ponte de pedra subiu do fosso!"
+    },
+    {
+     "kind": "torch",
+     "x": 8,
+     "y": 2,
+     "grupo": "oeste",
+     "abre": [
+      "ponteOeste"
+     ]
+    },
+    {
+     "kind": "chest",
+     "x": 17,
+     "y": 2,
+     "item": "chave_pequena",
+     "itemNome": "Chave Pequena",
+     "id": "bauChave"
+    },
+    {
+     "kind": "bell",
+     "x": 25,
+     "y": 2,
+     "grupo": "sinos",
+     "ordem": 1,
+     "abre": [
+      "escadaLeste"
+     ],
+     "msg": "Os três sinos ecoaram juntos… o chão se abriu numa escada!"
+    },
+    {
+     "kind": "bell",
+     "x": 27,
+     "y": 2,
+     "grupo": "sinos",
+     "ordem": 3
+    },
+    {
+     "kind": "bell",
+     "x": 29,
+     "y": 2,
+     "grupo": "sinos",
+     "ordem": 2
+    },
+    {
+     "kind": "sign",
+     "x": 31,
+     "y": 5,
+     "text": "Primeiro o da esquerda, depois o da direita; o do meio fala por último."
+    },
+    {
+     "kind": "sign",
+     "x": 13,
+     "y": 16,
+     "text": "A pedra pesada abre o caminho. Só um Pokémon forte a empurra."
+    },
+    {
+     "kind": "sign",
+     "x": 3,
+     "y": 5,
+     "text": "Fogo do outro lado do fosso. Um golpe de Fogo acende de longe."
+    }
+   ],
+   "mecanismos": [
+    {
+     "id": "ponteOeste",
+     "tipo": "ponte",
+     "t": "templefloor",
+     "pts": [
+      [
+       5,
+       3
+      ],
+      [
+       5,
+       4
+      ]
+     ],
+     "msg": "Uma ponte de pedra subiu do fosso!"
+    },
+    {
+     "id": "escadaLeste",
+     "tipo": "blocos",
+     "t": "stairdown",
+     "pts": [
+      [
+       28,
+       5
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "templo_2",
+   "name": "Cripta de Ará",
+   "x": 40,
+   "y": 78,
+   "rows": [
+    "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
+    "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
+    "HHEEEEEEEEEEEEEEEEEEEEEEEEEEEE<EHH",
+    "HHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHH",
+    "HHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHH",
+    "HHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHH",
+    "HHHHHHHHHHHEEHHHHHHHHHHHHHHHEEHHHH",
+    "HHHHHHHHHHHEEHHHHHHHHHHHHHHHEEHHHH",
+    "HHEEEEEEEEiiiiiiiiiiiiiEEEEEEEEEHH",
+    "HHEEEEEEEEiiiiiiiiiiiiiEEEEEEEEEHH",
+    "HHEEEEEEEEiiiiiiiiiiiiiEE00EEEEEHH",
+    "HHEEEEEEEEiiiiiiiiiiiiiEE00EEEEEHH",
+    "HHEEEEEEEEiiiiiiiiiiiiiEEEEEEEEEHH",
+    "HHEEEEEEEEiiiiiiiiiiiiiEEEEEEEEEHH",
+    "HHHHHHHHHHHHHHHHHHHHHHHHHHHEEHHHHH",
+    "HHHHHHHHHHHHHHHHHHHHHHHHHHHEEHHHHH",
+    "HHEEEEEEEEEEEEElllEEEEEEEEEEEEEEHH",
+    "HHEEEEEEEEEEEEElllEEEEEEEEEEEEEEHH",
+    "HHEEEEEEEEEEEEElllEEEEEEEEEEEEEEHH",
+    "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
+    "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH"
+   ],
+   "biome": "templo",
+   "escuro": true,
+   "objects": [
+    {
+     "kind": "brazier",
+     "x": 6,
+     "y": 2
+    },
+    {
+     "kind": "brazier",
+     "x": 20,
+     "y": 2
+    },
+    {
+     "kind": "crystal",
+     "x": 2,
+     "y": 5
+    },
+    {
+     "kind": "crystalPink",
+     "x": 31,
+     "y": 5
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 14,
+     "y": 8
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 22,
+     "y": 10
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 18,
+     "y": 13
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 10,
+     "y": 11
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 17,
+     "y": 9
+    },
+    {
+     "kind": "iceBlock",
+     "x": 5,
+     "y": 10,
+     "id": "blocoGelo"
+    },
+    {
+     "kind": "strengthRock",
+     "x": 25,
+     "y": 9,
+     "id": "pedraBuraco"
+    },
+    {
+     "kind": "plate",
+     "x": 12,
+     "y": 17,
+     "id": "placaPonte",
+     "abre": [
+      "ponteLava"
+     ]
+    },
+    {
+     "kind": "strengthRock",
+     "x": 10,
+     "y": 17,
+     "id": "pedraPonte"
+    },
+    {
+     "kind": "chest",
+     "x": 29,
+     "y": 17,
+     "item": "rareCandy",
+     "n": 2,
+     "id": "bauCripta"
+    },
+    {
+     "kind": "torch",
+     "x": 27,
+     "y": 16,
+     "apaga": 12,
+     "grupo": "cripta",
+     "abre": []
+    },
+    {
+     "kind": "sign",
+     "x": 3,
+     "y": 8,
+     "text": "No gelo não há freio: você só para quando bate."
+    }
+   ],
+   "mecanismos": [
+    {
+     "id": "ponteLava",
+     "tipo": "ponte",
+     "t": "bridge",
+     "pts": [
+      [
+       15,
+       17
+      ],
+      [
+       16,
+       17
+      ],
+      [
+       17,
+       17
+      ]
+     ],
+     "msg": "Uma ponte desceu sobre a lava!"
+    }
+   ]
+  },
+  {
+   "id": "caverna_gelo",
+   "name": "Caverna de Gelo",
+   "x": 78,
+   "y": 78,
+   "rows": [
+    "GGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGeeeeeeeeGGGGeeeeeeeeGG",
+    "GGeeeeeeeeeeeeeeeIIIeeGG",
+    "GGeeiiiiieeeeeeeIIIIeeGG",
+    "GGeeiiiiieeeeeeeeIIeeeGG",
+    "GGeeeeeeeeeeeeeeeeeeeeGG",
+    "GGeeeeeeeeeeGGGGeeeeeeGG",
+    "GGeeeeeeeeeeGeeeeeeeeeGG",
+    "GGGGGGGGGGeeGGGGGGGGGGGG",
+    "__________ee____________"
+   ],
+   "biome": "caverna",
+   "clima": {
+    "tinta": 15266559,
+    "neve": 0.15
+   },
+   "objects": [
+    {
+     "kind": "stalagmiteIce",
+     "x": 3,
+     "y": 2
+    },
+    {
+     "kind": "stalagmiteIce",
+     "x": 20,
+     "y": 7
+    },
+    {
+     "kind": "crackedIce",
+     "x": 12,
+     "y": 8,
+     "chao": "icefloor"
+    },
+    {
+     "kind": "crystal",
+     "x": 15,
+     "y": 2
+    }
+   ]
+  },
+  {
+   "id": "caverna_lava",
+   "name": "Caverna de Lava",
+   "x": 106,
+   "y": 78,
+   "rows": [
+    "UUUUUUUUUUUUUUUUUUUUUU",
+    "UUUUUUUUUUUUUUUUUUUUUU",
+    "UUuuuuuulllluuuuuuuuUU",
+    "UUuuuuuulllluuuuuuuuUU",
+    "UUuuuoouulllluuuuuuuUU",
+    "UUuuuoouulllluuuuqquUU",
+    "UUuuuuuuulllluuuuqquUU",
+    "UUuuuuuuuuuuuuuuuuuuUU",
+    "UUUUUUUUUuuUUUUUUUUUUU",
+    "_________uu___________"
+   ],
+   "biome": "caverna",
+   "escuro": 0.55,
+   "clima": {
+    "brasas": 0.6,
+    "calor": 0.6,
+    "tinta": 16770260,
+    "som": "lava"
+   },
+   "objects": [
+    {
+     "kind": "lavaRock",
+     "x": 3,
+     "y": 2
+    },
+    {
+     "kind": "lavaRock",
+     "x": 15,
+     "y": 6
+    },
+    {
+     "kind": "plate",
+     "x": 4,
+     "y": 7,
+     "abre": [
+      "ponteLavaC"
+     ]
+    },
+    {
+     "kind": "strengthRock",
+     "x": 6,
+     "y": 6
+    },
+    {
+     "kind": "fumarola",
+     "x": 18,
+     "y": 3
+    }
+   ],
+   "mecanismos": [
+    {
+     "id": "ponteLavaC",
+     "tipo": "ponte",
+     "t": "bridge",
+     "pts": [
+      [
+       8,
+       3
+      ],
+      [
+       9,
+       3
+      ],
+      [
+       10,
+       3
+      ],
+      [
+       11,
+       3
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "caverna_cristal",
+   "name": "Gruta de Cristal",
+   "x": 2,
+   "y": 104,
+   "rows": [
+    "$$$$$$$$$$$$$$$$$$$$$$$$",
+    "$$$$$$$$$$$$$$$$$$$$$$$$",
+    "$$ZZZZZZSSSSSSSSZZZZZZ$$",
+    "$$ZZZZSSSSSSSSSSSSZZZZ$$",
+    "$$ZZSSSSSS$$$$SSSSSSZZ$$",
+    "$$ZSSSSSSS$$$$SSSSSSSZ$$",
+    "$$ZZSSSSSSSSSSSSSSSSZZ$$",
+    "$$ZZZZSSSSSSSSSSSSZZZZ$$",
+    "$$$$$$$$$$SSSS$$$$$$$$$$",
+    "__________SSSS__________"
+   ],
+   "biome": "cristal",
+   "escuro": 0.85,
+   "objects": [
+    {
+     "kind": "crystal",
+     "x": 3,
+     "y": 2
+    },
+    {
+     "kind": "crystalPink",
+     "x": 20,
+     "y": 3
+    },
+    {
+     "kind": "crystal",
+     "x": 9,
+     "y": 6
+    },
+    {
+     "kind": "crystalPink",
+     "x": 15,
+     "y": 6
+    },
+    {
+     "kind": "crystal",
+     "x": 12,
+     "y": 3
+    },
+    {
+     "kind": "stalagmite",
+     "x": 5,
+     "y": 5
+    }
+   ]
+  },
+  {
+   "id": "mina",
+   "name": "Mina Velha",
+   "x": 30,
+   "y": 104,
+   "rows": [
+    "rrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+    "rrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+    "rrSSSSSSSSSSSSSSSSSSSSrrSSrr",
+    "rrSS++++++++++++++++++++SSrr",
+    "rrSS+SSSSSSSSSSSSSSSSSrrSSrr",
+    "rrSS+SSSSSSSSSSSSSSSSSrrSSrr",
+    "rrSS+++++SSSSSSSSSSSSSSSSSrr",
+    "rrSSSSSSSSSSSSSSSSSSSSSSSSrr",
+    "rrrrrrrrrrrrSSSSrrrrrrrrrrrr",
+    "____________SSSS____________"
+   ],
+   "biome": "mina",
+   "escuro": 0.5,
+   "objects": [
+    {
+     "kind": "cart",
+     "x": 6,
+     "y": 3
+    },
+    {
+     "kind": "crackedRock",
+     "x": 24,
+     "y": 3,
+     "chao": "darkcave",
+     "msg": "O vagonete arrebentou a parede rachada!"
+    },
+    {
+     "kind": "torch",
+     "x": 2,
+     "y": 2,
+     "acesa": true
+    },
+    {
+     "kind": "torch",
+     "x": 20,
+     "y": 7,
+     "acesa": true
+    },
+    {
+     "kind": "barrel",
+     "x": 3,
+     "y": 7
+    },
+    {
+     "kind": "barrel",
+     "x": 22,
+     "y": 7
+    },
+    {
+     "kind": "sign",
+     "x": 8,
+     "y": 2,
+     "text": "Empurre o vagonete: ele corre até o fim dos trilhos."
+    }
+   ]
+  }
+ ],
+ "warps": [
+  {
+   "x": 20,
+   "y": 2,
+   "dir": "up",
+   "to": [
+    88,
+    87
+   ],
+   "face": "up",
+   "label": "Caverna de Gelo"
+  },
+  {
+   "x": 96,
+   "y": 2,
+   "dir": "up",
+   "to": [
+    115,
+    86
+   ],
+   "face": "up",
+   "label": "Caverna de Lava"
+  },
+  {
+   "x": 63,
+   "y": 9,
+   "dir": "up",
+   "to": [
+    17,
+    98
+   ],
+   "face": "up",
+   "label": "Templo"
+  },
+  {
+   "x": 64,
+   "y": 9,
+   "dir": "up",
+   "to": [
+    18,
+    98
+   ],
+   "face": "up",
+   "label": "Templo"
+  },
+  {
+   "x": 56,
+   "y": 65,
+   "dir": "up",
+   "to": [
+    12,
+    112
+   ],
+   "face": "up",
+   "label": "Gruta de Cristal"
+  },
+  {
+   "x": 72,
+   "y": 65,
+   "dir": "up",
+   "to": [
+    42,
+    112
+   ],
+   "face": "up",
+   "label": "Mina"
+  },
+  {
+   "x": 88,
+   "y": 88,
+   "dir": "down",
+   "to": [
+    20,
+    3
+   ],
+   "face": "down",
+   "label": "saída"
+  },
+  {
+   "x": 89,
+   "y": 88,
+   "dir": "down",
+   "to": [
+    20,
+    3
+   ],
+   "face": "down",
+   "label": "saída"
+  },
+  {
+   "x": 115,
+   "y": 87,
+   "dir": "down",
+   "to": [
+    96,
+    3
+   ],
+   "face": "down",
+   "label": "saída"
+  },
+  {
+   "x": 116,
+   "y": 87,
+   "dir": "down",
+   "to": [
+    96,
+    3
+   ],
+   "face": "down",
+   "label": "saída"
+  },
+  {
+   "x": 17,
+   "y": 98,
+   "dir": "down",
+   "to": [
+    63,
+    10
+   ],
+   "face": "down",
+   "label": "saída"
+  },
+  {
+   "x": 18,
+   "y": 98,
+   "dir": "down",
+   "to": [
+    63,
+    10
+   ],
+   "face": "down",
+   "label": "saída"
+  },
+  {
+   "x": 12,
+   "y": 113,
+   "dir": "down",
+   "to": [
+    56,
+    66
+   ],
+   "face": "down",
+   "label": "saída"
+  },
+  {
+   "x": 13,
+   "y": 113,
+   "dir": "down",
+   "to": [
+    56,
+    66
+   ],
+   "face": "down",
+   "label": "saída"
+  },
+  {
+   "x": 14,
+   "y": 113,
+   "dir": "down",
+   "to": [
+    56,
+    66
+   ],
+   "face": "down",
+   "label": "saída"
+  },
+  {
+   "x": 15,
+   "y": 113,
+   "dir": "down",
+   "to": [
+    56,
+    66
+   ],
+   "face": "down",
+   "label": "saída"
+  },
+  {
+   "x": 42,
+   "y": 113,
+   "dir": "down",
+   "to": [
+    72,
+    66
+   ],
+   "face": "down",
+   "label": "saída"
+  },
+  {
+   "x": 43,
+   "y": 113,
+   "dir": "down",
+   "to": [
+    72,
+    66
+   ],
+   "face": "down",
+   "label": "saída"
+  },
+  {
+   "x": 44,
+   "y": 113,
+   "dir": "down",
+   "to": [
+    72,
+    66
+   ],
+   "face": "down",
+   "label": "saída"
+  },
+  {
+   "x": 45,
+   "y": 113,
+   "dir": "down",
+   "to": [
+    72,
+    66
+   ],
+   "face": "down",
+   "label": "saída"
+  },
+  {
+   "x": 70,
+   "y": 80,
+   "dir": "up",
+   "to": [
+    31,
+    87
+   ],
+   "face": "down",
+   "label": "escada"
+  },
+  {
+   "x": 30,
+   "y": 83,
+   "dir": "any",
+   "to": [
+    69,
+    81
+   ],
+   "face": "down",
+   "label": "escada",
+   "requer": "grupo:sinos",
+   "msg": "Só pedra aqui."
+  }
+ ],
+ "items": [
+  {
+   "x": 33,
+   "y": 22,
+   "item": "iceStone"
+  },
+  {
+   "x": 103,
+   "y": 29,
+   "item": "fireStone"
+  },
+  {
+   "x": 16,
+   "y": 50,
+   "item": "nugget"
+  },
+  {
+   "x": 121,
+   "y": 46,
+   "item": "pearl"
+  },
+  {
+   "x": 24,
+   "y": 92,
+   "item": "rareCandy"
+  },
+  {
+   "x": 7,
+   "y": 80,
+   "item": "superPotion"
+  },
+  {
+   "x": 92,
+   "y": 86,
+   "item": "neverMeltIce"
+  },
+  {
+   "x": 68,
+   "y": 90,
+   "item": "ultraBall",
+   "n": 3
+  }
+ ],
+ "spots": {
+  "inicio": [
+   64,
+   37,
+   "down"
+  ]
+ },
+ "areas": [
+  {
+   "name": "Praça da Demo",
+   "biome": "vila",
+   "rect": [
+    52,
+    30,
+    24,
+    14
+   ]
+  },
+  {
+   "name": "Picos Gelados",
+   "biome": "gelo",
+   "rect": [
+    0,
+    0,
+    44,
+    34
+   ]
+  },
+  {
+   "name": "Vulcão Brasa",
+   "biome": "vulcao",
+   "rect": [
+    84,
+    0,
+    44,
+    34
+   ]
+  },
+  {
+   "name": "Dunas do Sol",
+   "biome": "deserto",
+   "rect": [
+    0,
+    40,
+    22,
+    34
+   ]
+  },
+  {
+   "name": "Sertão Velho",
+   "biome": "sertao",
+   "rect": [
+    22,
+    40,
+    22,
+    34
+   ]
+  },
+  {
+   "name": "Praia Coral",
+   "biome": "praia",
+   "rect": [
+    84,
+    38,
+    44,
+    36
+   ]
+  },
+  {
+   "name": "Mangue Fundo",
+   "biome": "mangue",
+   "rect": [
+    84,
+    56,
+    14,
+    18
+   ]
+  },
+  {
+   "name": "Ruínas de Ará",
+   "biome": "ruinas",
+   "rect": [
+    46,
+    0,
+    36,
+    30
+   ]
+  },
+  {
+   "name": "Serra Oca",
+   "biome": "campo",
+   "rect": [
+    46,
+    52,
+    36,
+    22
+   ]
+  }
+ ],
+ "trees": [],
+ "people": [
+  {
+   "id": "guia",
+   "name": "Guia",
+   "look": "professor",
+   "x": 66,
+   "y": 35,
+   "dir": "down",
+   "wander": 0,
+   "lines": [
+    [
+     "Este mapa é só para testar os biomas novos.",
+     "Use o F3 para ver o FPS e as Opções para mudar a qualidade."
+    ]
+   ]
+  }
+ ]
+}

@@ -41,7 +41,7 @@ const hash = (x, y, s = 0) => { let h = (x * 374761393 + y * 668265263 + s * 144
 
 export class GameMap {
   constructor(tx) {
-    this.tx = tx;
+    this.tx = tx; this.region = REGION;
     const R = buildRegion(REGION);
     this.w = R.W; this.h = R.H; this.tiles = R.tiles; this.block = R.block; this.objects = R.objects; this.decorDefs = R.decor; this.peopleDefs = R.people; this.petDefs = R.pets;
     this.outdoorH = REGION.outdoorH ?? this.h; this.areas = ALL_AREAS;

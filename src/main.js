@@ -84,6 +84,8 @@ class Game {
       this.noSave = true;
       Object.assign(this.flags, { intro: true, starter: 4, rivalStarter: 7, balls: true, rival1: 'win', badges: [], trainers: {}, playerName: 'Teste' });
       this.party = [new Mon(4, 14), new Mon(25, 12), new Mon(7, 12)];
+      // mapa de teste pode pedir outra equipe ("teste": {"equipe": [[dex, nível], …]}), ex.: demo-biomas com um Machop para a Força
+      const eq = this.map.region?.teste?.equipe; if (eq) this.party = eq.map(([d, l]) => new Mon(d, l));
       Object.assign(this.bag, { pokeball: 10, potion: 5 });
       if (this.ui) this.ui.title = async () => { this.ui.state = 'play'; return 'test'; }; // sem conta: nada é gravado
     }
