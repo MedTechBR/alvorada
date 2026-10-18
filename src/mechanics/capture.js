@@ -15,7 +15,7 @@ export function ballModifier(ballId, mon, ctx = {}) {
   const it = itemInfo(ballId);
   const rule = it?.ball ?? 1;
   if (typeof rule === 'number') return { mult: rule };
-  const sp = SPECIES[mon.dex] ?? {};
+  const sp = mon.sp ?? SPECIES[mon.dex] ?? {}; // forma conta (Bola de Rede num Rotom Lavagem, peso da forma…)
   const types = sp.types ?? [];
   const seconds = ctx.seconds ?? null; // sem informação: Bola Rápida só vale com o alvo distraído
   switch (rule) {
@@ -52,7 +52,7 @@ export function ballModifier(ballId, mon, ctx = {}) {
  * Devolve { chance (0–1), shake (chance de cada sacudida), a, guaranteed }.
  */
 export function catchChance(mon, ball = 'pokeBall', ctx = {}) {
-  const sp = SPECIES[mon.dex] ?? {};
+  const sp = mon.sp ?? SPECIES[mon.dex] ?? {}; // forma conta (Bola de Rede num Rotom Lavagem, peso da forma…)
   const bm = ballModifier(itemId(ball), mon, ctx);
   if (bm.guaranteed) return { chance: 1, shake: 1, a: 255, guaranteed: true };
   const max = mon.stats.hp, hp = Math.max(1, mon.hp);

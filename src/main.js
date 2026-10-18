@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import { Input, IS_TOUCH } from './engine/input.js';
 import { Fx } from './engine/fx.js';
 import { makeTiles, T, TILE } from './world/tiles.js';
-import { GameMap } from './world/map.js';
+import { GameMap, MAP_ID } from './world/map.js';
 import { WorldLife } from './world/life.js';
 import { Mounts } from './world/mounts.js';
 import { makeTrainerFrames, dir4 } from './sprites/characters.js';
@@ -10,7 +10,7 @@ import { loadPokemonSprites } from './sprites/pmd.js';
 import { PokeEntity } from './entities/pokemon.js';
 import { Combat } from './combat/combat.js';
 import { Mon } from './data/mon.js';
-import { SPECIES, BIOME_ENCOUNTERS } from './data/species.js';
+import { SPECIES, BIOME_ENCOUNTERS, speciesKey, genderForm, formFromApi } from './data/species.js';
 import { MOVES } from './data/moves.js';
 import { TYPE_PT } from './data/types.js';
 import { Audio } from './audio/audio.js';
@@ -79,17 +79,20 @@ class Game {
     window.game = this;
     // tela de título (conta + personagem); depois o primeiro Pokémon sai da bola e a história começa
     // ?teste=1: entra direto com equipe de teste e sem gravar (para testes; não aparece para o jogador)
-    const teste = new URLSearchParams(location.search).has('teste');
+    // outro mapa (?mapa=demo-biomas) é sempre teste: não lê nem grava o save da aventura
+    const teste = new URLSearchParams(location.search).has('teste') || MAP_ID !== 'alvorada';
     if (teste) {
       this.noSave = true;
       Object.assign(this.flags, { intro: true, starter: 4, rivalStarter: 7, balls: true, rival1: 'win', badges: [], trainers: {}, playerName: 'Teste' });
       this.party = [new Mon(4, 14), new Mon(25, 12), new Mon(7, 12)];
+      // mapa de teste pode pedir outra equipe ("teste": {"equipe": [[dex, nível], …]}), ex.: demo-biomas com um Machop para a Força
+      const eq = this.map.region?.teste?.equipe; if (eq) this.party = eq.map(([d, l]) => new Mon(d, l));
       Object.assign(this.bag, { pokeball: 10, potion: 5 });
       if (this.ui) this.ui.title = async () => { this.ui.state = 'play'; return 'test'; }; // sem conta: nada é gravado
     }
     const start = await this.ui.title();
     this.net.autoStart(); // logado: entra sozinho num canal do mundo (src/net/world.js)
-    for (const m of this.party) loadPokemonSprites(m.dex).catch(() => {}); // já baixa a equipe enquanto a história começa
+    for (const m of this.party) loadPokemonSprites(m.spriteKey).catch(() => {}); // já baixa a equipe enquanto a história começa
     this.mode = 'trainer';
     this.leadIdx = Math.max(0, this.party.findIndex((m) => !m.fainted));
     this.hudInit();
@@ -213,8 +216,11 @@ class Game {
       const table = this.#encounterTable(own, biome, !room && nightNow(), zone, room ? null : x, room ? null : y).filter((e) => this.available.includes(e[0]) && SPECIES[e[0]]);
       const pool = table.length ? table : this.available.filter((d) => SPECIES[d] && d !== 130).map((d) => [d, 3, 8, 1]);
       let r = Math.random() * pool.reduce((s, e) => s + e[3], 0); const entry = pool.find((e) => (r -= e[3]) < 0) ?? pool[0];
-      const [dex, lo, hi] = entry;
-      const mon = new Mon(dex, lo + Math.floor(Math.random() * (hi - lo + 1)));
+      // [dex, nívelMín, nívelMáx, peso, forma?]: a 5ª posição (opcional) é a forma: o id do jogo ('alola') ou
+      // { forma: '<id da PokéAPI>' } como em src/data/habitats.js ({ forma: 'vulpix-alola' })
+      const [dex, lo, hi, , f5] = entry;
+      const form = typeof f5 === 'string' ? f5 : f5?.forma ? formFromApi(f5.forma)?.form : null;
+      const mon = new Mon(dex, lo + Math.floor(Math.random() * (hi - lo + 1)), { form: form ?? null });
       const w = new PokeEntity(this, mon, 'wild', x, y);
       await w.ready;
       // sem internet: só aparecem espécies cujos sprites já estão guardados (nada de bolinha no lugar do Pokémon)
@@ -311,7 +317,7 @@ class Game {
     if (share) for (const m of this.party) if (m !== mon && !m.fainted && m.level < 100) this.#xpEvents(m, m.gainXp(Math.max(1, Math.floor(xp * XP_SHARE)), this.#evoCtx()), false);
     this.hudLead(); this.hudMoves();
   }
-  #evoCtx() { return { partyTypes: this.party.flatMap((m) => m.types) }; }
+  #evoCtx() { return { partyTypes: this.party.flatMap((m) => m.types), partySpecies: this.party.map((m) => m.dex) }; }
   #xpEvents(mon, ev, main) {
     for (const v of ev) {
       if (v.type === 'level') {
@@ -319,7 +325,7 @@ class Game {
         if (this.lead?.mon === mon) this.fx.ring(this.lead.x, this.lead.y - 8, 0xffe27a, 16, 0.6);
       }
       if (v.type === 'learn') this.teach(mon, v.move);
-      if (v.type === 'evolve') this.ui.queue(() => this.evolve(mon, v.to));
+      if (v.type === 'evolve') this.ui.queue(() => this.evolve(mon, v.to, v.form));
     }
     void main;
   }
@@ -330,20 +336,31 @@ class Game {
     this.ui.queue(async () => { if (!mon.moves.includes(id)) await this.ui.menu.askLearn(mon, id); this.hudMoves(); });
   }
   // Evolução com a cena clássica (o mundo para); depois troca o sprite se ele estiver em campo
-  async evolve(mon, to) {
+  // form: forma de destino (Rattata de Alola → Raticate de Alola); sem ela, a padrão ou a do gênero
+  async evolve(mon, to, form = null) {
     if (!SPECIES[to] || mon.dex === to) return;
-    const old = mon.name, from = mon.dex;
-    await evolutionScene(this.ui, old, from, to);
-    const learned = mon.evolveTo(to);
+    const old = mon.name, from = mon.spriteKey;
+    await evolutionScene(this.ui, old, from, speciesKey(to, form ?? genderForm(to, mon.gender)));
+    const learned = mon.evolveTo(to, form);
     const e = this.lead;
     if (e?.mon === mon) {
-      const set = await loadPokemonSprites(to).catch(() => null);
+      const set = await loadPokemonSprites(mon.spriteKey).catch(() => null);
       if (set) e.setSprites(set);
       this.fx.burst(e.x, e.y - 10, 0xffffff, 2);
     }
     dexMark(this, to, 2);
     this.toast(`${old} evoluiu para ${mon.name}!`);
     for (const v of learned ?? []) if (v.type === 'learn') this.teach(mon, v.move);
+    this.hudLead(); this.hudMoves(); this.ui.partyChanged?.();
+  }
+  // Mudou de forma fora da luta (item de forma, como o Catálogo Rotom): troca o sprite se ele estiver em campo
+  async formChanged(mon) {
+    const e = this.lead;
+    if (e?.mon === mon) {
+      const set = await loadPokemonSprites(mon.spriteKey).catch(() => null);
+      if (set) e.setSprites(set);
+      this.fx.burst(e.x, e.y - 10, 0xffffff, 1);
+    }
     this.hudLead(); this.hudMoves(); this.ui.partyChanged?.();
   }
   blackout() {
@@ -510,11 +527,14 @@ class Game {
     p.t += dt; p.iframes -= dt; p.stun = (p.stun ?? 0) - dt; p.throwT = (p.throwT ?? 0) - dt;
     // montaria (X): quando o treinador está montado, ela cuida do movimento e do desenho
     if (!this.mount?.control(dt, pk, mx, my, mag, run)) {
-      const want = pk || p.stun > 0 ? 0 : (run ? 118 : 74);
-      const tvx = mag > 0.1 ? mx * want : 0, tvy = mag > 0.1 ? my * want : 0;
-      const acc = Math.min(1, dt * (mag > 0.1 ? 14 : 18));
+      // terreno dos biomas (src/world/masmorra.js): neve funda e areia movediça atrasam, o gelo faz escorregar
+      const tr = pk ? null : this.mundo?.masmorra?.player(dt, p, mx, my, mag);
+      const want = pk || p.stun > 0 ? 0 : (run ? 118 : 74) * (tr?.k ?? 1);
+      let tvx = mag > 0.1 ? mx * want : 0, tvy = mag > 0.1 ? my * want : 0;
+      let acc = Math.min(1, dt * (mag > 0.1 ? 14 : 18));
+      if (tr?.slide) { tvx = tr.slide.x * tr.speed; tvy = tr.slide.y * tr.speed; acc = 1; }
       p.vx += (tvx - p.vx) * acc; p.vy += (tvy - p.vy) * acc;
-      if (!pk && inp.pressed('dodge') && p.roll <= 0) {
+      if (!pk && !tr?.slide && inp.pressed('dodge') && p.roll <= 0) {
         const dx = mag > 0.1 ? mx : ({ down: 0, up: 0, left: -1, right: 1 }[p.dir]), dy = mag > 0.1 ? my : ({ down: 1, up: -1, left: 0, right: 0 }[p.dir]);
         p.kx += dx * 260; p.ky += dy * 260; p.roll = 0.5; p.iframes = 0.3; this.audio.sfx('dodge');
         this.combat.onDodge(p, true);

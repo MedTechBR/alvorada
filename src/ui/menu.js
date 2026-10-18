@@ -1,4 +1,4 @@
-import { SPECIES, BIOME_ENCOUNTERS, NIGHT_ENCOUNTERS } from '../data/species.js';
+import { SPECIES, BIOME_ENCOUNTERS, NIGHT_ENCOUNTERS, DEX_ORDER } from '../data/species.js';
 import { MOVES } from '../data/moves.js';
 import { TYPE_COLOR, TYPE_PT } from '../data/types.js';
 import { DEX_TEXT } from '../data/dex.js';
@@ -46,11 +46,11 @@ export function dexMark(g, dex, lvl) {
   d[dex] = lvl;
   return true;
 }
-export function dexCounts(g) {
+export function dexCounts(g, list = null) {
   const d = g.flags?.dex ?? {};
   let seen = 0, caught = 0;
-  for (const k of Object.keys(d)) { if (d[k] >= 1) seen++; if (d[k] >= 2) caught++; }
-  return { seen, caught, total: ALVORADA_DEX.length };
+  for (const k of list ?? Object.keys(d)) { if (d[k] >= 1) seen++; if (d[k] >= 2) caught++; }
+  return { seen, caught, total: list ? list.length : DEX_ORDER.length, regional: ALVORADA_DEX.length };
 }
 let HABITAT = null, PREVO = null;
 function habitat(dex, g) {
@@ -67,6 +67,17 @@ function habitat(dex, g) {
     }
   }
   return HABITAT[dex] ?? {};
+}
+// Texto da Pokédex para quem não tem texto próprio (dex.js): montado com os dados da espécie
+function dexGeneric(sp) {
+  const t = sp.types.map((x) => TYPE_PT[x]).join('/');
+  const n = (v) => String(v).replace('.', ',');
+  const tag = sp.legendary ? ' lendário' : sp.mythical ? ' mítico' : sp.baby ? ' bebê' : '';
+  return `Pokémon${tag} do tipo ${t}, registrado pela primeira vez na ${sp.gen ?? '?'}ª geração. Mede ${n(sp.height)} m e pesa ${n(sp.weight)} kg.`;
+}
+// Formas conhecidas (regionais, Mega, Gigantamax…), sem as que só mudam a cor
+function formsTxt(sp) {
+  return Object.values(sp.forms ?? {}).filter((f) => f.kind !== 'visual').map((f) => esc(f.name)).join(', ');
 }
 function prevo(dex) {
   if (!PREVO) { PREVO = {}; for (const [k, s] of Object.entries(SPECIES)) if (s.evolve) PREVO[s.evolve.to] = { from: +k, level: s.evolve.level }; }
@@ -135,8 +146,8 @@ function itemIcon(k) {
 const slot = (dex, cls = '', shadow = false) => `<div class="gm-pslot ${cls} ${shadow ? 'shadow' : ''}" data-dex="${dex}"><div class="gm-sil">${SILHOUETTE}</div></div>`;
 function fillPortraits(root) {
   root.querySelectorAll('.gm-pslot[data-dex]').forEach((s) => {
-    const dex = +s.dataset.dex;
-    portraitURL(dex).then((src) => { if (src && s.isConnected && +s.dataset.dex === dex) s.innerHTML = `<img class="gm-portrait" src="${src}" alt="">`; });
+    const dex = /^\d+$/.test(s.dataset.dex) ? +s.dataset.dex : s.dataset.dex; // dex ou chave de forma ("26-alola")
+    portraitURL(dex).then((src) => { if (src && s.isConnected && s.dataset.dex === String(dex)) s.innerHTML = `<img class="gm-portrait" src="${src}" alt="">`; });
   });
 }
 const typePills = (types) => types.map((t) => `<span class="gm-type" style="background:${TYPE_COLOR[t]}">${TYPE_PT[t]}</span>`).join('');
@@ -307,7 +318,7 @@ export class GameMenu {
     if (t.kind === 'msg') { if (a === 'ok' || a === 'back') this.#confirm(); return; }
     if (a === 'ok') return this.#confirm();
     if (a === 'back') return this.back();
-    if (a === 'tab') { if (t.lr) t.lr(shift ? -1 : 1); return; }
+    if (a === 'tab') { if (t.tab) t.tab(shift ? -1 : 1); else if (t.lr) t.lr(shift ? -1 : 1); return; }
     const d = a === 'up' || a === 'left' ? -1 : 1;
     const items = this.#items(), cur = items[t.sel];
     if (a === 'left' || a === 'right') {
@@ -444,23 +455,32 @@ export class GameMenu {
   #trainerName() { return this.g.flags.playerName ?? 'Ravi'; }
 
   // ---------- Pokédex ----------
+  // Duas listas: a Pokédex de Alvorada (regional, na ordem do caminho) e a Nacional (as 1025 espécies).
+  // Tab (ou os botões no topo) troca de lista; ←→ pula 10.
   #dex() {
     const g = this.g;
-    const list = ALVORADA_DEX;
+    const lists = [['Alvorada', ALVORADA_DEX], ['Nacional', DEX_ORDER]];
     const d = () => g.flags.dex ?? {};
     const L = this.#screen({
-      title: 'Pokédex', cls: 'gm-split',
-      extra: () => { const c = dexCounts(g); return `<span class="gm-chip">Vistos <b>${c.seen}</b></span><span class="gm-chip">Capturados <b>${c.caught}</b></span>`; },
-      foot: '<b>↑↓</b> mover · <b>←→</b> pular 10 · <b>Esc</b> voltar',
+      title: 'Pokédex', cls: 'gm-split', page: this.dexPage ?? 0,
+      extra: () => {
+        const c = dexCounts(g, lists[L.page][1]);
+        return lists.map(([n], j) => `<button class="gm-tab ${j === L.page ? 'on' : ''}" data-p="${j}">${n}</button>`).join('') +
+          `<span class="gm-chip">Vistos <b>${c.seen}</b>/${c.total}</span><span class="gm-chip">Capturados <b>${c.caught}</b></span>`;
+      },
+      foot: '<b>↑↓</b> mover · <b>←→</b> pular 10 · <b>Tab</b> Alvorada/Nacional · <b>Esc</b> voltar',
       draw: (body) => {
+        this.q('.gm-extra').querySelectorAll('.gm-tab').forEach((b) => { b.onclick = (e) => { e.stopPropagation(); L.tab(+b.dataset.p - L.page); }; });
+        const [, list] = lists[L.page], nat = L.page === 1;
         body.innerHTML = `<div class="gm-box gm-scroll gm-dexlist">${list.map((n, i) => {
           const s = d()[n] ?? 0;
-          return `<div class="nav gm-row gm-dexrow ${s ? '' : 'unk'}"><span class="gm-cur">▶</span><span class="no">${pad3(i + 1)}</span><span class="gm-dball ${s >= 2 ? 'c' : s ? 's' : ''}"></span><span class="nm">${s ? esc(SPECIES[n].name) : '- - - - -'}</span></div>`;
+          return `<div class="nav gm-row gm-dexrow ${s ? '' : 'unk'}"><span class="gm-cur">▶</span><span class="no">${nat ? String(n).padStart(4, '0') : pad3(i + 1)}</span><span class="gm-dball ${s >= 2 ? 'c' : s ? 's' : ''}"></span><span class="nm">${s ? esc(SPECIES[n].name) : '- - - - -'}</span></div>`;
         }).join('')}</div><div class="gm-box gm-dexinfo"></div>`;
         body.querySelectorAll('.nav').forEach((n) => { n._act = () => {}; });
       },
-      onFocus: (el, i) => this.#dexInfo(list[i], i + 1),
-      lr: (s) => { this.#focus(Math.max(0, Math.min(list.length - 1, L.sel + s * 10))); },
+      onFocus: (el, i) => { const [, list] = lists[L.page]; this.#dexInfo(list[i], L.page === 1 ? null : i + 1); },
+      lr: (s) => { this.#focus(Math.max(0, Math.min(lists[L.page][1].length - 1, L.sel + s * 10))); },
+      tab: (s) => { L.page = (L.page + s + lists.length * 4) % lists.length; this.dexPage = L.page; L.sel = 0; this.refresh(); },
     });
     this.#push(L);
   }
@@ -468,8 +488,9 @@ export class GameMenu {
     const g = this.g, box = this.q('.gm-dexinfo');
     if (!box || n == null) return;
     const s = g.flags.dex?.[n] ?? 0, sp = SPECIES[n];
+    const num = reg == null ? `Nº ${String(n).padStart(4, '0')}` : `Nº ${pad3(reg)}`;
     if (!s) {
-      box.innerHTML = `<div class="gm-dexhead"><div class="gm-unk">?</div><div><div class="gm-big">Nº ${pad3(reg)} · - - - - -</div>
+      box.innerHTML = `<div class="gm-dexhead"><div class="gm-unk">?</div><div><div class="gm-big">${num} · - - - - -</div>
         <div class="gm-soft">Ainda não encontrado. Explore a região para registrar este Pokémon.</div></div></div>`;
       return;
     }
@@ -479,10 +500,11 @@ export class GameMenu {
     const evo = [pv ? `Evolui de ${esc(SPECIES[pv.from].name)} no Nv. ${pv.level}.` : '', ev ? `Evolui para ${(g.flags.dex?.[sp.evolve.to] ?? 0) ? esc(ev.name) : '???'} no Nv. ${sp.evolve.level}.` : ''].filter(Boolean).join(' ');
     const caught = s >= 2;
     box.innerHTML = `<div class="gm-dexhead">${slot(n, '', !caught)}
-      <div><div class="gm-big">Nº ${pad3(reg)} · ${esc(sp.name)}</div><div class="gm-types">${typePills(sp.types)}</div>
+      <div><div class="gm-big">${num} · ${esc(sp.name)}</div><div class="gm-types">${typePills(sp.types)}</div>
       <div class="gm-soft">${caught ? `Altura ${String(sp.height).replace('.', ',')} m · Nacional nº ${pad3(n)}` : 'Visto, mas ainda não capturado.'}</div></div></div>
-      <p class="gm-desc">${caught ? esc(DEX_TEXT[n] ?? 'Ainda não há muitos registros sobre este Pokémon.') : 'Capture um para ler os dados completos.'}</p>
+      <p class="gm-desc">${caught ? esc(DEX_TEXT[n] ?? dexGeneric(sp)) : 'Capture um para ler os dados completos.'}</p>
       ${evo ? `<p class="gm-soft">${evo}</p>` : ''}
+      ${caught && formsTxt(sp) ? `<p class="gm-soft">Formas: ${formsTxt(sp)}</p>` : ''}
       <div class="gm-sub-t">Onde vive</div>
       ${habTxt ? `<ul class="gm-hab">${habTxt}</ul>` : `<p class="gm-soft">${[1, 4, 7].includes(n) ? 'Pokémon inicial: recebido do Prof. Jatobá.' : pv ? `Só se obtém evoluindo ${esc(SPECIES[pv.from].name)}.` : 'Não aparece na natureza da região.'}</p>`}`;
     clearTimeout(this.dexTimer);
@@ -500,7 +522,7 @@ export class GameMenu {
         body.innerHTML = `<div class="gm-grid">${g.party.map((m, i) => {
           const f = m.hp / m.stats.hp, st = m.status ? `<span class="status ${stPT(m.status)[2]}">${stPT(m.status)[0]}</span>` : '';
           return `<div class="nav gm-box gm-pcard ${m.fainted ? 'ko' : ''} ${L.swap === i ? 'swap' : ''}" data-i="${i}">
-            <span class="gm-cur">▶</span>${slot(m.dex)}
+            <span class="gm-cur">▶</span>${slot(m.spriteKey ?? m.dex)}
             <div class="gm-pmain"><div class="gm-pline"><span class="gm-pn">${esc(m.name)}</span>${i === g.leadIdx && g.lead?.alive ? '<span class="gm-tag">Em campo</span>' : ''}${st}${heldKey(m) ? `<span class="gm-ic sm" title="${esc(itemName(heldKey(m)))}">${itemIcon(heldKey(m))}</span>` : ''}</div>
               <div class="gm-pline"><span class="gm-lv">Nv. ${m.level}</span><span class="gm-types">${typePills(m.types)}</span></div>
               <div class="gm-hp"><span>PS</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div></div>
@@ -682,7 +704,7 @@ export class GameMenu {
       extra: () => `<span class="gm-chip">Equipe ${g.party.length}/6</span><span class="gm-chip">Caixa ${g.box.length}</span>`,
       foot: '<b>↑↓</b> mover · <b>Enter</b> guardar/retirar · <b>Esc</b> sair',
       draw: (body) => {
-        const card = (m, where, i) => `<div class="nav gm-row gm-pcrow ${m.fainted ? 'ko' : ''}" data-w="${where}" data-i="${i}"><span class="gm-cur">▶</span>${slot(m.dex, 'mini')}<span class="nm">${esc(m.name)}</span><span class="gm-soft">Nv. ${m.level}</span></div>`;
+        const card = (m, where, i) => `<div class="nav gm-row gm-pcrow ${m.fainted ? 'ko' : ''}" data-w="${where}" data-i="${i}"><span class="gm-cur">▶</span>${slot(m.spriteKey ?? m.dex, 'mini')}<span class="nm">${esc(m.name)}</span><span class="gm-soft">Nv. ${m.level}</span></div>`;
         body.innerHTML = `<div class="gm-box gm-scroll gm-pccol"><div class="gm-sub-t">Equipe</div>${g.party.map((m, i) => card(m, 'p', i)).join('')}</div>
           <div class="gm-box gm-scroll gm-pccol"><div class="gm-sub-t">Caixa 1</div>${g.box.length ? g.box.map((m, i) => card(m, 'b', i)).join('') : '<div class="gm-empty">A caixa está vazia. Pokémon capturados com a equipe cheia vêm para cá.</div>'}</div>`;
         body.querySelectorAll('.nav').forEach((n) => { n._act = () => this.#pcAct(n.dataset.w, +n.dataset.i); });
@@ -753,7 +775,7 @@ export class GameMenu {
         title: 'Aprender golpe', cls: 'gm-sum gm-learn',
         foot: '<b>↑↓</b> escolher · <b>Enter</b> esquecer este · <b>Esc</b> não aprender',
         draw: (body) => {
-          body.innerHTML = `<div class="gm-box gm-sumleft">${slot(m.dex, 'big')}<div class="gm-big">${esc(m.name)}</div><div class="gm-soft">Nv. ${m.level}</div>
+          body.innerHTML = `<div class="gm-box gm-sumleft">${slot(m.spriteKey ?? m.dex, 'big')}<div class="gm-big">${esc(m.name)}</div><div class="gm-soft">Nv. ${m.level}</div>
               <p class="gm-desc">${esc(m.name)} quer aprender <b>${esc(mv.name)}</b>, mas já sabe 4 golpes.<br>Esquecer um golpe para dar lugar a ${esc(mv.name)}?</p></div>
             <div class="gm-box gm-sumright gm-moves"><div class="gm-sub-t">Golpe novo</div>${card(id, 'gm-new')}
               <div class="gm-sub-t">Esquecer qual?</div>
@@ -887,7 +909,7 @@ export class GameMenu {
         const f = m.hp / m.stats.hp;
         const left = `<div class="gm-box gm-sumleft">
           <div class="gm-sumnav"><button class="gm-arrow" data-d="-1">▲</button><span>${L.mi + 1} / ${g.party.length}</span><button class="gm-arrow" data-d="1">▼</button></div>
-          ${slot(m.dex, 'big')}
+          ${slot(m.spriteKey ?? m.dex, 'big')}
           <div class="gm-big">${esc(m.name)}</div><div class="gm-soft">Nv. ${m.level} · Nº ${pad3(m.dex)}</div>
           <div class="gm-types">${typePills(m.types)}</div>
           <div class="gm-hp"><span>PS</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div></div>

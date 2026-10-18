@@ -5,6 +5,7 @@
 // Um "turno" dos jogos vale TURNO_S segundos aqui (src/mechanics/tempo.js): Sobras curam 1/16 dos PS a cada turno etc.
 // A lógica dos efeitos fica em src/mechanics/ (capture.js, damage.js, items.js); aqui só ficam os dados.
 import { MTS } from './gen/mts.js';
+import { ITENS } from './gen/itens.js';
 import { MOVES } from './moves.js';
 
 const I = (name, en, cat, price, extra = {}) => ({ name, en, cat, price, ...extra });
@@ -226,6 +227,13 @@ export const ITEMS = {
   abilityCapsule: I('Cápsula de Habilidade', 'Ability Capsule', 'misc', 10000, { abilitySwap: true, desc: 'Troca a habilidade pela outra comum da espécie.' }),
 };
 
+// ---------------- Itens gerados pela importação (src/data/gen/itens.js): Mega Pedras (megaStone, mega = [[dex, forma]]),
+// Orbes da Reversão Primitiva (primal), Pulseira Mega e Bracelete Dynamax (itens-chave), Espada/Escudo Enferrujados
+// (crowned), itens que mudam a forma ao serem usados (formChange: { dex, forms }) e os itens de evolução que faltavam.
+// O que já está escrito à mão acima vale mais (nome, preço e descrição).
+for (const [id, it] of Object.entries(ITENS)) if (!ITEMS[id]) ITEMS[id] = it;
+export const MEGA_STONES = Object.keys(ITEMS).filter((k) => ITEMS[k].megaStone);
+
 // ---------------- MTs: uma por golpe, reutilizáveis (como em Scarlet/Violet). Id: tm001…tm229.
 export const TM_BY_MOVE = {};
 for (const [n, move] of MTS) {
@@ -270,6 +278,7 @@ export const POCKETS = [
   ['chave', 'Itens-chave'],
 ];
 const POCKET_OF = { ball: 'bolas', medicine: 'remedios', berry: 'frutas', tm: 'tms', key: 'chave' };
+// (Mega Pedras e itens de forma ficam em Itens)
 const COLOR = {
   pokeBall: '#e5383b', greatBall: '#3a7be0', ultraBall: '#f2c94c', masterBall: '#8e44ad', potion: '#9b59d6', superPotion: '#e0662c',
   hyperPotion: '#e05a9b', maxPotion: '#3fa1d8', fullRestore: '#f2c94c', revive: '#f2d04c', oranBerry: '#3f6fd8', pechaBerry: '#f2a6c4',
@@ -289,7 +298,7 @@ function view(id) {
   if (it.cat === 'tm') v.tm = it.move;
   if (it.key) v.key = true;
   if (it.ball != null) v.ball = it.ball;
-  if (['medicine', 'vitamin', 'candy', 'evolution', 'misc'].includes(it.cat) || it.evs || (it.berry && (it.berry.heal || it.berry.healFrac || it.berry.cure))) v.usable = true;
+  if (['medicine', 'vitamin', 'candy', 'evolution', 'misc'].includes(it.cat) || it.formChange || it.evs || (it.berry && (it.berry.heal || it.berry.healFrac || it.berry.cure))) v.usable = true;
   return v;
 }
 export const ITEM_INFO = {};
@@ -314,7 +323,8 @@ export function useItemOn(g, key, m, ctx = {}) {
   // Doce Raro / Doce de Exp.: golpes novos passam pela tela de "aprender" (g.teach); evolução pela cena (fila da interface)
   for (const e of r.events ?? []) {
     if (e.type === 'learn' && it_cat(key) !== 'tm' && typeof g.teach === 'function') g.teach(m, e.move);
-    if (e.type === 'evolve' && typeof g.evolve === 'function') { if (g.ui?.queue) g.ui.queue(() => g.evolve(m, e.to)); else g.evolve(m, e.to); }
+    if (e.type === 'evolve' && typeof g.evolve === 'function') { if (g.ui?.queue) g.ui.queue(() => g.evolve(m, e.to, e.form)); else g.evolve(m, e.to, e.form); }
+    if (e.type === 'form') g.formChanged?.(m);
   }
   const text = typeof r.msg === 'string' ? r.msg : r.ok ? 'Funcionou!' : 'Isso não pode ser usado agora.';
   return { ok: r.ok, text, events: r.events ?? [] };

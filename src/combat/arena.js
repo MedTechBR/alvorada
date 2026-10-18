@@ -25,6 +25,7 @@ export class Arena {
   }
 
   hitObject(o, mv, P = 1) {
+    if (this.g.mundo?.masmorra?.hitObject(o, mv, P)) return; // tochas, paredes rachadas, portões… (src/world/masmorra.js)
     const fx = this.fx, rock = o.kind === 'rock', bush = o.kind === 'bush', tree = o.kind === 'tree' || o.kind === 'pine';
     this.shakes.push({ o, t: 0.25, amp: 1.5 + P });
     if (o.breakable) {

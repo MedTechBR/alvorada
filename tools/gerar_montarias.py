@@ -20,6 +20,15 @@ for linha in open('src/data/gen/especies.js', encoding='utf-8'):
     m = re.match(r'\s*(\d+): (\{.*\}),?\s*$', linha)
     if m: ESP[int(m.group(1))] = json.loads(m.group(2))
 PMD = set(json.load(open('assets/pmd/index.json')))
+# quem não tem sprite próprio usa o de outra pasta (tools/pmd_baixar.py instalar-tudo); a medida segue o substituto
+try: SUBST = {k: v['de'] for k, v in json.load(open('assets/pmd/substitutos.json')).items()}
+except Exception: SUBST = {}
+# formas que andam pelo mundo (regionais e alternativas) também podem ser montaria: chave "59-hisui"
+FORMAS = {f'{d}-{k}': {**s, **f} for d, s in ESP.items() for k, f in s.get('forms', {}).items() if f.get('kind') in ('regional', 'alt')}
+def pasta_de(key):
+    d, _, f = str(key).partition('-')
+    p = f'{int(d):04d}' + (f'-{f}' if f else '')
+    return p if os.path.isfile(f'assets/pmd/{p}/frames.json') else SUBST.get(p)
 MODOS = ['correr', 'nadar', 'escalar', 'voar', 'mergulhar']
 
 # ---------------------------------------------------------------- regras automáticas
@@ -95,6 +104,13 @@ MAO = {
 }
 # lendários e grandes que a regra deixa de fora
 MAO.update({716: '+correr', 791: '+correr', 717: '+voar', 792: '+voar', 899: '+correr', 901: '+correr'})
+# espécies e formas novas (todas as 1025): montarias de Paldea e o que a regra erra
+MAO.update({
+    1007: '+correr -escalar',    # Koraidon: a moto de Scarlet, corre com o treinador no lombo
+    1008: '+correr +nadar +voar',  # Miraidon: a moto de Violet (corre, nada e plana)
+    968: '+correr',              # Orthworm: minhocão de aço comprido, leva gente no dorso
+    '892-rapidStrike': '-nadar -mergulhar',  # Urshifu Golpe Fluido: lutador bípede, não é barco
+})
 
 # ---------------------------------------------------------------- estilo do assento
 # lombo: senta em cima (quadrúpedes, serpentes, peixes, aves); costas: vai agarrado às costas (bípedes em pé)
@@ -103,7 +119,7 @@ def estilo(dex, s, modos):
     if dex in LOMBO: return 'lombo'
     return 'costas' if s['shape'] == 'biped' and not ({'voar', 'nadar', 'mergulhar'} & modos) else 'lombo'
 COSTAS = {903, 461, 571, 428, 861, 282, 475, 214, 127, 212, 900, 740, 115}
-LOMBO = {6, 149, 635, 445, 697, 248, 306, 217, 553, 612, 460, 9, 160, 55, 195, 537}
+LOMBO = {6, 149, 635, 445, 697, 248, 306, 217, 553, 612, 460, 9, 160, 55, 195, 537, 1007, 1008, 968}
 
 # Pose revista à mão na vitrine (px do sprite sem escala; substituem a medida): lift = assento acima do centro,
 # back = recuo para trás do centro, topo = topo da silhueta de frente, backV = sobe mais olhando para baixo,
@@ -114,13 +130,16 @@ AJUSTE = {
     130: {'lift': 30, 'back': -6},   # Gyarados: no alto do pescoço, atrás da cabeça
     851: {'lift': -6, 'back': 15},   # Centiskorch: no corpo deitado, atrás da parte erguida
     286: {'back': 6}, 620: {'back': 5},  # Breloom e Mienshao: a cauda puxava o assento para longe
+    899: {'back': 5},                # Wyrdeer: o assento caía em cima dos chifres
 }
 
 # ---------------------------------------------------------------- medida do sprite
 ROW_RIGHT, ROW_DOWN = 2, 0   # linhas do PMD: 0 baixo, 2 direita
 
 def quadro(dex, anim='Idle', row=ROW_RIGHT, i=0):
-    pasta = f'assets/pmd/{dex:04d}/'
+    p = pasta_de(dex)
+    if not p: return None
+    pasta = f'assets/pmd/{p}/'
     try: fr = json.load(open(pasta + 'frames.json'))
     except Exception: return None
     a = fr['anims'].get(anim) or fr['anims'].get('Walk')
@@ -188,10 +207,13 @@ def medir_baixo(dex):
 
 # ---------------------------------------------------------------- monta a tabela
 tabela, cont = {}, {k: 0 for k in MODOS}
-for dex, s in sorted(ESP.items()):
-    if dex not in PMD: continue
+for dex, s in sorted(ESP.items()) + sorted(FORMAS.items()):
+    if isinstance(dex, int) and dex not in PMD: continue
+    if isinstance(dex, str) and not pasta_de(dex): continue
     modos = auto(dex, s)
-    for op in MAO.get(dex, '').split():
+    base = int(str(dex).split('-')[0])
+    # a forma herda os ajustes à mão da espécie, a não ser que tenha os próprios
+    for op in MAO.get(dex, MAO.get(base, '') if isinstance(dex, str) and dex not in MAO else '').split():
         (modos.add if op[0] == '+' else modos.discard)(op[1:])
     if not modos: continue
     est = estilo(dex, s, modos)
@@ -207,13 +229,15 @@ for dex, s in sorted(ESP.items()):
     for k in e['m']: cont[k] += 1
 
 def js(v): return json.dumps(v, ensure_ascii=False, separators=(',', ':'))
-linhas = [f'  {d}: {js(e)}, // {ESP[d]["name"]}' for d, e in tabela.items()]
+nome = lambda d: FORMAS[d]['name'] if isinstance(d, str) else ESP[d]['name']
+linhas = [f'  {d if isinstance(d, int) else js(d)}: {js(e)}, // {nome(d)}' for d, e in tabela.items()]
 txt = f'''// GERADO por tools/gerar_montarias.py (não edite à mão: ajustes vão nas tabelas MAO e AJUSTE do script).
 // Espécies que carregam o treinador: {len(tabela)} ({", ".join(f"{k} {v}" for k, v in cont.items())}).
 // m = modos; est = lombo (senta em cima) | costas (vai agarrado às costas, como no Sneasler);
 // lift = altura do assento acima do centro do corpo; back = recuo do assento para trás do centro;
 // topo = altura da silhueta acima do centro, olhando para a câmera (o treinador aparece por cima dela).
 // Medidas em px do sprite do PMD sem escala; src/world/mounts.js multiplica pela escala da espécie.
+// Formas (regionais e alternativas) entram com a chave "<dex>-<forma>" (a mesma de Mon.spriteKey).
 export const MONTARIAS = {{
 {chr(10).join(linhas)}
 }};

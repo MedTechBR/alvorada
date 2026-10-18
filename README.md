@@ -14,10 +14,20 @@ Controle: Start abre o menu.
 ## Sprites
 
 - **Pokémon:** estilo Pokémon Mystery Dungeon, do acervo de fãs [PMD SpriteCollab](https://github.com/PMDCollab/SpriteCollab)
-  (CC BY-NC 4.0; créditos por espécie em `assets/pmd/CREDITOS.md`). Ficam em `assets/pmd/<dex 4 dígitos>/`.
-  Baixar/atualizar: `python3 -I tools/pmd_baixar.py tudo <pasta-nova-vazia>` (lê as espécies de `src/data/species.js`,
-  baixa com pausas e novas tentativas, valida e gera `frames.json`, `index.json`, `fontes.json` e `CREDITOS.md`).
-  Só refazer os índices: `python3 -I tools/pmd_baixar.py processar`.
+  (CC BY-NC 4.0; créditos por pasta em `assets/pmd/CREDITOS.md`). Ficam em `assets/pmd/<dex 4 dígitos>/` e as formas em
+  `assets/pmd/<dex>-<forma>/` (ex.: `0026-alola`, `0006-megaX`).
+  Baixar tudo (as 1025 espécies e as formas que o SpriteCollab tem): `python3 -I tools/pmd_baixar.py baixar-tudo <pasta> <tracker.json>`
+  (6 conexões, só as 12 animações que o jogo usa); instalar: `python3 -I tools/pmd_baixar.py instalar-tudo <pasta>`
+  (gera `frames.json`, `index.json`, `substitutos.json`, `fontes.json`, `CREDITOS.md` e `SUBSTITUTOS.md`).
+  A subpasta do SpriteCollab de cada forma vem de `tools/pokeapi/formas_pmd.json` (gerado pelo importador).
+- **Tamanho:** só vão para o site as folhas `*-Anim.png` das animações usadas (Idle, Walk, Attack, Shoot, Charge, Hurt,
+  Sleep, Hop, Strike, Swing, Pound, Rotate; Faint e Special ninguém pede). `*-Offsets.png` e `*-Shadow.png` ficam só no
+  download: o `frames.json` já guarda os pontos que o jogo lê deles. As folhas são recompactadas sem perda
+  (`tools/png_sem_perda.py`: PNG de paleta, conferido pixel a pixel), quase metade do tamanho. `node tools/verificar_dados.mjs`
+  mede o total e o maior arquivo (limites do GitHub Pages: 1 GB no site, 100 MB por arquivo).
+- **Substitutos:** quem não tem sprite usa o de outra pasta, nesta ordem: escolha à mão (`SUBST_MAO`, parecidos), pré-evolução,
+  evolução, outra forma da espécie; uma forma sem sprite usa o da forma padrão. O jogo escala cada sprite pela altura real
+  (`src/sprites/scale.js`), então o substituto aparece do tamanho certo. Lista em `assets/pmd/SUBSTITUTOS.md`.
 - **Ancoragem:** `frames.json` guarda, por quadro, o ponto do chão (pixel branco do `*-Shadow.png`) e os pontos do
   `*-Offsets.png` (cabeça, centro, mãos). `frameOf()` em `src/sprites/pmd.js` devolve `ax/ay` (âncora do sprite),
   `head`, `mouth`, `hand` e `center`; os golpes à distância saem de `PokeEntity.emitPoint()`.
@@ -27,6 +37,24 @@ Controle: Start abre o menu.
   trocáveis. `makeCharacterFrames(look)` em `src/sprites/characters.js`; opções do criador em `LOOK_OPTIONS`;
   NPCs prontos em `PRESETS` (professor, mae, rival, treinador, treinadora, montanhista).
 - **Vitrine:** `tools/vitrine.html` (todas as espécies paradas e andando; `?pts=1` mostra cabeça/boca/mão; `?modo=humanos`).
+
+## Espécies e formas
+
+- **Dados:** `python3 -I tools/pokeapi/importar.py dados-brutos/pokeapi <tracker.json> src/data/gen` gera as 1025 espécies
+  da Pokédex Nacional, os golpes que elas aprendem (mais os Max Golpes e os 33 Max Golpes Gigantamax, escritos à mão em `GMAX`),
+  as habilidades, as MTs e os itens que faltavam (`src/data/gen/itens.js`: Mega Pedras, Orbes, Pulseira Mega, Bracelete Dynamax,
+  itens de forma e de evolução). Nomes em português: `tools/pokeapi/golpes_pt.tsv` e `habilidades_pt.tsv` (a PokéAPI não tem
+  pt-BR); a Pokédex sem texto próprio (`src/data/dex.js`) mostra uma frase montada com os dados.
+- **Formas:** em `SPECIES[dex].forms[forma]`, cada uma um objeto de espécie completo (tipos, status, habilidades, golpes,
+  evoluções) com `kind`: `regional` (Alola, Galar, Hisui, Paldea), `mega`, `primal`, `gmax`, `battle` (Zen, Coroado…),
+  `gender` (Meowstic fêmea…: aplicada pelo gênero), `alt` (Rotom, Deoxys, Oricorio, Lycanroc, Urshifu, Toxtricity…) e
+  `visual` (Unown, Vivillon, Arceus…). `speciesOf(dex, forma)` devolve a certa; `speciesKey`/`parseKey` tratam a chave `"26-alola"`.
+- **No Pokémon:** `mon.form` (permanente; vai no save só quando existe, então save antigo continua igual) e `mon.tempForm`
+  (Mega, Gigantamax, Primitiva: não vai no save; `mon.setTempForm('megaX')` / `setTempForm(null)`). `mon.sp` já devolve a
+  forma; `mon.spriteKey` é o que `loadPokemonSprites`/`portraitOf` recebem. `mon.setForm()` troca a permanente (itens de forma).
+- **Evoluções com forma:** `evo[].form` é a forma de destino (Rattata de Alola → Raticate de Alola); `evo[].region` só vale na
+  região dita pelo contexto (`ctx.region`, ainda não usado pelo mundo). Novas condições: `partySpecies`, `atkDef`, `natures`, `split`.
+- **Encontros com forma:** a 5ª posição da entrada de encontro é a forma: `[dex, nívelMín, nívelMáx, peso, 'alola']`.
 
 ## Modo online (P2P)
 
@@ -223,7 +251,7 @@ da água) ou cava (os demais); **X** pula; **Espaço** esquiva com invencibilida
 - **Carregamento:** barra real em `index.html` (conta os arquivos; o total da última visita fica em
   `localStorage['alvorada.boot.n']`) e etapas do `main.js` via `window.__boot(fração, texto)` / `window.__bootDone()`.
 - **Service worker** (`sw.js`): código em rede primeiro (6 s de limite, depois a cópia guardada); sprites em cache
-  próprio (`alvorada-sprites-v1`), cache primeiro e só do que aparece. Na primeira visita a página manda ao SW a
+  próprio (`alvorada-sprites-v2`), cache primeiro e só do que aparece. Na primeira visita a página manda ao SW a
   lista do que já carregou (`{ type: 'guardar', urls }`) para o jogo abrir offline na visita seguinte. Ao mudar a
   estrutura do cache, troque o nome em `CODE`/`SPR`.
 - **HUD:** objetivo recolhível (toque/clique ou J; no celular fica recolhido e abre 6 s quando muda); minimapa com

@@ -1,11 +1,12 @@
 // Aprender golpes: por nível, por MT (reutilizável) e por ensino (tutor).
-import { SPECIES } from '../data/species.js';
+import { speciesOf } from '../data/species.js';
 import { MOVES } from '../data/moves.js';
 import { ITEMS, itemId } from '../data/items.js';
 
 // Como a espécie aprende o golpe: 'level' | 'tm' | 'tutor' | null
-export function learnMethod(dex, moveId) {
-  const s = SPECIES[dex];
+// (form: forma do Pokémon; formas regionais e alternativas têm golpes próprios)
+export function learnMethod(dex, moveId, form = null) {
+  const s = speciesOf(dex, form);
   if (!s) return null;
   if (s.learn.some(([, id]) => id === moveId)) return 'level';
   if (s.tm.includes(moveId)) return 'tm';
@@ -15,18 +16,18 @@ export function learnMethod(dex, moveId) {
 
 export function canLearn(mon, moveId, via = null) {
   if (!MOVES[moveId] || mon.moves.includes(moveId)) return false;
-  const m = learnMethod(mon.dex, moveId);
+  const m = learnMethod(mon.dex, moveId, mon.form);
   return via ? m === via || (via === 'tutor' && m === 'level') : !!m;
 }
 
 // Golpes aprendidos exatamente neste nível (0 = ao evoluir)
-export function movesAtLevel(dex, level) {
-  return (SPECIES[dex]?.learn ?? []).filter(([lv]) => lv === level).map(([, id]) => id);
+export function movesAtLevel(dex, level, form = null) {
+  return (speciesOf(dex, form)?.learn ?? []).filter(([lv]) => lv === level).map(([, id]) => id);
 }
 
 // Os 4 últimos golpes aprendidos por nível até `level` (como um selvagem dos jogos)
-export function defaultMoves(dex, level) {
-  const learned = (SPECIES[dex]?.learn ?? []).filter(([lv]) => lv <= level).map(([, id]) => id).filter((id) => MOVES[id]);
+export function defaultMoves(dex, level, form = null) {
+  const learned = (speciesOf(dex, form)?.learn ?? []).filter(([lv]) => lv <= level).map(([, id]) => id).filter((id) => MOVES[id]);
   return [...new Set(learned.reverse())].slice(0, 4).reverse();
 }
 
@@ -53,8 +54,8 @@ export function useTM(mon, tmId, replaceIndex = -1) {
 }
 
 // MTs que esta espécie pode usar
-export function compatibleTMs(dex) {
-  const s = SPECIES[dex];
+export function compatibleTMs(dex, form = null) {
+  const s = speciesOf(dex, form);
   if (!s) return [];
   return Object.entries(ITEMS).filter(([, it]) => it.cat === 'tm' && s.tm.includes(it.move)).map(([id]) => id);
 }

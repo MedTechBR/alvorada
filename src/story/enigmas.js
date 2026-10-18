@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { SPR } from '../world/art.js';
 import { TILE } from '../world/tiles.js';
+import { MAP_ID, REGION } from '../world/map.js';
 
 // Quebra-cabeças dos capítulos 4 a 6, montados em cima das salas de assets/maps/alvorada.json:
 // - circuito: peças no chão que giram (E) para ligar a fonte ao gerador (Farol Coral, andares 1 e 2);
@@ -80,6 +81,17 @@ export const ENIGMAS = {
   // tábuas de luz do brejo (blocos do mapa externo): só com a Lente Prisma
   prisma: { item: 'lente_prisma', cells: [259, 260, 261, 262, 263, 264, 265, 266].flatMap((y) => [[380, y, 1], [381, y, 1]]) },
 };
+// Outro mapa (ex.: ?mapa=demo-biomas) não herda os enigmas da Alvorada. Qualquer mapa pode trazer os seus no campo
+// "enigmas" do JSON, no mesmo formato acima: listas (circuitos, alavancas, portais, somem, ambiente) somam,
+// portoes/raios juntam por id e os únicos (geradores, espelhos, quadros, prisma) trocam.
+// As mecânicas genéricas de masmorra (src/world/masmorra.js) usam o mesmo vocabulário em objetos do mapa.
+if (MAP_ID !== 'alvorada') Object.assign(ENIGMAS, { circuitos: [], portoes: {}, raios: {}, geradores: { sala: '' }, espelhos: { sala: '' }, quadros: { sala: '' }, alavancas: [], somem: [], portais: [], ambiente: [], prisma: { item: '', cells: [] } });
+for (const [k, v] of Object.entries(REGION.enigmas ?? {})) {
+  if (Array.isArray(v)) ENIGMAS[k] = [...(ENIGMAS[k] ?? []), ...v];
+  else if (k === 'portoes' || k === 'raios') ENIGMAS[k] = { ...(ENIGMAS[k] ?? {}), ...v };
+  else ENIGMAS[k] = v;
+}
+
 
 // ------------------------------------------------------------------ motor
 export class Enigmas {
