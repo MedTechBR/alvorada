@@ -31,7 +31,7 @@ try {
   }
   let i = 0;
   for (const s of lista) {
-    if (s.startsWith('k:')) { const [k, zz] = s.slice(2).split(','); await P.ev(`(() => { const i = vitrine.itens.find((i) => i.kind === '${k}'); vitrine.focar(i.x, i.z - 30, ${+zz || 0}); })()`); }
+    if (s.startsWith('k:')) { const [k, zz] = s.slice(2).split(','); await P.ev(`(() => { const i = vitrine.itens.find((i) => i.kind === '${k}'); vitrine.focar(i.x, i.z - 12, ${+zz || 0}); })()`); }
     else { const [x, z, zz] = s.split(',').map(Number); await P.ev(`vitrine.focar(${x}, ${z}, ${zz || 0})`); }
     await sleep(+(process.env.WAIT ?? 600));
     const shot = await P.raw('Page.captureScreenshot', { format: 'jpeg', quality: 85 });
