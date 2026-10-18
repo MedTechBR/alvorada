@@ -74,6 +74,8 @@ body.at-title #hud, body.at-title #touch, body.at-title #menu-btn, body.menu-ope
 .fo-balls { display: flex; gap: 3px; }
 .fo-balls i { width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(#e5383b 0 45%, #1d2340 45% 58%, #fff 58%); box-shadow: 0 0 0 1px #fff; }
 .fo-balls i.out { box-shadow: 0 0 0 2px #f2c335; } .fo-balls i.ko { filter: grayscale(1) brightness(.6); }
+.fo-fase { margin-top: 3px; font: 800 11px Nunito, system-ui, sans-serif; color: #ffe27a; letter-spacing: .02em; } .fo-fase.final { color: #ff8a6a; animation: fofase 1s ease-in-out infinite; }
+@keyframes fofase { 50% { opacity: .55; } }
 .fo-mon { margin-top: 5px; }
 .fo-l { display: flex; gap: 6px; align-items: baseline; font-size: 13px; }
 .fo-l small { margin-left: auto; opacity: .8; } .fo-l em { font-style: normal; font-size: 9px; padding: 1px 5px; border-radius: 4px; }

@@ -613,9 +613,11 @@ class Game {
   }
 
   #camera(dt) {
-    const p = this.player, c = this.cam, f = this.mode === 'pokemon' && this.lead?.alive ? this.lead : p;
+    // camFocus: ponto que uma cena curta pede para mostrar (arena de ginásio: fases, entrada do ás)
+    const p = this.player, c = this.cam, f = this.camFocus ?? (this.mode === 'pokemon' && this.lead?.alive ? this.lead : p);
     const fy = f.y - (f === p ? this.mount?.camLift ?? 0 : 0); // voando, a câmera sobe com o treinador
-    c.x += (f.x - c.x) * Math.min(1, dt * 8); c.y += (fy - c.y) * Math.min(1, dt * 8);
+    const ck = this.camFocus ? 3.5 : 8;
+    c.x += (f.x - c.x) * Math.min(1, dt * ck); c.y += (fy - c.y) * Math.min(1, dt * ck);
     let sx = 0, sy = 0;
     if (this.fx.shake > 0) { this.fx.shake -= dt; const k = this.fx.shake * 6; sx = (Math.random() - 0.5) * k; sy = (Math.random() - 0.5) * k; }
     const z = this.zoom;
