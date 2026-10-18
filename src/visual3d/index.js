@@ -8,6 +8,7 @@ import { Ceu } from './ceu.js';
 import { Pos } from './pos.js';
 import { IS_TOUCH } from '../engine/input.js';
 import { curvaY } from './curva.js';
+import { CameraDinamica } from './camera.js';
 
 // Visual 3D (HD-2D, estilo HeartGold/SoulSilver). Só desenha: a lógica do jogo é a mesma do 2D.
 // Liga-se ao jogo com ?visual=3d (main.js). Desenho completo em docs/visual-3d.md.
@@ -34,7 +35,9 @@ export class Visual3D {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(FOV, innerWidth / innerHeight, 16, 5000);
     this.alvo = new THREE.Vector3();
-    this.cima = new THREE.Vector3(0, Math.cos(INCLINACAO), -Math.sin(INCLINACAO)); // "para cima" dos billboards
+    this.cima = new THREE.Vector3(0, Math.cos(INCLINACAO), -Math.sin(INCLINACAO)); // "para cima" dos billboards (segue a câmera)
+    this.direita = new THREE.Vector3(1, 0, 0);
+    this.dinamica = new CameraDinamica(this);
     this.u = { tempo: { value: 0 }, luzSprite: { value: new THREE.Color(1, 1, 1) }, curva: { value: 0.0011 }, alvoZ: { value: 0 } }; // uniformes compartilhados
     this.ceu = new Ceu(this);
     this.setores = new Setores(this);
@@ -67,20 +70,26 @@ export class Visual3D {
   altura(px, py) { return this.relevo.em(px, py); }
 
   #camera() {
-    const g = this.g, c = g.cam ?? g.player;
-    if (!c) return;
-    const fx = c.x, fy = c.y;
+    const g = this.g, agora = performance.now(), dt = Math.min(0.1, (agora - (this.tCam ?? agora)) / 1000); this.tCam = agora;
+    const cd = this.dinamica.update(dt);
+    if (!cd) return;
     // a altura do foco segue o chão com suavidade (subir uma escada não dá tranco)
-    const h = this.altura(fx, fy + (g.mount?.camLift ?? 0));
-    this.focoH = this.focoH == null ? h : this.focoH + (h - this.focoH) * 0.15;
+    const h = this.altura(cd.x, cd.z);
+    this.focoH = this.focoH == null ? h : this.focoH + (h - this.focoH) * Math.min(1, dt * 8);
     let sx = 0, sy = 0;
     if (g.fx?.shake > 0) { const k = g.fx.shake * 6; sx = (Math.random() - 0.5) * k; sy = (Math.random() - 0.5) * k; }
-    this.alvo.set(fx + sx, this.focoH, fy + sy);
+    this.alvo.set(cd.x + sx, this.focoH, cd.z + sy);
     this.u.alvoZ.value = this.alvo.z;
-    const D = this.distancia;
-    this.camera.position.set(this.alvo.x, this.alvo.y + D * Math.sin(INCLINACAO), this.alvo.z + D * Math.cos(INCLINACAO));
+    const D = this.distancia * cd.dist, p = cd.incl, gy = cd.giro;
+    this.incl = p;
+    this.camera.position.set(this.alvo.x + Math.sin(gy) * D * Math.cos(p), this.alvo.y + D * Math.sin(p), this.alvo.z + Math.cos(gy) * D * Math.cos(p));
+    this.camera.up.set(0, 1, 0);
     this.camera.lookAt(this.alvo);
+    if (cd.rolo) this.camera.rotateZ(cd.rolo);
     this.camera.updateMatrixWorld();
+    this.pv = (this.pv ?? new THREE.Matrix4()).multiplyMatrices(this.camera.projectionMatrix, this.camera.matrixWorldInverse);
+    const e = this.camera.matrixWorld.elements;
+    this.direita.set(e[0], e[1], e[2]); this.cima.set(e[4], e[5], e[6]);
   }
   // pegada da câmera no chão (retângulo em px de mundo), limitada ao longe
   pegada(h = this.focoH ?? 0, extra = 1) {
@@ -114,10 +123,12 @@ export class Visual3D {
   }
   curvaY(z) { return curvaY(this.u.curva.value, this.alvo.z, z); }
   // projeção de um ponto no plano horizontal de altura h (sem o relevo): para a sobreposição
-  paraTelaPlano(x, y, h) {
-    const v = this.tmpV ??= new THREE.Vector3();
-    v.set(x, h + this.curvaY(y), y).project(this.camera);
-    return { x: (v.x * 0.5 + 0.5) * innerWidth, y: (-v.y * 0.5 + 0.5) * innerHeight };
+  paraTelaPlano(x, y, h, out = {}) {
+    const m = this.pv.elements, Y = h + this.curvaY(y);
+    const w = 1 / (m[3] * x + m[7] * Y + m[11] * y + m[15]);
+    out.x = ((m[0] * x + m[4] * Y + m[8] * y + m[12]) * w * 0.5 + 0.5) * innerWidth;
+    out.y = (-(m[1] * x + m[5] * Y + m[9] * y + m[13]) * w * 0.5 + 0.5) * innerHeight;
+    return out;
   }
   // px de tela por px de mundo de um billboard em pé no ponto (x, y)
   escalaEm(x, y) {
@@ -137,13 +148,19 @@ export class Visual3D {
     const g = this.g, dt = Math.min(0.05, g.app.ticker.deltaMS / 1000);
     this.t += dt; this.u.tempo.value = this.t;
     if (!this.view) this.cull();
+    const T = this.perf ??= { ceu: 0, setores: 0, espelho: 0, cena: 0, sobre: 0, n: 0 }, now = () => performance.now();
+    let t0 = now();
+    const marca = (k) => { const t = now(); T[k] += t - t0; t0 = t; };
     try {
-      this.ceu.update(dt);
-      this.setores.update(dt);
-      this.espelho.update(dt);
-      this.pos.render(this.scene, this.camera);
+      this.ceu.update(dt); marca('ceu');
+      this.setores.update(dt); marca('setores');
+      this.espelho.update(dt); marca('espelho');
+      this.pos.render(this.scene, this.camera); marca('cena');
     } catch (e) { this.#erro(e); }
-    try { this.sobre.render(); } catch (e) { this.#erro(e); }
+    try { this.sobre.render(); marca('sobre'); } catch (e) { this.#erro(e); }
+    T.n++;
   }
+  // médias de tempo de CPU por quadro (ms) desde a última chamada
+  medir() { const T = this.perf, o = {}; if (!T?.n) return o; for (const k of Object.keys(T)) if (k !== 'n') { o[k] = +(T[k] / T.n).toFixed(2); T[k] = 0; } T.n = 0; return o; }
   #erro(e) { if (!this.errT || this.t - this.errT > 5) { this.errT = this.t; console.error('[3D]', e); } }
 }

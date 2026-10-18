@@ -1,4 +1,4 @@
-import { RenderTexture, MeshPlane } from 'pixi.js';
+import { RenderTexture, MeshPlane, Matrix } from 'pixi.js';
 import { IS_TOUCH } from '../engine/input.js';
 
 // Sobreposição: o Pixi continua desenhando tudo o que o 2D desenha em coordenadas de mundo (golpes, choques no
@@ -16,10 +16,12 @@ export class Sobreposicao {
     this.rt = RenderTexture.create({ width: 512, height: 512 });
     this.rt.source.scaleMode = 'linear';
     // malha em grade: cada vértice vai para a projeção 3D do seu ponto no chão (com perspectiva e mundo curvo)
-    this.N = 18;
+    this.N = 13; this.mRT = new Matrix(); this.mTela = new Matrix();
     this.mesh = new MeshPlane({ texture: this.rt, verticesX: this.N, verticesY: this.N });
     app.stage.addChildAt(this.mesh, Math.max(0, app.stage.getChildIndex(g.world)));
     this.temTela = new WeakMap(); // filho de ents -> tem algo que não é sprite (barra, nome, balão)?
+    // grupos de desenho: esconder/mostrar o chão e as entidades não obriga o Pixi a refazer a lista do palco inteiro
+    g.world.isRenderGroup = true; g.ents.isRenderGroup = true; if (g.map.root) g.map.root.isRenderGroup = true;
   }
   // algo dentro que o espelho não desenha (Graphics, Text)
   #desenhoDeTela(n) {
@@ -30,48 +32,55 @@ export class Sobreposicao {
   render() {
     const v = this.v, g = this.g, app = g.app, R = app.renderer, W = g.world, stage = app.stage;
     if (!v.view) return;
-    // 1) mundo do 2D -> textura (sem chão, sem entidades)
+    const pf = (this.pf ??= { rt: 0, tela: 0, n: 0 }), t0 = performance.now();
+    // 1) mundo do 2D -> textura (sem chão, sem entidades): o grupo do mundo direto, com a transformação da textura
     const h = v.focoH ?? 0, p = v.pegada(h, 1.02);
     const ww = Math.max(1, p.x1 - p.x0), hh = Math.max(1, p.y1 - p.y0);
     const zoom = Math.max(1, g.zoom || 3);
     const k = Math.min(zoom * 1.1, this.max / ww, this.max / hh);
     const rw = Math.min(this.max, Math.ceil(ww * k)), rh = Math.min(this.max, Math.ceil(hh * k));
     if (Math.abs(this.rt.width - rw) > 32 || Math.abs(this.rt.height - rh) > 32 || this.rt.width < rw || this.rt.height < rh) this.rt.resize(rw + 16, rh + 16);
-    const sx = W.x, sy = W.y, ssx = W.scale.x, ssy = W.scale.y;
     const root = g.map.root, ents = g.ents;
     const vr = root?.visible, ve = ents.visible;
     if (root) root.visible = false; ents.visible = false;
-    W.position.set(-p.x0 * k, -p.y0 * k); W.scale.set(k);
-    // as coisas de tela cheia ficam de fora da textura
-    const tela = this.#esconderTela(stage);
-    const vm = this.mesh.visible; this.mesh.visible = false;
-    for (const c of stage.children) if (c !== W && c.visible) { c.visible = false; tela.push(c); }
-    R.render({ container: stage, target: this.rt, clear: true, clearColor: [0, 0, 0, 0] });
-    for (const c of tela) c.visible = true;
-    this.mesh.visible = vm;
+    this.mRT.set(k, 0, 0, k, -p.x0 * k, -p.y0 * k);
+    R.render({ container: W, target: this.rt, clear: true, clearColor: [0, 0, 0, 0], transform: this.mRT });
+    if (root) root.visible = vr; ents.visible = ve;
     // a grade: posição = projeção do ponto do chão; uv = a parte usada da textura
     const fu = (ww * k) / this.rt.width, fv = (hh * k) / this.rt.height, N = this.N;
-    const geo = this.mesh.geometry, pb = geo.getBuffer('aPosition'), ub = geo.getBuffer('aUV'), P = pb.data, U = ub.data;
+    const geo = this.mesh.geometry, pb = geo.getBuffer('aPosition'), ub = geo.getBuffer('aUV'), P = pb.data, U = ub.data, tmp = (this.tmp ??= {});
     for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
       const kk = (j * N + i) * 2, fx = i / (N - 1), fy = j / (N - 1);
-      const t = v.paraTelaPlano(p.x0 + ww * fx, p.y0 + hh * fy, h);
+      const t = v.paraTelaPlano(p.x0 + ww * fx, p.y0 + hh * fy, h, tmp);
       P[kk] = t.x; P[kk + 1] = t.y; U[kk] = fx * fu; U[kk + 1] = fy * fv;
     }
     pb.update(); ub.update();
-    // 2) tela: textura projetada + barras/nomes/balões das entidades + HUD do Pixi
-    W.position.set(0, 0); W.scale.set(1);
-    const escondidos = [];
-    for (const c of W.children) if (c !== ents && c.visible) { c.visible = false; escondidos.push(c); }
-    ents.visible = true;
-    const mexidos = this.#entidadesNaTela(ents);
+    const t1 = performance.now();
+    // 2) tela: textura projetada + HUD do Pixi (o mundo fica de fora: ele já está na textura)
+    const vw = W.visible; W.visible = false;
     const escTela = this.#esconderTela(stage);
     R.render({ container: stage });
     for (const c of escTela) c.visible = true;
-    for (const [c, x, y, s1, s2, vis] of mexidos) { c.position.set(x, y); c.scale.set(s1, s2); c.visible = vis; }
-    for (const s of this.spritesOff) s.renderable = true;
-    for (const c of escondidos) c.visible = true;
-    W.position.set(sx, sy); W.scale.set(ssx, ssy);
-    if (root) root.visible = vr; ents.visible = ve;
+    W.visible = vw;
+    // 3) barras de PS, nomes, balões e marcas das entidades: cada uma no seu ponto projetado, sem os sprites
+    this.#rotulos(R, ents);
+    pf.rt += t1 - t0; pf.tela += performance.now() - t1; pf.n++;
+  }
+  #rotulos(R, ents) {
+    const v = this.v, reavaliar = (v.t * 2 | 0) !== this.ultimo; this.ultimo = v.t * 2 | 0;
+    const vw = v.view;
+    for (const c of ents.children) {
+      if (!c.visible || c.alpha <= 0.01) continue;
+      let tem = this.temTela.get(c);
+      if (tem === undefined || reavaliar) { tem = this.#desenhoDeTela(c); this.temTela.set(c, tem); }
+      if (!tem || (vw && (c.x < vw.x0 || c.x > vw.x1 || c.y < vw.y0 || c.y > vw.y1 + 64))) continue;
+      const s = v.escalaEm(c.x, c.y), t = v.paraTela(c.x, c.y, 0), r = c.rotation ?? 0;
+      const sx = c.scale.x * s, sy = c.scale.y * s, co = Math.cos(r), si = Math.sin(r);
+      this.mTela.set(sx * co, sx * si, -sy * si, sy * co, t.x, t.y);
+      const off = []; this.#apagarSprites(c, off);
+      R.render({ container: c, clear: false, transform: this.mTela });
+      for (const [n, a] of off) n.alpha = a;
+    }
   }
   // camadas que multiplicam a tela inteira (no 3D, cada uma tem a sua versão)
   #esconderTela(stage) {
@@ -80,26 +89,8 @@ export class Sobreposicao {
     void stage;
     return out;
   }
-  // filhos de ents com barra/nome/balão: vão para o ponto projetado, em escala de tela; sprites ficam de fora
-  #entidadesNaTela(ents) {
-    const v = this.v, out = [];
-    this.spritesOff ??= []; this.spritesOff.length = 0;
-    for (const c of ents.children) {
-      if (!c.visible) continue;
-      let tem = this.temTela.get(c);
-      if (tem === undefined || (v.t * 2 | 0) !== this.ultimo) { tem = this.#desenhoDeTela(c); this.temTela.set(c, tem); }
-      out.push([c, c.x, c.y, c.scale.x, c.scale.y, true]);
-      if (!tem) { c.visible = false; continue; }
-      const s = v.escalaEm(c.x, c.y);
-      const t = v.paraTela(c.x, c.y, 0);
-      c.position.set(t.x, t.y); c.scale.set(c.scale.x * s, c.scale.y * s);
-      this.#apagarSprites(c);
-    }
-    this.ultimo = v.t * 2 | 0;
-    return out;
-  }
-  #apagarSprites(n) {
-    if (n.renderPipeId === 'sprite' && n.renderable) { n.renderable = false; this.spritesOff.push(n); }
-    for (const c of n.children ?? []) this.#apagarSprites(c);
+  #apagarSprites(n, off) {
+    if (n.renderPipeId === 'sprite' && n.alpha > 0) { off.push([n, n.alpha]); n.alpha = 0; }
+    for (const c of n.children ?? []) this.#apagarSprites(c, off);
   }
 }

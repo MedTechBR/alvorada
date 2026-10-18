@@ -168,7 +168,7 @@ export class Espelho {
     const modo = chao ? 3 : blend === 2 ? 2 : alpha < 0.99 ? 1 : 0;
     const tex = this.#tex(src);
     const q = this.#quad();
-    const v = this.v, cy = v.cima.y, cz = v.cima.z;
+    const v = this.v, cx = v.cima.x, cy = v.cima.y, cz = v.cima.z, rx = v.direita.x, ry = v.direita.y, rz = v.direita.z;
     const P = q.p;
     const cs = [[x0, y0], [x1, y0], [x0, y1], [x1, y1]];
     let k = 0, sumz = 0;
@@ -176,7 +176,7 @@ export class Espelho {
       const X = a * lx + c * ly + tx, Y = b * lx + d * ly + ty;
       if (deco) { P[k] = X; P[k + 1] = v.altura(X, Y) + 0.35; P[k + 2] = Y; }
       else if (chao) { P[k] = X; P[k + 1] = this.h + 0.45 + (sombra ? 0 : 0.1); P[k + 2] = Y; }
-      else { const up = this.gy - Y; P[k] = X; P[k + 1] = this.h + up * cy; P[k + 2] = this.gy + up * cz; }
+      else { const up = this.gy - Y, dx = X - this.gx; P[k] = this.gx + dx * rx + up * cx; P[k + 1] = this.h + dx * ry + up * cy; P[k + 2] = this.gy + dx * rz + up * cz; }
       sumz += P[k + 2]; k += 3;
     }
     const sw = src.width, sh = src.height;

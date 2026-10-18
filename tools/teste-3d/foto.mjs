@@ -2,7 +2,7 @@
 //   python3 tools/serve.py 8750   (noutro terminal)
 //   node tools/teste-3d/foto.mjs "<parâmetros da URL>" nome x,y[,hora] [x,y ...]
 // Ex.: node tools/teste-3d/foto.mjs "visual=3d" vila 297,347 300,330,22
-import { launch, open, sleep, until } from '../teste-online/cdp.mjs';
+import { launch, open, sleep, until } from './chrome.mjs';
 import { writeFileSync, mkdirSync } from 'node:fs';
 const [qs = '', nome = 'foto', ...pts] = process.argv.slice(2);
 const W = +(process.env.W ?? 1280), H = +(process.env.H ?? 720);
