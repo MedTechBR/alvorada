@@ -1,4 +1,4 @@
-import { loadPokemonSprites } from '../sprites/pmd.js';
+import { portraitOf } from '../sprites/pmd.js';
 import { MOVES } from '../data/moves.js';
 import { TYPE_PT } from '../data/types.js';
 import { esc } from '../net/validate.js';
@@ -126,17 +126,18 @@ const CSS = `
 
 const el = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; };
 
-// Retrato: primeiro quadro do Idle olhando para baixo, num canvas
-const portraits = new Map();
+// Retrato (portraitOf dos sprites: 1º quadro do Idle, de frente, recortado), centrado num canvas
 export async function portrait(dex, size = 48) {
   const cv = document.createElement('canvas'); cv.width = cv.height = size;
   try {
-    let img = portraits.get(dex);
-    if (!img) { img = loadPokemonSprites(dex); portraits.set(dex, img); }
-    const set = await img, a = set.anims.Idle, tex = a.frames[0][0], src = tex.source.resource, f = tex.frame;
-    const x = cv.getContext('2d'); x.imageSmoothingEnabled = false;
-    const k = Math.min(size / f.width, size / f.height);
-    x.drawImage(src, f.x, f.y, f.width, f.height, (size - f.width * k) / 2, (size - f.height * k) / 2, f.width * k, f.height * k);
+    const p = await portraitOf(dex);
+    if (p.url) {
+      const img = new Image(); img.src = p.url; await img.decode();
+      const x = cv.getContext('2d'); x.imageSmoothingEnabled = false;
+      const k = Math.max(1, Math.floor(Math.min(size / img.width, size / img.height))) * (img.width > size || img.height > size ? Math.min(size / img.width, size / img.height) : 1);
+      const w = img.width * k, h = img.height * k;
+      x.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+    }
   } catch {}
   return cv;
 }

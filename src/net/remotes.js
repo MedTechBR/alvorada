@@ -1,40 +1,16 @@
 import * as PIXI from 'pixi.js';
-import { makeTrainerFrames, dir4 } from '../sprites/trainer.js';
-import { PokeEntity } from '../entities/pokemon.js';
-import { validateMon, validateState } from './validate.js';
+import { makeCharacterFrames, dir4, FH } from '../sprites/characters.js';
 
-// Os outros treinadores no seu mapa: boneco com a cor do jogador, nome em cima, balão de fala,
+const TAG_Y = -(FH + 1), BUBBLE_Y = -(FH + 11); // nome e balão acima da cabeça (quadro de FH px)
+import { PokeEntity } from '../entities/pokemon.js';
+import { validateMon, validateState, cleanLook } from './validate.js';
+
+// Os outros treinadores no seu mapa: boneco com o visual do criador de personagem (makeCharacterFrames), nome em cima, balão de fala,
 // emotes e o Pokémon que acompanha. A posição chega 10x/s (20x/s no duelo) e é interpolada:
 // mostramos cada um ~130 ms no passado, entre duas amostras reais, para o movimento sair liso.
 
 const DELAY = 130, DELAY_DUEL = 90, EXTRAP = 160;
 export const EMOTES = { heart: '♥', excl: '!', ask: '?', note: '♪', dots: '…', gg: 'GG', zz: 'zZ', smile: ':)' };
-
-// Troca as cores do boné/camisa do treinador provisório pela cor do jogador (pixel a pixel).
-const parse = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
-const shade = (rgb, k) => rgb.map((v) => Math.max(0, Math.min(255, Math.round(v * k))));
-const frameCache = new Map();
-function framesFor(color) {
-  if (frameCache.has(color)) return frameCache.get(color);
-  const base = makeTrainerFrames(), c = parse(color);
-  const swap = new Map([['229,56,59', shade(c, 1)], ['47,111,228', shade(c, 0.72)]]); // boné/tênis, camisa
-  const out = {}; let touched = 0;
-  for (const [dir, list] of Object.entries(base)) {
-    out[dir] = list.map((t) => {
-      const src = t.source.resource;
-      if (!(src instanceof HTMLCanvasElement)) return t;
-      const cv = document.createElement('canvas'); cv.width = src.width; cv.height = src.height;
-      const x = cv.getContext('2d'); x.drawImage(src, 0, 0);
-      const img = x.getImageData(0, 0, cv.width, cv.height), d = img.data;
-      for (let i = 0; i < d.length; i += 4) { const to = swap.get(`${d[i]},${d[i + 1]},${d[i + 2]}`); if (to) { d[i] = to[0]; d[i + 1] = to[1]; d[i + 2] = to[2]; touched++; } }
-      x.putImageData(img, 0, 0);
-      const tex = PIXI.Texture.from(cv); tex.source.scaleMode = 'nearest'; return tex;
-    });
-  }
-  out.tint = touched ? 0xffffff : parseInt(color.slice(1), 16); // sprite novo sem essas cores: tinge
-  frameCache.set(color, out);
-  return out;
-}
 
 function label(text, color = '#ffffff', size = 6) {
   const t = new PIXI.Text({ text, style: { fontFamily: 'Avenir Next, Nunito, system-ui', fontWeight: '900', fontSize: size, fill: color, stroke: { color: '#14201a', width: 2.2 }, align: 'center' } });
@@ -52,7 +28,7 @@ export function bubble(parent, text, { big = false, life = 5 } = {}) {
   g.roundRect(-w / 2, -h, w, h, 3).fill(0xffffff).stroke({ width: 0.8, color: 0x3a4a3e });
   g.poly([-2.5, -0.4, 2.5, -0.4, 0, 3]).fill(0xffffff);
   t.y = -2;
-  c.addChild(g, t); c.y = -34; c.life = life; c.max = life; c.big = big;
+  c.addChild(g, t); c.y = BUBBLE_Y; c.life = life; c.max = life; c.big = big;
   parent.addChild(c); parent.bubble = c;
   return c;
 }
@@ -69,18 +45,26 @@ class Remote {
   constructor(g, p) {
     this.g = g; this.id = p.id; this.name = p.name; this.color = p.color;
     this.buf = []; this.off = null; this.lead = null; this.leadKey = ''; this.follower = null; this.duelMon = null;
-    this.frames = framesFor(p.color);
+    this.lookKey = ''; this.frames = null;
     const v = this.view = new PIXI.Container();
     const shadow = new PIXI.Sprite(g.tx.shadow); shadow.anchor.set(0.5); shadow.scale.set(0.8);
-    this.body = new PIXI.Sprite(this.frames.down[0]); this.body.anchor.set(0.5, 1); this.body.y = 2; this.body.tint = this.frames.tint;
-    this.tag = label(p.name, '#ffffff'); this.tag.y = -24;
+    this.body = new PIXI.Sprite(); this.body.anchor.set(0.5, 1); this.body.y = 2;
+    this.setLook(p.look);
+    this.tag = label(p.name, '#ffffff'); this.tag.y = TAG_Y;
     this.dot = new PIXI.Graphics(); this.#dot();
     v.addChild(shadow, this.body, this.tag, this.dot);
     v.visible = false; // até chegar a primeira posição
     g.ents.addChild(v);
     this.x = 0; this.y = 0; this.vx = 0; this.vy = 0; this.t = 0; this.dir = 'down';
   }
-  #dot() { this.dot.clear(); this.dot.circle(-this.tag.width / 2 - 3.5, -this.tag.height / 2 - 24, 2).fill(parseInt(this.color.slice(1), 16)).stroke({ width: 0.8, color: 0x14201a }); }
+  #dot() { this.dot.clear(); this.dot.circle(-this.tag.width / 2 - 3.5, -this.tag.height / 2 + TAG_Y, 2).fill(parseInt(this.color.slice(1), 16)).stroke({ width: 0.8, color: 0x14201a }); }
+  // visual do jogador (vem no aperto de mão, no roster e no 'info'); já chega limpo por cleanLook
+  setLook(look) {
+    const l = cleanLook(look), key = JSON.stringify(l);
+    if (key === this.lookKey) return;
+    this.lookKey = key; this.frames = makeCharacterFrames(l);
+    this.body.texture = this.frames.walk[this.dir ?? 'down'][0];
+  }
   rename(name) { if (name === this.name) return; this.name = name; this.tag.text = name; this.#dot(); }
   push(s, ts) {
     const now = performance.now();
@@ -115,6 +99,7 @@ class Remote {
   }
   setInfo(info) {
     if (!info) return;
+    if (info.look) this.setLook(info.look);
     if (info.lead === null) { this.lead = null; return; }
     const v = validateMon(info.lead); if (v.ok) this.lead = v.mon;
   }
@@ -148,8 +133,9 @@ class Remote {
     this.x = s.x; this.y = s.y; this.t += dt;
     const sp = Math.hypot(s.vx, s.vy);
     if (sp > 10) this.dir = dir4(s.vx, s.vy); else this.dir = s.d;
-    const step = sp > 10 ? Math.floor(this.t * (s.r ? 11 : 7.5)) % 4 : 0;
-    this.body.texture = this.frames[this.dir][step];
+    const anim = sp > 10 && s.r ? this.frames.run : this.frames.walk;
+    const step = sp > 10 ? Math.floor(this.t * (s.r ? 11 : 7.5)) % anim[this.dir].length : 0;
+    this.body.texture = anim[this.dir][step];
     v.x = Math.round(s.x); v.y = Math.round(s.y); v.zIndex = s.y;
     v.alpha = this.drop ? 0.45 : 1;
     tickBubble(v, dt);
@@ -182,7 +168,7 @@ export class Remotes {
       want.add(p.id);
       let r = this.map.get(p.id);
       if (!r) { r = new Remote(this.g, p); this.map.set(p.id, r); }
-      r.rename(p.name); r.drop = !!p.drop;
+      r.rename(p.name); if (p.look) r.setLook(p.look); r.drop = !!p.drop;
     }
     for (const [id, r] of this.map) if (!want.has(id)) { r.destroy(); this.map.delete(id); }
   }

@@ -1,5 +1,5 @@
 import { Emitter, createTransport } from './transport.js';
-import { cleanName } from './validate.js';
+import { cleanName, cleanLook } from './validate.js';
 
 // Sala em estrela: o anfitrião é o centro. Cada amigo tem um único link, com o anfitrião, que
 // repassa as mensagens. Isso limita a 7 conexões no anfitrião (8 jogadores) e deixa um só lugar
@@ -7,7 +7,7 @@ import { cleanName } from './validate.js';
 //
 // Aperto de mão (a senha NUNCA trafega, nem em URL):
 //   anfitrião -> cliente  {k:'chal', nonce, v}
-//   cliente -> anfitrião  {k:'hello', name, key, proof = SHA-256(nonce|código|senha), rejoin?}
+//   cliente -> anfitrião  {k:'hello', name, look, key, proof = SHA-256(nonce|código|senha), rejoin?}
 //   anfitrião -> cliente  {k:'welcome', id, token, roster} | {k:'deny', why}
 // Depois: {k:'m', type, data, to?, from} (mensagem do jogo), {k:'roster'}, {k:'ping'}/{k:'pong'}, {k:'bye'}.
 
@@ -33,10 +33,10 @@ export class Room extends Emitter {
   others() { return this.roster.filter((p) => p.id !== this.selfId); }
 
   // ---------- anfitrião ----------
-  static async host({ kind = 'peer', name, password, key }) {
+  static async host({ kind = 'peer', name, password, key, look }) {
     const r = new Room(); r.isHost = true; r.kind = kind; r.password = String(password ?? '');
     r.selfId = 'h'; r.links = new Map(); r.nextId = 1;
-    r.players.set('h', { id: 'h', name: cleanName(name), color: COLORS[0], host: true, key, drop: false });
+    r.players.set('h', { id: 'h', name: cleanName(name), look: cleanLook(look), color: COLORS[0], host: true, key, drop: false });
     for (let tries = 0; ; tries++) {
       const code = newRoomCode();
       r.t = createTransport(kind);
@@ -71,13 +71,13 @@ export class Room extends Emitter {
         }
         if (p) {
           this.links.get(p.id)?.close();
-          p.drop = false; p.name = cleanName(m.name); clearTimeout(p.dropT);
+          p.drop = false; p.name = cleanName(m.name); p.look = cleanLook(m.look); clearTimeout(p.dropT);
           this.emit('back', p.id);
         } else {
           if (this.players.size >= MAX_PLAYERS) return this.#deny(link, 'cheia');
           const id = 'p' + this.nextId++;
           const used = new Set([...this.players.values()].map((q) => q.color));
-          p = { id, name: cleanName(m.name), color: COLORS.find((c) => !used.has(c)) ?? COLORS[this.nextId % 8], host: false, key: String(m.key ?? '').slice(0, 40), token: rnd(12), drop: false };
+          p = { id, name: cleanName(m.name), look: cleanLook(m.look), color: COLORS.find((c) => !used.has(c)) ?? COLORS[this.nextId % 8], host: false, key: String(m.key ?? '').slice(0, 40), token: rnd(12), drop: false };
           this.players.set(id, p);
           this.emit('join', id);
         }
@@ -115,16 +115,16 @@ export class Room extends Emitter {
       l.send({ k: 'ping', t: now });
     }
   }
-  #pub() { return this.roster.map(({ id, name, color, host, drop, ping }) => ({ id, name, color, host, drop, ping })); }
+  #pub() { return this.roster.map(({ id, name, look, color, host, drop, ping }) => ({ id, name, look, color, host, drop, ping })); }
   #broadcastRoster() { const roster = this.#pub(); for (const l of this.links.values()) l.send({ k: 'roster', roster }); this.emit('roster', this.roster); }
   kick(id) { this.links.get(id)?.send({ k: 'bye', why: 'kick' }); this.#gone(id, true); }
 
   // ---------- cliente ----------
-  static async join({ kind = 'peer', code, name, password, key }) {
-    const r = new Room(); r.kind = kind; r.code = String(code).trim().toUpperCase(); r.name = cleanName(name); r.key = key;
+  static async join({ kind = 'peer', code, name, password, key, look }) {
+    const r = new Room(); r.kind = kind; r.code = String(code).trim().toUpperCase(); r.name = cleanName(name); r.key = key; r.look = cleanLook(look);
     r.password = String(password ?? '');
     if (/^\d{4}$/.test(r.code)) r.code = 'ALV-' + r.code;
-    await r.#connect(null);
+    try { await r.#connect(null); } catch (e) { r.closed = true; clearInterval(r.pinger); r.t?.destroy(); throw e; }
     return r;
   }
   async #connect(rejoin) {
@@ -134,7 +134,7 @@ export class Room extends Emitter {
     const res = await new Promise((resolve, reject) => {
       const to = setTimeout(() => { reject(new Error('timeout')); link.close(); }, 12000);
       link.on('message', async (m) => {
-        if (m.k === 'chal') { link.send({ k: 'hello', v: PROTO, name: this.name, key: this.key, proof: await proofOf(m.nonce, this.code, this.password), rejoin }); return; }
+        if (m.k === 'chal') { link.send({ k: 'hello', v: PROTO, name: this.name, look: this.look, key: this.key, proof: await proofOf(m.nonce, this.code, this.password), rejoin }); return; }
         if (m.k === 'deny') { clearTimeout(to); reject(new Error(m.why)); return; }
         if (m.k === 'welcome') { clearTimeout(to); resolve(m); return; }
         this.#clientMsg(m);

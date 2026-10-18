@@ -3,7 +3,7 @@ import { Remotes, EMOTES, bubble, tickBubble } from './remotes.js';
 import { Arbiter } from './arbiter.js';
 import { Trade } from './trade.js';
 import { Duel } from './duel.js';
-import { cleanText, cleanName, monWire } from './validate.js';
+import { cleanText, cleanName, cleanLook, monWire } from './validate.js';
 import { OnlineUI } from '../ui/online.js';
 
 // Modo online: liga a sala (room.js) ao jogo. É o único ponto que o main.js conhece:
@@ -39,20 +39,22 @@ export class Online {
   get selfId() { return this.room?.selfId; }
   get isHost() { return !!this.room?.isHost; }
   nameOf(id) { return this.room?.players.get(id)?.name ?? this.names.get(id) ?? 'Treinador'; }
+  // visual escolhido no criador de personagem: game.look (ou game.player.look); senão o padrão
+  get look() { return cleanLook(this.g.look ?? this.g.player?.look ?? 'menino'); }
   setName(n) { this.name = cleanName(n); store.set('alv-net-nome', this.name); }
   setKind(k) { this.kind = k; store.set('alv-net-rede', k); }
 
   // ---------- entrar / sair ----------
   async create({ name, password }) {
     this.setName(name);
-    const room = await Room.host({ kind: this.kind, name: this.name, password, key: this.key });
+    const room = await Room.host({ kind: this.kind, name: this.name, password, key: this.key, look: this.look });
     this.arbiter = new Arbiter((to, type, data) => this.deliver(to, type, data));
     this.#wire(room);
     return room.code;
   }
   async join({ code, name, password }) {
     this.setName(name);
-    const room = await Room.join({ kind: this.kind, code, name: this.name, password, key: this.key });
+    const room = await Room.join({ kind: this.kind, code, name: this.name, password, key: this.key, look: this.look });
     this.#wire(room);
     return room.code;
   }
@@ -131,7 +133,7 @@ export class Online {
 
   #sendInfo(to) {
     const lead = this.g.lead?.mon;
-    this.send('info', { lead: lead ? monWire(lead) : null }, to);
+    this.send('info', { lead: lead ? monWire(lead) : null, look: this.look }, to);
   }
 
   // ---------- quadro ----------
@@ -140,7 +142,7 @@ export class Online {
     if (!this.on) return;
     const g = this.g, p = g.player, l = g.lead;
     // Pokémon que acompanha mudou (troca, evolução, golpe novo): manda os detalhes
-    const key = l ? `${l.mon.uid}:${l.mon.dex}:${l.mon.level}:${l.mon.moves.join(',')}` : '-';
+    const key = (l ? `${l.mon.uid}:${l.mon.dex}:${l.mon.level}:${l.mon.moves.join(',')}` : '-') + JSON.stringify(this.g.look ?? this.g.player?.look ?? '');
     this.infoT -= dt;
     if (key !== this.infoKey || this.infoT <= 0) { this.infoKey = key; this.infoT = 4; this.#sendInfo(); }
     // posição: 10x/s passeando, 20x/s no duelo

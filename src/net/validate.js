@@ -1,6 +1,7 @@
 import { SPECIES, expForLevel } from '../data/species.js';
 import { MOVES } from '../data/moves.js';
 import { Mon } from '../data/mon.js';
+import { LOOK_OPTIONS, DEFAULT_LOOK } from '../sprites/charart.js';
 
 // Tudo que chega pela rede é suspeito. Aqui se confere e se reconstrói: nada de usar o objeto
 // recebido direto. Os status (HP máx., Ataque…) são RECALCULADOS a partir de espécie, nível e IVs,
@@ -45,6 +46,22 @@ export function monWire(m) {
   if (m.nature) o.nature = m.nature;
   if (m.shiny) o.shiny = true;
   return o;
+}
+
+// Visual do treinador (criador de personagem). Só passam opções conhecidas e cores #rrggbb;
+// qualquer coisa estranha vira o visual padrão.
+const HEX = /^#[0-9a-f]{6}$/i;
+export function cleanLook(o) {
+  if (o === 'menino' || o === 'menina') return { ...DEFAULT_LOOK[o] };
+  if (!o || typeof o !== 'object') return { ...DEFAULT_LOOK.menino };
+  const sexo = o.sexo === 'menina' ? 'menina' : 'menino', d = DEFAULT_LOOK[sexo];
+  const color = (v, list, def) => (typeof v === 'string' && HEX.test(v) ? v.toLowerCase() : Number.isInteger(v) && list[v] ? list[v] : def);
+  const id = (v, list, def) => (list.some((x) => x.id === v) ? v : def);
+  return {
+    sexo, pele: color(o.pele, LOOK_OPTIONS.pele, d.pele), cabelo: id(o.cabelo, LOOK_OPTIONS.cabelo, d.cabelo),
+    corCabelo: color(o.corCabelo, LOOK_OPTIONS.corCabelo, d.corCabelo), roupa: color(o.roupa, LOOK_OPTIONS.roupa, d.roupa),
+    calca: color(o.calca, LOOK_OPTIONS.calca, d.calca), bone: color(o.bone, LOOK_OPTIONS.bone, d.bone), chapeu: id(o.chapeu, LOOK_OPTIONS.chapeu, d.chapeu),
+  };
 }
 
 // Estado de posição (10–20 vezes por segundo): números finitos e dentro do mapa
