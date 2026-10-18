@@ -54,6 +54,9 @@ export class CameraDinamica {
       dist *= 1 + (Math.min(1.6, quer) - 1 + 0.12) * this.batalhaK;
       incl += 22 * this.batalhaK; // em batalha sobe: os golpes e as alturas ficam legíveis
     }
+    // alguém na frente (casa, árvore alta entre a câmera e o jogador): a câmera sobe até enxergar
+    this.tapado = amortece(this.tapado ?? 0, room ? 0 : this.#tapa(g, foco, incl), 3, dt);
+    incl += this.tapado * 26;
     // montaria
     if (m?.active) {
       const corre = Math.hypot(m.vx ?? 0, m.vy ?? 0);
@@ -94,6 +97,20 @@ export class CameraDinamica {
     this.incl = pula ? incl : amortece(this.incl, incl, 3, dt);
     this.giro = amortece(this.giro, giro, 1.5, dt);
     return { x: this.x, z: this.z, dist: this.dist, incl: this.incl * RAD, giro: this.giro * RAD, rolo: this.rolo * RAD };
+  }
+  // 0..1: quanto o objeto mais alto ao sul do foco esconde quem a câmera segue (pelo topo do modelo 3D)
+  #tapa(g, f, incl) {
+    if (!f) return 0;
+    const L = this.v.L, sx = Math.floor(f.x / 256), sy = Math.floor(f.y / 256), t = Math.tan(incl * RAD);
+    let pior = 0;
+    for (let j = 0; j <= 2; j++) for (let i = -1; i <= 1; i++) for (const o of L.objetosDoSetor(sx + i, sy + j)) {
+      const topo = o.__topo3d; if (topo == null || o.dead) continue;
+      const dz = o.y - 4 - f.y; if (dz <= 2 || dz > 300) continue;
+      const meia = (o.fw ?? 1) * 8 + 6; if (Math.abs(o.x - f.x) > meia) continue;
+      const linha = (this.v.altura(f.x, f.y) + 6) + dz * t; // altura da linha de visão (cabeça do jogador) naquele ponto
+      const sobra = topo - linha; if (sobra > 0) pior = Math.max(pior, Math.min(1, sobra / 30));
+    }
+    return pior;
   }
   // há luta por perto? caixa com o seu Pokémon e quem está brigando com ele
   #combate(g, foco) {

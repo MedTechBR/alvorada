@@ -99,7 +99,7 @@ export class Setores {
           float pisca = step(0.985, h2(floor(vW / 3.0) + floor(tempo * 3.0))) * 0.6;
           vec3 V = normalize(vVista);
           float fres = pow(1.0 - max(V.y, 0.0), 3.0);
-          c = mix(c, ceu, 0.18 + fres * 0.4);
+          c = mix(c * vec3(0.78, 0.92, 1.0), ceu, 0.06 + fres * 0.22);
           c *= luz;
           c += (brilho + pisca) * luz * vec3(1.0, 0.97, 0.88);
           gl_FragColor = vec4(c, 1.0);
