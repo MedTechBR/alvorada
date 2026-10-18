@@ -10,16 +10,16 @@ const CENAS = {
   centro: `const s = g.map.spots['dentro_centro_campina'] ?? Object.entries(g.map.spots).find(([k]) => k.startsWith('dentro_centro'))[1]; g.player.x = s.x; g.player.y = s.y; g.cam.x = s.x; g.cam.y = s.y;`,
   noite: `g.mundo.setHour(21.5); g.player.x = 297 * 16; g.player.y = 340 * 16;`,
   tarde: `g.mundo.setHour(17.4); g.player.x = 297 * 16; g.player.y = 347 * 16;`,
-  batalha: `g.player.x = 300 * 16; g.player.y = 318 * 16; g.cam.x = g.player.x; g.cam.y = g.player.y;
+  batalha: `g.player.x = 318 * 16; g.player.y = 292 * 16; g.cam.x = g.player.x; g.cam.y = g.player.y;
     await g.spawnWild(); await g.spawnWild(); const w = g.wilds.find((q) => q.alive); if (w) { w.x = g.player.x + 70; w.y = g.player.y - 50; w.ai.state = 'aggro'; w.aggroTarget = g.player; }
     g.throwMon(0, g.player.x + 20, g.player.y - 10); await new Promise((r) => setTimeout(r, 1200));
     if (w) { w.mon.level = Math.max(w.mon.level, 30); w.mon.stats = null; w.mon.calc?.(); w.mon.hp = w.mon.stats?.hp ?? w.mon.hp; }
-    for (let i = 0; i < 3; i++) { const L = g.lead; if (L && w?.alive) { L.cds = [0, 0, 0, 0]; g.combat.use(L, 1, w.x, w.y - 8); } await new Promise((r) => setTimeout(r, 300)); }`,
+    for (let i = 0; i < 3; i++) { const L = g.lead; if (L && w?.alive) { L.cds = [0, 0, 0, 0]; g.combat.use(L, 0, w.x, w.y - 8); } await new Promise((r) => setTimeout(r, 300)); }`,
   voar: `g.player.x = 297 * 16; g.player.y = 340 * 16; g.unlockMount('voar', { silent: true }); g.mount.fly?.(); await new Promise((r) => setTimeout(r, 2500)); g.player.y -= 40;`,
-  correr: `g.player.x = 300 * 16; g.player.y = 318 * 16; g.unlockMount('correr', { silent: true }); await g.mount.call('correr');`,
+  correr: `g.player.x = 318 * 16; g.player.y = 292 * 16; g.unlockMount('correr', { silent: true }); await g.mount.call('correr');`,
   nadar: `const L = g.map; let best = null; const p0 = { x: 300, y: 330 }; for (let r = 1; r < 60 && !best; r++) for (let a = 0; a < 40 && !best; a++) { const x = Math.round(p0.x + Math.cos(a / 40 * 6.28) * r), y = Math.round(p0.y + Math.sin(a / 40 * 6.28) * r); if (L.at(x, y) === 4 && L.at(x, y - 3) === 4 && L.at(x + 3, y) === 4) best = { x, y }; }
     g.unlockMount('nadar', { silent: true }); if (best) { g.player.x = best.x * 16 + 8; g.player.y = best.y * 16 + 8; g.cam.x = g.player.x; g.cam.y = g.player.y; } await new Promise((r) => setTimeout(r, 600)); await g.mount.call('nadar');`,
-  dynamax: `g.player.x = 300 * 16; g.player.y = 318 * 16; g.cam.x = g.player.x; g.cam.y = g.player.y;
+  dynamax: `g.player.x = 318 * 16; g.player.y = 292 * 16; g.cam.x = g.player.x; g.cam.y = g.player.y;
     await g.spawnWild(); const w = g.wilds.find((q) => q.alive); if (w) { w.x = g.player.x + 90; w.y = g.player.y - 40; w.ai.state = 'aggro'; w.aggroTarget = g.player; }
     g.throwMon(0, g.player.x + 20, g.player.y - 10); await new Promise((r) => setTimeout(r, 1300));
     g.bag.dynamaxBand = 1; g.poder.lugarDynamax = () => true; g.poder.usar(); await new Promise((r) => setTimeout(r, 2600));`,

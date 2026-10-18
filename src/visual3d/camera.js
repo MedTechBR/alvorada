@@ -51,7 +51,7 @@ export class CameraDinamica {
       const ext = Math.max((x1 - x0) / (innerWidth / innerHeight), y1 - y0) + 80;
       alvoX += (cx - alvoX) * 0.4 * this.batalhaK; alvoZ += (cz - alvoZ) * 0.4 * this.batalhaK;
       const quer = Math.max(1, ext / (innerHeight / Math.max(1, g.zoom)) * 0.9);
-      dist *= 1 + (Math.min(1.6, quer) - 1 + 0.12) * this.batalhaK;
+      dist *= 1 + (Math.min(1.35, quer) - 1) * this.batalhaK;
       incl += 8 * this.batalhaK; // em batalha sobe: os golpes e as alturas ficam legíveis
     }
     // alguém na frente (casa, árvore alta entre a câmera e o jogador): a câmera sobe até enxergar
