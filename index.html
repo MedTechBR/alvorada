@@ -4,8 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#1b2a1e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Alvorada">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Pokémon Alvorada: jogo de fã 2D, exploração e combate no mesmo mapa.">
   <title>Pokémon Alvorada</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
   <link rel="stylesheet" href="src/ui/style.css">
+  <link rel="stylesheet" href="src/ui/menu.css">
   <script type="importmap">
     { "imports": { "pixi.js": "https://cdn.jsdelivr.net/npm/pixi.js@8.6.6/dist/pixi.min.mjs" } }
   </script>
@@ -15,12 +25,16 @@
 
   <!-- HUD -->
   <div id="hud">
-    <div id="lead" class="panel"></div>
+    <div id="lead" class="panel" hidden></div>
+    <div id="objective" class="objective" hidden></div>
+    <div id="foe" class="foe" hidden></div>
     <div id="area" class="area"></div>
     <div id="toasts"></div>
     <div id="moves"></div>
     <div id="perf" hidden></div>
+    <div id="saved">Jogo salvo</div>
   </div>
+  <button id="menu-btn" aria-label="Abrir o menu"></button>
 
   <!-- Controles de toque (celular) -->
   <div id="touch" hidden>
@@ -30,14 +44,24 @@
       <button class="tb move" data-slot="1"></button>
       <button class="tb move" data-slot="2"></button>
       <button class="tb move" data-slot="3"></button>
-      <button class="tb small" id="t-ball">◓</button>
-      <button class="tb small" id="t-dodge">»</button>
-      <button class="tb small" id="t-act">A</button>
-      <button class="tb small" id="t-swap">⇄</button>
+      <button class="tb small" id="t-ball" aria-label="Poké Bola"></button>
+      <button class="tb small" id="t-dodge" aria-label="Esquiva"></button>
+      <button class="tb small" id="t-act" aria-label="Falar"></button>
+      <button class="tb small" id="t-swap" aria-label="Trocar Pokémon"></button>
     </div>
   </div>
 
-  <div id="loading">Carregando…</div>
+  <!-- Interface (título, diálogo, menu) -->
+  <div id="ui"></div>
+
+  <div id="rotate" hidden>
+    <div class="rot-ic"><div class="rot-phone"></div></div>
+    <b>Gire o aparelho</b>
+    <p>Alvorada fica melhor com o celular deitado.</p>
+    <button>Jogar assim mesmo</button>
+  </div>
+
+  <div id="loading"><div class="ld-ball"></div><span>Carregando…</span></div>
   <script type="module" src="src/main.js"></script>
 </body>
 </html>

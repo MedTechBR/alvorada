@@ -25,7 +25,9 @@ function segDist(px, py, ax, ay, bx, by) {
 
 // Quem pode acertar quem. Lados do online (src/net/*): 'rival' = Pokémon de outro jogador num
 // duelo PvP (inimigo do seu); 'peer' = Pokémon de outro jogador passeando (ninguém acerta nem é acertado).
-export const FOES = { ally: ['wild', 'rival'], wild: ['ally'], rival: ['ally'], peer: [] };
+// Quem pode acertar quem. ally = você e sua equipe; wild = selvagens; foe = Pokémon de treinador (história);
+// rival = Pokémon do outro jogador num duelo online; peer = do outro jogador passeando (ninguém acerta).
+export const FOES = { ally: ['wild', 'foe', 'rival'], wild: ['ally'], foe: ['ally'], rival: ['ally'], peer: [] };
 
 // Fórmula de dano (pura, sem relevo). Usada pelo árbitro do PvP online (src/net/arbiter.js), para os dois
 // lados de um duelo calcularem igual. user/t: qualquer objeto com .mon e .stat(k).
@@ -873,11 +875,13 @@ export class Combat {
   }
 
   // jogador esquivou (gancho chamado pelo controle)
-  onDodge(who) {
+  onDodge(who, quiet = false) {
     const g = this.g;
     if (!who) return;
     who.dodgeT = 0.32;
-    this.sfx('dodge');
+    if (!quiet) this.sfx('dodge');
+    this.dodgers = this.dodgers ?? new Set(); this.dodgers.add(who);
+    g.fx.emit(who.x, who.y, { tex: 'dust', n: 4, speed: 30, life: 0.35, scale: 0.6, end: 1.4, add: false, alpha: 0.7 });
     // esquiva perfeita: algo perigoso estava para acertar
     let perfect = false;
     for (const p of this.projectiles) if (!p.dead && this.hostile(p.user, who) && Math.hypot(p.x - who.x, p.gy - who.y) < 46) perfect = true;
@@ -907,6 +911,8 @@ export class Combat {
     this.alt.update(dt);
     this.ai.update(dt);
     this.vfx.update(dt);
+    // rastro da esquiva (imagens residuais azuladas enquanto dura a invencibilidade)
+    if (this.dodgers?.size) for (const d of this.dodgers) { d.dodgeT -= dt; if ((d.dodgeG = (d.dodgeG ?? 0) - dt) <= 0) { d.dodgeG = 0.03; this.vfx.afterimage(d, 0x9ad0ff, 0.6, 0.25); } if (d.dodgeT <= 0) this.dodgers.delete(d); }
     const G = this.groundG; G.clear();
     this.gfx.clear(); this.gfxN.clear();
     this.pilot.drawWorld(G);

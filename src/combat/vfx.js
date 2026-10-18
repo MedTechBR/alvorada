@@ -42,7 +42,7 @@ export class Vfx {
     if (!e.body?.texture) return;
     const s = this.ghostPool.pop() ?? new PIXI.Sprite();
     if (!s.parent) this.ghosts.addChild(s);
-    s.visible = true; s.texture = e.body.texture; s.anchor.set(0.5); s.tint = tint;
+    s.visible = true; s.texture = e.body.texture; s.anchor.set(e.body.anchor.x, e.body.anchor.y); s.tint = tint;
     s.x = e.view.x; s.y = e.view.y + e.body.y * e.view.scale.y; s.scale.set(e.view.scale.x * (e.body.scale?.x ?? 1), e.view.scale.y * (e.body.scale?.y ?? 1)); s.rotation = e.body.rotation;
     s.alpha = alpha; s.life = s.max = life; s.a0 = alpha;
     this.ghostLive.push(s);
