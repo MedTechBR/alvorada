@@ -20,6 +20,7 @@ export class Altitude {
   // tecla de altura (C / botão): voa, pousa, mergulha, cava ou emerge conforme o Pokémon e o lugar
   action(e, ax, ay) {
     if (!e?.alive || e.lock > 0 && !this.hidden(e)) return;
+    if (this.g.vivo?.acaoAltura(e, ax, ay)) return; // em cima de algo: desce; voando sobre telhado/copa/rocha: pousa (src/world/vivo.js)
     const m = e.alt?.mode;
     if (m === 'fly') return this.land(e);
     if (m === 'dive' || m === 'dig') return this.emerge(e, ax, ay);
@@ -28,7 +29,8 @@ export class Altitude {
     return this.dig(e);
   }
   jump(e) {
-    if (!e?.alive || e.z > 2 || e.alt?.mode || e.stun > 0) return;
+    if (!e?.alive || e.z - (e.piso ?? 0) > 2 || e.alt?.mode || e.stun > 0) return;
+    if (this.g.vivo?.pulo(e)) return; // perto de telhado, copa ou rocha: sobe, se a espécie consegue
     e.vz = 230; e.jumpT = 0.62;
     this.g.fx.emit(e.x, e.y, { tex: 'dust', n: 5, speed: 30, life: 0.4, scale: 0.6, end: 1.4, add: false, alpha: 0.7 });
     if (e.set?.anims?.Hop) e.play('Hop');
@@ -131,7 +133,15 @@ export class Altitude {
     if (m === 'dig') return !(info.src === 'quake');
     if (m === 'dive') return true;
     const src = info.src;
-    const airborne = t.z > 12;
+    // no alto (telhado, copa, rocha): golpe de terra não chega; corpo a corpo do chão só alcança até a altura de quem bate;
+    // e quem está lá em cima esquiva melhor dos golpes vindos do chão
+    const piso = t.piso ?? 0;
+    if (piso > 0 && (attacker?.piso ?? 0) < piso - 4 && !this.canFly(attacker) && (attacker?.z ?? 0) < piso) {
+      if (mv?.type === 'ground' || src === 'quake' || src === 'line') { this.g.fx.number(t.x, t.y - piso - (t.h ?? 16) - 8, 'Não alcança!', 0xd8f0ff); return true; }
+      if ((src === 'melee' || src === 'dash') && piso > (attacker?.topH ?? 16) + 10) { this.g.fx.number(t.x, t.y - piso - (t.h ?? 16) - 8, 'Não alcança!', 0xd8f0ff); return true; }
+      if (['proj', 'cone', 'wave', 'melee', 'dash', 'bolt', 'surf'].includes(src) && Math.random() < 0.22) return true;
+    }
+    const airborne = t.z - piso > 12;
     if (airborne) {
       if (src === 'quake' || src === 'line' || (mv?.type === 'ground' && src !== 'proj')) return true;
       if ((src === 'melee' || src === 'dash') && (attacker?.z ?? 0) < 8 && !this.canFly(attacker)) return true;

@@ -54,6 +54,8 @@ export class PokeEntity {
     const lift = Math.max(0, -p.y * s * 0.75) + this.z;  // parte da altura vira profundidade (vista 3/4)
     return { x: this.x + p.x * s, y: this.y + p.y * s + lift - this.z, h: lift };
   }
+  // ordem de desenho: no alto, desenha por cima do telhado/copa em que está
+  get sortY() { const p = this.piso ?? 0; return p > 0 ? this.y + p + 2 : this.y; }
   // altura do centro do corpo acima do chão (px de mundo)
   get midH() { return (this.h ?? 16) * 0.5 * (this.scale ?? 1) + this.z; }
   // topo da cabeça acima do chão (px de mundo)
@@ -66,7 +68,8 @@ export class PokeEntity {
   face(dx, dy) { if (Math.abs(dx) + Math.abs(dy) < 1e-3) return; this.angle = Math.atan2(dy, dx); this.dir = dir8(dx, dy); }
 
   think(dt) { return this.g.combat.ai.think(this, dt); }
-  speed(k = 1) { return (38 + this.stat('spe') * 0.42) * k * (this.mon.status === 'par' ? 0.6 : 1); }
+  // arenaVel: terreno da arena de ginásio (teia, chão alagado), calculado pela arena a cada quadro
+  speed(k = 1) { return (38 + this.stat('spe') * 0.42) * k * (this.mon.status === 'par' ? 0.6 : 1) * (this.arenaVel ?? 1); }
   provoke(by) { this.g.combat.ai.provoke(this, by); }
   wake() { this.g.combat.ai.wake(this); }
 
@@ -76,10 +79,10 @@ export class PokeEntity {
     if (this.alt?.mode === 'dive' || this.alt?.mode === 'dig') return;
     if (!quiet || this.anim !== 'Hurt') this.play('Hurt');
     this.squash = Math.min(0.35, 0.12 + power * 0.08);
-    const strong = power > 1.35 || eff > 1 || crit;
-    if (!quiet && (this.z > 6 || strong)) {
+    const strong = power > 1.35 || eff > 1 || crit, ar = this.z - (this.piso ?? 0) > 6;
+    if (!quiet && (ar || strong)) {
       this.vz = Math.max(this.vz, strong ? 120 + power * 50 : 60);
-      if (this.z > 6 || power > 1.7) { this.spinT = 0.45 + Math.min(0.3, power * 0.1); this.spinDir = Math.random() < 0.5 ? -1 : 1; }
+      if (ar || power > 1.7) { this.spinT = 0.45 + Math.min(0.3, power * 0.1); this.spinDir = Math.random() < 0.5 ? -1 : 1; }
     }
   }
 
@@ -114,9 +117,10 @@ export class PokeEntity {
     this.x += (this.vx + this.kx) * dt; this.y += (this.vy + this.ky) * dt;
     this.kx *= 1 - Math.min(1, dt * 7); this.ky *= 1 - Math.min(1, dt * 7);
     if (!this.g.combat?.alt?.resolve(this, this.r * 0.8)) this.g.map.resolve(this, this.r * 0.8, this.swim);
-    const wasUp = this.z > 0;
-    this.z = Math.max(0, this.z + this.vz * dt); this.vz -= 500 * dt; if (this.z === 0) this.vz = 0;
-    if (wasUp && this.z === 0 && this.spinT <= 0 && !this.alt) this.squash = Math.max(this.squash, 0.15);
+    // piso: altura do chão onde está (0, ou a do telhado/copa/rocha em que subiu: src/world/vivo.js)
+    const piso = this.piso ?? 0, wasUp = this.z > piso;
+    this.z = Math.max(piso, this.z + this.vz * dt); this.vz -= 500 * dt; if (this.z === piso) this.vz = 0;
+    if (wasUp && this.z === piso && this.spinT <= 0 && !this.alt) this.squash = Math.max(this.squash, 0.15);
     const moving = Math.hypot(this.vx, this.vy) > 8;
     if (!this.dead && (this.animLoop || this.anim === 'Idle' || this.anim === 'Walk')) {
       if (this.ai.state === 'sleep' && this.set.anims.Sleep) this.play('Sleep', true);
@@ -159,8 +163,8 @@ export class PokeEntity {
     const mid = this.spinT > 0 || this.wheelT > 0 ? (this.set.top ?? 16) * 0.5 : 0;
     this.body.y = -this.z / sc - mid + (hide === 'dive' ? 4 : 0);
     if (mid && f.oy != null) this.body.anchor.set(f.ax, (f.oy - mid) / (f.tex.frame.height || 1));
-    const sk = 1 - Math.min(0.45, this.z / 120), ss = this.set.shadowScale ?? [1, 1];
-    this.shadow.y = 0; this.shadow.alpha = 0.9 - Math.min(0.6, this.z / 40); this.shadow.scale.set(ss[0] * sk, ss[1] * sk);
+    const zr = this.z - piso, sk = 1 - Math.min(0.45, zr / 120), ss = this.set.shadowScale ?? [1, 1];
+    this.shadow.y = -piso / sc; this.shadow.alpha = 0.9 - Math.min(0.6, zr / 40); this.shadow.scale.set(ss[0] * sk, ss[1] * sk); // no alto, a sombra fica no telhado
     // cores: clarão branco, vermelho do dano, paralisia, carga do golpe
     const white = this.flashW > 0 || (this.charging && this.charging.t > this.charging.W - 0.22 && Math.sin(this.animT * 60) > 0);
     const want = white ? 1 : 0;

@@ -102,6 +102,7 @@ export class Mon {
     const oldMax = this.stats?.hp;
     this.stats = calcStats(this.sp.base, this.ivs, this.evs, this.level, this.nature);
     if (this.dmaxK) this.stats.hp = Math.round(this.stats.hp * this.dmaxK);
+    if (this.vigorK) this.stats.hp = Math.round(this.stats.hp * this.vigorK); // Pokémon de líder na arena de ginásio (não é gravado)
     if (oldMax != null && this.hp != null) this.hp = Math.max(this.hp > 0 ? 1 : 0, Math.min(this.stats.hp, this.hp + (this.stats.hp - oldMax)));
   }
 

@@ -16,7 +16,8 @@ import { animFor, kindOf } from './anims/index.js';
 const M = 16;            // 1 m = 16 px
 const TAU = Math.PI * 2;
 const WARN_HIT = 0xff3b2f, WARN_SOFT = 0xffd84a;
-const STAGE_DECAY = 6; // segundos para um estágio (+1/−1) se desfazer
+const STAGE_DECAY = 6;
+const ALTO_ALCANCE = 1.25, ALTO_DANO = 1.3; // em cima de algo: alcance ×1,25; golpe saltando de cima: dano ×1,3 // segundos para um estágio (+1/−1) se desfazer
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const angDiff = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
 function segDist(px, py, ax, ay, bx, by) {
@@ -57,6 +58,8 @@ export class Combat {
     this.sfxT = {};
   }
   move(id) { return MOVES[id]; }
+  // quem está no alto (telhado, copa, rocha: src/world/vivo.js) enxerga e alcança mais longe
+  range(mv, user = null) { return (mv.range ?? 6) * M * (user?.pouso ? ALTO_ALCANCE : 1); }
   // Golpe do espaço `slot`: o do Pokémon ou, em Dynamax, o Max Golpe no lugar dele (user.maxMoves, src/combat/poder.js)
   moveAt(user, slot) {
     const ov = user?.maxMoves?.[slot];
@@ -64,17 +67,16 @@ export class Combat {
     const id = user?.mon?.moves?.[slot];
     return { id, mv: MOVES[id] };
   }
-  range(mv) { return (mv.range ?? 6) * M; }
   inRange(user, mv, d, id) {
     const k = kindOf(id, mv);
     if (k === 'self' || k === 'shield') return true;
     if (k === 'melee' || k === 'multi') return d < (mv.range ?? 1.8) * M + 10 + user.r;
-    if (k === 'dash') return d < this.range(mv) * 0.75;
-    if (k === 'wave' || k === 'quake') return d < this.range(mv) * 0.85;
+    if (k === 'dash') return d < this.range(mv, user) * 0.75;
+    if (k === 'wave' || k === 'quake') return d < this.range(mv, user) * 0.85;
     if (k === 'bolt') return d < (animFor(id).bolt?.range ?? mv.range ?? 8) * M * 0.9;
-    if (k === 'surf' || k === 'line') return d < this.range(mv) * 0.8;
+    if (k === 'surf' || k === 'line') return d < this.range(mv, user) * 0.8;
     const b = BEAMS[id]; if (b) return d < b.range * M * 0.9;
-    return d < this.range(mv) * 0.9;
+    return d < this.range(mv, user) * 0.9;
   }
 
   // ---------- quem é inimigo de quem ----------
@@ -192,12 +194,14 @@ export class Combat {
       if (user.cds[slot] > 0 || user.lock > 0 || user.stun > 0 || user.charging) return false;
       user.cds[slot] = mv.cd * (user.side === 'wild' ? 1.2 : 1);
     }
+    this.g.arenaGinasio?.aoUsar(user, id, mv); // arena de ginásio: golpe no ritmo do berimbau
     if (mv.max) this.onMax?.(user, id, mv, ax, ay); // Max Golpe: recarga única, clima, campo e estágios (src/combat/poder.js)
     if (user.mon.status === 'par' && Math.random() < 0.15) { this.g.fx.number(user.x, user.y - 24, 'Paralisado!', '#fff27a'); user.lock = 0.5; return true; }
     let dx = ax - user.x, dy = ay - user.y; const d = Math.hypot(dx, dy) || 1; dx /= d; dy /= d;
     user.face(dx, dy);
     const g = this.g, color = typeHex(mv.type), A = animFor(id);
     const kind = opts.asDash ? 'dash' : kindOf(id, mv);
+    if (user.pouso && (kind === 'melee' || kind === 'multi' || kind === 'dash')) g.vivo?.saltarAtacando(user, ax, ay); // corpo a corpo lá de cima: salta no alvo
     // golpes que carregam antes (Raio Solar, Hiper-Raio): o jogador também espera a carga
     if (BEAMS[id]?.charge && !opts.charged && !opts.forced) {
       const W = BEAMS[id].charge;
@@ -288,7 +292,7 @@ export class Combat {
     const h0 = m.h;
     const sp = (mv.speed ?? 15) * M;
     const p = { user, side: user.side, mv, id, x: m.x, gy: m.gy, h: h0, hT: aimT ? (aimT.y - this.centerY(aimT)) : Math.max(6, h0 * 0.8),
-      vx: dx * sp, vy: dy * sp, left: this.range(mv), color, r: 4 + 2 * big, power: mv.power ?? 30, big, look, head: this.#head(look), t: 0, i,
+      vx: dx * sp, vy: dy * sp, left: this.range(mv, user), color, r: 4 + 2 * big, power: mv.power ?? 30, big, look, head: this.#head(look), t: 0, i,
       wob: id === 'bubble' ? Math.random() * TAU : id === 'razorLeaf' ? (i - 1) * 2.2 : 0,
       A, draw: look.draw ?? null, hist: look.hist ? [] : null, histN: look.hist ?? 0, scale: A.power ?? 1, homing: !!A.homing, ox: m.x, oy: m.y };
     p.y = p.gy - p.h;
@@ -326,7 +330,7 @@ export class Combat {
     if (p.homing && p.t > 0.12) { let best = null, bd = 120; for (const t of this.targetsOf(p.user)) { const dd = Math.hypot(t.x - p.x, t.y - p.gy); if (dd < bd) { bd = dd; best = t; } } if (best) { const a0 = Math.atan2(p.vy, p.vx), a1 = Math.atan2(best.y - p.gy, best.x - p.x), sp = Math.hypot(p.vx, p.vy), a = a0 + clamp(angDiff(a1, a0), -6 * dt, 6 * dt); p.vx = Math.cos(a) * sp; p.vy = Math.sin(a) * sp; } }
     if (p.draw) p.draw(this.gfx, this.gfxN, p, p.t);
     if (p.A.trail) p.A.trail(this.vfx, p, dt); else this.vfx.trail(p, dt);
-    if (p.left <= 0) { p.dead = true; this.#impact(p.A, p.mv.type, p.x, p.y, 0, 0.5 * p.big, p.gy); this.arena.impact(p.x, p.gy, p.mv, 0.5); return; }
+    if (p.left <= 0) { p.dead = true; this.#impact(p.A, p.mv.type, p.x, p.y, 0, 0.5 * p.big, p.gy); this.arena.impact(p.x, p.gy, p.mv, 0.5, false, p.user); return; }
     // choque com projéteis do outro lado
     for (const q of this.projectiles) {
       if (q === p || q.dead || q.grind || !this.hostile(p.user, q.user)) continue;
@@ -350,11 +354,11 @@ export class Combat {
         if (this.strike(p.user, t, p.mv, p.id, p.vx / d, p.vy / d, { src: 'proj', scale: p.scale }) === 'miss') continue;
         p.dead = true;
         this.#impact(p.A, p.mv.type, p.x, p.y, Math.atan2(p.vy, p.vx), p.big * 1.1, t.y);
-        this.arena.impact(t.x, t.y, p.mv, 0.6);
+        this.arena.impact(t.x, t.y, p.mv, 0.6, false, p.user);
         return;
       }
     }
-    if (this.arena.blockAt(p.x, p.gy, p.mv)) { p.dead = true; this.#impact(p.A, p.mv.type, p.x, p.y, 0, 0.8 * p.big, p.gy); this.ai.noise(p.x, p.gy, 70, p.user); }
+    if (this.arena.blockAt(p.x, p.gy, p.mv, p)) { p.dead = true; this.#impact(p.A, p.mv.type, p.x, p.y, 0, 0.8 * p.big, p.gy); this.ai.noise(p.x, p.gy, 70, p.user); }
   }
   // impacto da receita do golpe (ou o do tipo) + o resto que fica no chão
   #impact(A, type, x, y, dir, P, gy) {
@@ -386,7 +390,7 @@ export class Combat {
     g.fx.light(x, y, 0xffffff, 70, 0.3, 1);
     g.fx.screenFlash(0xffffff, 0.35); g.fx.kick(0.5, 0.12);
     this.sfx('boom'); this.ai.noise(x, y, 180, a.user);
-    this.arena.blast(x, y + 10, 26, a.mv);
+    this.arena.blast(x, y + 10, 26, a.mv, a.user);
     // empurra quem estiver perto
     for (const e of [...g.entities, g.player]) { const dx = e.x - x, dy = e.y - (y + 10), d = Math.hypot(dx, dy); if (d < 50 && d > 0.1 && e.alive !== false) { e.kx += dx / d * 220; e.ky += dy / d * 220; } }
   }
@@ -432,7 +436,7 @@ export class Combat {
         }
       }
       if (b.mv.type === 'fire') this.arena.burnLine(b.ox, b.oy + groundOff, b.hx, b.hy + groundOff);
-      if (b.blocked) this.arena.impact(b.hx, b.hy + groundOff, b.mv, 0.5);
+      if (b.blocked) this.arena.impact(b.hx, b.hy + groundOff, b.mv, 0.5, false, u);
       if (b.mv.type === 'water') this.arena.soak(b.hx, b.hy + groundOff);
       g.fx.shake = Math.max(g.fx.shake, 0.06);
       this.ai.noise(b.hx, b.hy, 80, u);
@@ -595,7 +599,7 @@ export class Combat {
       // o golpe para no primeiro objeto do caminho (parede rachada, tocha, pedra) em vez de passar por cima dele
       let ix = user.x + dx * reach * 0.8, iy = user.y + dy * reach * 0.8;
       for (let k = 6; k < reach * 0.8; k += 5) if (this.arena.objAt(user.x + dx * k, user.y + dy * k)) { ix = user.x + dx * k; iy = user.y + dy * k; break; }
-      this.arena.impact(ix, iy, mv, 0.7, true);
+      this.arena.impact(ix, iy, mv, 0.7, true, user);
     }
   }
   #meleeClash(a, b) {
@@ -625,7 +629,7 @@ export class Combat {
     const R = this.range(mv), qk = A.quakeK ?? 1;
     if (ground) {
       if (A.wave) A.wave(this.vfx, user, R); else { this.vfx.quake(user, mv, R); if (qk > 1.2) { this.vfx.quake(user, mv, R * 0.6); for (let i = 0; i < 6; i++) this.g.fx.decal('crack', user.x + (Math.random() - 0.5) * R, user.y + (Math.random() - 0.5) * R * 0.6, { scale: 0.8 + Math.random() * 0.6, life: 25 }); } }
-      this.g.fx.kick(0.5 * qk, 0.07 * qk); this.sfx('quake'); this.arena.blast(user.x, user.y, R * 0.45 * qk, mv); this.ai.noise(user.x, user.y, 220 * qk, user);
+      this.g.fx.kick(0.5 * qk, 0.07 * qk); this.sfx('quake'); this.arena.blast(user.x, user.y, R * 0.45 * qk, mv, user); this.ai.noise(user.x, user.y, 220 * qk, user);
     } else if (A.wave) A.wave(this.vfx, user, R); else this.vfx.wave(user, mv, id, R);
     if (mv.eff?.selfKO) this.g.later(0.05, () => this.hurt(user, user.mon.hp, null, { silent: true }));
     this.waves.push({ user, mv, id, x: user.x, y: user.y, R, t: 0, dur: ground ? 0.42 : 0.3, hit: new Set(), ground });
@@ -638,7 +642,7 @@ export class Combat {
       const d = Math.hypot(t.x - w.x, t.y - w.y);
       if (d <= r + t.r) { w.hit.add(t); this.strike(w.user, t, w.mv, w.id, (t.x - w.x) / (d || 1), (t.y - w.y) / (d || 1), { src: w.ground ? 'quake' : 'wave' }); }
     }
-    if (w.ground && Math.random() < dt * 20) { const an = Math.random() * TAU; this.arena.shakeAt(w.x + Math.cos(an) * r, w.y + Math.sin(an) * r, w.mv); }
+    if (w.ground && Math.random() < dt * 20) { const an = Math.random() * TAU; this.arena.shakeAt(w.x + Math.cos(an) * r, w.y + Math.sin(an) * r, w.mv, w.user); }
     return w.t < w.dur;
   }
 
@@ -668,7 +672,7 @@ export class Combat {
     else this.vfx.impact(f.ice ? 'ice' : 'rock', f.x, f.y - 4, 0, 1.4 * f.big, f.y);
     g.fx.decal('crater', f.x, f.y + 2, { scale: 0.5 + 0.4 * f.big, life: 25 });
     g.fx.kick(0.25 * f.big, 0.03); this.sfx('thud');
-    this.arena.blast(f.x, f.y, 12 * f.big, f.mv);
+    this.arena.blast(f.x, f.y, 12 * f.big, f.mv, f.user);
     this.ai.noise(f.x, f.y, 120, f.user);
     for (const t of this.targetsOf(f.user)) { const d = Math.hypot(t.x - f.x, t.y - f.y); if (d < 14 * f.big + t.r) this.strike(f.user, t, f.mv, f.id, (t.x - f.x) / (d || 1), (t.y - f.y) / (d || 1), { src: 'rain', scale: f.big > 1 ? 1 : 0.55 }); }
     return false;
@@ -734,7 +738,7 @@ export class Combat {
       g.fx.light(x, y, 0xfff6a0, 50, 0.4, 0.8); g.fx.shock(x, y, 0xffe23a, 40, 0.4);
       this.vfx.impact('electric', x, y - 6, 0, 1.8, y);
       g.fx.decal('scorch', x, y, { scale: 1.1, alpha: 0.9, life: 30 });
-      this.arena.blast(x, y, 14, mv); this.ai.noise(x, y, 220, user);
+      this.arena.blast(x, y, 14, mv, user); this.ai.noise(x, y, 220, user);
       for (const t of this.targetsOf(user)) { const d = Math.hypot(t.x - x, t.y - y); if (d < 22 + t.r) this.strike(user, t, mv, id, (t.x - x) / (d || 1), (t.y - y) / (d || 1), { src: 'sky' }); }
     });
   }
@@ -787,7 +791,7 @@ export class Combat {
       const rx = t.x - user.x, ry = t.y - user.y, along = rx * dx + ry * dy, lat = Math.abs(rx * dy - ry * dx);
       if (along > 0 && along < R + t.r && lat < 12 + t.r) this.g.later(along / 330, () => this.strike(user, t, mv, id, dx, dy, { src: 'line', knock: 1.2 }));
     }
-    for (let k = 1; k <= 5; k++) this.g.later(k * 0.04, () => this.arena.shakeAt(user.x + dx * R * k / 5, user.y + dy * R * k / 5, mv));
+    for (let k = 1; k <= 5; k++) this.g.later(k * 0.04, () => this.arena.shakeAt(user.x + dx * R * k / 5, user.y + dy * R * k / 5, mv, user));
   }
   #shield(user, mv, id, A) {
     const sh = A.shield ?? { color: 0x5aff8a, dur: 1 };
@@ -816,7 +820,9 @@ export class Combat {
     const st = (user.stages.acc ?? 0) - (t.stages.eva ?? 0), accM = st >= 0 ? (3 + st) / 3 : 3 / (3 - st);
     if (info.src !== 'beam' && Math.random() > (mv.cat === 'status' ? (mv.acc ?? 1) : 1) * Math.min(1, accM)) { this.#missText(t, 'Errou!'); return 'miss'; }
     if (mv.cat === 'status') { this.#status(user, t, mv); return 'hit'; }
-    const r = computeDamage(user, t, mv, { g, scale: info.scale ?? 1, noCrit: info.src === 'beam' && !info.force });
+    let scale = info.scale ?? 1;
+    if (user.quedaT > 0 && (info.src === 'dash' || info.src === 'melee')) { scale *= ALTO_DANO; user.quedaT = 0; g.fx.number(t.x, t.y - (t.topH ?? 20) - 22, 'Ataque do alto!', 0xffe27a, true, 'banner'); }
+    const r = computeDamage(user, t, mv, { g, scale, noCrit: info.src === 'beam' && !info.force });
     if (mv.maxFx) this.onMaxHit?.(user, t, mv, r); // efeitos dos Max Golpes e G-Max Golpes no alvo
     this.hurt(t, r.dmg, user, { eff: r.eff, crit: r.crit, mv, dx, dy, knock: info.knock ?? 1, quiet: info.quiet, note: r.note, src: info.src });
     // Orbe da Vida, Pele Áspera, Capacete Rochoso (recuo), Sino Concha (cura), Rocha do Rei (hesitar): src/mechanics
@@ -855,6 +861,7 @@ export class Combat {
       const K = 115 * power * mass * knock;
       t.kx += dx * K; t.ky += dy * K;
       t.react?.({ power: power * knock, eff, crit, quiet, dx, dy });
+      if (t.pouso && !quiet) g.vivo?.aoAtingir(t, power * knock, eff, crit); // golpe forte derruba quem está no alto
       if (!quiet) {
         t.lock = Math.max(t.lock, 0.12 + 0.1 * power);
         g.fx.kick(eff > 1 || crit ? 0.34 : 0.12 + 0.05 * power, eff > 1 || crit ? 0.09 : 0.03 + 0.012 * power);
@@ -974,14 +981,14 @@ export class Combat {
         if (this.strike(u, t, dsh.mv, dsh.id, u.kx / d, u.ky / d, { src: 'dash', knock: dsh.dive ? 1.4 : 1 }) !== 'miss') {
           this.#impact(dsh.A, dsh.mv.type, (t.x + u.x) / 2, this.centerY(t), Math.atan2(u.ky, u.kx), 1.2 + (dsh.dive ? 0.6 : 0), t.y);
           if (dsh.A?.bounceBack) { u.kx = -u.kx; u.ky = -u.ky; }
-          if (dsh.dive) { g.fx.shock(t.x, t.y, 0xffffff, 30, 0.3); this.arena.blast(t.x, t.y, 12, dsh.mv); }
+          if (dsh.dive) { g.fx.shock(t.x, t.y, 0xffffff, 30, 0.3); this.arena.blast(t.x, t.y, 12, dsh.mv, u); }
           u.kx *= 0.25; u.ky *= 0.25;
         }
       }
       if (!u.dashing) continue;
       if (dsh.t <= 0) { u.dashing = null; if (dsh.A?.recharge) { u.stun = Math.max(u.stun, dsh.A.recharge); g.fx.number(u.x, u.y - (u.topH ?? 20) - 12, 'Recarregando...', '#ffd0a0'); } if (dsh.dive) g.fx.emit(u.x, u.y, { tex: 'dust', n: 8, speed: 50, life: 0.5, scale: 0.7, end: 1.6, add: false, alpha: 0.7 }); }
       if (dsh.mv?.type === 'fire') g.scorchTile(u.x, u.y);
-      else this.arena.trample(u.x, u.y, dsh.mv);
+      else this.arena.trample(u.x, u.y, dsh.mv, u);
     }
     for (const p of this.projectiles) if (!p.dead) this.#updateProjectile(p, dt);
     for (const p of this.projectiles) if (p.dead && p.head) { this.#freeHead(p.head); p.head = null; }
