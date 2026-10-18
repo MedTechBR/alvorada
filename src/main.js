@@ -154,7 +154,7 @@ class Game {
     const e = this.lead; if (!e || e.mon !== mon) { mon.evolveTo(to); return; }
     for (let i = 0; i < 6; i++) this.later(i * 0.12, () => { e.flash = 0.08; this.fx.ring(e.x, e.y - 8, 0xffffff, 10 + i * 3, 0.3); });
     this.later(0.8, async () => {
-      mon.evolveTo(to); const set = await loadPokemonSprites(to); e.set = set; e.r = Math.max(5, Math.min(18, set.size * 0.22));
+      mon.evolveTo(to); const set = await loadPokemonSprites(to); e.setSprites(set);
       this.fx.burst(e.x, e.y - 10, 0xffffff, 2); this.toast(`${old} evoluiu para ${mon.name}!`); this.audio.sfx('caught'); this.hudLead();
     });
   }

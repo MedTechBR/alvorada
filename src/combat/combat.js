@@ -156,12 +156,12 @@ export class Combat {
       const power = Math.min(2.2, 0.6 + (mv?.power ?? 40) / 80) * (eff > 1 ? 1.3 : 1);
       t.kx += dx * 160 * power; t.ky += dy * 160 * power; t.vz = 70 * power;
       t.play('Hurt'); t.lock = Math.max(t.lock, 0.18);
-      g.fx.burst(t.x, t.y - t.set.size * 0.28, mv ? typeColor(mv.type) : 0xffffff, power * 0.8);
+      g.fx.burst(t.x, t.y - (t.h ?? 20) * 0.55, mv ? typeColor(mv.type) : 0xffffff, power * 0.8);
       g.fx.kick(eff > 1 || crit ? 0.32 : 0.14, eff > 1 || crit ? 0.07 : 0.035);
-      g.fx.number(t.x, t.y - t.set.size * 0.5 - 6, String(dmg), eff > 1 ? '#ffb347' : eff < 1 ? '#c8c8c8' : '#ffffff', eff > 1 || crit);
-      if (eff > 1) g.fx.number(t.x, t.y - t.set.size * 0.5 - 20, 'Super efetivo!', '#ffd84a');
-      else if (eff > 0 && eff < 1) g.fx.number(t.x, t.y - t.set.size * 0.5 - 20, 'Pouco efetivo', '#bbbbbb');
-      if (crit) g.fx.number(t.x, t.y - t.set.size * 0.5 - 32, 'Crítico!', '#ff7a5a');
+      g.fx.number(t.x, t.y - (t.h ?? 20) - 6, String(dmg), eff > 1 ? '#ffb347' : eff < 1 ? '#c8c8c8' : '#ffffff', eff > 1 || crit);
+      if (eff > 1) g.fx.number(t.x, t.y - (t.h ?? 20) - 20, 'Super efetivo!', '#ffd84a');
+      else if (eff > 0 && eff < 1) g.fx.number(t.x, t.y - (t.h ?? 20) - 20, 'Pouco efetivo', '#bbbbbb');
+      if (crit) g.fx.number(t.x, t.y - (t.h ?? 20) - 32, 'Crítico!', '#ff7a5a');
       g.audio?.sfx?.(eff > 1 ? 'hit-super' : eff < 1 ? 'hit-weak' : 'hit');
     }
     if (by && t.side === 'wild') t.provoke(by.side === 'ally' ? by : t.aggroTarget);

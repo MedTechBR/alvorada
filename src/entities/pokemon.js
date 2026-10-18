@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { frameOf, dir8, loadPokemonSprites } from '../sprites/pmd.js';
 import { TEMPER } from '../data/species.js';
+import { speciesScale } from '../sprites/scale.js';
 
 // Um Pokémon no mapa (do jogador ou selvagem). Não existe "modo batalha": ele sempre pode
 // atacar e ser atacado; os selvagens reagem conforme o temperamento.
@@ -22,13 +23,22 @@ export class PokeEntity {
     this.bar = new PIXI.Graphics();
     this.view.addChild(this.shadow, this.body, this.bar);
     this.r = 6;
-    this.ready = loadPokemonSprites(mon.dex).then((set) => { this.set = set; this.r = Math.max(5, Math.min(18, set.size * 0.22)); this.shadow.scale.set(...set.shadowScale); });
+    this.ready = loadPokemonSprites(mon.dex).then((set) => this.setSprites(set));
+  }
+
+  // Troca o conjunto de sprites (entrada e evolução) e aplica a escala da espécie (altura real)
+  setSprites(set) {
+    this.set = set;
+    this.baseScale = speciesScale(this.mon.dex, set);
+    this.h = (set.top || 24) * this.baseScale;            // altura na tela (px)
+    this.r = Math.max(5, Math.min(28, set.size * 0.22 * this.baseScale));
+    this.shadow.scale.set(...set.shadowScale);
   }
 
   // Ponto de onde sai um golpe (boca ou mão) no quadro atual, em coordenadas do mundo.
   // Devolve { x, y, h }: (x, y) = posição no chão abaixo da boca; h = altura da boca acima do chão (px).
   emitPoint(kind = 'mouth') {
-    const f = this.f, s = this.scale ?? 1;
+    const f = this.f, s = (this.scale ?? 1) * (this.baseScale ?? 1);
     const p = f ? (kind === 'hand' ? f.hand : f.mouth) : { x: 0, y: -(this.set?.top ?? 16) * 0.6 };
     const lift = Math.max(0, -p.y * s * 0.75) + this.z;  // parte da altura vira profundidade (vista 3/4)
     return { x: this.x + p.x * s, y: this.y + p.y * s + lift - this.z, h: lift };
@@ -126,7 +136,7 @@ export class PokeEntity {
     this.body.tint = this.flash > 0 ? 0xffffff : this.mon.status === 'par' && Math.sin(this.animT * 30) > 0.6 ? 0xfff27a : 0xffffff;
     this.body.alpha = this.alpha * (this.iframes > 0 && Math.sin(this.animT * 50) > 0 ? 0.55 : 1);
     if (this.flash > 0) this.body.tint = 0xff9a9a;
-    this.view.scale.set(this.scale);
+    this.view.scale.set(this.scale * (this.baseScale ?? 1));
     // barra de vida (selvagens atingidos e o seu Pokémon em combate)
     this.bar.clear();
     if ((this.hpShow > 0 || this.side === 'wild' && this.mon.hp < this.mon.stats.hp) && this.alive) {
