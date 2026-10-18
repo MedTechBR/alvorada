@@ -100,7 +100,7 @@ export class HudBatalha {
     const g = this.g, l = g.mode === 'pokemon' && g.lead?.alive ? g.lead : null;
     const alvo = l ? this.#alvo(l) : null;
     const on = !!(l && alvo && g.ui?.state === 'play');
-    this.#set('on', on, (v) => { this.el.hidden = !v; document.body.classList.toggle('hb-on', v); });
+    this.#set('on', on, (v) => { this.el.hidden = !v; document.body.classList.toggle('hb-on', v); const mk = g.ui?.hud?.layer; if (mk) mk.renderable = !v; });
     if (!on) return;
     this.#encher(this.eu, l, 'a', true);
     this.#encher(this.ele, alvo, 'b', false);
