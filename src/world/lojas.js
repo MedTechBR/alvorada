@@ -22,3 +22,6 @@ export function estoque(id, badges = 0) {
   for (const [n, list] of [...TIERS, ...loja.extra]) if (badges >= n) for (const k of list) if (!out.includes(k)) out.push(k);
   return out;
 }
+
+// Brasas (src/story/missoes/regiao-brasas.js e assets/maps/regioes/brasas.json)
+LOJAS.vendedor_termas = { nome: 'Mercado de Vila Termas', extra: [[0, ['fireStone', 'charcoal']], [1, ['heatRock']]] };
