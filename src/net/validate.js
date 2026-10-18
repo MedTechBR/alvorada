@@ -55,7 +55,7 @@ export function validateMon(o) {
     nature: o.nature != null ? String(o.nature).toLowerCase() : 'hardy', ability: o.ability ?? undefined,
     gender: o.gender !== undefined ? o.gender : undefined, shiny: o.shiny === true, friendship: o.friendship ?? undefined,
     item: o.item ?? null, ball: o.ball ?? 'pokeBall', metLevel: isInt(o.metLevel, 1, 100) ? o.metLevel : undefined,
-    nick: o.nick ? cleanText(o.nick, 12) || null : null, xp, moves: o.moves.slice(), status: o.status ?? null, uid, form: o.form ?? null,
+    nick: o.nick ? cleanText(o.nick, 12) || null : null, xp, moves: o.moves.slice(), status: o.status ?? null, uid, form: o.form ?? null, gmax: o.gmax === true,
   });
   // HP: inteiro entre 0 e o máximo recalculado
   mon.hp = Number.isInteger(o.hp) ? Math.max(0, Math.min(mon.stats.hp, o.hp)) : mon.stats.hp;

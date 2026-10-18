@@ -9,6 +9,7 @@ import { makeTrainerFrames, dir4 } from './sprites/characters.js';
 import { loadPokemonSprites } from './sprites/pmd.js';
 import { PokeEntity } from './entities/pokemon.js';
 import { Combat } from './combat/combat.js';
+import { Poder } from './combat/poder.js';
 import { Mon } from './data/mon.js';
 import { SPECIES, BIOME_ENCOUNTERS, speciesKey, genderForm, formFromApi } from './data/species.js';
 import { MOVES } from './data/moves.js';
@@ -68,6 +69,7 @@ class Game {
     this.quality = new Quality(this); // qualidade gráfica automática (src/engine/quality.js)
     this.ui = new UI(this);        // HUD, menus, diálogo, título e save (src/ui)
     this.story = new Story(this);  // capítulo 1 (src/story)
+    this.poder = new Poder(this);  // Mega Evolução, Dynamax e Gigantamax (src/combat/poder.js)
     window.__boot?.(0.92, 'Preparando a aventura…');
     this.available = await fetch('assets/pmd/index.json').then((r) => r.json()).catch(() => [1, 4, 6, 7, 9, 25, 130, 133]);
     this.spawnT = 0; this.wilds = [];
@@ -482,6 +484,7 @@ class Game {
     this.net?.update(dt); // online: manda sua posição, mostra os outros, cuida do duelo
     this.#updateWild(dt);
     this.combat.update(dt);
+    this.poder.update(dt);
     this.#updateBalls(dt);
     this.#updateThrowMon(dt);
     for (const e of this.entities) { if (e.fadeIn) { e.alpha = Math.min(1, e.alpha + dt * 2); if (e.alpha >= 1) e.fadeIn = false; } if (e.dead) e.alpha = Math.max(0, e.alpha - dt * 2); e.update(dt); e.view.zIndex = e.y; }
@@ -508,7 +511,7 @@ class Game {
     const fd = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] }[p.dir];
     return { x: lead.x + fd[0] * 120, y: lead.y + fd[1] * 120 };
   }
-  screenToWorld(sx, sy) { return { x: (sx - this.world.x) / this.zoom, y: (sy - this.world.y) / this.zoom }; }
+  screenToWorld(sx, sy) { const z = this.world.scale.x; return { x: (sx - this.world.x) / z, y: (sy - this.world.y) / z }; }
 
   #control(dt) {
     const inp = this.input, p = this.player;
@@ -575,6 +578,7 @@ class Game {
       }
       l.dodgeCd = (l.dodgeCd ?? 0) - dt;
       for (let s = 0; s < 4; s++) if (inp.pressed('m' + s)) { const a = this.#aimPoint(); this.combat.use(l, s, a.x, a.y); }
+      if (inp.pressed('power')) this.poder?.usar(); // V: Mega Evolução ou Dynamax (src/combat/poder.js)
       if (inp.pressed('recall') || inp.pressed('ball')) this.recall();
     } else {
       // treinador: Q (ou 1º botão) envia o Pokémon escolhido; B (ou 2º botão) joga Poké Bola de captura
@@ -620,7 +624,8 @@ class Game {
     c.x += (f.x - c.x) * Math.min(1, dt * 8); c.y += (fy - c.y) * Math.min(1, dt * 8);
     let sx = 0, sy = 0;
     if (this.fx.shake > 0) { this.fx.shake -= dt; const k = this.fx.shake * 6; sx = (Math.random() - 0.5) * k; sy = (Math.random() - 0.5) * k; }
-    const z = this.zoom;
+    const z = this.zoom * (this.camK ?? 1); // camK < 1: câmera afasta (Dynamax, reide; src/combat/poder.js)
+    if (this.world.scale.x !== z) this.world.scale.set(z);
     this.world.x = Math.round(innerWidth / 2 - (c.x + sx) * z);
     this.world.y = Math.round(innerHeight / 2 - (c.y + sy) * z);
     const hw = innerWidth / 2 / z + 40, hh = innerHeight / 2 / z + 40;

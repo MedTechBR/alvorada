@@ -600,7 +600,7 @@ export class Masmorra {
     const lvl = z.escuro === true ? 1 : +z.escuro, amb = Math.round(255 * (0.05 + (1 - lvl) * 0.55));
     L.bg.tint = (amb << 16) | (amb << 8) | Math.min(255, amb + 10); L.bg.width = L.w; L.bg.height = L.h;
     let n = 0;
-    const W = g.world, zoom = g.zoom, flick = 0.94 + Math.sin(this.t * 11) * 0.03 + Math.sin(this.t * 23) * 0.02;
+    const W = g.world, zoom = g.world.scale.x, flick = 0.94 + Math.sin(this.t * 11) * 0.03 + Math.sin(this.t * 23) * 0.02;
     const add = (x, y, r, tex = SPR.glow, a = 1) => {
       const sx = (W.x + x * zoom) / q, sy = (W.y + y * zoom) / q, rr = (r * zoom) / q;
       if (sx < -rr || sy < -rr || sx > L.w + rr || sy > L.h + rr) return;
