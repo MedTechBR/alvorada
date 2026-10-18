@@ -14,6 +14,7 @@ import { Npc } from './npc.js';
 import { TrainerBattle } from './battle.js';
 import { makeStarterTable, makeBallTexture } from '../sprites/npc.js';
 import { Roteiro } from './roteiro.js';
+import { Missoes } from './missoes/motor.js';
 
 // História principal (capítulo 1, portado do 3D): personagens, escolha do inicial, treinadores que
 // avistam o jogador e desafiam, Cidade Campina, ginásio do Líder Tomé, insígnia e objetivo no HUD.
@@ -42,6 +43,7 @@ export class Story {
     this.trainers = [...ROUTE_TRAINERS, ...GYM_TRAINERS, LEADER1].map((d) => this.npcs.get(d.id));
     this.#starterTable();
     this.roteiro = new Roteiro(this); // capítulos 2 em diante (src/story/script), depois de flags.ch1Done
+    g.missoes = new Missoes(g);       // missões secundárias e NPCs vivos (src/story/missoes, docs/missoes.md)
   }
   npc(id) { return this.npcs.get(id); }
   get flags() { return this.g.flags; }
@@ -261,7 +263,8 @@ export class Story {
     this.battle = b;
     this.busy = false; // a luta é livre: o jogador anda, mira e ataca
     this.refreshObjective();
-    return b.start().finally(() => { this.battle = null; this.busy = true; });
+    return b.start().finally(() => { this.battle = null; this.busy = true; })
+      .then((r) => { if (r === 'win') this.g.missoes?.evento('vitoria', { id: def.id }); return r; });
   }
 
   async #giveBadge(npc, d) {
@@ -324,9 +327,9 @@ export class Story {
     const g = this.g, f = this.flags, out = [];
     const add = (o, r, label, fn) => { if (o && (o.visible ?? true)) out.push({ o, r, label, fn }); };
     // o roteiro (capítulo 2+) responde primeiro quando tem cena com "falar" para o personagem
-    const R = (quem, fn) => async () => { if (!(await this.roteiro.falar(quem))) return fn(); };
-    add(this.npc('mom'), 24, 'Falar', R('mae', () => this.momTalk()));
-    add(this.npc('prof'), 26, 'Falar', R('prof', () => this.profTalk()));
+    const R = (quem, fn, n) => async () => { if (await this.roteiro.falar(quem, { semRepete: true })) return; if (n && (await g.missoes?.conversar(n))) return; if (await this.roteiro.falar(quem)) return; return fn(); };
+    add(this.npc('mom'), 24, 'Falar', R('mae', () => this.momTalk(), this.npc('mom')));
+    add(this.npc('prof'), 26, 'Falar', R('prof', () => this.profTalk(), f.balls && this.npc('prof')));
     const rival = this.npc('rival');
     if (!f.rivalGone) add(rival, 24, 'Falar', () => this.#talk(rival, f.starter ? RIVAL.idle : RIVAL.before(this.pname)));
     if (!f.starter) for (const b of this.balls) add({ x: this.table.x + b.x, y: this.table.y + 2, h: 26, visible: b.visible }, 12, `Ver ${SPECIES[b.dex].name}`, () => this.pickStarter(b.dex));
@@ -352,8 +355,8 @@ export class Story {
       if (n.visible) { const dx = p.x - n.x, dy = p.y - n.y, d = Math.hypot(dx, dy), m = n.r + (p.r ?? 5); if (d > 0.01 && d < m) { p.x = n.x + dx / d * m; p.y = n.y + dy / d * m; } }
     }
     this.battle?.update(dt);
-    const demo = MAP_ID !== 'alvorada'; // mapa de teste (?mapa=demo-biomas): sem cenas do roteiro
-    if (!demo) this.roteiro.update(dt);
+    const demo = MAP_ID !== 'alvorada'; // mapa de teste (?mapa=demo-biomas): sem cenas do roteiro nem missões
+    if (!demo) { this.roteiro.update(dt); g.missoes?.update(dt); }
     else for (const n of [...this.roteiro.atores.values(), ...(this.roteiro.atoresPk ?? [])]) if (n.visible) n.visible = false;
     this.#music(dt);
     if ((this.objT -= dt) <= 0) { this.objT = 0.3; this.refreshObjective(); }
@@ -419,5 +422,5 @@ export class Story {
   }
 
   // na batalha o painel do treinador ocupa o lugar do objetivo
-  refreshObjective() { this.g.ui.hud.setObjective(this.battle ? null : currentObjective(this)); }
+  refreshObjective() { const o = this.battle ? null : currentObjective(this); this.g.ui.hud.setObjective(this.battle ? null : this.g.missoes?.objetivo(o) ?? o); }
 }

@@ -115,6 +115,8 @@ export class People {
       } finally { n.talking = false; n.wanderT = 2; }
       return;
     }
+    // missões e NPCs vivos (src/story/missoes): etapas, ofertas, presentes, troca, tutor e falas que mudam
+    if (g.missoes) { let ok = false; try { ok = await g.missoes.conversar(n); } catch (e) { console.warn('missões', e); } if (ok) { n.talking = false; n.wanderT = 2; return; } }
     const lines = n.def.lines?.length ? n.def.lines : ['…'];
     // fala em sequência: cada conversa mostra a próxima frase (ou todas, se forem curtas)
     const all = n.def.all ?? lines.length <= 2;

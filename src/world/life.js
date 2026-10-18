@@ -192,7 +192,7 @@ export class WorldLife {
       if (s.it.hidden) { const d = Math.hypot(s.x - p.x, s.y - p.y); s.sparkle.alpha *= d < 56 ? 0.75 : 0; s.sparkle.y = s.y - 4; }
       if (Math.hypot(s.x - p.x, s.y - 4 - p.y) < 10) {
         this.taken.add(s.key);
-        const item = s.it.item, n = s.it.n ?? 1; g.bag[item] = (g.bag[item] ?? 0) + n;
+        const item = s.it.item, n = s.it.n ?? 1; g.bag[item] = (g.bag[item] ?? 0) + n; g.missoes?.evento('item', { item, n, x: s.it.x, y: s.it.y });
         g.toast(`Você encontrou ${s.it.hidden ? 'algo escondido: ' : ''}${(n === 1 && ITEM_PT[item]) || (n > 1 ? n + '× ' : '') + itemName(item)}!`); g.audio?.sfx?.('levelup');
         g.fx?.emit(s.x, s.y - 6, { color: 0xfff27a, n: 10, speed: 40, size: 3, life: 0.5, vz: 40 });
         g.hudMoves?.();
