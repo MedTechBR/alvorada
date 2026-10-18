@@ -12,7 +12,9 @@ const FLORES2D = new Set(FLOWERS.flat().map((t) => t.source));
 // - Decoração plana do mapa (flores, vitórias-régias, seixos, tapetes, lava/maré animadas): no chão.
 // Lotes por folha de textura e modo (um draw call cada), refeitos a cada quadro.
 const MODOS = { opaco: 0, transp: 1, aditivo: 2, chao: 3, silhueta: 4 };
-const PK_3D = 1.6; // Pokémon (sprites PMD) maiores no 3D que no 2D, na escala do demo
+// Pokémon (sprites PMD) no 3D: a mesma proporção do 2D em relação ao treinador, e um teto de altura para os grandes
+// (com a câmera baixa, um Gyarados ou um Snorlax sem teto cobria metade da tela e ninguém sabia quem era quem)
+const PK_3D = 0.85, PK_MAX = 64; // PK_MAX: altura máxima em px do mundo (o treinador tem ~46)
 const ORDEM = [0, 4, 6, 2, 9]; // renderOrder por modo: chão antes dos billboards transparentes
 const lin = new Float32Array(256); for (let i = 0; i < 256; i++) lin[i] = Math.pow(i / 255, 2.2);
 
@@ -131,8 +133,11 @@ export class Espelho {
     this.dono = v.setores.modelos.donosDeSprite?.() ?? null;
     this.subst = this.pers.update();
     // corpos PMD dos Pokémon desenhados maiores no 3D (escala do demo), crescendo a partir do pé
-    const pk = (this.pkCorpos ??= new Set()); pk.clear();
-    for (const e of g.entities ?? []) if (e.body && e.mon && !this.subst?.has(e.body)) pk.add(e.body);
+    const pk = (this.pkCorpos ??= new Map()); pk.clear();
+    for (const e of g.entities ?? []) if (e.body && e.mon && !this.subst?.has(e.body)) {
+      const alt = (e.h ?? 24) * (e.scale ?? 1) * PK_3D;
+      pk.set(e.body, alt > PK_MAX ? PK_3D * PK_MAX / alt : PK_3D);
+    }
     const epv =(this.entPorView ??= new Map()); epv.clear();
     for (const e of g.entities ?? []) if (e.view && e.pouso) epv.set(e.view, e);
     if (g.player?.pouso) epv.set(g.player.view, g.player);
@@ -199,7 +204,7 @@ export class Espelho {
   #sprite(n, a, b, c, d, tx, ty, alpha, plano, deco) {
     const sub = this.subst?.get(n);
     if (sub) return this.#spriteHGSS(n, sub, a, b, c, d, tx, ty, alpha);
-    if (this.pkCorpos?.has(n)) { const K = PK_3D; a *= K; b *= K; c *= K; d *= K; }
+    const K = this.pkCorpos?.get(n); if (K) { a *= K; b *= K; c *= K; d *= K; }
     const T = n.texture, src = T.source; if (!src?.resource) return;
     const f = T.frame, o = T.orig, w = o.width, h = o.height; if (!w || !h) return;
     const ax = n.anchor.x, ay = n.anchor.y;
