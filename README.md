@@ -72,12 +72,21 @@ Interface e história (ramo `interface`):
 - `src/story/` capítulo 1 (Prof. Jatobá, Téo, treinadores, Cidade Campina, Líder Tomé). Posições por pontos nomeados: o mapa pode definir `map.spots` (ver `src/story/spots.js`).
 - **Motor de roteiro** (`src/story/roteiro.js`): executa os capítulos escritos em dados (`src/story/script/capNN.js`,
   formato na seção 8 de `docs/historia-completa.md`). O capítulo 1 segue no `story.js`; quando ele termina
-  (`flags.ch1Done`), o motor toca o 2 e o 3 (`JOGAVEIS` em roteiro.js). Gatilhos de lugar, zona, fala, treinador
+  (`flags.ch1Done`), o motor toca do 2 ao 6 (`JOGAVEIS` em roteiro.js). Gatilhos de lugar, zona, fala, treinador
   que avista, vitória, derrota, interrupção de batalha e flag; falas com escolhas; batalhas no mapa (`battle.js`,
   com chefe Alfa sem treinador); insígnia, MT, itens, montaria (`game.unlockMount`, ou `map.setMount` se faltar),
   hora do dia e objetivo do HUD com seta. Perdendo uma luta da história, volta ao último Centro Pokémon e a cena
   pode ser tentada de novo. Quem aparece no mapa: `src/story/elenco.js`; itens-chave: `src/story/itens.js`.
   Para jogar um capítulo novo: elenco + pontos no mapa + o id em `JOGAVEIS`.
+  Extras dos capítulos 4 a 6: batalha em dupla (`dupla: 'teo'`: o Pokémon do Téo luta ao seu lado e não desmaia),
+  `depois.pokemon` (Pokémon de presente), `objetivo.porSala` (seta por andar em prédios de vários andares), elenco com
+  `segue` (acompanha o jogador), `sempre` (aparece antes do capítulo 2), `loja` (Mercado no esquema de `world/lojas.js`),
+  `espera` (fala do treinador quando a luta ainda não pode) e Pokémon que atuam parados num ponto (`pokemon` + `spot`).
+- **Quebra-cabeças** (`src/story/enigmas.js`): circuitos que giram e portões de raio do Farol Coral, os três geradores
+  na ordem curto-longo-curto, portas dos quadros e espelhos com o raio de luar do Casarão das Velas, alavancas e
+  carrinhos da Mina Aurora, passagens que abrem com a história (escadas, rampas, elevador), tábuas de luz do Brejo
+  (Lente Prisma) e clima por lugar (tinta e névoa). Estado em `flags.enigmas`. Prédios e objetos novos (farol,
+  casarão, Torre Aurora, lápides, lampiões, torres de transmissão, carrinhos…) em `src/story/cenario.js`.
 - `src/save.js` save por conta no localStorage, automático a cada 30 s.
 - PWA: `manifest.webmanifest`, `sw.js` (rede primeiro), ícones em `assets/icons` (`python3 tools/make_icons.py`).
 
@@ -87,8 +96,11 @@ Interface e história (ramo `interface`):
   gerado da planta `docs/mapa-alvorada.json` (`python3 -I tools/gerar-esboco.py` → `assets/maps/esboco.json`;
   1 unidade da planta = 6 blocos). 600x480 blocos de 16 px por fora + faixa isolada de interiores.
   Prontos: Vila Alvorada, Rota 1, Cidade Campina com o ginásio (milharal-labirinto), Fazenda do Tomé, Rota 2,
-  Bosque Sussurrante, Vila Sussurro, Toca do Absol, Rota 3 (Margem das Garças) e Porto Espelho (Centro, Casa do Nestor e
-  o Galpão de Barcos, ginásio da Marina), com interiores. O resto está esboçado (terreno, cidades, rotas).
+  Bosque Sussurrante, Vila Sussurro, Toca do Absol, Rota 3 (Margem das Garças), Porto Espelho (Centro, Casa do Nestor e
+  o Galpão de Barcos, ginásio da Marina), Rota 4 (Rio Lúmen e Restinga), Cidade Coral com o Farol (3 andares), Praia dos
+  Corais, Rota 5 (Brejo das Lamparinas), Vila Lamparina com o Cemitério e o Casarão das Velas, Rota 6 (Ferrovia da
+  Aurora), Cidade Aurora com a Torre e a Mina Aurora (4 níveis), com interiores. Uma falésia separa os campos da praia:
+  a costa se alcança de Lapras pelo rio (ou pela escadaria do Mirante depois do capítulo 4). O resto está esboçado.
 - **Arte:** blocos e objetos do Tuxemon (CC BY-SA 4.0, `assets/CREDITOS.md`) + prédios, árvores e móveis desenhados por
   código (`src/world/art.js`, `buildings.js`). Bordas do chão por compositor (`ground.js`).
 - **Código:** `map.js` (GameMap: setores de 16x16 montados sob demanda, colisão, mato alto, `setTile`, `resolve`,
