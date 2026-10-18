@@ -376,8 +376,110 @@ def creditos(disp):
     open(os.path.join(DEST, 'CREDITOS.md'), 'w', encoding='utf-8').write('\n'.join(linhas) + '\n')
 
 
+# ------------------------------------------------------------------ baixar tudo (todas as espécies e formas do tracker)
+# Animações que o jogo realmente usa (src/sprites/pmd.js, src/combat/vfx.js, combat.js, altitude.js, ai.js, people.js):
+# Faint e Special nunca são pedidas (Faint cai em Hurt e Special em Shoot), então não são baixadas nem publicadas.
+USADAS = ['Idle', 'Walk', 'Attack', 'Shoot', 'Charge', 'Hurt', 'Sleep', 'Hop', 'Strike', 'Swing', 'Pound', 'Rotate']
+# subpastas do SpriteCollab que não são formas do jogo (cores alternativas, cenas, versões beta, fantasias…)
+FORA = re.compile(r'^(Altcolor|Cutscene.*|Alternate\d*|.*_Altcolor|.*_Alternate|Beta|Shadow|Substitute.*|Egg|Cosplay|Mikon|'
+                  r'Hakogame|Turban|Pombon|Libre|Female|Shiny|Starter|Totem.*|Partner)$')
+
+
+def alvos_do_tracker(tracker):
+    """[(caminho relativo a sprite/, nome da forma)] de tudo que tem Idle ou Walk: espécies 0001–1025 e formas."""
+    out = []
+    for dex, v in sorted(tracker.items()):
+        if not re.fullmatch(r'\d{4}', dex) or dex == '0000' or int(dex) > 1025:
+            continue
+        sf = v.get('sprite_files') or {}
+        if 'Idle' in sf or 'Walk' in sf:
+            out.append((dex, ''))
+        for sk, sv in (v.get('subgroups') or {}).items():
+            nome = (sv.get('name') or '').strip()
+            if sk == '0000' or not nome or FORA.match(nome) or not re.fullmatch(r'\d{4}', sk):
+                continue
+            sf = sv.get('sprite_files') or {}
+            if 'Idle' in sf or 'Walk' in sf:
+                out.append((f'{dex}/{sk}', nome))
+    return out
+
+
+def baixar_um(stage, caminho, nome):
+    pasta = os.path.join(stage, caminho.replace('/', '-'))
+    ok = os.path.join(pasta, '_ok.json')
+    if os.path.exists(ok):
+        return json.load(open(ok))
+    xml = baixar_url(f'{BASE}sprite/{caminho}/AnimData.xml')
+    if not xml:
+        return {'origem': None, 'caminho': caminho, 'nome': nome}
+    shadow, anims = parse_animdata(xml)
+    os.makedirs(pasta, exist_ok=True)
+    open(os.path.join(pasta, 'AnimData.xml'), 'wb').write(xml)
+    bases = []
+    for w in USADAS:
+        b = resolver(anims, w)
+        if b and b not in bases:
+            bases.append(b)
+    baixados = 0
+    for b in bases:
+        for ex in EXTRAS:
+            dados = baixar_url(f'{BASE}sprite/{caminho}/{b}-{ex}.png')
+            if eh_png(dados):
+                open(os.path.join(pasta, f'{b}-{ex}.png'), 'wb').write(dados)
+                baixados += 1
+    cred = baixar_url(f'{BASE}sprite/{caminho}/credits.txt')
+    if cred:
+        open(os.path.join(pasta, 'credits.txt'), 'wb').write(cred)
+    info = {'origem': caminho, 'nome': nome, 'shadow': shadow, 'bases': bases,
+            'faltou': [w for w in USADAS if not resolver(anims, w)], 'arquivos': baixados}
+    json.dump(info, open(ok, 'w'))
+    return info
+
+
+def baixar_tudo(stage, tracker_path, reaproveitar=None, lista=None):
+    """Baixa em paralelo (6 conexões) tudo que o tracker tem. `reaproveitar` = pasta de um download antigo
+    (formato da função baixar) cujas espécies com sprite próprio são copiadas em vez de baixadas de novo."""
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    os.makedirs(os.path.join(stage, '_meta'), exist_ok=True)
+    if not os.path.exists(os.path.join(stage, '_meta', 'credit_names.txt')):
+        nomes = baixar_url(BASE + 'credit_names.txt')
+        if nomes:
+            open(os.path.join(stage, '_meta', 'credit_names.txt'), 'wb').write(nomes)
+    if lista is None:
+        lista = alvos_do_tracker(json.load(open(tracker_path, encoding='utf-8')))
+    if reaproveitar:
+        for caminho, nome in lista:
+            if '/' in caminho:
+                continue
+            velho = os.path.join(reaproveitar, caminho)
+            novo = os.path.join(stage, caminho)
+            okv = os.path.join(velho, '_ok.json')
+            if os.path.exists(okv) and not os.path.exists(novo) and json.load(open(okv)).get('origem') == caminho:
+                shutil.copytree(velho, novo)
+                info = json.load(open(okv))
+                info['nome'] = ''
+                json.dump(info, open(os.path.join(novo, '_ok.json'), 'w'))
+    log(f'{len(lista)} alvos ({sum(1 for c, _ in lista if "/" in c)} formas)')
+    rel = {}
+    with ThreadPoolExecutor(max_workers=6) as ex:
+        fut = {ex.submit(baixar_um, stage, c, n): c for c, n in lista}
+        for i, f in enumerate(as_completed(fut)):
+            c = fut[f]
+            try:
+                rel[c] = f.result()
+            except Exception as e:  # rede: fica para a próxima rodada (o _ok.json só é gravado no fim)
+                rel[c] = {'origem': None, 'erro': str(e)}
+            if i % 25 == 0:
+                log(f'{i + 1}/{len(lista)} {c} {rel[c].get("arquivos", "-")}')
+    json.dump(rel, open(os.path.join(stage, '_meta', 'tudo.json'), 'w'), indent=1, sort_keys=True)
+    log('fim: ' + str(sum(1 for v in rel.values() if v.get('origem'))) + ' com sprite')
+
+
 if __name__ == '__main__':
     cmd = sys.argv[1] if len(sys.argv) > 1 else ''
+    if cmd == 'baixar-tudo':  # baixar-tudo <pasta_stage> <tracker.json> [pasta antiga para reaproveitar]
+        baixar_tudo(sys.argv[2], sys.argv[3], sys.argv[4] if len(sys.argv) > 4 else None)
+        sys.exit(0)
     if cmd == 'baixar':
         baixar(sys.argv[2])
     elif cmd == 'instalar':
