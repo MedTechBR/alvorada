@@ -52,6 +52,9 @@ export class Sobreposicao {
     // desenhos em coordenadas de mundo que moram fora do mundo do Pixi: perigos da arena de ginásio dentro de
     // ents (Graphics na origem) e a camada de cima da arena (que copia a câmera 2D)
     for (const c of ents.children) if (c.renderPipeId === 'graphics' && !c.x && !c.y && c.visible) R.render({ container: c, target: this.rt, clear: false, transform: this.mRT });
+    // chão dos quebra-cabeças (peças do circuito, raio de luar, tábuas de luz): mora na camada de decoração, que está
+    // escondida acima; sem isto as peças não apareciam no 3D e não dava para saber o que girar
+    for (const c of g.sobre3d ?? []) if (c && !c.destroyed && c.visible && c.children.length) R.render({ container: c, target: this.rt, clear: false, transform: this.mRT });
     const topo = g.arenaGinasio?.topo;
     if (topo && !topo.destroyed && topo.visible) { const ga = topo.children[0]; if (ga) R.render({ container: ga, target: this.rt, clear: false, transform: this.mRT }); }
     if (root) root.visible = vr; ents.visible = ve;

@@ -11,8 +11,10 @@ try {
   const u = await util({ P, sleep, out });
   const KEY = { up: 'w', down: 's', left: 'a', right: 'd' };
   const rota = (tx, ty) => P.ev(`game.grade.rota(game.player, ${tx} * 16 + 8, ${ty} * 16 + 10, false)`);
-  const andar = async (tx, ty) => { for (let i = 0; i < 200; i++) { const e = await u.est(); if (e.tx === tx && e.ty === ty && !e.an) return true; const d = await rota(tx, ty); if (!d) { await sleep(150); continue; } await u.hold(KEY[d], e.dir === d ? 140 : 160); await sleep(30); } return false; };
+  const andar = async (tx, ty) => { for (let i = 0; i < 60; i++) { await livre(); const e = await u.est(); if (e.tx === tx && e.ty === ty && !e.an) return true; const d = await rota(tx, ty); if (!d) { await sleep(150); continue; } await u.hold(KEY[d], e.dir === d ? 140 : 160); await sleep(30); } return false; };
   const prompt = () => P.ev('game.ui.hud.promptKey');
+  const livre = async () => { for (let i = 0; i < 120 && await P.ev('!!(game.story.busy || game.ui.dialog.open || game.mundo.warping || game.viagem?.ocupada || game.story.roteiro.rodando)'); i++) { if (await P.ev('!!game.ui.dialog.open')) await u.hold('enter', 60); await sleep(400); } };
+  await livre(); await sleep(1500);
   await u.foto(`${sala}-0-antes`);
   const c = JSON.parse(await P.ev(`JSON.stringify((() => { const E = game.story.roteiro.enigmas; const c = E.circ.find((c) => c.d.sala === ${JSON.stringify(sala)}); return { id: c.d.id, x: c.d.x, y: c.d.y, w: c.d.w, h: c.d.h, rots: c.rots, tipos: c.cells.map((q) => q.tipo), sol: c.d.caminho, sala: [E.salas[c.d.sala].x, E.salas[c.d.sala].y] }; })())`));
   console.log('circuito', c.id, 'dark antes:', await P.ev(`game.map.interiorAt(game.player.x, game.player.y).dark`));
@@ -26,6 +28,7 @@ try {
     const k = j * c.w + i; const rots = JSON.parse(await P.ev(`JSON.stringify(game.story.roteiro.enigmas.circ.find((c) => c.d.sala === ${JSON.stringify(sala)}).rots)`));
     let n = 0; while (rot(PECA[c.tipos[k]], (rots[k] + n) % 4) !== m && n < 4) n++;
     if (n === 0) continue;
+    console.log('peça', i, j, 'girar', n);
     const ok = await andar(c.sala[0] + c.x + i, c.sala[1] + c.y + j); if (!ok) { console.log('NÃO CHEGOU à peça', i, j); continue; }
     for (let t = 0; t < n; t++) { const pr = await prompt(); if (!/Girar/.test(pr ?? '')) console.log('sem prompt na peça', i, j, JSON.stringify(pr)); await u.hold('e', 70); await sleep(350); giros++; }
     if (await P.ev(`game.story.roteiro.enigmas.circ.find((c) => c.d.sala === ${JSON.stringify(sala)}).ligado`)) break;

@@ -98,7 +98,7 @@ export class Enigmas {
   constructor(roteiro) {
     this.r = roteiro; this.g = roteiro.g; this.map = this.g.map;
     this.salas = Object.fromEntries(this.map.interiors.map((r) => [r.id, r]));
-    this.floor = new PIXI.Container(); this.map.decorLayer.addChild(this.floor);
+    this.floor = new PIXI.Container(); this.map.decorLayer.addChild(this.floor); (this.g.sobre3d ??= new Set()).add(this.floor); // o 3D desenha este chão na sobreposição (visual3d/sobreposicao.js)
     this.glow = new PIXI.Container(); this.glow.blendMode = 'add';
     this.objs = []; this.t = 0; this.portalCool = 0;
     this.#montar();
