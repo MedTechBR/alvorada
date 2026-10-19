@@ -15,9 +15,8 @@ try {
       const DIRV = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
       const livre = (tx, ty) => tx >= 0 && ty >= 0 && tx < m.w && ty < m.h && !m.solidAt(tx * T + 8, ty * T + 8, false) && !g.grade.ocupado(tx, ty);
       // alcançáveis a partir do bloco onde estamos
-      const bx = Math.floor(p.x / T), by = Math.floor((p.y - 2) / T);
-      const vis = new Set([bx + ',' + by]), fila = [[bx, by]];
-      for (let i = 0; i < fila.length; i++) { const [a, b] = fila[i]; for (const [dx, dy] of Object.values(DIRV)) { const x = a + dx, y = b + dy, k = x + ',' + y; if (vis.has(k) || !livre(x, y)) continue; if (x < room.x - 1 || y < room.y - 1 || x > room.x + W || y > room.y + H) continue; vis.add(k); fila.push([x, y]); } }
+      // todos os blocos livres da sala (a conexão com a entrada depende das portas e portões, que mudam com o enigma)
+      const vis = new Set(); for (let y = room.y; y < room.y + H; y++) for (let x = room.x; x < room.x + W; x++) if (livre(x, y)) vis.add(x + ',' + y);
       const its = g.story.interactions().filter((it) => /Girar|Gerador|alavanca|Alavanca|espelho|Acender|Apagar|Tocha|Braseiro|placa|Puxar|Empurrar/i.test(it.label) || true);
       const hit = new Map(); // idx -> [{tx,ty,dir}]
       const ps = { x: p.x, y: p.y, pouso: p.pouso };
