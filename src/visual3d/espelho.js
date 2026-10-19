@@ -14,7 +14,7 @@ const FLORES2D = new Set(FLOWERS.flat().map((t) => t.source));
 const MODOS = { opaco: 0, transp: 1, aditivo: 2, chao: 3, silhueta: 4 };
 // Pokémon (sprites PMD) no 3D: a mesma proporção do 2D em relação ao treinador, e um teto de altura para os grandes
 // (com a câmera baixa, um Gyarados ou um Snorlax sem teto cobria metade da tela e ninguém sabia quem era quem)
-const PK_3D = 0.85, PK_MAX = 64; // PK_MAX: altura máxima em px do mundo (o treinador tem ~46)
+const PK_3D = 0.85, PK_MAX = 64, PK_MAX_DMAX = 120; // PK_MAX: altura máxima em px do mundo (o treinador tem ~46)
 const ORDEM = [0, 4, 6, 2, 9]; // renderOrder por modo: chão antes dos billboards transparentes
 const lin = new Float32Array(256); for (let i = 0; i < 256; i++) lin[i] = Math.pow(i / 255, 2.2);
 
@@ -135,8 +135,8 @@ export class Espelho {
     // corpos PMD dos Pokémon desenhados maiores no 3D (escala do demo), crescendo a partir do pé
     const pk = (this.pkCorpos ??= new Map()); pk.clear();
     for (const e of g.entities ?? []) if (e.body && e.mon && !this.subst?.has(e.body)) {
-      const alt = (e.h ?? 24) * (e.scale ?? 1) * PK_3D;
-      pk.set(e.body, alt > PK_MAX ? PK_3D * PK_MAX / alt : PK_3D);
+      const alt = (e.h ?? 24) * (e.scale ?? 1) * PK_3D, teto = e.dmaxT > 0 ? PK_MAX_DMAX : PK_MAX; // Dynamax: teto bem maior
+      pk.set(e.body, alt > teto ? PK_3D * teto / alt : PK_3D);
     }
     const epv =(this.entPorView ??= new Map()); epv.clear();
     for (const e of g.entities ?? []) if (e.view && e.pouso) epv.set(e.view, e);
