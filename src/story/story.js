@@ -437,6 +437,7 @@ export class Story {
         const [fx, fy] = DIRV[t.dir] ?? [0, 1];
         const dx = p.x - t.x, dy = p.y - t.y, along = dx * fx + dy * fy, across = Math.abs(dx * fy - dy * fx);
         if (along <= 4 || along > d.sight * T || across > T * 0.9) continue;
+        if (!g.map.veDe?.(t.x, t.y, p.x, p.y)) continue; // parede no meio: não avista
         this.#cut(async () => {
           t.exclaim(); g.audio?.sfx?.('exclaim');
           p.dir = this.#dirTo(p, t);

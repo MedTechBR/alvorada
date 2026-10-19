@@ -293,6 +293,7 @@ export class Roteiro {
       const dx = p.x - n.x, dy = p.y - n.y, along = dx * fx + dy * fy, across = Math.abs(dx * fy - dy * fx);
       if (along <= 4 || along > e.visao * T || across > T * 0.9) continue;
       if (this.#mapaDe(n.x, n.y) !== this.#mapaDe(p.x, p.y)) continue;
+      if (!g.map.veDe?.(n.x, n.y, p.x, p.y)) continue; // parede no meio: não avista
       this.s.cut(async () => {
         n.exclaim(); g.audio?.sfx?.('exclaim');
         await sleep(650);

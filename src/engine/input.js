@@ -34,7 +34,8 @@ export class Input {
     // toque/clique em algo do mundo (peça de quebra-cabeça): alvoToque(x, y) diz se ali tem algo; o toque vai para
     // `toques` (src/story/enigmas.js consome) e não vira golpe, arremesso nem analógico
     this.toques = []; this.alvoToque = null;
-    canvas.addEventListener('mousedown', (e) => { if (e.button === 0 && this.alvoToque?.(e.clientX, e.clientY)) { this.toques.push({ x: e.clientX, y: e.clientY, t: performance.now() }); return; } if (e.button === 0) this.taps.add('m0'); if (e.button === 2) this.taps.add('m1'); });
+    addEventListener('touchstart', () => { this.ultToque = performance.now(); }, { capture: true, passive: true });
+    canvas.addEventListener('mousedown', (e) => { if (performance.now() - (this.ultToque ?? -1e9) < 800) return; /* clique que o navegador inventa depois do toque */ if (e.button === 0 && this.alvoToque?.(e.clientX, e.clientY)) { this.toques.push({ x: e.clientX, y: e.clientY, t: performance.now() }); return; } if (e.button === 0) this.taps.add('m0'); if (e.button === 2) this.taps.add('m1'); });
     canvas.addEventListener('contextmenu', (e) => e.preventDefault());
     // zoom: roda do mouse e pinça com dois dedos
     this.zoomDelta = 0;

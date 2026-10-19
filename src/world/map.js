@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { T, TILE, SOLID, SWIMMABLE, MOUNT_PASS, TALLS } from './tiles.js';
+import { T, TILE, SOLID, SWIMMABLE, MOUNT_PASS, TALLS, WALLS } from './tiles.js';
 import { WATER_FRAMES, FLOWERS, LILY, TALL, CORN, SPR } from './art.js';
 import { KINDS, DECOR } from './objects.js';
 import { prepararMundo, montarParte, passosParte } from './build.js';
@@ -285,6 +285,13 @@ export class GameMap {
     let lx = x0, ly = y0;
     for (let i = 1; i <= n; i++) { const x = x0 + (x1 - x0) * i / n, y = y0 + (y1 - y0) * i / n; if (solido(x, y)) break; lx = x; ly = y; }
     return { x: lx, y: ly };
+  }
+  // Dá para ver de um ponto ao outro? (parede, penhasco e vazio tapam; objeto, água e portão de raio não)
+  // Treinador não avista o jogador do outro lado da parede (antes vinha andando através dela).
+  veDe(x0, y0, x1, y1) {
+    const n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 6));
+    for (let i = 1; i < n; i++) { const t = this.at(Math.floor((x0 + (x1 - x0) * i / n) / T), Math.floor((y0 + (y1 - y0) * i / n - 2) / T)); if (t === TILE.CLIFF || t === TILE.VOID || WALLS.has(t)) return false; }
+    return true;
   }
   // Centro do bloco livre mais perto (até `raio` blocos), na mesma sala; null se não há. solido(tx, ty) em blocos.
   blocoLivrePerto(px, py, solido, raio = 5) {

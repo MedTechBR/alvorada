@@ -257,20 +257,20 @@ export class Enigmas {
     G.clear();
     for (const cell of c.cells) {
       const k = cell.j * d.w + cell.i, lit = on.has(k), base = PECA[cell.tipo];
-      const borda = k === alvoK && !chegou ? 0xffd27a : toca ? 0x8aa0b8 : 0x5a6470;
-      G.roundRect(cell.x - 7, cell.y - 7, 14, 14, 2).fill({ color: 0x2a3040 }).stroke({ width: k === alvoK && !chegou ? 1.6 : 1, color: borda });
+      const borda = k === alvoK && !chegou ? 0xffd27a : toca ? 0xb4c8e4 : 0x5a6470;
+      G.roundRect(cell.x - 7, cell.y - 7, 14, 14, 2).fill({ color: 0x2a3040 }).stroke({ width: k === alvoK && !chegou ? 1.8 : toca ? 1.2 : 1, color: borda });
       const col = lit ? (chegou ? 0x9afff4 : 0xffd27a) : 0x6a6e78;
       const ca = Math.cos(cell.ang), sa = Math.sin(cell.ang);
       for (const [b, dx, dy] of SIDES) if (base & b) G.moveTo(cell.x, cell.y).lineTo(cell.x + (dx * ca - dy * sa) * 8, cell.y + (dx * sa + dy * ca) * 8).stroke({ width: 3, color: col });
       G.circle(cell.x, cell.y, 2.2).fill(col);
-      if (cell.flash > 0) G.roundRect(cell.x - 8, cell.y - 8, 16, 16, 3).stroke({ width: 1.5, color: 0xffffff, alpha: Math.min(1, cell.flash * 4) });
+      if (cell.flash > 0) { const a = Math.min(1, cell.flash * 4); G.roundRect(cell.x - 7, cell.y - 7, 14, 14, 2).fill({ color: 0xffffff, alpha: 0.28 * a }); G.roundRect(cell.x - 8.5, cell.y - 8.5, 17, 17, 3).stroke({ width: 2, color: 0xffffff, alpha: a }); }
     }
   }
   #girar(c, cell) {
     const k = cell.j * c.d.w + cell.i;
     if (c.ligado) { this.g.toast('O circuito já está ligado.'); return; }
     c.rots[k] = (c.rots[k] + 1) % 4; this.st['c_' + c.d.id] = c.rots.slice();
-    cell.alvo += Math.PI / 2; cell.flash = 0.3; // gira com animação (update)
+    cell.alvo += Math.PI / 2; cell.flash = 0.45; // gira com animação (update)
     this.g.audio?.sfx?.('pop'); this.g.ui?.buzz?.(12);
     this.#ligar(c, true);
   }
