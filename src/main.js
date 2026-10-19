@@ -419,7 +419,7 @@ class Game {
     const p = this.player, dx = ax - p.x, dy = ay - p.y, d = Math.hypot(dx, dy) || 1;
     const ball = new PIXI.Graphics(); ball.circle(0, 0, 3).fill(0xffffff); ball.rect(-3, -3, 6, 3).fill(0xe5383b); ball.circle(0, 0, 1).fill(0x222222);
     this.world.addChild(ball);
-    const dist = Math.min(d, 150), tx = p.x + dx / d * dist, ty = p.y + dy / d * dist;
+    const dist = Math.min(d, 260), tx = p.x + dx / d * dist, ty = p.y + dy / d * dist; // alcança o selvagem que o seu Pokémon enfrenta
     const col = parseInt((ITEM_INFO[key]?.color ?? '#e5383b').slice(1), 16);
     if (key !== 'pokeball' && col !== 0xe5383b) { ball.clear(); ball.circle(0, 0, 3).fill(0xffffff); ball.rect(-3, -3, 6, 3).fill(col); ball.circle(0, 0, 1).fill(0x222222); }
     this.balls ??= []; this.balls.push({ s: ball, key, x0: p.x, y0: p.y - 12, x1: tx, y1: ty, t: 0, dur: 0.25 + dist / 600 });
@@ -616,7 +616,10 @@ class Game {
       l.dodgeCd = (l.dodgeCd ?? 0) - dt;
       for (let s = 0; s < 4; s++) if (inp.pressed('m' + s)) { const a = this.#aimPoint(); this.combat.use(l, s, a.x, a.y); }
       if (inp.pressed('power')) this.poder?.usar(); // V: Mega Evolução ou Dynamax (src/combat/poder.js)
-      if (inp.pressed('recall') || inp.pressed('ball')) this.recall();
+      if (inp.pressed('recall')) this.recall();
+      // com o Pokémon em campo, o botão da Poké Bola joga bola de captura no selvagem mais perto (antes recolhia o Pokémon;
+      // recolher fica no R e no menu "…")
+      if (inp.pressed('ball')) { const a = this.#aimPoint(); this.throwBall(a.x, a.y); }
     } else {
       // treinador: Q (ou 1º botão) envia o Pokémon escolhido; B (ou 2º botão) joga Poké Bola de captura
       if (inp.pressed('ball') || inp.pressed('m0')) { const a = this.#aimPoint(); this.throwMon(this.leadIdx, a.x, a.y); }
@@ -666,7 +669,14 @@ class Game {
     const p = this.player;
     // poucos selvagens por vez e espaçados: cheio demais ficava impossível de jogar (WILD_MAX vivos, um novo a cada ~5 s)
     // (um por vez: com os sprites demorando a baixar, vários nasciam de uma vez só quando chegavam e passavam de WILD_MAX)
-    if (this.spawnT <= 0 && !this.spawnPend && this.wilds.filter((w) => w.alive).length < WILD_MAX) { this.spawnT = 4 + Math.random() * 3; this.spawnPend = true; this.spawnWild().catch(() => {}).finally(() => { this.spawnPend = false; }); }
+    // batalha com treinador (ou reide): nenhum selvagem nasce, e os que estão por perto vão embora em vez de entrar no meio
+    const lutaTreinador = (this.story?.battle && !this.story.battle.done) || (this.tocas?.reide && !this.tocas.reide.done);
+    if (lutaTreinador) {
+      this.spawnT = Math.max(this.spawnT, 3);
+      for (const w of this.wilds) if (w.alive && !w.saindo && Math.hypot(w.x - p.x, w.y - p.y) < 26 * T) { w.saindo = true; w.dead = true; w.vx = w.vy = 0; }
+    }
+    for (const w of [...this.wilds]) if (w.saindo && w.alpha <= 0.02) this.removeEntity(w);
+    if (!lutaTreinador && this.spawnT <= 0 && !this.spawnPend && this.wilds.filter((w) => w.alive).length < WILD_MAX) { this.spawnT = 4 + Math.random() * 3; this.spawnPend = true; this.spawnWild().catch(() => {}).finally(() => { this.spawnPend = false; }); }
     for (const w of this.wilds) {
       if (!w.alive || w.busy) { w.vx = w.vy = 0; continue; }
       if (w.stun > 0 || w.lock > 0) { w.vx = w.vy = 0; continue; }

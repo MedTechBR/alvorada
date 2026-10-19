@@ -42,6 +42,11 @@ export class Hud {
       const alterna = (e) => { e.preventDefault(); e.stopPropagation(); document.body.classList.toggle('mais-on'); clearTimeout(this.maisT); if (document.body.classList.contains('mais-on')) this.maisT = setTimeout(() => document.body.classList.remove('mais-on'), 5000); };
       m.addEventListener('touchstart', alterna, { passive: false }); m.addEventListener('click', alterna);
       tb.appendChild(m);
+      // recolher o Pokémon (o botão da Poké Bola, com ele em campo, agora joga bola de captura): fica dentro do "…"
+      const r = document.createElement('button'); r.className = 'tb small'; r.id = 't-recall'; r.setAttribute('aria-label', 'Recolher o Pokémon'); r.innerHTML = '<b>↩</b>';
+      const recolhe = (e) => { e.preventDefault(); e.stopPropagation(); this.g.input.taps.add('recall'); document.body.classList.remove('mais-on'); };
+      r.addEventListener('touchstart', recolhe, { passive: false }); r.addEventListener('click', recolhe);
+      tb.appendChild(r);
     }
     const mb = $('menu-btn');
     mb.innerHTML = ICONS.menu + (IS_TOUCH ? '' : '<span>Menu <kbd>M</kbd></span>');

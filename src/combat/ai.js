@@ -31,7 +31,6 @@ export class WildAI {
       const ai = w.ai;
       if (ai.state === 'sleep') { this.wake(w); continue; }
       if (ai.state === 'aggro' || ai.state === 'flee') continue;
-      if (w.temper === 'timid' && d < r * 0.7) { this.flee(w, src); continue; }
       if (ai.state !== 'alert' && (ai.state === 'idle' || ai.state === 'wander' || ai.state === 'follow')) { ai.state = 'alert'; ai.t = 0.9; ai.look = { x, y }; ai.src = src?.side ? src : null; this.#mark(w, '?', 0xffffff); }
     }
   }
@@ -48,7 +47,7 @@ export class WildAI {
     if (w.side !== 'wild' || !w.alive || !by) return;
     if (w.ai.state === 'sleep') this.wake(w);
     if (by.isTrainer && this.g.lead?.alive && Math.random() < 0.7) by = this.g.lead;
-    if (!cornered && w.temper === 'timid' && w.mon.hp > w.mon.stats.hp * 0.3 && !w.isAlpha) { this.flee(w, by); return; }
+    // (os tímidos não fogem mais do combate: revidam como os neutros; pedido do dono)
     const was = w.ai.state === 'aggro' && w.aggroTarget === by;
     w.ai.state = 'aggro'; w.ai.t = 12; w.aggroTarget = by;
     if (!was) { this.#mark(w, '!', 0xff5a4a); w.ai.react = 0.25 + Math.random() * 0.2; }
@@ -137,7 +136,6 @@ export class WildAI {
       const tgt = lead?.alive && !this.c.alt.hidden(lead) ? lead : pl;
       const d = Math.hypot(tgt.x - e.x, tgt.y - e.y);
       if (e.temper === 'aggressive' && d < sight) { this.provoke(e, tgt); return Z; }
-      if (e.temper === 'timid' && dP < sight && pl.speed > 50) { this.flee(e, pl); return Z; }
     }
     if (ai.state === 'follow') {
       const a = e.pack?.alpha;
