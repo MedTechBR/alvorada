@@ -19,6 +19,7 @@ import { drawLook, FW, FH } from './looks.js';
 import { MOUNTS, MOUNT_KINDS, mountModes, mountConfig } from '../world/mounts.js';
 import { MONTARIAS } from '../data/montarias.js';
 import { telaMissoes } from './missoes.js';
+import { telaEditarGolpes } from './editar-golpes.js';
 
 // Menu do jogo no estilo clássico (portado do 3D): lista vertical com cursor de seta,
 // caixas claras de borda arredondada dupla. Navega com mouse, teclado (setas/Enter/Esc), controle e toque.
@@ -553,10 +554,11 @@ export class GameMenu {
     }
     const m = g.party[i];
     const canSend = i !== g.leadIdx && !m.fainted && !this.ui.story?.busy;
-    const opts = ['Resumo', ...(canSend ? ['Enviar ao campo'] : []), 'Mudar ordem', 'Usar item', 'Item equipado', ...(mountModes(m).length ? ['Usar como montaria'] : []), 'Cancelar'];
+    const opts = ['Resumo', 'Editar golpes', ...(canSend ? ['Enviar ao campo'] : []), 'Mudar ordem', 'Usar item', 'Item equipado', ...(mountModes(m).length ? ['Usar como montaria'] : []), 'Cancelar'];
     const c = await this.#choose(esc(m.name), opts);
     const pick = opts[c];
     if (pick === 'Resumo') this.#summary(i);
+    else if (pick === 'Editar golpes') telaEditarGolpes(this, { screen: (o) => this.#screen(o), push: (l) => this.#push(l), choose: (t, o) => this.#choose(t, o), msg: (t) => this.#msg(t), refresh: () => this.refresh(), focus: (n) => this.#focus(n), pop: () => this.#pop(), q: (s) => this.q(s), helpers: { CAT_PT, KIND_PT, moveEffect } }, i);
     else if (pick === 'Enviar ao campo') { await g.sendOut(i); g.toast?.(`Vai, ${m.name}!`); this.ui.partyChanged(); this.refresh(); }
     else if (pick === 'Mudar ordem') { L.swap = i; this.refresh(); }
     else if (pick === 'Item equipado') await this.#heldMenu(m);
@@ -604,6 +606,7 @@ export class GameMenu {
     const m = g.party[c];
     if (m.moves.includes(id)) { await this.#msg(`${m.name} já sabe ${mv.name}.`); return; }
     if (!canLearn(m, id)) { await this.#msg(`${m.name} não consegue aprender ${mv.name}.`); return; }
+    m.noteMoves?.();
     if (m.moves.length < 4) m.moves.push(id);
     else {
       const r = await this.#choose(`${esc(m.name)} já sabe 4 golpes. Esquecer qual?`, [...m.moves.map((x) => esc(MOVES[x]?.name ?? x)), 'Não aprender']);
@@ -611,6 +614,7 @@ export class GameMenu {
       const old = MOVES[m.moves[r]]?.name; m.moves[r] = id;
       await this.#msg(`1, 2 e… pronto! ${m.name} esqueceu ${old}.`);
     }
+    m.noteMoves?.();
     if (m.pp && mv.pp) m.pp[m.moves.indexOf(id)] = mv.pp;
     if (ITEM_INFO[key].consumable) g.bag[key]--;
     g.audio?.sfx?.('levelup');
@@ -757,7 +761,8 @@ export class GameMenu {
   askLearn(m, id) {
     const mv = MOVES[id];
     if (!mv || m.moves.includes(id)) return Promise.resolve(false);
-    if (m.moves.length < 4) { m.moves.push(id); return Promise.resolve(true); }
+    m.noteMoves?.();
+    if (m.moves.length < 4) { m.moves.push(id); m.noteMoves?.(); return Promise.resolve(true); }
     const own = this.#openBare(), base = this.layers.length;
     return new Promise((res) => {
       this.pendingClose = () => res(false);
@@ -791,7 +796,7 @@ export class GameMenu {
               const old = MOVES[m.moves[k]]?.name ?? m.moves[k];
               const c = await this.#choose(`Esquecer ${esc(old)} e aprender ${esc(mv.name)}?`, ['Sim', 'Não']);
               if (c !== 0) return;
-              m.moves[k] = id;
+              m.moves[k] = id; m.noteMoves?.();
               this.g.audio?.sfx?.('levelup');
               this.ui.partyChanged();
               finish(true, `1, 2 e… pronto! ${m.name} esqueceu ${old} e aprendeu ${mv.name}!`);
