@@ -79,7 +79,7 @@ export class CenarioVivo {
     this.g = g;
     this.est = new Map();      // só os objetos mexidos: chave -> estado
     this.tiles = new Map();    // blocos trocados por um tempo: índice -> { tx, ty, orig, novo, tipo, ate, v }
-    this.fendas = [];          // { x, y, ang, len, ate }
+    this.listaFendas = [];          // { x, y, ang, len, ate }
     this.ouvintes = new Map();
     this.horas = 0; this.v = 0; this.fila = new Map(); this.enviarT = 0; this.scanT = 0; this.passaroT = 8;
     this.pronto = false;
@@ -104,7 +104,7 @@ export class CenarioVivo {
   mexidos() { return [...this.est.values()].map((s) => ({ o: s.o, ...this.estado(s.o) })); }
   camada(o) { const c = this.#camada(o); return c ? { ...c, nome: CAMADA_NOME[c.camada] } : null; }
   altura(e) { const p = e?.pouso; return { z: e?.z ?? 0, piso: e?.piso ?? 0, camada: p ? p.camada : CAMADA.CHAO, nome: CAMADA_NOME[p ? p.camada : 0], pouso: p?.k ?? null, saltando: !!e?.saltando }; }
-  temporarios() { const out = []; for (const t of this.tiles.values()) out.push({ tipo: t.tipo, tx: t.tx, ty: t.ty, orig: t.orig, novo: t.novo, resta: Math.max(0, t.ate - this.horas) }); for (const f of this.fendas) out.push({ tipo: 'fenda', x: f.x, y: f.y, ang: f.ang, len: f.len, resta: Math.max(0, f.ate - this.horas) }); return out; }
+  temporarios() { const out = []; for (const t of this.tiles.values()) out.push({ tipo: t.tipo, tx: t.tx, ty: t.ty, orig: t.orig, novo: t.novo, resta: Math.max(0, t.ate - this.horas) }); for (const f of this.listaFendas) out.push({ tipo: 'fenda', x: f.x, y: f.y, ang: f.ang, len: f.len, resta: Math.max(0, f.ate - this.horas) }); return out; }
   perfil(e) { return e?.isTrainer ? null : (e.cvPerfil ??= perfilEscalada(e.mon)); }
   // testes: adianta o relógio do cenário (horas do jogo)
   passar(h) { this.#tick(0, h); }
@@ -132,7 +132,7 @@ export class CenarioVivo {
     const g = this.g, m = g.map;
     if (m.id !== this.mapaId) {
       for (const s of this.est.values()) { s.marcas?.destroy({ children: true }); this.#tirarPedreiro(s); }
-      this.est.clear(); this.tiles.clear(); this.fendas = []; this.fila.clear(); this.mec = null;
+      this.est.clear(); this.tiles.clear(); this.listaFendas = []; this.fila.clear(); this.mec = null;
       for (const e of [g.player, ...g.entities]) if (e) { e.pouso = null; e.saltando = null; e.piso = 0; if (e.isTrainer) e.z = 0; }
       this.mapaId = m.id; this.flagsRef = null; // aplica o save do mundo novo no próximo passo
     }
@@ -388,7 +388,7 @@ export class CenarioVivo {
     for (let i = 0; i < n; i++) {
       const ang = Math.random() * Math.PI * 2, d = r * (0.25 + Math.random() * 0.6), len = 10 + Math.random() * r * 0.5;
       const f = { x: x + Math.cos(ang) * d, y: y + Math.sin(ang) * d * 0.7, ang, len, ate: this.horas + H_FENDA };
-      this.fendas.push(f); if (this.fendas.length > 40) this.fendas.shift();
+      this.listaFendas.push(f); if (this.listaFendas.length > 40) this.listaFendas.shift();
       for (let s = 0; s < len; s += 9) this.g.fx.decal('crack', f.x + Math.cos(ang) * s, f.y + Math.sin(ang) * s * 0.7, { scale: 0.6 + Math.random() * 0.4, life: H_FENDA * 50, rot: ang + (Math.random() - 0.5) * 0.6, alpha: 0.9 });
     }
     this.emit('fenda', { x, y, r, n });
@@ -881,7 +881,7 @@ export class CenarioVivo {
       if (SOLID.has(t.orig) && [g.player, ...g.entities].some((e) => e && Math.floor(e.x / T) === t.tx && Math.floor(e.y / T) === t.ty)) { t.ate = this.horas + 0.03; continue; }
       if (t.tipo === 'gelo') this.#derreter(t); else { m.setTile(t.tx, t.ty, t.orig); this.tiles.delete(t.tx + t.ty * m.w); this.emit('tile', { tx: t.tx, ty: t.ty, tipo: t.tipo, novo: t.orig, orig: t.orig, voltou: true }); }
     }
-    if (this.fendas.length && this.fendas[0].ate <= this.horas) this.fendas = this.fendas.filter((f) => f.ate > this.horas);
+    if (this.listaFendas.length && this.listaFendas[0].ate <= this.horas) this.listaFendas = this.listaFendas.filter((f) => f.ate > this.horas);
   }
   #vizinhos(o, r) { const m = this.g.map, out = new Set(), cx = o.tx, cy = o.ty, R = Math.ceil(r / T) + 1; for (let j = -R; j <= R; j++) for (let i = -R; i <= o.fw + R; i++) { const q = m.cellObj.get(cx + i + (cy + j) * m.w); if (q && q !== o && !q.dead && Math.hypot(q.x - o.x, q.y - o.y) < r + 8) out.add(q); } return out; }
   // a árvore caindo acerta quem estiver embaixo
