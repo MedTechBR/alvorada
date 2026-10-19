@@ -5,7 +5,7 @@ import { util } from './grade-util.mjs';
 import { mkdirSync } from 'node:fs';
 const sala = process.argv[2] ?? 'farol_coral', cel = process.argv.includes('celular');
 const out = new URL('../shots/enigmas/', import.meta.url); mkdirSync(out, { recursive: true });
-const s = await sessao({ qs: 'ir=' + sala, ...(cel ? { W: 740, H: 360, cel: true } : {}) });
+const s = await sessao({ qs: 'ir=farol_coral', ...(cel ? { W: 740, H: 360, cel: true } : {}) });
 const { P } = s;
 try {
   const u = await util({ P, sleep, out });
@@ -15,6 +15,9 @@ try {
   const prompt = () => P.ev('game.ui.hud.promptKey');
   const livre = async () => { for (let i = 0; i < 120 && await P.ev('!!(game.story.busy || game.ui.dialog.open || game.mundo.warping || game.viagem?.ocupada || game.story.roteiro.rodando)'); i++) { if (await P.ev('!!game.ui.dialog.open')) await u.hold('enter', 60); await sleep(400); } };
   await livre(); await sleep(1500);
+  // entra no andar pela escada (ponto de chegada dos portais do enigmas.js)
+  const ENTRADA = { farol_coral: null, farol_coral_2: [13, 10, 'up'], farol_topo: [2, 8, 'up'] }[sala];
+  if (ENTRADA) { await P.ev(`(() => { const r = game.map.interiors.find((x) => x.id === ${JSON.stringify(sala)}); game.mundo.warpTo(r.x + ${ENTRADA[0]}, r.y + ${ENTRADA[1]}, ${JSON.stringify(ENTRADA[2])}); return 1; })()`); await sleep(2500); await livre(); }
   await u.foto(`${sala}-0-antes`);
   const c = JSON.parse(await P.ev(`JSON.stringify((() => { const E = game.story.roteiro.enigmas; const c = E.circ.find((c) => c.d.sala === ${JSON.stringify(sala)}); return { id: c.d.id, x: c.d.x, y: c.d.y, w: c.d.w, h: c.d.h, rots: c.rots, tipos: c.cells.map((q) => q.tipo), sol: c.d.caminho, sala: [E.salas[c.d.sala].x, E.salas[c.d.sala].y] }; })())`));
   console.log('circuito', c.id, 'dark antes:', await P.ev(`game.map.interiorAt(game.player.x, game.player.y).dark`));
