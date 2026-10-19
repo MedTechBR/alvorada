@@ -189,7 +189,7 @@ export class Toque {
     // ícone do botão grande da esquerda: esquiva com o Pokémon, correr com o treinador
     this.#set('esqIc', pk, (v) => { const b = document.getElementById('t-dodge'); if (b) { b.innerHTML = v ? ICONES.esquiva : ICONES.correr; b.setAttribute('aria-label', v ? 'Esquiva' : 'Correr'); } });
     // número de bolas no Capturar do treinador
-    if (!pk) this.#set('nb', bolas, (v) => { const n = document.querySelector('.tb.move[data-slot="1"] .tq-n'); if (n) n.textContent = v; });
+    if (!pk) { const n = document.querySelector('.tb.move[data-slot="1"] .tq-n'); if (n && n.textContent !== String(bolas)) n.textContent = bolas; }
     const key = JSON.stringify(vis) + (innerWidth > innerHeight * 1.15 ? 'L' : 'P') + innerWidth + 'x' + innerHeight;
     if (key !== this.v.lay) { this.v.lay = key; this.#arruma(vis, pk); }
     if (pk) this.#recargas(l);
