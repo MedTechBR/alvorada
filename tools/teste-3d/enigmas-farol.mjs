@@ -9,6 +9,17 @@ const s = await sessao({ qs: 'ir=farol_coral', ...(cel ? { W: 740, H: 360, cel: 
 const { P } = s;
 try {
   const u = await util({ P, sleep, out });
+  if (cel) { // toque de verdade: analógico (arrastar) para andar/virar e o botão A (#t-act) para girar
+    const rect = async (sel) => JSON.parse(await P.ev(`JSON.stringify((() => { const r = document.querySelector('${sel}').getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, v: r.width > 0 && getComputedStyle(document.querySelector('${sel}')).display !== 'none' }; })())`));
+    const tq = (type, id, x, y) => P.raw('Input.dispatchTouchEvent', { type, touchPoints: type === 'touchEnd' ? [] : [{ x, y, id }] });
+    const V = { w: [0, -40], s: [0, 40], a: [-40, 0], d: [40, 0] };
+    const hold0 = u.hold;
+    u.hold = async (k, ms) => {
+      const ks = [].concat(k); if (ks[0] === 'e' || ks[0] === 'enter') { const a = await rect('#t-act'); if (!a.v) { console.log('  botão A não visível'); return; } await tq('touchStart', 7, a.x, a.y); await sleep(70); await tq('touchEnd', 7, 0, 0); return; }
+      const st = await rect('#stick'), [dx, dy] = V[ks[0]]; await tq('touchStart', 1, st.x, st.y); await sleep(20); await tq('touchMove', 1, st.x + dx, st.y + dy); await sleep(ms); await tq('touchEnd', 1, 0, 0);
+    };
+    console.log('toque ativo:', await P.ev('document.body.classList.contains("touch")'));
+  }
   const KEY = { up: 'w', down: 's', left: 'a', right: 'd' };
   const rota = (tx, ty) => P.ev(`game.grade.rota(game.player, ${tx} * 16 + 8, ${ty} * 16 + 10, false)`);
   const andar = async (tx, ty) => { for (let i = 0; i < 60; i++) { await livre(); const e = await u.est(); if (e.tx === tx && e.ty === ty && !e.an) return true; const d = await rota(tx, ty); if (!d) { await sleep(150); continue; } await u.hold(KEY[d], e.dir === d ? 140 : 160); await sleep(30); } return false; };
