@@ -2,7 +2,7 @@ import { SPECIES, BIOME_ENCOUNTERS, NIGHT_ENCOUNTERS, DEX_ORDER, speciesOfKey } 
 import { MOVES } from '../data/moves.js';
 import { TYPE_COLOR, TYPE_PT } from '../data/types.js';
 import { DEX_TEXT } from '../data/dex.js';
-import { ITEM_INFO, POCKETS, useItemOn, usableOnMon, holdable, itemName, itemInfo, sellPrice, buyPrice } from '../data/items.js';
+import { ITEM_INFO, itemId, POCKETS, useItemOn, usableOnMon, holdable, itemName, itemInfo, sellPrice, buyPrice } from '../data/items.js';
 import { ALVORADA_DEX } from '../story/pokedex.js';
 import { BADGES } from '../story/names.js';
 import * as World from '../world/map.js';
@@ -33,6 +33,7 @@ const STATUS_PT = { par: ['PAR', 'Paralisado', 'st-par'], slp: ['DOR', 'Dormindo
   brn: ['QUE', 'Queimado', 'st-brn'], frz: ['CON', 'Congelado', 'st-frz'] };
 const stPT = (s) => STATUS_PT[s] ?? [String(s).toUpperCase().slice(0, 3), String(s), 'st-slp'];
 const STAT_PT = { hp: 'PS', atk: 'Ataque', def: 'Defesa', spa: 'Atq. Esp.', spd: 'Def. Esp.', spe: 'Velocidade', eva: 'Evasão', acc: 'Precisão' };
+const POCKET_COLOR = { itens: '#e08a2c', remedios: '#b05fd6', bolas: '#e5383b', tms: '#3a86e0', frutas: '#3ca55c', chave: '#d3a41c' };
 const CAT_PT = { phys: ['Físico', '#e8603f'], spec: ['Especial', '#4f7fe0'], status: ['Estado', '#8d93ab'] };
 const KIND_PT = { melee: 'Corpo a corpo', dash: 'Investida', proj: 'Projétil', cone: 'Sopro em leque', wave: 'Onda ao redor', self: 'No próprio usuário',
   cloud: 'Nuvem', rain: 'Cai sobre o alvo', quake: 'Tremor ao redor', multi: 'Vários golpes seguidos' };
@@ -134,8 +135,38 @@ const ICON = {
   save: '<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2" fill="#7a5cd6" stroke="#36246e" stroke-width="1.4"/><rect x="7" y="3" width="10" height="6" fill="#fff" stroke="#36246e" stroke-width="1.2"/><rect x="7" y="13" width="10" height="8" rx="1" fill="#e9e3ff"/></svg>',
   close: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#eef2fa" stroke="#3a4363" stroke-width="1.4"/><path d="M8.5 8.5l7 7M15.5 8.5l-7 7" stroke="#3a4363" stroke-width="2" stroke-linecap="round"/></svg>',
 };
+
+// Frascos próprios: cada remédio tem forma e cor (Poção em spray roxo, Antídoto em frasco com gota, Antiparalisia amarelo com raio…)
+const MED = {
+  potion: ['spray', '#9b59d6'], superPotion: ['spray', '#e0662c'], hyperPotion: ['spray', '#e05a9b'], maxPotion: ['spray', '#3fa1d8'], fullRestore: ['spray', '#f2c94c'],
+  antidote: ['vial', '#9b59d6', 'drop'], paralyzeHeal: ['vial', '#f2c335', 'bolt'], awakening: ['vial', '#4a90e0', 'z'], burnHeal: ['vial', '#e5383b', 'flame'],
+  iceHeal: ['vial', '#6ad0e8', 'flake'], fullHeal: ['vial', '#ff8fb8', 'star'], revive: ['gem', '#f2d04c'], maxRevive: ['gem', '#ffb340'], revivalHerb: ['leaf', '#4fae4f'],
+  ether: ['vial', '#4cc2b0', 'plus'], maxEther: ['vial', '#2a9a8a', 'plus'], elixir: ['vial', '#b57be0', 'plus'], maxElixir: ['vial', '#7b4bc0', 'plus'],
+  freshWater: ['bottle', '#6fb8ee'], sodaPop: ['bottle', '#e8604a'], lemonade: ['bottle', '#f2d84c'], moomooMilk: ['bottle', '#f4f4f4'],
+  energyPowder: ['pouch', '#d86a8a'], energyRoot: ['leaf', '#a8763a'], healPowder: ['pouch', '#e6a5c8'],
+};
+const GLYPH = { drop: '<path d="M12 11c-2 2.6-3 4-3 5.4a3 3 0 0 0 6 0C15 15 14 13.600 12 11z" fill="#fff"/>', bolt: '<path d="M13 10l-3 5h2.500l-1 4 4-6h-2.500z" fill="#fff"/>',
+  z: '<path d="M9.500 11h5l-5 7h5" fill="none" stroke="#fff" stroke-width="1.800" stroke-linejoin="round"/>', flame: '<path d="M12 10c.5 2-2 3-2 5.500a2.300 2.300 0 0 0 4.600 0c0-1-.6-1.600-1-2.300 0 1-.8 1.300-.8 1.300.2-1.800-.8-3-.8-4.500z" fill="#fff"/>',
+  flake: '<path d="M12 10v9M8.500 12l7 5M15.500 12l-7 5" stroke="#fff" stroke-width="1.600" stroke-linecap="round"/>', star: '<path d="M12 10l1.200 2.800 3 .3-2.300 2 .7 3-2.600-1.600-2.600 1.600.7-3-2.300-2 3-.3z" fill="#fff"/>',
+  plus: '<path d="M12 11v7M8.500 14.500h7" stroke="#fff" stroke-width="2.200" stroke-linecap="round"/>' };
+function medIcon(k) {
+  const [shape, c, glyph] = MED[k] ?? [];
+  if (!shape) return null;
+  const S = '#1d2340', head = `fill="#fff" stroke="${S}" stroke-width="1.200"`;
+  const body = {
+    spray: `<rect x="10" y="2" width="8" height="3.500" rx="1.200" fill="#8d93ab" stroke="${S}" stroke-width="1.100"/><path d="M8 7h8l1.500 2.500v10A2.500 2.500 0 0 1 15 22H9a2.500 2.500 0 0 1-2.500-2.500v-10z" fill="${c}" stroke="${S}" stroke-width="1.300"/><rect x="9" y="12" width="6" height="5" rx="1" fill="#fff" opacity=".85"/><path d="M5 5h4" stroke="${S}" stroke-width="1.400" stroke-linecap="round"/>`,
+    vial: `<rect x="8.500" y="2.500" width="7" height="3.500" rx="1.200" fill="${c}" stroke="${S}" stroke-width="1.200"/><path d="M9 6h6l2.500 4v9.500A2.500 2.500 0 0 1 15 22H9a2.500 2.500 0 0 1-2.500-2.500V10z" fill="#e9f3ff" stroke="${S}" stroke-width="1.300"/><path d="M7 13h10v6.500A2.500 2.500 0 0 1 14.500 22h-5A2.500 2.500 0 0 1 7 19.500z" fill="${c}"/>${GLYPH[glyph] ?? ''}`,
+    bottle: `<rect x="10" y="2.500" width="4" height="3" rx="1" ${head}/><path d="M10 5.500c0 2-3 3-3 6.500v7a2.500 2.500 0 0 0 2.500 2.500h5a2.500 2.500 0 0 0 2.500-2.500v-7c0-3.500-3-4.500-3-6.500z" fill="${c}" stroke="${S}" stroke-width="1.300"/><rect x="8.500" y="12" width="7" height="5" rx="1" fill="#fff" opacity=".8"/>`,
+    gem: `<path d="M12 2.500l7 6.500-7 12.500L5 9z" fill="${c}" stroke="${S}" stroke-width="1.400" stroke-linejoin="round"/><path d="M5 9h14M9 9l3-6.500L15 9l-3 12.500z" fill="none" stroke="${S}" stroke-width="1" opacity=".55"/><path d="M8.500 8.500l2-3" stroke="#fff" stroke-width="1.600" stroke-linecap="round"/>`,
+    leaf: `<path d="M5 19C4 10 10 4 20 4c0 10-6 16-15 15z" fill="${c}" stroke="${S}" stroke-width="1.400" stroke-linejoin="round"/><path d="M5 19L15 9" stroke="${S}" stroke-width="1.200" stroke-linecap="round"/>`,
+    pouch: `<path d="M8 4h8l-1.500 3c3 1.500 4.500 4.500 4.500 8a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5c0-3.500 1.500-6.500 4.500-8z" fill="${c}" stroke="${S}" stroke-width="1.300" stroke-linejoin="round"/><rect x="8" y="3" width="8" height="2.500" rx="1" fill="#fff" stroke="${S}" stroke-width="1.100"/><circle cx="12" cy="14.500" r="2.200" fill="#fff" opacity=".85"/>`,
+  }[shape];
+  return `<svg viewBox="0 0 24 24">${body}</svg>`;
+}
+
 function itemIcon(k) {
   const it = ITEM_INFO[k];
+  const med = medIcon(itemId(k)); if (med) return med;
   if (it?.ball) return it.color && k !== 'pokeball' ? ICONS.ball.replace('#e5383b', it.color) : ICONS.ball;
   if (k === 'pokedex') return ICON.dex;
   if (k === 'townMap') return ICON.map;
@@ -145,7 +176,7 @@ function itemIcon(k) {
   return `<svg viewBox="0 0 24 24"><path d="M12 6c-1-2.5-3-3.5-5-3.5 1 2 2.6 3 5 3.5z" fill="#4c9a3c"/><circle cx="12" cy="14" r="7" fill="${it?.color ?? '#7bc67b'}" stroke="#1d2340" stroke-width="1.3"/><circle cx="9.5" cy="11.5" r="1.8" fill="#fff" opacity=".55"/></svg>`;
 }
 // Retrato: sprite do PMD (preenchido depois, assíncrono) ou silhueta
-const slot = (dex, cls = '', shadow = false) => `<div class="gm-pslot ${cls} ${shadow ? 'shadow' : ''}" data-dex="${dex}"><div class="gm-sil">${SILHOUETTE}</div></div>`;
+const slot = (dex, cls = '', shadow = false, tc = null) => `<div class="gm-pslot ${cls} ${shadow ? 'shadow' : ''}" data-dex="${dex}"${tc ? ` style="--tc:${tc}"` : ''}><div class="gm-sil">${ICONS.ball}</div></div>`;
 function fillPortraits(root) {
   root.querySelectorAll('.gm-pslot[data-dex]').forEach((s) => {
     const dex = /^\d+$/.test(s.dataset.dex) ? +s.dataset.dex : s.dataset.dex; // dex ou chave de forma ("26-alola")
@@ -397,6 +428,7 @@ export class GameMenu {
       render: () => {
         this.q('.gm-title').textContent = typeof opts.title === 'function' ? opts.title() : opts.title;
         this.q('.gm-extra').innerHTML = opts.extra?.(L) ?? '';
+        this.el.style.removeProperty('--th');
         const body = this.q('.gm-body');
         body.className = 'gm-body ' + (opts.cls ?? '');
         opts.draw(body, L);
@@ -525,8 +557,8 @@ export class GameMenu {
       draw: (body) => {
         body.innerHTML = `<div class="gm-grid">${g.party.map((m, i) => {
           const f = m.hp / m.stats.hp, st = m.status ? `<span class="status ${stPT(m.status)[2]}">${stPT(m.status)[0]}</span>` : '';
-          return `<div class="nav gm-box gm-pcard ${m.fainted ? 'ko' : ''} ${L.swap === i ? 'swap' : ''}" data-i="${i}">
-            <span class="gm-cur">▶</span>${slot(m.spriteKey ?? m.dex)}
+          return `<div class="nav gm-box gm-pcard ${m.fainted ? 'ko' : ''} ${L.swap === i ? 'swap' : ''}" data-i="${i}" style="--tc:${TYPE_COLOR[m.types[0]] ?? '#8d93ab'}">
+            <span class="gm-cur">▶</span>${slot(m.spriteKey ?? m.dex, '', false, TYPE_COLOR[m.types[0]])}
             <div class="gm-pmain"><div class="gm-pline"><span class="gm-pn">${esc(m.name)}</span>${i === g.leadIdx && g.lead?.alive ? '<span class="gm-tag">Em campo</span>' : ''}${st}${heldKey(m) ? `<span class="gm-ic sm" title="${esc(itemName(heldKey(m)))}">${itemIcon(heldKey(m))}</span>` : ''}</div>
               <div class="gm-pline"><span class="gm-lv">Nv. ${m.level}</span><span class="gm-types">${typePills(m.types)}</span></div>
               <div class="gm-hp"><span>PS</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div></div>
@@ -846,7 +878,7 @@ export class GameMenu {
       foot: `<b>↑↓</b> mover · <b>Enter</b> ${buy ? 'comprar' : 'vender'} · <b>Esc</b> voltar`,
       draw: (body) => {
         const ks = keys();
-        body.innerHTML = `<div class="gm-box gm-scroll gm-items">${ks.length ? ks.map((k) => `<div class="nav gm-row gm-item" data-k="${k}"><span class="gm-cur">▶</span><span class="gm-ic">${itemIcon(k)}</span><span class="nm">${esc(itemName(k))}</span><span class="gm-soft">${buy ? `tem ${g.bag[k] ?? 0}` : '×' + g.bag[k]}</span><span class="qt">₽ ${price(k).toLocaleString('pt-BR')}</span></div>`).join('') : `<div class="gm-empty">${buy ? 'Nada à venda.' : 'Você não tem nada que o Mercado compre.'}</div>`}</div>
+        body.innerHTML = `<div class="gm-box gm-scroll gm-items">${ks.length ? ks.map((k) => `<div class="nav gm-row gm-item" data-k="${k}"><span class="gm-cur">▶</span><span class="gm-ic">${itemIcon(k)}</span><span class="nm">${esc(itemName(k))}</span><span class="gm-soft">${buy ? (ITEM_INFO[k]?.tm ? ((g.bag[k] ?? 0) > 0 ? 'já tem · reutilizável' : 'reutilizável') : `tem ${g.bag[k] ?? 0}`) : '×' + g.bag[k]}</span><span class="qt">₽ ${price(k).toLocaleString('pt-BR')}</span></div>`).join('') : `<div class="gm-empty">${buy ? 'Nada à venda.' : 'Você não tem nada que o Mercado compre.'}</div>`}</div>
           <div class="gm-box gm-itemdesc"></div>`;
         body.querySelectorAll('.nav').forEach((n) => { n._act = () => this.#shopQty(mode, n.dataset.k, price(n.dataset.k)); });
         if (!ks.length) this.q('.gm-itemdesc').innerHTML = `<div class="gm-soft">${buy ? '' : 'Frutas, remédios, bolas e tesouros (Pérola, Pepita…) podem ser vendidos pela metade do preço.'}</div>`;
@@ -860,7 +892,8 @@ export class GameMenu {
   }
   #shopQty(mode, k, unit) {
     const g = this.g, buy = mode === 'buy';
-    const max = buy ? Math.max(0, Math.min(99, Math.floor((g.money ?? 0) / Math.max(1, unit)))) : g.bag[k] ?? 0;
+    if (buy && ITEM_INFO[k]?.tm && (g.bag[k] ?? 0) > 0) { this.#msg(`Você já tem ${itemName(k)}. MT não se gasta: use quantas vezes quiser!`); return; }
+    const max = buy ? Math.max(0, Math.min(ITEM_INFO[k]?.tm ? 1 : 99, Math.floor((g.money ?? 0) / Math.max(1, unit)))) : g.bag[k] ?? 0;
     if (max <= 0) { this.#msg(buy ? 'Você não tem dinheiro suficiente.' : 'Você não tem esse item.'); return; }
     let n = 1;
     const pop = this.q('.gm-pop');
@@ -915,9 +948,9 @@ export class GameMenu {
         const m = g.party[L.mi], sp = m.sp;
         const xpF = (m.xp - m.xpFloor()) / Math.max(1, m.xpToNext() - m.xpFloor());
         const f = m.hp / m.stats.hp;
-        const left = `<div class="gm-box gm-sumleft">
+        const left = `<div class="gm-box gm-sumleft" style="--tc:${TYPE_COLOR[m.types[0]] ?? '#8d93ab'}">
           <div class="gm-sumnav"><button class="gm-arrow" data-d="-1">▲</button><span>${L.mi + 1} / ${g.party.length}</span><button class="gm-arrow" data-d="1">▼</button></div>
-          ${slot(m.spriteKey ?? m.dex, 'big')}
+          ${slot(m.spriteKey ?? m.dex, 'big', false, TYPE_COLOR[m.types[0]])}
           <div class="gm-big">${esc(m.name)}</div><div class="gm-soft">Nv. ${m.level} · Nº ${pad3(m.dex)}</div>
           <div class="gm-types">${typePills(m.types)}</div>
           <div class="gm-hp"><span>PS</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div></div>
@@ -980,11 +1013,12 @@ export class GameMenu {
       extra: () => `<span class="gm-chip">₽ <b>${(g.money ?? 0).toLocaleString('pt-BR')}</b></span>`,
       foot: '<b>←→</b> bolso · <b>↑↓</b> mover · <b>Enter</b> usar · <b>Esc</b> voltar',
       draw: (body) => {
-        const [cat] = POCKETS[L.pocket];
+        const [cat] = POCKETS[L.pocket], pc = POCKET_COLOR[cat] ?? '#3a67c8';
+        this.el.style.setProperty('--th', pc);
         // itens desconhecidos (de outro ramo, ainda sem dados aqui) caem no bolso Itens
         const keys = Object.keys(g.bag).filter((k) => g.bag[k] > 0 && (ITEM_INFO[k]?.pocket ?? 'itens') === cat);
-        body.innerHTML = `<div class="gm-pockets">${POCKETS.map(([c, name], j) => `<button class="gm-tab ${j === L.pocket ? 'on' : ''}" data-p="${j}">${name}</button>`).join('')}</div>
-          <div class="gm-box gm-scroll gm-items">${keys.length ? keys.map((k) => `<div class="nav gm-row gm-item" data-k="${k}"><span class="gm-cur">▶</span><span class="gm-ic">${itemIcon(k)}</span><span class="nm">${esc(itemName(k))}</span><span class="qt">${ITEM_INFO[k]?.key ? '' : '×' + g.bag[k]}</span></div>`).join('') : '<div class="gm-empty">Este bolso está vazio.</div>'}</div>
+        body.innerHTML = `<div class="gm-pockets">${POCKETS.map(([c, name], j) => `<button class="gm-tab ${j === L.pocket ? 'on' : ''}" data-p="${j}" style="--c:${POCKET_COLOR[c]}">${name}</button>`).join('')}</div>
+          <div class="gm-box gm-scroll gm-items">${keys.length ? keys.map((k) => `<div class="nav gm-row gm-item" data-k="${k}"><span class="gm-cur">▶</span><span class="gm-ic">${itemIcon(k)}</span><span class="nm">${esc(itemName(k))}</span>${ITEM_INFO[k]?.tm ? '<span class="qt reuse" title="Não se gasta: use quantas vezes quiser">reutilizável</span>' : `<span class="qt">${ITEM_INFO[k]?.key ? '' : '×' + g.bag[k]}</span>`}</div>`).join('') : '<div class="gm-empty">Este bolso está vazio.</div>'}</div>
           <div class="gm-box gm-itemdesc"></div>`;
         body.querySelectorAll('.gm-tab').forEach((b) => { b.onclick = (e) => { e.stopPropagation(); L.pocket = +b.dataset.p; this.lastPocket = L.pocket; L.sel = 0; this.refresh(); }; });
         body.querySelectorAll('.nav').forEach((n) => { n._act = () => this.#useFromBag(n.dataset.k); });

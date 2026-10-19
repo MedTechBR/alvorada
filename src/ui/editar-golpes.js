@@ -40,7 +40,7 @@ export function telaEditarGolpes(menu, api, idx) {
       <div class="eg-pills">${pill(v.type)}<span class="gm-type" style="background:${cc}">${cat}</span>${extra}</div>
       <div class="eg-stats"><div><i>Poder</i><b>${v.power ?? '—'}</b></div><div><i>Precisão</i><b>${v.acc == null ? '—' : Math.round(v.acc * 100)}</b></div><div><i>Recarga</i><b>${fmt(v.cd ?? 1)} s</b></div></div>
       <div class="eg-kind">${esc(KIND_PT[v.kind] ?? '')}</div>
-      ${desc ? `<p class="eg-desc">${esc(desc)}</p>` : ''}${eff ? `<div class="gm-eff">${esc(eff)}</div>` : ''}`;
+      ${desc ? `<p class="eg-desc">${esc(desc)}</p>` : ''}${eff && !desc ? `<div class="gm-eff">${esc(eff)}</div>` : ''}`;
   };
 
   // aplica a mudança e avisa o resto do jogo (botões do HUD, recarga do espaço trocado)

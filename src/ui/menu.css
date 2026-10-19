@@ -321,3 +321,164 @@
 .gm-mtspd i { display: block; height: 100%; background: linear-gradient(90deg, #4fc36b, #ffd23f); }
 .gm-mthint { padding: 0 6px; font-size: 13px; }
 @media (max-width: 520px) { .gm-mtspd { width: 44px; } .gm-mtrow .gm-chip { display: none; } }
+
+/* =====================================================================================================
+   Acabamento no estilo HeartGold/SoulSilver e FireRed/LeafGreen: cor por função, borda dupla clara/escura,
+   fundos com gradiente e padrão discreto, faixa colorida nos cabeçalhos e cursor pulsando.
+   Cada tela define só --th (a cor dela); o resto (escuro, fundo, brilho) sai de color-mix.
+   ===================================================================================================== */
+.gm { --th: #3a67c8; --th2: color-mix(in srgb, var(--th) 58%, #0f1634); --thl: color-mix(in srgb, var(--th) 28%, #fff);
+  --bgA: color-mix(in srgb, var(--th) 17%, #fff); --bgB: color-mix(in srgb, var(--th) 7%, #fff); --pat: rgba(255,255,255,.62); }
+.gm:has(.gm-body.gm-party) { --th: #2fa05a; }
+.gm:has(.gm-body.gm-sum) { --th: #d9475f; }
+.gm:has(.gm-body.gm-split) { --th: #e5383b; }
+.gm:has(.gm-body.eg) { --th: #e8742a; }
+.gm:has(.gm-body.gm-mounts) { --th: #b9772f; }
+.gm:has(.gm-body.gm-mapscr) { --th: #3f9a52; }
+.gm:has(.gm-body.gm-cardscr) { --th: #2f6fe4; }
+.gm:has(.gm-body.gm-opts) { --th: #6f7a99; }
+.gm:has(.gm-body.gm-savescr) { --th: #7a5cd6; }
+.gm:has(.gm-body.gm-pc) { --th: #1fa3a8; }
+.gm:has(.gm-body.gm-shop) { --th: #e0902a; }
+.gm:has(.gm-body.gm-quests, .gm-body.mq) { --th: #c99a1c; }
+
+/* fundo: gradiente suave + bolinhas (telas ímpares) ou listras (pares) discretas */
+.gm.gm-sub { background:
+  radial-gradient(circle at 1px 1px, var(--pat) 1.6px, transparent 2px) 0 0 / 22px 22px,
+  linear-gradient(165deg, var(--bgA), var(--bgB) 55%, var(--bgA)); }
+.gm.gm-sub:has(.gm-body.gm-bag, .gm-body.gm-mounts, .gm-body.gm-opts, .gm-body.gm-pc) { background:
+  repeating-linear-gradient(135deg, rgba(255,255,255,.5) 0 12px, transparent 12px 24px),
+  linear-gradient(165deg, var(--bgA), var(--bgB) 55%, var(--bgA)); }
+
+/* caixas: borda dupla (escura por fora, clara por dentro) na cor da tela */
+.gm-box { background: linear-gradient(#ffffff, #f4f7fd); border: 3px solid var(--th2);
+  box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 5px var(--thl), 0 4px 0 color-mix(in srgb, var(--th2) 35%, transparent), 0 8px 14px -6px rgba(20,28,60,.25); }
+
+/* cabeçalho: faixa colorida com o título, botões em círculo e chips à direita */
+.gm-head { background: linear-gradient(180deg, color-mix(in srgb, var(--th) 78%, #fff), var(--th) 55%, var(--th2));
+  border: 3px solid var(--th2); border-radius: 999px; padding: 3px 5px; min-height: 48px;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.45), 0 4px 0 color-mix(in srgb, var(--th2) 35%, transparent); }
+.gm-title { background: none; box-shadow: none; padding: 0 14px; font-size: 20px; text-shadow: 0 2px 0 rgba(0,0,0,.28); letter-spacing: .6px; overflow: hidden; text-overflow: ellipsis; }
+.gm-back, .gm-x { width: 38px; height: 38px; border: 2px solid var(--th2); background: linear-gradient(#fff, #e6ecf8); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+.gm-x svg { width: 28px; height: 28px; }
+.gm-chip { background: linear-gradient(#fff, #eef2fb); border: 2px solid var(--th2); font-size: 13px; padding: 2px 11px; }
+.gm-chip.hot { background: linear-gradient(#ffe68a, #ffd23f); }
+.gm-tab { background: linear-gradient(#fff, #edf1fa); border: 2px solid var(--th2); color: var(--th2); padding: 3px 13px; }
+.gm-tab.on { background: linear-gradient(color-mix(in srgb, var(--th) 80%, #fff), var(--th)); color: #fff; text-shadow: 0 1px 0 rgba(0,0,0,.3); }
+.gm-sub-t { color: var(--th2); border-bottom: 2px solid var(--thl); }
+.gm-foot b { border-color: var(--thl); }
+
+/* linhas e cursor: seta pulsando + destaque que respira */
+.gm-row { transition: background .12s; }
+.gm-row.sel { background: linear-gradient(90deg, color-mix(in srgb, var(--th) 26%, #fff), color-mix(in srgb, var(--th) 7%, #fff)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--th) 55%, #efc54a); animation: gmglow 1.1s ease-in-out infinite alternate; }
+@keyframes gmglow { to { box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--th) 80%, #efc54a); } }
+.nav.sel > .gm-cur { color: var(--th2); font-size: 14px; }
+
+/* animação curta ao abrir a tela e ao trocar de página */
+.gm-body > * { animation: gmpage .2s cubic-bezier(.2,.7,.3,1) both; }
+.gm-body > *:nth-child(2) { animation-delay: .04s; }
+.gm-body > *:nth-child(3) { animation-delay: .08s; }
+@keyframes gmpage { from { opacity: 0; transform: translateY(8px) scale(.985); } }
+@media (prefers-reduced-motion: reduce) { .gm-body > *, .gm-screen, .gm-row.sel { animation: none; } }
+
+/* ---- retratos: bola de placeholder enquanto carrega ---- */
+.gm-pslot { background: radial-gradient(circle at 50% 60%, #fff 0 36%, color-mix(in srgb, var(--tc, var(--th)) 22%, #e6edfb) 74%); border: 3px solid color-mix(in srgb, var(--tc, var(--th)) 55%, #fff); box-shadow: inset 0 -5px 0 rgba(0,0,0,.05); }
+.gm-sil { display: flex; align-items: center; justify-content: center; width: 52%; height: 52%; opacity: .55; animation: gmph 1.2s ease-in-out infinite alternate; }
+.gm-sil svg { width: 100%; height: 100%; }
+@keyframes gmph { from { transform: scale(.88) rotate(-8deg); } to { transform: scale(1) rotate(8deg); } }
+
+/* ---- menu principal: ícone em bolha colorida por função ---- */
+.gm-side { background: linear-gradient(#ffffff, #eef2fb); }
+.gm-main { --ic: #3a67c8; padding: 4px 12px 4px 32px; }
+.gm-main[data-id=dex] { --ic: #e5383b; } .gm-main[data-id=party] { --ic: #2fa05a; } .gm-main[data-id=mounts] { --ic: #b9772f; } .gm-main[data-id=bag] { --ic: #e08a2c; }
+.gm-main[data-id=quests] { --ic: #c99a1c; } .gm-main[data-id=map] { --ic: #3f9a52; } .gm-main[data-id=voar] { --ic: #4a90e0; } .gm-main[data-id=card] { --ic: #2f6fe4; }
+.gm-main[data-id=online] { --ic: #1fa3a8; } .gm-main[data-id=options] { --ic: #6f7a99; } .gm-main[data-id=save] { --ic: #7a5cd6; } .gm-main[data-id=close] { --ic: #8d93ab; }
+.gm-main .gm-ic { width: 32px; height: 32px; border-radius: 50%; align-items: center; justify-content: center; background: radial-gradient(circle at 35% 28%, #fff, color-mix(in srgb, var(--ic) 22%, #fff)); border: 2px solid color-mix(in srgb, var(--ic) 70%, #1d2340); }
+.gm-main .gm-ic svg { width: 20px; height: 20px; }
+.gm-main.sel { background: linear-gradient(90deg, color-mix(in srgb, var(--ic) 30%, #fff), color-mix(in srgb, var(--ic) 10%, #fff)); box-shadow: inset 0 0 0 2px var(--ic); }
+.gm-main.sel > .gm-cur { color: var(--ic); }
+.gm-info { background: linear-gradient(#ffffff, #eef2fb); }
+
+/* ---- equipe: cartão colorido pelo tipo principal ---- */
+.gm-pcard { --tc: #8d93ab; background: linear-gradient(120deg, color-mix(in srgb, var(--tc) 30%, #fff), #fff 62%); border-color: color-mix(in srgb, var(--tc) 62%, #1d2340);
+  box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 5px color-mix(in srgb, var(--tc) 35%, #fff), 0 4px 0 color-mix(in srgb, var(--tc) 40%, transparent); }
+.gm-pcard.sel { background: linear-gradient(120deg, color-mix(in srgb, var(--tc) 42%, #fff7cf), #fffbe8 70%); border-color: #b48a10; animation: gmglow2 1.1s ease-in-out infinite alternate; }
+@keyframes gmglow2 { to { transform: translateY(-2px); } }
+.gm-pcard .gm-pn { text-shadow: 0 1px 0 #fff; }
+.gm-pcard.ko { background: linear-gradient(#f1f1f5, #e2e3ea); }
+.gm-hp { font-weight: 900; color: var(--th2); }
+.hpbar { background: #dfe5f2; border-radius: 99px; overflow: hidden; box-shadow: inset 0 0 0 1.5px #b9c4de, inset 0 2px 0 rgba(0,0,0,.08); }
+.hpbar i { background-image: linear-gradient(rgba(255,255,255,.4), rgba(255,255,255,0) 55%, rgba(0,0,0,.1)); background-blend-mode: normal; }
+.gm-type { box-shadow: inset 0 -2px 0 rgba(0,0,0,.18), 0 1px 0 rgba(255,255,255,.6); border: 1.5px solid rgba(0,0,0,.18); font-weight: 900; letter-spacing: .3px; }
+
+/* ---- resumo e golpes ---- */
+.gm-sumleft { background: linear-gradient(180deg, color-mix(in srgb, var(--tc, var(--th)) 32%, #fff), #fff 58%); }
+.gm-move { background: linear-gradient(90deg, color-mix(in srgb, var(--c) 16%, #fff), #f6f8fd 55%); border: 2px solid color-mix(in srgb, var(--c) 40%, #fff); border-left: 7px solid var(--c); }
+.gm-tbl tr + tr { border-top-color: var(--thl); }
+.gm-tbl th { color: var(--th2); }
+
+/* ---- mochila: cada bolso com a sua cor ---- */
+.gm-bag { --pc: var(--th); }
+.gm-pockets .gm-tab { --c: var(--th); border-color: color-mix(in srgb, var(--c) 70%, #1d2340); color: color-mix(in srgb, var(--c) 75%, #1d2340); padding: 4px 14px; }
+.gm-pockets .gm-tab.on { background: linear-gradient(color-mix(in srgb, var(--c) 78%, #fff), var(--c)); color: #fff; box-shadow: 0 3px 0 color-mix(in srgb, var(--c) 55%, #1d2340); transform: translateY(-1px); }
+.gm-items { background: linear-gradient(#fff, color-mix(in srgb, var(--pc) 7%, #fff)); }
+.gm-item { border-bottom: 2px dotted var(--thl); border-radius: 8px; }
+.gm-item .gm-ic { width: 36px; height: 36px; align-items: center; justify-content: center; border-radius: 50%; background: radial-gradient(circle at 35% 28%, #fff, color-mix(in srgb, var(--pc) 16%, #fff)); border: 2px solid color-mix(in srgb, var(--pc) 45%, #fff); }
+.gm-item .gm-ic svg { width: 26px; height: 26px; }
+.gm-item .qt { background: color-mix(in srgb, var(--pc) 14%, #fff); border: 2px solid color-mix(in srgb, var(--pc) 40%, #fff); border-radius: 99px; padding: 0 10px; font-size: 14px; }
+.gm-item .qt:empty { display: none; }
+.gm-item .qt.reuse { background: linear-gradient(#e7fbe9, #cdf2d2); border-color: #55b867; color: #1f7a38; font-size: 12px; letter-spacing: .3px; }
+.gm-itemdesc { background: linear-gradient(#fff, color-mix(in srgb, var(--pc) 9%, #fff)); }
+.gm-itemdesc .gm-ic.big { width: 62px; height: 62px; align-items: center; justify-content: center; border-radius: 50%; background: radial-gradient(circle at 35% 28%, #fff, color-mix(in srgb, var(--pc) 22%, #fff)); border: 3px solid color-mix(in srgb, var(--pc) 50%, #fff); flex: none; }
+.gm-itemdesc .gm-ic.big svg { width: 44px; height: 44px; }
+.gm-ic.sm svg { width: 18px; height: 18px; }
+
+/* ---- Pokédex ---- */
+.gm-dexrow:nth-child(odd) { background: color-mix(in srgb, var(--th) 5%, #fff); }
+
+.gm-dexrow .no { color: var(--th2); font-weight: 900; }
+.gm-dexinfo { background: linear-gradient(#fff, color-mix(in srgb, var(--th) 6%, #fff)); }
+
+/* ---- cartão de treinador, opções, salvar, montarias ---- */
+.gm-seg i.on { background: linear-gradient(#ffd98a, #f0902b); border-color: #b86512; }
+.gm-step { border-color: var(--thl); }
+.gm-saveinfo, .gm-ask, .gm-optnote { background: linear-gradient(#fff, #f4f7fd); }
+.gm-pop, .gm-msg { background: linear-gradient(#ffffff, #f1f5fc); border-color: #2a335a; box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 5px #cfd9f0, 0 6px 0 rgba(20,28,60,.25), 0 14px 24px -8px rgba(20,28,60,.4); }
+
+
+/* ---- celular deitado (telas baixas): faixa e bolsões mais compactos ---- */
+@media (max-height: 520px) {
+  .gm-head { min-height: 34px; padding: 2px 4px; border-width: 2px; }
+  .gm-title { font-size: 15px; padding: 0 10px; }
+  .gm-back, .gm-x { width: 28px; height: 28px; }
+  .gm-x svg { width: 21px; height: 21px; }
+  .gm-chip { font-size: 11px; padding: 1px 8px; }
+  .gm-tab { font-size: 12px; padding: 2px 10px; }
+  .gm-pockets { gap: 5px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 0 2px 3px; }
+  .gm-pockets .gm-tab { flex: none; padding: 2px 10px; }
+  .gm-main { padding: 2px 10px 2px 28px; }
+  .gm-main .gm-ic { width: 24px; height: 24px; border-width: 1.5px; }
+  .gm-main .gm-ic svg { width: 15px; height: 15px; }
+  .gm-item { padding-top: 3px; padding-bottom: 3px; }
+  .gm-item .gm-ic { width: 28px; height: 28px; }
+  .gm-item .gm-ic svg { width: 20px; height: 20px; }
+  .gm-item .qt { font-size: 12px; padding: 0 8px; }
+  .gm-itemdesc { min-height: 0; padding: 6px 14px; gap: 10px; }
+  .gm-itemdesc .gm-ic.big { width: 40px; height: 40px; border-width: 2px; }
+  .gm-itemdesc .gm-ic.big svg { width: 28px; height: 28px; }
+  .gm-sumleft .gm-sumnav { font-size: 12px; }
+  .gm-sumleft .gm-pslot.big { width: 84px; height: 84px; }
+  .gm-sumleft .gm-big { font-size: 15px; }
+  .gm-sumleft { gap: 1px; padding: 6px; }
+  .gm-pslot, .gm-pslot.big { border-width: 2px; }
+  .gm-box { border-width: 2px; box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 4px var(--thl), 0 3px 0 color-mix(in srgb, var(--th2) 35%, transparent); }
+}
+@media (max-height: 520px) {
+  .gm-side { max-height: calc(100% - 16px - var(--safe-t) - var(--safe-b)); overflow-y: auto; padding: 4px 6px; scrollbar-width: none; }
+  .gm-list { gap: 0; }
+  .gm-main { padding: 0 10px 0 28px; font-size: 14px; }
+  .gm-main .gm-ic { width: 22px; height: 22px; }
+  .gm-main .gm-ic svg { width: 14px; height: 14px; }
+}
+.gm-mapcv { box-shadow: 0 0 0 2px var(--th2); }
+.gm-key:empty { display: none; }

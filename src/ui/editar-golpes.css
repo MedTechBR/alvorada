@@ -9,14 +9,14 @@
 .eg-slot.vazio { border-left-style: dashed; color: var(--ink-soft); background: #fafbfe; }
 .eg-slot.alvo { outline: 3px solid #ffd23f; }
 .eg-slot.sel, .eg-opt.sel { background: #fff0b8; }
-.eg-n { flex: none; width: 22px; height: 22px; border-radius: 50%; background: #36426b; color: #fff; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; }
+.eg-n { flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--th2); color: #fff; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; }
 .eg-nm { flex: 1; min-width: 0; display: flex; align-items: center; white-space: nowrap; }
 .eg-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .eg-dica { margin-top: auto; font-size: 12px; color: var(--ink-soft); padding-top: 4px; }
 .eg-chips { display: flex; gap: 5px; overflow-x: auto; padding: 2px 2px 8px; flex: none; scrollbar-width: none; }
 .eg-chips::-webkit-scrollbar { display: none; }
-.eg-chip { flex: none; border: 2px solid var(--c, #36426b); background: #fff; color: var(--c, #36426b); border-radius: 99px; padding: 3px 11px; font-size: 13px; white-space: nowrap; }
-.eg-chip.on { background: var(--c, #36426b); color: #fff; text-shadow: 0 1px 0 rgba(0,0,0,.25); }
+.eg-chip { flex: none; border: 2px solid var(--c, var(--th2)); background: #fff; color: var(--c, var(--th2)); border-radius: 99px; padding: 3px 11px; font-size: 13px; white-space: nowrap; }
+.eg-chip.on { background: var(--c, var(--th2)); color: #fff; text-shadow: 0 1px 0 rgba(0,0,0,.25); }
 .eg-chip.sel { box-shadow: 0 0 0 3px #ffd23f; }
 .eg-rows { flex: 1; min-height: 0; }
 .eg-opt { border-left: 6px solid var(--c); margin-bottom: 4px; padding-top: 6px; padding-bottom: 6px; font-size: 16px; min-width: 0; }
