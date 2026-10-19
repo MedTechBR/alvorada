@@ -38,7 +38,7 @@ async function caso(b, nome, rodada) {
     await p.raw('Page.reload', {});
   }
   await until(() => p.ev('!!window.game?.map && window.game.ui?.state === "play" && !!window.game.player'), 60000);
-  await p.ev(`import('/tools/jornadas-teste.js')`); await p.ev(`import('/tools/arenas-bot.js')`);
+  await p.ev(`import(location.origin + '/tools/jornadas-teste.js')`); await p.ev(`import(location.origin + '/tools/arenas-bot.js')`);
   if (CEL) await p.raw('Emulation.setCPUThrottlingRate', { rate: 4 });
   await sleep(500);
   // equipe, flags e lugar
