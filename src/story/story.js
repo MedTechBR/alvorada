@@ -295,6 +295,10 @@ export class Story {
     if (temEspaco(m, mx, my, { extra })) return null;
     const r = acharEspaco(m, mx, my, { extra });
     if (!r) return null;
+    if (r.aperto) { // só o melhor que a sala tem: muda só se for bem mais aberto do que aqui
+      const aqui = acharEspaco(m, mx, my, { extra, raio: 4, tamanhos: [[r.w, r.h]] });
+      if (aqui && (aqui.livres ?? r.w * r.h) + 6 >= r.livres) return null;
+    }
     const L = lugares(r, p.x <= npc.x);
     const antes = { j: { x: p.x, y: p.y, dir: p.dir }, n: { x: npc.x, y: npc.y, dir: npc.dir } };
     const leva = (j, n) => {
