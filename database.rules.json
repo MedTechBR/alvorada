@@ -18,7 +18,7 @@
               "d": { ".validate": "newData.isString() && (newData.val() === 'down' || newData.val() === 'up' || newData.val() === 'left' || newData.val() === 'right')" },
               "r": { ".validate": "newData.isBoolean()" },
               "w": { ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9-]{1,24}$/)" },
-              "ts": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1e12" },
+              "ts": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000000000" },
               "l": {
                 ".validate": "newData.hasChildren(['x', 'y', 'u'])",
                 "x": { ".validate": "newData.isNumber() && newData.val() >= -64 && newData.val() <= 65700" },

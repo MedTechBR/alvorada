@@ -13,6 +13,7 @@ import { MountRig } from '../world/mounts.js';
 // ficam só com a posição guardada (minimapa e lista do menu), sem boneco nem Pokémon em campo.
 
 const DELAY = 130, DELAY_DUEL = 90, EXTRAP = 160;
+const DELAY_SLOW = 300, DELAY_DUEL_SLOW = 200, EXTRAP_SLOW = 320; // mundo Firebase: posição ~4,5x/s (10x no duelo)
 export const EMOTES = { heart: '♥', excl: '!', ask: '?', note: '♪', dots: '…', gg: 'GG', zz: 'zZ', smile: ':)', wave: 'Oi!' }; // wave = Acenar
 
 function label(text, color = '#ffffff', size = 6) {
@@ -78,7 +79,7 @@ class Remote {
     this.w = s.w ?? 'alvorada'; // mundo (continente) em que ele está
   }
   // posição interpolada no instante (agora - atraso)
-  sample(delay) {
+  sample(delay, extrap = EXTRAP) {
     const b = this.buf; if (!b.length) return null;
     const rt = performance.now() - delay;
     let i = b.length - 1; while (i > 0 && b[i - 1].t > rt) i--;
@@ -86,7 +87,7 @@ class Remote {
     if (!A && rt < B.t) return { ...B, vx: 0, vy: 0, lv: { x: 0, y: 0 } };
     if (!A || rt >= B.t) {
       const P = b[b.length - 2], Q = b[b.length - 1];
-      if (!P || rt - Q.t > EXTRAP) return { ...Q, vx: 0, vy: 0, lv: { x: 0, y: 0 } };
+      if (!P || rt - Q.t > extrap) return { ...Q, vx: 0, vy: 0, lv: { x: 0, y: 0 } };
       const k = (rt - Q.t) / Math.max(1, Q.t - P.t), dt = (Q.t - P.t) / 1000 || 0.1;
       const vx = (Q.x - P.x) / dt, vy = (Q.y - P.y) / dt;
       const l = Q.l && P.l ? { ...Q.l, x: Q.l.x + (Q.l.x - P.l.x) * k, y: Q.l.y + (Q.l.y - P.l.y) * k } : Q.l;
@@ -137,8 +138,8 @@ class Remote {
     this.dropFollower(); this.leadKey = '';
     this.rig?.setKind(null);
   }
-  update(dt, duel, inView) {
-    const s = this.sample(duel ? DELAY_DUEL : DELAY);
+  update(dt, duel, inView, slow = false) {
+    const s = this.sample(slow ? (duel ? DELAY_DUEL_SLOW : DELAY_SLOW) : (duel ? DELAY_DUEL : DELAY), slow ? EXTRAP_SLOW : EXTRAP);
     if (!s) return;
     this.x = s.x; this.y = s.y; this.has = true;
     if (!duel && !inView(s.x, s.y)) { this.hide(); return; }
@@ -206,7 +207,7 @@ export class Remotes {
   update(dt, duelWith) {
     const g = this.g, z = g.zoom || 3, hw = innerWidth / 2 / z + 96, hh = innerHeight / 2 / z + 96, c = g.cam ?? g.player;
     const inView = (x, y) => Math.abs(x - c.x) < hw && Math.abs(y - c.y) < hh && this.sameRoom(x, y);
-    for (const r of this.map.values()) r.update(dt, r.id === duelWith, (x, y) => (r.w ?? 'alvorada') === (g.map.id ?? 'alvorada') && inView(x, y));
+    for (const r of this.map.values()) r.update(dt, r.id === duelWith, (x, y) => (r.w ?? 'alvorada') === (g.map.id ?? 'alvorada') && inView(x, y), this.slow);
   }
   // pontos do minimapa: quem está no mesmo lugar que você
   dots() { const out = []; for (const r of this.map.values()) if (r.has && this.sameRoom(r.x, r.y, r.w ?? 'alvorada')) out.push({ x: r.x, y: r.y, drop: !!r.drop }); return out; }

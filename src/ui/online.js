@@ -211,11 +211,12 @@ export class OnlineUI {
     const net = this.net, on = net.on, room = net.room, btn = this.$('net-btn'), w = net.world;
     btn.classList.toggle('on', on);
     const live = on ? room.roster.filter((p) => !p.drop).length : 0;
-    const text = on ? (net.inWorld ? `● Canal ${w.channel} · ${live} online` : `● ${room.code} · ${room.players.size}`)
+    const near = Math.max(0, live - 1), where = w.fire ? (near ? `${near} por perto` : 'Online') : `Canal ${w.channel} · ${live} online`; // Firebase: só conta quem está por perto
+    const text = on ? (net.inWorld ? `● ${where}` : `● ${room.code} · ${room.players.size}`)
       : w.running ? (w.state === 'offline' ? 'Offline' : 'Online…') : 'Online';
     if (btn.textContent !== text) btn.textContent = text;
     // o botão Online virou item do menu (style.css); o indicador discreto fica nos atalhos de cima, ao lado do Chat
-    const chip = this.$('net-chan'), ct = on ? (net.inWorld ? `Canal ${w.channel} · ${live} online` : `${room.code} · ${room.players.size}`) : '';
+    const chip = this.$('net-chan'), ct = on ? (net.inWorld ? (w.fire ? (near ? `${near} por perto` : '') : where) : `${room.code} · ${room.players.size}`) : '';
     if (chip.textContent !== ct) chip.textContent = ct;
     btn.title = on ? 'Jogadores online (O)' : w.running ? (w.state === 'offline' ? 'Sem conexão com o mundo; tentando de novo sozinho' : 'Procurando um canal do mundo…') : 'Jogar online (O)';
   }
@@ -271,9 +272,9 @@ export class OnlineUI {
       <span class="nm">${esc(p.name)}${p.me ? ' (você)' : ''}${p.drop ? '<span class="tag drop">caiu…</span>' : ''}<br><span class="net-small">${esc(p.area)}${p.dist != null ? ` · ${p.dist} blocos` : ''}${p.near ? ' · aqui perto' : ''}</span></span>
       ${!p.me && !p.drop ? `<button data-a="wave" data-id="${esc(p.id)}" class="ghost" title="Acenar">Acenar</button><button data-a="trade" data-id="${esc(p.id)}">Trocar</button><button data-a="duel" data-id="${esc(p.id)}" class="pri">Desafiar</button>` : ''}</div>`).join('');
     m.innerHTML = `<div class="net-card">
-      <h2><span>Mundo · Canal ${net.world.channel}</span><button class="ghost" data-a="close">Fechar</button></h2>
-      <div class="net-small">${live.length} online neste canal (até ${net.world.max}). Ande pelo mapa para encontrar os outros: eles aparecem no minimapa.</div>
-      <h3>Jogadores online</h3>${rows}
+      <h2><span>${net.world.fire ? 'Mundo' : `Mundo · Canal ${net.world.channel}`}</span><button class="ghost" data-a="close">Fechar</button></h2>
+      <div class="net-small">${net.world.fire ? `${Math.max(0, live.length - 1)} por perto. Só aparece quem está a poucos blocos de você: ande pelo mapa para encontrar os outros.` : `${live.length} online neste canal (até ${net.world.max}). Ande pelo mapa para encontrar os outros: eles aparecem no minimapa.`}</div>
+      <h3>${net.world.fire ? 'Jogadores por perto' : 'Jogadores online'}</h3>${rows}
       <h3>Chat por perto</h3><div class="net-small" style="opacity:1">${this.#hist()}</div>
       <div class="net-row"><button data-a="chat">Escrever (T)</button><button data-a="priv">Sala privada</button><button data-a="world-off" class="ghost">Ficar offline</button></div>
       <div class="net-small" style="margin-top:10px">Perto de alguém, aperte E (ou o botão A) para desafiar, trocar ou acenar. Ninguém acerta ninguém fora de um duelo aceito.</div>

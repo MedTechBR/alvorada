@@ -1,5 +1,6 @@
 import { Room } from './room.js';
 import { World, CHANNEL_MAX } from './world.js';
+import { FireWorld } from './fire.js';
 import { Remotes, EMOTES, bubble, tickBubble } from './remotes.js';
 import { Arbiter } from './arbiter.js';
 import { Trade } from './trade.js';
@@ -26,6 +27,7 @@ import { OnlineUI } from '../ui/online.js';
 // briga sobre quem capturou/derrotou, e funciona mesmo com os amigos longe uns dos outros.
 
 const ARBITER_TYPES = new Set(['st', 'use', 'd-open', 'd-team', 'd-active', 'd-claim', 'd-forfeit', 'd-poder']);
+const DEFAULT_ON = true;       // mundo Firebase ligado por padrão (quem desligar fica offline e o jogo lembra)
 const NEAR = 40 * 16;          // "perto" para o anfitrião repassar posição a 10 Hz, golpes e chat (40 blocos)
 const GHOST = 15000;           // na reeleição do anfitrião, quem sumiu continua na tela (apagado) por até 15 s
 const Q = new URLSearchParams(location.search);
@@ -44,11 +46,16 @@ export class Online {
     this.reide = new NetReide(this); // reide cooperativo das Tocas de Luz
     this.key = store.get('alv-net-key') ?? (() => { const k = Math.random().toString(36).slice(2) + Date.now().toString(36); store.set('alv-net-key', k); return k; })();
     this.name = store.get('alv-net-nome') ?? 'Treinador' + Math.floor(10 + Math.random() * 90);
-    this.kind = Q.get('rede') === 'local' ? 'local' : (store.get('alv-net-rede') ?? 'peer');
+    this.kind = Q.get('rede') === 'local' ? 'local' : (store.get('alv-net-rede') ?? 'peer'); // rede das SALAS PRIVADAS (PeerJS ou teste local)
+    // mundo sempre ligado: 'fire' = Firebase, sem anfitrião (src/net/fire.js, padrão); 'peer' = canais PeerJS antigos (?backend=peer ou ?rede=local)
+    this.backend = Q.get('rede') === 'local' ? 'peer' : (Q.get('backend') === 'peer' || Q.get('backend') === 'fire' ? Q.get('backend') : (store.get('alv-net-backend') ?? 'fire'));
     this.stT = 0; this.infoT = 0; this.seq = 0; this.infoKey = '';
     // canal do mundo (o limite por canal pode ser trocado no localhost com ?canal_max=N, para testar canal cheio)
     const max = LOCALHOST && Number(Q.get('canal_max')) >= 2 ? Math.min(32, Number(Q.get('canal_max'))) : CHANNEL_MAX;
-    this.world = new World({ kind: this.kind, max, profile: () => ({ name: this.name, look: this.look, key: this.key }), near: (a, b) => this.#nearSt(a, b), pauseHidden: !Q.has('teste') });
+    const profile = () => ({ name: this.name, look: this.look, key: this.key });
+    this.world = this.backend === 'fire' ? new FireWorld({ profile, pauseHidden: !Q.has('teste'), memoryAuth: !!PROF })
+      : new World({ kind: this.kind, max, profile, near: (a, b) => this.#nearSt(a, b), pauseHidden: !Q.has('teste') });
+    this.remotes.slow = this.backend === 'fire'; // posições chegam ~4,5x por segundo: mostra os outros um pouco mais no passado
     this.world.on('room', (room) => this.#wire(room, true));
     this.world.on('state', () => this.ui.render());
     this.ui = new OnlineUI(this);
@@ -60,12 +67,12 @@ export class Online {
   get inWorld() { return this.mode === 'world'; }
   get selfId() { return this.room?.selfId ?? this.lastSelf; }
   get isHost() { return !!this.room?.isHost; }
-  get worldOn() { return store.get('alv-net-mundo') === '1'; } // desligado por padrão (Opções → Jogar online)
+  get worldOn() { const v = store.get('alv-net-mundo'); return v == null ? DEFAULT_ON && this.backend === 'fire' : v === '1'; } // Opções → Jogar online; só o mundo Firebase liga sozinho
   nameOf(id) { return this.room?.players.get(id)?.name ?? this.names.get(id) ?? 'Treinador'; }
   // visual escolhido no criador de personagem: game.look (ou game.player.look); senão o padrão
   get look() { return cleanLook(this.g.look ?? this.g.player?.look ?? 'menino'); }
   setName(n) { this.name = cleanName(n); store.set('alv-net-nome', this.name); }
-  setKind(k) { this.kind = k; this.world.kind = k; store.set('alv-net-rede', k); }
+  setKind(k) { this.kind = k; if (!this.world.fire) this.world.kind = k; store.set('alv-net-rede', k); }
 
   // ---------- mundo ----------
   // Chamado pelo main.js depois do título (com a conta já escolhida)
@@ -259,6 +266,7 @@ export class Online {
     // posição: 20x/s no duelo, 10x/s com alguém por perto, 2x/s sozinho (o anfitrião repassa 1x/s para quem está longe)
     this.stT -= dt;
     if (this.stT <= 0) {
+      if (this.room.fire) this.room.fast = this.duel.active; // Firebase: no duelo a posição sobe a 10x/s
       const busy = this.duel.active || this.remotes.nearest(p.x, p.y, NEAR + 160) || this.room.players.size <= 2 || this.mode === 'room';
       this.stT = this.duel.active ? 0.05 : busy ? 0.1 : 0.5;
       const r1 = (v) => Math.round(v * 10) / 10;
