@@ -9,8 +9,9 @@ const { P } = s;
 try {
   const u = await util({ P, sleep, out });
   const livre = async () => { for (let i = 0; i < 120 && await P.ev('!!(game.story.busy || game.ui.dialog.open || game.mundo.warping || game.story.roteiro.rodando)'); i++) { if (await P.ev('!!game.ui.dialog.open')) await u.hold('enter', 60); await sleep(400); } };
-  for (let i = 0; i < 100 && !(await P.ev('!!game.map.interiorAt(game.player.x, game.player.y)')); i++) await sleep(500); // espera o ?ir= chegar
+  for (let i = 0; i < 100 && !(await P.ev(`game.map?.interiorAt(game.player.x, game.player.y)?.id === 'casarao_velas'`)); i++) await sleep(500); // espera o ?ir= chegar
   await livre();
+  await P.ev('game.mundo.setHour(21), 1'); // o Casarão só abre das 18h às 6h
   const KEY = { up: 'w', down: 's', left: 'a', right: 'd' };
   const caso = async (sala, [bx, by], dir, ler, nome) => {
     for (let t = 0; t < 4; t++) {
@@ -18,6 +19,7 @@ try {
       await P.ev(`(() => { const r = game.map.interiors.find((x) => x.id === ${JSON.stringify(sala)}); game.mundo.warpTo(r.x + ${bx}, r.y + ${by}, 'down'); return 1; })()`);
       await sleep(2500); await livre();
       const pos = await P.ev(`(() => { const r = game.map.interiors.find((x) => x.id === ${JSON.stringify(sala)}); return Math.floor(game.player.x / 16) - r.x === ${bx} && Math.floor((game.player.y - 2) / 16) - r.y === ${by}; })()`);
+      console.log('  tentativa', t, 'pos ok:', pos, await P.ev(`JSON.stringify([game.player.x/16, game.player.y/16, game.map.interiorAt(game.player.x, game.player.y)?.id])`));
       if (pos) break;
     }
     await u.hold(KEY[dir], 70); await sleep(300); // toque curto só vira, como o jogador
