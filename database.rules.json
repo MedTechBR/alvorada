@@ -1,0 +1,58 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "mundo": {
+      "v1": {
+        "celulas": {
+          "$cell": {
+            ".read": "auth != null",
+            ".validate": "$cell.matches(/^[a-z0-9-]{1,24}_-?[0-9]{1,3}_-?[0-9]{1,3}$/)",
+            "$uid": {
+              ".write": "auth != null && auth.uid === $uid",
+              ".validate": "newData.hasChildren(['n', 'k', 'x', 'y', 'd', 'r', 'w', 'ts'])",
+              "n": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 14" },
+              "k": { ".validate": "newData.isString() && newData.val().length <= 400" },
+              "x": { ".validate": "newData.isNumber() && newData.val() >= -64 && newData.val() <= 65700" },
+              "y": { ".validate": "newData.isNumber() && newData.val() >= -64 && newData.val() <= 65700" },
+              "d": { ".validate": "newData.isString() && (newData.val() === 'down' || newData.val() === 'up' || newData.val() === 'left' || newData.val() === 'right')" },
+              "r": { ".validate": "newData.isBoolean()" },
+              "w": { ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9-]{1,24}$/)" },
+              "ts": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1e12" },
+              "l": {
+                ".validate": "newData.hasChildren(['x', 'y', 'u'])",
+                "x": { ".validate": "newData.isNumber() && newData.val() >= -64 && newData.val() <= 65700" },
+                "y": { ".validate": "newData.isNumber() && newData.val() >= -64 && newData.val() <= 65700" },
+                "u": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 16" },
+                "a": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 7" },
+                "h": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 160" },
+                "p": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+                "$other": { ".validate": false }
+              },
+              "tz": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 120" },
+              "m": { ".validate": "newData.isString() && (newData.val() === 'correr' || newData.val() === 'nadar' || newData.val() === 'escalar' || newData.val() === 'voar' || newData.val() === 'mergulhar')" },
+              "z": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 120" },
+              "mu": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+              "md": { ".validate": "(newData.isNumber() && newData.val() >= 1 && newData.val() <= 1025) || (newData.isString() && newData.val().length <= 30)" },
+              "$other": { ".validate": false }
+            }
+          }
+        },
+        "caixa": {
+          "$uid": {
+            ".read": "auth != null && auth.uid === $uid",
+            "$msg": {
+              ".write": "auth != null && ((auth.uid === $uid && !newData.exists()) || (!data.exists() && newData.exists() && newData.child('f').val() === auth.uid))",
+              ".validate": "newData.hasChildren(['f', 'y', 'd', 't'])",
+              "f": { ".validate": "newData.isString() && newData.val().length <= 40" },
+              "y": { ".validate": "newData.isString() && newData.val().matches(/^[a-z][a-z?-]{0,11}$/)" },
+              "d": { ".validate": "newData.isString() && newData.val().length <= 16000" },
+              "t": { ".validate": "newData.val() === now" },
+              "$other": { ".validate": false }
+            }
+          }
+        }
+      }
+    }
+  }
+}
