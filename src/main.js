@@ -30,9 +30,10 @@ import { ITEM_INFO, itemInfo, itemName } from './data/items.js';
 import { rollShakes } from './mechanics/capture.js';
 import { setAmbiente, isNight as nightNow } from './mechanics/ambiente.js';
 import { formaRegionalEm } from './data/regioes.js';
+import { OPTIONS } from './ui/options.js';
 const WILD_MAX = 4; // selvagens vivos ao mesmo tempo perto do jogador
 
-const XP_SHARE = 0.5; // parte da XP que vai para quem ficou na equipe
+// Exp. Compartilhado (como nos jogos novos): com ele ligado (padrão, em Opções), toda a equipe ganha a XP inteira
 const ALPHA_DROPS = [['greatBall', 2, 30], ['superPotion', 2, 25], ['stardust', 1, 14], ['pearl', 1, 14], ['bigMushroom', 1, 6], ['rareCandy', 1, 7], ['nugget', 1, 4]];
 
 const $ = (id) => document.getElementById(id);
@@ -338,12 +339,16 @@ class Game {
     });
   }
   removeEntity(e) { this.ents.removeChild(e.view); e.view.destroy({ children: true }); this.entities = this.entities.filter((o) => o !== e); this.wilds = this.wilds.filter((o) => o !== e); }
-  // XP: quem lutou ganha tudo; o resto da equipe (sem desmaiar) ganha metade, como o Compartilhar Experiência
-  // dos jogos novos. Assim o Pokémon capturado também cresce sem precisar moer.
+  // XP: quem lutou ganha tudo; com o Exp. Compartilhado ligado, o resto da equipe (sem desmaiar) ganha o mesmo, como
+  // nos jogos novos. Assim o Pokémon capturado também cresce sem precisar moer.
   giveXp(mon, xp, { share = true } = {}) {
     if (this.lead?.mon === mon) this.fx.number(this.lead.x, this.lead.y - 34, `+${xp} XP`, '#9ad0ff');
     this.#xpEvents(mon, mon.gainXp(xp, this.#evoCtx()), true);
-    if (share) for (const m of this.party) if (m !== mon && !m.fainted && m.level < 100) this.#xpEvents(m, m.gainXp(Math.max(1, Math.floor(xp * XP_SHARE)), this.#evoCtx()), false);
+    if (share && OPTIONS.expShare !== false) {
+      let n = 0;
+      for (const m of this.party) if (m !== mon && !m.fainted && m.level < 100) { this.#xpEvents(m, m.gainXp(xp, this.#evoCtx()), false); n++; }
+      if (n && (this.xpAvisoT ?? 0) < this.time) { this.toast(`Exp. Compartilhado: a equipe também ganhou ${xp} XP.`); this.xpAvisoT = this.time + 20; }
+    }
     this.hudLead(); this.hudMoves();
   }
   #evoCtx() { return { partyTypes: this.party.flatMap((m) => m.types), partySpecies: this.party.map((m) => m.dex) }; }

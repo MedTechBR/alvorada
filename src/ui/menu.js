@@ -1197,6 +1197,7 @@ export class GameMenu {
       { k: 'uiScale', label: IS_TOUCH ? 'Tamanho dos botões e do HUD' : 'Tamanho do HUD (celular)', type: 'choice', values: UI_SCALES, show: (v) => v + '%' },
       { k: 'movimento', label: 'Movimento do treinador', type: 'choice', values: ['classico', 'livre'], show: (v) => MOVIMENTO_PT[v] },
       ...(IS_TOUCH ? [{ k: 'toque', label: 'Controle de toque', type: 'choice', values: ['analogico', 'cruz'], show: (v) => TOQUE_PT[v] }] : []),
+      { k: 'expShare', label: 'Exp. Compartilhado (toda a equipe ganha XP)', type: 'bool', on: 'Ligado', off: 'Desligado' },
       { k: 'vibrate', label: 'Vibrar ao acertar e ser atingido', type: 'bool', on: 'Ligado', off: 'Desligado' },
       { k: 'quality', label: 'Qualidade gráfica', type: 'choice', values: ['auto', 'alta', 'baixa'], show: (v) => QUALITY_PT[v] + (v === 'auto' && this.g.quality ? ` (${this.g.quality.level})` : '') },
       { k: 'fps', label: 'Mostrar FPS (F3)', type: 'bool', on: 'Sim', off: 'Não' },

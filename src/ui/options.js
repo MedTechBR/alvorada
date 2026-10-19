@@ -1,7 +1,7 @@
 // Opções do jogador (ficam neste aparelho, em localStorage). Sempre com try/catch:
 // em janela anônima ou com o armazenamento bloqueado, o jogo segue com os valores padrão.
 const KEY = 'alvorada2d.opcoes';
-export const DEFAULT_OPTS = { music: 7, sfx: 8, textSpeed: 'normal', vibrate: true, uiScale: 100, fps: false, quality: 'auto', camCinema: true, visual: '3d', online: false, dicas: true, movimento: 'classico', toque: 'analogico' };
+export const DEFAULT_OPTS = { music: 7, sfx: 8, textSpeed: 'normal', vibrate: true, uiScale: 100, fps: false, quality: 'auto', camCinema: true, visual: '3d', online: false, dicas: true, movimento: 'classico', toque: 'analogico', expShare: true };
 export const QUALITY_PT = { auto: 'Automática', alta: 'Alta', baixa: 'Baixa' };
 export const TEXT_SPEED = { lenta: 24, normal: 46, rapida: 95 };
 export const TEXT_SPEED_PT = { lenta: 'Lenta', normal: 'Normal', rapida: 'Rápida' };
