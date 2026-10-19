@@ -109,6 +109,20 @@ export class Hud {
     b.visible = true;
   }
 
+  // As salas ficam numa faixa longe do mapa de fora: sem isto, o marcador de dentro de uma casa apontava (e dizia
+  // "649 m") para o objetivo lá fora. De dentro, mira a porta de saída; de fora, mira a porta da sala do objetivo.
+  #alvoNaTela(t) {
+    const m = this.g.map, p = this.g.player, T = 16;
+    const de = m.interiorAt?.(p.x, p.y), em = m.interiorAt?.(t.x, t.y);
+    if (de === em) return t;
+    const dentro = (r, x, y) => x >= r.x && y >= r.y && x < r.x + r.w && y < r.y + r.h;
+    const quais = (m.warps ?? []).filter((w) => w.to && !w.trap && (de ? dentro(de, w.x, w.y) && !dentro(de, w.to.x, w.to.y) : em && !dentro(em, w.x, w.y) && dentro(em, w.to.x, w.to.y)));
+    if (!quais.length) return de ? { x: p.x, y: p.y } : t; // sem porta conhecida: sem marcador
+    let best = quais[0], bd = 1e12;
+    for (const w of quais) { const d = Math.hypot(w.x * T + 8 - p.x, w.y * T + 8 - p.y); if (d < bd) { bd = d; best = w; } }
+    return { x: best.x * T + 8, y: best.y * T + 8 };
+  }
+
   frame() {
     const g = this.g;
     if (this.bubble.visible && this.promptTarget) {
@@ -118,10 +132,10 @@ export class Hud {
     const o = this.obj, m = this.marker;
     const show = o?.target && this.ui.state === 'play' && !this.ui.blocking && !this.ui.story?.busy;
     if (!show) { m.visible = false; return; }
-    const p = g.player, d = Math.hypot(o.target.x - p.x, o.target.y - p.y);
+    const p = g.player, tg = this.#alvoNaTela(o.target), d = Math.hypot(tg.x - p.x, tg.y - p.y);
     if (d < 40) { m.visible = false; return; }
     const z = g.world.scale.x, W = innerWidth, H = innerHeight;
-    const tp = g.worldToScreen ? g.worldToScreen(o.target.x, o.target.y, 26) : { x: g.world.x + o.target.x * z, y: g.world.y + (o.target.y - 26) * z };
+    const tp = g.worldToScreen ? g.worldToScreen(tg.x, tg.y, 26) : { x: g.world.x + tg.x * z, y: g.world.y + (tg.y - 26) * z };
     let x = tp.x, y = tp.y;
     const padL = 34, padR = 34, padT = IS_TOUCH ? 90 : 120, padB = IS_TOUCH ? 140 : 90;
     let edge = false, ang = 0;
