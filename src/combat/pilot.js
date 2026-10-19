@@ -1,4 +1,5 @@
 import { IS_TOUCH } from '../engine/input.js';
+import { ICONES } from '../ui/toque.js';
 
 // Complementos do controle do Pokémon (o controle direto em si fica em main.js: treinador ↔ Pokémon):
 // - ações de altura no modo Pokémon: C = voar / pousar, mergulhar ou cavar; X = pular;
@@ -11,8 +12,6 @@ const CSS = `
 #moves .mv.ready { animation: mvready .35s ease-out; }
 @keyframes mvready { 0% { box-shadow:0 0 0 0 #ffe27a; transform:scale(1.08); } 100% { box-shadow:0 0 0 10px #ffe27a00; transform:scale(1); } }
 .tb.move.ready { animation: mvready .35s ease-out; }
-#t-alt { right: 226px; bottom: 50px; } #t-jump { right: 176px; bottom: 214px; }
-#t-alt, #t-jump { display: none; } body.mode-pokemon #t-alt, body.mode-pokemon #t-jump { display: block; }
 `;
 
 export class Pilot {
@@ -21,11 +20,12 @@ export class Pilot {
     const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
     const box = document.getElementById('tbtns');
     if (box && IS_TOUCH) {
-      const mk = (id, label, act, aria) => {
-        const b = document.createElement('button'); b.className = 'tb small'; b.id = id; b.textContent = label; b.setAttribute('aria-label', aria); box.appendChild(b);
+      // posição, ícone e quando aparecem: src/ui/toque.js
+      const mk = (id, icone, act, aria) => {
+        const b = document.createElement('button'); b.className = 'tb small'; b.id = id; b.innerHTML = icone; b.setAttribute('aria-label', aria); box.appendChild(b);
         b.addEventListener('touchstart', (e) => { g.input.taps.add(act); e.preventDefault(); }, { passive: false });
       };
-      mk('t-alt', '⇅', 'alt', 'Voar, mergulhar ou cavar'); mk('t-jump', '⤒', 'jump', 'Pular');
+      mk('t-alt', ICONES.voar, 'alt', 'Voar, mergulhar ou cavar'); mk('t-jump', ICONES.pular, 'jump', 'Pular');
     }
   }
   get active() { return this.g.mode === 'pokemon' && !!this.g.lead?.alive; }

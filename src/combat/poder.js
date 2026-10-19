@@ -4,6 +4,7 @@ import { itemName } from '../data/items.js';
 import { TYPE_COLOR } from '../data/types.js';
 import { loadPokemonSprites } from '../sprites/pmd.js';
 import { IS_TOUCH } from '../engine/input.js';
+import { ICONES } from '../ui/toque.js';
 import { setAmbiente, getAmbiente } from '../mechanics/ambiente.js';
 import { TURNO_S } from '../mechanics/tempo.js';
 import { effectiveness } from '../data/types.js';
@@ -44,12 +45,10 @@ const CSS = `
 #moves .mv.max::before { background: linear-gradient(180deg, #ff3a5a, var(--tc)); }
 #moves .mv.max { box-shadow: 0 3px 0 rgba(0,0,0,.22), 0 0 0 2px rgba(232,36,58,.55); }
 .tb.move.max { box-shadow: 0 4px 0 rgba(0,0,0,.3), 0 0 0 3px #ff3a5a, 0 0 14px rgba(255,58,90,.8); }
-#t-power { right: 228px; bottom: 112px; width: 54px; height: 54px; display: none; padding: 0; overflow: hidden;
-  background: radial-gradient(circle at 50% 35%, #ffd2ea, #e0337a 70%); color: #fff; border: 3px solid #fff; box-shadow: 0 3px 0 rgba(0,0,0,.3), 0 0 0 2px rgba(29,35,64,.55); font-size: 10px; }
-#t-power.dmax { background: radial-gradient(circle at 50% 35%, #ffc2c8, #e8243a 70%); }
-#t-power.on { display: flex; animation: pwrpulse 1.1s ease-in-out infinite; }
-#t-power svg { width: 26px; height: 26px; display: block; margin: 0 auto -1px; }
-body:not(.mode-pokemon) #t-power { display: none; }
+/* botão do celular: posição e quando aparece em src/ui/toque.js; aqui só a cor (Mega rosa, Dynamax vermelho) */
+#t-power { background: radial-gradient(circle at 50% 35%, #f05aa0, #a01a5a 75%) !important; }
+#t-power.dmax { background: radial-gradient(circle at 50% 35%, #ff5a6a, #a0101e 75%) !important; }
+#t-power.on { animation: pwrpulse 1.1s ease-in-out infinite; }
 #poder-timer { position: absolute; left: 50%; top: calc(var(--g, 12px) + var(--st, 0px) + 6px); transform: translateX(-50%); pointer-events: none; z-index: 5;
   background: rgba(40,6,14,.82); color: #fff; border: 2px solid #ff5a6a; border-radius: 12px; padding: 3px 12px 5px; font: 900 13px Nunito, system-ui, sans-serif; text-align: center; min-width: 120px; }
 #poder-timer[hidden] { display: none; }
@@ -57,8 +56,6 @@ body:has(#net-duel:not([hidden])) #poder-timer { top: calc(var(--g, 12px) + var(
 body:has(#reide:not([hidden])) #poder-timer { top: calc(var(--g, 12px) + var(--st, 0px) + 66px); }
 #poder-timer i { display: block; height: 5px; border-radius: 3px; background: linear-gradient(90deg, #ff3a5a, #ffb0c0); margin-top: 3px; transform-origin: left; }
 `;
-const ICON_MEGA = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="#fff" stroke-width="2.2"/><path d="M8 17c0-6 8-4 8-10M8 7c0 6 8 4 8 10" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>';
-const ICON_DMAX = '<svg viewBox="0 0 24 24"><path d="M12 3l3 6 6 1-4.5 4.5L18 21l-6-3-6 3 1.5-6.5L3 10l6-1z" fill="#fff" stroke="#7a0a14" stroke-width="1.2" stroke-linejoin="round"/></svg>';
 
 export class Poder {
   constructor(g) {
@@ -87,7 +84,7 @@ export class Poder {
     document.getElementById('ui')?.appendChild(this.timerEl);
     const box = document.getElementById('tbtns');
     if (box) {
-      const b = this.btn = document.createElement('button'); b.className = 'tb'; b.id = 't-power'; b.setAttribute('aria-label', 'Mega Evolução ou Dynamax');
+      const b = this.btn = document.createElement('button'); b.className = 'tb small'; b.id = 't-power'; b.setAttribute('aria-label', 'Mega Evolução ou Dynamax');
       box.appendChild(b);
       b.addEventListener('touchstart', (e) => { g.input.taps.add('power'); e.preventDefault(); }, { passive: false });
     }
@@ -131,7 +128,7 @@ export class Poder {
   #touchBtn(o) {
     const b = this.btn; if (!b) return;
     b.classList.toggle('on', !!o); b.classList.toggle('dmax', o?.k === 'dmax');
-    b.innerHTML = o ? `<span>${o.k === 'mega' ? ICON_MEGA : ICON_DMAX}${o.k === 'mega' ? 'Mega' : o.label === 'Gigantamax' ? 'G-Max' : 'Dmax'}</span>` : '';
+    b.innerHTML = o ? (o.k === 'mega' ? ICONES.mega : ICONES.dmax) : ''; b.setAttribute('aria-label', o?.label ?? 'Mega Evolução ou Dynamax');
   }
 
   // ---------- ações do jogador ----------

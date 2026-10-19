@@ -109,10 +109,7 @@ body.touch #menu-btn { width: 46px; height: 46px; padding: 0; justify-content: c
 
 /* ---------- toque ---------- */
 #touch { position: fixed; inset: 0; z-index: 20; pointer-events: none; }
-#stick { position: absolute; left: calc(5vw + var(--sl)); bottom: calc(7vh + var(--sb)); width: 136px; height: 136px; border-radius: 50%; pointer-events: auto;
-  background: radial-gradient(circle, rgba(255,255,255,.06) 0 40%, rgba(255,255,255,.16) 41% 100%); border: 2px solid rgba(255,255,255,.4); box-shadow: inset 0 0 18px rgba(0,0,0,.25);
-  transform: scale(var(--ui-scale)); transform-origin: bottom left; }
-#dpad { display: none; position: absolute; left: calc(5vw + var(--sl)); bottom: calc(7vh + var(--sb)); width: 136px; height: 136px; pointer-events: auto; transform: scale(var(--ui-scale)); transform-origin: bottom left; touch-action: none; }
+#dpad { display: none; position: absolute; left: calc(14px + var(--nl, 0px)); bottom: calc(14px + var(--sb)); width: 136px; height: 136px; pointer-events: auto; transform: scale(var(--ui-scale)); transform-origin: bottom left; touch-action: none; }
 body.cruz #dpad { display: block; } body.cruz #stick { display: none; }
 #dpad button { position: absolute; width: 46px; height: 46px; padding: 0; border-radius: 12px; border: 3px solid rgba(255,255,255,.55); background: rgba(40,48,80,.55); box-shadow: 0 3px 0 rgba(0,0,0,.28); }
 #dpad button::after { content: ''; position: absolute; left: 50%; top: 50%; width: 0; height: 0; margin: -7px 0 0 -8px; border: 8px solid transparent; }
@@ -121,33 +118,6 @@ body.cruz #dpad { display: block; } body.cruz #stick { display: none; }
 #dpad button[data-d=left] { left: 0; top: 45px; } #dpad button[data-d=left]::after { border-right: 13px solid #fff; border-left: 0; margin: -8px 0 0 -8px; }
 #dpad button[data-d=right] { right: 0; top: 45px; } #dpad button[data-d=right]::after { border-left: 13px solid #fff; border-right: 0; margin: -8px 0 0 -4px; }
 #dpad button.on { background: rgba(255,255,255,.6); }
-#stick-knob { position: absolute; left: 41px; top: 41px; width: 54px; height: 54px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #d6dcea); box-shadow: 0 4px 0 rgba(0,0,0,.25), 0 0 0 3px rgba(54,66,107,.6); }
-#tbtns { position: absolute; right: calc(3.5vw + var(--sr)); bottom: calc(5vh + var(--sb)); width: 236px; height: 236px; transform: scale(var(--ui-scale)); transform-origin: bottom right; }
-.tb { position: absolute; pointer-events: auto; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; text-align: center;
-  font: 900 11px/1.05 Nunito, system-ui, sans-serif; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.6); touch-action: none; }
-.tb.move { width: 70px; height: 70px; padding: 6px; background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--tc) 70%, #fff), var(--tc) 70%);
-  border: 3px solid rgba(255,255,255,.85); box-shadow: 0 4px 0 rgba(0,0,0,.3), 0 0 0 2px rgba(29,35,64,.55); overflow: hidden; }
-.tb.move span { position: relative; z-index: 1; }
-.tb.move::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(rgba(10,14,30,.62) calc(var(--cd, 0) * 1turn), transparent 0); }
-.tb.move span { display: flex; flex-direction: column; align-items: center; gap: 1px; max-width: 100%; }
-.tb.move span.long { font-size: 10px; letter-spacing: -.2px; }
-.tb.move i { font-style: normal; display: block; font-size: 9px; opacity: .92; max-width: 64px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tb.move svg { width: 24px; height: 24px; margin-bottom: 1px; filter: drop-shadow(0 1px 1px rgba(0,0,0,.4)); }
-.tb.move[data-slot="0"] svg { width: 28px; height: 28px; }
-.tb.small { width: 50px; height: 50px; background: rgba(251,250,244,.92); color: var(--line); border: 3px solid var(--line); box-shadow: 0 3px 0 rgba(0,0,0,.3); text-shadow: none; }
-.tb.small svg { width: 26px; height: 26px; }
-.tb:active, .tb.aiming { filter: brightness(1.15); transform: scale(.94); }
-.tb.move[data-slot="0"] { right: 0; bottom: 0; width: 88px; height: 88px; font-size: 13px; }
-.tb.move[data-slot="0"] i { max-width: 76px; font-size: 10px; }
-/* modo treinador: a Poké Bola e a troca já estão nos botões grandes */
-body.touch:not(.mode-pokemon) #t-ball, body.touch:not(.mode-pokemon) #t-swap { display: none; }
-.tb.move[data-slot="1"] { right: 94px; bottom: 2px; }
-.tb.move[data-slot="2"] { right: 6px; bottom: 94px; }
-.tb.move[data-slot="3"] { right: 82px; bottom: 76px; }
-#t-ball { right: 170px; bottom: 98px; } #t-dodge { right: 172px; bottom: 30px; } #t-act { right: 128px; bottom: 154px; } #t-swap { right: 40px; bottom: 170px; }
-#t-act b { font-size: 20px; }
-#t-act.ready { background: #ffd23f; animation: actpulse 1s ease-in-out infinite; }
-@keyframes actpulse { 50% { box-shadow: 0 3px 0 rgba(0,0,0,.3), 0 0 0 6px rgba(255,210,63,.45); } }
 
 /* celular: HUD compacto e encaixado nas bordas seguras */
 body.touch { --g: 8px; }
@@ -155,7 +125,7 @@ body.touch #lead { width: 186px; padding: 5px 9px 6px; --hud-k: var(--ui-scale);
 body.touch .ld-nm { font-size: 13px; }
 body.touch .objective { top: calc(var(--g) + var(--st) + 80px); max-width: 220px; --hud-k: var(--ui-scale); }
 body.touch .objective .ot { font-size: 12px; }
-body.touch #toasts { top: auto; right: auto; left: 50%; transform: translateX(-50%); bottom: calc(10px + var(--sb)); align-items: center; flex-direction: column-reverse; max-width: min(320px, 44vw); }
+body.touch #toasts { top: calc(var(--st) + 52px); right: auto; left: 50%; transform: translateX(-50%); bottom: auto; align-items: center; flex-direction: column; max-width: min(320px, 44vw); }
 body.touch #toasts div { font-size: 12px; padding: 5px 10px; text-align: center; }
 body.touch .foe { --hud-k: var(--ui-scale); }
 @media (max-height: 430px) {
@@ -164,15 +134,11 @@ body.touch .foe { --hud-k: var(--ui-scale); }
   body.touch .objective { top: calc(var(--g) + var(--st) + 80px * var(--ui-scale)); max-width: 230px; }
   body.touch .objective:not(.min) .os { display: none; }
   #dpad { width: 118px; height: 118px; transform: scale(calc(var(--ui-scale) * .9)); } #dpad button { width: 40px; height: 40px; } #dpad button[data-d=up], #dpad button[data-d=down] { left: 39px; } #dpad button[data-d=left], #dpad button[data-d=right] { top: 39px; }
-  #stick { width: 118px; height: 118px; } #stick-knob { left: 34px; top: 34px; width: 48px; height: 48px; }
-  #tbtns { transform: scale(calc(var(--ui-scale) * .86)); }
   .area { font-size: 14px; }
 }
 @media (max-width: 520px) { /* retrato */
   body.touch .objective { top: calc(var(--g) + var(--st) + 80px); max-width: min(230px, calc(100vw - 140px)); }
-  body.touch #toasts { bottom: calc(230px + var(--sb)); max-width: 86vw; }
-  #tbtns { transform: scale(calc(var(--ui-scale) * .82)); }
-  #stick { transform: scale(calc(var(--ui-scale) * .85)); } #dpad { transform: scale(calc(var(--ui-scale) * .8)); }
+  #dpad { transform: scale(calc(var(--ui-scale) * .8)); }
   .foe { top: calc(var(--g) + var(--st) + 84px); }
 }
 
@@ -324,7 +290,6 @@ body.touch #minimapa { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) +
   body.touch #minimapa .mm-lab { font-size: 10px; margin-top: 1px; }
 }
 @media (max-height: 640px) { body:not(.touch) #toasts { top: calc(var(--g) + var(--st) + 196px); } }
-#t-alt, #t-jump { font-size: 22px; line-height: 1; }
 /* computador com tela grande: tudo da interface cresce proporcionalmente (--k vem de ui.js) */
 body:not(.touch) #hud, body:not(.touch) #ui, body:not(.touch) #menu-btn, body:not(.touch) #minimapa, body:not(.touch) #net { zoom: var(--k, 1); }
 /* criador de personagem em tela baixa: o logo sai para o painel caber sem quebrar as linhas */
@@ -346,24 +311,19 @@ body.touch #perf { top: auto; bottom: calc(var(--sb) + 52px); font-size: 10px; w
 .fo-pic { width: 22px; height: 22px; flex: none; border-radius: 50%; background: rgba(255,255,255,.12); overflow: hidden; display: inline-flex; align-items: center; justify-content: center; align-self: center; }
 .fo-pic img { width: 120%; height: 120%; object-fit: contain; image-rendering: pixelated; }
 
-/* zoom (+ e −): pílula vertical à esquerda do minimapa; no celular deitado, embaixo do botão do menu */
-#zoom { position: fixed; z-index: 15; display: flex; flex-direction: column; gap: 0; top: calc(var(--g) + var(--st) + 82px); right: calc(var(--g) + var(--sr) + 152px);
+/* zoom (+ e −): pílula vertical à esquerda do minimapa; no celular, horizontal e pequena (fim deste arquivo) */
+#zoom { position: fixed; z-index: 15; display: flex; flex-direction: column-reverse; gap: 0; top: calc(var(--g) + var(--st) + 82px); right: calc(var(--g) + var(--sr) + 152px);
   border-radius: 99px; border: 3px solid var(--line); background: var(--paper); box-shadow: 0 3px 0 rgba(0,0,0,.25); overflow: hidden; }
 #zoom button { width: 34px; height: 32px; padding: 0; border: 0; background: none; color: var(--line); font: 900 22px/1 Nunito, system-ui, sans-serif; cursor: pointer; touch-action: none; }
-#zoom button + button { border-top: 2px solid #d3ddf2; }
+#zoom button + button { border-bottom: 2px solid #d3ddf2; }
+#zoom button svg { width: 18px; height: 18px; display: block; margin: auto; }
 #zoom button:active { background: #fff0b8; }
 body.at-title #zoom, body.menu-open #zoom, body.dlg-open #zoom { visibility: hidden; }
 body:not(.touch) #zoom { zoom: var(--k, 1); }
 @media (max-height: 640px) { body:not(.touch) #zoom { right: calc(var(--g) + var(--sr) + 124px); top: calc(var(--g) + var(--st) + 70px); } }
-body.touch #zoom { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) + 40px); right: calc(var(--g) + var(--sr) + 116px); transform: scale(var(--ui-scale)); transform-origin: top right; }
-@media (max-height: 500px) {
-  body.touch #zoom { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) + 6px); right: calc(var(--g) + var(--sr) + 6px); }
-  body.touch #zoom button { width: 34px; height: 30px; font-size: 20px; }
-}
 /* celular em pé: nome da área abaixo do painel do Pokémon, zoom embaixo do minimapa, avisos no meio da tela */
 @media (max-width: 520px) {
   body.touch .area { top: calc(var(--st) + 128px); font-size: 14px; }
-  body.touch #zoom { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) + 140px); right: calc(var(--g) + var(--sr) + 4px); }
   body.touch #toasts { bottom: auto; top: calc(var(--st) + 168px); flex-direction: column; max-width: calc(100vw - 80px); }
 }
 /* online no celular deitado: janela mais compacta (cabe sem rolar na maioria dos casos) */
@@ -377,45 +337,73 @@ body.touch #zoom { top: calc(var(--g) + var(--st) + 46px * var(--ui-scale) + 40p
 
 /* tela limpa (pedido do dono): dicas de tecla só nos primeiros minutos; ações raras do toque atrás do "…" */
 body.dicas-vistas #moves .mv.hint, body.sem-dicas #moves .mv.hint { display: none; }
-#t-mais { display: none; right: 172px; bottom: 154px; }
-#t-mais b { font-size: 22px; line-height: 0.6; }
-body.touch #t-mais { display: flex; }
-body.touch:not(.mais-on) #t-swap, body.touch:not(.mais-on) #t-alt, body.touch:not(.mais-on) #t-jump { visibility: hidden; }
-body.touch.mais-on #t-mais { background: #ffd23f; }
-body.touch.hb-on #t-mais { right: 268px; bottom: 174px; }
 
-/* ---------- botões de toque num cacho só, no canto inferior direito (pedido do dono: menos espalhado) ----------
-   posições em px a partir do canto inferior direito do cacho; principais maiores, secundários (52 px, >= 44 px mesmo
-   com a escala de telas baixas) colados em volta, com folga uniforme. Explorando: Enviar no canto, Capturar e
-   Escolher dos lados, A na diagonal, ">>", Bola, "…" e montaria em volta. Com o Pokémon em campo: golpes em
-   losango, A, ">>", Bola e "…" nos cantos do losango; Trocar, Voar e Pular saem do "…". */
-body.touch #tbtns { width: 268px; height: 236px; right: calc(2.5vw + var(--sr)); bottom: calc(3vh + var(--sb)); }
-body.touch #tbtns .tb { transform: none; }
-body.touch #tbtns .tb.small, body.touch #t-mais, body.touch #t-mount, body.touch #t-alt, body.touch #t-jump, body.touch #t-power { width: 52px !important; height: 52px !important; }
-body.touch:not(.mode-pokemon) #tbtns .tb.move[data-slot="0"] { right: 0 !important; bottom: 0 !important; width: 84px !important; height: 84px !important; }
-body.touch:not(.mode-pokemon) #tbtns .tb.move[data-slot="1"] { right: 90px !important; bottom: 0 !important; width: 64px !important; height: 64px !important; }
-body.touch:not(.mode-pokemon) #tbtns .tb.move[data-slot="2"] { right: 0 !important; bottom: 90px !important; width: 64px !important; height: 64px !important; }
-body.touch:not(.mode-pokemon) #tbtns .tb.move[data-slot="3"] { right: 160px !important; bottom: 58px !important; width: 52px !important; height: 52px !important; font-size: 9px; }
-body.touch:not(.mode-pokemon) #t-act { right: 76px !important; bottom: 76px !important; }
-body.touch:not(.mode-pokemon) #t-dodge { right: 160px !important; bottom: 0 !important; }
-body.touch:not(.mode-pokemon) #t-mais { right: 0 !important; bottom: 160px !important; }
-body.touch:not(.mode-pokemon) #t-mount { right: 58px !important; bottom: 160px !important; }
-body.touch.mode-pokemon #tbtns .tb.move { width: 62px !important; height: 62px !important; }
-body.touch.mode-pokemon #tbtns .tb.move[data-slot="0"] { right: 68px !important; bottom: 136px !important; }
-body.touch.mode-pokemon #tbtns .tb.move[data-slot="1"] { right: 136px !important; bottom: 68px !important; }
-body.touch.mode-pokemon #tbtns .tb.move[data-slot="2"] { right: 0 !important; bottom: 68px !important; }
-body.touch.mode-pokemon #tbtns .tb.move[data-slot="3"] { right: 68px !important; bottom: 0 !important; }
-body.touch.mode-pokemon #t-act { right: 0 !important; bottom: 0 !important; }
-body.touch.mode-pokemon #t-dodge { right: 136px !important; bottom: 0 !important; }
-body.touch.mode-pokemon #t-ball { right: 0 !important; bottom: 136px !important; }
-body.touch.mode-pokemon #t-mais { right: 136px !important; bottom: 136px !important; }
-body.touch.mode-pokemon #t-swap { right: 200px !important; bottom: 0 !important; }
-body.touch.mode-pokemon #t-alt { right: 200px !important; bottom: 58px !important; }
-body.touch.mode-pokemon #t-jump { right: 200px !important; bottom: 116px !important; }
-body.touch.mode-pokemon #t-power { right: 200px !important; bottom: 174px !important; }
-/* zoom: no celular a pinça basta; os botões + e − aparecem com o "…" */
-body.touch:not(.mais-on) #zoom { display: none; }
-
-/* recolher o Pokémon: só no celular, com ele em campo, dentro do "…" */
-#t-recall { display: none; }
-body.touch.mode-pokemon.mais-on #t-recall { display: block; right: 200px !important; bottom: 174px !important; width: 52px !important; height: 52px !important; font-size: 22px; line-height: 1; }
+/* ---------- celular: controles de toque (src/ui/toque.js) e HUD colado nos cantos ----------
+   Pedido do dono: "botões feios, texto escapando", "emoji mal acabado", "informações afastadas do canto".
+   Analógico flutuante à esquerda (zona grande e invisível; o círculo aparece onde o dedo encosta); botões num cacho
+   à direita, escuros e redondos, ícones SVG brancos; golpes com o aro na cor do tipo, recarga em número grande e o
+   nome numa pílula embaixo. As posições de cada botão vêm do toque.js (style inline); aqui só a aparência.
+   Recorte da câmera do iPhone deitado: --nl / --nr têm o recuo só do lado do recorte (toque.js); --sl e --sr
+   ficam 0 no celular deitado, e só o que ficaria embaixo do recorte (cacho, analógico) usa --nl / --nr. */
+body.touch { --g: 6px; }
+#stick-zona { position: absolute; left: 0; bottom: 0; width: 50%; height: 74%; pointer-events: auto; touch-action: none; }
+body.cruz #stick-zona { display: none; }
+#stick { position: absolute; left: calc(18px + var(--nl, 0px)); bottom: calc(16px + var(--sb)); width: 124px; height: 124px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(255,255,255,.05) 0 38%, rgba(255,255,255,.14) 39% 100%); border: 2px solid rgba(255,255,255,.5); box-shadow: inset 0 0 16px rgba(0,0,0,.22);
+  opacity: .35; transform: scale(var(--ui-scale)); transition: opacity .15s; }
+#stick.on { opacity: 1; transition: none; }
+#stick-knob { position: absolute; left: 36px; top: 36px; width: 48px; height: 48px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #d6dcea); box-shadow: 0 3px 6px rgba(0,0,0,.3); }
+#tbtns { position: absolute; right: calc(6px + var(--nr, 0px)); bottom: calc(6px + var(--sb) * .6); transform: scale(var(--tq-k, 1)); transform-origin: bottom right; pointer-events: none; }
+.tb { position: absolute; pointer-events: auto; box-sizing: border-box; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center;
+  color: #fff; background: rgba(20,22,32,.74); border: 2.5px solid rgba(255,255,255,.82); box-shadow: 0 3px 8px rgba(0,0,0,.35); touch-action: none; font: 900 11px/1 Nunito, system-ui, sans-serif; }
+.tb.tq-off { display: none !important; }
+.tb > svg { width: 50%; height: 50%; filter: drop-shadow(0 1px 1px rgba(0,0,0,.45)); }
+.tb:active, .tb.aiming { transform: scale(.93); filter: brightness(1.2); }
+.tb.move { border: 3.5px solid var(--tc); background: radial-gradient(circle at 50% 36%, color-mix(in srgb, var(--tc) 58%, #262a3c), color-mix(in srgb, var(--tc) 22%, #12141c) 78%); }
+.tb.move::after { content: ''; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; background: conic-gradient(rgba(8,10,20,.62) calc(var(--cd, 0) * 1turn), transparent 0); }
+.tb.move .tq-ic { width: 46%; height: 46%; display: block; } .tb.move .tq-ic svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 1px 1px rgba(0,0,0,.45)); }
+.tb.move .tq-cd { position: absolute; inset: 0; display: grid; place-items: center; font: 900 21px/1 Nunito, system-ui, sans-serif; z-index: 2; text-shadow: 0 2px 0 rgba(0,0,0,.5); pointer-events: none; }
+.tb.move[data-slot="0"] .tq-cd { font-size: 27px; }
+.tb.move.esfria .tq-ic { opacity: 0; }
+.tq-nome { position: absolute; left: 50%; top: calc(100% - 8px); transform: translateX(-50%); width: max-content; max-width: 90px; box-sizing: border-box; padding: 0 6px; z-index: 3; pointer-events: none;
+  font: 900 10.5px/15px Nunito, system-ui, sans-serif; color: #fff; white-space: nowrap; overflow: hidden; text-align: center; background: rgba(12,14,22,.86); border-radius: 99px; box-shadow: 0 0 0 1.5px var(--tc); }
+.tq-n { position: absolute; right: -3px; top: -3px; min-width: 20px; height: 20px; padding: 0 4px; border-radius: 10px; background: #fff; color: #1c1e28; font: 900 11px/20px Nunito, system-ui, sans-serif; text-align: center; z-index: 3; }
+#t-act { background: #ffd23f; color: #1c1e28; border-color: #fff; animation: actpulse 1s ease-in-out infinite; }
+#t-act > svg { filter: none; }
+@keyframes actpulse { 50% { box-shadow: 0 3px 8px rgba(0,0,0,.35), 0 0 0 6px rgba(255,210,63,.45); } }
+#t-team.on { background: #ffd23f; color: #1c1e28; }
+/* faixa da equipe: retratos (toque troca) e Recolher; enquanto aberta, os painéis do topo saem da frente */
+#tq-equipe { position: absolute; top: calc(6px + var(--st)); left: 50%; transform: translateX(-50%); z-index: 5; pointer-events: auto; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px;
+  max-width: calc(100vw - 12px); padding: 6px 8px; background: rgba(16,18,26,.9); border: 2px solid rgba(255,255,255,.22); border-radius: 18px; box-shadow: 0 6px 18px rgba(0,0,0,.4); }
+#tq-equipe button { touch-action: none; cursor: pointer; }
+.tq-mon { position: relative; width: 52px; height: 52px; padding: 0; border-radius: 50%; background: radial-gradient(circle at 45% 35%, #3a3f52, #1a1c26); border: 2.5px solid rgba(255,255,255,.55); overflow: hidden; }
+.tq-mon.cur { border-color: #ffd23f; box-shadow: 0 0 0 2px rgba(255,210,63,.4); }
+.tq-mon.ko { filter: grayscale(1); opacity: .5; }
+.tq-pic { position: absolute; inset: 0; display: grid; place-items: center; }
+.tq-pic img { width: 118%; image-rendering: pixelated; margin-top: 6%; }
+.tq-hp { position: absolute; left: 9px; right: 9px; bottom: 5px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.22); overflow: hidden; }
+.tq-hp i { display: block; height: 100%; background: #4cd07a; } .tq-hp i.mid { background: #f2c335; } .tq-hp i.low { background: #ee4b4b; }
+.tq-acao { height: 52px; display: flex; align-items: center; gap: 6px; padding: 0 14px 0 10px; border: 0; border-radius: 99px; background: #f4f1ea; color: #1c1e28; font: 900 13px/1 Nunito, system-ui, sans-serif; white-space: nowrap; }
+.tq-acao svg { width: 24px; height: 24px; flex: none; }
+body.equipe-on #lead, body.equipe-on .objective, body.equipe-on #minimapa, body.equipe-on #zoom, body.equipe-on #hb .pn, body.equipe-on #hb .vs, body.equipe-on .foe { visibility: hidden; }
+/* painel do Pokémon e objetivo: compactos e no canto */
+body.touch #lead { width: 172px; padding: 3px 7px 5px; border-width: 2.5px; border-radius: 10px; }
+body.touch .ld-top { gap: 5px; } body.touch .ld-pic { width: 22px; height: 22px; } body.touch .ld-nm { font-size: 12px; } body.touch .ld-lv { font-size: 10.5px; }
+body.touch #lead .bar.hp { height: 6px; margin-top: 2px; } body.touch .ld-mid { margin-top: 2px; gap: 6px; } body.touch .ld-hpt { font-size: 10px; min-width: 0; }
+body.touch .ld-party { margin-top: 3px; gap: 3px; } body.touch .ld-party b { width: 9px; height: 9px; }
+body.touch .objective { top: calc(var(--g) + var(--st) + 66px * var(--ui-scale)); max-width: 200px; }
+body.touch .objective.min { padding: 3px 22px 3px 8px; max-width: 190px; } body.touch .objective.min .ot { font-size: 11px; }
+/* menu, minimapa e zoom: colados no canto de cima à direita; o − e o + lado a lado */
+body.touch #menu-btn { width: 44px; height: 44px; border-width: 2.5px; }
+body.touch #zoom { flex-direction: row; border-width: 2.5px; transform: scale(var(--ui-scale)); transform-origin: top right; }
+body.touch #zoom button { width: 32px; height: 26px; } body.touch #zoom button svg { width: 15px; height: 15px; }
+body.touch #zoom button + button { border-bottom: 0; border-left: 2px solid #d3ddf2; }
+body.touch:not(.mais-on) #zoom { display: flex; }
+@media (max-height: 499px) { /* deitado: minimapa ao lado do menu, zoom ao lado do minimapa */
+  body.touch #minimapa { top: calc(var(--g) + var(--st)); right: calc(var(--g) + var(--sr) + 44px * var(--ui-scale) + 6px); }
+  body.touch #zoom { top: calc(var(--g) + var(--st)); right: calc(var(--g) + var(--sr) + 44px * var(--ui-scale) + 96px); }
+}
+@media (min-height: 500px) { /* em pé e telas altas: minimapa embaixo do menu, zoom embaixo do minimapa */
+  body.touch #minimapa { top: calc(var(--g) + var(--st) + 44px * var(--ui-scale) + 6px); right: calc(var(--g) + var(--sr)); }
+  body.touch #zoom { top: calc(var(--g) + var(--st) + 44px * var(--ui-scale) + 134px); right: calc(var(--g) + var(--sr) + 18px); }
+}
