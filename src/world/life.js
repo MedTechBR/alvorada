@@ -127,7 +127,9 @@ export class WorldLife {
 
   // ---------- portas, tapetes e escadas ----------
   #warps(dt) {
-    const g = this.g, p = g.player, inp = g.input;
+    const g = this.g, inp = g.input;
+    // com o Pokémon em campo quem entra na porta é ele (o treinador só acompanha, src/main.js #seguir); warpTo leva os dois
+    const pk = g.mode === 'pokemon' && g.lead?.alive, p = pk ? g.lead : g.player;
     this.warpCool -= dt;
     if (this.warping || this.warpCool > 0) return;
     const tx = Math.floor(p.x / T), ty = Math.floor((p.y - 2) / T);
@@ -136,13 +138,13 @@ export class WorldLife {
     const mv = inp?.move ?? { x: 0, y: 0 };
     let goingUp = p.vy < -8 || mv.y < -0.4, goingDown = p.vy > 8 || mv.y > 0.4;
     // em grade a porta abre na chegada ao bloco (como nos jogos), olhando para o lado da entrada
-    if (g.grade?.ativo && !p.pouso && !g.mount?.flying) { if (p.gr?.s) return; goingUp = p.dir === 'up'; goingDown = p.dir === 'down'; }
+    if (g.grade?.ativo && !pk && !p.pouso && !g.mount?.flying) { if (p.gr?.s) return; goingUp = p.dir === 'up'; goingDown = p.dir === 'down'; }
     if (w.dir === 'up' && !goingUp) return;
     if (w.dir === 'down' && !goingDown) return;
     // passagem com condição (flags ou item:<id>): avisa e devolve um passo
     if (w.requer && ![].concat(w.requer).every((f) => this.masmorra.flag(f))) {
       this.warpCool = 1.2; if (w.msg) g.toast(w.msg);
-      const b = { up: [0, 10], down: [0, -10], left: [10, 0], right: [-10, 0] }[w.face] ?? [0, 0]; p.x += b[0]; p.y += b[1]; p.vx = p.vy = 0;
+      const b = { up: [0, 10], down: [0, -10], left: [10, 0], right: [-10, 0] }[w.face] ?? [0, 0]; p.x += b[0]; p.y += b[1]; p.vx = p.vy = 0; // (com o Pokémon em campo, é ele que volta o passo)
       return;
     }
     if (w.mundo) { this.warpCool = 1.5; g.viagem?.passagem(w); return; } // passagem para outro mundo (src/world/viagem.js)

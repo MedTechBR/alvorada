@@ -227,6 +227,13 @@ class Game {
       return;
     }
   }
+  // Escolhe o Pokémon i (faixa da equipe no celular, src/ui/toque.js): em campo troca na hora; a pé vira o próximo a sair
+  escolher(i) {
+    const m = this.party[i]; if (!m || i === this.leadIdx) return;
+    if (m.fainted) { this.toast(`${m.name} não pode lutar.`); return; }
+    if (this.mode === 'pokemon' && this.lead) { const at = { x: this.lead.x, y: this.lead.y }; this.#sendOut(i, at); this.toast(`Vai, ${m.name}!`); }
+    else { this.leadIdx = i; this.toast(`Escolhido: ${m.name}`); this.hudLead(); this.hudMoves(); }
+  }
 
   // ---------- selvagens ----------
   async spawnWild() {
@@ -570,14 +577,17 @@ class Game {
     p.t += dt; p.iframes -= dt; p.stun = (p.stun ?? 0) - dt; p.throwT = (p.throwT ?? 0) - dt;
     // montaria (X): quando o treinador está montado, ela cuida do movimento e do desenho
     if (!this.mount?.control(dt, pk, mx, my, mag, run)) {
-      if (this.grade.ativo && !p.pouso && !p.saltando) this.#andarGrade(dt, run, pk);
+      // com o Pokémon em campo o treinador acompanha sozinho, fora da grade (#seguir); ao recolher, a grade realinha ao bloco
+      if (this.grade.ativo && !p.pouso && !p.saltando && !pk) this.#andarGrade(dt, run, pk);
       else {
       this.grade.soltar(p);
       // terreno dos biomas (src/world/masmorra.js): neve funda e areia movediça atrasam, o gelo faz escorregar
       const tr = pk ? null : this.mundo?.masmorra?.player(dt, p, mx, my, mag);
-      const want = pk || p.stun > 0 ? 0 : (run ? 118 : 74) * (tr?.k ?? 1);
-      let tvx = mag > 0.1 ? mx * want : 0, tvy = mag > 0.1 ? my * want : 0;
-      let acc = Math.min(1, dt * (mag > 0.1 ? 14 : 18));
+      const sg = pk ? this.#seguir(dt) : null;
+      const corre = sg ? sg.corre : run;
+      const want = (pk && !sg) || p.stun > 0 ? 0 : (corre ? 118 : 74) * (tr?.k ?? 1);
+      let tvx = sg ? sg.x * want : mag > 0.1 ? mx * want : 0, tvy = sg ? sg.y * want : mag > 0.1 ? my * want : 0;
+      let acc = Math.min(1, dt * (sg || mag > 0.1 ? 14 : 18));
       if (tr?.slide) { tvx = tr.slide.x * tr.speed; tvy = tr.slide.y * tr.speed; acc = 1; }
       p.vx += (tvx - p.vx) * acc; p.vy += (tvy - p.vy) * acc;
       if (!pk && !tr?.slide && inp.pressed('dodge') && p.roll <= 0) {
@@ -586,14 +596,18 @@ class Game {
         this.combat.onDodge(p, true);
       }
       p.roll -= dt;
+      const x0 = p.x, y0 = p.y;
       p.x += (p.vx + p.kx) * dt; p.y += (p.vy + p.ky) * dt;
       p.kx *= 1 - Math.min(1, dt * 8); p.ky *= 1 - Math.min(1, dt * 8);
       this.map.resolve(p, p.r);
-      p.speed = Math.hypot(p.vx, p.vy);
+      // acompanhando, o treinador não pisa em porta (quem atravessa é o Pokémon; src/world/life.js leva os dois)
+      if (pk && this.map.warpAt?.get(Math.floor(p.x / T) + Math.floor((p.y - 2) / T) * this.map.w)) { p.x = x0; p.y = y0; p.vx = p.vy = 0; }
+      if (sg) this.#seguiu(dt, Math.hypot(p.x - x0, p.y - y0));
+      p.speed = sg ? Math.hypot(p.x - x0, p.y - y0) / Math.max(dt, 1e-4) : Math.hypot(p.vx, p.vy);
       if (p.speed > 10) p.dir = dir4(p.vx, p.vy);
       else if (pk) p.dir = dir4(this.lead.x - p.x, this.lead.y - p.y); // olha para o próprio Pokémon
-      const step = p.speed > 10 ? Math.floor(p.t * (run ? 11 : 7.5)) % 4 : 0;
-      const set = p.throwT > 0 && p.frames.throw ? p.frames.throw : run && p.speed > 90 ? p.frames.run : p.frames.walk ?? p.frames;
+      const step = p.speed > 10 ? Math.floor(p.t * (corre ? 11 : 7.5)) % 4 : 0;
+      const set = p.throwT > 0 && p.frames.throw ? p.frames.throw : corre && p.speed > 90 ? p.frames.run : p.frames.walk ?? p.frames;
       p.body.texture = (set[p.dir] ?? p.frames.walk[p.dir])[p.throwT > 0 ? Math.min(2, Math.floor((0.3 - p.throwT) / 0.1)) : step] ?? p.frames.walk[p.dir][0];
       p.body.alpha = p.iframes > 0 && Math.sin(p.t * 40) > 0 ? 0.5 : 1;
       p.view.x = Math.round(p.x); p.view.y = Math.round(p.y); p.view.zIndex = p.y;
@@ -607,9 +621,9 @@ class Game {
       if (l.lock <= 0 && !l.dashing && l.stun <= 0) {
         const sp = l.speed(run ? 1.45 : 1.1) * 1.15;
         l.vx = mag > 0.1 ? mx * sp : 0; l.vy = mag > 0.1 ? my * sp : 0;
-        // não pode ir longe demais do treinador
-        const tdx = l.x - p.x, tdy = l.y - p.y, td = Math.hypot(tdx, tdy), LEASH = 20 * T;
-        if (td > LEASH && (l.vx * tdx + l.vy * tdy) > 0) { l.vx *= 0.15; l.vy *= 0.15; if (!this.leashT || this.time > this.leashT) { this.toast('Longe demais do treinador!'); this.leashT = this.time + 3; } }
+        // não pode ir longe demais do treinador: só vale se ele ficou preso (normalmente ele acompanha, #seguir)
+        const tdx = l.x - p.x, tdy = l.y - p.y, td = Math.hypot(tdx, tdy), LEASH = 16 * T;
+        if (td > LEASH && (this.segue?.preso ?? 0) > 1 && (l.vx * tdx + l.vy * tdy) > 0) { l.vx *= 0.15; l.vy *= 0.15; if (!this.leashT || this.time > this.leashT) { this.toast('Longe demais do treinador!'); this.leashT = this.time + 3; } }
         if (mag > 0.1) l.face(mx, my);
       } else { l.vx = 0; l.vy = 0; }
       if (inp.pressed('dodge') && (l.dodgeCd ?? 0) <= 0) {
@@ -636,6 +650,67 @@ class Game {
     if (inp.pressed('catch') || (!pk && inp.pressed('m1'))) { const a = this.#aimPoint(); this.throwBall(a.x, a.y); }
     if (inp.pressed('swap')) this.swap();
   }
+
+  // Com o Pokémon em campo o treinador acompanha sozinho (pedido do dono: "o treinador também seguisse, mas mais no
+  // canto para não atrapalhar as batalhas"). Explorando: fica a uns 4–6 blocos atrás do Pokémon, andando ou correndo
+  // conforme a distância. Em luta: do lado oposto aos inimigos, a 5 blocos ou mais do mais perto, e sai de lado se um
+  // golpe vem na direção dele. Parede no caminho: segue a rota da grade (Grade.rota). Devolve { x, y, corre } (direção
+  // unitária) ou null para ficar parado olhando o Pokémon.
+  #seguir(dt) {
+    const p = this.player, l = this.lead, c = this.combat;
+    const S = (this.segue ??= { anda: false, rotaT: 0, rota: null, preso: 0, ax: 0, ay: 0, quer: false });
+    S.quer = false;
+    const dl = Math.hypot(l.x - p.x, l.y - p.y);
+    // longe demais (atravessou algo, ficou muito para trás numa curva): reaparece atrás do Pokémon
+    if (dl > 26 * T && !this.mundo?.warping) {
+      const a = l.angle ?? 0, q = this.map.livreMaisPerto(l.x - Math.cos(a) * 4 * T, l.y - Math.sin(a) * 4 * T);
+      if (!this.map.solidAt(q.x, q.y) && this.map.interiorAt(q.x, q.y) === this.map.interiorAt(l.x, l.y)) { p.x = q.x; p.y = q.y; p.vx = p.vy = 0; this.fx.burst(p.x, p.y - 8, 0xffffff, 0.5); S.preso = 0; return null; }
+    }
+    const inimigos = c.targetsOf(l).filter((e) => !e.isTrainer && Math.hypot(e.x - l.x, e.y - l.y) < 14 * T);
+    let ax, ay, luta = inimigos.length > 0, perigo = false;
+    if (luta) {
+      // do lado oposto ao centro dos inimigos, uns 6 blocos atrás do Pokémon
+      let cx = 0, cy = 0; for (const e of inimigos) { cx += e.x; cy += e.y; } cx /= inimigos.length; cy /= inimigos.length;
+      let dx = l.x - cx, dy = l.y - cy; const d = Math.hypot(dx, dy) || 1; dx /= d; dy /= d;
+      ax = l.x + dx * 6 * T; ay = l.y + dy * 6 * T;
+      for (const e of inimigos) { const ex = ax - e.x, ey = ay - e.y, ed = Math.hypot(ex, ey) || 1; if (ed < 5.5 * T) { ax = e.x + ex / ed * 5.5 * T; ay = e.y + ey / ed * 5.5 * T; } }
+    } else {
+      // atrás do Pokémon (contra o movimento dele), a uns 4,5 blocos
+      const v = Math.hypot(l.vx, l.vy), a = l.angle ?? 0;
+      const fx = v > 10 ? l.vx / v : Math.cos(a), fy = v > 10 ? l.vy / v : Math.sin(a);
+      ax = l.x - fx * 4.5 * T; ay = l.y - fy * 4.5 * T;
+    }
+    // golpe vindo na direção dele: sai de lado
+    for (const q of c.projectiles) {
+      if (q.dead || !c.hostile(q.user, p)) continue;
+      const sp = Math.hypot(q.vx, q.vy) || 1, ux = q.vx / sp, uy = q.vy / sp, rx = p.x - q.x, ry = p.y - q.gy;
+      const frente = rx * ux + ry * uy, lado = rx * uy - ry * ux;
+      if (frente > 0 && frente < 110 && Math.abs(lado) < 22) { const s = lado >= 0 ? 1 : -1; ax = p.x + uy * s * 3 * T; ay = p.y - ux * s * 3 * T; perigo = true; }
+    }
+    // o destino tem de ser chão do mesmo lugar
+    const q = this.map.livreMaisPerto(ax, ay); ax = q.x; ay = q.y;
+    S.ax = ax; S.ay = ay;
+    const dx = ax - p.x, dy = ay - p.y, dist = Math.hypot(dx, dy);
+    // quando parar: explorando, perto o bastante do Pokémon (3 a 6,5 blocos) já serve; em luta, perto do ponto
+    if (!perigo) {
+      if (luta) { if (S.anda ? dist < 0.6 * T : dist < 2 * T) { S.anda = false; return null; } }
+      else if (S.anda ? dist < T || (dl < 3.8 * T && dl > 2.5 * T) : dl < 6.5 * T && dl > 2.5 * T) { S.anda = false; return null; }
+    }
+    S.anda = true; S.quer = true;
+    // reto, se der; senão pela rota da grade (refeita a cada 0,3 s)
+    let ux = dx / (dist || 1), uy = dy / (dist || 1);
+    let livre = true;
+    for (let k = 6; k < Math.min(dist, 6 * T); k += 6) if (this.map.solidAt(p.x + ux * k, p.y + uy * k)) { livre = false; break; }
+    if (!livre) {
+      S.rotaT -= dt;
+      if (S.rotaT <= 0 || !S.rota) { S.rotaT = 0.3; const r = this.grade.rota(p, ax, ay); S.rota = r ? { tx: blocoX(p) + DIRV[r][0], ty: blocoY(p) + DIRV[r][1] } : null; }
+      if (S.rota) { const rx = ancoraX(S.rota.tx) - p.x, ry = ancoraY(S.rota.ty) - p.y, rd = Math.hypot(rx, ry); if (rd < 2) S.rotaT = 0; else { ux = rx / rd; uy = ry / rd; } }
+    } else S.rota = null;
+    const corre = perigo || dist > 5 * T || dl > 8 * T;
+    return { x: ux, y: uy, corre };
+  }
+  // anotado depois do movimento: quanto tempo ele quis andar e não saiu do lugar (vale para a coleira)
+  #seguiu(dt, andou) { const S = this.segue; if (!S) return; S.preso = S.quer && andou < 0.4 ? S.preso + dt : Math.max(0, S.preso - dt * 2); }
 
   // Treinador a pé no movimento clássico: um passo de bloco em bloco (src/world/grade.js); o resto do quadro
   // (animação, mato, sombra) continua como no movimento livre.
@@ -694,7 +769,9 @@ class Game {
   // ninguém atravessa ninguém
   #crowd() {
     const grade = this.grade.ativo && !this.mount?.flying && !this.player.pouso;
-    const list = [...(this.mount?.ghost ? [] : [this.player]), ...this.entities.filter((e) => e.alive && !e.busy)];
+    // o treinador acompanhando o Pokémon não esbarra em ninguém (não prende o Pokémon nem os selvagens)
+    const segue = this.mode === 'pokemon' && this.lead?.alive;
+    const list = [...(this.mount?.ghost || segue ? [] : [this.player]), ...this.entities.filter((e) => e.alive && !e.busy)];
     for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) {
       const a = list[i], b = list[j];
       const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy), m = (a.r + b.r) * 0.85;

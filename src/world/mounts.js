@@ -5,6 +5,7 @@ import { speciesScale } from '../sprites/scale.js';
 import { SPECIES, speciesOfKey, parseKey } from '../data/species.js';
 import { MONTARIAS } from '../data/montarias.js';
 import { IS_TOUCH } from '../engine/input.js';
+import { ICONES } from '../ui/toque.js';
 import { dir4 } from '../sprites/characters.js';
 import { DIRV, ancoraX, ancoraY, blocoX, blocoY } from './grade.js';
 
@@ -288,10 +289,7 @@ function whirlTex() {
 }
 
 const CSS = `
-#t-mount { right: 176px; bottom: 214px; }
-body.mode-pokemon #t-mount { display: none; }
-#t-mount svg { width: 26px; height: 26px; }
-#t-mount.on { background: #ffd23f; }
+#t-mount.on { background: #ffd23f !important; color: #1c1e28 !important; } /* posição e ícone do botão: src/ui/toque.js */
 .mt-unlock { position: fixed; left: 50%; top: 26%; transform: translate(-50%, -20px) scale(.92); opacity: 0; z-index: 60; pointer-events: none;
   display: flex; align-items: center; gap: 14px; padding: 12px 22px 12px 14px; border-radius: 18px; min-width: 260px; max-width: min(92vw, 460px);
   background: linear-gradient(180deg, rgba(28,40,60,.96), rgba(16,24,40,.96)); border: 3px solid #ffd23f; box-shadow: 0 8px 0 rgba(0,0,0,.35), 0 0 0 6px rgba(255,210,63,.18);
@@ -318,7 +316,7 @@ export class Mounts {
     if (IS_TOUCH) {
       const box = document.getElementById('tbtns');
       if (box) {
-        const b = this.btn = document.createElement('button'); b.className = 'tb small'; b.id = 't-mount'; b.innerHTML = ICON; b.setAttribute('aria-label', 'Montaria');
+        const b = this.btn = document.createElement('button'); b.className = 'tb small'; b.id = 't-mount'; b.innerHTML = ICONES.montaria; b.setAttribute('aria-label', 'Montaria');
         box.appendChild(b);
         const inp = g.input;
         b.addEventListener('touchstart', (e) => { inp.taps.add('mount'); inp.held.add('mount'); e.preventDefault(); }, { passive: false });

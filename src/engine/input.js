@@ -51,18 +51,28 @@ export class Input {
     document.getElementById('touch').hidden = false;
     const stick = document.getElementById('stick'), knob = document.getElementById('stick-knob');
     this.#cruz(stick);
+    // analógico flutuante (como nos jogos de ação de celular): a zona da esquerda é grande e invisível; o círculo
+    // aparece onde o dedo encosta e volta apagado para o canto quando o dedo sai
+    const zona = document.createElement('div'); zona.id = 'stick-zona'; stick.before(zona);
     let sid = null, cx = 0, cy = 0;
-    stick.addEventListener('touchstart', (e) => { const t = e.changedTouches[0]; sid = t.identifier; const r = stick.getBoundingClientRect(); cx = r.left + r.width / 2; cy = r.top + r.height / 2; e.preventDefault(); }, { passive: false });
+    const R = 55; // raio útil (px de tela) até a velocidade máxima
+    zona.addEventListener('touchstart', (e) => {
+      if (sid !== null) return;
+      const t = e.changedTouches[0]; sid = t.identifier; cx = t.clientX; cy = t.clientY;
+      const r = stick.offsetWidth / 2;
+      stick.style.left = (cx - r) + 'px'; stick.style.top = (cy - r) + 'px'; stick.style.bottom = 'auto'; stick.classList.add('on');
+      e.preventDefault();
+    }, { passive: false });
     addEventListener('touchmove', (e) => {
       for (const t of e.changedTouches) {
         if (t.identifier === sid) {
-          let dx = (t.clientX - cx) / 55, dy = (t.clientY - cy) / 55; const l = Math.hypot(dx, dy); if (l > 1) { dx /= l; dy /= l; }
+          let dx = (t.clientX - cx) / R, dy = (t.clientY - cy) / R; const l = Math.hypot(dx, dy); if (l > 1) { dx /= l; dy /= l; }
           this.move.x = dx; this.move.y = dy; knob.style.transform = `translate(${dx * 40}px, ${dy * 40}px)`;
           this.held[Math.hypot(dx, dy) > 0.85 ? 'add' : 'delete']('run');
         }
       }
     }, { passive: false });
-    const end = (e) => { for (const t of e.changedTouches) if (t.identifier === sid) { sid = null; this.move.x = this.move.y = 0; knob.style.transform = ''; this.held.delete('run'); } };
+    const end = (e) => { for (const t of e.changedTouches) if (t.identifier === sid) { sid = null; this.move.x = this.move.y = 0; knob.style.transform = ''; this.held.delete('run'); stick.classList.remove('on'); stick.style.left = stick.style.top = stick.style.bottom = ''; } };
     addEventListener('touchend', end); addEventListener('touchcancel', end);
     // Botões de golpe: toque = mira automática; arrastar = mira manual (estilo Brawl Stars)
     for (const b of document.querySelectorAll('.tb.move')) {
@@ -72,7 +82,7 @@ export class Input {
       b.addEventListener('touchend', (e) => { for (const t of e.changedTouches) if (t.identifier === id) { this.taps.add('m' + slot); this.releasedAim = { slot, dir: this.touchAim[slot] }; this.touchAim[slot] = null; b.classList.remove('aiming'); id = null; } });
     }
     const tap = (elId, a) => document.getElementById(elId).addEventListener('touchstart', (e) => { this.taps.add(a); this.held.add(a); e.preventDefault(); setTimeout(() => this.held.delete(a), 120); }, { passive: false });
-    tap('t-ball', 'ball'); tap('t-dodge', 'dodge'); tap('t-act', 'act'); tap('t-swap', 'swap');
+    tap('t-ball', 'ball'); tap('t-dodge', 'dodge'); tap('t-act', 'act'); tap('t-swap', 'swap'); // o botão Equipe e a faixa ficam em src/ui/toque.js
     // movimento clássico: o botão de esquiva do treinador vira "correr" enquanto está apertado (como o B dos jogos)
     const rb = document.getElementById('t-dodge');
     rb.addEventListener('touchstart', () => { if (OPTIONS.movimento !== 'livre' && !document.body.classList.contains('mode-pokemon')) this.corre = true; }, { passive: true });

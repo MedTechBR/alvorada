@@ -4,6 +4,7 @@ import { MOVES } from '../data/moves.js';
 import { TYPE_PT, TYPE_COLOR } from '../data/types.js';
 import { IS_TOUCH } from '../engine/input.js';
 import { portraitURL } from './portrait.js';
+import { Toque, ICONES } from './toque.js';
 
 // HUD leve: o DOM é montado uma vez e só recebe escrita quando um valor muda,
 // no máximo 10 vezes por segundo. Marcador de objetivo, balão de interação e "!" ficam no PixiJS
@@ -13,11 +14,9 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 const STATUS = { par: ['PAR', '#d4b000'], slp: ['DOR', '#7d7d9c'], psn: ['ENV', '#a040a0'], tox: ['ENV', '#7a1f8a'], brn: ['QUE', '#e0662c'], frz: ['CON', '#58b8e0'] };
 const hpCls = (k) => (k < 0.2 ? 'low' : k < 0.5 ? 'mid' : '');
 
+// ícones coloridos usados pelo menu (src/ui/menu.js: equipe e bolas na mochila); os do toque ficam em src/ui/toque.js
 export const ICONS = {
   ball: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="#fff" stroke="#1d2340" stroke-width="2"/><path d="M2.5 12a9.5 9.5 0 0 1 19 0z" fill="#e5383b" stroke="#1d2340" stroke-width="2"/><circle cx="12" cy="12" r="3.2" fill="#fff" stroke="#1d2340" stroke-width="2"/></svg>',
-  dodge: '<svg viewBox="0 0 24 24"><path d="M4 7l6 5-6 5M12 7l6 5-6 5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  swap: '<svg viewBox="0 0 24 24"><path d="M5 9h12l-3.5-3.5M19 15H7l3.5 3.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  menu: '<svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>',
 };
 
 export class Hud {
@@ -32,30 +31,16 @@ export class Hud {
       lead, pic: lead.querySelector('.ld-pic'), nm: lead.querySelector('.ld-nm'), lv: lead.querySelector('.ld-lv'), st: lead.querySelector('.ld-st'),
       hp: lead.querySelector('.hp i'), hpt: lead.querySelector('.ld-hpt'), xp: lead.querySelector('.xp i'), party: lead.querySelector('.ld-party'),
     };
-    // botões de toque: ícones e menu
-    for (const [id, ic] of [['t-ball', ICONS.ball], ['t-dodge', ICONS.dodge], ['t-swap', ICONS.swap]]) { const b = $(id); if (b) b.innerHTML = ic; }
-    const act = $('t-act'); if (act) act.innerHTML = '<b>A</b>';
-    // ações raras (trocar, voar/mergulhar, pular) ficam num botão "…" (menos botões na tela ao mesmo tempo)
-    const tb = $('tbtns');
-    if (tb && !$('t-mais')) {
-      const m = document.createElement('button'); m.className = 'tb small'; m.id = 't-mais'; m.setAttribute('aria-label', 'Mais ações'); m.innerHTML = '<b>…</b>';
-      const alterna = (e) => { e.preventDefault(); e.stopPropagation(); document.body.classList.toggle('mais-on'); clearTimeout(this.maisT); if (document.body.classList.contains('mais-on')) this.maisT = setTimeout(() => document.body.classList.remove('mais-on'), 5000); };
-      m.addEventListener('touchstart', alterna, { passive: false }); m.addEventListener('click', alterna);
-      tb.appendChild(m);
-      // recolher o Pokémon (o botão da Poké Bola, com ele em campo, agora joga bola de captura): fica dentro do "…"
-      const r = document.createElement('button'); r.className = 'tb small'; r.id = 't-recall'; r.setAttribute('aria-label', 'Recolher o Pokémon'); r.innerHTML = '<b>↩</b>';
-      const recolhe = (e) => { e.preventDefault(); e.stopPropagation(); this.g.input.taps.add('recall'); document.body.classList.remove('mais-on'); };
-      r.addEventListener('touchstart', recolhe, { passive: false }); r.addEventListener('click', recolhe);
-      tb.appendChild(r);
-    }
+    // botões de toque (ícones SVG, posições, Equipe, o que aparece e some): src/ui/toque.js
+    this.toque = new Toque(g, ui);
     const mb = $('menu-btn');
-    mb.innerHTML = ICONS.menu + (IS_TOUCH ? '' : '<span>Menu <kbd>M</kbd></span>');
+    mb.innerHTML = ICONES.menu + (IS_TOUCH ? '' : '<span>Menu <kbd>M</kbd></span>');
     const open = (e) => { e.preventDefault(); e.stopPropagation(); this.ui.openMenu(); };
     mb.addEventListener('touchstart', open, { passive: false });
     mb.addEventListener('click', open);
-    // botões de zoom (+ e −) sempre à vista, ao lado do minimapa; a roda do mouse, a pinça e as teclas + e − também valem
+    // botões de zoom (− e +) sempre à vista, junto do minimapa (no celular, lado a lado embaixo dele); a roda do mouse, a pinça e as teclas + e − também valem
     const zm = document.createElement('div'); zm.id = 'zoom';
-    zm.innerHTML = '<button data-z="1" aria-label="Aproximar">+</button><button data-z="-1" aria-label="Afastar">−</button>';
+    zm.innerHTML = `<button data-z="-1" aria-label="Afastar">${ICONES.menos}</button><button data-z="1" aria-label="Aproximar">${ICONES.mais}</button>`;
     for (const b of zm.querySelectorAll('button')) {
       b.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); if (this.ui.state === 'play' && !this.ui.blocking) this.g.setZoom(this.g.zoom + +b.dataset.z); });
     }
@@ -102,7 +87,7 @@ export class Hud {
   setPrompt(target, label) {
     const b = this.bubble;
     if (!target || !label) { b.visible = false; this.promptKey = ''; return; }
-    const txt = (IS_TOUCH ? 'A · ' : 'E · ') + label;
+    const txt = (IS_TOUCH ? '' : 'E · ') + label; // no celular o botão de falar aparece sozinho; o balão só diz o quê
     if (txt !== this.promptKey) {
       this.promptKey = txt;
       this.bubbleTx.text = txt;
@@ -195,7 +180,6 @@ export class Hud {
     if (ids === this.v.moves) return;
     this.v.moves = ids;
     this.v.cds = null;
-    const mb = $('t-mount'); if (mb) mb.hidden = !g.mount?.hint();
     // modo treinador: ações de enviar, capturar e escolher (no celular os botões de golpe viram essas ações)
     if (trainer) {
       const hint = (t, sub, k) => `<div class="mv hint"><kbd>${k}</kbd><span><b>${esc(t)}</b><small>${esc(sub)}</small></span></div>`;
@@ -205,16 +189,7 @@ export class Hud {
         hint('Escolher', 'próximo da equipe', 'Tab') +
         hint('Zoom', 'roda do mouse', '+ −') +
         (g.mount?.hint() ? hint(g.mount.hint().title, g.mount.hint().sub, 'X') : ''); // montaria (src/world/mounts.js)
-      // no celular: rótulo curto com ícone (o nome do Pokémon vai pequeno embaixo); o 4º botão troca o tipo de bola
-      const labels = m ? [`${ICONS.ball}Enviar<i>${esc(m.name)}</i>`, `${ICONS.ball}Capturar<i>${balls}×</i>`, g.party.length > 1 ? `${ICONS.swap}Escolher` : '', bk && g.ballKeys().length > 1 ? `${ICONS.ball}Bola<i>${esc(itemName(bk))}</i>` : ''] : ['', '', '', ''];
-      for (const b of document.querySelectorAll('.tb.move')) {
-        const i = +b.dataset.slot;
-        b.innerHTML = labels[i] ? `<span>${labels[i]}</span>` : '';
-        b.style.setProperty('--tc', i === 0 ? '#e8584a' : i === 1 ? '#3a8ad8' : '#7a8296');
-        b.style.setProperty('--cd', '0');
-        b.style.visibility = labels[i] ? 'visible' : 'hidden';
-        b.classList.remove('max');
-      }
+      this.toque.moves(); // celular: Enviar e Capturar nos lugares dos golpes 1 e 2 (src/ui/toque.js)
       g.poder?.hudHtml(); // esconde o botão do celular no modo treinador
       this.cdEls = null;
       return;
@@ -226,13 +201,7 @@ export class Hud {
       const mv = mvAt(i);
       return `<div class="mv${dmax ? ' max' : ''}" style="--tc:${TYPE_COLOR[mv?.type] ?? '#999'}"><kbd>${keys[i]}</kbd><span><b>${esc(mv?.name ?? id)}</b><small>${TYPE_PT[mv?.type] ?? ''} · ${mv?.power || '—'}</small></span><div class="cd"></div></div>`;
     }).join('') + power;
-    for (const b of document.querySelectorAll('.tb.move')) {
-      const mv = m && mvAt(+b.dataset.slot);
-      b.innerHTML = mv ? `<span class="${mv.name.length > 11 ? 'long' : ''}">${esc(mv.name)}</span>` : '';
-      b.style.setProperty('--tc', TYPE_COLOR[mv?.type] ?? '#999');
-      b.style.visibility = mv ? 'visible' : 'hidden';
-      b.classList.toggle('max', dmax);
-    }
+    this.toque.moves();
     this.cdEls = IS_TOUCH ? null : [...document.querySelectorAll('#moves .mv .cd')];
   }
 
@@ -258,9 +227,8 @@ export class Hud {
     // dicas de tecla da barra de baixo: só nos primeiros 3 minutos de jogo (ou sempre, se a opção pedir)
     this.tJogo = (this.tJogo ?? 0) + 0.1;
     this.#set('dicas', this.tJogo > 180, (v) => document.body.classList.toggle('dicas-vistas', v));
-    // botão A acende quando há com quem falar
-    const ready = !!this.promptKey;
-    this.#set('act', ready, (v) => $('t-act')?.classList.toggle('ready', v));
+    // celular: o botão A só aparece quando há com quem falar; os outros somem quando não fazem nada
+    this.toque.update();
     this.#trainer();
   }
 
