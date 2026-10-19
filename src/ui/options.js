@@ -1,7 +1,7 @@
 // Opções do jogador (ficam neste aparelho, em localStorage). Sempre com try/catch:
 // em janela anônima ou com o armazenamento bloqueado, o jogo segue com os valores padrão.
 const KEY = 'alvorada2d.opcoes';
-export const DEFAULT_OPTS = { music: 7, sfx: 8, textSpeed: 'normal', vibrate: true, uiScale: 100, fps: false, quality: 'auto', camCinema: true, visual: '3d', online: false, dicas: true, movimento: 'classico', toque: 'analogico', expShare: true };
+export const DEFAULT_OPTS = { music: 7, sfx: 8, textSpeed: 'normal', vibrate: true, uiScale: 100, fps: false, quality: 'auto', camCinema: true, visual: '3d', online: true, dicas: true, movimento: 'classico', toque: 'analogico', expShare: true };
 export const QUALITY_PT = { auto: 'Automática', alta: 'Alta', baixa: 'Baixa' };
 export const TEXT_SPEED = { lenta: 24, normal: 46, rapida: 95 };
 export const TEXT_SPEED_PT = { lenta: 'Lenta', normal: 'Normal', rapida: 'Rápida' };
@@ -26,7 +26,7 @@ export function applyOpts(g) {
   if (g?.quality && g.quality.mode !== o.quality) g.quality.setMode(o.quality);
   try { localStorage.setItem('alvorada.visual', o.visual === '2d' ? '2d' : '3d'); } catch { /* sem armazenamento */ } // vale ao reabrir (src/main.js)
   g?.v3d?.dinamica?.setCinema(o.camCinema !== false);
-  if (g?.net && !!o.online !== g.net.worldOn) g.net.setWorld(!!o.online); // Jogar online (desligado por padrão)
+  if (g?.net && !!o.online !== g.net.worldOn) g.net.setWorld(!!o.online); // Jogar online (ligado por padrão no mundo Firebase; quem desligar fica offline)
   document.body.classList.toggle('cruz', o.toque === 'cruz'); // direcional em cruz no lugar do analógico (src/engine/input.js)
   document.body.classList.toggle('sem-dicas', o.dicas === false); // visual 3D: movimentos de câmera (src/visual3d/camera.js)
   const a = g?.audio;

@@ -1,8 +1,16 @@
 // Teste do mundo por Firebase (src/net/fire.js): 2 jogadores anônimos, posição, saída (onDisconnect), regras, troca e duelo.
-//   python3 tools/serve.py 8743   (noutro terminal)   ·   node tools/teste-online/firebase.mjs
+//   (sobe o servidor sozinho na porta 8761)   ·   node tools/teste-online/firebase.mjs
+import { spawn } from 'node:child_process';
 import { launch, open, sleep, until } from './cdp.mjs';
-const base = `http://127.0.0.1:8743/index.html?teste=1&online=1&backend=fire`;
+// sobe o próprio servidor local (e derruba tudo ao sair)
+const PORT = 8761;
+const srv = spawn('python3', ['tools/serve.py', String(PORT)], { stdio: 'ignore' });
+await sleep(1500);
+const base = `http://127.0.0.1:${PORT}/index.html?teste=1&online=1&backend=fire`;
 const b = await launch(9361);
+const bye = () => { try { b.kill(); } catch {} try { srv.kill('SIGKILL'); } catch {} };
+for (const sg of ['SIGINT', 'SIGTERM', 'exit']) process.on(sg, () => { bye(); if (sg !== 'exit') process.exit(1); });
+setTimeout(() => { console.log('TIMEOUT geral'); bye(); process.exit(2); }, 420000).unref();
 const log = (...a) => console.log(...a.map((x) => typeof x === 'string' ? x : JSON.stringify(x)));
 const st = (p) => p.ev(`(() => { const n = game.net, w = n.world; return { state: w.state, on: n.on, id: n.selfId, n: n.room?.players.size, err: w.lastError, rem: [...n.remotes.map.values()].map(r => ({ id: r.id, name: r.name, vis: r.view.visible, x: Math.round(r.x), y: Math.round(r.y), has: !!r.has })) }; })()`);
 try {
@@ -78,4 +86,4 @@ try {
   const gone = await until(async () => (await st(P.a)).n === 1, 40000, 250);
   log('FECHAR B -> A vê só ele mesmo:', !!gone, 'em', Date.now() - t1, 'ms');
   for (const p of Object.values(P)) { const ex = p.logs.filter((l) => /EXC|rror|fire\]/.test(l)); log('CONSOLE', p.tag, ex.length ? ex.slice(0, 8) : 'sem erros'); }
-} finally { b.kill(); }
+} finally { bye(); }

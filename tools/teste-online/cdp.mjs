@@ -1,5 +1,5 @@
 // Driver mínimo de teste (ver mundo.mjs). Abre o Google Chrome do macOS sem interface.
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -13,7 +13,7 @@ export async function launch(port = 9333) {
     '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--disable-background-timer-throttling', '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows',
     '--window-size=1200,800', 'about:blank'], { stdio: 'ignore' });
   for (let i = 0; i < 150; i++) { try { await fetch(`http://127.0.0.1:${port}/json/version`); break; } catch { await sleep(200); } }
-  return { port, proc: p, kill: () => p.kill('SIGKILL') };
+  return { port, proc: p, kill: () => { p.kill('SIGKILL'); spawnSync('pkill', ['-9', '-f', dir]); } }; // também os processos filhos (renderizadores)
 }
 
 export async function open(b, url, tag = '') {
