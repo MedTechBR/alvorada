@@ -245,6 +245,7 @@ class Game {
       const mon = new Mon(dex, lo + Math.floor(Math.random() * (hi - lo + 1)), { form: form ?? null });
       const w = new PokeEntity(this, mon, 'wild', x, y);
       await w.ready;
+      if (this.wilds.filter((o) => o.alive).length >= WILD_MAX + 2) { w.view.destroy({ children: true }); return; } // a área encheu enquanto o sprite baixava
       // sem internet: só aparecem espécies cujos sprites já estão guardados (nada de bolinha no lugar do Pokémon)
       if (w.set?.placeholder && !navigator.onLine) { w.view.destroy({ children: true }); continue; }
       if (Math.random() < 0.15) w.ai.state = 'sleep';
@@ -622,7 +623,8 @@ class Game {
     this.spawnT -= dt;
     const p = this.player;
     // poucos selvagens por vez e espaçados: cheio demais ficava impossível de jogar (WILD_MAX vivos, um novo a cada ~5 s)
-    if (this.spawnT <= 0 && this.wilds.filter((w) => w.alive).length < WILD_MAX) { this.spawnT = 4 + Math.random() * 3; this.spawnWild(); }
+    // (um por vez: com os sprites demorando a baixar, vários nasciam de uma vez só quando chegavam e passavam de WILD_MAX)
+    if (this.spawnT <= 0 && !this.spawnPend && this.wilds.filter((w) => w.alive).length < WILD_MAX) { this.spawnT = 4 + Math.random() * 3; this.spawnPend = true; this.spawnWild().catch(() => {}).finally(() => { this.spawnPend = false; }); }
     for (const w of this.wilds) {
       if (!w.alive || w.busy) { w.vx = w.vy = 0; continue; }
       if (w.stun > 0 || w.lock > 0) { w.vx = w.vy = 0; continue; }
