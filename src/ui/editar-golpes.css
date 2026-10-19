@@ -59,3 +59,7 @@
   .eg-n { width: 18px; height: 18px; font-size: 11px; }
   .eg-novo { font-size: 8px; padding: 0 4px; margin-left: 3px; }
 }
+
+/* nome longo ("Cortina de Fumaça", "Sopro do Dragão"): corta com reticências antes da etiqueta do tipo, sem encostar nela */
+.eg-slot .eg-nm, .eg-opt .eg-nm { overflow: hidden; text-overflow: ellipsis; display: block; padding-right: 6px; }
+.eg-slot .gm-type, .eg-opt .gm-type, .eg-slot .eg-pill, .eg-opt .eg-pill, .eg-pw, .eg-org { flex-shrink: 0; }
