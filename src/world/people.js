@@ -23,7 +23,8 @@ export class People {
   #resident(d) {
     const g = this.g;
     let n;
-    try { n = new Npc(g, { id: d.id, name: d.name, look: d.look ?? 'menino', x: d.x * T + 8, y: d.y * T + 10, dir: d.dir ?? 'down' }); }
+    const pos = this.map.livreMaisPerto?.(d.x * T + 8, d.y * T + 10) ?? { x: d.x * T + 8, y: d.y * T + 10 }; // fora de poste, banco, palmeira
+    try { n = new Npc(g, { id: d.id, name: d.name, look: d.look ?? 'menino', x: pos.x, y: pos.y, dir: d.dir ?? 'down' }); }
     catch (e) { console.warn('morador', d.id, e); return null; }
     n.def = d; n.wanderT = 1 + Math.random() * 3; n.talking = false;
     return n;

@@ -233,6 +233,20 @@ export class GameMap {
   areaName(px, py) { const r = this.interiorAt(px, py); if (r) return r.name; return this.areaAt(px, py)?.name ?? 'Alvorada'; }
   isIndoor(px, py) { return !!this.interiorAt(px, py); }
 
+  // Ponto de pé livre mais perto de (px, py), para personagens que o mapa pôs em cima de poste, banco, palmeira ou água.
+  // Balcão e mesa de sala ficam como estão (o atendente fica atrás do balcão de propósito). Devolve o mesmo ponto se já está livre.
+  livreMaisPerto(px, py) {
+    if (!this.solidAt(px, py)) return { x: px, y: py };
+    const tx = Math.floor(px / T), ty = Math.floor(py / T), k0 = this.cellObj?.get(tx + ty * this.w)?.kind;
+    if (this.interiorAt(px, py) && /counter|table|desk/i.test(k0 ?? '')) return { x: px, y: py };
+    for (let k = 1; k <= 4; k++) for (let j = -k; j <= k; j++) for (let i = -k; i <= k; i++) {
+      if (Math.max(Math.abs(i), Math.abs(j)) !== k) continue;
+      const x = (tx + i) * T + 8, y = (ty + j) * T + 10;
+      if (!this.solidAt(x, y) && this.interiorAt(x, y) === this.interiorAt(px, py)) return { x, y };
+    }
+    return { x: px, y: py };
+  }
+
   // Colisão: bloco sólido ou ocupado por objeto
   solidAt(px, py, swim = false) {
     const x = Math.floor(px / T), y = Math.floor(py / T);

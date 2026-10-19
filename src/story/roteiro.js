@@ -95,6 +95,7 @@ export class Roteiro {
       const s = g.map.spots?.[e.spot];
       if (s) { x = s.x; y = s.y + 2; dir = s.dir ?? 'down'; } else console.warn('roteiro: ponto que falta no mapa', e.spot);
     }
+    if (e.spot && g.map.livreMaisPerto) ({ x, y } = g.map.livreMaisPerto(x, y)); // não nasce em cima de árvore, poste ou água
     const n = new Npc(g, { id: e.id, name: e.nome ?? nomeDe(e.quem), look, x, y, dir });
     n.e = e; n.padrao = e.padrao ?? lines; n.visible = false; n.home = { x, y, dir };
     this.atores.set(e.id, n);
