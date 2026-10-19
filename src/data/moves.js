@@ -17,6 +17,7 @@
 // "todos os adversários" → wave (ou quake se for de Terra/Pedra físico); clima → rain; campo e armadilhas → cloud;
 // estado → self (em si) ou proj de estado; poder alto e PP baixo → cd maior.
 import { GOLPES } from './gen/golpes.js';
+import { GOLPE_DESC } from './golpes-desc.js'; // descrições escritas à mão (valem acima das geradas)
 import { RECEITAS } from './gen/receitas.js'; // gerado por tools/alinhar_receitas.mjs a partir de src/combat/anims
 
 // Ajustes finos herdados da versão anterior do jogo (já testados no mapa).
@@ -180,6 +181,7 @@ for (const [id, g] of Object.entries(GOLPES)) {
   // oficial → ajustes antigos → famosos → receita de animação do combate → pedidos explícitos
   const m = merge(merge(merge(merge(g, ANTIGOS[id]), FAMOSOS[id]), RECEITAS[id]), FORCADOS[id]);
   m.id = id;
+  if (GOLPE_DESC[id]) m.desc = GOLPE_DESC[id];
   if (m.kind === 'proj' && !m.speed) m.speed = m.type === 'electric' ? 26 : 17;
   if (m.acc === null && m.cat !== 'status') m.homing = true;
   m.aimSpread = m.acc == null ? 0 : Math.round((1 - m.acc) * 0.8 * 100) / 100;
