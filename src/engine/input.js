@@ -31,7 +31,10 @@ export class Input {
     addEventListener('keyup', (e) => { const a = KEYS[e.code]; if (a) { this.held.delete(a); this.pilha = this.pilha.filter((d) => d !== a); } });
     addEventListener('blur', () => { this.held.clear(); this.pilha.length = 0; });
     canvas.addEventListener('mousemove', (e) => { this.mouse.x = e.clientX; this.mouse.y = e.clientY; this.mouse.inside = true; this.usingPad = false; });
-    canvas.addEventListener('mousedown', (e) => { if (e.button === 0) this.taps.add('m0'); if (e.button === 2) this.taps.add('m1'); });
+    // toque/clique em algo do mundo (peça de quebra-cabeça): alvoToque(x, y) diz se ali tem algo; o toque vai para
+    // `toques` (src/story/enigmas.js consome) e não vira golpe, arremesso nem analógico
+    this.toques = []; this.alvoToque = null;
+    canvas.addEventListener('mousedown', (e) => { if (e.button === 0 && this.alvoToque?.(e.clientX, e.clientY)) { this.toques.push({ x: e.clientX, y: e.clientY, t: performance.now() }); return; } if (e.button === 0) this.taps.add('m0'); if (e.button === 2) this.taps.add('m1'); });
     canvas.addEventListener('contextmenu', (e) => e.preventDefault());
     // zoom: roda do mouse e pinça com dois dedos
     this.zoomDelta = 0;
@@ -43,7 +46,12 @@ export class Input {
       const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
       if (d > pinch * 1.4) { this.zoomDelta += 1; pinch = d; } else if (d < pinch / 1.4) { this.zoomDelta -= 1; pinch = d; } // 1,4: um passo de zoom a cada abertura razoável dos dedos
     }, { passive: true });
-    canvas.addEventListener('touchend', () => { pinch = null; }, { passive: true });
+    let tq = null; // toque curto direto no mundo (fora da zona do analógico)
+    canvas.addEventListener('touchstart', (e) => { const t = e.changedTouches[0]; tq = e.touches.length === 1 ? { id: t.identifier, x: t.clientX, y: t.clientY, t: performance.now() } : null; }, { passive: true });
+    canvas.addEventListener('touchend', (e) => {
+      pinch = null;
+      for (const t of e.changedTouches) if (tq && t.identifier === tq.id) { if (performance.now() - tq.t < 400 && Math.hypot(t.clientX - tq.x, t.clientY - tq.y) < 14 && this.alvoToque?.(tq.x, tq.y)) this.toques.push({ x: tq.x, y: tq.y, t: performance.now() }); tq = null; }
+    }, { passive: true });
     if (IS_TOUCH) this.#touch();
   }
 
@@ -56,15 +64,24 @@ export class Input {
     const zona = document.createElement('div'); zona.id = 'stick-zona'; stick.before(zona);
     let sid = null, cx = 0, cy = 0;
     const R = 55; // raio útil (px de tela) até a velocidade máxima
-    zona.addEventListener('touchstart', (e) => {
-      if (sid !== null) return;
-      const t = e.changedTouches[0]; sid = t.identifier; cx = t.clientX; cy = t.clientY;
+    // a zona do analógico cobre metade da tela: um toque curto em cima de uma peça do quebra-cabeça gira a peça;
+    // se o dedo arrasta (mais de 14 px), vira analógico normal a partir de onde encostou
+    let pend = null;
+    const ligaStick = (id, x, y) => {
+      sid = id; cx = x; cy = y;
       const r = stick.offsetWidth / 2;
       stick.style.left = (cx - r) + 'px'; stick.style.top = (cy - r) + 'px'; stick.style.bottom = 'auto'; stick.classList.add('on');
+    };
+    zona.addEventListener('touchstart', (e) => {
+      if (sid !== null) return;
+      const t = e.changedTouches[0];
       e.preventDefault();
+      if (this.alvoToque?.(t.clientX, t.clientY)) { pend = { id: t.identifier, x: t.clientX, y: t.clientY, t: performance.now() }; return; }
+      ligaStick(t.identifier, t.clientX, t.clientY);
     }, { passive: false });
     addEventListener('touchmove', (e) => {
       for (const t of e.changedTouches) {
+        if (pend && t.identifier === pend.id && Math.hypot(t.clientX - pend.x, t.clientY - pend.y) > 14) { ligaStick(pend.id, pend.x, pend.y); pend = null; }
         if (t.identifier === sid) {
           let dx = (t.clientX - cx) / R, dy = (t.clientY - cy) / R; const l = Math.hypot(dx, dy); if (l > 1) { dx /= l; dy /= l; }
           this.move.x = dx; this.move.y = dy; knob.style.transform = `translate(${dx * 40}px, ${dy * 40}px)`;
@@ -72,7 +89,7 @@ export class Input {
         }
       }
     }, { passive: false });
-    const end = (e) => { for (const t of e.changedTouches) if (t.identifier === sid) { sid = null; this.move.x = this.move.y = 0; knob.style.transform = ''; this.held.delete('run'); stick.classList.remove('on'); stick.style.left = stick.style.top = stick.style.bottom = ''; } };
+    const end = (e) => { for (const t of e.changedTouches) if (pend && t.identifier === pend.id) { if (e.type === 'touchend') this.toques.push({ x: pend.x, y: pend.y, t: performance.now() }); pend = null; } for (const t of e.changedTouches) if (t.identifier === sid) { sid = null; this.move.x = this.move.y = 0; knob.style.transform = ''; this.held.delete('run'); stick.classList.remove('on'); stick.style.left = stick.style.top = stick.style.bottom = ''; } };
     addEventListener('touchend', end); addEventListener('touchcancel', end);
     // Botões de golpe: toque = mira automática; arrastar = mira manual (estilo Brawl Stars)
     for (const b of document.querySelectorAll('.tb.move')) {

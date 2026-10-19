@@ -109,6 +109,15 @@ export class TrainerBattle {
     if (!this.opts.noFlee && Math.hypot(g.player.x - this.npc.x, g.player.y - this.npc.y) > 26 * 16) { g.toast(`Você fugiu da batalha com ${this.def.name}.`); this.finish('flee'); }
   }
 
+  // Câmera da luta (main.js): no meio entre quem você controla e o Pokémon do treinador mais perto, para os dois
+  // ficarem na tela (antes seguia só o seu e o do treinador ficava cortado em cima). Longe demais: segue o seu.
+  focoCamera(x, y) {
+    if (this.done) return null;
+    let f = null, bd = 13 * 16;
+    for (const e of this.active) { if (!e.alive || e.dead) continue; const d = Math.hypot(e.x - x, e.y - y); if (d < bd) { bd = d; f = e; } }
+    return f ? { x: (x + f.x) / 2, y: (y + f.y) / 2 - 4 } : null;
+  }
+
   // chamado pelo main.js (gancho onFaint) quando um Pokémon 'foe' desmaia
   onFaint(e, by) {
     if (this.arena?.onFaint(e)) return true; // ajudantes da arena (casulos) não contam para a vitória

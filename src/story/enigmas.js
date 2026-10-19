@@ -27,10 +27,12 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 export const ENIGMAS = {
   circuitos: [
     // caminho = células (coluna, linha) da fonte ao gerador; as outras peças são de enfeite (e atrapalham)
+    // embaralha = quantas peças do caminho começam fora do lugar (as outras já vêm certas: o dono achou cansativo girar
+    // dezenas de peças; assim a luz já corre pelo começo do caminho e mostra onde está o defeito)
     { id: 'farol1', sala: 'farol_coral', x: 3, y: 4, w: 7, h: 3, fonte: [2, 5, E], gerador: [10, 5], semente: 7,
-      caminho: [[0, 1], [0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [3, 2], [4, 2], [4, 1], [5, 1], [6, 1]], acende: true, abre: 'farol1_porta' },
+      caminho: [[0, 1], [0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [3, 2], [4, 2], [4, 1], [5, 1], [6, 1]], embaralha: 4, acende: true, abre: 'farol1_porta' },
     { id: 'farol2', sala: 'farol_coral_2', x: 2, y: 3, w: 6, h: 5, fonte: [1, 4, E], gerador: [8, 7], semente: 13,
-      caminho: [[0, 1], [1, 1], [1, 0], [2, 0], [3, 0], [3, 1], [3, 2], [2, 2], [1, 2], [1, 3], [1, 4], [2, 4], [3, 4], [4, 4], [4, 3], [5, 3], [5, 4]], acende: true, raio: 'farol2_raio' },
+      caminho: [[0, 1], [1, 1], [1, 0], [2, 0], [3, 0], [3, 1], [3, 2], [2, 2], [1, 2], [1, 3], [1, 4], [2, 4], [3, 4], [4, 4], [4, 3], [5, 3], [5, 4]], embaralha: 5, acende: true, raio: 'farol2_raio' },
   ],
   // portões fechados por padrão; "abre" de um circuito ou alavanca libera
   portoes: {
@@ -130,7 +132,15 @@ export class Enigmas {
   // estado salvo → mundo (também depois de carregar um save)
   aplicar() {
     const st = this.st;
-    for (const c of this.circ) { c.rots = st['c_' + c.id] ? [...st['c_' + c.id]] : c.rots0.slice(); this.#ligar(c, false); }
+    for (const c of this.circ) {
+      // save de antes da versão 2 (todas as peças embaralhadas): se não estava resolvido, recomeça na versão nova
+      const sv = st['c_' + c.d.id];
+      c.rots = sv && sv.length === c.rots0.length ? [...sv] : c.rots0.slice();
+      if (sv && (st.cver ?? 1) < 2 && !this.#energia(c).chegou) { c.rots = c.rots0.slice(); delete st['c_' + c.d.id]; }
+      c.cells.forEach((q, k) => { q.ang = q.alvo = c.rots[k] * Math.PI / 2; });
+      this.#ligar(c, false);
+    }
+    st.cver = 2;
     for (const [id, p] of Object.entries(this.portoes)) this.#portao(p, st['p_' + id] ?? p.d.aberto ?? false);
     for (const c of this.circ) if (c.ligado && c.d.abre) this.#portao(this.portoes[c.d.abre], true);
     if (this.gens) this.#desenharGens();
@@ -183,12 +193,18 @@ export class Enigmas {
       let r = 0; while (rot(PECA[tipo], r) !== m) r++;
       sol.set(q[0] + ',' + q[1], { tipo, r, m });
     });
+    // quais peças do caminho começam erradas: `embaralha` delas, espalhadas pelo caminho (espalhadas por igual: a primeira já perto da fonte)
+    const nE = Math.min(d.caminho.length, d.embaralha ?? d.caminho.length), erradas = new Set();
+    for (let n = 0; n < nE; n++) { const q = d.caminho[Math.floor((n + 0.5) * d.caminho.length / nE)]; erradas.add(q[0] + ',' + q[1]); }
     for (let j = 0; j < d.h; j++) for (let i = 0; i < d.w; i++) {
       const sl = sol.get(i + ',' + j);
       const tipo = sl ? sl.tipo : ['I', 'L', 'L', 'T'][Math.floor(rnd() * 4)];
       let r0 = Math.floor(rnd() * 4);
-      if (sl) while (rot(PECA[tipo], r0) === sl.m) r0 = (r0 + 1) % 4; // começa sempre fora do lugar
-      c.cells.push({ i, j, tipo, ...this.#px(d.sala, d.x + i, d.y + j) }); c.rots0.push(r0);
+      if (sl && erradas.has(i + ',' + j)) while (rot(PECA[tipo], r0) === sl.m) r0 = (r0 + 1) % 4; // esta começa fora do lugar
+      else if (sl) r0 = sl.r;
+      const cell = { i, j, tipo, ...this.#px(d.sala, d.x + i, d.y + j) };
+      cell.ang = cell.alvo = r0 * Math.PI / 2; cell.flash = 0;
+      c.cells.push(cell); c.rots0.push(r0);
     }
     c.fonte = this.#px(d.sala, d.fonte[0], d.fonte[1]); c.genPx = this.#px(d.sala, d.gerador[0], d.gerador[1]);
     this.floor.addChild(c.gfx);
@@ -220,18 +236,10 @@ export class Enigmas {
     return { on, chegou };
   }
   #ligar(c, avisar) {
-    const { on, chegou } = this.#energia(c), G = c.gfx;
-    G.clear();
+    const { on, chegou } = this.#energia(c);
     const d = c.d, ligou = chegou && !c.ligado;
-    c.ligado = chegou;
-    // cabo da fonte até a primeira peça
-    for (const cell of c.cells) {
-      const k = cell.j * d.w + cell.i, m = rot(PECA[cell.tipo], c.rots[k]), lit = on.has(k);
-      G.roundRect(cell.x - 7, cell.y - 7, 14, 14, 2).fill({ color: 0x2a3040 }).stroke({ width: 1, color: 0x5a6470 });
-      const col = lit ? (chegou ? 0x9afff4 : 0xffd27a) : 0x6a6e78;
-      for (const [b, dx, dy] of SIDES) if (m & b) G.moveTo(cell.x, cell.y).lineTo(cell.x + dx * 8, cell.y + dy * 8).stroke({ width: 3, color: col });
-      G.circle(cell.x, cell.y, 2.2).fill(col);
-    }
+    c.ligado = chegou; c.on = on;
+    this.#desenharCircuito(c);
     c.genSpr.tint = chegou ? 0x9afff4 : 0x8a8e98;
     const sala = this.salas[d.sala];
     if (d.acende && sala) sala.dark = !chegou;
@@ -241,12 +249,81 @@ export class Enigmas {
       if (d.abre) { this.#portao(this.portoes[d.abre], true); g.toast('O portão de raio se abriu!'); }
     }
   }
+  // peças: base, braços (girando com animação) e moldura: clara quando dá para tocar, amarela na peça embaixo do
+  // jogador (a que o A gira), branca piscando na que acabou de girar
+  #desenharCircuito(c) {
+    const G = c.gfx, d = c.d, on = c.on ?? new Set(), chegou = c.ligado;
+    const alvoK = this.#pecaDoJogador(c), toca = this.#perto(d.sala) && !chegou;
+    G.clear();
+    for (const cell of c.cells) {
+      const k = cell.j * d.w + cell.i, lit = on.has(k), base = PECA[cell.tipo];
+      const borda = k === alvoK && !chegou ? 0xffd27a : toca ? 0x8aa0b8 : 0x5a6470;
+      G.roundRect(cell.x - 7, cell.y - 7, 14, 14, 2).fill({ color: 0x2a3040 }).stroke({ width: k === alvoK && !chegou ? 1.6 : 1, color: borda });
+      const col = lit ? (chegou ? 0x9afff4 : 0xffd27a) : 0x6a6e78;
+      const ca = Math.cos(cell.ang), sa = Math.sin(cell.ang);
+      for (const [b, dx, dy] of SIDES) if (base & b) G.moveTo(cell.x, cell.y).lineTo(cell.x + (dx * ca - dy * sa) * 8, cell.y + (dx * sa + dy * ca) * 8).stroke({ width: 3, color: col });
+      G.circle(cell.x, cell.y, 2.2).fill(col);
+      if (cell.flash > 0) G.roundRect(cell.x - 8, cell.y - 8, 16, 16, 3).stroke({ width: 1.5, color: 0xffffff, alpha: Math.min(1, cell.flash * 4) });
+    }
+  }
   #girar(c, cell) {
     const k = cell.j * c.d.w + cell.i;
     if (c.ligado) { this.g.toast('O circuito já está ligado.'); return; }
     c.rots[k] = (c.rots[k] + 1) % 4; this.st['c_' + c.d.id] = c.rots.slice();
-    this.g.audio?.sfx?.('pop');
+    cell.alvo += Math.PI / 2; cell.flash = 0.3; // gira com animação (update)
+    this.g.audio?.sfx?.('pop'); this.g.ui?.buzz?.(12);
     this.#ligar(c, true);
+  }
+  // índice da peça em que o jogador está em pé (-1 se nenhuma)
+  #pecaDoJogador(c) {
+    const p = this.g.player, r = this.salas[c.d.sala]; if (!r) return -1;
+    const i = Math.floor(p.x / T) - r.x - c.d.x, j = Math.floor((p.y - 2) / T) - r.y - c.d.y;
+    return i >= 0 && j >= 0 && i < c.d.w && j < c.d.h ? j * c.d.w + i : -1;
+  }
+  #perto(sala) { return this.#sala() === sala; }
+
+  // ---------------- toque direto nas peças (celular) e clique (mouse) ----------------
+  // tudo o que gira ou liga na sala onde o jogador está, até 12 blocos dele: { x, y, raio, alto, fn }
+  #tocaveis() {
+    const out = [], sala = this.#sala(), p = this.g.player, s = this.g.story;
+    if (s?.busy || s?.battle || this.r.rodando || this.g.ui?.dialog?.open || this.g.mundo?.warping) return out;
+    const perto = (x, y) => Math.hypot(x - p.x, y - p.y) < 12 * T;
+    for (const c of this.circ) if (c.d.sala === sala && !c.ligado) for (const cell of c.cells) if (perto(cell.x, cell.y)) out.push({ x: cell.x, y: cell.y, raio: 8.5, alto: 0, fn: () => this.#girar(c, cell) });
+    if (this.esp && this.esp.d.sala === sala) this.esp.d.espelhos.forEach(([x, y], i) => { const q = this.#px(this.esp.d.sala, x, y); if (perto(q.x, q.y)) out.push({ x: q.x, y: q.y + 4, raio: 9, alto: 14, fn: () => this.#girarEspelho(i) }); });
+    if (this.gens && this.gens.d.sala === sala) this.gens.cells.forEach((q, i) => { if (perto(q.x, q.y)) out.push({ x: q.x, y: q.y + 4, raio: q.tipo === 'g' ? 13 : 10, alto: q.tipo === 'g' ? 26 : 18, fn: () => this.r.s.cut(() => this.#ligarGerador(i)) }); });
+    for (const L of this.alav) if (L.a.sala === sala && perto(L.x, L.y)) out.push({ x: L.x, y: L.y + 4, raio: 9, alto: 12, fn: () => this.#puxar(L) });
+    return out;
+  }
+  // o que está sob o ponto da tela (sx, sy): o chão sob o dedo, com a altura dos objetos de pé (o dedo no topo do
+  // gerador acerta um ponto do chão atrás dele)
+  #alvoNaTela(sx, sy) {
+    const g = this.g, w = g.screenToWorld?.(sx, sy); if (!w) return null;
+    let best = null, bd = 1e9;
+    for (const o of this.#tocaveis()) {
+      // distância do ponto ao segmento (base -> base recuada pela altura), em px de mundo
+      const ax = o.x, ay = o.y, by = o.y - o.alto * 0.7, t = o.alto ? Math.max(0, Math.min(1, (ay - w.y) / (ay - by))) : 0;
+      const d = Math.hypot(w.x - ax, w.y - (ay + (by - ay) * t));
+      if (d < o.raio && d < bd) { bd = d; best = o; }
+    }
+    return best;
+  }
+  #toques() {
+    const inp = this.g.input; if (!inp) return;
+    inp.alvoToque ??= (sx, sy) => !!this.#alvoNaTela(sx, sy);
+    const agora = performance.now();
+    while (inp.toques?.length) { const q = inp.toques.shift(); if (agora - q.t > 600) continue; this.#alvoNaTela(q.x, q.y)?.fn(); }
+  }
+  #animar(dt) {
+    for (const c of this.circ) {
+      let mexe = false;
+      for (const cell of c.cells) {
+        if (Math.abs(cell.alvo - cell.ang) > 1e-3) { cell.ang += (cell.alvo - cell.ang) * Math.min(1, dt * 16); if (Math.abs(cell.alvo - cell.ang) < 0.01) cell.ang = cell.alvo; mexe = true; }
+        if (cell.flash > 0) { cell.flash = Math.max(0, cell.flash - dt); mexe = true; }
+      }
+      // a moldura amarela segue o jogador; a clara aparece quando ele entra na sala
+      const chave = this.#pecaDoJogador(c) + ':' + this.#perto(c.d.sala);
+      if (mexe || chave !== c.chave) { c.chave = chave; this.#desenharCircuito(c); }
+    }
   }
 
   // ---------------- portões ----------------
@@ -488,6 +565,14 @@ export class Enigmas {
     }
   }
 
+  // blocos que abrem e fecham sozinhos (portões, portões de raio): a batalha não vai para cima deles (src/combat/espaco.js)
+  celulasMoveis() {
+    const out = new Set(), k = ([x, y]) => out.add(this.#k(x, y));
+    for (const p of Object.values(this.portoes)) p.cells.forEach(k);
+    for (const r of Object.values(this.raios)) for (const l of r.linhas) l.forEach(k);
+    return out;
+  }
+
   // ---------------- laço e interação ----------------
   update(dt) {
     this.t += dt;
@@ -496,6 +581,8 @@ export class Enigmas {
     this.#raios(dt);
     this.#portais(dt);
     this.#ambiente(dt);
+    this.#animar(dt);
+    this.#toques();
     if ((this.pT = (this.pT ?? 0) - dt) <= 0) { this.pT = 1; this.#prisma(false); }
     if (this.g.flags !== this.ultFlags) { this.ultFlags = this.g.flags; this.aplicar(); }
     // o raio de luar cintila

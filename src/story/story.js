@@ -12,6 +12,7 @@ import { currentObjective, hasBadge, beaten } from './quests.js';
 import { Spots } from './spots.js';
 import { Npc } from './npc.js';
 import { TrainerBattle } from './battle.js';
+import { temEspaco, acharEspaco, lugares } from '../combat/espaco.js';
 import { makeStarterTable, makeBallTexture } from '../sprites/npc.js';
 import { Roteiro } from './roteiro.js';
 import { GINASIOS } from './jornadas.js';
@@ -272,13 +273,40 @@ export class Story {
   }
   async #afterTalk(npc) { return this.#talk(npc, npc.def.after ?? npc.def.win); }
 
-  #fight(npc, def, opts = {}) {
+  async #fight(npc, def, opts = {}) {
     const b = new TrainerBattle(this, npc, def, opts);
+    const volta = await this.#espacoDaLuta(npc, b);
     this.battle = b;
     this.busy = false; // a luta é livre: o jogador anda, mira e ataca
     this.refreshObjective();
-    return b.start().finally(() => { this.battle = null; this.busy = true; })
-      .then((r) => { if (r === 'win') this.g.missoes?.evento('vitoria', { id: def.id }); return r; });
+    const r = await b.start().finally(() => { this.battle = null; this.busy = true; });
+    // perdeu e desmaiou: quem leva é o desmaio (Centro Pokémon); nos outros casos, todos voltam para onde estavam
+    if (volta && (r !== 'lose' || opts.noBlackout)) await volta();
+    if (r === 'win') this.g.missoes?.evento('vitoria', { id: def.id });
+    return r;
+  }
+  // Lugar apertado (corredor, entre estantes, ao lado da escada): a luta vai para o espaço livre mais perto
+  // (src/combat/espaco.js), com um escurecer rápido; devolve a função que traz todo mundo de volta no fim.
+  async #espacoDaLuta(npc, b) {
+    const g = this.g, p = g.player, m = g.map;
+    if (b.arena || !npc || g.net?.duel?.active) return null; // arena de ginásio tem os lugares dela
+    const mx = Math.floor((p.x + npc.x) / 2 / T), my = Math.floor((p.y + npc.y) / 2 / T);
+    const moveis = this.roteiro?.enigmas?.celulasMoveis?.(), extra = moveis?.size ? (k) => moveis.has(k) : null;
+    if (temEspaco(m, mx, my, { extra })) return null;
+    const r = acharEspaco(m, mx, my, { extra });
+    if (!r) return null;
+    const L = lugares(r, p.x <= npc.x);
+    const antes = { j: { x: p.x, y: p.y, dir: p.dir }, n: { x: npc.x, y: npc.y, dir: npc.dir } };
+    const leva = (j, n) => {
+      p.x = j.x; p.y = j.y; p.vx = p.vy = p.kx = p.ky = 0; p.dir = j.dir; p.seguro = null; g.grade?.soltar?.(p);
+      if (npc.place) npc.place(n.x, n.y, n.dir); else { npc.x = n.x; npc.y = n.y; }
+      const lado = Math.sign(n.x - j.x) || 1;
+      if (g.lead) { g.lead.x = j.x + lado * 18; g.lead.y = j.y; g.lead.kx = g.lead.ky = g.lead.vx = g.lead.vy = 0; g.lead.seguro = null; m.resolve(g.lead, g.lead.r); }
+      for (const e of g.entities) if (e.side === 'aliado' && e.alive) { e.x = j.x + lado * 10; e.y = j.y + 18; e.seguro = null; m.resolve(e, e.r); }
+      g.cam.x = (j.x + n.x) / 2; g.cam.y = (j.y + n.y) / 2;
+    };
+    await g.ui.fade(() => leva(L.jogador, L.treinador), 300);
+    return () => g.ui.fade(() => leva(antes.j, antes.n), 300);
   }
 
   async #giveBadge(npc, d) {

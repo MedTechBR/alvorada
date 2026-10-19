@@ -796,7 +796,7 @@ class Game {
     // camFocus: ponto que uma cena curta pede para mostrar (arena de ginásio: fases, entrada do ás)
     const p = this.player, c = this.cam, f = this.mode === 'pokemon' && this.lead?.alive ? this.lead : p;
     let fx = f.x, fy = f.y - (f === p ? this.mount?.camLift ?? 0 : 0); // voando, a câmera sobe com o treinador
-    const foco = this.camFocus ?? this.camFoco?.(fx, fy); if (foco) { fx = foco.x; fy = foco.y; } // reide: entre o Pokémon e o chefe (src/world/tocas.js)
+    const foco = this.camFocus ?? this.camFoco?.(fx, fy) ?? this.story?.battle?.focoCamera?.(fx, fy); if (foco) { fx = foco.x; fy = foco.y; } // reide: entre o Pokémon e o chefe (src/world/tocas.js)
     const ck = this.camFocus ? 3.5 : 8;
     c.x += (fx - c.x) * Math.min(1, dt * ck); c.y += (fy - c.y) * Math.min(1, dt * ck);
     let sx = 0, sy = 0;
