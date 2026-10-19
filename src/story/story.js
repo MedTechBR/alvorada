@@ -96,8 +96,9 @@ export class Story {
     const t = new PIXI.Sprite(makeStarterTable()); t.anchor.set(0.5, 1); t.y = 4;
     this.table.addChild(t);
     const bt = makeBallTexture();
-    this.balls = STARTERS.map((dex, i) => { const b = new PIXI.Sprite(bt); b.anchor.set(0.5, 1); b.x = (i - 1) * 11; b.y = -7; b.dex = dex; this.table.addChild(b); return b; });
-    this.table.x = s.x; this.table.y = s.y; this.table.zIndex = s.y;
+    this.balls = STARTERS.map((dex, i) => { const b = new PIXI.Sprite(bt); b.anchor.set(0.5, 1); b.x = (i - 1) * T; b.y = -7; b.dex = dex; this.table.addChild(b); return b; });
+    // uma Poké Bola por bloco, e o meio da mesa (+8) no centro de um bloco: no movimento em grade cada bola fica na frente de um bloco
+    this.table.x = s.x + 8; this.table.y = s.y; this.table.zIndex = s.y;
     g.ents.addChild(this.table);
   }
   #refresh() {
@@ -336,7 +337,7 @@ export class Story {
     add(this.npc('prof'), 26, 'Falar', R('prof', () => this.profTalk(), f.balls && this.npc('prof')));
     const rival = this.npc('rival');
     if (!f.rivalGone) add(rival, 24, 'Falar', () => this.#talk(rival, f.starter ? RIVAL.idle : RIVAL.before(this.pname)));
-    if (!f.starter) for (const b of this.balls) add({ x: this.table.x + b.x, y: this.table.y + 2, h: 26, visible: b.visible }, 12, `Ver ${SPECIES[b.dex].name}`, () => this.pickStarter(b.dex));
+    if (!f.starter) for (const b of this.balls) add({ x: this.table.x + b.x, y: this.table.y + 2, h: 26, visible: b.visible }, 24, `Ver ${SPECIES[b.dex].name}`, () => this.pickStarter(b.dex));
     for (const t of this.trainers) {
       const done = beaten(f, t.def.id);
       const quem = t.def.id === 'leader_tome' ? 'tome' : t.def.id;

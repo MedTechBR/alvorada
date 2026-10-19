@@ -769,7 +769,7 @@ export class Mounts {
   #gradePasso(dt, pk, run, C, climb) {
     const g = this.g, p = g.player, inp = g.input, m = g.map, swim = !!C.water;
     let dir = pk || p.stun > 0 || g.mundo?.warping ? null : inp.gridDir;
-    const anda = (C.walk ?? 100) / T * 0.97, corre = Math.min((C.run ?? 140) / T * 0.84, anda * 1.3);
+    const anda = Math.min(8, (C.walk ?? 100) / T * 0.97), corre = Math.min(10, (C.run ?? 140) / T * 0.84, anda * 1.3); // teto: 8 / 10 blocos/s
     let vel = (climb ? Math.min(anda, (C.climb ?? 60) / T * 1.0) : run ? corre : anda) * T;
     if (this.under) vel *= 0.85;
     if (!swim) vel *= g.mundo?.masmorra?.mountK(p) ?? 1; // neve funda, areia movediça
