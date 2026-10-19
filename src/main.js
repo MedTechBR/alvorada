@@ -680,6 +680,13 @@ class Game {
       const fx = v > 10 ? l.vx / v : Math.cos(a), fy = v > 10 ? l.vy / v : Math.sin(a);
       ax = l.x - fx * 4.5 * T; ay = l.y - fy * 4.5 * T;
     }
+    // ninguém mira no treinador enquanto o Pokémon luta; e quem chega perto demais faz ele correr para longe
+    for (const e of this.wilds) {
+      if (!e.alive) continue;
+      if (e.aggroTarget === p) e.aggroTarget = l;
+      const ex = p.x - e.x, ey = p.y - e.y, ed = Math.hypot(ex, ey);
+      if (ed < 3.5 * T && c.hostile(l, e)) { const k = ed || 1; ax = p.x + ex / k * 4 * T; ay = p.y + ey / k * 4 * T; perigo = true; }
+    }
     // golpe vindo na direção dele: sai de lado
     for (const q of c.projectiles) {
       if (q.dead || !c.hostile(q.user, p)) continue;
