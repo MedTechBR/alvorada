@@ -53,7 +53,8 @@ const LAYOUT = LOSANGO ? {
   empe: { esq: [226, 122], peq: [[226, 222], [158, 236], [90, 246], [226, 290], [158, 304], [90, 314]] },
 } : {
   deitado: { esq: [252, 46], peq: [[215.5, 120.4], [160.7, 190], [324, 38], [290, 106], [382, 38], [350, 106]] },
-  empe: { esq: [226, 122], peq: [[226, 222], [158, 236], [90, 246], [226, 290], [158, 304], [90, 314]] },
+  // em pé o cacho fica estreito (até 234 px) para não encostar no analógico da esquerda
+  empe: { esq: [200, 150], peq: [[204, 238], [138, 226], [72, 236], [204, 300], [138, 290], [72, 300]] },
 };
 // lugar fixo de cada botão pequeno (índice em peq); os de contexto (Mega, A no modo Pokémon) ocupam a próxima vaga livre
 const FIXO = { pokemon: { 't-ball': 0, 't-team': 1, 't-jump': 2, 't-alt': 3 }, treinador: { 't-mount': 0 } };

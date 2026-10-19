@@ -56,6 +56,9 @@ body.touch #hb .pn { width: 27vw; max-width: 236px; padding: 3px 8px; gap: 6px; 
 body.touch #hb .nm { font-size: 12px; } body.touch #hb .lv { font-size: 11px; } body.touch #hb .tg { margin: 1px 0 2px; } body.touch #hb .tg i { font-size: 8px; padding: 0 5px; }
 body.touch #hb .bar { height: 5px; } body.touch #hb .ps { font-size: 9px; margin-top: 0; } body.touch #hb .vs { font-size: 16px; }
 body.touch #hb .pn.eu { left: calc(6px + var(--sl, 0px)); top: calc(6px + var(--st, 0px)); } body.touch #hb .pn.ele { right: calc(56px + var(--sr, 0px)); top: calc(6px + var(--st, 0px)); } body.touch #hb .vs { top: calc(12px + var(--st, 0px)); }
+@media (max-width: 520px) { /* em pé: painéis lado a lado, cada um com metade da largura, sem o VS */
+  body.touch #hb .pn { width: calc(50vw - 34px); max-width: none; } body.touch #hb .pn.ele { right: calc(52px + var(--sr, 0px)); } body.touch #hb .vs { display: none; }
+}
 `;
 
 export class HudBatalha {
