@@ -96,8 +96,9 @@ export class Story {
     const t = new PIXI.Sprite(makeStarterTable()); t.anchor.set(0.5, 1); t.y = 4;
     this.table.addChild(t);
     const bt = makeBallTexture();
-    this.balls = STARTERS.map((dex, i) => { const b = new PIXI.Sprite(bt); b.anchor.set(0.5, 1); b.x = (i - 1) * 11; b.y = -7; b.dex = dex; this.table.addChild(b); return b; });
-    this.table.x = s.x; this.table.y = s.y; this.table.zIndex = s.y;
+    this.balls = STARTERS.map((dex, i) => { const b = new PIXI.Sprite(bt); b.anchor.set(0.5, 1); b.x = (i - 1) * T; b.y = -7; b.dex = dex; this.table.addChild(b); return b; });
+    // uma Poké Bola por bloco, e o meio da mesa (+8) no centro de um bloco: no movimento em grade cada bola fica na frente de um bloco
+    this.table.x = s.x + 8; this.table.y = s.y; this.table.zIndex = s.y;
     g.ents.addChild(this.table);
   }
   #refresh() {
@@ -336,7 +337,7 @@ export class Story {
     add(this.npc('prof'), 26, 'Falar', R('prof', () => this.profTalk(), f.balls && this.npc('prof')));
     const rival = this.npc('rival');
     if (!f.rivalGone) add(rival, 24, 'Falar', () => this.#talk(rival, f.starter ? RIVAL.idle : RIVAL.before(this.pname)));
-    if (!f.starter) for (const b of this.balls) add({ x: this.table.x + b.x, y: this.table.y + 2, h: 26, visible: b.visible }, 12, `Ver ${SPECIES[b.dex].name}`, () => this.pickStarter(b.dex));
+    if (!f.starter) for (const b of this.balls) add({ x: this.table.x + b.x, y: this.table.y + 2, h: 26, visible: b.visible }, 24, `Ver ${SPECIES[b.dex].name}`, () => this.pickStarter(b.dex));
     for (const t of this.trainers) {
       const done = beaten(f, t.def.id);
       const quem = t.def.id === 'leader_tome' ? 'tome' : t.def.id;
@@ -358,7 +359,7 @@ export class Story {
     for (const n of this.npcs.values()) {
       n.update(dt);
       // ninguém atravessa as pessoas
-      if (n.visible) { const dx = p.x - n.x, dy = p.y - n.y, d = Math.hypot(dx, dy), m = n.r + (p.r ?? 5); if (d > 0.01 && d < m) { p.x = n.x + dx / d * m; p.y = n.y + dy / d * m; } }
+      if (n.visible && !g.grade?.ativo) { const dx = p.x - n.x, dy = p.y - n.y, d = Math.hypot(dx, dy), m = n.r + (p.r ?? 5); if (d > 0.01 && d < m) { p.x = n.x + dx / d * m; p.y = n.y + dy / d * m; } }
     }
     this.battle?.update(dt);
     const demo = MAP_ID !== 'alvorada'; // mapa de teste (?mapa=demo-biomas): sem cenas do roteiro nem missões
@@ -370,7 +371,12 @@ export class Story {
 
     // interação mais perto
     let best = null, bd = 1e9;
-    if (!this.battle) for (const it of this.interactions()) { const d = Math.hypot(it.o.x - p.x, it.o.y - p.y); if (d < it.r && d < bd) { bd = d; best = it; } }
+    const frente = g.grade?.ativo && !p.pouso ? { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] }[p.dir] : null; // em grade, só o que está à frente do treinador
+    if (!this.battle) for (const it of this.interactions()) {
+      const ox = it.o.x - p.x, oy = it.o.y - p.y, d = Math.hypot(ox, oy);
+      if (frente && d > 6) { const along = ox * frente[0] + oy * frente[1], perp = Math.abs(ox * frente[1] - oy * frente[0]); if (along < 0 || perp > along * 0.55 + 7) continue; }
+      if (d < it.r && d < bd) { bd = d; best = it; }
+    }
     g.ui.hud.setPrompt(best ? { x: best.o.x, y: best.o.y, h: best.o.h } : null, best?.label);
     if (best && g.input.pressed('act')) { g.input.taps.delete('act'); this.#cut(best.fn); return; }
     if (demo) return;

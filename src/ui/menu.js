@@ -8,7 +8,7 @@ import { BADGES } from '../story/names.js';
 import * as World from '../world/map.js';
 import * as Tiles from '../world/tiles.js';
 import { IS_TOUCH } from '../engine/input.js';
-import { OPTIONS, DEFAULT_OPTS, saveOpts, applyOpts, TEXT_SPEED_PT, UI_SCALES, QUALITY_PT } from './options.js';
+import { OPTIONS, DEFAULT_OPTS, saveOpts, applyOpts, TEXT_SPEED_PT, UI_SCALES, QUALITY_PT, MOVIMENTO_PT, TOQUE_PT } from './options.js';
 import { portraitURL, SILHOUETTE } from './portrait.js';
 import { ICONS } from './hud.js';
 import { exportCode, importCode, Auth } from '../net/auth.js';
@@ -1195,6 +1195,8 @@ export class GameMenu {
       { k: 'sfx', label: 'Volume dos efeitos', type: 'slider' },
       { k: 'textSpeed', label: 'Velocidade do texto', type: 'choice', values: ['lenta', 'normal', 'rapida'], show: (v) => TEXT_SPEED_PT[v] },
       { k: 'uiScale', label: IS_TOUCH ? 'Tamanho dos botões e do HUD' : 'Tamanho do HUD (celular)', type: 'choice', values: UI_SCALES, show: (v) => v + '%' },
+      { k: 'movimento', label: 'Movimento do treinador', type: 'choice', values: ['classico', 'livre'], show: (v) => MOVIMENTO_PT[v] },
+      ...(IS_TOUCH ? [{ k: 'toque', label: 'Controle de toque', type: 'choice', values: ['analogico', 'cruz'], show: (v) => TOQUE_PT[v] }] : []),
       { k: 'vibrate', label: 'Vibrar ao acertar e ser atingido', type: 'bool', on: 'Ligado', off: 'Desligado' },
       { k: 'quality', label: 'Qualidade gráfica', type: 'choice', values: ['auto', 'alta', 'baixa'], show: (v) => QUALITY_PT[v] + (v === 'auto' && this.g.quality ? ` (${this.g.quality.level})` : '') },
       { k: 'fps', label: 'Mostrar FPS (F3)', type: 'bool', on: 'Sim', off: 'Não' },
@@ -1255,7 +1257,7 @@ export class GameMenu {
       draw: (body) => {
         const row = (a, b) => `<tr><th>${a}</th><td>${b}</td></tr>`;
         const kb = `<div class="gm-sub-t">Teclado e mouse</div><table class="gm-tbl">
-            ${row('Andar / correr', '<kbd>WASD</kbd> ou setas · <kbd>Shift</kbd> corre')}
+            ${row('Andar / correr', '<kbd>WASD</kbd> ou setas, bloco a bloco (um toque curto só vira) · <kbd>Shift</kbd> corre')}
             ${row('Enviar / voltar', '<kbd>Q</kbd> joga a Poké Bola do Pokémon escolhido · <kbd>Q</kbd> ou <kbd>R</kbd> chama de volta')}
             ${row('Golpes', '<kbd>1</kbd> a <kbd>4</kbd> · clique esquerdo = golpe 1, direito = golpe 2 · a mira segue o mouse')}
             ${row('Capturar', '<kbd>B</kbd> joga uma Poké Bola vazia · <kbd>G</kbd> troca o tipo de bola')}
@@ -1272,7 +1274,7 @@ export class GameMenu {
             ${row('Esquiva / Pokémon', '<kbd>A</kbd> esquiva · <kbd>X</kbd> envia ou chama de volta o Pokémon')}${row('Capturar', 'com o treinador: <kbd>RB</kbd> joga a Poké Bola')}${row('Falar / trocar', '<kbd>Y</kbd> fala · <kbd>B</kbd> troca')}
             ${row('Montaria', '<kbd>Select</kbd>')}${row('Menu', '<kbd>Start</kbd>')}</table>`;
         const touch = `<div class="gm-sub-t">Tela de toque</div><table class="gm-tbl">
-            ${row('Andar', 'analógico à esquerda (empurre até a borda para correr)')}
+            ${row('Andar', 'analógico à esquerda (4 direções; empurre até a borda para correr) ou direcional em cruz (Opções) · segure o botão da esquiva para correr')}
             ${row('Enviar e capturar', 'botão vermelho envia o Pokémon escolhido · azul joga uma Poké Bola vazia')}
             ${row('Golpes', 'toque = mira automática no mais perto · arraste o botão = mira manual')}
             ${row('Botões menores', 'esquiva, <b>A</b> (falar), sela (montaria) · no modo Pokémon: bola (voltar), trocar, voar/cavar e pular')}

@@ -112,6 +112,15 @@ body.touch #menu-btn { width: 46px; height: 46px; padding: 0; justify-content: c
 #stick { position: absolute; left: calc(5vw + var(--sl)); bottom: calc(7vh + var(--sb)); width: 136px; height: 136px; border-radius: 50%; pointer-events: auto;
   background: radial-gradient(circle, rgba(255,255,255,.06) 0 40%, rgba(255,255,255,.16) 41% 100%); border: 2px solid rgba(255,255,255,.4); box-shadow: inset 0 0 18px rgba(0,0,0,.25);
   transform: scale(var(--ui-scale)); transform-origin: bottom left; }
+#dpad { display: none; position: absolute; left: calc(5vw + var(--sl)); bottom: calc(7vh + var(--sb)); width: 136px; height: 136px; pointer-events: auto; transform: scale(var(--ui-scale)); transform-origin: bottom left; touch-action: none; }
+body.cruz #dpad { display: block; } body.cruz #stick { display: none; }
+#dpad button { position: absolute; width: 46px; height: 46px; padding: 0; border-radius: 12px; border: 3px solid rgba(255,255,255,.55); background: rgba(40,48,80,.55); box-shadow: 0 3px 0 rgba(0,0,0,.28); }
+#dpad button::after { content: ''; position: absolute; left: 50%; top: 50%; width: 0; height: 0; margin: -7px 0 0 -8px; border: 8px solid transparent; }
+#dpad button[data-d=up] { left: 45px; top: 0; } #dpad button[data-d=up]::after { border-bottom: 13px solid #fff; border-top: 0; margin-top: -7px; }
+#dpad button[data-d=down] { left: 45px; bottom: 0; } #dpad button[data-d=down]::after { border-top: 13px solid #fff; border-bottom: 0; margin-top: -5px; }
+#dpad button[data-d=left] { left: 0; top: 45px; } #dpad button[data-d=left]::after { border-right: 13px solid #fff; border-left: 0; margin: -8px 0 0 -8px; }
+#dpad button[data-d=right] { right: 0; top: 45px; } #dpad button[data-d=right]::after { border-left: 13px solid #fff; border-right: 0; margin: -8px 0 0 -4px; }
+#dpad button.on { background: rgba(255,255,255,.6); }
 #stick-knob { position: absolute; left: 41px; top: 41px; width: 54px; height: 54px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #d6dcea); box-shadow: 0 4px 0 rgba(0,0,0,.25), 0 0 0 3px rgba(54,66,107,.6); }
 #tbtns { position: absolute; right: calc(3.5vw + var(--sr)); bottom: calc(5vh + var(--sb)); width: 236px; height: 236px; transform: scale(var(--ui-scale)); transform-origin: bottom right; }
 .tb { position: absolute; pointer-events: auto; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; text-align: center;
@@ -154,6 +163,7 @@ body.touch .foe { --hud-k: var(--ui-scale); }
   body.touch .ld-party { margin-top: 4px; }
   body.touch .objective { top: calc(var(--g) + var(--st) + 80px * var(--ui-scale)); max-width: 230px; }
   body.touch .objective:not(.min) .os { display: none; }
+  #dpad { width: 118px; height: 118px; transform: scale(calc(var(--ui-scale) * .9)); } #dpad button { width: 40px; height: 40px; } #dpad button[data-d=up], #dpad button[data-d=down] { left: 39px; } #dpad button[data-d=left], #dpad button[data-d=right] { top: 39px; }
   #stick { width: 118px; height: 118px; } #stick-knob { left: 34px; top: 34px; width: 48px; height: 48px; }
   #tbtns { transform: scale(calc(var(--ui-scale) * .86)); }
   .area { font-size: 14px; }
@@ -162,7 +172,7 @@ body.touch .foe { --hud-k: var(--ui-scale); }
   body.touch .objective { top: calc(var(--g) + var(--st) + 80px); max-width: min(230px, calc(100vw - 140px)); }
   body.touch #toasts { bottom: calc(230px + var(--sb)); max-width: 86vw; }
   #tbtns { transform: scale(calc(var(--ui-scale) * .82)); }
-  #stick { transform: scale(calc(var(--ui-scale) * .85)); }
+  #stick { transform: scale(calc(var(--ui-scale) * .85)); } #dpad { transform: scale(calc(var(--ui-scale) * .8)); }
   .foe { top: calc(var(--g) + var(--st) + 84px); }
 }
 

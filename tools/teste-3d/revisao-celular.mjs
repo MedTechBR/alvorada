@@ -6,7 +6,7 @@
 import { launch, open, sleep, until } from './chrome.mjs';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
-const PORT = process.env.PORT ?? 8760, URL0 = `http://127.0.0.1:${PORT}/index.html`;
+const PORT = process.env.PORT ?? 8760, URL0 = `http://127.0.0.1:${PORT}/index.html${process.env.Q ?? ''}`; // Q=?mov=livre testa o movimento antigo
 const out = new URL('../shots/', import.meta.url); mkdirSync(out, { recursive: true });
 const nome = 'Rev' + randomBytes(2).toString('hex'), senha = randomBytes(9).toString('base64url');
 const res = [];

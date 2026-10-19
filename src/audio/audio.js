@@ -175,6 +175,7 @@ export class Audio {
       case 'caught': [0, 4, 7, 4, 7, 12].forEach((s, i) => T(659 * 2 ** (s / 12), t + i * 0.1, 0.18, { vol: 0.14, type: 'pulse' })); break;
       case 'shake': T(220, t, 0.06, { vol: 0.15, type: 'square' }); N(t, 0.05, { freq: 3000, vol: 0.1 }); break;
       case 'thud': T(120, t, 0.15, { to: 50, vol: 0.3, type: 'triangle' }); N(t, 0.1, { freq: 400, vol: 0.2 }); break;
+      case 'bump': T(150, t, 0.07, { to: 95, vol: 0.1, type: 'triangle' }); N(t, 0.03, { freq: 500, vol: 0.05 }); break; // esbarrar na parede (movimento em grade)
       case 'deny': T(110, t, 0.12, { vol: 0.12, type: 'square' }); break;
       case 'dodge': N(t, 0.2, { freq: 800, to: 3000, vol: 0.15 }); break;
       case 'status': T(300, t, 0.3, { to: 150, vol: 0.12, type: 'pulse' }); T(310, t, 0.3, { to: 160, vol: 0.08, type: 'square' }); break;

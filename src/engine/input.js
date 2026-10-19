@@ -1,6 +1,8 @@
+import { OPTIONS } from '../ui/options.js';
 // Entrada unificada: teclado + mouse (mira), controle e toque (analógico virtual + botões que miram ao arrastar).
 export const IS_TOUCH = matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
 
+const DIRS4 = ['up', 'down', 'left', 'right'];
 const KEYS = {
   KeyW: 'up', ArrowUp: 'up', KeyS: 'down', ArrowDown: 'down', KeyA: 'left', ArrowLeft: 'left', KeyD: 'right', ArrowRight: 'right',
   ShiftLeft: 'run', ShiftRight: 'run', Space: 'dodge', KeyE: 'act', Enter: 'act', KeyQ: 'ball', Tab: 'swap', KeyF: 'feed',
@@ -17,14 +19,17 @@ export class Input {
     this.aimStick = null; // vetor do analógico direito / arraste no toque
     this.touchAim = {};   // slot -> {x,y} enquanto arrasta um botão de golpe
     this.usingPad = false;
+    // movimento em grade (src/world/grade.js): pilha das direções apertadas (vale a última), e a direção resultante
+    this.pilha = []; this.gridDir = null; this.eixo = null;
     addEventListener('keydown', (e) => {
       const a = KEYS[e.code]; if (!a) return;
       if (['Tab', 'Space', 'F3'].includes(e.code) || e.code.startsWith('Arrow')) e.preventDefault();
       if (!this.held.has(a)) this.taps.add(a);
       this.held.add(a); this.usingPad = false;
+      if (DIRS4.includes(a) && !this.pilha.includes(a)) this.pilha.push(a);
     });
-    addEventListener('keyup', (e) => { const a = KEYS[e.code]; if (a) this.held.delete(a); });
-    addEventListener('blur', () => this.held.clear());
+    addEventListener('keyup', (e) => { const a = KEYS[e.code]; if (a) { this.held.delete(a); this.pilha = this.pilha.filter((d) => d !== a); } });
+    addEventListener('blur', () => { this.held.clear(); this.pilha.length = 0; });
     canvas.addEventListener('mousemove', (e) => { this.mouse.x = e.clientX; this.mouse.y = e.clientY; this.mouse.inside = true; this.usingPad = false; });
     canvas.addEventListener('mousedown', (e) => { if (e.button === 0) this.taps.add('m0'); if (e.button === 2) this.taps.add('m1'); });
     canvas.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -45,6 +50,7 @@ export class Input {
   #touch() {
     document.getElementById('touch').hidden = false;
     const stick = document.getElementById('stick'), knob = document.getElementById('stick-knob');
+    this.#cruz(stick);
     let sid = null, cx = 0, cy = 0;
     stick.addEventListener('touchstart', (e) => { const t = e.changedTouches[0]; sid = t.identifier; const r = stick.getBoundingClientRect(); cx = r.left + r.width / 2; cy = r.top + r.height / 2; e.preventDefault(); }, { passive: false });
     addEventListener('touchmove', (e) => {
@@ -67,6 +73,32 @@ export class Input {
     }
     const tap = (elId, a) => document.getElementById(elId).addEventListener('touchstart', (e) => { this.taps.add(a); this.held.add(a); e.preventDefault(); setTimeout(() => this.held.delete(a), 120); }, { passive: false });
     tap('t-ball', 'ball'); tap('t-dodge', 'dodge'); tap('t-act', 'act'); tap('t-swap', 'swap');
+    // movimento clássico: o botão de esquiva do treinador vira "correr" enquanto está apertado (como o B dos jogos)
+    const rb = document.getElementById('t-dodge');
+    rb.addEventListener('touchstart', () => { if (OPTIONS.movimento !== 'livre' && !document.body.classList.contains('mode-pokemon')) this.corre = true; }, { passive: true });
+    const rbEnd = () => { this.corre = false; };
+    rb.addEventListener('touchend', rbEnd); rb.addEventListener('touchcancel', rbEnd);
+  }
+
+  // Direcional em cruz (opção "Controle de toque"): no lugar do analógico, 4 botões; vale a última direção apertada
+  #cruz(stick) {
+    const box = document.createElement('div'); box.id = 'dpad';
+    box.innerHTML = '<button data-d="up" aria-label="Cima"></button><button data-d="left" aria-label="Esquerda"></button><button data-d="right" aria-label="Direita"></button><button data-d="down" aria-label="Baixo"></button>';
+    stick.after(box);
+    const ids = new Map(); // dedo -> direção
+    const por = (e) => {
+      for (const t of e.changedTouches) {
+        const el = document.elementFromPoint(t.clientX, t.clientY)?.closest?.('#dpad button'), d = el?.dataset.d ?? null;
+        const antes = ids.get(t.identifier);
+        if (antes && antes !== d) { this.pilha = this.pilha.filter((x) => x !== antes); box.querySelector(`[data-d=${antes}]`)?.classList.remove('on'); ids.delete(t.identifier); }
+        if (d && antes !== d) { ids.set(t.identifier, d); if (!this.pilha.includes(d)) this.pilha.push(d); el.classList.add('on'); }
+      }
+      e.preventDefault();
+    };
+    box.addEventListener('touchstart', por, { passive: false });
+    box.addEventListener('touchmove', por, { passive: false });
+    const fim = (e) => { for (const t of e.changedTouches) { const d = ids.get(t.identifier); if (d) { this.pilha = this.pilha.filter((x) => x !== d); box.querySelector(`[data-d=${d}]`)?.classList.remove('on'); ids.delete(t.identifier); } } };
+    addEventListener('touchend', fim); addEventListener('touchcancel', fim);
   }
 
   poll() {
@@ -78,6 +110,7 @@ export class Input {
     // Controle de videogame
     const pad = navigator.getGamepads?.()[0];
     this.aimStick = null;
+    let padDir = null;
     if (pad) {
       const dz = (v) => (Math.abs(v) < 0.18 ? 0 : v);
       const lx = dz(pad.axes[0]), ly = dz(pad.axes[1]), rx = dz(pad.axes[2]), ry = dz(pad.axes[3]);
@@ -92,7 +125,26 @@ export class Input {
         this.padPrev[i] = p;
       }
       if (Math.hypot(pad.axes[0], pad.axes[1]) > 0.9) this.held.add('run');
+      // direcional (cruz) do controle: 12 cima (também Mega/Dynamax), 13 baixo, 14 esquerda, 15 direita
+      const b = (i) => pad.buttons[i]?.pressed;
+      padDir = b(14) ? 'left' : b(15) ? 'right' : b(13) ? 'down' : b(12) ? 'up' : null;
+      if (!padDir && (lx || ly)) padDir = this.#dominante(lx, ly, 0.5);
+      if (padDir) this.usingPad = true;
     }
+    // direção do movimento em grade: teclado/cruz (última apertada) > analógico do toque > controle
+    this.gridDir = this.pilha.length ? this.pilha[this.pilha.length - 1] : IS_TOUCH && !this.cruzOn() ? this.#dominante(this.move.x, this.move.y, 0.35) : padDir;
+    if (!this.pilha.length && !IS_TOUCH && !padDir) this.eixo = null;
+    if (this.corre) { this.held.add('run'); this.corriaBtn = true; } else if (this.corriaBtn) { this.held.delete('run'); this.corriaBtn = false; }
+  }
+  cruzOn() { return IS_TOUCH && OPTIONS.toque === 'cruz'; }
+  // analógico -> uma das 4 direções pela dominante, com zona morta; o eixo atual só troca quando o outro ganha com folga
+  #dominante(x, y, zona) {
+    const ax = Math.abs(x), ay = Math.abs(y);
+    if (Math.max(ax, ay) < zona) { this.eixo = null; return null; }
+    if (this.eixo === 'x' && ax * 1.25 >= ay) return x > 0 ? 'right' : 'left';
+    if (this.eixo === 'y' && ay * 1.25 >= ax) return y > 0 ? 'down' : 'up';
+    this.eixo = ax >= ay ? 'x' : 'y';
+    return this.eixo === 'x' ? (x > 0 ? 'right' : 'left') : (y > 0 ? 'down' : 'up');
   }
   pressed(a) { return this.taps.has(a); }
   down(a) { return this.held.has(a); }

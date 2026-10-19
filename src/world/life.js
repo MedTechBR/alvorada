@@ -134,7 +134,9 @@ export class WorldLife {
     const w = this.map.warpAt.get(tx + ty * this.map.w);
     if (!w) return;
     const mv = inp?.move ?? { x: 0, y: 0 };
-    const goingUp = p.vy < -8 || mv.y < -0.4, goingDown = p.vy > 8 || mv.y > 0.4;
+    let goingUp = p.vy < -8 || mv.y < -0.4, goingDown = p.vy > 8 || mv.y > 0.4;
+    // em grade a porta abre na chegada ao bloco (como nos jogos), olhando para o lado da entrada
+    if (g.grade?.ativo && !p.pouso && !g.mount?.flying) { if (p.gr?.s) return; goingUp = p.dir === 'up'; goingDown = p.dir === 'down'; }
     if (w.dir === 'up' && !goingUp) return;
     if (w.dir === 'down' && !goingDown) return;
     // passagem com condição (flags ou item:<id>): avisa e devolve um passo

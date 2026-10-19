@@ -5,6 +5,7 @@ import { makeTiles, T, TILE } from './world/tiles.js';
 import { GameMap, MAP_ID } from './world/map.js';
 import { WorldLife } from './world/life.js';
 import { Mounts } from './world/mounts.js';
+import { Grade, DIRV, VEL, ancoraX, ancoraY, blocoX, blocoY } from './world/grade.js';
 import { Viagem } from './world/viagem.js';
 import { makeTrainerFrames, dir4 } from './sprites/characters.js';
 import { loadPokemonSprites } from './sprites/pmd.js';
@@ -71,6 +72,7 @@ class Game {
       regiao: () => formaRegionalEm(this.map, this.player.x, this.player.y, this.map.id ?? MAP_ID) }); // evoluções regionais (src/data/regioes.js)
     // treinador e equipe
     this.player = this.#makeTrainer(this.map.spawn.x, this.map.spawn.y);
+    this.grade = new Grade(this);  // movimento clássico em grade (src/world/grade.js)
     this.mount = new Mounts(this); // montarias do treinador (X): src/world/mounts.js
     this.party = []; this.box = []; this.bag = { pokeball: 0, potion: 0 }; this.money = 0; this.flags = {};
     this.leadIdx = 0; this.entities = [];
@@ -552,6 +554,10 @@ class Game {
       const i = this.party[this.leadIdx]?.fainted ? this.party.findIndex((m) => !m.fainted) : this.leadIdx;
       const a = this.#aimPoint(); this.throwMon(i, a.x, a.y);
     }
+    // movimento clássico (grade de 16 px, 4 direções): vale para o treinador a pé e para as montarias de chão;
+    // o Pokémon controlado (batalha em tempo real), o voo e o telhado seguem livres
+    const grade = this.grade.ativo && !pk && !this.mount?.flying && !p.pouso && !p.saltando;
+    if (grade) { const v = DIRV[inp.gridDir]; inp.move.x = v ? v[0] : 0; inp.move.y = v ? v[1] : 0; }
     const mx = inp.move.x, my = inp.move.y, mag = Math.min(1, Math.hypot(mx, my));
     const run = inp.down('run');
 
@@ -559,6 +565,9 @@ class Game {
     p.t += dt; p.iframes -= dt; p.stun = (p.stun ?? 0) - dt; p.throwT = (p.throwT ?? 0) - dt;
     // montaria (X): quando o treinador está montado, ela cuida do movimento e do desenho
     if (!this.mount?.control(dt, pk, mx, my, mag, run)) {
+      if (this.grade.ativo && !p.pouso && !p.saltando) this.#andarGrade(dt, run, pk);
+      else {
+      this.grade.soltar(p);
       // terreno dos biomas (src/world/masmorra.js): neve funda e areia movediça atrasam, o gelo faz escorregar
       const tr = pk ? null : this.mundo?.masmorra?.player(dt, p, mx, my, mag);
       const want = pk || p.stun > 0 ? 0 : (run ? 118 : 74) * (tr?.k ?? 1);
@@ -584,6 +593,7 @@ class Game {
       p.body.alpha = p.iframes > 0 && Math.sin(p.t * 40) > 0 ? 0.5 : 1;
       p.view.x = Math.round(p.x); p.view.y = Math.round(p.y); p.view.zIndex = p.y;
       if (this.map.tallAt(p.x, p.y) && p.speed > 20 && Math.random() < dt * 4) this.fx.emit(p.x, p.y - 2, { color: 0x5aa84e, n: 2, speed: 25, size: 3, life: 0.35, add: false, grav: 120, vz: 40 });
+      }
     }
 
     // ----- Pokémon em campo: você controla direto -----
@@ -619,6 +629,38 @@ class Game {
     if (inp.pressed('swap')) this.swap();
   }
 
+  // Treinador a pé no movimento clássico: um passo de bloco em bloco (src/world/grade.js); o resto do quadro
+  // (animação, mato, sombra) continua como no movimento livre.
+  #andarGrade(dt, run, pk) {
+    const inp = this.input, p = this.player, gr = this.grade;
+    let dir = pk || p.stun > 0 || this.mundo?.warping ? null : inp.gridDir;
+    const idle = !p.gr?.s;
+    // terreno dos biomas (src/world/masmorra.js): decidido parado no centro do bloco; neve funda atrasa, o gelo escorrega bloco a bloco
+    if (idle) { const v = dir ? DIRV[dir] : [0, 0]; this.terreno = pk ? null : this.mundo?.masmorra?.player(dt, p, v[0], v[1], dir ? 1 : 0); }
+    const tr = this.terreno;
+    let auto = false;
+    if (tr?.slide) { dir = tr.slide.x ? (tr.slide.x > 0 ? 'right' : 'left') : (tr.slide.y > 0 ? 'down' : 'up'); auto = true; }
+    else if (tr?.stop) dir = null;
+    const lento = tr?.k ?? 1;
+    const vel = tr?.slide ? tr.speed : (run ? VEL.corre : VEL.anda) * lento;
+    p.kx = p.ky = 0;
+    p.correndo = run && !tr?.slide && !pk;
+    gr.passo(p, dt, {
+      dir, vel, auto, swim: false,
+      pode: (tx, ty) => gr.pode(tx, ty),
+      inicio: (tx, ty) => { if (this.map.tallAt(ancoraX(tx), ancoraY(ty))) this.map.rustle(ancoraX(tx), ancoraY(ty), run ? 0.6 : 0.45); },
+      fim: (tx, ty) => { if (this.map.tallAt(p.x, p.y)) this.fx.emit(p.x, p.y - 2, { color: 0x5aa84e, n: 3, speed: 25, size: 3, life: 0.35, add: false, grav: 120, vz: 40 }); },
+      esbarra: () => this.audio.sfx('bump'),
+    });
+    p.roll -= dt;
+    if (!p.andando && pk) p.dir = dir4(this.lead.x - p.x, this.lead.y - p.y); // olha para o próprio Pokémon
+    const idx = p.andando ? p.animIdx : 0;
+    const set = p.throwT > 0 && p.frames.throw ? p.frames.throw : p.correndo && p.andando ? p.frames.run : p.frames.walk ?? p.frames;
+    p.body.texture = (set[p.dir] ?? p.frames.walk[p.dir])[p.throwT > 0 ? Math.min(2, Math.floor((0.3 - p.throwT) / 0.1)) : idx] ?? p.frames.walk[p.dir][0];
+    p.body.alpha = p.iframes > 0 && Math.sin(p.t * 40) > 0 ? 0.5 : 1;
+    p.view.x = Math.round(p.x); p.view.y = Math.round(p.y); p.view.zIndex = p.y;
+  }
+
   #updateWild(dt) {
     this.spawnT -= dt;
     const p = this.player;
@@ -636,13 +678,16 @@ class Game {
 
   // ninguém atravessa ninguém
   #crowd() {
+    const grade = this.grade.ativo && !this.mount?.flying && !this.player.pouso;
     const list = [...(this.mount?.ghost ? [] : [this.player]), ...this.entities.filter((e) => e.alive && !e.busy)];
     for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) {
       const a = list[i], b = list[j];
       const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy), m = (a.r + b.r) * 0.85;
       if (d > 0.01 && d < m) {
-        const push = (m - d) / 2, nx = dx / d, ny = dy / d;
-        a.x -= nx * push; a.y -= ny * push; b.x += nx * push; b.y += ny * push;
+        // na grade, o treinador não sai do bloco: quem esbarra nele é que é empurrado
+        const wa = a === this.player && grade ? 0 : 1, wb = b === this.player && grade ? 0 : 1, w = wa + wb || 1;
+        const push = (m - d), nx = dx / d, ny = dy / d;
+        a.x -= nx * push * wa / w; a.y -= ny * push * wa / w; b.x += nx * push * wb / w; b.y += ny * push * wb / w;
       }
     }
   }

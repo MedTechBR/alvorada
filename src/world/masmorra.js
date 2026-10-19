@@ -193,6 +193,7 @@ export class Masmorra {
     // correnteza leva quem está na água (treinador nadando e o Pokémon)
     for (const e of [p, g.lead]) {
       if (!e || (e !== p && !e.alive)) continue;
+      if (e === p && g.grade?.ativo) continue; // na grade a correnteza leva a montaria de bloco em bloco (mounts.js)
       const c = CURRENT[m.at(Math.floor(e.x / T), Math.floor((e.y - 2) / T))];
       if (!c) continue;
       e.x += c[0] * 72 * dt; e.y += c[1] * 72 * dt; m.resolve(e, e.r ?? 5, true);
