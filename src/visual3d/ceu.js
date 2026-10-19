@@ -126,16 +126,21 @@ export class Ceu {
     this.fundo = this.fundo ?? new THREE.Color(0xbfe2f6);
     if (A.ceu.uCeu?.horizonte) this.fundo.copy(A.ceu.uCeu.horizonte.value);
   }
-  // partículas de ambiente por bioma (sem pétalas na neve nem no vulcão)
+  // partículas de ambiente pelo lugar: a região manda (Geada: neve; Brasas: cinzas e brasas; Sertão: poeira, sem folhas;
+  // Jandaias: sem pétalas) e depois o bioma. Pétalas só em campo e floresta. (As vilas ficam com o bioma "vila" mesmo
+  // no meio da neve, por isso olhar só o bioma da área não bastava.)
   #particulasDoBioma(room) {
     if (room) return null;
     const g = this.v.g, p = g.player; if (!p) return null;
-    const b = g.map.biome(p.x, p.y);
-    if (/neve|gelo|pico/.test(b)) return { petalas: false, folhas: false, polen: false, poeira: false };
-    if (/vulcao|cratera|abismo/.test(b)) return { petalas: false, folhas: false, polen: false };
-    if (/deserto|sertao|salar|canion/.test(b)) return { petalas: false, folhas: false };
-    if (/praia|mar|recife/.test(b)) return { petalas: false };
+    const b = g.map.biome(p.x, p.y), reg = g.map.regionAt?.(p.x, p.y)?.id;
+    const nada = { petalas: false, folhas: false, polen: false, poeira: false };
+    if (reg === 'geada' && !/floresta|caverna|mina|templo|ruina/.test(b)) return { ...nada, neve: true };
+    if (reg === 'brasas' || /vulcao|cratera|termal|abismo/.test(b)) return { ...nada, cinzas: true, brasas: /vulcao|cratera|abismo/.test(b) };
+    if (/neve|gelo|pico/.test(b)) return { ...nada, neve: true };
+    if (reg === 'sertao' || /deserto|sertao|salar|canion/.test(b)) return { petalas: false, folhas: false };
     if (/caverna|mina|cristal|templo|ruina/.test(b)) return { petalas: false, folhas: false, polen: false };
+    if (/praia|mar|recife|mangue|brejo|selva/.test(b) || reg === 'jandaia') return { petalas: false };
+    if (!/^(campo|floresta|vila|margem|pampa|planalto)$/.test(b)) return { petalas: false };
     return null;
   }
   // salas e biomas escuros (masmorra.darkZone): escuro de verdade com luz em volta do jogador, do Pokémon de

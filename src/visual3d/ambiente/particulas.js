@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { U, iniciarComum } from './comum.js';
 
 // Partículas de ambiente, todas calculadas na GPU (zero trabalho por quadro no JS além de 3 uniformes):
-//   folhas que caem rodopiando, pétalas rosa, pólen, poeira dourada flutuando na luz e vagalumes à noite.
+//   folhas que caem rodopiando, pétalas rosa, pólen, poeira dourada flutuando na luz e vagalumes à noite; neve, cinzas e
+//   brasas só nos biomas que pedem.
 // Cada tipo é uma malha instanciada (1 draw call). As partículas vivem numa caixa presa ao mundo em volta do foco
 // da câmera e dão a volta nas bordas (somem suavemente), então andar pelo mapa nunca as deixa para trás.
 const TIPOS = {
@@ -10,6 +11,10 @@ const TIPOS = {
   petalas:  { n: 140, forma: 1, aditivo: false, tam: [2.6, 4.2], vel: [16, -7, 3], flut: 12, cores: [0xffa6c4, 0xff8ab0, 0xffc8da], dia: 1 },
   polen:    { n: 260, forma: 2, aditivo: true, tam: [0.9, 1.6], vel: [3, 1.2, 1], flut: 5, cores: [0xfff0b0, 0xffe080], dia: 1, brilho: 1.4 },
   poeira:   { n: 80, forma: 3, aditivo: true, tam: [3, 7], vel: [4, 1.5, 1], flut: 7, cores: [0xffd27a, 0xffb85a], dia: 1, brilho: 0.55 },
+  // só aparecem quando o bioma pede (mostrar.<nome> === true, src/visual3d/ceu.js #particulasDoBioma)
+  neve:     { n: 320, forma: 1, aditivo: false, tam: [1.5, 2.6], vel: [5, -20, 3], flut: 6, cores: [0xffffff, 0xeaf4ff, 0xd8e8fa], dia: 1, so: 1 },
+  cinzas:   { n: 170, forma: 1, aditivo: false, tam: [1.6, 3.2], vel: [7, -9, 3], flut: 8, cores: [0x6e665f, 0x8b837c, 0x4f4943], dia: 1, so: 1 },
+  brasas:   { n: 70, forma: 2, aditivo: true, tam: [1.2, 2.2], vel: [4, 11, 2], flut: 7, cores: [0xff8a30, 0xffb04a, 0xff6a20], dia: 1, brilho: 2.2, so: 1 },
   vagalumes:{ n: 70, forma: 4, aditivo: true, tam: [1.6, 2.6], vel: [2, 0.5, 2], flut: 14, cores: [0xd8ff7a, 0xfff08a], dia: 0, brilho: 2.4 },
 };
 
@@ -108,6 +113,7 @@ export class Particulas {
       if (nome === 'poeira' || nome === 'polen') vis *= o.sol ?? 1;
       if (o.interior) vis = 0;
       if (o.mostrar && o.mostrar[nome] === false) vis = 0;
+      if (t.T.so && !(o.mostrar && o.mostrar[nome] === true)) vis = 0;
       t.uni.visivel.value = vis; t.uni.escalaN.value = o.escala ?? 1;
       t.me.visible = vis > 0.01;
     }
