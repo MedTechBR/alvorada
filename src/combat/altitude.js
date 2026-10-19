@@ -1,4 +1,4 @@
-import { T, TILE } from '../world/tiles.js';
+import { T, TILE, WALLS } from '../world/tiles.js';
 import { MOVES } from '../data/moves.js';
 import { nearWater } from './damage.js';
 
@@ -87,7 +87,7 @@ export class Altitude {
     // procura o alvo mais perto da mira (até 70 px de onde está)
     let best = null, bd = 1e9;
     for (const t of c.targetsOf(e)) { if (t.isTrainer) continue; const d = Math.hypot(t.x - (ax ?? e.x), t.y - (ay ?? e.y)); const de = Math.hypot(t.x - e.x, t.y - e.y); if (de < 80 && d < bd) { bd = d; best = t; } }
-    if (best && m === 'dig') { e.x = best.x + (Math.random() - 0.5) * 4; e.y = best.y + 2; }
+    if (best && m === 'dig') { const q = this.ate(e, best.x + (Math.random() - 0.5) * 4, best.y + 2); e.x = q.x; e.y = q.y; } // sai debaixo do alvo, sem passar parede
     e.alt = null; e.vz = 260; e.iframes = Math.max(e.iframes, 0.2);
     e.play(c.pickAnim(e, ['Attack', 'Strike']));
     if (m === 'dive') {
@@ -153,12 +153,32 @@ export class Altitude {
   // colisão especial: voando passa por cima de água e objetos; mergulhado só anda na água;
   // Pokémon de Água controlado pelo jogador entra e sai da água.
   resolve(e, r) {
-    const m = e.alt?.mode, map = this.g.map;
-    if (m === 'fly') { this.#resolveBy(e, r, (tx, ty) => map.at(tx, ty) === TILE.CLIFF); return true; }
-    if (m === 'dive') { map.resolve(e, r, true); return true; }
-    if (this.isWaterType(e) && (e.amphibious || e.side === 'wild' && this.inWater(e))) { this.#resolveBy(e, r, (tx, ty) => map.at(tx, ty) === TILE.CLIFF || map.block[tx + ty * map.w] === 1); return true; }
+    const m = e.alt?.mode;
+    if (m === 'fly' || m === 'dive' || this.#anfibio(e)) { this.#resolveBy(e, r, this.solido(e)); return true; }
     return false;
   }
+  #anfibio(e) { return this.isWaterType(e) && (e.amphibious || e.side === 'wild' && this.inWater(e)); }
+  // O que é parede para este Pokémon agora, em blocos (tx, ty). Voando passa por cima de água, objetos e mato, mas
+  // não de parede de sala nem de penhasco (antes só o penhasco segurava: voando, atravessava a parede da sala);
+  // mergulhado só anda na água; o Pokémon de Água anfíbio anda onde andaria a pé OU nadando (antes atravessava parede).
+  solido(e) {
+    const m = e.alt?.mode, map = this.g.map;
+    if (m === 'fly') return (tx, ty) => { const t = map.at(tx, ty); return t === TILE.CLIFF || t === TILE.VOID || WALLS.has(t); };
+    if (m === 'dive') return (tx, ty) => map.solidAt(tx * T + 1, ty * T + 1, true);
+    if (this.#anfibio(e)) return (tx, ty) => map.solidAt(tx * T + 1, ty * T + 1, false) && map.solidAt(tx * T + 1, ty * T + 1, true);
+    return (tx, ty) => map.solidAt(tx * T + 1, ty * T + 1, !!e.swim);
+  }
+  // Rede de segurança depois de qualquer deslocamento: se o centro acabou dentro de um bloco sólido (empurrão de
+  // arena, teleporte, saída do buraco, troca de modo), volta ao último ponto bom ou ao bloco livre mais perto.
+  seguro(e) {
+    if (e.pouso || e.saltando) { e.seguro = null; return; }
+    const s = this.solido(e), at = (x, y) => s(Math.floor(x / T), Math.floor(y / T));
+    if (!at(e.x, e.y)) { (e.seguro ??= {}).x = e.x; e.seguro.y = e.y; return; }
+    const v = e.seguro && !at(e.seguro.x, e.seguro.y) ? e.seguro : this.g.map.blocoLivrePerto(e.x, e.y, s, 6);
+    if (v) { e.x = v.x; e.y = v.y; e.kx = e.ky = 0; }
+  }
+  // de onde está até (x, y) sem atravessar parede
+  ate(e, x, y) { const s = this.solido(e); return this.g.map.ateLivre(e.x, e.y, x, y, (px, py) => s(Math.floor(px / T), Math.floor(py / T))); }
   #resolveBy(p, r, solid) {
     const x0 = Math.floor((p.x - r) / T), x1 = Math.floor((p.x + r) / T), y0 = Math.floor((p.y - r) / T), y1 = Math.floor((p.y + r) / T);
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
@@ -194,7 +214,7 @@ export class Altitude {
         if ((a.mound = (a.mound ?? 0) - dt) <= 0) { a.mound = 0.25; g.fx.decal('turf', e.x, e.y + 1, { scale: 0.6, life: 3, alpha: 0.8 }); }
         if (a.auto && a.t > a.dur) { // anda por baixo até a mira e sai
           const dx = a.auto.ax - e.x, dy = a.auto.ay - e.y, d = Math.hypot(dx, dy);
-          if (d > 6 && a.t < a.dur + 0.5) { e.x += dx / d * Math.min(d, 260 * dt); e.y += dy / d * Math.min(d, 260 * dt); }
+          if (d > 6 && a.t < a.dur + 0.5) { const q = this.ate(e, e.x + dx / d * Math.min(d, 260 * dt), e.y + dy / d * Math.min(d, 260 * dt)); if (Math.hypot(q.x - e.x, q.y - e.y) < 0.5) this.emerge(e, a.auto.ax, a.auto.ay, a.auto.id); else { e.x = q.x; e.y = q.y; } }
           else this.emerge(e, a.auto.ax, a.auto.ay, a.auto.id);
         } else if (a.t > a.dur) this.emerge(e, e.x, e.y);
       }

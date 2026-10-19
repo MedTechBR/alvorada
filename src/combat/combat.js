@@ -688,7 +688,7 @@ export class Combat {
     if (id === 'doubleTeam') for (let i = 0; i < 6; i++) g.later(i * 0.04, () => { const s = (i % 2 ? 1 : -1) * (6 + i * 2); const ox = user.view.x; user.view.x += s; this.vfx.afterimage(user, 0xffffff, 0.6, 0.5); user.view.x = ox; });
     if (e.teleport) {
       this.vfx.impact('psychic', user.x, this.centerY(user), 0, 1, user.y);
-      const a = Math.random() * TAU; user.x += Math.cos(a) * 90; user.y += Math.sin(a) * 90; g.map.resolve(user, user.r);
+      const a = Math.random() * TAU, q = this.alt.ate(user, user.x + Math.cos(a) * 90, user.y + Math.sin(a) * 90); user.x = q.x; user.y = q.y; this.alt.seguro(user); // não passa para o outro lado da parede
       this.vfx.impact('psychic', user.x, this.centerY(user), 0, 1, user.y); this.sfx('teleport');
     }
   }

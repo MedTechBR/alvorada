@@ -271,6 +271,33 @@ export class GameMap {
       }
     }
   }
+  // Desloca (dx, dy) em passos curtos, resolvendo a colisão a cada passo: um golpe forte, uma esquiva ou uma investida
+  // de um quadro grande não atravessa parede de um bloco (antes o círculo pulava o meio da parede e era empurrado
+  // para o outro lado). resolver = colisão própria (voando, mergulhado, anfíbio: src/combat/altitude.js).
+  andar(p, dx, dy, r, swim = false, resolver = null) {
+    const n = Math.min(16, Math.max(1, Math.ceil(Math.hypot(dx, dy) / Math.max(2, r * 0.75))));
+    for (let i = 0; i < n; i++) { p.x += dx / n; p.y += dy / n; if (resolver) resolver(); else this.resolve(p, r, swim); }
+  }
+  // Último ponto livre no segmento de (x0, y0) a (x1, y1), de 4 em 4 px: teleporte, cavar e sair do buraco não
+  // passam para o outro lado de uma parede. solido(x, y) em pixels.
+  ateLivre(x0, y0, x1, y1, solido = (x, y) => this.solidAt(x, y)) {
+    const n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 4));
+    let lx = x0, ly = y0;
+    for (let i = 1; i <= n; i++) { const x = x0 + (x1 - x0) * i / n, y = y0 + (y1 - y0) * i / n; if (solido(x, y)) break; lx = x; ly = y; }
+    return { x: lx, y: ly };
+  }
+  // Centro do bloco livre mais perto (até `raio` blocos), na mesma sala; null se não há. solido(tx, ty) em blocos.
+  blocoLivrePerto(px, py, solido, raio = 5) {
+    const tx = Math.floor(px / T), ty = Math.floor(py / T), sala = this.interiorAt(px, py);
+    let best = null, bd = 1e9;
+    for (let j = -raio; j <= raio; j++) for (let i = -raio; i <= raio; i++) {
+      if (solido(tx + i, ty + j)) continue;
+      const x = (tx + i) * T + 8, y = (ty + j) * T + 8;
+      if (this.interiorAt(x, y) !== sala) continue;
+      const d = Math.hypot(x - px, y - py); if (d < bd) { bd = d; best = { x, y }; }
+    }
+    return best;
+  }
   // Lugar para um selvagem aparecer: de preferência no mato alto, longe da vista imediata
   randomSpawn(px, py, rMin = 9, rMax = 20) {
     const ptx = Math.floor(px / T), pty = Math.floor(py / T);

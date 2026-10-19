@@ -1,4 +1,4 @@
-import { T, TILE } from '../world/tiles.js';
+import { T, TILE, WALLS } from '../world/tiles.js';
 import { CenarioVivo } from '../world/vivo.js';
 
 // Destruição da arena: crateras e terra revirada, mato cortado ou queimado (o fogo se espalha
@@ -18,7 +18,7 @@ export class Arena {
   get vivo() { return this.g.vivo; }
   cell(x, y) { return Math.floor(x / T) + Math.floor(y / T) * this.g.map.w; }
   objAt(x, y) { const o = this.g.objSprites?.get(this.cell(x, y)); return o && !o.dead ? o : null; }
-  solidAt(x, y) { if (this.objAt(x, y)) return true; const t = this.g.map.at(Math.floor(x / T), Math.floor(y / T)); return t === TILE.CLIFF; }
+  solidAt(x, y) { if (this.objAt(x, y)) return true; const t = this.g.map.at(Math.floor(x / T), Math.floor(y / T)); return t === TILE.CLIFF || t === TILE.VOID || WALLS.has(t); } // feixes e golpes em linha param na parede da sala
   // troca de bloco que volta com o tempo (pelo cenário vivo)
   #troca(tx, ty, t, tipo, by) { if (this.vivo) this.vivo.trocarTile(tx, ty, t, tipo, undefined, by); else this.g.map.setTile(tx, ty, t); }
 
@@ -27,6 +27,7 @@ export class Arena {
   blockAt(x, y, mv, p = null) {
     if (this.g.arenaGinasio?.bloqueia(x, y, mv, p)) return true;
     const by = p?.user ?? p;
+    { const t = this.g.map.at(Math.floor(x / T), Math.floor(y / T)); if (t === TILE.VOID || WALLS.has(t)) return true; } // projétil para na parede da sala
     const o = this.objAt(x, y);
     if (o) { this.hitObject(o, mv, 1, by); return true; }
     if (mv && this.g.map.tallAt(x, y)) {

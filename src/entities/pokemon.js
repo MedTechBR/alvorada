@@ -114,9 +114,11 @@ export class PokeEntity {
     }
     // movimento (quem controla define vx/vy antes)
     if (this.dead) { this.vx *= 0.8; this.vy *= 0.8; }
-    this.x += (this.vx + this.kx) * dt; this.y += (this.vy + this.ky) * dt;
+    // em passos curtos com colisão a cada passo (empurrão de golpe, esquiva e investida não atravessam parede)
+    const alt = this.g.combat?.alt, rr = this.r * 0.8;
+    this.g.map.andar(this, (this.vx + this.kx) * dt, (this.vy + this.ky) * dt, rr, this.swim, () => { if (!alt?.resolve(this, rr)) this.g.map.resolve(this, rr, this.swim); });
     this.kx *= 1 - Math.min(1, dt * 7); this.ky *= 1 - Math.min(1, dt * 7);
-    if (!this.g.combat?.alt?.resolve(this, this.r * 0.8)) this.g.map.resolve(this, this.r * 0.8, this.swim);
+    alt?.seguro(this);
     // piso: altura do chão onde está (0, ou a do telhado/copa/rocha em que subiu: src/world/vivo.js)
     const piso = this.piso ?? 0, wasUp = this.z > piso;
     this.z = Math.max(piso, this.z + this.vz * dt); this.vz -= 500 * dt; if (this.z === piso) this.vz = 0;
