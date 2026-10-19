@@ -56,7 +56,9 @@ export class Mon {
     this.ot = opts.ot ?? null; // treinador original (Pokémon de troca); null = o jogador
     this.xp = opts.xp ?? expForLevel(sp.growth, this.level);
     this.moves = opts.moves ?? Mon.defaultMoves(dex, this.level, this.form);
+    this.learned = Array.isArray(opts.learned) ? [...new Set(opts.learned.filter((id) => typeof id === 'string'))] : []; // histórico de golpes (Editor de golpes)
     this.status = opts.status ?? null; // par | slp | psn | tox | brn | frz
+    this.noteMoves();
     this.calc();
     this.hp = opts.hp ?? this.stats.hp;
     this.uid = opts.uid ?? Math.random().toString(36).slice(2, 10);
@@ -185,6 +187,9 @@ export class Mon {
     return events;
   }
 
+  // Guarda os golpes atuais no histórico (`learned`). Quem troca golpes chama antes de tirar um; é barato e idempotente.
+  noteMoves() { for (const id of this.moves) if (!this.learned.includes(id)) this.learned.push(id); }
+
   learn(id, replaceIndex = -1) { return learnMove(this, id, replaceIndex); }
   // Pode aprender (por nível, MT ou ensino)? O menu usa isso para as MTs.
   canLearn(id) { return canLearn(this, id); }
@@ -213,6 +218,8 @@ export class Mon {
       ability: this.baseAbility ?? this.ability, gender: this.gender, shiny: this.shiny, friendship: this.friendship, item: this.item,
       ball: this.ball, metLevel: this.metLevel, nick: this.nick, ...(this.ot ? { ot: this.ot } : {}), xp: this.xp, moves: this.moves, status: this.status,
       hp: this.hp, uid: this.uid };
+    this.noteMoves();
+    if (this.learned.length) o.learned = this.learned.slice(); // só quando existe: o save antigo não muda
     if (this.form) o.form = this.form; // só quando existe: o save de quem não tem forma fica igual ao antigo
     if (this.gmax) o.gmax = true;      // fator G (Gigantamax), também só quando existe
     // em Dynamax, grava o PS na escala normal

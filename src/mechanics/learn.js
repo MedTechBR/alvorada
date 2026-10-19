@@ -39,11 +39,27 @@ export function learnMove(mon, moveId, replaceIndex = -1, { check = false, via =
   if (!MOVES[moveId]) return { ok: false, reason: 'unknown' };
   if (mon.moves.includes(moveId)) return { ok: false, reason: 'known' };
   if (check && !canLearn(mon, moveId, via)) return { ok: false, reason: 'cannot' };
-  if (mon.moves.length < 4) { mon.moves.push(moveId); return { ok: true }; }
+  mon.noteMoves?.(); // o histórico guarda o que ele sabia antes (o Editor de golpes devolve de graça)
+  if (mon.moves.length < 4) { mon.moves.push(moveId); mon.noteMoves?.(); return { ok: true }; }
   if (replaceIndex < 0 || replaceIndex > 3) return { ok: false, reason: 'full' };
   const replaced = mon.moves[replaceIndex];
   mon.moves[replaceIndex] = moveId;
+  mon.noteMoves?.();
   return { ok: true, replaced };
+}
+
+// Golpes que o Pokémon pode LEMBRAR no Editor de golpes (de graça, a qualquer hora, como o Lembrador de Legends Arceus):
+// os que a espécie/forma aprende por nível até o nível atual (inclui os de evolução, nível 0, e os iniciais, nível 1) e os que
+// ele já conheceu (`mon.learned`: MTs, tutores, golpes de formas anteriores). Devolve [{ id, src, lv?, novo }] sem os atuais.
+// src: 'level' (por nível) | 'past' (já conheceu). novo = nunca esteve entre os golpes dele.
+export function rememberable(mon) {
+  const sp = speciesOf(mon.dex, mon.form), seen = new Set(mon.learned ?? []), out = new Map();
+  for (const [lv, id] of sp?.learn ?? []) {
+    if (lv > mon.level || !MOVES[id] || mon.moves.includes(id) || out.has(id)) continue;
+    out.set(id, { id, src: 'level', lv, novo: !seen.has(id) });
+  }
+  for (const id of mon.learned ?? []) if (MOVES[id] && !mon.moves.includes(id) && !out.has(id)) out.set(id, { id, src: 'past', novo: false });
+  return [...out.values()];
 }
 
 // Usa uma MT (não se gasta). tmId: 'tm001'…

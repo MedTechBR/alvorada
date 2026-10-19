@@ -1,5 +1,6 @@
 import { SPECIES, expForLevel, speciesOf, isBattleForm } from '../data/species.js';
 import { MOVES } from '../data/moves.js';
+import { learnableMoves } from '../data/species.js';
 import { Mon } from '../data/mon.js';
 import { NATURES as NATURE_DATA } from '../data/natures.js';
 import { ITEMS, itemInfo } from '../data/items.js';
@@ -46,6 +47,9 @@ export function validateMon(o) {
   if (sp.genderRate < 0 ? o.gender != null : (sp.genderRate === 0 && o.gender === 'f') || (sp.genderRate === 8 && o.gender === 'm')) return { ok: false, why: 'gênero impossível para a espécie' };
   if (o.friendship != null && !isInt(o.friendship, 0, 255)) return { ok: false, why: 'amizade fora de 0–255' };
   if (o.ball != null && !(typeof o.ball === 'string' && itemInfo(o.ball)?.cat === 'ball')) return { ok: false, why: 'Poké Bola inválida' };
+  // histórico de golpes (Editor de golpes): só os que a espécie pode ter por nível, MT ou tutor; o resto é descartado em silêncio
+  const legal = new Set(learnableMoves(o.dex, o.form ?? null));
+  const learned = Array.isArray(o.learned) ? [...new Set(o.learned.filter((m) => typeof m === 'string' && legal.has(m) && Object.hasOwn(MOVES, m)))].slice(0, 120) : [];
   const lo = expForLevel(sp.growth, o.level), hi = o.level >= 100 ? lo : expForLevel(sp.growth, o.level + 1) - 1;
   const xp = Number.isFinite(o.xp) ? Math.max(lo, Math.min(hi, Math.floor(o.xp))) : lo;
   const uid = typeof o.uid === 'string' && /^[a-z0-9]{4,16}$/i.test(o.uid) ? o.uid : undefined;
@@ -55,7 +59,7 @@ export function validateMon(o) {
     nature: o.nature != null ? String(o.nature).toLowerCase() : 'hardy', ability: o.ability ?? undefined,
     gender: o.gender !== undefined ? o.gender : undefined, shiny: o.shiny === true, friendship: o.friendship ?? undefined,
     item: o.item ?? null, ball: o.ball ?? 'pokeBall', metLevel: isInt(o.metLevel, 1, 100) ? o.metLevel : undefined,
-    nick: o.nick ? cleanText(o.nick, 12) || null : null, xp, moves: o.moves.slice(), status: o.status ?? null, uid, form: o.form ?? null, gmax: o.gmax === true,
+    nick: o.nick ? cleanText(o.nick, 12) || null : null, xp, moves: o.moves.slice(), learned, status: o.status ?? null, uid, form: o.form ?? null, gmax: o.gmax === true,
   });
   // HP: inteiro entre 0 e o máximo recalculado
   mon.hp = Number.isInteger(o.hp) ? Math.max(0, Math.min(mon.stats.hp, o.hp)) : mon.stats.hp;
