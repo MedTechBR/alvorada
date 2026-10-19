@@ -37,7 +37,7 @@ function texLuz() {
 }
 export function luzDasJanelas(v, sx, sy) {
   const js = v.salasJanelas?.get(sx + ',' + sy); if (!js?.length) return null;
-  matLuz ??= v.curvar(new THREE.MeshBasicMaterial({ map: texLuz(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, opacity: 0.32 }));
+  matLuz ??= v.curvar(new THREE.MeshBasicMaterial({ map: texLuz(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, opacity: 0.3 }));
   const pos = [], uv = [], idx = [];
   const q = (a, b, c, d) => { const n = pos.length / 3; pos.push(...a, ...b, ...c, ...d); uv.push(0, 1, 1, 1, 1, 0, 0, 0); idx.push(n, n + 1, n + 2, n, n + 2, n + 3); };
   for (const j of js) {
@@ -45,8 +45,8 @@ export function luzDasJanelas(v, sx, sy) {
     // mancha no piso (paralelogramo deitado)
     q([j.x - 20 + dx, y0, j.z + len], [j.x + 20 + dx, y0, j.z + len], [j.x + 18, y0, j.z + 14], [j.x - 18, y0, j.z + 14]); q([j.x - 20 + dx, y0 + 0.1, j.z + len], [j.x + 20 + dx, y0 + 0.1, j.z + len], [j.x + 18, y0 + 0.1, j.z + 14], [j.x - 18, y0 + 0.1, j.z + 14]);
     // feixe: da janela até a mancha
-    q([j.x - 14 + dx, y0, j.z + len], [j.x + 14 + dx, y0, j.z + len], [j.x + 13, top, j.z + 1], [j.x - 13, top, j.z + 1]);
-    q([j.x - 14 + dx * 0.6, y0 + 2, j.z + len * 0.6], [j.x + 14 + dx * 0.6, y0 + 2, j.z + len * 0.6], [j.x + 13, bot, j.z + 1], [j.x - 13, bot, j.z + 1]);
+    // (os dois planos aditivos do feixe passavam na frente de quem andava na sala e deixavam o boneco branco, sem cor: só a mancha no piso fica)
+    void top; void bot;
   }
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeBoundingSphere();
   const m = new THREE.Mesh(g, matLuz); m.renderOrder = 8; return m;
