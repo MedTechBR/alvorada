@@ -218,6 +218,24 @@ export const ELENCO = [
     apos: ['O teto da mina é de pedra, mas a Graça tem pedra na cabeça.'] },
   { id: 'g7_rita', quem: 'aprendiz', nome: 'Alpinista Rita', look: LOOKS.campista, spot: 'mina_rita', visao: 5,
     apos: ['Os Lycanroc uivam na mina quando o sol atrasa.'] },
+  // ---------------- Rota 9 (Estepe dos Ventos) ----------------
+  { id: 'r9_a', quem: 'treinador', nome: 'Ciclista Otto', look: LOOKS.cacador, spot: 'r9_a', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r9_b', quem: 'treinador', nome: 'Pastora Lia', look: LOOKS.campista, spot: 'r9_b', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r9_c', quem: 'treinador', nome: 'Montanhista Sol', look: LOOKS.operario, spot: 'r9_c', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r9_d', quem: 'treinador', nome: 'Caçador Remo', look: LOOKS.cacador, spot: 'r9_d', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r9_e', quem: 'treinador', nome: 'Observadora Ivone', look: LOOKS.observador, spot: 'r9_e', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r9_f', quem: 'treinador', nome: 'Pescador Nico', look: LOOKS.pescador, spot: 'r9_f', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r9_g', quem: 'treinador', nome: 'Campista Edu', look: LOOKS.campista, spot: 'r9_g', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r9_h', quem: 'treinador', nome: 'Mineira Rosa', look: LOOKS.mineiro, spot: 'r9_h', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  // ---------------- Rota 11 (Escadaria dos Vigias) ----------------
+  { id: 'r11_a', quem: 'treinador', nome: 'Vigia Teodoro', look: LOOKS.mineiro, spot: 'r11_a', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r11_b', quem: 'treinador', nome: 'Escriba Nilza', look: LOOKS.cacadora, spot: 'r11_b', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r11_c', quem: 'treinador', nome: 'Explorador Bruno', look: LOOKS.operario, spot: 'r11_c', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r11_d', quem: 'treinador', nome: 'Estudante Caio', look: LOOKS.observador, spot: 'r11_d', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r11_e', quem: 'treinador', nome: 'Arqueóloga Vera', look: LOOKS.cacadora, spot: 'r11_e', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r11_f', quem: 'treinador', nome: 'Guarda Rui', look: LOOKS.operario, spot: 'r11_f', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r11_g', quem: 'treinador', nome: 'Viajante Sena', look: LOOKS.campista, spot: 'r11_g', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r11_h', quem: 'treinador', nome: 'Ermitão Ary', look: LOOKS.pescador, spot: 'r11_h', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
 ];
 
 // Treinadores das regiões novas do mundo grande (cada região traz o seu arquivo; veja docs/construir-regiao.md)
