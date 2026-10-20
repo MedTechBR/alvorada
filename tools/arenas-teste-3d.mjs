@@ -137,6 +137,7 @@ try {
     console.log('   fases:', (r.fases ?? []).map((f) => `${f.fase}@${f.t}s`).join(' → '));
     console.log(`   perigos que acertaram: seu lado ${r.acertos?.ally}, líder ${r.acertos?.foe} · por perigo ${JSON.stringify(r.porPerigo)}`);
     console.log(`   avisos ${r.avisos} · menor aviso antes de acertar ${r.minAviso}s · golpes sem aviso ${r.semAviso}`);
+    console.log(`   muros (tem que ser 0) ${r.noMuro ?? '?'} · fora da arena (tem que ser 0) ${r.foraArea ?? '?'} · fases vistas ${(r.fases ?? []).length}`);
     console.log(`   robô: ${JSON.stringify(r.bot)} · lógica ${JSON.stringify(r.perf)}${r.fps ? ' · celular ' + JSON.stringify(r.fps) : ''}`);
     if (r.fotos?.length) console.log('   fotos:', r.fotos.join(', '));
     if (r.erros.length) console.log('   ERROS:', r.erros);

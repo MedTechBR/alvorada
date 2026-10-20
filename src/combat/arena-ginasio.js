@@ -31,7 +31,7 @@ export const DIFICULDADE = {
   aviso: (d) => 1.3 - 0.4 * d,      // × tempo de aviso de cada perigo
   dano: (d) => 0.75 + 0.5 * d,      // × fração dos PS que o perigo tira
   ritmo: (d) => 1.1 - 0.35 * d,     // × intervalo entre perigos
-  vigor: (d, n = 3) => (n <= 3 ? 1.7 : n === 4 ? 1.45 : 1.3) + 0.2 * d, // × PS máximos dos Pokémon do líder (n = tamanho da equipe)
+  vigor: (d, n = 3) => (n <= 3 ? 4.4 : n === 4 ? 3.9 : 3.5) + 0.5 * d, // × PS máximos dos Pokémon do líder (n = tamanho da equipe): luta de minutos, não de segundos
   reacao: (d) => 0.55 - 0.35 * d,   // s até a IA reagir a um aviso
   esperteza: (d) => 0.4 + 0.5 * d,  // chance de a IA usar a arena (peças, cobertura, fase)
   lider: (d) => 9 - 3 * d,         // s entre um perigo acionado pelo líder e o próximo
@@ -63,7 +63,8 @@ export class ArenaGinasio {
     this.t = 0; this.done = false; this.fase = -1; this.cenaT = 0; this.liderT = DIFICULDADE.lider(d) * 0.8;
     this.avisos = []; this.tiles = new Map(); this.blocks = new Map(); this.gfxs = []; this.ajudantes = [];
     this.ouvintes = []; this.lutT = 0; this.cache = [];
-    this.stats = { avisos: 0, golpes: 0, semAviso: 0, minAviso: Infinity, acertos: { ally: 0, foe: 0 }, porPerigo: {}, fases: [], inicio: performance.now() };
+    this.stats = { avisos: 0, golpes: 0, semAviso: 0, minAviso: Infinity, acertos: { ally: 0, foe: 0 }, porPerigo: {}, fases: [], inicio: performance.now(), noMuro: 0, foraArea: 0 };
+    this.pressa = 1; this.pararT = 0; this.checkT = 0; // tempo da luta (1 = normal), segundos com o seu Pokémon parado, relógio da conferência
     // camadas: chão (abaixo de todos) e topo (acima de todos)
     this.G0 = new PIXI.Graphics(); g.fx.ground.addChild(this.G0);
     this.G1 = new PIXI.Graphics(); g.combat.layer.addChild(this.G1);
@@ -190,10 +191,18 @@ export class ArenaGinasio {
     }
     g.audio?.music?.(cfg.musica?.luta ?? 'gym');
     this.#entrarFase(0, true);
+    await this.#vs();
     // apresentação: a câmera passeia pela arena enquanto o nome aparece
     await this.cena({ foco: { x: this.R.cx, y: this.R.cy }, dur: 1.5, titulo: cfg.nome, fala: cfg.abertura, quem: npc, cor: cfg.cor, som: 'whistle', forca: 1 });
   }
 
+  // flash de VS antes da apresentação: a tela pisca e o VS aparece (ninguém age ainda)
+  async #vs() {
+    const g = this.g;
+    g.fx.screenFlash(0xffffff, 0.9); g.audio?.sfx?.('boom');
+    g.ui?.banner?.('VS', '#ffffff');
+    await new Promise((r) => g.later(0.8, r));
+  }
   // cena curta: câmera vai a um ponto, faixa e fala; ninguém age nem apanha enquanto dura
   cena({ foco, dur = 1.5, titulo, fala, quem, cor = '#ffe27a', som = null, tremor = 0, forca = 0.8 } = {}) {
     const g = this.g;
@@ -239,15 +248,18 @@ export class ArenaGinasio {
     this.t += dt;
     const parado = this.cenaT > 0;
     if (parado) this.cenaT -= dt;
+    // o seu Pokémon parado conta para o castigo da IA (ver guiar)
+    const L = this.lead; if (L && !parado) this.pararT = Math.hypot(L.vx ?? 0, L.vy ?? 0) < 4 ? this.pararT + dt : 0;
+    if ((this.checkT -= dt) <= 0) { this.checkT = 0.5; this.#confere(); }
     // fases: a próxima entra quando a condição dela vale (uma de cada vez, nunca no meio de outra cena)
     const prox = this.cfg.fases?.[this.fase + 1];
     if (!parado && prox && this.#condicao(prox.quando)) this.#entrarFase(this.fase + 1);
     if (!parado) {
       // o líder aciona um perigo de vez em quando (grita antes; o perigo em si ainda tem o aviso dele)
-      if ((this.liderT -= dt) <= 0) { this.liderT = DIFICULDADE.lider(this.d) * (0.85 + Math.random() * 0.3); this.#acaoLider(); }
+      if ((this.liderT -= dt * this.pressa) <= 0) { this.liderT = DIFICULDADE.lider(this.d) * (0.85 + Math.random() * 0.3); this.#acaoLider(); }
       // sem Pokémon do líder em campo (entre um e outro), os perigos esperam: ninguém apanha sozinho
       const luta = this.b.active.some((e) => e.alive) || this.ajudantes.length;
-      if (luta) for (const p of this.pecas) if (p.ativo) p.update?.(dt);
+      if (luta) for (const p of this.pecas) if (p.ativo) p.update?.(dt * this.pressa);
       for (let i = this.avisos.length - 1; i >= 0; i--) {
         const av = this.avisos[i]; av.t += dt;
         if (av.t >= av.dur) { this.avisos.splice(i, 1); try { av.depois?.(av); } catch (err) { console.warn('perigo da arena falhou', err); } }
@@ -262,6 +274,16 @@ export class ArenaGinasio {
     }
     for (const p of this.pecas) p.sempre?.(dt); // o que anda mesmo nas cenas (plateia, barcos)
     this.#desenhar();
+  }
+
+  // conferência dos muros: quem está dentro de parede (que não nada, não voa) ou fora da arena (tem que dar 0)
+  #confere() {
+    const m = this.g.map;
+    for (const e of this.g.entities) {
+      if (!SIDES.has(e.side) || !e.alive || e.dead || !e.mon) continue;
+      if (m.solidAt(e.x, e.y) && !this.voando(e) && !this.nadador(e)) this.stats.noMuro++;
+      if (!this.dentro(e.x, e.y, 4)) this.stats.foraArea++;
+    }
   }
 
   #acaoLider() {
@@ -284,6 +306,8 @@ export class ArenaGinasio {
     if (this.cenaT > 0) return { vx: 0, vy: 0 };
     const ia = (e.aIA ??= { t: Math.random(), reac: 0, alvo: null });
     const s = e.speed(1.15);
+    // esquiva: saiu de lado de um golpe seu (aoUsar), por um instante
+    if (e.esquiva?.t > 0) { e.esquiva.t -= dt; return { vx: e.esquiva.vx, vy: e.esquiva.vy }; }
     // 1) perigo onde está: depois do tempo de reação, sai para o lugar seguro mais perto
     const p = this.perigo(e.x, e.y, e);
     if (p >= 0.45) {
@@ -295,6 +319,9 @@ export class ArenaGinasio {
       ia.t = 1 + Math.random() * 1.2;
       ia.alvo = Math.random() < this.esperteza ? this.#objetivo(e) : null;
     }
+    // castigo: se você fica parado, o Pokémon do líder perto vai até você (e não espera a sua vez)
+    const L = this.lead;
+    if (L && this.pararT > 1.4 && !e.charging && Math.hypot(e.x - L.x, e.y - L.y) < 170) ia.alvo = { x: L.x, y: L.y, raio: 18, pressa: 1.35, castigo: true };
     if (ia.alvo && !e.charging) {
       const a = ia.alvo, d = Math.hypot(a.x - e.x, a.y - e.y);
       if (d < (a.raio ?? 8)) { a.chegou?.(e); if (a.ficar) return { vx: v.vx * 0.15, vy: v.vy * 0.15 }; ia.alvo = null; }
@@ -358,7 +385,8 @@ export class ArenaGinasio {
   // o último Pokémon vai entrar: cena no líder antes do arremesso (devolve o atraso extra, em segundos)
   antesDoAs() {
     const as = this.cfg.as ?? {}, npc = this.b.npc;
-    this.cena({ foco: npc ? { x: npc.x, y: npc.y } : { x: this.R.cx, y: this.R.cy }, dur: 1.6, titulo: as.titulo ?? 'O ás do líder!', fala: as.fala, quem: npc, cor: as.cor ?? this.cfg.cor, som: 'howl', forca: 1 });
+    this.pressa = 1.3; // o último Pokémon: a arena pisca mais depressa até o fim
+    this.cena({ foco: npc ? { x: npc.x, y: npc.y } : { x: this.R.cx, y: this.R.cy }, dur: 1.6, titulo: `${this.b.def?.name ?? 'O líder'} está com tudo!`, fala: as.fala, quem: npc, cor: as.cor ?? this.cfg.cor, som: 'howl', forca: 1 });
     if (as.musica) this.g.audio?.music?.(as.musica);
     return 1.5;
   }
@@ -419,7 +447,17 @@ export class ArenaGinasio {
   bloqueia(x, y, mv, p) { if (!this.dentro(x, y, 8)) return false; let b = false; for (const pc of this.pecas) if (pc.ativo !== false && pc.bloqueia?.(x, y, mv, p)) b = true; return b; }
   impacto(x, y, mv, P = 1) { if (!this.dentro(x, y, 8)) return; for (const pc of this.pecas) pc.impacto?.(x, y, mv, P); }
   pisoteio(x, y, mv, u) { if (!this.dentro(x, y, 8)) return; for (const pc of this.pecas) pc.pisoteio?.(x, y, mv, u); }
-  aoUsar(user, id, mv) { for (const pc of this.pecas) if (pc.ativo) pc.aoUsar?.(user, id, mv); if (this.esperaPoder && user === this.esperaPoder.e) { /* o poder espera os PS */ } }
+  aoUsar(user, id, mv) {
+    for (const pc of this.pecas) if (pc.ativo) pc.aoUsar?.(user, id, mv);
+    if (this.esperaPoder && user === this.esperaPoder.e) { /* o poder espera os PS */ }
+    // esquiva: os Pokémon do líder perto do seu golpe saem de lado (com chance, conforme a dificuldade)
+    if (user && user === this.g.lead) for (const e of this.b.active) {
+      if (!e.alive || e.dead || e.esquiva?.t > 0 || Math.hypot(e.x - user.x, e.y - user.y) > 150) continue;
+      if (Math.random() > 0.25 + 0.5 * this.esperteza) continue;
+      const ax = e.x - user.x, ay = e.y - user.y, l = Math.hypot(ax, ay) || 1, sg = Math.random() < 0.5 ? 1 : -1, v = 2.2 * e.speed(1);
+      e.esquiva = { t: 0.45, vx: -ay / l * sg * v, vy: ax / l * sg * v };
+    }
+  }
   molhado(x, y) { for (const pc of this.pecas) if (pc.ativo && pc.molhado?.(x, y)) return true; return false; }
   // multiplicador extra de dano (carga do gerador, golpe no ritmo do berimbau)
   modDano(user, t, mv) {
