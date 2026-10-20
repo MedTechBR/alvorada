@@ -43,6 +43,7 @@ for (const t of TAM) {
     const ev = (x) => P.ev(x);
     const click = (sel, i = 0) => ev(`(() => { const e = [...document.querySelectorAll(${JSON.stringify(sel)})][${i}]; if (!e) return false; e.click(); return true; })()`);
     try {
+    const prep = async () => {
       await until(() => P.ev('!!(window.game && game.ui && game.ui.state === "play")'), 120000, 300);
       await ev(`import('/tools/jornadas-teste.js').then(() => 1)`);
       await sleep(2500);
@@ -50,6 +51,8 @@ for (const t of TAM) {
       await ev(`(() => { const g = game; g.party.forEach((m, i) => { m.level = 20 + i * 8; m.xp = m.xpFloor() + Math.round((m.xpToNext() - m.xpFloor()) * (.3 + i * .2)); m.calc(); }); g.party[1].hp = Math.round(g.party[1].stats.hp * .45); g.party[2].hp = Math.round(g.party[2].stats.hp * .12); g.party[2].status = 'par';
         Object.assign(g.bag, { potion: 5, superPotion: 2, antidote: 3, paralyzeHeal: 2, awakening: 1, burnHeal: 2, iceHeal: 1, fullHeal: 1, revive: 1, greatBall: 6, ultraBall: 3, pokeBall: 12, oranBerry: 4, sitrusBerry: 2, tm001: 1, tm036: 1, tm_bite: 1, repel: 2 });
         for (const d of [1,2,4,7,10,16,19,25,39,52,54,63,66,74,92]) (g.flags.dex ??= {})[d] = d % 3 ? 2 : 1; return 1; })()`);
+    };
+    await prep();
       // exploração
       await ev(`(() => { const s = game.map.spots.inicio; game.player.x = s.x; game.player.y = s.y + 20; game.cam.x = game.player.x; game.cam.y = game.player.y; game.mundo.setHour(10); return 1; })()`);
       await sleep(2000); await foto('03-explorando', 600);
@@ -59,12 +62,14 @@ for (const t of TAM) {
       await ev(`(game.ui.dialog.d && game.ui.dialog.d.res?.(0), game.ui.dialog.d = null, game.ui.dialog.el.hidden = true, document.body.classList.remove('dlg-open'), 1)`);
       await sleep(300);
       // batalha selvagem
-      await ev(`(async () => { const g = game; g.player.x = 318 * 16; g.player.y = 292 * 16; g.cam.x = g.player.x; g.cam.y = g.player.y;
+      const wild = ev(`(async () => { const g = game; g.player.x = 318 * 16; g.player.y = 292 * 16; g.cam.x = g.player.x; g.cam.y = g.player.y;
         for (let k = 0; k < 6 && !g.wilds.some((q) => q.alive); k++) await g.spawnWild(); const w = g.wilds.find((q) => q.alive); if (w) { w.x = g.player.x + 70; w.y = g.player.y - 50; w.ai.state = 'aggro'; w.aggroTarget = g.player; }
         g.throwMon(0, g.player.x + 20, g.player.y - 10); await new Promise((r) => setTimeout(r, 1500)); if (w) { w.x = g.player.x + 60; w.y = g.player.y - 50; w.hpShow = 9; w.mon.hp = Math.round(w.mon.stats.hp * .6); }
         const L = g.lead; if (L && w?.alive) { L.cds = [0, 0, 0, 0]; g.combat.use(L, 0, w.x, w.y - 8); } return 1; })()`);
-      await foto('05-batalha-selvagem', 700);
+      await until(() => P.ev('document.querySelector("#hb.on") ? 1 : 0'), 15000, 60).catch(() => 0); await sleep(420); await foto('05a-batalha-intro', 0);
+      await wild; await foto('05-batalha-selvagem', 900);
       await ev(`(game.wilds.forEach((w) => w.alive && (w.mon.hp = 0)), 1)`); await sleep(1500);
+      await P.raw('Page.navigate', { url: `http://127.0.0.1:${PORT}/index.html?teste=1` }); await sleep(1500); await prep();
       // batalha de treinador
       const tr = await ev(`(async () => { const g = game; const t = g.story.trainers.find((q) => !g.story.flags.trainers?.[q.def.id]); if (!t) return 'sem treinador';
         window.__trId = t.def.id; g.player.x = t.x; g.player.y = t.y + 26; g.player.dir = 'up'; g.cam.x = g.player.x; g.cam.y = g.player.y; return t.def.id; })()`);
@@ -73,9 +78,13 @@ for (const t of TAM) {
       ev(`(async () => { const g = game; const t = g.story.trainers.find((q) => q.def.id === window.__trId); const it = g.story.interactions().find((x) => x.o === t); if (it) await g.story.cut(it.fn); return 1; })()`).catch((e) => console.log('trainer', e.message.slice(0, 120)));
       await sleep(900); await foto('06a-treinador-fala', 200);
       await ev(`(() => { window.lutar(true); clearInterval(window.__auto); window.__auto = setInterval(() => { const d = game.ui.dialog.d; if (d) dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter', key: 'Enter', bubbles: true })); window.passoLuta?.(); }, 150); return 1; })()`);
-      await until(() => P.ev('!!(game.story.battle && !game.story.battle.done && game.story.battle.active.some((e) => e.alive))'), 40000, 400).catch(() => 0);
+      await until(() => P.ev('document.querySelector("#hb.on") ? 1 : 0'), 40000, 60).catch(() => 0); await sleep(380); await foto('06c-treinador-intro', 0);
       await sleep(2500); await foto('06-batalha-treinador', 300);
+      await foto('06b-treinador-luta', 600);
       await ev(`(clearInterval(window.__auto), window.passoLuta = null, 1)`);
+      await ev(`(clearInterval(window.__auto), window.passoLuta = null, 1)`);
+      await P.raw('Page.navigate', { url: `http://127.0.0.1:${PORT}/index.html?teste=1` }); await sleep(1500); await prep();
+      await P.raw('Page.navigate', { url: `http://127.0.0.1:${PORT}/index.html?teste=1` }); await sleep(1500); await prep();
       // menus
       await ev(`(() => { game.story.battle?.finish?.('win'); game.wilds.forEach((w) => w.alive && (w.mon.hp = 0)); return 1; })()`).catch(() => 0);
       const raiz = async () => { await ev(`(game.ui.menu.close(), 1)`); await sleep(350); await ev(`(game.ui.menu.open(), 1)`); await sleep(500); };
