@@ -34,7 +34,7 @@ export default {
       falas: [
         ['narrador', 'Na entrada das ruínas, a parede de pedra está riscada com linhas de escavação. Uma máquina de perfuração está parada ao lado de um buraco fundo.'],
         ['recruta', 'Falta só uma camada, Admin. Quando a pedra sair, é só levar.'],
-        ['ebano', 'Admin Ébano. Esta parede tem o desenho do cadeado do Relógio. A Dra. Véspera precisa dele para saber como usar as pedras.'],
+        ['ebano', 'Esta parede tem o desenho do cadeado do Relógio. A Dra. Véspera precisa dele para usar as pedras.'],
         ['jogador', 'O cadeado do Relógio está desenhado nessa parede?'],
         ['ebano', 'Sim, desde muito antes da Aurora. Quem quiser ler esta parede vai ter que passar por mim.'],
       ],
@@ -77,7 +77,7 @@ export default {
         ['narrador', 'O Absol levanta a cabeça devagar e olha para você, como quem espera há muito tempo.'],
         ['narrador', 'Você estende a mão devagar. O Absol encosta a testa na sua palma. Um calor morno sobe pelo braço, e uma voz de mulher aparece dentro da sua cabeça.'],
         ['absol', 'Eu sou a Sina, a Absol da Véspera. Estamos juntas desde antes da Aurora.'],
-        ['absol', 'Quando a Véspera tentou fechar o Relógio sozinha, a luz dele me prendeu e eu virei uma sentinela. Desde então, eu aviso antes dos desastres.'],
+        ['absol', 'A Véspera tentou fechar o Relógio sozinha, e a luz dele me prendeu. Desde então, eu aviso antes dos desastres.'],
         ['absol', 'Você me viu no bosque, na gruta, no templo e na mina. Eu guiava você até as pedras ameaçadas.'],
         ['jogador', 'Então você é a Sina. A Véspera sabe que você está aqui?'],
         ['absol', 'Sabe. Mas ela só me liberta mexendo no cadeado do Relógio, e ele prende o Necrozma. Ninguém deve soltá-lo.'],
