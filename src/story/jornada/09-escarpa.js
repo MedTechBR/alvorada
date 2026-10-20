@@ -64,7 +64,7 @@ export default {
         ['vespera', 'Abre. E o Necrozma, que come a luz, sai do Relógio. O Solano sabe disso. Ele quer capturá-lo e vender luz infinita para todas as cidades.'],
         ['vespera', 'A Crepúsculo foi só a faca que cortou a corda. Quem segurava a corda era a Aurora, desde a primeira amostra.'],
         ['jogador', 'Então a Dra. Véspera não está do lado da noite. Está tentando impedir a Aurora de capturar a luz.'],
-        ['vespera', 'Eu estou tentando impedir que alguém compre o amanhecer. Se você quiser me acreditar, vá ao Relógio antes do Solano. Eu levo a pedra que me sobrou.'],
+        ['vespera', 'Eu estou tentando impedir que alguém compre o amanhecer. Se você quiser me acreditar, vá ao Relógio antes do Solano. Eu não tenho mais pedras, só o que sei sobre o Relógio.'],
       ],
       depois: {
         flags: { 'nh.reviravolta4': true },
