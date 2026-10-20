@@ -111,8 +111,9 @@ Dois grupos acrescentaram campos. O Matheus pediu só texto, então o ideal é r
    mesmo para quem acabou de chegar. O pool do morador `jovem` não depende do progresso.
 5. **Clube de trocas.** O móvel `counterTroca` ainda existe, apesar de a troca online ter saído. O texto foi ajustado; o móvel
    sairia pela lógica.
-6. **Flags de cidade.** `cap456` e `cap456b` (Aurora, Coral, Lamparina) não têm definição visível nos docs; o aparecimento
-   condicional pode cortar uma conversa de Lamparina.
+6. **Flags de cidade (resolvido).** `cap456` e `cap456b` só aparecem como chave de objetos de cenário em `alvorada.json`
+   (placas, casas, postes, barracas). Nenhum NPC usa essas chaves e nada no jogo as lê, então não afetam o aparecimento
+   de ninguém. Ficam como dado morto; `assets/maps/LEIAME.md` ainda as descreve.
 7. **Ids repetidos entre mapas.** `seu_ze`, `juca`, `quinzinho`, `rita` e outros aparecem em `assets/maps/alvorada.json` sem
    pertencer a essa cidade. As falas novas assumem o contexto de cada missão.
 8. **Falas de elenco sem uso.** `padrao` em `pipa_cidade`, `pipa_redacao`, `teo_mina`, `heitor_mina`, `heitor_torre`,
@@ -122,3 +123,19 @@ Dois grupos acrescentaram campos. O Matheus pediu só texto, então o ideal é r
     "Guarda Dora" também colidem. Vale renomear em um dos lados.
 11. **Cenas da história.** As falas de `sq_pipoca`, `sq_garrafa` e `sq_diario_farol` ficam em `src/story/jornada/*.js`, que
     não foram editadas. Confirmar se batem com os textos novos de etapa e com a recompensa (o bilhete do Heitor).
+
+## Rodada 2 (correções pedidas pelo coordenador)
+
+- **Rumores:** `rumorCidade` agora é id real de cidade nos 51 lendários (29 reescritos e 22 novos). Os 22 que estavam
+  vazios ganharam intro e rumor. O rumor aparece em dois lugares: na Pokédex, como "Pista:", e agora também na conversa
+  com um morador da cidade (o primeiro adulto da primeira casa gerada, em `src/world/interiores.js` e `src/world/people.js`).
+  O rumor só é dito enquanto o lendário não foi resolvido e enquanto as flags de `requer` estão setadas.
+- **Geradores:** `tools/regioes/jandaia-treinadores.mjs` reproduz `elenco-jandaia.js`. Os textos de Sertão, que estavam
+  só no gerador, foram levados para `tools/regioes/sertao-dialogos.json`, lido por `sertao-missoes.py`.
+  O cabeçalho de `regiao-sertao.js` aponta para esse JSON. Os textos que ficaram só no JSON (alvorada, placas do
+  núcleo, geada inteira, dois rumores de brasas e de jandaias, uma fala de ocaso/leste) não devem ser regenerados.
+- **Nomes repetidos:** Tiago (Rota 1) virou Rafa; Surfista Lúcio virou Surfista Zeno; Guarda Dora virou Guarda Ênio;
+  Alpinista Zélia virou Alpinista Berta; Catador Lúcio virou Catador Edson; Cangaceira Dalva virou Cangaceira Maura;
+  Ciclista Tomé virou Ciclista Rômulo. Os ids não mudaram.
+- **sq_aurora_boreal:** `requer: { insignias: 2 }` virou `requer: { flags: ['relogio_vencido'] }`, flag setada depois
+  do Necrozma e das oito insígnias (`src/story/jornada/12-relogio.js`).
