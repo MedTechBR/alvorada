@@ -1,5 +1,6 @@
 import { KINDS } from './objects.js';
 import { gerarInteriores } from './interiores.js';
+import { mesclarVestir } from './vestir.js';
 
 // Mundos (continentes) e a montagem dos dados de um mapa a partir dos arquivos de assets/maps/.
 //
@@ -50,6 +51,11 @@ async function montar(id) {
   const J = structuredClone(await lerPrincipal(id));
   const incs = await Promise.all((J.include ?? []).map((f) => ler(new URL(f, base))));
   const regs = (await Promise.all((J.regioes ?? []).map((f) => ler(new URL(f, base)).then((d) => ({ ...d, _arquivo: f })).catch((e) => { console.warn(e.message); return null; })))).filter(Boolean);
+  // camada vestir (enfeite gerado por tools/vestir.mjs): assets/maps/vestir/<id da região>.json, se existir
+  // ?vestir=0 na URL deixa o mapa sem o enfeite (comparar antes e depois)
+  const semVestir = typeof location !== 'undefined' && new URLSearchParams(location.search).get('vestir') === '0';
+  const vestires = semVestir ? regs.map(() => null) : await Promise.all(regs.map((F) => fetch(new URL(`vestir/${F.regiao?.id}.json`, MAPS)).then((r) => (r.ok ? r.json() : null)).catch(() => null)));
+  regs.forEach((F, i) => mesclarVestir(F, vestires[i]));
 
   const W = J.w, H = J.h, OH = J.outdoorH ?? H;
   const R = {
