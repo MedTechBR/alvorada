@@ -66,12 +66,12 @@ export const ARENAS = {
       { tipo: 'plateia', estilo: 'inseto', lugares: TRIBUNA, cores: [0xe8c040, 0x7ad84a, 0xe86a3a, 0x5a8ae8], frases: ['Bzzz!', 'Zzz-zum!', 'Cri-cri!', 'Bzz!'] },
       { tipo: 'teia', cobre: 0.3, lento: 0.5, prende: 1.4, preso: 0.8, imunes: ['bug'] },
       { tipo: 'planta', pos: [...esp([4, 6], [12, 11], [20, 14], [4, 30], [12, 25], [20, 22]), [24, 12], [25, 24]], raio: 1.4, aviso: 0.85, dano: 0.07, prende: 0.6, recarga: 3.5 },
-      { tipo: 'casulo', pos: esp([2, 10], [2, 26], [15, 4], [15, 33]), eclode: [16, 22], dex: [13, 10, 265, 401], nivel: -7, max: 3, vida: 20, hp: 2 },
+      { tipo: 'casulo', pos: esp([2, 10], [2, 26], [15, 4], [15, 33]), eclode: [24, 32], dex: [13, 10, 265, 401], nivel: -7, max: 2, vida: 20, hp: 2 },
     ],
     fases: [
       { id: 'chao', nome: 'O chão da estufa' },
       { id: 'passarelas', nome: 'As passarelas', quando: { desmaios: 2, psEquipe: 0.5 }, titulo: 'A TEIA SUBIU!', fala: 'Agora só os fios dourados são seguros. Fica nas passarelas, se conseguir!',
-        evento: ['teia'], ajusta: { casulo: { eclode: [11, 15], max: 4 }, planta: { recarga: 2.6 } } },
+        evento: ['teia'], ajusta: { casulo: { eclode: [16, 22], max: 3 }, planta: { recarga: 2.6 } } },
       { id: 'final', nome: 'Metamorfose', final: true, quando: { asPS: 0.5 }, titulo: 'METAMORFOSE!', fala: 'Toda mudança começa quietinha… e termina assim!', musica: 'gymFinal' },
     ],
   },
@@ -83,7 +83,8 @@ export const ARENAS = {
     gritos: { inundacao: ['Abre a comporta!', 'Sobe, maré!'], correnteza: 'Vira a correnteza!' },
     pecas: [
       { tipo: 'plateia', estilo: 'marujo', lugares: TRIBUNA, frases: ['Iça a vela!', 'Vai, Marina!', 'Olha a onda!', 'Ê, marujo!'] },
-      { tipo: 'inundacao', altas: [...esp([2, 4, 4, 3], [2, 30, 4, 3], [16, 14, 3, 3], [16, 21, 3, 3]), [21, 4, 8, 2], [21, 32, 8, 2]], ciclo: [[0, 6], [1, 7], [2, 6], [1, 5]], aviso: 1.6, lento: [1, 0.8, 0.62, 0.5], afoga: 0.035, maxAfoga: 3 },
+      // pontos altos espalhados (ilhas, cantos, laterais, frente de cada treinador): em qualquer lugar, um a poucos passos
+      { tipo: 'inundacao', altas: [...esp([2, 4, 4, 3], [2, 30, 4, 3], [16, 14, 3, 3], [16, 21, 3, 3], [2, 15, 3, 7], [9, 5, 3, 3], [9, 30, 3, 3]), [21, 4, 8, 2], [21, 32, 8, 2]], ciclo: [[0, 6], [1, 7], [2, 6], [1, 5]], aviso: 1.6, lento: [1, 0.8, 0.62, 0.5], afoga: 0.035, maxAfoga: 3 },
       { tipo: 'correnteza', modo: 'giro', centro: [24.5, 18.5], forca: 55, periodo: 12 },
       { tipo: 'plataforma', barcos: [
         { w: 2, h: 2, rota: [[14, 12], [21, 12], [21, 24], [14, 24]], vel: 1.3, pausa: 1.2 }, { w: 2, h: 2, rota: [[21, 24], [14, 24], [14, 12], [21, 12]], vel: 1.3, pausa: 1.2 },

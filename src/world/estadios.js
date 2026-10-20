@@ -79,7 +79,7 @@ function marina(P) { // galpão: piscina no meio (água funda no centro), ponte 
   P.ret('~', 13, 11, 24, 16).ret('W', 17, 14, 16, 10);
   P.espRet('D', 16, 14, 3, 3).espRet('D', 16, 21, 3, 3); // ilhas (nunca alagam: são as "altas" da inundação)
   P.ret('b', 24, 11, 2, 16);                             // ponte no meio (divide a piscina em duas metades)
-  P.espObj('crate', 6, 12).espObj('crate', 6, 25).espObj('barrel', 3, 18).espObj('crate', 10, 4).espObj('crate', 10, 33);
+  P.espObj('crate', 6, 12).espObj('crate', 6, 25).espObj('barrel', 7, 18).espObj('crate', 10, 4).espObj('crate', 10, 33);
 }
 function pier(P) { // píer comprido: deque de madeira cortado por três canais de água
   for (const x of [9, 23, 37]) P.ret('~', x, 6, 4, 26);

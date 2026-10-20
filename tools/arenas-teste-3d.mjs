@@ -96,11 +96,12 @@ async function caso(b, nome, rodada) {
     const ok = await p.ev(`(async () => {
       const G = window.game, { CENAS } = await import('/src/story/jornada/index.js'), { montarEquipe, nomeBatalha } = await import('/src/story/especies.js');
       // a batalha da cena (jornada) ou, para o Tomé, a do ginásio clássico (src/story/chapter1.js: LEADER1)
-      const cena = CENAS.find((c) => c.depois?.batalha?.id === '${C.batalha}'), L1 = (await import('/src/story/chapter1.js')).LEADER1;
+      const { CAPITULOS } = await import('/src/story/script/index.js'), L1 = (await import('/src/story/chapter1.js')).LEADER1;
+      const cena = CENAS.find((c) => c.depois?.batalha?.id === '${C.batalha}') ?? CAPITULOS.flatMap((c) => c.cenas).find((c) => c.depois?.batalha?.id === '${C.batalha}');
       const bt = cena?.depois?.batalha ?? (L1.id === '${C.batalha}' ? { id: L1.id, nome: L1.name, equipe: L1.team } : null); if (!bt) return 'sem batalha ${C.batalha}';
       const team = montarEquipe(bt.equipe, G.flags.rivalStarter ?? 7);
       // a sua equipe fica uns níveis acima do ás da luta (a equipe do caso diz só as espécies)
-      const { Mon } = await import('/src/data/mon.js'), nv = Math.max(...bt.equipe.map((q) => q[1])) + 3;
+      const { Mon } = await import('/src/data/mon.js'), nv = Math.max(...bt.equipe.map((q) => q[1])) + 8;
       G.party = G.party.map((m, i) => new Mon(m.dex, nv - (i ? 1 : 0))); G.leadIdx = 0; G.hudLead(); G.hudMoves();
       const def = { id: bt.id, name: nomeBatalha(bt.nome, bt.equipe), money: 0, team: bt.equipe, double: !!bt.double, dynamax: !!bt.dynamax };
       const R = G.story.roteiro; let npc = R.atores.get(bt.id) ?? G.story.npc?.(bt.id); if (!npc?.visible) npc = null;

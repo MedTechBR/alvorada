@@ -417,7 +417,7 @@ export class ArenaGinasio {
   // lugar seguro mais perto (anéis de amostras em volta)
   seguro(e, longe = null) {
     let best = null, bs = 1e9;
-    for (const R of [22, 38, 56, 76]) {
+    for (const R of [22, 38, 56, 76, 100, 130]) { // anéis de fora: no estádio o lugar seguro pode estar a 8 blocos
       for (let i = 0; i < 12; i++) {
         const a = i / 12 * TAU + R, x = e.x + Math.cos(a) * R, y = e.y + Math.sin(a) * R;
         if (!this.livre(x, y, e.r * 0.6)) continue;
