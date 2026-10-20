@@ -5,9 +5,10 @@ import { ChaoLG } from './chao.js';
 import { materialAguaLG, geometriaAguaLG } from './agua.js';
 import { materialGramaLG, geometriaGramaLG } from './grama.js';
 import { aplicarLuzLG } from './luz.js';
+import { OPTIONS } from '../../ui/options.js';
 export { modeloLG, chaveLG, temModeloLG } from './modelos.js';
 
-// Estilo "Let's Go" no 3D (piloto até o 2º ginásio; desenho em docs/visual-letsgo.md).
+// Estilo "Let's Go" no 3D (piloto até o 2º ginásio; a zona está em zona.js).
 // Um pacote só, ligado ao Visual3D (src/visual3d/index.js) por poucos ganchos:
 //   v.lg.setor(sx, sy)                 o setor é desenhado no estilo novo? (setores.js decide o chão, a água e o mato)
 //   v.lg.relevo.em(px, py)             ondulação do chão (somada em Visual3D.altura)
@@ -17,7 +18,8 @@ export { modeloLG, chaveLG, temModeloLG } from './modelos.js';
 // URL: ?estilo=voxel força o visual de antes em todo lugar; ?estilo=letsgo força o novo em todo lugar.
 export class LetsGo {
   constructor(v) {
-    const q = new URLSearchParams(location.search).get('estilo');
+    // a URL manda (testes); senão, a opção "Estilo do 3D" (Opções)
+    const q = new URLSearchParams(location.search).get('estilo') ?? OPTIONS.estilo3d;
     this.v = v;
     this.zona = new ZonaLetsGo(v.g.map, q === 'voxel' ? 'voxel' : q === 'letsgo' ? 'letsgo' : 'zona');
     this.relevo = new RelevoLG(v, this.zona);
