@@ -35,10 +35,10 @@ export default {
       local: 'galpao_barcos',
       gatilho: { tipo: 'entrar', alvo: 'galpao_barcos', requer: ['nh.chegouEspelho'], semFlag: ['nh.ebanoEspelho'] },
       falas: [
-        ['narrador', 'Dentro do galpão, a Marina está de costas para a porta, com um Pokémon de água na frente. Dois recrutas tentam abrir a caixa de ferramentas onde ela guarda uma pedra.'],
+        ['narrador', 'Dentro do galpão, a Marina enfrenta dois recrutas que tentam abrir a caixa onde ela guarda a pedra.'],
         ['marina', 'Ei! Essa caixa é do ginásio, e a pedra também. Saiam daqui!'],
         ['ebano', 'Fique fora disso, Líder. A Dra. Véspera quer a pedra longe de quem a vende.'],
-        ['marina', 'Quem vende são vocês, Ébano. Essas tábuas guardam as cargas que saem daqui: vocês chegam de noite, e no dia seguinte o sol atrasa.'],
+        ['marina', 'Quem vende são vocês, Ébano. Essas tábuas guardam as cargas do porto: vocês chegam de noite, e no dia seguinte o sol atrasa.'],
         ['ebano', 'Chega de conversa. Pokémon, para fora!'],
       ],
       depois: {
@@ -61,7 +61,7 @@ export default {
       local: 'porto_espelho',
       gatilho: { tipo: 'vencer', alvo: 'c3_ebano' },
       falas: [
-        ['narrador', 'Quando o Ébano recua, uma mulher de casaco longo aparece na ponta do píer. Ela não tem Pokémon à vista, só um Absol sentado a seus pés.'],
+        ['narrador', 'Quando o Ébano recua, uma mulher de casaco longo aparece na ponta do píer, com um Absol sentado aos seus pés.'],
         ['vespera', 'Você venceu o meu homem, menino. Isso é raro, quase tão raro quanto o sol nascer na hora.'],
         ['jogador', 'Você é a Dra. Véspera. A Crepúsculo quer as oito pedras para quê?'],
         ['vespera', 'Para que a noite não acabe. A luz já virou moeda: quem tem dinheiro compra o amanhecer, e o resto espera no escuro.'],
@@ -123,7 +123,7 @@ export default {
         ['marina', 'Pronto, a Insígnia Gota é sua. Ela deixa usar a água fora da batalha, com um Pokémon que saiba nadar.'],
         ['narrador', '{jogador} recebeu a Insígnia Gota!'],
         ['marina', 'Água ensina a esperar a maré, e a não ter pressa. Agora você pode atravessar o lago.'],
-        ['marina', 'A Crepúsculo voltou aqui por causa das cargas que saem do porto. Vá ver o Seu Nestor: ele conhece cada barco que chega e que sai.'],
+        ['marina', 'A Crepúsculo voltou aqui por causa das cargas do porto. Vá ver o Seu Nestor: ele conhece cada barco que chega e sai.'],
       ],
       depois: {
         insignia: 'espelho', montaria: 'lapras',
@@ -141,7 +141,7 @@ export default {
       gatilho: { tipo: 'falar', alvo: 'nestor', semFlag: ['nh.sqGarrafa'] },
       falas: [
         ['nestor', 'Cada garrafa tem uma história. Eu jogo uma no mar todo ano desde que a Aurora chegou, com um bilhete dentro, para quem achar.'],
-        ['nestor', 'Quase nunca volta nenhuma. Mas esta semana a maré trouxe uma de volta, presa nas raízes do manguezal, a oeste do porto. Eu não consigo andar na lama com estas costas.'],
+        ['nestor', 'Quase nunca volta nenhuma. Mas esta semana uma veio presa nas raízes do manguezal, a oeste. Eu não aguento a lama.'],
         ['jogador', 'Uma das suas garrafas voltando… Isso parece coisa de pescador com saudade.'],
         ['nestor', 'É saudade, sim. E é curiosidade também: eu quero saber quem leu o meu bilhete e respondeu. Vai lá, filho.'],
       ],
@@ -156,7 +156,7 @@ export default {
       local: 'manguezal',
       gatilho: { tipo: 'pisar', alvo: 'manguezal', requer: ['nh.sqGarrafa'], semFlag: ['nh.achouGarrafa'] },
       falas: [
-        ['narrador', 'Entre as raízes dos mangues, uma garrafa verde está presa numa rede de pesca. Dentro, o bilhete do Nestor e, enrolado junto, um segundo papel, molhado e pálido.'],
+        ['narrador', 'Entre as raízes dos mangues, uma garrafa verde está presa numa rede. Dentro, o bilhete do Nestor e um segundo papel, molhado.'],
         ['narrador', 'A letra é torta, de quem escreve no escuro: "Recebi o seu bilhete, mas não posso responder à vista. Estamos no nível 4. A luz daqui não é limpa, é a mesma que sai dos nossos cabos. Heitor."'],
         ['jogador', 'Heitor. O bilhete fala de cabos e de nível 4. Isso não parece coisa de pescador, parece coisa de mina.'],
         ['narrador', 'O papel está úmido, e a tinta escorre nas bordas. Você guarda os dois bilhetes no bolso com cuidado.'],
@@ -170,10 +170,10 @@ export default {
       gatilho: { tipo: 'falar', alvo: 'nestor', requer: ['nh.achouGarrafa'], semFlag: ['nh.sqGarrafaFim'] },
       falas: [
         ['nestor', 'Heitor! Esse nome eu conheço. O menino que cantava nos barcos quando era pequeno. Ele é o pai do Téo, não é?'],
-        ['nestor', 'Se ele escreveu isso, não é coisa de quem está doente. É coisa de quem está preso lá embaixo e achou um jeito de pedir ajuda. Respondeu a minha garrafa, filho. A minha!'],
+        ['nestor', 'Não é coisa de quem está doente. É de quem está preso lá embaixo e pediu ajuda. Respondeu à minha garrafa, filho!'],
         ['nestor', 'Leve o bilhete com você, para o Téo. Eu copio a letra para a minha caixa. Garrafa que responde merece um lugar de honra.'],
         ['jogador', 'Eu levo para o Téo. E um dia eu vou descer até lá para ver o que está acontecendo.'],
-        ['narrador', 'O Seu Nestor copia o bilhete num papel limpo e guarda a cópia numa caixa de madeira, junto com as outras garrafas. Parece um pequeno museu do mar.'],
+        ['narrador', 'O Seu Nestor copia o bilhete num papel limpo e guarda a cópia numa caixa de madeira, com as outras garrafas.'],
       ],
       depois: { itens: [['ultraBall', 3]], flags: { 'nh.sqGarrafaFim': true, 'nh.bilheteHeitor': true }, ambiente: true },
     },
@@ -181,7 +181,7 @@ export default {
       id: 'j03_boletim3',
       gatilho: { tipo: 'flag', alvo: 'badges.espelho', semFlag: ['nh.boletim.3'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e vinte e sete minutos. Os pescadores do porto dizem que o lago está mais escuro de manhã.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis horas e vinte e sete minutos. Os pescadores dizem que o lago está escuro.'],
         ['mae', 'Ravi, seis e vinte e sete. O Capitão Ivo disse que nunca viu o sol tão preguiçoso. Ele mandou um abraço, aliás.'],
         ['jogador', 'Mãe, amanhã cedo eu vou ver o lago. Se o sol atrasar mais, eu te conto.'],
       ],

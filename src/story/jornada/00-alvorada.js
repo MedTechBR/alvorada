@@ -33,7 +33,7 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'laboratorio', requer: ['balls'], semFlag: ['nh.explicouRelogio'] },
       falas: [
         ['prof', 'Bom ver você com seu Pokémon. Este sol atrasado me dá dor de cabeça: meus aparelhos marcam o mesmo atraso do rádio.'],
-        ['prof', 'No alto do Planalto dos Ventos existe um Relógio de Pedra. A lenda diz que ele prende o Necrozma, um Pokémon que se alimenta de luz.'],
+        ['prof', 'No Planalto dos Ventos existe um Relógio de Pedra. A lenda diz que ele prende o Necrozma, um Pokémon que come luz.'],
         ['prof', 'As oito Pedras do Alvorecer são as chaves desse relógio. Cada ginásio da região guarda uma há séculos.'],
         ['jogador', 'E a Equipe Crepúsculo quer juntar as pedras para quê?'],
         ['prof', 'Ainda não sei. Mas cada líder que você vencer vai pedir sua ajuda para proteger a pedra da cidade dele.'],

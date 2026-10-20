@@ -63,6 +63,6 @@ export const LEADER1 = {
   lose: ['Ainda não está maduro, mas a semente é boa. Descanse e volte quando quiser.'],
   after: [
     'Cada ginásio de Alvorada guarda uma Pedra do Alvorecer. Nenhuma delas deve sair do seu lugar sem um bom motivo.',
-    'Ultimamente o sol nasce tarde, e a Crepúsculo andou rondando a minha fazenda. Se alguém perguntar da pedra, não diga onde ela está.',
+    'Ultimamente o sol nasce tarde, e a Crepúsculo rondou a minha fazenda. Se perguntarem da pedra, não diga onde ela está.',
   ],
 };

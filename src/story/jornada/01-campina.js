@@ -35,7 +35,7 @@ export default {
         ['lili', 'Eles reviraram o celeiro atrás de uma pedra! Eu disse que aqui só tem leite, milho e galinha.'],
         ['recruta', 'Saia da frente, velho. A pedra não é sua. Ela vai para quem sabe o que fazer com ela.'],
         ['tome', 'A pedra é do ginásio, e está comigo há quarenta anos. Não vou entregar a ninguém.'],
-        ['ebano', 'Admin Ébano, da Equipe Crepúsculo. A Dra. Véspera quer as oito pedras longe de quem as vende. Você não entende o que está em jogo.'],
+        ['ebano', 'Admin Ébano, da Equipe Crepúsculo. A Dra. Véspera quer as pedras longe de quem as vende. Você não sabe o que faz.'],
         ['jogador', 'Vender? A pedra é do ginásio, não é de vocês.'],
         ['ebano', 'Então prove. Se você me vencer, eu vou embora e deixo o celeiro em paz. Se perder, a pedra vem comigo.'],
       ],
@@ -65,7 +65,7 @@ export default {
       falas: [
         ['ebano', 'Hm. Não esperava tanta resistência. Fique com a pedra por enquanto. A Dra. Véspera só queria ver quem se importa com elas.'],
         ['narrador', 'O Admin Ébano recolhe o Murkrow derrotado e some atrás do celeiro. A pedra continua no lugar.'],
-        ['tome', 'Você segurou eles, garoto! Eu já ia pegar o forcado. Agora vá ao ginásio, que quero ver se luta tão bem quanto segura um celeiro.'],
+        ['tome', 'Você segurou eles, garoto! Agora vá ao ginásio e mostre se luta tão bem quanto segura um celeiro.'],
       ],
       depois: { ambiente: true },
       atores: [

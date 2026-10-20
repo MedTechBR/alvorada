@@ -94,7 +94,7 @@ export default {
       falas: [
         ['narrador', 'No fundo, um Ariados enorme se debate entre as teias. Os olhos estão vermelhos. Ele não parece bravo, parece assustado.'],
         ['absol', '…'],
-        ['narrador', 'O cristal atrás dele pulsa mais forte a cada vez que ele se mexe. O Absol olha para você e depois para o Ariados, como quem pede ajuda.'],
+        ['narrador', 'O cristal pulsa mais forte a cada movimento do Ariados. O Absol olha para você, depois para ele, como quem pede ajuda.'],
       ],
       depois: {
         batalha: { id: 'alfa_ariados', nome: 'Ariados Alfa', alfa: true, perder: 'repete', equipe: [[168, 20, ['poisonSting', 'nightShade', 'stringShot', 'bugBite']]] },
@@ -162,7 +162,7 @@ export default {
       gatilho: { tipo: 'vencer', alvo: 'c2_recruta2' },
       falas: [
         ['recruta', 'Tá bom, fica com a telha! Mas a gente só cumpre ordem. Quem manda quer saber da luz do bosque, não da pedra.'],
-        ['narrador', 'Os recrutas fogem pela janela. Na copa de uma árvore lá fora, uma mulher de casaco longo observa a cena. Um Absol está ao lado dela.'],
+        ['narrador', 'Os recrutas fogem pela janela. Numa árvore lá fora, uma mulher de casaco longo observa. Um Absol está ao lado dela.'],
         ['vespera', 'Bom trabalho, menino. A Lia tem sorte de ter alguém que se importa com a pedra. Espero que a sorte dure.'],
         ['vespera', 'Mas a luz do bosque não espera ninguém. Pergunte à Lia o que ela sabe sobre essas raízes.'],
         ['narrador', 'Ela some entre os galhos. Só a voz fica.'],
@@ -218,7 +218,7 @@ export default {
         ['lia', 'Chegou ao centro da teia! Pouca gente chega sem ser puxada de volta pelo Spinarak. Ele está meio decepcionado.'],
         ['lia', 'Inseto é pequeno, é quieto, é fácil de ignorar. E é por isso que ganha. Vamos lá!'],
         ['jogador', 'Eu estou pronto, Lia. Mas antes me diz: a sua estufa sempre foi assim, tão escura?'],
-        ['lia', 'Não. Até uns meses atrás a estufa pegava sol de manhã. Depois vieram uns homens da Companhia Aurora com a luzita, e tudo escureceu.'],
+        ['lia', 'Não. Até uns meses atrás a estufa pegava sol de manhã. Depois vieram homens da Companhia Aurora, com a luzita.'],
       ],
       depois: {
         batalha: {
@@ -243,8 +243,8 @@ export default {
         ['lia', 'Você foi rápido como um Yanma! A Insígnia Casulo é sua. Ela lembra que toda mudança começa quietinha, por dentro.'],
         ['narrador', '{jogador} recebeu a Insígnia Casulo!'],
         ['lia', 'E esta MT: Picada. Pega o Pokémon desprevenido e ainda come a fruta dele. Grosseiro, mas eficiente.'],
-        ['lia', 'Você viu a gruta. Eu já desconfiava que o bosque estava doente perto daqueles veios. As árvores com raiz em cima deles estão secando.'],
-        ['lia', 'A Companhia Aurora diz que a luzita é limpa. O bosque discorda, e eu confio mais no bosque. Siga pela Rota 3, a leste, até Porto Espelho.'],
+        ['lia', 'Você viu a gruta. Eu já desconfiava que o bosque estava doente perto daqueles veios. As raízes em cima deles estão secando.'],
+        ['lia', 'A Companhia Aurora diz que a luzita é limpa. O bosque discorda, e eu confio mais nele. Siga pela Rota 3 até Porto Espelho.'],
       ],
       depois: {
         insignia: 'sussurro', mt: 'bugBite',
@@ -272,7 +272,7 @@ export default {
       id: 'j02_boletim2',
       gatilho: { tipo: 'flag', alvo: 'badges.sussurro', semFlag: ['nh.boletim.2'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e dezenove minutos. São catorze minutos de atraso desde o começo da semana.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis horas e dezenove minutos. São catorze minutos de atraso desde segunda.'],
         ['mae', 'Ravi, seis e dezenove. Você está ganhando insígnias, e o sol está ficando mais preguiçoso. Isso não é normal.'],
         ['jogador', 'Ele já atrasava antes da minha primeira insígnia, Mãe. Então não é por causa das minhas vitórias.'],
       ],
@@ -300,7 +300,7 @@ export default {
       local: 'bosque_sussurrante',
       gatilho: { tipo: 'pisar', alvo: 'mata_jequitibas', requer: ['nh.sqPipoca'], semFlag: ['nh.achouPipoca'] },
       falas: [
-        ['narrador', 'Entre as raízes de um jequitibá, um Skwovet roliço guarda um monte de nozes maior do que ele. Na coleira de barbante, um sininho amassado.'],
+        ['narrador', 'Entre as raízes de um jequitibá, um Skwovet roliço guarda um monte de nozes maior que ele. Tem um sininho na coleira.'],
         ['narrador', 'Ele não está perdido. O monte tem uma noz de cada árvore do bosque, arrumadinha por tamanho, como quem prepara um presente.'],
         ['jogador', 'Era para o Tito, não era? Vem comigo, Pipoca. Ele está preocupado, mas vai gostar.'],
         ['narrador', 'O Skwovet escolhe a maior noz, enfia na bochecha e anda na sua frente, desconfiado, de volta para a vila.'],
@@ -315,7 +315,7 @@ export default {
       falas: [
         ['tito', 'Pipoca! Seu maluco! Eu não estava bravo. Eu estava só um pouquinho bravo, mas agora passou.'],
         ['narrador', 'O Pipoca tira a noz da bochecha e põe na mão do Tito. O Tito olha para a noz, olha para o Skwovet e esfrega o nariz na manga.'],
-        ['tito', 'Você passou o dia inteiro atrás dele? Então toma o meu Ovo da Sorte. Guardo desde que ele era filhote, e acho que o dia de dar é hoje.'],
+        ['tito', 'Você passou o dia inteiro atrás dele? Então toma o meu Ovo da Sorte. Guardo desde filhote, e acho que hoje é dia de dar.'],
         ['narrador', 'O Pipoca sobe no ombro do Tito e começa a roer a orelha dele. Os dois estão felizes.'],
       ],
       depois: {
