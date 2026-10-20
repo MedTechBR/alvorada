@@ -11,6 +11,19 @@ import { toCharLook } from '../ui/looks.js';
 const RAIZ = new URL('../../assets/hgss/personagens/', import.meta.url).href;
 const RAIZ_PK = new URL('../../assets/hgss/pokemon/', import.meta.url).href;
 const DIRS = { down: 0, up: 1, left: 2, right: 3 };
+// Figurantes: folhas FireRed dos moradores (o resto do acervo HGSS só entra se elas faltarem)
+const GERAIS_FRLG = ['frlg_oldman', 'frlg_woman', 'frlg_girl', 'frlg_lass', 'frlg_kid', 'frlg_little_girl', 'frlg_youngster', 'frlg_camper', 'frlg_bug_catcher', 'frlg_cooltrainer_f'];
+// Papéis fixos pelo id da pessoa (vale mesmo quando o look é uma predefinição de objeto)
+const PAPEL_FRLG = [
+  [/(^|_)joy(\d|_|$)|enfermeira|nurse/i, 'frlg_nurse'],
+  [/vendedor|vendedora|balconista|lojista|clerk/i, 'frlg_clerk'],
+  [/(^|_)(mae|mom)(_|\d|$)/i, 'frlg_mom'],
+  [/(^|_)(prof|jatoba|oak)(_|\d|$)/i, 'frlg_oak'],
+  [/(^|_)teo(_|\d|$)/i, 'frlg_rival'],
+  [/cientista|scientist/i, 'frlg_scientist'],
+  [/guia_(gin|ginasio)|gym_guide/i, 'frlg_gym_guide'],
+  [/leader_(graca|bras)/i, 'frlg_brock'],
+];
 
 export class Personagens {
   constructor(v) {
@@ -81,13 +94,17 @@ export class Personagens {
   #idDe(look, quem) {
     const J = this.J;
     const PROIBIDO = /^frlg_trainer/;
+    // papel fixo pelo id da pessoa (enfermeira Joy, atendente, Mãe, Prof. Jatobá...): vale mesmo com look de predefinição
+    const q = String(quem ?? '');
+    if (q) for (const [re, k] of PAPEL_FRLG) if (re.test(q) && J.personagens[k]) return k;
     let id = typeof look === 'string' ? (J.personagens[look] ? look : J.looks[look]) : null;
     if (look === 'rival') id = 'frlg_rival';
     if (id && !PROIBIDO.test(id)) {
       // looks genéricos (menino, menina, treinador...) variam por pessoa dentro de folhas parecidas
       if (!/^(menino|menina|treinador|treinadora|garoto|moca|youngster)$/.test(look) || !quem) return id;
     }
-    this.pool ??= Object.keys(J.personagens).filter((k) => !PROIBIDO.test(k) && !/_run$|_bike|_surf|_fishing|_heal|_save|_poketch|_watering|_ladder|_shake|_hm|_vsseeker|_contest|_rocket|running|gym_leader|elite_four|champion|boss|commander|executive|prof_|npc_19[89]|npc_20[0-8]/.test(k));
+    this.pool ??= GERAIS_FRLG.some((k) => J.personagens[k]) ? GERAIS_FRLG.filter((k) => J.personagens[k])
+      : Object.keys(J.personagens).filter((k) => !PROIBIDO.test(k) && !/_run$|_bike|_surf|_fishing|_heal|_save|_poketch|_watering|_ladder|_shake|_hm|_vsseeker|_contest|_rocket|running|gym_leader|elite_four|champion|boss|commander|executive|prof_|npc_19[89]|npc_20[0-8]/.test(k));
     let h = 2166136261; for (const c of String(quem || look || '')) h = Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0;
     return this.pool[h % this.pool.length];
   }

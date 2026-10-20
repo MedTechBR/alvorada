@@ -251,7 +251,7 @@ function centro(c, nome) {
   fixo({ kind: 'counter', x: 5, y: 3 }); fixo({ kind: 'pc', x: 10, y: 2 }); fixo({ kind: 'machine', x: 2, y: 2, text: 'A máquina de cura. Ela toca uma musiquinha que você conhece de cor.' });
   fixo({ kind: 'plant', x: 1, y: 7 }); fixo({ kind: 'plant', x: 13, y: 7 }); fixo({ kind: 'table', x: 11, y: 5 }); fixo({ kind: 'shelf', x: 13, y: 2, text: `Revistas e um mapa de ${c.cidade}.` });
   G.marcar(7, 2, 1, 1);
-  const enf = { id: `${c.id}_enfermeira`, name: 'Enfermeira', look: { preset: 'mae', top: '#f4a6b8', pants: '#ffffff', hair: '#e86a8a' }, x: 7, y: 2, dir: 'down', heal: true, gerado: true,
+  const enf = { id: `${c.id}_enfermeira`, name: 'Enfermeira', look: 'enfermeira', x: 7, y: 2, dir: 'down', heal: true, gerado: true,
     lines: ['Bem-vindo ao Centro Pokémon! Vou cuidar dos seus Pokémon.', 'Prontinho! Seus Pokémon estão cheios de energia. Volte sempre!'], all: true };
   const pontos = [[3, 6], [11, 7]];
   const people = comNpc(c, [enf, ...moradores(c, c.id, pontos).slice(0, 1)], pontos);
@@ -266,7 +266,7 @@ function loja(c, nome) {
   fixo({ kind: 'plant', x: 9, y: 6 });
   const vid = `${c.id}_vendedor`;
   if (!LOJAS[vid]) LOJAS[vid] = { nome: `${nome}`, extra: [] };
-  const vend = { id: vid, name: 'Vendedor', look: { preset: 'treinador', top: '#3a7ae8', pants: '#2a3a5a' }, x: 2, y: 3, dir: 'down', gerado: true, lines: ['Bem-vindo!'] };
+  const vend = { id: vid, name: 'Vendedor', look: 'lojista', x: 2, y: 3, dir: 'down', gerado: true, lines: ['Bem-vindo!'] };
   const pontos = [[7, 5]];
   const people = comNpc(c, [vend, ...moradores(c, c.id, pontos).slice(0, c.r() < 0.5 ? 1 : 0)], pontos);
   return { id: c.id, name: nome, rows: paredes(W, H, 't', porta), objects: objs, decor: [], people, items: [] };
