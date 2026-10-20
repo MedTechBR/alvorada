@@ -16,7 +16,7 @@ export default {
     {
       id: 'j11_chegada',
       local: 'ninho_mirante_ventos',
-      gatilho: { tipo: 'entrar', alvo: 'ninho_mirante_ventos', requer: ['nh.tempestadeFim'], semFlag: ['nh.chegouMirante'] },
+      gatilho: { tipo: 'entrar', alvo: 'mirante_ventos', requer: ['nh.tempestadeFim'], semFlag: ['nh.chegouMirante'] },
       falas: [
         ['narrador', 'Mirante dos Ventos: uma torre de vidro no topo do Planalto, com o vento vindo de todos os lados. Lá do alto, dá para ver o Relógio de Pedra, pequeno e escuro, do outro lado do vale.'],
         ['narrador', 'O Prof. Jatobá tinha marcado de encontrar você aqui. Ele disse, pelo rádio, que queria mostrar a pedra da Celeste antes de subir.'],
@@ -32,7 +32,7 @@ export default {
       // o sequestro: a Aurora chega de helicóptero e leva o professor. Lúcio luta para protegê-lo.
       id: 'j11_prof_sequestrado',
       local: 'ninho_mirante_ventos',
-      gatilho: { tipo: 'entrar', alvo: 'ninho_mirante_ventos', requer: ['nh.chegouMirante'], semFlag: ['nh.profSequestrado'] },
+      gatilho: { tipo: 'entrar', alvo: 'mirante_ventos', requer: ['nh.chegouMirante'], semFlag: ['nh.profSequestrado'] },
       falas: [
         ['narrador', 'O Prof. Jatobá está sentado no muro do mirante, com uma pasta de papel no colo. Quando você se aproxima, um carro branco com faróis dourados para bem atrás dele.'],
         ['prof', 'Ravi, fuja! Eles não vieram me ajudar, vieram me buscar!'],

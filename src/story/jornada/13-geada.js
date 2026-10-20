@@ -30,7 +30,7 @@ export default {
     {
       id: 'j13_vila_geada',
       local: 'ninho_vila_geada',
-      gatilho: { tipo: 'entrar', alvo: 'ninho_vila_geada', requer: ['nh.chegouGeada'], semFlag: ['nh.vilaGeada'] },
+      gatilho: { tipo: 'entrar', alvo: 'vila_geada', requer: ['nh.chegouGeada'], semFlag: ['nh.vilaGeada'] },
       falas: [
         ['narrador', 'Vila Geada: casas de madeira com telhado de neve, um observatório com cúpula de vidro e uma estalagem onde o fogo nunca apaga.'],
         ['prof', 'Ravi, está me ouvindo? Eu estou no observatório da vila. Um rapaz da estalagem me emprestou o telefone.'],

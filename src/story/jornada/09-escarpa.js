@@ -15,7 +15,7 @@ export default {
     {
       id: 'j09_chegada',
       local: 'ninho_cidade_escarpa',
-      gatilho: { tipo: 'entrar', alvo: 'ninho_cidade_escarpa', requer: ['nh.sina', 'nh.mapaParedao'], semFlag: ['nh.chegouEscarpa'] },
+      gatilho: { tipo: 'entrar', alvo: 'cidade_escarpa', requer: ['nh.sina', 'nh.mapaParedao'], semFlag: ['nh.chegouEscarpa'] },
       falas: [
         ['narrador', 'Cidade Escarpa: casas penduradas na rocha, escadas esculpidas no paredão e um ateliê de pedra com estátuas pela calçada.'],
         ['narrador', 'Dá para ver o Planalto dos Ventos lá em cima, com o Relógio de Pedra no topo, pequeno, contra o céu. A tempestade está parada sobre ele.'],
@@ -31,7 +31,7 @@ export default {
       // a traição: o Sereno aparece com a Véspera e foge com as sete pedras
       id: 'j09_traicao',
       local: 'ninho_cidade_escarpa',
-      gatilho: { tipo: 'entrar', alvo: 'ninho_cidade_escarpa', requer: ['nh.chegouEscarpa'], semFlag: ['nh.traicaoSereno'] },
+      gatilho: { tipo: 'entrar', alvo: 'cidade_escarpa', requer: ['nh.chegouEscarpa'], semFlag: ['nh.traicaoSereno'] },
       falas: [
         ['narrador', 'No meio da praça, a Dra. Véspera segura uma caixa de madeira com sete pedras de cores diferentes. O Admin Sereno está ao lado dela, de capa roxa, sorrindo.'],
         ['vespera', 'Sete, Sereno. Só falta uma. Com as oito no Relógio, a noite finalmente vai ter fim para quem merece.'],

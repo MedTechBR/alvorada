@@ -15,7 +15,7 @@ export default {
     {
       id: 'j14_portao',
       local: 'ninho_liga_zenite',
-      gatilho: { tipo: 'entrar', alvo: 'ninho_liga_zenite', requer: ['nh.teoFinalPronto'], semFlag: ['nh.chegouLiga'] },
+      gatilho: { tipo: 'entrar', alvo: 'liga_zenite', requer: ['nh.teoFinalPronto'], semFlag: ['nh.chegouLiga'] },
       falas: [
         ['narrador', 'O Caminho do Zênite é uma escada de degraus brancos, com bandeiras de todas as regiões. No topo, o Portão da Liga brilha com a luz do fim da manhã.'],
         ['teo', 'Ravi! Eu cheguei antes, como prometi. Eu fiquei olhando a Elite de longe, e eles são bem mais assustadores do que pareciam em treino.'],
