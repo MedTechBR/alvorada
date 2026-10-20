@@ -163,7 +163,11 @@ class Montagem {
     return null;
   }
   lado(tipo, parede, y, larg = 1, alt = 16, y0 = 26) { if (this.espelho) parede = parede === 'esq' ? 'dir' : 'esq'; this.enfeites.push({ tipo, parede, x: y, larg, y0, alt }); }
-  tapete(x, y, w, h, estilo) { if (this.espelho) x = this.P.x0 + this.P.x1 + 1 - x - w; this.tapetes.push({ x, y, w, h, estilo }); }
+  tapete(x, y, w, h, estilo) {
+    if (this.espelho) x = this.P.x0 + this.P.x1 + 1 - x - w;
+    const P = this.P, ax = Math.max(P.x0, x), ay = Math.max(P.y0, y), bx = Math.min(P.x1 + 1, x + w), by = Math.min(P.y1 + 1, y + h); // nunca passa da parede
+    if (bx > ax && by > ay) this.tapetes.push({ x: ax, y: ay, w: bx - ax, h: by - ay, estilo });
+  }
 }
 
 // ---------------------------------------------------------------- receitas
