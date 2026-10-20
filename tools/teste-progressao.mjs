@@ -67,11 +67,14 @@ ok(recusaLider({ badges: [] }, 'leader_tome') === null, 'leader_tome: o primeiro
     const f0 = { badges: [] };
     aplicar(sem, W, 'alvorada', f0, memo);
     ok(sem[k] === 1, `${b.id}: deveria ser sólida antes da liberação (bloco ${x},${y})`);
-    const f1 = { badges: [b.liberaPor] };
+    // libera: a insígnia (liberaPor) e/ou a flag de história (ate, com pontos: 'nh.mapaParedao')
+    const f1 = { badges: b.liberaPor ? [b.liberaPor] : [], brasas_resolvido: true }; // (a tempestade do Planalto tem teste próprio)
+    if (b.ate) { const ps = b.ate.split('.'); let o = f1; for (const q of ps.slice(0, -1)) o = o[q] ??= {}; o[ps.at(-1)] = true; }
     aplicar(sem, W, 'alvorada', f1, memo);
-    ok(sem[k] === 0, `${b.id}: deveria ser passável depois de ${b.liberaPor}`);
+    ok(sem[k] === 0, `${b.id}: deveria ser passável depois de ${b.liberaPor ?? b.ate}`);
     ok(!memo.has(k), `${b.id}: ao liberar, o bloco deveria voltar ao que era`);
     ok(typeof b.msg === 'string' && b.msg.length > 10, `${b.id}: falta a frase de aviso`);
+    aplicar(sem, W, 'alvorada', { badges: [] }, memo); aplicar(sem, W, 'alvorada', { badges: ['campina', 'sussurro', 'espelho', 'coral', 'lamparina', 'rochedo', 'escarpa', 'mirante'], nh: { teoDuvida: true, reviravolta1: true, mapaParedao: true }, relogio_vencido: true, geada_vencida: true }, memo);
   }
   // blocos que já eram sólidos (objetos do mapa) não são apagados ao liberar
   const pre = new Uint8Array(W * H); const [bx, by] = BARREIRAS[0].rects[0]; pre[bx + by * W] = 1;

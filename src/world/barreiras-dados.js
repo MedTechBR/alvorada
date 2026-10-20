@@ -47,7 +47,7 @@ export const BARREIRAS = [
   { id: 'paredao_mapa', mundo: 'alvorada', ate: 'nh.mapaParedao', rects: [[184, 131, 4, 13], [284, 131, 2, 13], [420, 131, 4, 13]],
     msg: 'O Paredão é alto demais para subir às cegas. Falta o mapa do Paredão, no Museu do Sertão.' },
   // 7 → Brasas: o mar a sudeste (Rota Marítima 19) abre depois da Graça
-  { id: 'mar_brasas', mundo: 'alvorada', liberaPor: 'escarpa', rects: [[600, 477, 600, 3]],
+  { id: 'mar_brasas', mundo: 'alvorada', liberaPor: 'escarpa', rects: [[800, 477, 400, 3]],
     msg: 'Ondas altas no mar das Brasas: "Só depois da Insígnia Rocha."' },
   // 8 → Relógio: o anel dos menires fica isolado pela Companhia Aurora até a Celeste
   { id: 'cerco_relogio', mundo: 'alvorada', liberaPor: 'mirante', rects: [[284, 56, 32, 2], [284, 86, 32, 2], [284, 58, 2, 28], [314, 58, 2, 28]],

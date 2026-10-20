@@ -138,9 +138,9 @@ export default {
         objetivo: { texto: 'Descoberta: a Companhia Aurora é quem atrasa o sol. Vá ao Forte Rochedo, a oeste pela Rota 7, e procure as cartas antigas do Prof. Jatobá no arquivo', alvo: 'arquivo_forte' },
       },
       atores: [
-        { id: 'vespera_mina', quem: 'vespera', nome: 'Dra. Véspera', look: LOOKS.vespera, spot: 'dentro_mina_aurora_n4', longe: 3, permanente: false },
-        { id: 'absol_mina', quem: 'absol', pokemon: 359, nome: 'Absol', spot: 'dentro_mina_aurora_n4', cena: ['j07_mina_medidor'] },
-        { id: 'heitor_mina7', quem: 'heitor', nome: 'Heitor', look: LOOKS.heitor, spot: 'dentro_mina_aurora_n4', longe: 3 },
+        { id: 'vespera_mina', quem: 'vespera', nome: 'Dra. Véspera', look: LOOKS.vespera, longe: 3, permanente: false },
+        { id: 'absol_mina', quem: 'absol', pokemon: 359, nome: 'Absol', cena: ['j07_mina_medidor'] },
+        { id: 'heitor_mina7', quem: 'heitor', nome: 'Heitor', look: LOOKS.heitor, longe: 3 },
         { id: 'teo_mina7', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'dentro_torre_aurora', segue: true, cena: ['j07_sirene', 'j07_mina_entrada', 'j07_mina_medidor', 'j07_saida_mina'] },
       ],
     },

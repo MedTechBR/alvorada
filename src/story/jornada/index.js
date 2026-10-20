@@ -1,6 +1,9 @@
 // História nova ("Pokémon Alvorada", nova jornada clássica): docs/jornada-classica.md e docs/jornada-roteiro.md.
 //
-// COMO LIGAR (para quem for integrar em src/story/roteiro.js; não feito aqui):
+// LIGADA (2026-10-20): src/story/roteiro.js roda [mantidas, regiões, ...JORNADA]; o elenco do mapa vem de
+// src/story/elenco-ativo.js (elenco.js + ELENCO_JORNADA, um por id); as jornadas do painel estão em jornadas.js; a ordem
+// e as barreiras foram conferidas por tools/teste-jornada-completa.mjs. O roteiro de como ligar fica abaixo, como registro.
+// COMO LIGAR (feito):
 //   1. Importar { JORNADA, ELENCO_JORNADA } deste arquivo.
 //   2. Trocar a lista de capítulos do motor: this.caps = [TRAMA, ...JORNADA] (no lugar de [TRAMA, ...CAPITULOS...]).
 //      O motor já lê cenas por gatilho (não por ordem da lista); a ordem obrigatória do jogo vem dos
