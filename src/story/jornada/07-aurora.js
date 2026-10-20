@@ -49,7 +49,7 @@ export default {
         objetivo: { texto: 'Passe pelo Gerente Lúcio, que bloqueia o elevador de serviço, e desça à Mina Aurora', alvo: 'mina_aurora' },
       },
       atores: [
-        { id: 'lucio_torre', quem: 'lucio', nome: 'Gerente Lúcio', look: LOOKS.lucio, spot: 'torre_aurora', longe: 3 },
+        { id: 'lucio_torre_n', quem: 'lucio', nome: 'Gerente Lúcio', look: LOOKS.lucio, spot: 'torre_aurora', longe: 3 },
         { id: 'pipa_aurora', quem: 'pipa', nome: 'Pipa', look: LOOKS.pipa, spot: 'pipa_aurora', cena: ['j07_chegada', 'j07_torre_visita'] },
       ],
     },
@@ -74,7 +74,7 @@ export default {
         flags: { 'nh.lucioVencido': true },
       },
       atores: [
-        { id: 'lucio_torre', quem: 'lucio', nome: 'Gerente Lúcio', look: LOOKS.lucio, spot: 'torre_aurora', longe: 3 },
+        { id: 'lucio_torre_n', quem: 'lucio', nome: 'Gerente Lúcio', look: LOOKS.lucio, spot: 'torre_aurora', longe: 3 },
       ],
     },
     {
@@ -93,7 +93,7 @@ export default {
         objetivo: { texto: 'Desça à Mina Aurora e encontre o Heitor, pai do Téo, no nível quatro', alvo: 'mina_aurora' },
       },
       atores: [
-        { id: 'teo_mina', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'torre_aurora', segue: true, cena: ['j07_sirene', 'j07_mina_entrada', 'j07_mina_medidor', 'j07_saida_mina'] },
+        { id: 'teo_mina7', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'torre_aurora', segue: true, cena: ['j07_sirene', 'j07_mina_entrada', 'j07_mina_medidor', 'j07_saida_mina'] },
       ],
     },
     {
@@ -110,7 +110,7 @@ export default {
         objetivo: { texto: 'Desça pelas escadas até o nível quatro, onde está o Heitor', alvo: 'mina_aurora_n4' },
       },
       atores: [
-        { id: 'teo_mina', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'torre_aurora', segue: true, cena: ['j07_sirene', 'j07_mina_entrada', 'j07_mina_medidor', 'j07_saida_mina'] },
+        { id: 'teo_mina7', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'torre_aurora', segue: true, cena: ['j07_sirene', 'j07_mina_entrada', 'j07_mina_medidor', 'j07_saida_mina'] },
       ],
     },
     {
@@ -140,7 +140,7 @@ export default {
         { id: 'vespera_mina', quem: 'vespera', nome: 'Dra. Véspera', look: LOOKS.vespera, spot: 'mina_aurora_n4', longe: 3, permanente: false },
         { id: 'absol_mina', quem: 'absol', pokemon: 359, nome: 'Absol', spot: 'mina_aurora_n4', cena: ['j07_mina_medidor'] },
         { id: 'heitor_mina7', quem: 'heitor', nome: 'Heitor', look: LOOKS.heitor, spot: 'mina_aurora_n4', longe: 3 },
-        { id: 'teo_mina', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'torre_aurora', segue: true, cena: ['j07_sirene', 'j07_mina_entrada', 'j07_mina_medidor', 'j07_saida_mina'] },
+        { id: 'teo_mina7', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'torre_aurora', segue: true, cena: ['j07_sirene', 'j07_mina_entrada', 'j07_mina_medidor', 'j07_saida_mina'] },
       ],
     },
     {
@@ -160,7 +160,7 @@ export default {
       },
       atores: [
         { id: 'solano_mina', quem: 'solano', nome: 'Augusto Solano', look: LOOKS.solano, spot: 'aurora_praca', longe: 3 },
-        { id: 'teo_mina', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'torre_aurora', segue: true, cena: ['j07_sirene', 'j07_mina_entrada', 'j07_mina_medidor', 'j07_saida_mina'] },
+        { id: 'teo_mina7', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'torre_aurora', segue: true, cena: ['j07_sirene', 'j07_mina_entrada', 'j07_mina_medidor', 'j07_saida_mina'] },
       ],
     },
     {

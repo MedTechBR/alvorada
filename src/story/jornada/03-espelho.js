@@ -49,7 +49,7 @@ export default {
         flags: { 'nh.ebanoEspelho': true },
       },
       atores: [
-        { id: 'marina_galpao', quem: 'marina', nome: 'Líder Marina', look: LOOKS.marina, spot: 'galpao_barcos', longe: 3 },
+        { id: 'marina_galpao_ataque', quem: 'marina', nome: 'Líder Marina', look: LOOKS.marina, spot: 'galpao_barcos', longe: 3 },
         { id: 'recruta_galpao', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'galpao_barcos', longe: 4 },
         { id: 'recruta2_galpao', quem: 'recruta2', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'galpao_barcos', longe: 4 },
         { id: 'ebano_galpao', quem: 'ebano', nome: 'Admin Ébano', look: LOOKS.ebano, spot: 'galpao_barcos', longe: 3 },

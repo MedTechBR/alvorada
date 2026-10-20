@@ -46,8 +46,8 @@ export default {
         objetivo: { texto: 'Avise a Lia na Vila Sussurro: a estufa será roubada hoje à noite', alvo: 'vila_sussurro' },
       },
       atores: [
-        { id: 'recruta_bosque', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'trilha_jequitiba', longe: 4 },
-        { id: 'recruta2_bosque', quem: 'recruta2', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'trilha_jequitiba', longe: 4 },
+        { id: 'recruta_trilha', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'trilha_jequitiba', longe: 4 },
+        { id: 'recruta2_trilha', quem: 'recruta2', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'trilha_jequitiba', longe: 4 },
       ],
     },
     {
@@ -132,8 +132,8 @@ export default {
         },
       },
       atores: [
-        { id: 'recruta_estufa', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'estufa_lia', longe: 3 },
-        { id: 'recruta2_estufa', quem: 'recruta2', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'estufa_lia', longe: 3 },
+        { id: 'recruta_estufa_n', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'estufa_lia', longe: 3 },
+        { id: 'recruta2_estufa_n', quem: 'recruta2', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'estufa_lia', longe: 3 },
       ],
     },
     {

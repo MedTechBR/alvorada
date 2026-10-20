@@ -45,7 +45,7 @@ export default {
       },
       atores: [
         { id: 'solano_praca', quem: 'solano', nome: 'Augusto Solano', look: LOOKS.solano, spot: 'palco_solano', longe: 4 },
-        { id: 'iracema_praca', quem: 'iracema', nome: 'Iracema', look: LOOKS.iracema, spot: 'iracema_praca', longe: 3 },
+        { id: 'iracema_inauguracao', quem: 'iracema', nome: 'Iracema', look: LOOKS.iracema, spot: 'iracema_praca', longe: 3 },
       ],
     },
     {

@@ -66,6 +66,7 @@ export default {
       id: 'j12_vespera_aliada',
       local: 'relogio_pedra',
       gatilho: { tipo: 'vencer', alvo: 'c12_vespera' },
+      reviravolta: 6,
       falas: [
         ['vespera', 'Você segurou. Eu não esperava. Agora escuta, porque eu não vou repetir: o Solano planeja abrir o cadeado e capturar o Necrozma.'],
         ['vespera', 'Quando o Necrozma sair, ele vai comer toda a luz do Planalto para a Aurora vender. Eu não vou deixar isso acontecer, nem que eu fique presa aqui com a Sina.'],
@@ -76,7 +77,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.chegaramAliados': true, 'nh.veraAliada': true },
-        objetivo: { texto: 'Enfrente o Solano no topo do Relógio, antes que ele abra o cadeado', alvo: 'relogio_pedra' },
+        objetivo: { texto: 'Descoberta: a Véspera e o Téo se aliam ao jogador, e o Solano quer abrir o cadeado para capturar o Necrozma. Enfrente o Solano no topo do Relógio', alvo: 'relogio_pedra' },
       },
       atores: [
         { id: 'vespera_relogio', quem: 'vespera', nome: 'Dra. Véspera', look: LOOKS.vespera, spot: 'relogio_pedra', longe: 3 },
