@@ -197,29 +197,29 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Jornada `alvorada` · boletim do sol no fim: 6h05 · arquivo `src/story/jornada/00-alvorada.js`*
 
 ### `j00_boletim_manha`
-*Gatilho:* a flag `balls` virar verdadeira (sem nh.sol)
-- **Mãe:** Ravi! Liga o rádio, o boletim do sol está no ar. Você precisa ouvir isso antes de sair.
+*Gatilho:* a flag `balls` virar verdadeira, sem `nh.sol`
+- **Mãe:** Ravi! Liga o rádio, o boletim do sol já está no ar. Ouve isso, é importante.
 - **Rádio Alvorada:** Bom dia, Vila Alvorada. Hoje o sol nasceu às seis horas e cinco minutos. Três minutos mais tarde do que ontem.
 - **Mãe:** Isso já é o quinto dia seguido. O Seu Zé diz que os relógios dele estão certos. Então quem está atrasado é o sol.
-- **Ravi:** Ouvi os vizinhos falando da Equipe Crepúsculo. Dizem que eles roubam as pedras dos ginásios.
-- **Mãe:** Então vai com cuidado. E volta para o almoço, que eu não quero você comendo lanche de estrada.
+- **Ravi:** Ouvi os vizinhos falando de uma tal Equipe Crepúsculo. Dizem que andam de capa roxa pela região.
+- **Mãe:** Quem anda de capa roxa só traz encrenca. Vai com cuidado e volta para o almoço!
 - *Depois:* flags `nh.sol=6h05` · só conta a história
 
 ### `j00_laboratorio`
-*Gatilho:* entrar `laboratorio` (exige balls, sem nh.explicouRelogio)
-- **Prof. Jatobá:** Chegou na hora! Esse sol atrasado está me dando dor de cabeça. Meus instrumentos mostram o mesmo problema que o rádio mostra.
-- **Prof. Jatobá:** No alto do Planalto dos Ventos existe um Relógio de Pedra. Dizem as lendas que ele prende o Necrozma, um Pokémon que come luz.
+*Gatilho:* entrar `laboratorio`, exige `balls`, sem `nh.explicouRelogio`
+- **Prof. Jatobá:** Bom ver você com seu Pokémon. Este sol atrasado me dá dor de cabeça: meus aparelhos marcam o mesmo atraso do rádio.
+- **Prof. Jatobá:** No Planalto dos Ventos existe um Relógio de Pedra. A lenda diz que ele prende o Necrozma, um Pokémon que come luz.
 - **Prof. Jatobá:** As oito Pedras do Alvorecer são as chaves desse relógio. Cada ginásio da região guarda uma há séculos.
-- **Ravi:** E a Equipe Crepúsculo quer juntar as pedras?
-- **Prof. Jatobá:** É o que parece. Por isso você precisa das insígnias: cada líder que vencer também vai te pedir ajuda para proteger a pedra da cidade.
+- **Ravi:** E a Equipe Crepúsculo quer juntar as pedras para quê?
+- **Prof. Jatobá:** Ainda não sei. Mas cada líder que você vencer vai pedir sua ajuda para proteger a pedra da cidade dele.
 - *Depois:* flags `nh.explicouRelogio=true`
 - *Objetivo no painel:* Saia pela Rota 1, a oeste da vila, e chegue à Cidade Campina → `campina`
 
 ### `j00_saida`
-*Gatilho:* pisar `saida_vila_oeste` (exige balls, sem nh.explicouRelogio)
+*Gatilho:* pisar `saida_vila_oeste`, exige `balls`, sem `nh.explicouRelogio`
 - *A Rota 1 começa logo depois da última casa. Dá para ver a Cidade Campina lá no fundo, no meio dos campos.*
-- *Antes de sair, o Prof. Jatobá gritou da janela: "Passa no laboratório antes! Você ainda não sabe o que é o Relógio!"*
-- **Ravi:** Então é melhor ir logo. Mas antes eu quero entender o que o professor quer dizer.
+- *Atrás de você, o Prof. Jatobá grita da porta do laboratório: "Espera! Você precisa saber o que é o Relógio!"*
+- **Ravi:** Ele parece preocupado de verdade. Acho melhor voltar e ouvir o que ele tem a dizer.
 - *Você olha para o céu. O sol ainda está baixo e pálido, como se tivesse esquecido de subir.*
 - *Objetivo no painel:* Volte ao laboratório do Prof. Jatobá antes de seguir para a Rota 1 → `lab`
 
@@ -227,23 +227,23 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Jornada `campina` · boletim do sol no fim: 6h12 · arquivo `src/story/jornada/01-campina.js`*
 
 ### `j01_chegada`
-*Gatilho:* entrar `campina` (exige nh.explicouRelogio, sem badges.campina)
+*Gatilho:* entrar `campina`, exige `nh.explicouRelogio`, sem `badges.campina`
 - *Cidade Campina: ruas de terra, uma feira de abóboras e, no fim da praça, uma quadra coberta. Ali fica o ginásio.*
-- *Você veio pela Rota 1 para conquistar a Insígnia Espiga, a primeira das oito pedras que a Crepúsculo cobiça.*
-- **Ravi:** O Líder Tomé é o primeiro desafio. Mas antes preciso saber o que os recrutas estão fazendo por aqui.
+- *Você veio pela Rota 1 para o primeiro ginásio. O líder guarda a Pedra do Alvorecer da cidade, e a Crepúsculo a cobiça.*
+- **Ravi:** O Líder Tomé é o primeiro desafio. Mas esta cidade parece nervosa. O que está acontecendo por aqui?
 - *Um feirante aponta para a Fazenda do Tomé, a leste da cidade: "Tem gente de capa roxa rondando o celeiro desde cedo."*
 - *Depois:* flags `nh.chegouCampina=true`
 - *Objetivo no painel:* Vá à Fazenda do Tomé, a leste da cidade, e veja o que os recrutas querem → `fazenda_tome`
 
 ### `j01_fazenda`
-*Gatilho:* entrar `fazenda_tome` (exige nh.chegouCampina, sem nh.ebanoCampina)
+*Gatilho:* entrar `fazenda_tome`, exige `nh.chegouCampina`, sem `nh.ebanoCampina`
 - **Líder Tomé:** Ah, você é o treinador do Prof. Jatobá! Chegou bem na hora. Uns sujeitos de capa roxa estão no celeiro.
-- **Lili:** Eles pegaram os tambores de leite e falaram que é para a chefe deles. Eu falei que leite é de vaca, não de patrão!
-- **Recruta Crepúsculo:** Passa, velho. A pedra não é sua. A pedra vai para quem sabe o que fazer com ela.
-- **Líder Tomé:** A pedra é do ginásio! Ela está comigo há quarenta anos, não é nada de outro mundo.
-- **Admin Ébano:** Admin Ébano, da Equipe Crepúsculo. A Dra. Véspera quer as oito pedras longe de quem as vende. Você não entende, garoto.
+- **Lili:** Eles reviraram o celeiro atrás de uma pedra! Eu disse que aqui só tem leite, milho e galinha.
+- **Recruta Crepúsculo:** Saia da frente, velho. A pedra não é sua. Ela vai para quem sabe o que fazer com ela.
+- **Líder Tomé:** A pedra é do ginásio, e está comigo há quarenta anos. Não vou entregar a ninguém.
+- **Admin Ébano:** Admin Ébano, da Equipe Crepúsculo. A Dra. Véspera quer as pedras longe de quem as vende. Você não sabe o que faz.
 - **Ravi:** Vender? A pedra é do ginásio, não é de vocês.
-- **Admin Ébano:** Então prova. Se você vencer, eu levo o recado. Se perder, eu levo a pedra e você explica para o Tomé.
+- **Admin Ébano:** Então prove. Se você me vencer, eu vou embora e deixo o celeiro em paz. Se perder, a pedra vem comigo.
 - *Batalha* `c1_ebano`: Admin Ébano, prêmio ₽1200. Se perder, volta a esta cena.
   - Equipe: Houndour Nv 13 (Brasa, Olhar Malicioso, Mordida); Murkrow Nv 14 (Bicada, Assustar, Perseguição)
 - *Depois:* flags `nh.ebanoCampina=true`
@@ -251,33 +251,23 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 
 ### `j01_ebano_fuga`
 *Gatilho:* vencer `c1_ebano`
-- **Admin Ébano:** Hm. Não deveria ter sido tão rápido. Pode ficar com o celeiro. A Dra. Véspera só queria ver se você se importava.
-- *O Admin Ébano recolhe a bola de um Murkrow derrotado e some atrás do celeiro, mas não leva a pedra.*
-- **Líder Tomé:** Você segurou eles. Eu já ia pegar o forcado. Mas a minha pedra fica no ginásio, e lá é onde eu quero você amanhã.
+- **Admin Ébano:** Hm, não esperava tanta resistência. Fique com a pedra por enquanto. A Dra. Véspera só queria testar você.
+- *O Admin Ébano recolhe o Murkrow derrotado e some atrás do celeiro. A pedra continua no lugar.*
+- **Líder Tomé:** Você segurou eles, garoto! Agora vá ao ginásio e mostre se luta tão bem quanto segura um celeiro.
 - *Depois:* só conta a história
 
-### `j01_tome_ginasio`
-*Gatilho:* falar `tome` (exige nh.ebanoCampina, sem badges.campina)
-- **Líder Tomé:** Você veio pelo caminho certo, e chegou com a cara de quem pensa que já ganhou. Eu gosto disso.
-- **Líder Tomé:** Quarenta anos de colheita me ensinaram uma coisa: a gente planta devagar e colhe rápido. Vamos ver a sua colheita.
-- **Ravi:** Não vou pegar leve, Tomé. Prometi à Lili que voltava com a pedra no bolso.
-- **Líder Tomé:** Ótimo! Então prepare o seu melhor pão. Eu já estou com o meu pronto.
-- *Batalha* `leader_tome`: Líder Tomé, prêmio ₽1400.
-  - Equipe: Patrat Nv 12 (Investida, Chicote de Cauda, Ataque Rápido); Lillipup Nv 13 (Investida, Olhar Malicioso, Mordida); Skitty Nv 14 (Pancadinha, Enrolar-se, Ataque Rápido)
-
 ### `j01_tome_insignia`
-*Gatilho:* vencer `leader_tome`
+*Gatilho:* a flag `badges.campina` virar verdadeira, sem `nh.pedraCampina`
 - **Líder Tomé:** Olha só! A Insígnia Espiga é sua. Ela lembra que, para crescer, a gente precisa de paciência e de chuva.
-- *{jogador} recebeu a Insígnia Espiga!*
-- **Líder Tomé:** Escuta, vou falar sério. A pedra da cidade é a última coisa que eu guardo para mim. Eu não consigo ficar de olho nela sozinho.
-- **Líder Tomé:** Cuida dela com a mesma atenção que você cuidou dessa insígnia. Quando a Crepúsculo voltar, e vai voltar, eu conto com você.
-- **Líder Tomé:** A Rota 2 fica para o oeste, depois do lamaçal. Com um Pokémon que tenha patas fortes você passa sem se afundar.
-- *Depois:* insígnia **Insígnia Espiga** · flags `nh.pedraCampina=true`
+- **Líder Tomé:** Escuta, vou ser sincero. A pedra da cidade é o que eu tenho de mais precioso, e não dou conta de vigiá-la sozinho.
+- **Líder Tomé:** Fique de olho nela. Quando a Crepúsculo voltar, e vai voltar, eu conto com você.
+- **Líder Tomé:** A Rota 2 começa ao norte da fazenda, depois do lamaçal. Cuidado com o barro: ele engole quem anda distraído.
+- *Depois:* flags `nh.pedraCampina=true`
 - *Objetivo no painel:* Siga pela Rota 2 (lamaçal) até a Vila Sussurro, ao norte → `vila_sussurro`
 
 ### `j01_boletim1`
-*Gatilho:* a flag `badges.campina` virar verdadeira (sem nh.boletim.1)
-- **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e doze minutos. Sete minutos depois do esperado.
+*Gatilho:* depois da cena `j01_tome_insignia`, sem `nh.boletim.1`
+- **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e doze minutos. Sete minutos mais tarde do que ontem.
 - **Mãe:** Ravi, ouviu? Seis e doze. Você já ganhou uma insígnia e o sol atrasou mais um pouco. Coincidência, não acha?
 - **Ravi:** Mãe, eu não acredito em coincidência. Mas ainda não sei o que é.
 - *Depois:* flags `nh.boletim.1=true`, `nh.sol=6h12` · só conta a história
@@ -286,28 +276,37 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Jornada `sussurro` · boletim do sol no fim: 6h19 · arquivo `src/story/jornada/02-sussurro.js`*
 
 ### `j02_chegada`
-*Gatilho:* entrar `vila_sussurro` (exige badges.campina, sem nh.chegouSussurro)
+*Gatilho:* entrar `vila_sussurro`, exige `badges.campina`, sem `nh.chegouSussurro`
 - *Vila Sussurro: casas entre as raízes dos jequitibás, passarelas de corda e lanternas de vaga-lume nos galhos.*
-- *Você veio para a Insígnia Casulo. A Lia é a líder, mas o motivo de você estar aqui está escrito no mapa: a pedra da Lia fica na estufa.*
-- **Líder Lia:** Cuidado com a passarela! Tem um Wurmple atravessando. Ele está nisso desde ontem.
-- **Líder Lia:** Eu sou a Lia, pesquisadora, bióloga e babá de lagarta. Também sou a líder do ginásio. Ouvi falar de você: o Tomé me mandou um bilhete.
-- **Líder Lia:** Tem gente de capa roxa rondando minha estufa. Eles perguntaram da "pedra da Lia". Pedra! Como se eu fosse uma pedreira!
-- **Ravi:** Então eu vou ver a estufa. Mas antes me diz: você sabe quem são esses sujeitos de capa roxa?
+- *Você veio pela Insígnia Casulo. A Líder Lia guarda a pedra da cidade numa estufa de vidro, nos fundos da vila.*
+- **Líder Lia:** Cuidado com a passarela! Tem um Wurmple atravessando, e ele não sai do meio do caminho desde ontem.
+- **Líder Lia:** Eu sou a Lia, líder do ginásio, bióloga e babá de lagarta. O Tomé mandou um bilhete falando de você.
+- **Líder Lia:** Tem gente de capa roxa rondando minha estufa, perguntando pela "pedra da Lia". Pedra! Eu sou bióloga, não pedreira!
+- **Ravi:** Eles são da Equipe Crepúsculo? Você sabe o que querem com a pedra?
+- **Líder Lia:** Não sei quem são, mas o bosque anda estranho. Vá até o Bosque Sussurrante e descubra com seus próprios olhos.
 - *Depois:* flags `nh.chegouSussurro=true`
 - *Objetivo no painel:* Entre no Bosque Sussurrante, a oeste, e descubra quem está rondando a estufa → `bosque_sussurrante`
 
 ### `j02_recrutas`
-*Gatilho:* pisar `trilha_jequitiba` (exige nh.chegouSussurro, sem nh.ouviuRecrutas)
+*Gatilho:* pisar `trilha_jequitiba`, exige `nh.chegouSussurro`, sem `nh.ouviuRecrutas`
 - *Atrás de um jequitibá, duas pessoas de capa roxa cochicham. A capa de um deles tem uma lua minguante bordada.*
 - **Recruta Crepúsculo:** A pedra da Lia fica na estufa. Hoje à noite, quando a vila dormir.
 - **Recruta Crepúsculo:** E se o tal Absol aparecer de novo? Ele me olhou ontem. Me olhou com julgamento.
-- **Recruta Crepúsculo:** Absol não morde. Só avisa. E a gente já sabe o aviso. Vamos.
+- **Recruta Crepúsculo:** Absol não morde. Ele só aparece antes de alguma desgraça. Vamos antes que ele apareça de novo.
 - *Eles somem entre as árvores. Você corre de volta para a vila.*
 - *Depois:* flags `nh.ouviuRecrutas=true`
 - *Objetivo no painel:* Avise a Lia na Vila Sussurro: a estufa será roubada hoje à noite → `vila_sussurro`
 
+### `j02_avisa_lia`
+*Gatilho:* entrar `vila_sussurro`, exige `nh.ouviuRecrutas`, sem `nh.avisouLia`
+- **Ravi:** Lia! Ouvi dois recrutas dizendo que a sua estufa será roubada hoje à noite, quando a vila dormir.
+- **Líder Lia:** Na minha estufa? Obrigada por avisar. Vou pôr alguém de vigia.
+- **Líder Lia:** Fique de olho no fundo da estufa. Se eles querem a pedra, vão tentar quando a vila estiver dormindo.
+- *Depois:* flags `nh.avisouLia=true`
+- *Objetivo no painel:* Vá à estufa da Lia e vigie a noite → `estufa_lia`
+
 ### `j02_sina_trilha`
-*Gatilho:* pisar `bifurcacao` (exige nh.ouviuRecrutas, sem nh.seguiuAbsol)
+*Gatilho:* pisar `bifurcacao`, exige `nh.ouviuRecrutas`, sem `nh.seguiuAbsol`
 - *O vento para. As folhas param de sussurrar. Na trilha da esquerda, um Absol branco espera, olhando para você.*
 - **Absol:** …
 - *Ele dá alguns passos para dentro do mato e olha para trás. Ele quer que você o siga.*
@@ -316,21 +315,21 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *Objetivo no painel:* Siga o Absol até a gruta de musgo (Toca do Absol), ao norte → `toca_absol`
 
 ### `j02_toca_entrada`
-*Gatilho:* entrar `toca_absol` (exige nh.seguiuAbsol, sem nh.tocaEntrou)
-- *Uma gruta coberta de musgo. Nas paredes, veios de cristal brilham com a mesma luz morna do chaveiro da Aurora.*
+*Gatilho:* entrar `toca_absol`, exige `nh.seguiuAbsol`, sem `nh.tocaEntrou`
+- *Uma gruta coberta de musgo. Nas paredes, veios de cristal brilham com uma luz morna, como a de um lampião.*
 - *Só que aqui a luz pulsa. Devagar. Como se respirasse.*
 - *Lá do fundo vem um barulho de teia rasgando.*
 - **Ravi:** Esse barulho não é normal. Eu vou até o fundo.
-- **Absol:** Absol.
+- **Absol:** …
 - *Depois:* flags `nh.tocaEntrou=true`
 - *Objetivo no painel:* Vá até o fundo da Toca do Absol → `toca_absol`
 
 ### `j02_ariados_alfa`
-*Gatilho:* pisar `toca_absol` (exige nh.tocaEntrou, sem nh.ariadosVencido)
+*Gatilho:* pisar `toca_absol`, exige `nh.tocaEntrou`, sem `nh.ariadosVencido`
 - *No fundo, um Ariados enorme se debate entre as teias. Os olhos estão vermelhos. Ele não parece bravo, parece assustado.*
-- **Absol:** Absol.
-- *O cristal atrás dele pulsa mais forte a cada vez que ele se mexe. O Absol se põe entre você e o Ariados.*
-- *Batalha* `alfa_ariados`: Ariados Alfa, Pokémon Alfa. Se perder, volta a esta cena.
+- **Absol:** …
+- *O cristal pulsa mais forte a cada movimento do Ariados. O Absol olha para você, depois para ele, como quem pede ajuda.*
+- *Batalha* `alfa_ariados`: Ariados Alfa. Se perder, volta a esta cena.
   - Equipe: Ariados Nv 20 (Ferrão Venenoso, Sombra Noturna, Fio de Seda, Picada)
 - *Depois:* flags `nh.ariadosVencido=true`
 
@@ -338,218 +337,220 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* vencer `alfa_ariados`
 - *O Ariados se encolhe. O vermelho dos olhos vai sumindo até virar um amarelo cansado. Ele foge pela fresta do teto.*
 - *O Absol encosta o chifre num veio de cristal. A luz treme. Depois ele olha para você por um bom tempo, e some no mato.*
-- **Ravi:** As árvores daqui estão mesmo morrendo perto dessa luz? Eu preciso contar isso para a Lia.
+- **Ravi:** Essa luz vem das raízes. O Absol me trouxe até aqui para eu ver. Preciso contar isso para a Lia.
 - **Pokédex:** Bzzz… Registro novo: veio de cristal luminoso. A luz não é igual à de nenhuma pedra conhecida.
 - *Depois:* flags `nh.viuCristal=true`
 - *Objetivo no painel:* Leve o que viu da gruta de volta à Lia, na Vila Sussurro → `vila_sussurro`
 
 ### `j02_estufa_noite`
-*Gatilho:* entrar `estufa_lia` (só de noite; exige nh.ouviuRecrutas, sem nh.defendeuEstufa)
-- *A estufa está escura. Dois vultos de capa roxa abrem o cofre de vidro onde a Lia guarda o fragmento.*
+*Gatilho:* entrar `estufa_lia`, à noite, exige `nh.ouviuRecrutas`, sem `nh.defendeuEstufa`
+- *A estufa está escura. Dois vultos de capa roxa abrem a vitrine onde a Lia guarda a pedra.*
 - **Recruta Crepúsculo:** Pronto, peguei. Que pedra mais sem graça, parece pedaço de telha.
 - **Recruta Crepúsculo:** Ih. Tem um moleque olhando pra gente.
 - **Recruta Crepúsculo:** Moleque, a Equipe Crepúsculo não tem nada contra você. A gente só quer guardar a noite. Sai da frente.
-- **Ravi:** Guardar a noite? Isso aí é da Lia.
+- **Ravi:** Guardar a noite? Essa pedra é da Lia, e ela não está à venda.
 - **Recruta Crepúsculo:** Então vem pegar!
 - *Batalha* `c2_recruta`: Recruta Crepúsculo, prêmio ₽500. Se perder, volta a esta cena.
   - Equipe: Zubat Nv 17 (Sanguessuga, Supersônico, Assustar); Murkrow Nv 17 (Bicada, Assustar, Perseguição)
 
 ### `j02_estufa_fim`
 *Gatilho:* vencer `c2_recruta`
-- **Recruta Crepúsculo:** Deixa comigo! Houndour, morde a canela dele! Com carinho, que ele é criança!
+- **Recruta Crepúsculo:** Chega de brincadeira. Houndour, para cima dele!
 - **Recruta Crepúsculo:** Agora você me deixou sem graça. Vou dar o troco na Lia!
-- **Ravi:** Então vem. Aqui a gente não precisa de capa roxa para proteger o que é da Lia.
+- **Ravi:** Então vem. A pedra é da Lia, e esta noite não é de vocês.
 - *Batalha* `c2_recruta2`: Recruta Crepúsculo, prêmio ₽500. Se perder, volta a esta cena.
   - Equipe: Houndour Nv 17 (Brasa, Olhar Malicioso, Mordida); Gastly Nv 18 (Lambida, Hipnose)
 
 ### `j02_estufa_vespera`
 *Gatilho:* vencer `c2_recruta2`
-- **Recruta Crepúsculo:** Tá bom! Fica com a telha! Mas escuta: a gente não é o problema. O problema está brilhando no seu bolso.
-- *Os recrutas fogem pela janela. Na copa de uma árvore lá fora, uma mulher de casaco longo observa a cena. Um Absol está ao lado dela.*
+- **Recruta Crepúsculo:** Tá bom, fica com a telha! Mas a gente só cumpre ordem. Quem manda quer saber da luz do bosque, não da pedra.
+- *Os recrutas fogem pela janela. Numa árvore lá fora, uma mulher de casaco longo observa. Um Absol está ao lado dela.*
 - **Dra. Véspera:** Bom trabalho, menino. A Lia tem sorte de ter alguém que se importa com a pedra. Espero que a sorte dure.
-- **Dra. Véspera:** Mas a luz do bosque não espera ninguém. Pergunte à Lia o que ela viu nas raízes.
+- **Dra. Véspera:** Mas a luz do bosque não espera ninguém. Pergunte à Lia o que ela sabe sobre essas raízes.
 - *Ela some entre os galhos. Só a voz fica.*
 - *Depois:* flags `nh.defendeuEstufa=true`, `nh.viuVespera=true`
-- *Objetivo no painel:* Vença os aprendizes Nando e Bel e desafie a Líder Lia na Estufa-Teia → `lia` (treinadores: g2_nando, g2_bel)
+- *Objetivo no painel:* Vença os aprendizes Nando e Bel e desafie a Líder Lia na Estufa-Teia → `lia`
 
 ### `j02_nando`
-*Gatilho:* avistar `g2_nando`
-- **Aprendiz:** Pisou no fio prateado? Não? Então ainda dá pra me enfrentar! Fio dourado é seguro, fio prateado é encrenca.
-- *Batalha* `g2_nando`: Caçador Nando, prêmio ₽520.
+*Gatilho:* ser avistado por `g2_nando`
+- **Aprendiz:** Você chegou até aqui sem cair nas teias? Ótimo, agora vai cair nas minhas!
+- *Batalha* `g2_nando`: Caçador Nando, prêmio ₽520
   - Equipe: Scatterbug Nv 16 (Investida, Fio de Seda, Esforço de Inseto); Kricketot Nv 17 (Rosnado, Aguentar, Cortador de Fúria)
 
 ### `j02_bel`
-*Gatilho:* avistar `g2_bel`
-- **Aprendiz:** Os casulos apontam para a próxima folha. Eu não devia ter falado isso. Agora vou ter que te vencer pra compensar!
-- *Batalha* `g2_bel`: Caçadora Bel, prêmio ₽560.
+*Gatilho:* ser avistado por `g2_bel`
+- **Aprendiz:** Eu não devia ter falado da Lia com você. Agora vou ter que te vencer para compensar!
+- *Batalha* `g2_bel`: Caçadora Bel, prêmio ₽560
   - Equipe: Joltik Nv 17 (Fio de Seda, Absorver, Choque do Trovão); Combee Nv 18 (Lufada de Vento, Picada, Aroma Doce)
 
 ### `j02_rival2`
-*Gatilho:* entrar `vila_sussurro` (exige nh.defendeuEstufa, sem nh.rival2)
-- **Téo:** Ei! Você está na minha frente de novo. Eu passei a semana toda ouvindo que você tem sorte.
+*Gatilho:* entrar `vila_sussurro`, exige `nh.defendeuEstufa`, sem `nh.rival2`
+- **Téo:** Ei! Você está sempre na minha frente. Toda a vila diz que você tem sorte.
 - **Ravi:** Sorte não ganha ginásio, Téo.
 - **Téo:** Então vamos ver o que ganha. Meu {rival_inicial} está pronto desde o laboratório!
-- *Batalha* `nh_rival2`: Rival Téo, prêmio ₽1800. Se perder, a história segue.
-  - Equipe: Staravia Nv 14 (Ataque de Asa, Ataque Rápido, Reflexo); Growlithe Nv 14 (Brasa, Mordida, Rugido); Eevee Nv 15 (Ataque Rápido, Mordida, Ataque de Areia); rival:2
+- *Batalha* `nh_rival2`: Rival Téo, prêmio ₽1800
+  - Equipe: Staravia Nv 14 (Ataque de Asa, Ataque Rápido, Reflexo); Growlithe Nv 14 (Brasa, Mordida, Rugido); Eevee Nv 15 (Ataque Rápido, Mordida, Ataque de Areia); rival:2 Nv 17
 - *Depois:* flags `nh.rival2=true`
 
 ### `j02_lia_ginasio`
-*Gatilho:* falar `lia` (exige nh.defendeuEstufa, exige trainers.g2_nando, exige trainers.g2_bel, sem badges.sussurro)
+*Gatilho:* falar com `lia`, exige `nh.defendeuEstufa`, `trainers.g2_nando`, `trainers.g2_bel`, sem `badges.sussurro`
 - **Líder Lia:** Chegou ao centro da teia! Pouca gente chega sem ser puxada de volta pelo Spinarak. Ele está meio decepcionado.
 - **Líder Lia:** Inseto é pequeno, é quieto, é fácil de ignorar. E é por isso que ganha. Vamos lá!
 - **Ravi:** Eu estou pronto, Lia. Mas antes me diz: a sua estufa sempre foi assim, tão escura?
-- **Líder Lia:** Não. Antes de a Aurora pedir o cristal, a estufa tinha sol de manhã. Agora tem só essa penumbra.
-- *Batalha* `leader_lia`: Líder Lia, prêmio ₽1800.
+- **Líder Lia:** Não. Até uns meses atrás a estufa pegava sol de manhã. Depois vieram homens da Companhia Aurora, com a luzita.
+- *Batalha* `leader_lia`: Líder Lia, prêmio ₽1800
   - Equipe: Combee Nv 17 (Picada, Lufada de Vento, Aroma Doce); Spinarak Nv 18 (Fio de Seda, Ferrão Venenoso, Absorver, Sombra Noturna); Venonat Nv 18 (Confusão, Pó Venenoso, Supersônico); Scyther Nv 19 (Ataque Rápido, Cortador de Fúria, Olhar Malicioso, Ataque de Asa)
 
 ### `j02_lia_insignia`
 *Gatilho:* vencer `leader_lia`
 - **Líder Lia:** Você foi rápido como um Yanma! A Insígnia Casulo é sua. Ela lembra que toda mudança começa quietinha, por dentro.
-- *{jogador} recebeu a Insígnia Casulo!*
+- *Ravi recebeu a Insígnia Casulo!*
 - **Líder Lia:** E esta MT: Picada. Pega o Pokémon desprevenido e ainda come a fruta dele. Grosseiro, mas eficiente.
-- **Líder Lia:** Você viu a gruta. Eu sabia que o bosque estava doente perto daqueles veios. As árvores com raiz em cima deles estão secando.
-- **Líder Lia:** A Aurora diz que a luzita é limpa. Mas o bosque não concorda, e eu confio mais no bosque. Vai até a Rota 3, perto de Porto Espelho. Lá a gente conversa de novo.
-- *Depois:* insígnia **Insígnia Casulo** · MT `bugBite` · flags `nh.luzitaSussurro=true`
+- **Líder Lia:** Você viu a gruta. Eu já desconfiava que o bosque estava doente perto daqueles veios. As raízes ali estão secando.
+- **Líder Lia:** A Companhia Aurora diz que a luzita é limpa. Eu confio mais no bosque. Siga pela Rota 3 até Porto Espelho.
+- *Depois:* insígnia **sussurro** · MT bugBite · flags `nh.luzitaSussurro=true`
 - *Objetivo no painel:* Siga pela Rota 3 (ponte reconstruída) até Porto Espelho, a leste → `porto_espelho`
 
 ### `j02_bia_luz`
 *Gatilho:* depois da cena `j02_lia_insignia`
-- **Bia:** {jogador}! É a Bia! Analisei o registro do cristal da gruta. A luz dele não brilha, ela vaza. Como se viesse de outro lugar.
-- **Bia:** Nenhuma pedra que eu conheço faz isso. O Professor ficou branco quando eu contei. Disse "deve ser nada" e foi tomar banho.
-- **Bia:** Ele nunca toma banho por tanto tempo. Fica de olho nele e me avisa se alguém perguntar da luzita.
+- **Bia:** Ravi! É a Bia! Analisei o cristal da gruta. Ele não brilha, a luz vaza. Como se viesse de outro lugar.
+- **Bia:** Nenhuma pedra que eu conheço faz isso. Quando contei ao Professor, ele ficou branco e disse que devia ser nada.
+- **Bia:** Depois saiu sem dizer para onde. Se alguém perguntar da luzita, me avisa.
 - **Ravi:** Então ela não é só luz. É algo que vem de fora da terra.
 - **Bia:** Isso mesmo. Eu vou tentar descobrir de onde.
 - *Depois:* só conta a história
 
 ### `j02_boletim2`
-*Gatilho:* a flag `badges.sussurro` virar verdadeira (sem nh.boletim.2)
-- **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e dezenove minutos. O atraso já passa de quinze minutos desde o começo da semana.
+*Gatilho:* a flag `badges.sussurro` virar verdadeira, sem `nh.boletim.2`
+- **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu às seis horas e dezenove minutos. São catorze minutos de atraso desde segunda.
 - **Mãe:** Ravi, seis e dezenove. Você está ganhando insígnias, e o sol está ficando mais preguiçoso. Isso não é normal.
-- **Ravi:** Então o sol atrasa desde a primeira vitória. Foi isso que eu vi no Sussurro.
+- **Ravi:** Ele já atrasava antes da minha primeira insígnia, Mãe. Então não é por causa das minhas vitórias.
 - *Depois:* flags `nh.boletim.2=true`, `nh.sol=6h19` · só conta a história
 
 ### `j02_sq_pipoca_inicio`
-*Gatilho:* falar `tito` (sem nh.sqPipoca)
-- **Tito:** O Pipoca sumiu! Ele é um Skwovet, o meu melhor amigo, e saiu de manhã para buscar noz no bosque. Ele sempre volta antes do almoço. Sempre.
-- **Tito:** Já é de tarde, e esse sol que atrasa deixa todo bicho do bosque perdido. Se você achar ele, fala que eu não tô bravo. Só um pouquinho.
+*Gatilho:* falar com `tito`, sem `nh.sqPipoca`
+- **Tito:** O Pipoca sumiu! É o meu Skwovet, saiu de manhã para buscar noz no bosque. Ele sempre volta antes do almoço. Sempre.
+- **Tito:** Já é de tarde, e ele nunca se atrasa. Se você achar, diz que eu não tô bravo. Só um pouquinho.
 - **Ravi:** Acho que vi um Skwovet correndo para a mata dos jequitibás. Pode ser ele?
 - **Tito:** Pode, sim! Ele adora aquela mata. Se achar, traga de volta com cuidado: ele é medroso.
 - *Depois:* flags `nh.sqPipoca=true` · só conta a história
-- *Missão secundária (diário):* Procure o Pipoca, o Skwovet do Tito, na Mata dos Jequitibás, no bosque → `mata_jequitibas`
+- *Missão secundária:* Procure o Pipoca, o Skwovet do Tito, na Mata dos Jequitibás, no bosque → `mata_jequitibas`
 
 ### `j02_sq_pipoca_achado`
-*Gatilho:* pisar `mata_jequitibas` (exige nh.sqPipoca, sem nh.achouPipoca)
-- *Entre as raízes de um jequitibá, um Skwovet roliço guarda um monte de nozes maior do que ele. Na coleira de barbante, um sininho amassado.*
-- *Ele não está perdido. O monte tem uma noz de cada árvore do bosque, arrumadinha por tamanho, como quem prepara um presente.*
+*Gatilho:* pisar `mata_jequitibas`, exige `nh.sqPipoca`, sem `nh.achouPipoca`
+- *Entre as raízes de um jequitibá, um Skwovet roliço guarda um monte de nozes maior que ele. Tem um sininho na coleira.*
+- *Ele não está perdido. O monte tem uma noz de cada árvore do bosque, arrumadinha, como um presente.*
 - **Ravi:** Era para o Tito, não era? Vem comigo, Pipoca. Ele está preocupado, mas vai gostar.
 - *O Skwovet escolhe a maior noz, enfia na bochecha e anda na sua frente, desconfiado, de volta para a vila.*
 - *Depois:* flags `nh.achouPipoca=true` · só conta a história
-- *Missão secundária (diário):* Leve o Pipoca de volta ao Tito, na Vila Sussurro → `vila_sussurro`
+- *Missão secundária:* Leve o Pipoca de volta ao Tito, na Vila Sussurro → `vila_sussurro`
 
 ### `j02_sq_pipoca_fim`
-*Gatilho:* falar `tito` (exige nh.achouPipoca, sem nh.sqPipocaFim)
+*Gatilho:* falar com `tito`, exige `nh.achouPipoca`, sem `nh.sqPipocaFim`
 - **Tito:** Pipoca! Seu maluco! Eu não estava bravo. Eu estava só um pouquinho bravo, mas agora passou.
-- *O Pipoca tira a noz da bochecha e põe na mão do Tito. O Tito olha para a noz, olha para o Skwovet e esfrega o nariz na manga.*
-- **Tito:** Você passou o dia fora para me trazer isso? Então toma o meu Ovo da Sorte. Eu guardo desde que ele era filhote. Eu ia dar um dia, e acho que o dia é hoje.
+- *O Pipoca tira a noz da bochecha e põe na mão do Tito. O Tito esfrega o nariz na manga, emocionado.*
+- **Tito:** Você passou o dia inteiro atrás dele? Então toma o meu Ovo da Sorte. Guardo desde filhote, e acho que hoje é dia de dar.
 - *O Pipoca sobe no ombro do Tito e começa a roer a orelha dele. Os dois estão felizes.*
-- *Depois:* itens 1× rareCandy · flags `nh.sqPipocaFim=true` · só conta a história
+- *Depois:* 1× luckyEgg · flags `nh.sqPipocaFim=true` · só conta a história
 
 ## 03 · O espelho partido
 *Jornada `espelho` · boletim do sol no fim: 6h27 · arquivo `src/story/jornada/03-espelho.js`*
 
 ### `j03_chegada`
-*Gatilho:* entrar `porto_espelho` (exige badges.sussurro, sem nh.chegouEspelho)
+*Gatilho:* entrar `porto_espelho`, exige `badges.sussurro`, sem `nh.chegouEspelho`
 - *Porto Espelho: um píer comprido, barcos encostados e um lago tão calmo que parece uma lâmina.*
-- *Para continuar, você precisa de uma insígnia que deixe usar a água. A Líder Marina tem a Insígnia Gota e fica no Galpão de Barcos.*
-- **Tia Jandira:** A moqueca hoje está de lamber os dedos. A Marina está no galpão, no fim do píer. Mas cuidado: ontem estranharam uns barcos sem dono.
+- *Para atravessar o lago e chegar ao mar, você precisa da Insígnia Gota. A Líder Marina fica no Galpão de Barcos.*
+- **Tia Jandira:** A Marina está no galpão, no fim do píer. Mas ontem apareceram uns barcos sem dono. Cuidado!
 - **Ravi:** Barcos sem dono? Quem faria isso?
 - **Tia Jandira:** Gente de capa roxa, que chega de madrugada e não fala com ninguém. Eles estão rondando o galpão desde cedo.
 - *Depois:* flags `nh.chegouEspelho=true`
 - *Objetivo no painel:* Vá ao Galpão de Barcos, no fim do píer, e veja o que a Crepúsculo quer ali → `galpao_barcos`
 
 ### `j03_galpao_ataque`
-*Gatilho:* entrar `galpao_barcos` (exige nh.chegouEspelho, sem nh.ebanoEspelho)
-- *Dentro do galpão, a Marina está de costas para a porta, com um Pokémon de água na frente. Dois recrutas tentam abrir a caixa de ferramentas onde ela guarda uma pedra.*
+*Gatilho:* entrar `galpao_barcos`, exige `nh.chegouEspelho`, sem `nh.ebanoEspelho`
+- *Dentro do galpão, a Marina enfrenta dois recrutas que tentam abrir a caixa onde ela guarda a pedra.*
 - **Líder Marina:** Ei! Essa caixa é do ginásio, e a pedra também. Saiam daqui!
-- **Admin Ébano:** Admin Ébano, da Equipe Crepúsculo. A Dra. Véspera quer a pedra longe de quem a vende. Fique fora disso, Líder.
-- **Líder Marina:** Quem vende é você. Essas tábuas de barco contam a história toda: vocês chegam de noite, e o sol atrasa no dia seguinte.
+- **Admin Ébano:** Fique fora disso, Líder. A Dra. Véspera quer a pedra longe de quem a vende.
+- **Líder Marina:** Quem vende são vocês, Ébano. Essas tábuas guardam as cargas: vocês chegam de noite, e o sol atrasa no dia seguinte.
 - **Admin Ébano:** Chega de conversa. Pokémon, para fora!
-- *Batalha* `c3_ebano`: Admin Ébano, prêmio ₽1500. Se perder, a história segue.
+- *Batalha* `c3_ebano`: Admin Ébano, prêmio ₽1500
   - Equipe: Zubat Nv 12 (Mordida, Supersônico, Ataque de Asa); Houndour Nv 13 (Brasa, Mordida, Rugido); Sableye Nv 14 (Golpes de Fúria, Assustar, Detectar)
 - *Depois:* flags `nh.ebanoEspelho=true`
 
 ### `j03_vespera_pier`
 *Gatilho:* vencer `c3_ebano`
-- *Quando o Ébano recua, uma mulher de casaco longo aparece na ponta do píer. Ela não tem Pokémon à vista, só um Absol sentado a seus pés.*
-- **Dra. Véspera:** Você venceu o meu homem. Isso é raro. Quase tão raro quanto a sua pontualidade.
+- *Quando o Ébano recua, uma mulher de casaco longo aparece na ponta do píer, com um Absol sentado aos seus pés.*
+- **Dra. Véspera:** Você venceu o meu homem, menino. Isso é raro, quase tão raro quanto o sol nascer na hora.
 - **Ravi:** Você é a Dra. Véspera. A Crepúsculo quer as oito pedras para quê?
-- **Dra. Véspera:** Para que a noite não acabe, menino. A luz de hoje é só uma moeda: ela compra o amanhecer de quem tem dinheiro.
+- **Dra. Véspera:** Para que a noite não acabe. A luz já virou moeda: quem tem dinheiro compra o amanhecer, e o resto espera no escuro.
 - **Dra. Véspera:** Vá à Líder Marina e depois siga para o mar, se ainda tiver coragem. A água também tem segredos.
 - *Depois:* flags `nh.viuVesperaPier=true`
-- *Objetivo no painel:* Vença os aprendizes Zeca e Tainá e desafie a Líder Marina no Galpão de Barcos → `marina` (treinadores: g3_zeca, g3_taina)
+- *Objetivo no painel:* Vença os aprendizes Zeca e Tainá e desafie a Líder Marina no Galpão de Barcos → `marina`
 
 ### `j03_zeca`
-*Gatilho:* avistar `g3_zeca`
-- **Aprendiz:** A Marina usa o Basculin no fim. Ele morde forte e nada mais rápido ainda.
-- *Batalha* `g3_zeca`: Pescador Zeca, prêmio ₽700.
+*Gatilho:* ser avistado por `g3_zeca`
+- **Aprendiz:** A Marina guarda o Basculin para o fim. Ele morde forte e nada mais rápido que todos nós.
+- *Batalha* `g3_zeca`: Pescador Zeca, prêmio ₽700
   - Equipe: Magikarp Nv 10 (Splash, Investida, Esperneio); Barboach Nv 11 (Tapa de Lama, Revólver d'Água, Amnésia)
 
 ### `j03_taina`
-*Gatilho:* avistar `g3_taina`
+*Gatilho:* ser avistado por `g3_taina`
 - **Aprendiz:** Quer chegar na Marina? Primeiro aprende a ficar molhado!
-- *Batalha* `g3_taina`: Nadadora Tainá, prêmio ₽740.
+- *Batalha* `g3_taina`: Nadadora Tainá, prêmio ₽740
   - Equipe: Wingull Nv 11 (Revólver d'Água, Ataque de Asa, Supersônico); Marill Nv 12 (Bolha, Rolagem, Enrolar-se)
 
 ### `j03_marina_ginasio`
-*Gatilho:* falar `marina` (exige trainers.g3_zeca, exige trainers.g3_taina, exige nh.viuVesperaPier, sem badges.espelho)
+*Gatilho:* falar com `marina`, exige `trainers.g3_zeca`, `trainers.g3_taina`, `nh.viuVesperaPier`, sem `badges.espelho`
 - **Líder Marina:** Você chegou ao fundo do galpão. Pouca gente chega sem ficar molhado. Os meus Pokémon estão bem treinados.
 - **Líder Marina:** Água não tem forma. Ela pega o formato de quem a segura. Vamos ver se você sabe segurar.
 - **Ravi:** Então eu não vou ficar molhado à toa. Vamos ver quem nada melhor.
-- **Líder Marina:** Esse é o espírito! Pode começar com o Basculin, que ele já está ansioso.
-- *Batalha* `leader_marina`: Líder Marina, prêmio ₽2200.
+- **Líder Marina:** Esse é o espírito! Pode começar quando quiser. O Basculin já está ansioso para morder.
+- *Batalha* `leader_marina`: Líder Marina, prêmio ₽2200
   - Equipe: Psyduck Nv 20 (Revólver d'Água, Confusão, Arranhão); Buizel Nv 21 (Jato Aquático, Ataque Rápido, Revólver d'Água); Basculin Nv 22 (Jato Aquático, Mordida, Pulso d'Água, Cabeçada); Staryu Nv 23 (Jato de Bolhas, Escaldar, Recuperação); Mantine Nv 24 (Jato de Bolhas, Cachoeira, Recuperação)
 
 ### `j03_marina_insignia`
 *Gatilho:* vencer `leader_marina`
 - **Líder Marina:** Pronto, a Insígnia Gota é sua. Ela deixa usar a água fora da batalha, com um Pokémon que saiba nadar.
-- *{jogador} recebeu a Insígnia Gota!*
+- *Ravi recebeu a Insígnia Gota!*
 - **Líder Marina:** Água ensina a esperar a maré, e a não ter pressa. Agora você pode atravessar o lago.
-- **Líder Marina:** A Crepúsculo voltou aqui por causa das tábuas do galpão. Elas guardam um mapa de todas as cargas que saíram daqui este ano. Vá ver o Seu Nestor, ele tem um sino de vento que vê mais que eu.
-- *Depois:* insígnia **Insígnia Gota** · montaria `lapras` · flags `nh.nadar=true`
+- **Líder Marina:** A Crepúsculo voltou aqui por causa das cargas do porto. Vá ver o Seu Nestor: ele conhece cada barco que chega e sai.
+- *Depois:* insígnia **espelho** · montaria lapras · flags `nh.nadar=true`
 - *Objetivo no painel:* Pegue a Rota 4, na água, e siga para a Cidade Coral, a leste → `cidade_coral`
 
 ### `j03_sq_garrafa_inicio`
-*Gatilho:* falar `nestor` (sem nh.sqGarrafa)
-- **Seu Nestor:** Cada garrafa tem uma história. Eu jogo uma no mar todo ano desde que a Aurora chegou, com um bilhete dentro, para quem achar.
-- **Seu Nestor:** Quase nunca volta nenhuma. Mas esta semana a maré trouxe uma de volta, presa nas raízes do manguezal, a oeste do porto. Eu não consigo andar na lama com estas costas.
+*Gatilho:* falar com `nestor`, sem `nh.sqGarrafa`
+- **Seu Nestor:** Cada garrafa tem uma história. Todo ano eu jogo uma no mar, com um bilhete dentro, para quem achar.
+- **Seu Nestor:** Quase nunca volta nenhuma. Mas esta semana uma veio presa nas raízes do manguezal, a oeste. Eu não aguento a lama.
 - **Ravi:** Uma das suas garrafas voltando… Isso parece coisa de pescador com saudade.
 - **Seu Nestor:** É saudade, sim. E é curiosidade também: eu quero saber quem leu o meu bilhete e respondeu. Vai lá, filho.
 - *Depois:* flags `nh.sqGarrafa=true` · só conta a história
-- *Missão secundária (diário):* Ache a garrafa que voltou, presa nas raízes do manguezal, a oeste do porto → `manguezal`
+- *Missão secundária:* Ache a garrafa que voltou, presa nas raízes do manguezal, a oeste do porto → `manguezal`
 
 ### `j03_sq_garrafa_achada`
-*Gatilho:* pisar `manguezal` (exige nh.sqGarrafa, sem nh.achouGarrafa)
-- *Entre as raízes dos mangues, uma garrafa verde está presa numa rede de pesca. Dentro, o bilhete do Nestor e, enrolado junto, um segundo papel, molhado e pálido.*
-- *A letra é torta, de quem escreve no escuro: "Recebi o seu bilhete, mas não posso responder à vista. Estamos no nível 4. A luz daqui não é limpa, é a mesma que sai dos nossos cabos. Heitor."*
-- **Ravi:** Heitor. Esse é o nome do pai do Téo. O Téo disse que ele trabalha na Mina Aurora.
+*Gatilho:* pisar `manguezal`, exige `nh.sqGarrafa`, sem `nh.achouGarrafa`
+- *Entre as raízes do mangue, uma garrafa verde está presa numa rede. Dentro, o bilhete do Nestor e outro papel.*
+- *A letra é torta, de quem escreve no escuro:*
+- *"Recebi o seu bilhete, mas não posso responder à vista. Estamos no nível 4."*
+- *"A luz daqui não é limpa, é a mesma que sai dos nossos cabos. Heitor."*
+- **Ravi:** Heitor. O bilhete fala de cabos e de nível 4. Isso não parece coisa de pescador, parece coisa de mina.
 - *O papel está úmido, e a tinta escorre nas bordas. Você guarda os dois bilhetes no bolso com cuidado.*
 - *Depois:* flags `nh.achouGarrafa=true` · só conta a história
-- *Missão secundária (diário):* Leve a garrafa de volta ao Seu Nestor, no porto de Porto Espelho → `nestor`
+- *Missão secundária:* Leve a garrafa de volta ao Seu Nestor, no porto de Porto Espelho → `nestor`
 
 ### `j03_sq_garrafa_fim`
-*Gatilho:* falar `nestor` (exige nh.achouGarrafa, sem nh.sqGarrafaFim)
-- **Seu Nestor:** Heitor! Esse nome eu conheço. O menino da Aurora que cantava no barco quando era pequeno. É o pai do Téo, não é?
-- **Seu Nestor:** Se ele escreveu isso, não é coisa de quem está doente. É coisa de quem está preso lá embaixo e achou um jeito de pedir ajuda. Respondeu a minha garrafa, filho. A minha!
+*Gatilho:* falar com `nestor`, exige `nh.achouGarrafa`, sem `nh.sqGarrafaFim`
+- **Seu Nestor:** Heitor! Esse nome eu conheço. O menino que cantava nos barcos quando era pequeno. Ele é o pai do Téo, não é?
+- **Seu Nestor:** Não é coisa de quem está doente. É de quem está preso lá embaixo e pediu ajuda. Respondeu à minha garrafa, filho!
 - **Seu Nestor:** Leve o bilhete com você, para o Téo. Eu copio a letra para a minha caixa. Garrafa que responde merece um lugar de honra.
-- **Ravi:** Eu levo. E eu vou descer até lá.
-- *O Seu Nestor copia o bilhete num papel limpo e guarda a cópia numa caixa de madeira, junto com as outras garrafas. Parece um pequeno museu do mar.*
-- *Depois:* flags `nh.sqGarrafaFim=true`, `nh.bilheteHeitor=true` · só conta a história
+- **Ravi:** Eu levo para o Téo. E um dia eu vou descer até lá para ver o que está acontecendo.
+- *O Seu Nestor copia o bilhete num papel limpo e guarda a cópia numa caixa de madeira, com as outras garrafas.*
+- *Depois:* 3× ultraBall · flags `nh.sqGarrafaFim=true`, `nh.bilheteHeitor=true` · só conta a história
 
 ### `j03_boletim3`
-*Gatilho:* a flag `badges.espelho` virar verdadeira (sem nh.boletim.3)
-- **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e vinte e sete minutos. Os pescadores do porto dizem que o lago está mais escuro de manhã.
+*Gatilho:* a flag `badges.espelho` virar verdadeira, sem `nh.boletim.3`
+- **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu às seis e vinte e sete. Os pescadores dizem que o lago está escuro.
 - **Mãe:** Ravi, seis e vinte e sete. O Capitão Ivo disse que nunca viu o sol tão preguiçoso. Ele mandou um abraço, aliás.
-- **Ravi:** Mãe, eu vou ver o lago de manhã. Se o sol atrasar mais, eu conto.
+- **Ravi:** Mãe, amanhã cedo eu vou ver o lago. Se o sol atrasar mais, eu te conto.
 - *Depois:* flags `nh.boletim.3=true`, `nh.sol=6h27` · só conta a história
 
 ## 04 · Faísca na Costa Coral
