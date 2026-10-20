@@ -18,9 +18,9 @@ export default {
       falas: [
         ['narrador', 'Porto Espelho: um píer comprido, barcos encostados e um lago tão calmo que parece uma lâmina.'],
         ['narrador', 'Para atravessar o lago e chegar ao mar, você precisa da Insígnia Gota. A Líder Marina fica no Galpão de Barcos.'],
-        ['jandira', 'A Marina está no galpão, no fim do píer. Mas ontem apareceram uns barcos sem dono. Cuidado!'],
-        ['jogador', 'Barcos sem dono? Quem faria isso?'],
-        ['jandira', 'Gente de capa roxa, que chega de madrugada e não fala com ninguém. Eles estão rondando o galpão desde cedo.'],
+        ['jandira', 'A Marina está no galpão, no fim do píer. Mas tem gente de capa roxa rondando por lá desde cedo.'],
+        ['jogador', 'Capa roxa? É a Equipe Crepúsculo?'],
+        ['jandira', 'Deve ser. Chegam de madrugada e não falam com ninguém. Vá ver se a Marina precisa de ajuda.'],
       ],
       depois: {
         flags: { 'nh.chegouEspelho': true },
@@ -37,8 +37,8 @@ export default {
       falas: [
         ['narrador', 'Dentro do galpão, a Marina enfrenta dois recrutas que tentam abrir a caixa onde ela guarda a pedra.'],
         ['marina', 'Ei! Essa caixa é do ginásio, e a pedra também. Saiam daqui!'],
-        ['ebano', 'Fique fora disso, Líder. A Dra. Véspera quer a pedra longe de quem a vende.'],
-        ['marina', 'Quem vende são vocês, Ébano. Essas tábuas guardam as cargas: vocês chegam de noite, e o sol atrasa no dia seguinte.'],
+        ['ebano', 'Fique fora disso, Líder. A Dra. Véspera mandou pegar a pedra do seu ginásio.'],
+        ['marina', 'Proteger? Vocês arrombam caixas de madrugada! Saiam do meu galpão.'],
         ['ebano', 'Chega de conversa. Pokémon, para fora!'],
       ],
       depois: {
@@ -62,10 +62,10 @@ export default {
       gatilho: { tipo: 'vencer', alvo: 'c3_ebano' },
       falas: [
         ['narrador', 'Quando o Ébano recua, uma mulher de casaco longo aparece na ponta do píer, com um Absol sentado aos seus pés.'],
-        ['vespera', 'Você venceu o meu homem, menino. Isso é raro, quase tão raro quanto o sol nascer na hora.'],
+        ['vespera', 'Você venceu o Ébano. Isso é raro, quase tão raro quanto o sol nascer na hora.'],
         ['jogador', 'Você é a Dra. Véspera. A Crepúsculo quer as oito pedras para quê?'],
-        ['vespera', 'Para que a noite não acabe. A luz já virou moeda: quem tem dinheiro compra o amanhecer, e o resto espera no escuro.'],
-        ['vespera', 'Vá à Líder Marina e depois siga para o mar, se ainda tiver coragem. A água também tem segredos.'],
+        ['vespera', 'As pedras prendem algo perigoso no Relógio de Pedra. Quero guardá-las num lugar seguro, longe de quem lucra com a luz.'],
+        ['vespera', 'Vença a Marina e siga para a Cidade Coral. Lá você vai ver quem lucra com a luz.'],
       ],
       depois: {
         flags: { 'nh.viuVesperaPier': true },
@@ -94,8 +94,8 @@ export default {
       local: 'galpao_barcos',
       gatilho: { tipo: 'falar', alvo: 'marina', requer: ['trainers.g3_zeca', 'trainers.g3_taina', 'nh.viuVesperaPier'], semFlag: ['badges.espelho'] },
       falas: [
-        ['marina', 'Você chegou ao fundo do galpão. Pouca gente chega sem ficar molhado. Os meus Pokémon estão bem treinados.'],
-        ['marina', 'Água não tem forma. Ela pega o formato de quem a segura. Vamos ver se você sabe segurar.'],
+        ['marina', 'Você chegou ao fundo do galpão. Meus Pokémon de água estão bem treinados.'],
+        ['marina', 'Meus Pokémon de água são rápidos e se adaptam a qualquer golpe. Vamos ver se você acompanha.'],
         ['jogador', 'Então eu não vou ficar molhado à toa. Vamos ver quem nada melhor.'],
         ['marina', 'Esse é o espírito! Pode começar quando quiser. O Basculin já está ansioso para morder.'],
       ],
@@ -112,7 +112,7 @@ export default {
         },
       },
       atores: [
-        { id: 'marina_galpao_lider', quem: 'marina', nome: 'Líder Marina', look: LOOKS.marina, spot: 'dentro_galpao_barcos', permanente: true, padrao: ['Você vai nadar, de qualquer jeito. Vai ser bom para o seu cansaço.'] },
+        { id: 'marina_galpao_lider', quem: 'marina', nome: 'Líder Marina', look: LOOKS.marina, spot: 'dentro_galpao_barcos', permanente: true, padrao: ['O lago e o mar são enormes. Cuide bem dos seus Pokémon de água.'] },
       ],
     },
     {
@@ -122,8 +122,8 @@ export default {
       falas: [
         ['marina', 'Pronto, a Insígnia Gota é sua. Ela deixa usar a água fora da batalha, com um Pokémon que saiba nadar.'],
         ['narrador', '{jogador} recebeu a Insígnia Gota!'],
-        ['marina', 'Água ensina a esperar a maré, e a não ter pressa. Agora você pode atravessar o lago.'],
-        ['marina', 'A Crepúsculo voltou aqui por causa das cargas do porto. Vá ver o Seu Nestor: ele conhece cada barco que chega e sai.'],
+        ['marina', 'Agora você pode atravessar o lago e chegar ao mar.'],
+        ['marina', 'A Crepúsculo veio roubar a minha pedra. Se quiser saber mais do porto, fale com o Seu Nestor. Depois siga pela Rota 4.'],
       ],
       depois: {
         insignia: 'espelho', montaria: 'lapras',
@@ -142,8 +142,8 @@ export default {
       falas: [
         ['nestor', 'Cada garrafa tem uma história. Todo ano eu jogo uma no mar, com um bilhete dentro, para quem achar.'],
         ['nestor', 'Quase nunca volta nenhuma. Mas esta semana uma veio presa nas raízes do manguezal, a oeste. Eu não aguento a lama.'],
-        ['jogador', 'Uma das suas garrafas voltando… Isso parece coisa de pescador com saudade.'],
-        ['nestor', 'É saudade, sim. E é curiosidade também: eu quero saber quem leu o meu bilhete e respondeu. Vai lá, filho.'],
+        ['jogador', 'Uma garrafa que voltou? Eu pego para o senhor.'],
+        ['nestor', 'Obrigado. Quero ver se alguém respondeu ao meu bilhete.'],
       ],
       secundaria: { texto: 'Ache a garrafa que voltou, presa nas raízes do manguezal, a oeste do porto', alvo: 'manguezal' },
       depois: { flags: { 'nh.sqGarrafa': true }, ambiente: true },
@@ -157,10 +157,10 @@ export default {
       gatilho: { tipo: 'pisar', alvo: 'manguezal', requer: ['nh.sqGarrafa'], semFlag: ['nh.achouGarrafa'] },
       falas: [
         ['narrador', 'Entre as raízes do mangue, uma garrafa verde está presa numa rede. Dentro, o bilhete do Nestor e outro papel.'],
-        ['narrador', 'A letra é torta, de quem escreve no escuro:'],
-        ['narrador', '"Recebi o seu bilhete, mas não posso responder à vista. Estamos no nível 4."'],
-        ['narrador', '"A luz daqui não é limpa, é a mesma que sai dos nossos cabos. Heitor."'],
-        ['jogador', 'Heitor. O bilhete fala de cabos e de nível 4. Isso não parece coisa de pescador, parece coisa de mina.'],
+        ['narrador', 'A letra é torta, escrita com pressa:'],
+        ['narrador', '"Recebi o seu bilhete, mas não posso sair daqui. Estamos presos no nível 4 da mina."'],
+        ['narrador', '"A luz da Aurora não é limpa. Ela vem dos cabos da mina onde trabalhamos. Heitor."'],
+        ['jogador', 'Heitor, cabos, nível 4... Isso é de uma mina. Ele deve estar preso na Mina Aurora.'],
         ['narrador', 'O papel está úmido, e a tinta escorre nas bordas. Você guarda os dois bilhetes no bolso com cuidado.'],
       ],
       secundaria: { texto: 'Leve a garrafa de volta ao Seu Nestor, no porto de Porto Espelho', alvo: 'nestor' },
@@ -172,9 +172,9 @@ export default {
       gatilho: { tipo: 'falar', alvo: 'nestor', requer: ['nh.achouGarrafa'], semFlag: ['nh.sqGarrafaFim'] },
       falas: [
         ['nestor', 'Heitor! Esse nome eu conheço. O menino que cantava nos barcos quando era pequeno. Ele é o pai do Téo, não é?'],
-        ['nestor', 'Não é coisa de quem está doente. É de quem está preso lá embaixo e pediu ajuda. Respondeu à minha garrafa, filho!'],
-        ['nestor', 'Leve o bilhete com você, para o Téo. Eu copio a letra para a minha caixa. Garrafa que responde merece um lugar de honra.'],
-        ['jogador', 'Eu levo para o Téo. E um dia eu vou descer até lá para ver o que está acontecendo.'],
+        ['nestor', 'Ele não está doente, está preso lá embaixo e pediu ajuda. Alguém precisa avisar o Téo.'],
+        ['nestor', 'Leve o bilhete ao Téo. Eu fico com uma cópia. Garrafa que responde merece lugar de honra.'],
+        ['jogador', 'Eu levo ao Téo. E vou ajudar a tirar o Heitor de lá.'],
         ['narrador', 'O Seu Nestor copia o bilhete num papel limpo e guarda a cópia numa caixa de madeira, com as outras garrafas.'],
       ],
       depois: { itens: [['ultraBall', 3]], flags: { 'nh.sqGarrafaFim': true, 'nh.bilheteHeitor': true }, ambiente: true },
@@ -183,9 +183,9 @@ export default {
       id: 'j03_boletim3',
       gatilho: { tipo: 'flag', alvo: 'badges.espelho', semFlag: ['nh.boletim.3'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e vinte e sete. Os pescadores dizem que o lago está escuro.'],
-        ['mae', '{jogador}, seis e vinte e sete. O Capitão Ivo disse que nunca viu o sol tão preguiçoso. Ele mandou um abraço, aliás.'],
-        ['jogador', 'Mãe, amanhã cedo eu vou ver o lago. Se o sol atrasar mais, eu te conto.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e vinte e sete. Em Porto Espelho, os pescadores saíram no escuro.'],
+        ['mae', '{jogador}, seis e vinte e sete. O sol atrasa a cada dia. Você está bem?'],
+        ['jogador', 'Estou bem, Mãe. Se eu descobrir o motivo do atraso, te conto.'],
       ],
       depois: { flags: { 'nh.boletim.3': true, 'nh.sol': '6h27' }, ambiente: true },
     },
