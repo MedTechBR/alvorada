@@ -24,10 +24,43 @@ que a Crepúsculo quer.
 - O jogador e o rival **Téo** atrapalham a Crepúsculo ginásio após ginásio. Cada líder, ao perder, entrega a
   insígnia E pede ajuda para proteger a pedra da cidade.
 
-**Uma única reviravolta** (depois da 7ª insígnia): a Crepúsculo já tem sete pedras; a oitava está com o
-jogador desde a 5ª insígnia (a **Vela Eterna** que a Dona Zélia deu "para guardar"). Véspera sequestra o
-professor para trocar pela pedra. O jogador sobe ao Relógio, vence Véspera, e Necrozma desperta mesmo assim:
-batalha com o lendário (pode capturar). O sol volta ao horário certo. Depois disso, a Liga.
+**Reviravoltas (revisão de 19/10: Matheus pediu "história mais complexa, com mais reviravoltas").** A trama é
+complexa, mas cada reviravolta tem uma cena própria que a explica com todas as letras, e o painel de objetivo
+resume em uma frase o que mudou. Nada fica implícito.
+
+| # | Quando | Reviravolta | Como o jogador descobre |
+|---|---|---|---|
+| 1 | Mina Aurora (antes da 6ª insígnia) | **Quem rouba o sol não é a Crepúsculo, é a Companhia Aurora.** A "luz limpa" da Aurora vem da luzita, a raiz do cadeado do Relógio. Cada tonelada extraída atrasa o nascer do sol. A Crepúsculo roubava as pedras para tirá-las do alcance da Aurora. | Medidor da própria empresa no fundo da mina; Véspera, presa no desabamento junto com o jogador, conta a versão dela |
+| 2 | Arquivo do Forte Rochedo | **O Prof. Jatobá ajudou a criar a Aurora.** Ele e Véspera descobriram a luzita 16 anos atrás; foi ele quem vendeu a amostra para Solano. A "Noite Longa de Lamparina" foi a primeira extração. | Cartas antigas no arquivo; o professor confessa por telefone |
+| 3 | Sertão, Ruínas de Pedra Pintada | **O Absol que aparece antes de cada desastre é Sina, a parceira de Véspera,** que ficou presa à luz do Relógio e virou sentinela. Ela vinha guiando o jogador às pedras ameaçadas. | Pinturas das ruínas + Sina deixa o jogador tocar nela |
+| 4 | Cidade Escarpa (7ª insígnia) | **Sereno, o braço direito de Véspera, é espião de Solano.** As traduções que guiavam a Crepúsculo foram falsificadas: juntar as oito pedras no Relógio não faz o sol "dormir", ABRE o cadeado. Solano deixou a Crepúsculo fazer o trabalho sujo para capturar o Necrozma e vender luz infinita. | Sereno trai Véspera na frente do jogador e foge com sete pedras |
+| 5 | Mirante (8ª insígnia) | **A oitava chave sempre esteve com o jogador:** a Vela Eterna que a Dona Zélia lhe deu "para guardar" em Lamparina. Solano sequestra o professor para trocar pela vela. | Zélia explica; Solano liga para o jogador |
+| 6 | Relógio de Pedra | Véspera e Téo se aliam ao jogador contra Solano. Mesmo assim o Necrozma escapa: batalha com o lendário (pode capturar). As insígnias do jogador fecham o cadeado de novo. | Clímax |
+| 7 | Salão da Campeã | **A Campeã Dalva é a irmã gêmea de Véspera** (estrela-d'alva e estrela-vésper, o mesmo astro). Ela sabia da Aurora e escolheu o silêncio. | Fala antes da última batalha; epílogo com as duas |
+
+Vilões: **Equipe Crepúsculo** (Véspera, Admin Ébano) na primeira metade; **Companhia Aurora** (Augusto Solano,
+Gerente Lúcio, Sereno infiltrado) na segunda. Téo tem arco próprio: o pai, Heitor, é mineiro da Aurora preso no
+desabamento; Téo começa defendendo a Aurora e muda de lado na Mina.
+
+## 1b. Missões secundárias
+
+Pedido: "não quero sidequests soltas no mundo se forem sem graça". Regra:
+- Cortar as missões de entrega/coleta genéricas (`src/story/missoes/regiao-*.js` que não tocam na trama).
+- Ficam só missões com história própria, ligadas a personagens ou a reviravoltas (ex.: ajudar Heitor a sair da
+  mina, achar as cartas do professor, a família de Sina, a Vila Fim-do-Mundo no pós-jogo) e as que dão algo
+  marcante (montaria, Pokémon raro, golpe especial). Máximo ~2 por cidade, cada uma com começo, meio e fim.
+
+## 1c. Pokémon de cada lugar
+
+Pedido: "os Pokémon de cada região precisam casar com os cenários". Regra para `src/data/habitats.js`:
+- Cada área só tem espécies do tipo e do ambiente dela: gelo (Geada: Snover, Sneasel, Swinub, Spheal, Cubchoo,
+  Vanillite...), vulcão (Brasas: Slugma, Numel, Torkoal, Magby, Salandit...), deserto (Sertão: Sandshrew,
+  Trapinch, Cacnea, Hippopotas, Sandile...), selva (Jandaias: Tropius, Aipom, Paras, Pikipek, Fomantis...),
+  praia/mar (Wingull, Krabby, Corsola, Staryu...), brejo (Wooper, Croagunk, Stunfisk...), caverna (Zubat,
+  Geodude, Roggenrola...), montanha/planalto (Rufflet, Skarmory, Gligar...), floresta (Caterpie, Pikachu,
+  Oddish...), campos (Rattata, Pidgey, Lechonk...).
+- Nada de espécie fora de lugar (Pokémon de gelo no campo, de água no deserto). Auditoria por script que lista
+  cada área com seu bioma e as espécies que não combinam.
 
 **Personagens (só os essenciais):**
 | Quem | Papel |
@@ -37,13 +70,14 @@ batalha com o lendário (pode capturar). O sol volta ao horário certo. Depois d
 | Prof. Jatobá | Dá o inicial, a Pokédex e explica a lenda do Relógio |
 | Téo (rival) | Vizinho, começa junto; 5 batalhas ao longo do jogo; vira aliado no Relógio |
 | Dra. Véspera | Chefe da Equipe Crepúsculo |
+| Augusto Solano | Dono da Companhia Aurora (vilão da segunda metade) |
+| Sereno | Braço direito de Véspera, espião de Solano |
+| Heitor | Pai de Téo, mineiro da Aurora |
 | Admin Ébano | Braço direito de Véspera; aparece nos eventos das cidades |
 | Sina (Absol) | Aparece antes de cada desastre; guia o jogador às pedras ameaçadas |
 | 8 líderes | Tomé, Lia, Marina, Jonas, Zélia, Brás, Graça, Celeste |
 | Elite 4 + Campeã | Aurélio, Clarice, Seu Brasa, Iberê; Campeã Dalva |
 
-Cortados da trama principal (podem ficar como NPCs sem enredo): Companhia Aurora/Solano como vilão, Sereno
-espião, cartas do professor, gêmeas Véspera/Dalva. Uma reviravolta só.
 
 **Regra de clareza:** o painel de objetivo SEMPRE diz o próximo passo concreto ("Vá à Cidade Campina pela Rota 1
 e desafie o líder Tomé"). Cada cidade abre com uma cena curta (3–6 falas) que diz por que você está ali.
