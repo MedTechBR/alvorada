@@ -15,13 +15,19 @@ try {
   await p.ev(`import(location.origin + '/tools/jornadas-teste.js')`);
   mkdirSync('tools/shots', { recursive: true });
   const foto = async (n) => { const r = await p.raw('Page.captureScreenshot', { format: 'jpeg', quality: 85 }); const arq = `tools/shots/${n}.jpg`; writeFileSync(arq, Buffer.from(r.result.data, 'base64')); return arq; };
-  await p.ev(`(async () => {
+  const iniciar = async () => {
+    await p.raw('Page.reload', {});
+    await until(() => p.ev('!!window.game?.map && window.game.ui?.state === "play" && !!window.game.player'), 60000);
+    await p.ev(`import(location.origin + '/tools/jornadas-teste.js')`);
+    await p.ev(`(async () => {
     const G = window.game, { Mon } = await import('/src/data/mon.js');
     G.party = [new Mon(5, 20), new Mon(8, 19)]; G.leadIdx = 0; G.hudLead(); G.hudMoves();
     Object.assign(G.flags, { balls: true, starter: 4, badges: ['campina'] });
     G.flags.nh = { ...(G.flags.nh ?? {}), contouCristal: true };
     motor(true);
   })()`);
+  };
+  await iniciar();
 
   // ---- 1. piso armadilha: ligado na entrada, desligado ao chegar à Lia
   const piso = (q) => p.ev(`(() => { const G = window.game, r = G.map.interiors.find((q) => q.id === 'estufa_lia'); let webs = 0, fios = 0;
@@ -32,6 +38,10 @@ try {
   const antes = await piso(); console.log('piso antes:', JSON.stringify(antes));
   if (!antes.webs || !antes.armadilhas || antes.flag) erros.push('o piso devia estar ativo na entrada');
   console.log('foto:', await foto('piso-lia-antes'));
+  // o corredor do fio dourado: o Caçador Nando fica ao lado do caminho, não em cima
+  await p.ev(`(() => { const G = window.game, r = G.map.interiors.find((q) => q.id === 'estufa_lia'); tp(r.x + 6, r.y + 7); G.player.dir = "left"; })()`);
+  await sleep(1200);
+  console.log('foto:', await foto('estufa-corredor-livre'));
   await p.ev(`(() => { const G = window.game, r = G.map.interiors.find((q) => q.id === 'estufa_lia'); tp(r.x + 11, r.y + 3); })()`);
   await sleep(1500);
   const depois = await piso(); console.log('piso depois:', JSON.stringify(depois));
@@ -55,6 +65,36 @@ try {
   if (!r2.ok || !r2.vis.length || r2.vis.some((v) => !v.v || v.sala !== 'estufa_lia' || Math.hypot(v.dx, v.dy) < 2 || Math.hypot(v.dx, v.dy) > 5.5)) erros.push('recrutas não aparecem perto do jogador quando falam');
   await sleep(500);
   console.log('foto:', await foto('estufa-recrutas-falando'));
+
+  // ---- 3. cenas de outros trechos: quem fala está na tela (Ébano na fazenda do Tomé; sequestro do professor no Mirante)
+  const cena = async (seg, id, spot, hora, falantes) => {
+    await iniciar();
+    await p.ev(`(async () => {
+      const G = window.game, R = G.story.roteiro;
+      for (let i = 0; i < 100 && (R.rodando || G.story.battle); i++) await espera(0.2);
+      window.segurar = ${JSON.stringify(falantes[0])};
+      const sp = G.map.spots[${JSON.stringify(spot)}]; tp(sp.tx, sp.ty); G.mundo.setHour(${hora});
+      const P = G.player; for (let j = -12; j <= 12; j++) for (let i = -12; i <= 12; i++) G.map.block[(sp.tx + i) + (sp.ty + j) * G.map.w] = 0; // sem as barreiras da progressão (o teste põe o jogador direto na cena)
+      await ate(() => !G.map.solidAt(P.x + 16, P.y) || !G.map.solidAt(P.x, P.y + 16), 20); await espera(1); // as regiões distantes montam aos poucos
+    })()`);
+    await p.ev(`(async () => { const G = window.game, R = G.story.roteiro, { JORNADA } = await import('/src/story/jornada/index.js');
+      const seg = JORNADA.find((s) => s.id === ${JSON.stringify(seg)}); window.__t = R.tocar(seg, seg.cenas.find((s) => s.id === ${JSON.stringify(id)})); })()`);
+    for (let i = 0; i < falantes.length; i++) {
+      const f = falantes[i];
+      const ok = await until(() => p.ev(`window.game.ui.dialog?.d?.name?.includes(${JSON.stringify(f)}) ?? false`), 30000).then(() => true, () => false);
+      await sleep(700);
+      const v = await p.ev(`(() => { const G = window.game, R = G.story.roteiro, P = G.player; const sala = G.map.interiorAt(P.x, P.y)?.id ?? 'mundo';
+        const a = [...R.atores.values(), ...R.atoresPk, ...Object.values(R.pkFal ?? {})].filter((n) => n.visible && (G.map.interiorAt(n.x, n.y)?.id ?? 'mundo') === sala).map((n) => ({ id: n.e?.id ?? n.dex, nome: n.name, d: Math.round(Math.hypot(n.x - P.x, n.y - P.y) / 16 * 10) / 10 }));
+        return { nome: G.ui.dialog?.d?.name, perto: a.filter((x) => x.d <= 6), todos: a.filter((x) => x.d <= 14).length, st: G.ui.dialog?.open, bat: !!G.story.battle }; })()`);
+      console.log(`${id} fala de "${f}":`, JSON.stringify(v));
+      if (!ok || !v.perto.some((x) => (x.nome ?? '').includes(f.split(' ').at(-1)) || (x.nome ?? '').includes(f))) erros.push(`${id}: "${f}" não está na tela quando fala`);
+      console.log('foto:', await foto(`cena-${id}-${f.replace(/[^A-Za-z]/g, '')}`));
+      await p.ev(`window.segurar = ${JSON.stringify(falantes[i + 1] ?? '\u0000')}`);
+    }
+    await p.ev(`window.__t`);
+  };
+  await cena('nova01', 'j01_fazenda', 'fazenda_tome', 10, ['Recruta', 'Admin Ébano']);
+  await cena('nova11', 'j11_prof_sequestrado', 'mirante_ventos', 16, ['Jatobá', 'Lúcio']);
   await p.close();
 } finally { b.kill(); }
 console.log(erros.length ? 'FALHOU: ' + erros.join('; ') : 'OK');

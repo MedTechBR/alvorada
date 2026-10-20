@@ -132,6 +132,15 @@ export class Enigmas {
     this.aplicar();
   }
 
+  // Quebra-cabeças no caminho de um líder ou de uma cena: depois de resolvidos uma vez ficam resolvidos para sempre
+  // (chegar ao líder ou ganhar a insígnia também vale): portões de raio do Farol param de alternar e os quadros do
+  // Casarão levam sempre ao salão certo. Circuito ligado, espelhos, geradores, alavancas e portões já ficam gravados no save.
+  #resolvidos() {
+    const f = this.g.flags, st = this.st, sala = this.#sala(), insignias = f.badges ?? [];
+    if (!st.farolOk && (sala === 'farol_topo' || insignias.includes('coral'))) st.farolOk = true;
+    if (!st.quadroOk && (this.r.flag('candelabrosAcesos') || insignias.includes('lamparina'))) st.quadroOk = true;
+  }
+
   // ---------------- pisos armadilha (Estufa-Teia da Lia) ----------------
   // Como nos jogos originais: o piso do ginásio vale até o jogador chegar ao líder (ou ganhar a insígnia). Depois disso
   // ele se desliga para sempre (flags.pisoOff[sala]): vira piso comum, as armadilhas param de levar de volta à entrada
@@ -387,8 +396,8 @@ export class Enigmas {
   #raios(dt) {
     for (const r of Object.values(this.raios)) {
       const c = this.circ.find((x) => x.d.raio === r.id), ativo = c?.ligado;
-      // antes do gerador: as duas linhas fechadas; depois, alternam
-      const fase = ativo ? Math.floor(this.t / r.d.periodo) % 2 : 2;
+      // antes do gerador: as duas linhas fechadas; depois, alternam; resolvido de vez (chegou ao líder): abertas (fase 3)
+      const fase = this.st.farolOk ? 3 : ativo ? Math.floor(this.t / r.d.periodo) % 2 : 2;
       if (fase !== r.fase) {
         r.fase = fase;
         r.linhas.forEach((l, i) => { const fechado = fase === 2 || fase === i; for (const [x, y] of l) this.#solidar(x, y, fechado); if (fechado) this.#expulsar(l); });
@@ -513,7 +522,7 @@ export class Enigmas {
   }
   async #portaQuadro(i) {
     const q = this.quad, g = this.g, certo = this.st.quadro ?? 1;
-    if (i === certo) { await this.#ir(this.#abs(q.d.sala, ...q.d.certo), q.d.face); g.toast('Você entrou no Salão do Luar.'); return; }
+    if (i === certo || this.st.quadroOk) { this.st.quadroOk = true; await this.#ir(this.#abs(q.d.sala, ...q.d.certo), q.d.face); g.toast('Você entrou no Salão do Luar.'); return; }
     let n; do n = Math.floor(Math.random() * 3); while (n === certo);
     this.st.quadro = n;
     await this.#ir(this.#abs(q.d.sala, ...q.d.volta), 'up', () => this.#desenharQuadros());
@@ -604,7 +613,7 @@ export class Enigmas {
     this.t += dt;
     const mundo = this.g.mundo;
     if (mundo?.lights && this.glow.parent !== mundo.lights) mundo.lights.addChild(this.glow);
-    if ((this.piT = (this.piT ?? 0) - dt) <= 0) { this.piT = 0.25; this.#pisos(); }
+    if ((this.piT = (this.piT ?? 0) - dt) <= 0) { this.piT = 0.25; this.#pisos(); this.#resolvidos(); }
     this.#raios(dt);
     this.#portais(dt);
     this.#ambiente(dt);
