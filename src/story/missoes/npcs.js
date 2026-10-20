@@ -40,7 +40,7 @@ function falaAtual(M, def) {
 // devolve a função da conversa, ou null se esta pessoa não tem nada especial agora
 export function servicos(M, n, id, def) {
   const s = mem(M, id), g = M.g;
-  if (def.treinador && !s.w && M.cond(def.treinador.requer)) return () => treinador(M, n, id, def.treinador);
+  if (def.treinador && !venceu(M, id, def.treinador) && M.cond(def.treinador.requer)) return () => treinador(M, n, id, def.treinador);
   if (def.presente && !s.p && M.cond(def.presente.requer)) return async () => {
     const p = def.presente;
     await M.say(n, p.falas ?? ['Tome, é para você!']);
@@ -68,7 +68,7 @@ export function servicos(M, n, id, def) {
     const falas = r.especie?.[mon.dex] ?? mon.types.map((t) => r.tipo?.[t]).find(Boolean) ?? r.qualquer;
     if (falas) return () => M.say(n, falas, { portrait: mon.dex, vars: M.vars({ pokemon: mon.name }) });
   }
-  if (def.treinador && s.w) return () => M.say(n, def.treinador.depois ?? def.treinador.vitoria ?? ['Boa luta! Volte quando quiser.']);
+  if (def.treinador && venceu(M, id, def.treinador)) return () => M.say(n, def.treinador.depois ?? def.treinador.vitoria ?? ['Boa luta! Volte quando quiser.']);
   if (def.troca && s.t && def.troca.falas?.depois) {
     // já trocou: fala do Pokémon que foi com você (se não houver outra fala nova)
     const f = falaAtual(M, def);
@@ -81,6 +81,11 @@ export function servicos(M, n, id, def) {
 }
 
 // ---------------- treinador de rota (luta uma vez; vencido, só conversa) ----------------
+// Quem já tinha vencido o "desafio" antigo (missão `tr_<id>` ou `sq_tr_<id>`, hoje removida) conta como vencido.
+function venceu(M, id, t) {
+  const f = M.f, b = t.batalha?.id;
+  return !!(M.s.npcs[id]?.w || f.trainers?.[b] || M.s.feitas['tr_' + id] || M.s.feitas['sq_tr_' + id] || f['tr_' + id + '_completa'] || f['sq_tr_' + id + '_completa']);
+}
 async function treinador(M, n, id, t) {
   const g = M.g, s = mem(M, id), b = t.batalha;
   if (!g.party.some((x) => !x.fainted)) { await M.say(n, ['Seus Pokémon estão cansados. Cure a equipe e volte para a batalha!']); return; }

@@ -174,14 +174,11 @@ def salas(R):
                   {'kind': 'maquete', 'x': 8, 'y': 2, 'text': 'Maquete do Vulcão Tição, com a cratera, o rio de lava e os três pontos marcados em vermelho para os sensores.'},
                   {'kind': 'estante', 'x': 5, 'y': 2, 'text': 'Cadernos de campo. A letra da Dra. Lava piora conforme o tremor aumenta.'},
                   {'kind': 'obsidianRock', 'x': 11, 'y': 4, 'text': 'Amostra de obsidiana com a etiqueta "Cratera, 02".'},
-                  {'kind': 'lavaRock', 'x': 2, 'y': 5, 'text': 'Basalto ainda morno. A Dra. Lava jura que ele respira.'},
+                  {'kind': 'lavaRock', 'x': 2, 'y': 5, 'text': 'Basalto ainda morno. A vulcanóloga jura que ele respira.'},
                   {'kind': 'table', 'x': 9, 'y': 5}, {'kind': 'plant', 'x': 11, 'y': 7}, {'kind': 'plant', 'x': 1, 'y': 7},
               ],
               'decor': [rug(5, 5)],
-              'people': [
-                  {'id': 'dra_lava', 'name': 'Dra. Lava', 'look': OLHA['lava'], 'x': 6, 'y': 3, 'dir': 'down',
-                   'lines': ['Sou a Dra. Lava, vulcanóloga. Estudo o Tição desde que ele começou a roncar.', 'Os tremores aumentam, mas o vulcão ainda guarda segredo. Alguém com coragem poderia ajudar.']},
-              ]})
+              'people': []})  # a Vulcanóloga Jaciara vem da cena j10_vulcanologa (src/story/jornada/10-brasas.js)
 
 
 # ---------------------------------------------------------------- vila
