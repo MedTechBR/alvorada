@@ -16,7 +16,7 @@ mkdirSync(OUT, { recursive: true });
 
 // piloto de teste: o seu Pokémon anda o tempo todo (aproxima, contorna, recua) e usa os golpes em rodízio pela
 // mesma porta do jogador (combat.use com mira no alvo). Assim a gravação mostra a luta andando, sem teletransporte.
-const PILOTO = `(() => {
+const PILOTO = () => `(() => {
   const G = window.game; let slot = 0, tG = 0, lado = 1, tL = 0, t0 = G.time;
   clearInterval(window.__piloto);
   window.__piloto = setInterval(() => {
@@ -37,11 +37,13 @@ const PILOTO = `(() => {
   return 1;
 })()`;
 
-const SELVAGEM = `(async () => {
+const SELVAGEM = () => `(async () => {
   const G = window.game, espera = (ms) => new Promise((r) => setTimeout(r, ms));
   G.player.x = 318 * 16; G.player.y = 292 * 16; G.cam.x = G.player.x; G.cam.y = G.player.y; G.mundo.setHour(11);
   const { Mon } = await import('/src/data/mon.js');
-  G.party = [new Mon(25, 30), new Mon(4, 28)]; G.leadIdx = 0; G.hudLead(); G.hudMoves();
+  const VIT = ${modo === 'vitrine'};
+  G.party = VIT ? [new Mon(6, 40), new Mon(25, 30)] : [new Mon(25, 30), new Mon(4, 28)]; G.leadIdx = 0; G.hudLead(); G.hudMoves();
+  if (VIT) { G.party[0].item = 'charizarditeX'; G.bag.megaBracelet = 1; }
   for (let k = 0; k < 6 && !G.wilds.some((q) => q.alive); k++) await G.spawnWild();
   const w = G.wilds.find((q) => q.alive);
   for (const o of G.wilds) if (o !== w) o.x += 4000;
@@ -49,6 +51,7 @@ const SELVAGEM = `(async () => {
   w.ai.state = 'aggro'; w.aggroTarget = G.player;
   G.throwMon(0, G.player.x + 30, G.player.y - 10); await espera(1500);
   w.aggroTarget = G.lead; w.provoke?.(G.lead);
+  // vitrine: Mega Evolução logo de cara e o selvagem fraco (desmaia na gravação: quadro de impacto + faixa)
   return w.mon.name;
 })()`;
 
@@ -78,9 +81,10 @@ try {
   await sleep(2500);
   // cena de abertura do teste (diálogo): Enter até sumir
   for (let k = 0; k < 60; k++) { const d = await P.ev('!!(game.ui.dialog?.open || game.ui.dialog?.d || game.story?.busy)'); if (!d) break; await P.ev("dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter', key: 'Enter', bubbles: true })), 1"); await sleep(250); }
-  console.log('montando', modo, await P.ev(modo === 'ginasio' ? GINASIO : SELVAGEM));
+  console.log('montando', modo, await P.ev(modo === 'ginasio' ? GINASIO : SELVAGEM()));
+  if (modo === 'vitrine') process.env.KO = '1';
   if (modo === 'ginasio') { await until(() => P.ev('window.game.arenaGinasio?.contem === true && !!window.game.lead?.alive'), 40000, 300); await sleep(2500); }
-  await P.ev(PILOTO);
+  await P.ev(PILOTO());
   await sleep(2500);
   const res = { modo, tela: `${W}x${H}` };
   if (process.env.SOFOTO !== '1') {
@@ -102,6 +106,8 @@ try {
     // sai a cada 1/fps s de TEMPO DE JOGO, então a tira mostra o movimento como ele é
     const n = +nq, passo = 1000 / +fq, arqs = [], LENTO = +(process.env.LENTO ?? 0.04);
     await P.ev(`(() => { game.app.ticker.speed = ${LENTO}; window.__tj = 0; game.app.ticker.add((t) => { window.__tj += t.deltaMS; }); return 1; })()`);
+    // vitrine: a Mega acontece já gravando; 2,6 s de jogo depois o selvagem fica fraco e desmaia na frente da câmera
+    if (modo === 'vitrine') await P.ev(`(() => { const G = game; G.poder.usar(); G.later(2.6, () => { const w = G.wilds.find((q) => q.alive); if (w) w.mon.hp = Math.max(1, Math.round(w.mon.stats.hp * 0.15)); }); return 1; })()`);
     const t0 = Date.now();
     for (let i = 0; i < n; i++) {
       await until(() => P.ev(`window.__tj >= ${i * passo}`), 60000, 20);

@@ -82,7 +82,7 @@ export class Espetaculo {
 
   // ---------- faixas: "<X> DESMAIOU!", "MEGA <X>!" ----------
   faixa(texto, tipo = 'ko') {
-    this.faixaAt = { s: texto, tipo, t: 0, life: tipo === 'mega' ? 1.7 : 1.5 };
+    this.faixaAt = { s: texto, tipo, t: 0, life: tipo === 'mega' ? 1.4 : 1.3 };
   }
 
   // ---------- quadro de impacto ----------
@@ -197,7 +197,7 @@ export class Espetaculo {
     const o = this.faixaAt; o.t += dt; if (o.t >= o.life) { this.faixaAt = null; return; }
     const W = this.W, H = this.H, E = this.esc, mega = o.tipo === 'mega';
     const ent = easeOut(clamp(o.t / 0.16, 0, 1)), sai = clamp((o.life - o.t) / 0.25, 0, 1);
-    const tam = Math.min(W * 0.085, 62 * E * 1.15), cy = H * (mega ? 0.36 : 0.42);
+    const tam = Math.min(W * 0.085, 62 * E * 1.15), cy = H * (mega ? 0.3 : 0.42);
     x.globalAlpha = sai;
     // faixa escura inclinada atrás das letras
     x.save(); x.translate(W / 2 + (1 - ent) * -W, cy); x.rotate(-0.06);

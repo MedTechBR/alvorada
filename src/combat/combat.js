@@ -892,7 +892,7 @@ export class Combat {
       if (crit) g.fx.screenFlash(0xffffff, 0.15);
       // quadro de impacto (estilo mangá) nos golpes fortes da SUA luta: crítico, super efetivo, golpe que tira muito ou nocaute
       const ko = t.mon.hp <= 0, pesado = dmg >= t.mon.stats.hp * 0.3 || (pw >= 90 && dmg >= t.mon.stats.hp * 0.15);
-      if (g.show && by && !quiet && (by.side === 'ally' || t.side === 'ally') && (ko || crit || eff > 1 || pesado))
+      if (g.show && by && (ko || !quiet) && (by.side === 'ally' || t.side === 'ally') && (ko || crit || eff > 1 || pesado))
         g.show.impacto({ a: by, b: t, x: t.x, y: t.y, h: t.midH ?? 12, dano: dmg, eff, crit, ko, tipo: mv?.type });
       // chão marcado e poeira do empurrão (vfx.js): o golpe deixa rastro no campo
       this.vfx.marca?.(mv?.type, t.x, t.y, power * knock, dx, dy);
