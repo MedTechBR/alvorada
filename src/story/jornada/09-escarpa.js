@@ -59,10 +59,10 @@ export default {
       gatilho: { tipo: 'apos', cena: 'j09_traicao' },
       reviravolta: 4,
       falas: [
-        ['vespera', 'Eu traduzi as inscrições do Relógio em dezesseis anos de estudo. Tinha certeza de que as oito pedras fechariam o cadeado.'],
+        ['vespera', 'Eu traduzi as inscrições do Relógio por dezesseis anos. Tinha certeza de que as oito pedras fechariam o cadeado.'],
         ['vespera', 'Mas o Sereno copiou as traduções para a equipe e trocou "fechar" por "abrir". Eu não conferi, porque confiava nele.'],
         ['jogador', 'Então juntar as oito no Relógio não fecha nada. Abre o cadeado.'],
-        ['vespera', 'Abre. E o Necrozma, que come a luz, sai pela fenda. O Solano quer capturá-lo e vender luz infinita para todas as cidades.'],
+        ['vespera', 'Abre. O Necrozma, que come a luz, sai. O Solano quer capturá-lo e vender luz infinita para as cidades.'],
         ['vespera', 'A Crepúsculo trabalhou para o plano do Solano sem saber. Ele só precisava de alguém que juntasse as pedras.'],
         ['jogador', 'Então a senhora não quer a noite. Quer impedir a Aurora de vender a luz.'],
         ['vespera', 'Isso. Não tenho mais pedras, mas ainda posso ajudar. Cuidado com o Solano: ele quer abrir o Relógio.'],
@@ -124,7 +124,7 @@ export default {
         ['graca', 'A Insígnia Rocha é sua. Com ela, seu Pokémon pode voar, mas só até as cidades que você já visitou.'],
         ['narrador', '{jogador} recebeu a Insígnia Rocha!'],
         ['graca', 'Se você achar a pedra de Escarpa, traga de volta. Ela é da minha cidade.'],
-        ['graca', 'Vá ao Arquipélago das Brasas, ao sul. Dizem que o Ébano quer acordar o vulcão. A cinza cobriria o Planalto e fecharia o caminho até o Relógio.'],
+        ['graca', 'Vá ao Arquipélago das Brasas, ao sul. O Ébano quer acordar o vulcão, e a cinza fecharia o caminho até o Relógio.'],
       ],
       depois: {
         insignia: 'escarpa', montaria: 'corviknight',
@@ -139,7 +139,7 @@ export default {
       id: 'j09_boletim7',
       gatilho: { tipo: 'flag', alvo: 'badges.escarpa', semFlag: ['nh.boletim.7'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às sete horas e três minutos. A Companhia Aurora diz, pela primeira vez, que é uma "variação passageira".'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às sete e três. A Aurora diz, pela primeira vez, que é uma "variação passageira".'],
         ['mae', '{jogador}, sete e três. Passageira? Faz mais de uma semana. Você sabe o que está acontecendo?'],
         ['jogador', 'A Aurora está mentindo, Mãe. Vou ao Relógio de Pedra resolver isso.'],
       ],
