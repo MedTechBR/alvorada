@@ -20,7 +20,7 @@ export default {
         ['narrador', 'Ilha do Basalto: rochas negras, fontes de água quente e um cheiro forte de enxofre que chega até o barco.'],
         ['narrador', 'Lá em cima, o vulcão Tição solta uma fumaça fina. Os moradores dizem que o ronco não para desde a semana passada.'],
         ['jogador', 'Se o Ébano está aqui, deve ser por causa do vulcão. A Graça disse que ele quer acordá-lo.'],
-        ['jogador', 'Se o vulcão está acordando, a Graça não exagerava quando falou da cinza.'],
+        ['jogador', 'Preciso chegar ao vulcão antes que seja tarde.'],
         ['narrador', 'Uma nuvem de vapor sobe das fontes quentes e se espalha pelas rochas, molhando as suas botas.'],
       ],
       depois: {
@@ -35,9 +35,9 @@ export default {
       falas: [
         ['narrador', 'Na borda da cratera, um trator de perfuração treme sobre o chão quente. Dois recrutas empurram um tubo para dentro da rocha.'],
         ['recruta', 'Mais uma camada e o vulcão acorda. Aí a cinza sobe para o céu e o Planalto some no escuro.'],
-        ['ebano', 'Admin Ébano. Você é insistente. Quando o Tição acordar, a cinza cobre o Planalto e ninguém sobe ao Relógio.'],
-        ['jogador', 'A cinza é obra sua? Por que a Crepúsculo quer o Planalto no escuro?'],
-        ['ebano', 'Porque a Véspera quer o Relógio longe de quem vai abri-lo. Agora, saia do caminho.'],
+        ['ebano', 'Admin Ébano. Você é insistente. Se o Tição acordar, a cinza cobre o Planalto e ninguém chega ao Relógio.'],
+        ['jogador', 'Você quer fechar o caminho até o Relógio? Por quê?'],
+        ['ebano', 'Porque o Solano vai tentar abrir o Relógio. A Dra. Véspera quer impedir, e o vulcão é o jeito. Saia do caminho.'],
       ],
       depois: {
         batalha: {
@@ -57,11 +57,11 @@ export default {
       local: 'casa_vulcanologa',
       gatilho: { tipo: 'vencer', alvo: 'c10_ebano' },
       falas: [
-        ['vulcanologa', 'Eu registro o vulcão há vinte anos. A tempestade sobre o Planalto nunca veio do Tição, e isso me preocupa.'],
-        ['vulcanologa', 'O Relógio puxa o ar de cima para dentro dele, toda noite. O calor do Tição empurra esse ar de volta. Sem calor, a tempestade fica parada.'],
-        ['vulcanologa', 'O Templo da Chama fica onde o calor do vulcão chega mais perto da superfície. Se alguém acender a pira, o ar volta a girar.'],
-        ['jogador', 'Então o Ébano quer o Planalto no escuro, e a tempestade é a cortina dele.'],
-        ['vulcanologa', 'Ou quer que ninguém chegue ao Relógio antes dele. Não sei qual dos dois é pior. Vá ao Templo e acenda a pira.'],
+        ['vulcanologa', 'A tempestade sobre o Planalto vem do Relógio de Pedra, que puxa o ar para cima. Ela não é culpa do vulcão.'],
+        ['vulcanologa', 'O calor do Tição empurra esse ar de volta. Quando o vulcão esfria, a tempestade fica parada em cima do Planalto.'],
+        ['vulcanologa', 'O Templo da Chama fica onde o calor do vulcão chega mais perto da superfície. Se acenderem a pira lá, a tempestade se desfaz.'],
+        ['jogador', 'Então o Ébano quer o Planalto fechado, e a tempestade ajuda ele.'],
+        ['vulcanologa', 'Não importa o motivo dele. Vá ao Templo da Chama e acenda a pira para desfazer a tempestade.'],
       ],
       depois: {
         flags: { 'nh.explicouTempestade': true },
@@ -79,7 +79,7 @@ export default {
         ['narrador', 'O Templo da Chama é uma escada de pedra negra por dentro do vulcão. Em cada andar, uma fresta mostra a lava lá embaixo.'],
         ['narrador', 'No topo, uma pira está apagada há séculos. Um Pokémon de fogo, pequeno e ofegante, espera por alguém que a acenda.'],
         ['jogador', 'Vou acender a chama. Vamos juntos.'],
-        ['narrador', 'A pira se acende de uma vez, com um estalo grave. O calor sobe pelas paredes, e a tempestade lá em cima começa a girar ao contrário.'],
+        ['narrador', 'A pira se acende de uma vez, com um estalo grave. O calor sobe pelas paredes, e a tempestade lá em cima começa a se desfazer.'],
       ],
       depois: {
         flags: { 'nh.temploChama': true, 'nh.tempestadeFim': true, brasas_resolvido: true },
@@ -93,7 +93,7 @@ export default {
       falas: [
         ['vulcanologa', 'Olha lá em cima! O céu do Planalto abriu. Pela primeira vez em duas semanas dá para ver o topo do Relógio.'],
         ['jogador', 'E o Relógio? Ainda está fechado?'],
-        ['vulcanologa', 'Está fechado, mas o cadeado está girando sozinho. Quem estiver lá em cima vai sentir isso.'],
+        ['vulcanologa', 'Está fechado, mas o cadeado está se mexendo sozinho. Alguém pode estar tentando abri-lo. Vá logo ao Planalto.'],
       ],
       depois: { ambiente: true },
     },
