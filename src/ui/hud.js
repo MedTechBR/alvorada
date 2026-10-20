@@ -286,6 +286,7 @@ export class Hud {
     ult.set(text, agora); if (ult.size > 60) ult.delete(ult.keys().next().value);
     const box = $('toasts');
     const el = document.createElement('div'); el.textContent = text; box.prepend(el);
+    setTimeout(() => el.classList.add('out'), 3100);
     setTimeout(() => el.remove(), 3400);
     while (box.children.length > 4) box.lastChild.remove();
   }
