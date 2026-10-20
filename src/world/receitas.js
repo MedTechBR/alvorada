@@ -188,13 +188,13 @@ function centro(M, P, R) {
   const escEsq = esc && esc.x === x0;
   // Clube de Trocas: balcão azul encostado no canto livre de cima, com atendente atrás
   const trocaX = escEsq ? x1 - 1 : x0;
-  const troca = M.por('counterTroca', [[trocaX, y0 + 2]], { text: 'CLUBE DE TROCAS E BATALHAS\nFale com a atendente para trocar e batalhar com amigos.' });
+  const troca = M.por('counterTroca', [[trocaX, y0 + 2]], { text: 'CLUBE DE TROCAS E BATALHAS\nPergunte à atendente como funciona.' });
   if (troca) M.posto.troca = [trocaX + (escEsq ? 0 : 1), y0 + 1];
   for (const c of [[bx + 8, y0], [x1, y0], [x0, y0], [bx - 1, y0], [x1, y0 + 1]]) M.por('plantaGrande', [c]);
   // sala de espera: dois sofás, mesinha com revistas, TV no rack e plantas grandes nos cantos
   const ladoTV = escEsq ? 'esq' : 'dir';
   const tvX = ladoTV === 'dir' ? x1 - 1 : x0, sx = ladoTV === 'dir' ? x0 : x1;
-  const tv = M.por('tvRack', [[tvX, y0 + 3], [tvX, y0 + 4], [tvX - (ladoTV === 'dir' ? 1 : -1), y0 + 3]], { text: R.txt.tv ?? 'Passando o jogo da Liga. A enfermeira aumenta o volume para a sala toda ver.' });
+  const tv = M.por('tvRack', [[tvX, y0 + 3], [tvX, y0 + 4], [tvX - (ladoTV === 'dir' ? 1 : -1), y0 + 3]], { text: R.txt.tv ?? 'Passa um jogo da Liga. A enfermeira aumentou o volume para a sala toda ver.' });
   if (tv) { M.por('mesaRevistas', [[tv.x, tv.y + 1], [tv.x + 1, tv.y + 1]], { text: R.txt.mesa ?? 'Revistas: "Treinador Moderno" e "Pokémon & Saúde".' }); M.por('sofaCentroN', [[tv.x, tv.y + 2], [tv.x, tv.y + 3]]); }
   const sofaL = M.por(sx === x0 ? 'sofaLadoL' : 'sofaLadoR', [[sx, y1 - 2], [sx, y1 - 3], [sx, y0 + 3]]);
   if (sofaL) M.por('mesaRevistas', [[sx === x0 ? sx + 1 : sx - 1, sofaL.y + 1], [sx === x0 ? sx + 1 : sx - 1, sofaL.y]], { text: 'Folhetos da Liga e um guia de Pokémon de bolso.' });
