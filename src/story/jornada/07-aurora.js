@@ -21,7 +21,7 @@ export default {
       falas: [
         ['narrador', 'Cidade Aurora: torres de cristal e outdoors com a palavra "limpa" em letras douradas.'],
         ['narrador', 'O sol mal aparece entre os prédios. Todo mundo aqui tem uma lanterna de luzita no bolso, acesa de dia.'],
-        ['pipa', 'Você chegou! Eu sou a Pipa, do Jornal Farol. Preciso de alguém que não seja da empresa para uma matéria sobre a Torre.'],
+        ['pipa', 'Você chegou! Eu sou a Pipa, do Jornal Farol. Preciso de alguém de fora da empresa para uma matéria sobre a Torre.'],
         ['pipa', 'O gerente Lúcio faz visitas guiadas na Torre. Ele mostra as tubulações, mas nunca diz de onde vem a luz.'],
         ['jogador', 'Uma repórter e uma visita guiada. Vou reparar no que ele não mostra.'],
       ],
@@ -39,7 +39,7 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'torre_aurora', requer: ['nh.chegouAurora'], semFlag: ['nh.visitaTorre'] },
       falas: [
         ['lucio', 'Bem-vindos à Torre Aurora! Aqui nasce a luz que acende as lâmpadas de Alvorada. É luz limpa, que não depende do céu.'],
-        ['lucio', 'O cristal vem da nossa mina, nível quatro. Ele não queima, não fumaça, não depende do sol. A luzita é a energia do futuro.'],
+        ['lucio', 'O cristal vem da nossa mina, no nível quatro. A luzita não queima, não fumaça e não depende do sol.'],
         ['pipa', 'E de onde vem o cristal, exatamente? O que a Aurora tira de baixo da terra?'],
         ['lucio', 'Isso é segredo da empresa, senhorita. O que importa é que o sol atrasa e nós mantemos a cidade acesa.'],
         ['narrador', 'Quando o Lúcio fala do sol, uma parte das luzes da torre pisca. Ninguém parece notar, exceto você.'],
@@ -127,10 +127,10 @@ export default {
         ['vespera', 'Pergunte à sua empresa, Téo. Tem um medidor aqui na parede que mostra quanta luz sai de cada tonelada de cristal.'],
         ['narrador', 'Na parede, uma placa marca a produção da semana. Ao lado, um mostrador mostra a hora do nascer do sol, que atrasa a cada tonelada extraída.'],
         ['jogador', 'O sol nasce mais tarde por causa do que a Aurora tira daqui?'],
-        ['vespera', 'A luzita é a peça que mantém o Relógio de Pedra fechado. Quanto mais a Aurora tira, mais o Relógio perde força e mais tarde o sol nasce.'],
-        ['vespera', 'Eu roubava as pedras dos ginásios para a Aurora não pegá-las. E quem descobriu a luzita foi o seu professor. Procure as cartas dele no Forte Rochedo.'],
+        ['vespera', 'A luzita mantém o Relógio de Pedra fechado. Quanto mais a Aurora tira, mais tarde o sol nasce.'],
+        ['vespera', 'Eu roubava as pedras para a Aurora não pegá-las. Foi o seu professor que descobriu a luzita.'],
         ['teo', 'Eu defendi a Aurora desde o começo. E ela deixou meu pai preso aqui embaixo, sem nem tocar a sirene a tempo.'],
-        ['heitor', 'Eles mandaram a gente cavar mais rápido, Téo. Depois que o nível três desabou, o supervisor disse que a cota não podia parar.'],
+        ['heitor', 'Eles mandaram cavar mais rápido, Téo. Depois do desabamento, o supervisor disse que a cota não podia parar.'],
         ['teo', 'Chega. Eu não defendo mais a Aurora. Vou ajudar quem está tirando vocês daqui.'],
       ],
       depois: {
@@ -208,10 +208,10 @@ export default {
       reviravolta: 2,
       falas: [
         ['prof', '{jogador}? Eu estava esperando você ler as cartas. Eu deveria ter contado antes. Eu queria proteger você.'],
-        ['prof', 'Há dezesseis anos, eu e a Véspera descobrimos a luzita no Planalto. Levei uma amostra ao Augusto Solano, que disse querer estudá-la. Ele a comprou.'],
+        ['prof', 'Há dezesseis anos, eu e a Véspera descobrimos a luzita. Levei uma amostra ao Solano, e ele a comprou.'],
         ['jogador', 'Então o senhor ajudou a criar a Aurora.'],
-        ['prof', 'Ajudei. A primeira extração, a Noite Longa de Lamparina, saiu da minha amostra. Eu não sabia que o cristal mantinha o Relógio fechado.'],
-        ['prof', 'Depois que eu soube, já era tarde. A Véspera rompeu com a Aurora e passou a tirar as pedras das mãos deles. Eu fiquei calado.'],
+        ['prof', 'Ajudei. A Noite Longa de Lamparina foi a primeira extração, com a minha amostra. Eu não sabia o que ela causava.'],
+        ['prof', 'Quando eu soube, já era tarde. A Véspera rompeu com a Aurora e passou a roubar as pedras. Eu fiquei calado.'],
         ['jogador', 'Professor, eu não vou fingir que isso não aconteceu. Mas agora eu preciso de você para chegar até o Relógio.'],
       ],
       depois: {
@@ -267,7 +267,7 @@ export default {
         ['bras', 'Olha só, que luta! A Insígnia Punho é sua. Com ela, seu Pokémon pode escalar paredões.'],
         ['narrador', '{jogador} recebeu a Insígnia Punho!'],
         ['bras', 'Eu não entendo do sol nem da Aurora. Mas esse problema é grande, então não se arrisque à toa.'],
-        ['bras', 'Para ir a Escarpa, você precisa do mapa do Paredão. Ele está na Vila Mandacaru, no Sertão do Levante. A Graça, a próxima líder, espera em Escarpa.'],
+        ['bras', 'Para ir a Escarpa, você precisa do mapa do Paredão. Ele está na Vila Mandacaru, no Sertão do Levante.'],
       ],
       depois: {
         insignia: 'rochedo', montaria: 'sneasler',
@@ -281,7 +281,7 @@ export default {
       id: 'j07_boletim6',
       gatilho: { tipo: 'flag', alvo: 'badges.rochedo', semFlag: ['nh.boletim.6'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e cinquenta e um minutos. A Companhia Aurora nega qualquer relação com o atraso.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e cinquenta e um. A Companhia Aurora nega relação com o atraso.'],
         ['mae', '{jogador}, seis e cinquenta e um. A Aurora nega? Quem nega tanto deve ter algo a esconder.'],
         ['jogador', 'Eu sei por quê, Mãe. Quanto mais luzita a Aurora tira da mina, mais tarde o sol nasce.'],
       ],
