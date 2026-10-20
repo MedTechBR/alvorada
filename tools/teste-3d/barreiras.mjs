@@ -31,6 +31,9 @@ try {
   await sleep(2500);
   // fecha a fala de abertura (se houver)
   await P.ev(`(() => { const e = game.ui?.dialog?.el; if (e) e.style.visibility = "hidden"; return 1; })()`); // a fala de abertura da Mãe tapa metade da tela
+  // conversa: de frente para o guarda da Rota 2, o botão A acha ele e a fala é a da barreira
+  const fala = await P.ev(`(() => { const g = game; g.barreiras.sync(); g.player.x = 120 * 16 + 8; g.player.y = 278 * 16 + 10; g.player.dir = 'up'; g.cam.x = g.player.x; g.cam.y = g.player.y; g.mundo.people.update(0.016, true); const w = g.mundo.people.nearest(g.player.x, g.player.y, 'up'); return JSON.stringify(w ? { id: w.o.def.id, nome: w.o.def.name, fala: w.o.def.lines[0] } : null); })()`);
+  console.log('conversa com o guarda:', fala);
   for (const [nome, [x, y, pre]] of Object.entries(CENAS)) {
     if (so.length && !so.includes(nome)) continue;
     await P.ev(`(() => { ${pre ?? ''} const g = game; g.barreiras?.sync(); g.player.x = ${x} * 16 + 8; g.player.y = ${y} * 16 + 8; g.cam.x = g.player.x; g.cam.y = g.player.y; g.mundo.setHour?.(11); return 1; })()`);
@@ -40,9 +43,6 @@ try {
     const f = new URL(`${nome}.jpg`, out); writeFileSync(f, Buffer.from(shot.result.data, 'base64'));
     console.log('ok', nome, info, f.pathname);
   }
-  // conversa: de frente para o guarda da Rota 2, o botão A acha ele e a fala é a da barreira
-  const fala = await P.ev(`(() => { const g = game; g.barreiras.sync(); g.player.x = 120 * 16 + 8; g.player.y = 278 * 16 + 10; g.player.dir = 'up'; g.cam.x = g.player.x; g.cam.y = g.player.y; g.mundo.people.update(0.016, true); const w = g.mundo.people.nearest(g.player.x, g.player.y, 'up'); return JSON.stringify(w ? { id: w.o.def.id, nome: w.o.def.name, fala: w.o.def.lines[0] } : null); })()`);
-  console.log('conversa com o guarda:', fala);
   const errs = P.logs.filter((l) => /EXC|error|Error/.test(l));
   console.log(errs.length ? 'console:\n' + errs.slice(0, 15).join('\n') : 'console: sem erros');
 } finally { b.kill(); }
