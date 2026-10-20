@@ -83,7 +83,9 @@ for (const i of R.items) if (i.room == null) { marca(i.x, i.y, 1); anc(i.x, i.y)
 for (const t of R.tocas ?? []) { marca(t.x, t.y, 3); anc(t.x, t.y); }
 for (const s of R.signs ?? []) if (s.x != null) marca(s.x, s.y, 1);
 for (const mc of R.mecanismos ?? []) { for (const [x, y] of mc.pts ?? []) marca(x, y, 2); if (mc.rect) { const [x, y, w, h] = mc.rect; for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) marca(x + i, y + j, 2); } }
-for (const [x0, y0, w0, h0] of R.noTrees ?? []) for (let y = y0; y < y0 + h0; y++) for (let x = x0; x < x0 + w0; x++) if (x >= 0 && y >= 0 && x < W && y < OH) rsv[x + y * W] = 1;
+// noTrees ("sem árvores soltas"): sem paredão nem marco ali, mas a cidade pode ganhar poste, canteiro e enfeite
+const semArv = new Uint8Array(N);
+for (const [x0, y0, w0, h0] of R.noTrees ?? []) for (let y = y0; y < y0 + h0; y++) for (let x = x0; x < x0 + w0; x++) if (x >= 0 && y >= 0 && x < W && y < OH) semArv[x + y * W] = 1;
 for (const o of S.placed) if (o.doorX !== undefined && o.doorY < OH) { marca(o.doorX, o.doorY + 1, 2); anc(o.doorX, Math.min(OH - 1, o.doorY + 1)); }
 for (const o of S.placed) if (o.text && o.y < OH) marca(o.x, o.y + 1, 1); // placas e móveis com texto: dá para ler
 const ancReais = new Set(ancs);
@@ -212,7 +214,7 @@ const dist = (k) => D[k] / 3;
 // raio: meia largura do corredor (blocos); muro: o paredão; fundo: o miolo do paredão; borda: o pé do paredão;
 // solto: o que fica espalhado no corredor; alto: o mato alto; chao: manchas de chão; piso: chão sob a mata; marcos.
 const CFG = {
-  campo: { degrau: 'degrau', um: ['moita', 'moita', 'pedrinha'], raio: 5, amp: 1.5, muro: ['tree', 'tree2', 'tree', 'autumn', 'tree2', 'pine'], fundo: ['bigtree', 'tree', 'bigautumn', 'tree2'], borda: ['cone', 'roundbush', 'boulder', 'stump', 'cone'], solto: ['boulder2', 'stump', 'log', 'grayrock'], alto: 'tall', chao: [['grass2', 0.5], ['flowers', 0.12]], piso: 'dark', marcos: ['arvoreGigante', 'santuario', 'ruina', 'arcoPedra', 'menhir'], baga: true, decor: ['mush', 'pebble'] },
+  campo: { degrau: 'degrau', um: ['moita', 'moita', 'pedrinha'], raio: 5, amp: 1.5, muro: ['tree', 'tree2', 'tree', 'autumn', 'tree2', 'pine'], fundo: ['bigtree', 'tree', 'bigautumn', 'tree2'], borda: ['cone', 'roundbush', 'boulder', 'stump', 'cone'], solto: ['boulder2', 'stump', 'log', 'grayrock'], alto: 'tall', chao: [['grass2', 0.5], ['flowers', 0.12]], piso: 'dark', marcos: ['arvoreGigante', 'fazenda', 'santuario', 'ruina', 'arcoPedra', 'fazenda'], baga: true, decor: ['mush', 'pebble'] },
   floresta: { um: ['moita', 'moita', 'samambaia'], raio: 4, amp: 1.2, muro: ['pine', 'pineT', 'tree', 'pinheiroAlto', 'pine2', 'tree2'], fundo: ['pinheiroAlto', 'bigtree', 'pineT'], borda: ['roundbush', 'stump', 'cone', 'log'], solto: ['log', 'stump', 'cogumelos', 'samambaia', 'samambaia'], alto: 'tall', chao: [['dark', 0.35], ['grass2', 0.3]], piso: 'dark', marcos: ['arvoreGigante', 'santuario', 'cachoeira'], baga: true, decor: ['mush', 'mush2'] },
   selva: { um: ['moita', 'samambaia'], raio: 4, amp: 1.2, muro: ['arvoreSelva', 'umbu', 'bambu', 'folhaGigante', 'arvoreSelva'], fundo: ['arvoreSelva', 'umbu'], borda: ['folhaGigante', 'samambaia', 'samambaia', 'bambu'], solto: ['samambaia', 'samambaia', 'folhaGigante', 'cogumelos', 'log'], alto: 'tall', chao: [['dark', 0.45], ['mangmud', 0.06]], piso: 'dark', marcos: ['arvoreGigante', 'cachoeira', 'mural'], baga: true, decor: ['mush2'] },
   neve: { degrau: 'degrauNeve', um: ['moitaNeve', 'moitaNeve', 'stalagmiteIce'], raio: 5, amp: 1.6, muro: ['snowPine', 'pinheiroNevado', 'snowPineBig', 'snowPine'], fundo: ['snowPineBig', 'pinheiroNevado'], borda: ['monteNeve', 'pedraGelo', 'monteNeve', 'galhoNevado'], solto: ['monteNeve', 'pedraGelo', 'monteNeve', 'galhoNevado', 'stalagmiteIce'], alto: 'tallsnow', chao: [['deepsnow', 0.22]], piso: null, marcos: ['lagoGelo', 'arcoPedra', 'pedraGeloAnel', 'snowman'], baga: false, decor: [] },
@@ -222,9 +224,9 @@ const CFG = {
   sertao: { um: ['arbustoSeco', 'cactus', 'cactoBarril'], raio: 5, amp: 1.5, muro: ['mandacaru', 'juazeiro', 'xiquexique', 'cactus', 'arbustoSeco', 'umbu'], fundo: ['juazeiro', 'umbu', 'mandacaru'], borda: ['xiquexique', 'arbustoSeco', 'cactoBarril', 'boulder', 'cactus'], solto: ['arbustoSeco', 'cactoBarril', 'skull', 'boulder2', 'xiquexique'], alto: 'talldry', chao: [['cracked', 0.1]], piso: null, marcos: ['mesaGrupo', 'santuario', 'umbu'], baga: false, decor: ['pebble'] },
   vulcao: { um: ['pedrinhaBasalto', 'pinaculo'], raio: 5, amp: 1.5, muro: ['escarpaBasalto', 'basaltoColunas', 'pinaculo', 'arvoreCinza', 'escarpaBasalto'], fundo: ['escarpaBasalto', 'basaltoColunas'], borda: ['basaltoColunas', 'lavaRock', 'arvoreCinza', 'fumarola', 'pinaculo'], solto: ['lavaRock', 'arvoreCinza', 'fumarola', 'fendaLava', 'pinaculo'], alto: null, chao: [['ash', 0.3], ['obsidian', 0.05]], piso: null, marcos: ['lagoLava', 'pinaculoGrupo', 'termas'], baga: false, decor: [] },
   termal: { um: ['pedrinhaBasalto', 'fumarola'], raio: 5, amp: 1.5, muro: ['escarpa', 'basaltoColunas', 'pinaculo'], fundo: ['escarpa'], borda: ['fumarola', 'boulder', 'basaltoColunas'], solto: ['fumarola', 'boulder2', 'lavaRock'], alto: null, chao: [['ash', 0.2]], piso: null, marcos: ['termas'], baga: false, decor: [] },
-  praia: { um: ['palmSmall', 'pedrinha'], raio: 8, amp: 2.5, muro: ['palmeira', 'coqueiro', 'pedraMar', 'palmeira', 'palmSmall'], fundo: ['coqueiro', 'palmeira', 'pedraMar'], borda: ['pedraMar', 'driftwood', 'palmSmall', 'concha'], solto: ['concha', 'concha', 'pedraMar', 'driftwood', 'palmSmall', 'concha', 'pocaMare'], alto: null, chao: [], piso: null, marcos: ['pocaMare', 'barco', 'palmeiral', 'jangada', 'guardaSol'], baga: false, decor: ['pebble'] },
+  praia: { touceira: true, um: ['palmSmall', 'pedrinha'], raio: 8, amp: 2.5, muro: ['palmeira', 'coqueiro', 'pedraMar', 'palmeira', 'palmSmall'], fundo: ['coqueiro', 'palmeira', 'pedraMar'], borda: ['pedraMar', 'driftwood', 'palmSmall', 'concha'], solto: ['concha', 'concha', 'pedraMar', 'driftwood', 'palmSmall', 'concha', 'pocaMare'], alto: null, chao: [], piso: null, marcos: ['pocaMare', 'barco', 'palmeiral', 'jangada', 'guardaSol'], baga: false, decor: ['pebble'] },
   mangue: { um: ['taboa', 'moita'], raio: 4, amp: 1.2, muro: ['mangue', 'mangue', 'palmeira', 'taboa'], fundo: ['mangue'], borda: ['taboa', 'taboa', 'driftwood', 'log'], solto: ['taboa', 'driftwood', 'stump', 'vitoriaRegia'], alto: 'reed', chao: [], piso: null, marcos: ['mangue', 'santuario'], baga: false, decor: ['mush'] },
-  margem: { degrau: 'degrau', um: ['moita', 'taboa'], raio: 5, amp: 1.5, muro: ['tree2', 'tree', 'oran', 'pecha', 'tree2'], fundo: ['bigtree', 'tree2'], borda: ['taboa', 'roundbush', 'cone', 'boulder'], solto: ['taboa', 'log', 'stump', 'boulder2'], alto: 'tall', chao: [['grass2', 0.4], ['flowers', 0.08]], piso: 'dark', marcos: ['santuario', 'arvoreGigante'], baga: true, decor: ['mush', 'pebble'] },
+  margem: { degrau: 'degrau', um: ['moita', 'taboa'], raio: 5, amp: 1.5, muro: ['tree2', 'tree', 'tree2', 'autumn'], fundo: ['bigtree', 'tree2'], borda: ['taboa', 'roundbush', 'cone', 'boulder'], solto: ['taboa', 'log', 'stump', 'boulder2'], alto: 'tall', chao: [['grass2', 0.4], ['flowers', 0.08]], piso: 'dark', marcos: ['santuario', 'arvoreGigante'], baga: true, decor: ['mush', 'pebble'] },
   planalto: { degrau: 'degrau', um: ['pedrinha', 'moita'], raio: 6, amp: 2.5, muro: ['escarpa', 'escarpa', 'arvoreVento', 'escarpa', 'pinheiroAlto'], fundo: ['escarpa', 'escarpa', 'pinheiroAlto'], borda: ['boulder', 'grayrock', 'arvoreVento', 'boulder2', 'moita'], solto: ['boulder', 'grayrock', 'arvoreVento', 'boulder2'], alto: 'tall', chao: [['grass2', 0.4], ['flowers', 0.05]], piso: null, marcos: ['arcoPedra', 'menhirAnel', 'arvoreVento', 'ruina'], baga: false, decor: ['pebble'] },
 };
 const ALTO_BASE = { tall: [TILE.GRASS, TILE.GRASS2, TILE.DARK], tallsnow: [TILE.SNOWFIELD, TILE.DEEPSNOW], talldry: [TILE.CAATINGA, TILE.CRACKED, TILE.REDROCK, TILE.GRASS], reed: [TILE.MANGMUD] };
@@ -291,11 +293,22 @@ function gerarRegiao(reg) {
       }
       case 'palmeiral': { let n = 0; for (let a = 0; a < 5; a++) n += pe(a % 2 ? 'coqueiro' : 'palmeira', x + Math.round(hash(x, a, seed) * 5), y + Math.round(hash(a, y, seed) * 3)) ? 1 : 0; if (n) pe('guardaSol', x + 2, y + 4); return n > 1; }
       case 'barco': if (!pe('barco', x, y)) return false; pe('redePesca', x + 4, y); return true;
+      case 'fazenda': {
+        // lavoura cercada (9x6) com canteiros em fileira, espantalho, porteira embaixo; celeiro ou moinho ao lado
+        const fw = 9, fh = 6;
+        for (let j = -1; j <= fh; j++) for (let i = -1; i <= fw + 5; i++) { const X = x + i, Y = y + j; if (!dentro(X, Y) || !livre(X + Y * W)) return false; }
+        for (let i = 0; i < fw; i++) { pe('cercaVara', x + i, y); if (i < 3 || i > 5) pe('cercaVara', x + i, y + fh - 1); }
+        for (let j = 1; j < fh - 1; j++) { pe('fenceV', x, y + j); pe('fenceV', x + fw - 1, y + j); }
+        for (let j = 1; j < fh - 2; j++) for (let i = 1; i < fw - 1; i++) if (i !== 4) pe('horta', x + i, y + j);
+        pe('espantalho', x + 4, y + 2);
+        if (hash(x, y, seed + 97) < 0.5) pe('celeiro', x + fw + 1, y + 1); else pe('windmill', x + fw + 1, y + 2);
+        return true;
+      }
       default: return pe(nome, x, y);
     }
   };
   for (let y = y0 + 2; y < y1 - 8; y += 3) for (let x = x0 + 2; x < x1 - 8; x += 3) {
-    const k = x + y * W; if (!livre(k)) continue;
+    const k = x + y * W; if (!livre(k) || semArv[k]) continue;
     const c = cfgDe(k); if (!c || !c.marcos.length) continue;
     const d = dist(k); if (d < 2.5 || d > Math.min(c.raio + 4, 10)) continue;
     if (!longe(x, y, 42) || hash(x, y, seed + 95) > 0.35) continue;
@@ -309,14 +322,16 @@ function gerarRegiao(reg) {
   for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) {
     const k = x + y * W; if (!livre(k)) continue;
     const c = cfgDe(k); if (!c || !c.muro.length) continue;
-    const prof = dist(k) - raio(x, y, c); if (prof <= 0 || clareira[k]) continue;
+    const prof = dist(k) - raio(x, y, c); if (prof <= 0 || clareira[k] || semArv[k]) continue;
     if (c.piso && prof > 0.5) setT(k, c.piso);
     // vulcão: rios de lava serpenteando por dentro do paredão (acendem à noite)
     if (bio[k] === BI.vulcao && prof > 1.5 && Math.abs(fbm(x * 0.05, y * 0.05, seed + 44) - 0.5) < 0.035) { setT(k, 'lava'); blk[k] = 1; continue; }
+    // mata e selva: riachos serpenteando por dentro da mata
+    if ((bio[k] === BI.floresta || bio[k] === BI.selva) && prof > 1 && Math.abs(fbm(x * 0.045, y * 0.045, seed + 46) - 0.5) < 0.028) { setT(k, 'water'); blk[k] = 1; continue; }
     // miolo (longe da trilha, só aparece na beira da tela ou voando): em grade mais aberta, para poupar memória e
     // triângulos; a frente do paredão (até 5 blocos) é fechada, então não dá para entrar nele
-    if (prof > 5 && (y & 1)) continue;
-    if (prof > 8 && ((x % 3) || hash(x, y, seed + 40) < 0.35)) continue;
+    if (prof > 4 && (y & 1)) continue;
+    if (prof > 7 && ((x % 3) || hash(x, y, seed + 40) < 0.35)) continue;
     // deserto: dunas soltas numa grade torta (não em fileira), o chão vira duna; o resto do paredão é areia ondulada
     if (c.ralo) { if (t[k] === TILE.SAND || t[k] === TILE.CAATINGA) setT(k, 'dune'); if ((x + (y >> 1) * 2) % 3 || (y & 1) || hash(x, y, seed + 45) < 0.2) continue; }
     let lista = prof < 1.4 ? c.borda : prof > 4 ? c.fundo : c.muro;
@@ -352,11 +367,26 @@ function gerarRegiao(reg) {
       if (fila.length >= 4) { for (const X of fila) { pe(c.degrau, X, y); usado[X + y * W] = 1; } continue; }
     }
     if (d >= r - 1.6 && d <= r && c.borda.length && hash(x, y, seed + 60) < 0.22) { if (pe(esc(c.borda, x, y, 61), x, y)) continue; }
-    if (d >= 2.2 && d < Math.min(r, 14) - 1 && c.solto.length && hash(x, y, seed + 62) < (c.raio > 50 ? 0.03 : 0.022)) { if (pe(esc(c.solto, x, y, 63), x, y)) continue; }
+    if (d >= 2.2 && d < Math.min(r, 14) - 1 && c.solto.length && hash(x, y, seed + 62) < (c.touceira ? 0.045 : 0.022)) {
+      const kind = esc(c.solto, x, y, 63);
+      if (pe(kind, x, y)) {
+        // praia: palmeira puxa outras em volta (touceira), pedra puxa pedras e conchas
+        if (c.touceira && (kind === 'palmeira' || kind === 'coqueiro' || kind === 'pedraMar')) for (let a = 0; a < 4; a++) { const X = x + Math.round((hash(x, a, seed + 64) - 0.5) * 6), Y = y + Math.round((hash(a, y, seed + 65) - 0.5) * 4); if (dist(X + Y * W) >= 2) pe(a % 2 ? kind : (kind === 'pedraMar' ? 'concha' : 'palmSmall'), X, Y); }
+        continue;
+      }
+    }
     for (const [nome, p] of c.chao) {
       if (p > 0 && fbm(x * 0.18, y * 0.18, seed + 70 + nome.length) > 1 - p * 0.9) { if (nome !== 'deepsnow' || d > 1.5) setT(k, nome); break; }
     }
     if (c.decor.length && d >= 1.5 && hash(x, y, seed + 80) < 0.02) out.decor.push({ kind: esc(c.decor, x, y, 81), x, y });
+  }
+  // vitórias-régias e juncos na água parada junto da margem
+  for (let y = Math.max(1, y0); y < Math.min(y1, OH - 1); y++) for (let x = Math.max(1, x0); x < Math.min(x1, W - 1); x++) {
+    const k = x + y * W; if ((t[k] !== TILE.WATER && t[k] !== TILE.SHALLOW) || blk[k] || rsv[k] || P[k]) continue;
+    const ai = lab[k], ab = ai >= 0 ? R.areas[ai].biome : null; if (ab !== 'margem' && ab !== 'mangue' && ab !== 'floresta' && ab !== 'selva') continue;
+    let terra = false; for (const [i, j] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) if (LAND.has(t[k + i + j * W])) terra = true;
+    if (!terra || hash(x, y, seed + 85) > 0.12) continue;
+    blk[k] = 1; out.objects.push({ kind: t[k] === TILE.SHALLOW && hash(x, y, seed + 86) < 0.5 ? 'taboa' : 'vitoriaRegia', x, y });
   }
   // praia: linha de onda (areia molhada) junto da água
   for (let y = Math.max(1, y0); y < Math.min(y1, OH - 1); y++) for (let x = Math.max(1, x0); x < Math.min(x1, W - 1); x++) {
@@ -416,6 +446,7 @@ function vestirCidades(reg, { t, blk, dentro, pe, setT, livre, seed, out }) {
     let neve = 0, areia = 0, cinza = 0, seco = 0, cais = 0;
     let verde = 0;
     for (let y = Y0; y < Y1; y++) for (let x = X0; x < X1; x++) { const q = T[x + y * W]; if (VERDE.has(q)) verde++; if (q === TILE.SNOWFIELD || q === TILE.SNOW || q === TILE.TALLSNOW) neve++; else if (q === TILE.SAND || q === TILE.WETSAND) areia++; else if (q === TILE.BASALT || q === TILE.ASH || q === TILE.HOTSPRING) cinza++; else if (q === TILE.CAATINGA || q === TILE.DUNE || q === TILE.CRACKED) seco++; else if (q === TILE.DOCK) cais++; }
+    const n0 = out.objects.length;
     const tema = cinza > 40 ? 'termas' : neve > verde && neve > 40 ? 'neve' : cais > 4 || areia > verde ? 'porto' : seco > verde ? 'sertao' : 'campo';
     const pePraca = (kind, x, y) => {
       const K = KINDS[kind]; for (let j = 0; j < K.fh; j++) for (let i = 0; i < K.fw; i++) { const k = x + i + (y + j) * W; if (!dentro(x + i, y + j) || blk[k] || P[k] || rsv[k] || t[k] !== TILE.PLAZA) return false; }
@@ -469,8 +500,10 @@ function vestirCidades(reg, { t, blk, dentro, pe, setT, livre, seed, out }) {
       const beira = x - ax < 2 || ax + aw - 1 - x < 2 || y - ay < 2 || ay + ah - 1 - y < 2;
       if (beira && VERDE.has(t[k]) && tema !== 'neve' && fbm(x * 0.35, y * 0.35, seed + 216) > 0.42) { setT(k, 'flowers'); continue; }
       if (tema !== 'neve' && tema !== 'termas' && VERDE.has(t[k]) && fbm(x * 0.3, y * 0.3, seed + 211) > 0.72) setT(k, 'flowers');
-      if (hash(x, y, seed + 212) < 0.016) {
-        const enfeite = { campo: ['flowerpot', 'haybale', 'horta', 'mailbox', 'canteiro', 'moita'], porto: ['caixotes', 'barrel', 'redePesca', 'crate', 'guardaSol'], neve: ['monteNeve', 'snowman', 'monteNeve', 'moitaNeve', 'pedraGelo'], termas: ['fumarola', 'barrel', 'lanternaPedra', 'boulder'], sertao: ['cactoBarril', 'xiquexique', 'pot', 'barrel'] }[tema];
+      // neve: montes de neve varrida na beira das ruas
+      if (tema === 'neve' && juntoTrilha && hash(x, y, seed + 219) < 0.16 && pe('monteNeve', x, y)) continue;
+      if (hash(x, y, seed + 212) < 0.03) {
+        const enfeite = { campo: ['flowerpot', 'horta', 'mailbox', 'canteiro', 'moita'], porto: ['caixotes', 'crate', 'redePesca', 'crate', 'guardaSol'], neve: ['monteNeve', 'snowman', 'monteNeve', 'moitaNeve', 'pedraGelo'], termas: ['fumarola', 'caixotes', 'lanternaPedra', 'boulder'], sertao: ['cactoBarril', 'xiquexique', 'flowerpot', 'caixotes'] }[tema];
         pe(enfeite[Math.floor(hash(x, y, seed + 213) * enfeite.length)], x, y);
       }
     }
@@ -486,6 +519,7 @@ function vestirCidades(reg, { t, blk, dentro, pe, setT, livre, seed, out }) {
         break;
       }
     }
+    if (process.env.DEBUG) { let nl = 0, nr = 0, np = 0, nb = 0; for (let y = Y0; y < Y1; y++) for (let x = X0; x < X1; x++) { const k = x + y * W; if (livre(k)) nl++; if (rsv[k]) nr++; if (P[k]) np++; if (blk[k]) nb++; } console.log('cidade', a.name, tema, out.objects.length - n0, 'livres', nl, 'rsv', nr, 'P', np, 'blk', nb, (X1 - X0) * (Y1 - Y0)); }
   }
 }
 
