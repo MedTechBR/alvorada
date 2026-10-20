@@ -165,7 +165,7 @@ export default {
       depois: {
         batalha: {
           id: 'c12_necrozma', nome: 'Necrozma Juba do Crepúsculo', alfa: true, perder: 'repete', chefe: true, captura: true,
-          equipe: [[800, 50, ['sunsteelStrike', 'photonGeyser', 'dragonDance', 'shadowClaw'], { forma: 'juba_do_crepusculo' }]],
+          equipe: [[800, 50, ['sunsteelStrike', 'photonGeyser', 'dragonDance', 'shadowClaw'], { forma: 'dusk' }]],
           aliado: { nome: 'Lunala', equipe: [[792, 48, ['moongeistBeam', 'airSlash', 'moonblast', 'psyshock']]] },
         },
       },

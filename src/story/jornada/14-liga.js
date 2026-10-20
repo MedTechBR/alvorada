@@ -168,7 +168,7 @@ export default {
           equipe: [
             [196, 62, ['psychic', 'dazzlingGleam', 'shadowBall', 'morningSun']],
             [468, 62, ['airSlash', 'dazzlingGleam', 'auraSphere', 'roost']],
-            [745, 63, ['accelerock', 'stoneEdge', 'crunch', 'closeCombat'], { forma: 'diurna' }],
+            [745, 63, ['accelerock', 'stoneEdge', 'crunch', 'closeCombat']],
             [282, 63, ['moonblast', 'psychic', 'mysticalFire']],
             [445, 64, ['earthquake', 'dragonClaw', 'stoneEdge', 'swordsDance'], { item: 'garchompite' }],
             [637, 66, ['fieryDance', 'bugBuzz', 'quiverDance', 'gigaDrain']],
