@@ -14,6 +14,7 @@ import { CameraDinamica } from './camera.js';
 import { Tocas3D } from './tocas3d.js';
 import { HudBatalha } from '../ui/hud-batalha.js';
 import { ZonasClima } from './zonas-clima.js';
+import { LetsGo } from './letsgo/index.js';
 
 // Visual 3D (HD-2D, estilo HeartGold/SoulSilver). Só desenha: a lógica do jogo é a mesma do 2D.
 // Liga-se ao jogo com ?visual=3d (main.js). Desenho completo em docs/visual-3d.md.
@@ -53,6 +54,8 @@ export class Visual3D {
       try { this.amb = new Ambiente({ renderer: r, scene: this.scene, camera: this.camera, quality: g.quality, L: this.L }); }
       catch (e) { console.error('[3D] ambientação falhou; seguindo sem ela', e); this.amb = null; }
     }
+    // estilo Let's Go (src/visual3d/letsgo): zona do começo até o 2º ginásio; ?estilo=voxel desliga, ?estilo=letsgo liga em tudo
+    if (this.amb && this.pixel) { try { this.lg = new LetsGo(this); if (!this.lg.ligado) this.lg = null; } catch (e) { console.error('[3D] estilo Let\'s Go falhou; seguindo sem ele', e); this.lg = null; } }
     this.ceu = new Ceu(this);
     this.setores = new Setores(this);
     this.zonas = new ZonasClima(this); // tempestade e neblina das zonas fechadas (barreiras-dados.js)
@@ -107,7 +110,7 @@ export class Visual3D {
   }
   // distância da câmera: um bloco no foco tem na tela o mesmo tamanho que tem no 2D com esse zoom
   get distancia() { const z = Math.max(0.4, (this.g.zoom || 3) * (this.g.camK ?? 1)); return innerHeight / (2 * z * Math.tan(FOV * Math.PI / 360)) * 1.04; }
-  altura(px, py) { return this.relevo.em(px, py); }
+  altura(px, py) { const h = this.relevo.em(px, py); return this.lg ? h + this.lg.relevo.em(px, py) : h; }
   // aplica o mundo curvo uma vez em materiais que vieram de outros módulos (ambientação, kit)
   curvar(m) { if (m && !m.userData.curvado) { m.userData.curvado = true; curvarMaterial(m, this); m.needsUpdate = true; } return m; }
 
@@ -162,7 +165,7 @@ export class Visual3D {
     this.perto = { x0: Math.max(v.x0, a.x - hw), x1: Math.min(v.x1, a.x + hw), y0: Math.max(v.y0, a.z - hh * 1.4), y1: Math.min(v.y1, a.z + hh) };
     this.L.cull(this.perto);
   }
-  #novoMundo() { this.versao = this.L.versao; this.relevo.limpar(); this.setores.limpar(); this.zonas?.limpar(); }
+  #novoMundo() { this.versao = this.L.versao; this.relevo.limpar(); this.lg?.limpar(); this.setores.limpar(); this.zonas?.limpar(); }
 
   paraTela(x, y, h = 0) {
     const v = this.tmpV ??= new THREE.Vector3();

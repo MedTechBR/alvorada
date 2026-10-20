@@ -3,12 +3,14 @@ import { ModelosKit } from './kit/modelos-setor.js';
 import { kit } from './kit/index.js';
 import { comPixel } from './pixel.js';
 import { Modelos as ModelosCodigo } from './modelos-codigo.js';
+import { criarMaterial } from './kit/construtor.js';
 
 // Modelos low-poly: o kit (src/visual3d/kit, docs/visual-3d-kit.md) com o mundo curvo e a sombra do sol.
 // ?kit=0 usa os modelos antigos daqui (modelos-codigo.js), só para comparar.
 class ModelosNoMundo extends ModelosKit {
   constructor(v) {
     super(v); v.curvar(this.mat); if (v.pixel) comPixel(this.mat, v);
+    if (v.lg) this.matLG = v.lg.materialModelos(() => criarMaterial(kit.uNoite)); // estilo Let's Go: liso, sem a textura de pixel
     // sombra de contato (mancha macia) debaixo dos móveis e objetos: assenta tudo no chão, dentro e fora
     const c = document.createElement('canvas'); c.width = c.height = 64;
     const x = c.getContext('2d'), gr = x.createRadialGradient(32, 32, 0, 32, 32, 32);
@@ -54,7 +56,7 @@ class ModelosNoMundo extends ModelosKit {
       if (I.length) { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(P, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(UV, 2)); g.setIndex(I); g.computeBoundingSphere(); s.luzes = new THREE.Mesh(g, this.matLuz); s.luzes.renderOrder = 2; s.grupo.add(s.luzes); }
     }
     // altura do topo de cada modelo (telhado, copa): a câmera sobe quando ele tapa o jogador; cenário vivo sobe nele
-    for (const o of this.v.L.objetosDoSetor(s.sx, s.sy)) { if (o.dead || !kit.temModelo(o.kind)) continue; const r = kit.modelo(o.kind, o); o.__topo3d = this.v.altura(o.x, o.y - 4) + (r?.topo?.y ?? r?.altura ?? 0); }
+    for (const o of this.v.L.objetosDoSetor(s.sx, s.sy)) { if (o.dead || !kit.temModelo(o.kind)) continue; const r = this.modeloDe(o, s); o.__topo3d = this.v.altura(o.x, o.y - 4) + (r?.topo?.y ?? r?.altura ?? 0); }
   }
 }
 ModelosNoMundo.prototype.liberarBase = ModelosKit.prototype.liberar;

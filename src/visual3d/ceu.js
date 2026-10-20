@@ -121,6 +121,7 @@ export class Ceu {
     }
     if (A.pos.u.exposicao) A.pos.u.exposicao.value = room ? 1.0 : 0.96 + nt * 0.25;
     if (room) { A.ceu.hemi.intensity = room.escuro ? 0.25 : room.dark ? 0.6 : 1.35; A.ceu.sol.intensity = room.escuro ? 0.2 : room.dark ? 0.5 : 1.9; }
+    v.lg?.luz(dt, room, nt); // estilo Let's Go: luz e pós da zona (src/visual3d/letsgo/luz.js)
     const ls = v.u.luzSprite.value;
     ls.copy(A.luzP).multiplyScalar(1.05);
     if (nt > 0) { ls.r = Math.max(ls.r, 0.62 * nt); ls.g = Math.max(ls.g, 0.5 * nt); ls.b = Math.max(ls.b, 0.42 * nt); }

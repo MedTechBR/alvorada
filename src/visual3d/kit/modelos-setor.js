@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { kit } from './index.js';
 import { GLB_TIPOS, glbPronto, pedirGLB, onGLB } from './glb.js';
+import { modeloLG, chaveLG } from '../letsgo/modelos.js';
 
 // Ponte entre o kit de modelos e os setores do visual 3D (src/visual3d/setores.js).
 // Mesma interface do Modelos provisório: new ModelosKit(v); setor(s); liberar(s); update(); temModelo(kind);
@@ -23,6 +24,10 @@ export class ModelosKit {
   donosDeSprite() { return this.donos; }
   #movel(o) { return MOVEL(this.v.L.catalogo(o.kind)) || kit.dinamico(o.kind); }
   #h(x, y, fh) { return this.v.altura(x, y - fh * 8); }
+  // setor no estilo Let's Go (s.lg): modelo liso quando o tipo tem um (src/visual3d/letsgo/modelos.js), senão o do kit
+  modeloDe(o, s) { return (s?.lg && modeloLG(o.kind, o)) || kit.modelo(o.kind, o); }
+  chaveDe(o, s) { return (s?.lg && chaveLG(o.kind, o)) || kit.chave(o.kind, o); }
+  matDe(s) { return s?.lg && this.matLG ? this.matLG : this.mat; }
 
   setor(s) {
     this.liberar(s);
@@ -32,7 +37,7 @@ export class ModelosKit {
       // cenário vivo: caído, toco, broto ou quebrado usa o sprite 2D (que gira, troca para o toco, cresce)
       if (o.dead || !kit.temModelo(o.kind) || this.v.g.vivo?.mexido?.(o)) continue;
       if (this.#movel(o)) { moveis.push(o); continue; }
-      const md = kit.modelo(o.kind, o), K = kit.ficha(o.kind);
+      const md = this.modeloDe(o, s), K = kit.ficha(o.kind);
       itens.push({ geometry: md.geometry, x: o.x, y: this.#h(o.x, o.y, K.fh), z: o.y });
       if (o.sprite) donos.push(o.sprite);
     }
@@ -43,8 +48,8 @@ export class ModelosKit {
       itens.push({ geometry: md.geometry, x: p.x, y: this.#h(p.x, p.y, 1), z: p.y });
     }
     s.kitObjs = L.objetosDoSetor(s.sx, s.sy).length;
-    if (itens.length) { s.kitMalha = new THREE.Mesh(kit.mesclar(itens), this.mat); s.kitMalha.matrixAutoUpdate = false; s.grupo.add(s.kitMalha); }
-    s.kitMoveis = moveis.map((o) => { const m = new THREE.Mesh(kit.modelo(o.kind, o).geometry, this.mat); m.o = o; m.chave = kit.chave(o.kind, o); s.grupo.add(m); if (o.sprite) donos.push(o.sprite); return m; });
+    if (itens.length) { s.kitMalha = new THREE.Mesh(kit.mesclar(itens), this.matDe(s)); s.kitMalha.matrixAutoUpdate = false; s.grupo.add(s.kitMalha); }
+    s.kitMoveis = moveis.map((o) => { const m = new THREE.Mesh(this.modeloDe(o, s).geometry, this.matDe(s)); m.o = o; m.chave = this.chaveDe(o, s); s.grupo.add(m); if (o.sprite) donos.push(o.sprite); return m; });
     s.kitDonos = donos; for (const sp of donos) this.donos.add(sp);
     this.setores.add(s);
   }
@@ -72,8 +77,8 @@ export class ModelosKit {
         m.visible = vivo; if (!vivo) continue;
         const K = kit.ficha(o.kind), x = sp ? sp.x : o.x, y = sp ? sp.y - (K.oy ?? 0) : o.y;
         m.position.set(x, this.#h(x, y, K.fh), y);
-        const ch = kit.chave(o.kind, o);
-        if (ch !== m.chave) { m.chave = ch; m.geometry = kit.modelo(o.kind, o).geometry; }
+        const ch = this.chaveDe(o, s);
+        if (ch !== m.chave) { m.chave = ch; m.geometry = this.modeloDe(o, s).geometry; }
       }
     }
   }
