@@ -128,7 +128,7 @@ export default {
       depois: {
         insignia: 'espelho', montaria: 'lapras',
         flags: { 'nh.nadar': true },
-        objetivo: { texto: 'Pegue a Rota 4, na água, e siga para a Cidade Coral, a leste', alvo: 'cidade_coral' },
+        objetivo: { texto: 'Pegue a Rota 4, na água, e siga para a Cidade Coral, a leste', alvo: 'praca_coral' },
       },
       atores: [
         { id: 'marina_galpao_lider', quem: 'marina', nome: 'Líder Marina', look: LOOKS.marina, spot: 'dentro_galpao_barcos', permanente: true },

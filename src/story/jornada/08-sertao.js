@@ -123,6 +123,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.mapaParedao': true },
+        objetivo: { texto: 'Com o mapa, escale o Paredão pela Rota 8 até a Cidade Escarpa', alvo: 'ninho_cidade_escarpa' },
         ambiente: true,
       },
     },

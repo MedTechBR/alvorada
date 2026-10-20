@@ -130,7 +130,7 @@ export const JORNADAS = [
   },
   {
     id: 'brasas', nome: 'Brasas no vulcão', cidade: 'Arquipélago das Brasas', tipo: 'regiao', fim: 'brasas_resolvido',
-    lugares: ['ilha_basalto', 'vila_termas'], padrao: { texto: 'Vá ao Arquipélago das Brasas: voe para o sudeste ou pegue o Barco das Brasas em Vila Siri', alvo: 'sertao_cais_siri' },
+    lugares: ['ilha_basalto', 'vila_termas'], padrao: { texto: 'Chegue à Vila Termas, no Arquipélago das Brasas', alvo: 'vila_termas' },
     etapas: [
       { texto: 'Chegue ao Arquipélago das Brasas', feita: 'nh.chegouBrasas' },
       { texto: 'Detenha o Admin Ébano no Vulcão Tição', feita: 'nh.ebanoBrasas' },

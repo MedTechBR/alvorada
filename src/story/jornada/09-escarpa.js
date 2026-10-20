@@ -129,7 +129,7 @@ export default {
       depois: {
         insignia: 'escarpa', montaria: 'corviknight',
         flags: { 'nh.voar': true },
-        objetivo: { texto: 'Vá ao Arquipélago das Brasas, a sudeste: voe com o Corviknight ou pegue o Barco das Brasas no cais de Vila Siri, no Sertão', alvo: 'sertao_cais_siri' },
+        objetivo: { texto: 'Vá ao Arquipélago das Brasas, a sudeste: voe com o Corviknight ou pegue o Barco das Brasas com o Capitão Tonho, no cais de Vila Siri, no Sertão', alvo: 'siri_barqueiro' },
       },
       atores: [
         { id: 'graca_mina', quem: 'graca', nome: 'Líder Graça', look: LOOKS.zelia, spot: 'ninho_cidade_escarpa', permanente: true },

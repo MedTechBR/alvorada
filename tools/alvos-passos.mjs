@@ -115,6 +115,14 @@ export async function analisarAlvos(A) {
       const pp = proximoPasso(f);
       let o = obj, prox = TODAS.filter(({ s, seg: sg }) => !feitas.has(s.id) && principal(s) && condOk(s.gatilho, f) && (s.gatilho.tipo !== 'avistar' || sg === seg)).map(({ s }) => s);
       if (pp && pp.jornada !== seg.jornada) {
+        // o objetivo que a cena gravou ao fechar o trecho (fica no diário) também tem de levar ao começo do próximo
+        if (obj?.alvo && deOnde !== 'padrão da jornada' && !checar.fechou?.has(deOnde)) {
+          (checar.fechou ??= new Set()).add(deOnde);
+          const Jp = JORNADAS.find((j) => j.id === pp.jornada), al = alvoDe(obj.alvo, f);
+          const r = { seg: seg.id, origem: deOnde + ' (fim do trecho)', texto: obj.texto, alvo: obj.alvo, pos: al, prox: ['começo da jornada ' + pp.jornada], dispara: null };
+          if (al && Jp?.lugares) r.dispara = perto(al, { gatilho: { tipo: 'entrar', alvo: Jp.lugares } }, f);
+          resultados.push(r);
+        }
         o = { texto: pp.texto, alvo: pp.alvo ?? LIDER_ID[pp.key] };
         const Jp = JORNADAS.find((j) => j.id === pp.jornada);
         if (Jp?.lugares) prox = [{ id: 'começo da jornada ' + Jp.id, gatilho: { tipo: 'entrar', alvo: Jp.lugares } }, ...prox];

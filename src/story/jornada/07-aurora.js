@@ -271,7 +271,7 @@ export default {
       ],
       depois: {
         insignia: 'rochedo', montaria: 'sneasler',
-        objetivo: { texto: 'Siga pela Rota 14 até a Vila Mandacaru, no Sertão do Levante', alvo: 'ninho_cidade_escarpa' },
+        objetivo: { texto: 'Siga pela Rota 14 até a Vila Mandacaru, no Sertão do Levante', alvo: 'ninho_vila_mandacaru' },
       },
       atores: [
         { id: 'bras_roda', quem: 'bras', nome: 'Líder Brás', look: LOOKS.tecnico, spot: 'ninho_forte_rochedo', permanente: true },
