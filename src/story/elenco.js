@@ -169,6 +169,30 @@ export const ELENCO = [
   { id: 'teo_saida', quem: 'teo', cap: 6, nome: 'Téo', look: 'rival', spot: 'teo_torre', cena: ['saida_mina'] },
   // ---------------- Trama principal (trama.js): o Téo das revanches por marco de insígnias ----------------
   { id: 'teo_marco', quem: 'teo', nome: 'Téo', look: 'rival', cena: ['teo_marco2', 'teo_marco2_depois', 'teo_marco4', 'teo_marco4_depois', 'teo_marco6'], longe: 3 },
+  // ---------------- Forte Rochedo e Rota 7 (ginásio de Brás; capítulos 7 a 12 em src/story/script) ----------------
+  { id: 'leader_bras', quem: 'bras', nome: 'Líder Brás', substitui: 'leader_bras', look: { preset: 'montanhista', hat: 'cap', cap: '#e8803a', capLogo: '#f2f2f2', hair: '#2a211c', skin: '#c98d62', top: '#e8803a', trim: '#2a2a2a', pants: '#2a2a2a', shoes: '#f2f2f2', bagStyle: null } },
+  { id: 'bras_forte', quem: 'bras', nome: 'Brás', substitui: 'bras_forte', look: { preset: 'montanhista', hat: 'cap', cap: '#e8803a', capLogo: '#f2f2f2', hair: '#2a211c', skin: '#c98d62', top: '#e8803a', trim: '#2a2a2a', pants: '#2a2a2a', shoes: '#f2f2f2', bagStyle: null } },
+  { id: 'mestre_cobra', quem: 'cobra', nome: 'Mestre Cobra', substitui: 'mestre_cobra', look: { preset: 'montanhista', hat: null, hair: '#e8e4dc', skin: '#a06a44', top: '#f2f2f2', trim: '#2a2a2a', pants: '#2a2a2a', shoes: '#1a1a22', bagStyle: null } },
+  { id: 'g6_dandara', quem: 'aprendiz', nome: 'Faixa-preta Dandara', look: LOOKS.nadadora, spot: 'roda_dandara', visao: 5,
+    apos: ['O portão da roda abriu porque eu perdi. Agora ele fica aberto pra todo mundo.'] },
+  { id: 'g6_tiao', quem: 'aprendiz', nome: 'Faixa-preta Tião', look: LOOKS.cacador, spot: 'roda_tiao', visao: 5,
+    apos: ['Meu Crabrawler aprendeu capoeira só de olhar. Ele ginga de lado. Porque ele é caranguejo.'] },
+  { id: 'r7_jairo', quem: 'treinador', nome: 'Lutador Jairo', look: LOOKS.operario, spot: 'r7_jairo', visao: 6,
+    apos: ['Eu treino socando pedra. As pedras estão ganhando, mas eu não desisto!'] },
+  { id: 'r7_soraia', quem: 'treinador', nome: 'Capoeirista Soraia', look: LOOKS.cacadora, spot: 'r7_soraia', visao: 6,
+    apos: ['Ginga! Ginga! Se você não ginga, você apanha. Primeira lição grátis!'] },
+  { id: 'r7_b', quem: 'treinador', nome: 'Caçador Renan', look: LOOKS.cacador, spot: 'r7_b', visao: 5,
+    apos: ['Os Rattata da ravina roubaram meu lanche. Agora eu treino só pra eles não me verem de novo.'] },
+  { id: 'r7_c', quem: 'treinador', nome: 'Montanhista Lino', look: LOOKS.pescador, spot: 'r7_c', visao: 5,
+    apos: ['O Paredão não é para amadores. Quem sobe lá precisa de garra, de Pokémon forte e de paciência.'] },
+  { id: 'r7_d', quem: 'treinador', nome: 'Campista Dora', look: LOOKS.campista, spot: 'r7_d', visao: 5,
+    apos: ['Acampei na ravina e acordei com um Geodude mordendo minha bota. Ele ganhou o meu respeito.'] },
+  { id: 'r7_e', quem: 'treinador', nome: 'Observador Hugo', look: LOOKS.observador, spot: 'r7_e', visao: 5,
+    apos: ['Ouvi dizer que tem gente que vê uma sombra branca no alto do Paredão. Eu só vi pedra.'] },
+  { id: 'r7_f', quem: 'treinador', nome: 'Mineira Ana', look: LOOKS.mineiro, spot: 'r7_f', visao: 5,
+    apos: ['Desço para a mina cedo e subo tarde. A luz lá em baixo é muito estranha, sabia?'] },
+  { id: 'r7_g', quem: 'treinador', nome: 'Pescador Juno', look: LOOKS.pescador, spot: 'r7_g', visao: 5,
+    apos: ['A ravina tem um rio subterrâneo. Ninguém sabe onde ele nasce.'] },
 ];
 
 // Treinadores das regiões novas do mundo grande (cada região traz o seu arquivo; veja docs/construir-regiao.md)
