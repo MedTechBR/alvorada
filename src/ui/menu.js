@@ -1193,7 +1193,7 @@ export class GameMenu {
     for (const k of F.vis ?? []) { const sx = (k % CW) * 16, sy = Math.floor(k / CW) * 16; if (sy >= H) continue; x0 = Math.min(x0, sx); y0 = Math.min(y0, sy); x1 = Math.max(x1, sx + 16); y1 = Math.max(y1, sy + 16); }
     if (x0 > x1) { x0 = 0; y0 = 0; x1 = W; y1 = H; }
     const fa = (F.areas ?? []).find((a) => a.name === L.focus);
-    const ot = aqui ? this.ui.hud.obj?.target : null;
+    const ot = aqui ? this.#objFora() : null;
     if (ot && Number.isFinite(ot.x) && ot.y / 16 < H) { x0 = Math.min(x0, ot.x / 16 - 6); y0 = Math.min(y0, ot.y / 16 - 6); x1 = Math.max(x1, ot.x / 16 + 6); y1 = Math.max(y1, ot.y / 16 + 6); }
     if (aqui) for (const q of g.missoes?.marcadores?.({ regiao: true }) ?? []) if (q.acomp && q.y / 16 < H) { x0 = Math.min(x0, q.x / 16 - 6); y0 = Math.min(y0, q.y / 16 - 6); x1 = Math.max(x1, q.x / 16 + 6); y1 = Math.max(y1, q.y / 16 + 6); }
     if (fa) { x0 = Math.min(x0, fa.x - 8); y0 = Math.min(y0, fa.y - 8); x1 = Math.max(x1, fa.x + 8); y1 = Math.max(y1, fa.y + 8); }
@@ -1230,7 +1230,7 @@ export class GameMenu {
       c.beginPath(); c.arc(qx, qy, r, 0, Math.PI * 2); c.fillStyle = '#4aa3ff'; c.fill(); c.lineWidth = 2 * dpr; c.strokeStyle = '#fff'; c.stroke();
       c.fillStyle = '#fff'; c.font = `900 ${Math.round(r * 1.5)}px Avenir Next, Nunito, ui-rounded, system-ui, sans-serif`; c.fillText('!', qx, qy + 0.5 * dpr);
     }
-    const obj = this.ui.hud.obj?.target;
+    const obj = this.#objFora();
     if (obj && Number.isFinite(obj.x)) { const [ox, oy] = S(obj.x / 16, obj.y / 16), r = 7 * dpr; c.beginPath(); c.moveTo(ox, oy - r); c.lineTo(ox + r, oy); c.lineTo(ox, oy + r); c.lineTo(ox - r, oy); c.closePath(); c.fillStyle = '#f2b705'; c.fill(); c.lineWidth = 2 * dpr; c.strokeStyle = '#fff'; c.stroke(); }
     const [x, y] = S(ptx, pty);
     const pulse = 0.5 + 0.5 * Math.sin((L.t ?? 0) * 6);
@@ -1239,6 +1239,13 @@ export class GameMenu {
     c.font = `900 ${13 * dpr}px Avenir Next, Nunito, ui-rounded, system-ui, sans-serif`;
     c.beginPath(); c.arc(cv.width - 22 * dpr, 22 * dpr, 13 * dpr, 0, Math.PI * 2); c.fillStyle = '#e5383b'; c.fill(); c.lineWidth = 2 * dpr; c.strokeStyle = '#fff'; c.stroke();
     c.fillStyle = '#fff'; c.fillText('N', cv.width - 22 * dpr, 22.5 * dpr);
+  }
+
+  // objetivo no mapa de fora: alvo dentro de um prédio vira a porta dele (o guia leva até lá)
+  #objFora() {
+    const t = this.ui.hud.obj?.target, m = this.g.map; if (!t || !Number.isFinite(t.x)) return null;
+    const r = m.interiorAt?.(t.x, t.y); if (!r) return t;
+    return r.door ? { x: r.door.x * 16 + 8, y: r.door.y * 16 + 8 } : null;
   }
 
   // ---------- Cartão de treinador ----------

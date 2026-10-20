@@ -128,21 +128,32 @@ export class Minimap {
       const u = this.dpr; ctx.fillStyle = '#fff3c8'; ctx.strokeStyle = '#3a2a1a'; ctx.lineWidth = u;
       ctx.beginPath(); ctx.moveTo(x - 3 * u, y); ctx.lineTo(x, y - 3.5 * u); ctx.lineTo(x + 3 * u, y); ctx.lineTo(x + 3 * u, y + 3 * u); ctx.lineTo(x - 3 * u, y + 3 * u); ctx.closePath(); ctx.fill(); ctx.stroke();
     }
-    // missões ativas (src/story/missoes): bolinha azul com "!" (a acompanhada fica presa na borda quando está longe)
+    // missão acompanhada (src/story/missoes): bolinha azul com "!" — só a que o jogador escolheu acompanhar
     for (const q of g.missoes?.marcadores?.() ?? []) {
+      if (!q.acomp) continue;
       let [qx, qy] = toS(q.x, q.y); const dx = qx - R, dy = qy - R, dd = Math.hypot(dx, dy), lim = R - 8 * this.dpr;
-      if (dd > lim) { if (!q.acomp) continue; qx = R + dx / dd * lim; qy = R + dy / dd * lim; }
-      const u = this.dpr, r = (q.acomp ? 4.6 : 3.6) * u; ctx.fillStyle = '#4aa3ff'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.3 * u;
+      if (dd > lim) { qx = R + dx / dd * lim; qy = R + dy / dd * lim; }
+      const u = this.dpr, r = 4.6 * u; ctx.fillStyle = '#4aa3ff'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.3 * u;
       ctx.beginPath(); ctx.arc(qx, qy, r, 0, 7); ctx.fill(); ctx.stroke();
       ctx.fillStyle = '#fff'; ctx.font = `900 ${Math.round(r * 1.6)}px Avenir Next, ui-rounded, system-ui, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('!', qx, qy + 0.3 * u);
     }
-    // objetivo da história: losango (preso na borda quando está longe)
-    const tg = g.ui?.hud?.obj?.target;
-    if (tg && Number.isFinite(tg.x)) {
+    // objetivo: o caminho do guia (src/world/guia.js) em pontilhado até o alvo ou até a porta, e o losango lá.
+    // Longe, o losango fica na borda, na direção em que o CAMINHO sai do minimapa (não em linha reta).
+    const gi = g.guia?.info, tg = g.ui?.hud?.obj?.target;
+    if (gi?.ok && gi.trecho?.length) {
+      const u = this.dpr, lim = R - 8 * u;
+      ctx.setLineDash([2.2 * u, 2.6 * u]); ctx.lineWidth = 2.2 * u; ctx.strokeStyle = 'rgba(242,183,5,0.95)'; ctx.lineCap = 'round';
+      ctx.beginPath(); let fora = null;
+      gi.trecho.forEach((q, i) => { const [x, y] = toS(q.x, q.y); if (!fora && Math.hypot(x - R, y - R) > lim) fora = [x, y]; if (!fora) { if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); } });
+      ctx.stroke(); ctx.setLineDash([]);
+      const fim = gi.saida ?? tg;
+      let [ox, oy] = fim ? toS(fim.x, fim.y) : [R, R];
+      if (Math.hypot(ox - R, oy - R) > lim) { const [fx, fy] = fora ?? [ox, oy], dx = fx - R, dy = fy - R, dd = Math.hypot(dx, dy) || 1; ox = R + dx / dd * lim; oy = R + dy / dd * lim; }
+      this.#losango(ctx, ox, oy);
+    } else if (tg && Number.isFinite(tg.x) && !(gi?.pronto && !gi.ok)) {
       let [ox, oy] = toS(tg.x, tg.y); const dx = ox - R, dy = oy - R, dd = Math.hypot(dx, dy), lim = R - 8 * this.dpr;
       if (dd > lim) { ox = R + dx / dd * lim; oy = R + dy / dd * lim; }
-      const u = this.dpr, r = 5 * u; ctx.fillStyle = '#f2b705'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5 * u;
-      ctx.beginPath(); ctx.moveTo(ox, oy - r); ctx.lineTo(ox + r, oy); ctx.lineTo(ox, oy + r); ctx.lineTo(ox - r, oy); ctx.closePath(); ctx.fill(); ctx.stroke();
+      this.#losango(ctx, ox, oy);
     }
     // jogador: seta
     const pa = room ? DIR_ANGLE[p.dir] : (this.rotate ? 0 : DIR_ANGLE[p.dir] ?? 0);
@@ -159,6 +170,11 @@ export class Minimap {
     const h = Math.floor(this.life.hour), mi = Math.floor((this.life.hour % 1) * 60 / 10) * 10;
     const lt = `${String(h).padStart(2, '0')}:${String(mi).padStart(2, '0')}${this.rotate ? ' · gira' : ''}`;
     if (this.label.textContent !== lt) this.label.textContent = lt;
+  }
+
+  #losango(ctx, ox, oy) {
+    const u = this.dpr, r = 5 * u; ctx.fillStyle = '#f2b705'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5 * u;
+    ctx.beginPath(); ctx.moveTo(ox, oy - r); ctx.lineTo(ox + r, oy); ctx.lineTo(ox, oy + r); ctx.lineTo(ox - r, oy); ctx.closePath(); ctx.fill(); ctx.stroke();
   }
 
   // Mapa completo da região (para o menu): fog nos setores não visitados, nomes das áreas e o jogador.

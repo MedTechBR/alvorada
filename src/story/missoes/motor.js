@@ -514,7 +514,7 @@ export class Missoes {
     const e = this.etapa(m), a = this.s.ativas[m.id];
     const n = e?.n ?? (e?.tipo === 'achar' ? this.mundo.total(e) : 1);
     const sub = n > 1 ? `${e.rotulo ?? 'Progresso'}: ${Math.min(a.c, n)}/${n}` : m.regiao ?? undefined;
-    return { id: `missao:${m.id}:${a.e}`, label: `Missão · ${m.titulo}`, title: m.titulo, text: e?.texto ?? m.resumo ?? m.titulo, sub, target: this.alvo(m, e) };
+    return { id: `missao:${m.id}:${a.e}`, label: `Missão · ${m.titulo}`, title: m.titulo, text: e?.texto ?? m.resumo ?? m.titulo, sub, target: this.alvoBruto(m, e) }; // o alvo de verdade: o guia (src/world/guia.js) acha as portas
   }
   // texto das etapas para o diário: [{ texto, feita, atual, prog }]
   passos(m) {
