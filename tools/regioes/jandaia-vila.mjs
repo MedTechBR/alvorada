@@ -59,10 +59,10 @@ export function vila(M, C, J) {
   // ---------------- moradores ----------------
   const ppl = J.people;
   ppl.push(
-    { id: 'pescador_tupa_fora', name: 'Pescador Tupã', look: LOOK.pescador, x: 67, y: 616, dir: 'down', wander: 2, lines: ['Estou secando a rede. A rede está secando a paciência.', 'Quem for à Selva Grande: leve um Pokémon que suba. O resto é só coragem, e coragem não escala.'] },
+    { id: 'pescador_tupa_fora', name: 'Pescador Tupã', look: LOOK.pescador, x: 67, y: 616, dir: 'down', wander: 2, lines: ['Estou secando a rede. A rede está secando a paciência.', 'Quem for à Selva Grande, leve um Pokémon que saiba escalar. O resto é coragem, e coragem não sobe cipó.'] },
     { id: 'turista_praia', name: 'Turista', look: LOOK.turista, x: 76, y: 603, dir: 'right', wander: 3, lines: ['Vim passar um fim de semana. Faz seis meses.', 'Os Oricorio daqui dançam o dia todo. Eu tento imitar. Não tem como.'] },
     { id: 'surfista_jandaia', name: 'Surfista Maruê', look: LOOK.surf, x: 104, y: 606, dir: 'left', wander: 2, lines: ['A onda boa vem às sete da manhã e às quatro da tarde. A mais ou menos vem toda hora.', 'Se o mar ficar quieto demais, é porque tem algo grande debaixo dele. Ou é só o mar descansando.'] },
-    { id: 'menina_ovo', name: 'Menina Cacá', look: 'menina', kid: true, x: 99, y: 599, dir: 'down', wander: 2, lines: ['A Vó Iara deixa eu contar os ovos. Hoje estão todos aí. Ontem faltou um. Era o dela.', 'O Chansey faz sopa de ovo. Não pergunte de quem são os ovos.'] },
+    { id: 'menina_ovo', name: 'Menina Cacá', look: 'menina', kid: true, x: 99, y: 599, dir: 'down', wander: 2, lines: ['A Vó Iara deixa eu contar os ovos da creche. Hoje estão todos no cesto.', 'Ontem faltou um. Era um ovo que já tinha nascido e saído andando.'] },
   );
   // os 4 Capitães da ilha: um em cada praia (a missão "O guardião da ilha" os usa)
   const cap = (id, nome, look, x, y, dir, fala) => { const [px, py] = perto(M, ['sand'], x, y, 14) ?? [x, y]; ppl.push({ id, name: nome, look, x: px, y: py, dir, lines: fala }); };
@@ -147,7 +147,7 @@ export function salasVila(J) {
     ],
     decor: [{ kind: 'rug', x: 7, y: 7 }, { kind: 'window', x: 4, y: 1, oy: 3 }, { kind: 'window', x: 12, y: 1, oy: 3 }],
     people: [
-      { id: 'recepcionista_pousada', name: 'Dona Nalva', look: 'mae', x: 10, y: 5, dir: 'down', lines: ['Bem-vindo à Pousada da Praia! O café da manhã é às oito. O almoço é às duas. O jantar é quando a fome bater.', 'Os quartos são todos com vista para o mar. Os fundos também.'] },
+      { id: 'recepcionista_pousada', name: 'Dona Nalva', look: 'mae', x: 10, y: 5, dir: 'down', lines: ['Bem-vindo à Pousada da Praia! O café é às oito, o almoço às duas e o jantar quando a fome bater.', 'Os quartos têm vista para o mar. Os dos fundos têm vista para o mar também, só que mais longe.'] },
       { id: 'hospede_pousada', name: 'Casal de Turistas', look: LOOK.turista, x: 15, y: 6, dir: 'left', wander: 1, lines: ['Viemos pelos Pokémon de Alola. O Rattata daqui usa óculos de sol, eu juro.'] },
     ],
   });
@@ -175,7 +175,7 @@ export function salasVila(J) {
     ],
     decor: [{ kind: 'rug', x: 7, y: 6 }, { kind: 'window', x: 5, y: 1, oy: 3 }],
     people: [
-      { id: 'dra_ybi', name: 'Dra. Ybi', look: LOOK.pesquisadora, x: 8, y: 5, dir: 'down', lines: ['Sou arqueóloga. Estudo as raízes do templo, que são mais antigas que a ilha e mais teimosas que eu.', 'O templo tem três andares. Cada um guarda uma tabuleta. Sem as três, o mapa não fecha.'] },
+      { id: 'dra_ybi', name: 'Dra. Ybi', look: LOOK.pesquisadora, x: 8, y: 5, dir: 'down', lines: ['Sou arqueóloga. Estudo as raízes do templo, mais antigas que a ilha e mais teimosas que eu.', 'O templo tem três andares, com uma tabuleta em cada um. Sem as três, o mapa não fecha.'] },
       { id: 'pesq_ybi_1', name: 'Assistente Gil', look: LOOK.explorador, x: 13, y: 6, dir: 'left', wander: 1, lines: ['Eu carrego as caixas. A Dra. Ybi carrega o raciocínio. Divisão justa.'] },
     ],
   });
