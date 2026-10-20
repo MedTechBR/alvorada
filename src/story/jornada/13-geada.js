@@ -33,10 +33,10 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'vila_geada', requer: ['nh.chegouGeada'], semFlag: ['nh.vilaGeada'] },
       falas: [
         ['narrador', 'Vila Geada: casas de madeira com telhado de neve, um observatório de cúpula de vidro e uma estalagem sempre quente.'],
-        ['prof', '{jogador}! Depois do Relógio eu não podia ficar parado. A aurora daqui é a melhor medição que eu tenho.'],
-        ['prof', 'Cuidado na Caverna de Gelo. Dizem que o eco repete a voz de quem passa, e às vezes não sabemos quem responde.'],
-        ['prof', 'E o Téo subiu para o Cume ontem. Ele quer enfrentar você lá em cima, antes da Liga. Não deixe ele te achar despreparado.'],
-        ['jogador', 'O senhor não parece cansado depois de tudo. Fico feliz de ver.'],
+        ['prof', '{jogador}! Depois do Relógio, vim medir o sol aqui do observatório. Quero ter certeza de que ele nasce na hora.'],
+        ['prof', 'Cuidado na Caverna de Gelo: o chão é escorregadio e tem muitos Pokémon de gelo.'],
+        ['prof', 'O Téo subiu para o Cume ontem. Ele quer lutar com você lá, antes da Liga. Cure bem a sua equipe.'],
+        ['jogador', 'Que bom ver o senhor bem, professor.'],
       ],
       depois: {
         flags: { 'nh.vilaGeada': true },
@@ -52,9 +52,9 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'caverna_gelo_1', requer: ['nh.vilaGeada'], semFlag: ['nh.cavernaGelo'] },
       falas: [
         ['narrador', 'A Caverna de Gelo tem três andares, cada um mais frio. As paredes são de gelo azul, com bolhas de ar presas nele.'],
-        ['narrador', 'No primeiro andar, sua voz volta mais grave do que você falou. Parece que alguém responde do fundo, usando a sua voz.'],
-        ['jogador', 'Eco não me assusta. Eu vou subir.'],
-        ['narrador', 'No terceiro andar, uma luz fraca aparece ao fundo. Na saída para o Cume, alguém está parado de costas, esperando.'],
+        ['narrador', 'No primeiro andar, sua voz volta em eco, mais grave.'],
+        ['jogador', 'É só o eco. Vou subir.'],
+        ['narrador', 'No terceiro andar, a saída para o Cume já aparece. Alguém espera lá, parado.'],
       ],
       depois: {
         flags: { 'nh.cavernaGelo': true },
@@ -68,11 +68,11 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'cume_vento_branco', requer: ['nh.cavernaGelo'], semFlag: ['nh.rival5'] },
       falas: [
         ['teo', 'Você demorou. Eu fiquei esperando aqui desde ontem, olhando o vento e pensando se você ia mesmo subir.'],
-        ['jogador', 'Eu subi. E o seu pai? Eu o vi no Relógio, Téo. Ele está bem, e está livre.'],
-        ['teo', 'Eu sei. Eu não estou aqui por ele. Ou melhor, estou, mas não do jeito que você pensa.'],
-        ['teo', 'Mudei de lado na mina e não sei se aguento ficar do lado certo. Quero uma luta de verdade antes da Elite.'],
-        ['jogador', 'Então vamos lutar. Você fala depois, se quiser.'],
-        ['teo', 'Se eu ganhar, eu falo. Se perder, falo do mesmo jeito. Mas eu vou falar, {jogador}.'],
+        ['jogador', 'Cheguei. Seu pai está bem, né? Eu o vi no Relógio.'],
+        ['teo', 'Está, sim. Obrigado por ajudar ele.'],
+        ['teo', 'Mudei de lado na mina e quero provar que fiz a escolha certa. Vamos fazer uma luta de verdade antes da Elite.'],
+        ['jogador', 'Então vamos lutar!'],
+        ['teo', 'Vamos! E sem pegar leve, {jogador}.'],
       ],
       depois: {
         batalha: {
@@ -96,9 +96,9 @@ export default {
       gatilho: { tipo: 'vencer', alvo: 'nh_rival5' },
       falas: [
         ['teo', 'Tá, você ganhou. Eu não estou com raiva. Estou com frio, e isso é pior.'],
-        ['teo', 'Meu pai já saiu da mina, e eu vou com ele para casa. Nenhuma companhia manda mais em nós dois.'],
-        ['teo', 'Quando a Elite perguntar quem te trouxe até aqui, diga o meu nome. Eu estou no Portão da Liga, esperando você.'],
-        ['jogador', 'Eu digo, Téo. Pode deixar.'],
+        ['teo', 'Meu pai já está livre, e nenhuma companhia manda mais em nós.'],
+        ['teo', 'Vá na frente. Eu espero você no Portão da Liga.'],
+        ['jogador', 'Combinado. Até lá.'],
         ['narrador', 'O Téo estende a mão sem muita cerimônia. A luta não resolveu tudo, mas aproximou os dois.'],
         ['jogador', 'Até a Liga, Téo.'],
       ],
