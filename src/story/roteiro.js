@@ -62,6 +62,7 @@ const DIRV = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // Pokémon que falam e o dex de cada um (aparecem perto do jogador quando falam, em #garantir)
 const SEM_CORPO = new Set(['narrador', 'jogador', 'radio', 'pokedex', 'inicial']); // quem fala sem aparecer na tela
+const NPC_ANTIGO = { mae: 'mom', prof: 'prof', teo: 'rival', tome: 'leader_tome' };
 const FALANTES_PK = { absol: 359, lunala: 792, solgaleo: 791, necrozma: 800 };
 const MONTARIA = { mudbray: 'correr', lapras: 'nadar', sneasler: 'escalar', corviknight: 'voar', mantine: 'mergulhar' };
 // Pokémon do Téo que luta ao seu lado nas batalhas em dupla (Mina Aurora): lado próprio, inimigo dos selvagens e dos
@@ -202,6 +203,8 @@ export class Roteiro {
       this.#posicionar([a]); a.visible = true; (this.pkTemp ??= []).push({ a, id: cena.id });
       return;
     }
+    const sn = this.s.npc?.(NPC_ANTIGO[quem]); // moradores do story.js (Mãe, Professor, Téo, Tomé)
+    if (sn && perto(sn)) return;
     const todos = [...this.atores.values()].filter((a) => a.e.quem === quem);
     if (todos.some(perto)) { this.#lembrar(todos.find(perto)); return; }
     if (!todos.length) return console.warn('roteiro: ninguém faz o papel', quem, 'na cena', cena.id);
@@ -452,7 +455,7 @@ export class Roteiro {
       // cartão de jornada escrito como fala do narrador ("Jornada: Nome")
       if (quem === 'narrador' && linhas.length === 1 && /^Jornada: /.test(linhas[0])) { await g.ui.chapterCard(linhas[0]); continue; }
       // falas genéricas de treinador ('treinador', 'aprendiz') saem com o nome de quem está na cena
-      const generico = quem === 'treinador' || quem === 'aprendiz';
+      const generico = quem === 'treinador' || quem === 'aprendiz' || quem === 'vigilante';
       if (!generico && !SEM_CORPO.has(quem) && PERSONAGENS[quem]?.papel !== 'narrador') this.#garantir(quem);
       const n = generico ? (this.atorCena?.visible ? this.atorCena : null) : quem !== 'narrador' && quem !== 'jogador' ? this.#porQuem(quem) : null;
       if (n && Math.hypot(n.x - g.player.x, n.y - g.player.y) < 12 * T) { n.faceTo(g.player.x, g.player.y); g.player.dir = this.s.dirTo(g.player, n); }
