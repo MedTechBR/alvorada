@@ -64,10 +64,10 @@ export class Espetaculo {
     const h = (t.topH ?? 20) * 0.85 + 6, x = t.x + (Math.random() - 0.5) * 8;
     const cor = eff > 1 ? '#ffc23a' : eff < 1 && eff > 0 ? '#c9ced8' : crit ? '#ff7a4a' : '#ffffff';
     const big = forte || crit || eff > 1;
-    this.#push({ x, y: t.y, h, s: String(dmg), cor, st: 'dmg', big, life: 0.9, k: 1 });
+    this.#push({ x, y: t.y, h, oy: -24, s: String(dmg), cor, st: 'dmg', big, life: 0.9, k: 1 }); // acima da plaquinha do alvo
     const pal = this.#palavras(eff, crit);
     // as palavras ficam acima do número, em degraus fixos na tela (não encavalam com o número que pula)
-    pal.forEach((p, i) => this.#push({ x: t.x, y: t.y, h, oy: -(big ? 22 : 19) - i * 13, s: p.s, cor: p.cor, st: 'banner', big: true, life: 0.95, k: 1 }));
+    pal.forEach((p, i) => this.#push({ x: t.x, y: t.y, h, oy: -(big ? 46 : 43) - i * 13, s: p.s, cor: p.cor, st: 'banner', big: true, life: 0.95, k: 1 }));
   }
   #palavras(eff, crit) {
     const out = [];

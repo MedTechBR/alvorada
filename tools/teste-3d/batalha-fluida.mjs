@@ -33,6 +33,7 @@ const PILOTO = () => `(() => {
     if ((tG -= dt) <= 0) { tG = 0.7 + Math.random() * 0.5; const n = L.mon.moves.length || 1; for (let k = 0; k < n; k++) { const s = (slot++) % n; if (!L.cds[s]) { G.combat.use(L, s, w.x, w.y - 8); break; } } }
     if (!${process.env.KO === '1'}) for (const e of alvos) if (e.mon.hp < e.mon.stats.hp * 0.25) e.mon.hp = e.mon.stats.hp; // a luta não acaba no meio da gravação
     if (L.mon.hp < L.mon.stats.hp * 0.3) L.mon.hp = L.mon.stats.hp;
+    if (${process.env.CRIT === '1'}) L.critBoost = 99; // CRIT=1: golpes críticos com frequência (para ver o texto CRÍTICO!)
   }, 33);
   return 1;
 })()`;
