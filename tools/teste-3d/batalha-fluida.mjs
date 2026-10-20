@@ -17,19 +17,20 @@ mkdirSync(OUT, { recursive: true });
 // piloto de teste: o seu Pokémon anda o tempo todo (aproxima, contorna, recua) e usa os golpes em rodízio pela
 // mesma porta do jogador (combat.use com mira no alvo). Assim a gravação mostra a luta andando, sem teletransporte.
 const PILOTO = `(() => {
-  const G = window.game; let slot = 0, tG = 0, lado = 1, tL = 0;
+  const G = window.game; let slot = 0, tG = 0, lado = 1, tL = 0, t0 = G.time;
   clearInterval(window.__piloto);
   window.__piloto = setInterval(() => {
+    const dt = G.time - t0; t0 = G.time; if (dt <= 0) return; // relógio do jogo (a gravação roda em câmera lenta)
     const L = G.lead, inp = G.input; if (!L?.alive) { inp.move.x = inp.move.y = 0; return; }
     const b = G.story?.battle, alvos = (b ? b.active : G.entities).filter((e) => e.alive && !e.dead && e.side !== 'ally' && e.mon);
     if (!alvos.length) { inp.move.x = inp.move.y = 0; return; }
     const w = alvos.reduce((m, e) => (Math.hypot(e.x - L.x, e.y - L.y) < Math.hypot(m.x - L.x, m.y - L.y) ? e : m));
     const dx = w.x - L.x, dy = w.y - L.y, d = Math.hypot(dx, dy) || 1;
-    if ((tL -= 0.033) <= 0) { tL = 1 + Math.random() * 1.4; lado = Math.random() < 0.5 ? 1 : -1; }
+    if ((tL -= dt) <= 0) { tL = 1 + Math.random() * 1.4; lado = Math.random() < 0.5 ? 1 : -1; }
     let mx = -dy / d * 0.8 * lado, my = dx / d * 0.8 * lado;
     if (d > 80) { mx += dx / d; my += dy / d; } else if (d < 40) { mx -= dx / d; my -= dy / d; }
     const l = Math.hypot(mx, my) || 1; inp.move.x = mx / l; inp.move.y = my / l;
-    if ((tG -= 0.033) <= 0) { tG = 0.7 + Math.random() * 0.5; const n = L.mon.moves.length || 1; for (let k = 0; k < n; k++) { const s = (slot++) % n; if (!L.cds[s]) { G.combat.use(L, s, w.x, w.y - 8); break; } } }
+    if ((tG -= dt) <= 0) { tG = 0.7 + Math.random() * 0.5; const n = L.mon.moves.length || 1; for (let k = 0; k < n; k++) { const s = (slot++) % n; if (!L.cds[s]) { G.combat.use(L, s, w.x, w.y - 8); break; } } }
     if (!${process.env.KO === '1'}) for (const e of alvos) if (e.mon.hp < e.mon.stats.hp * 0.25) e.mon.hp = e.mon.stats.hp; // a luta não acaba no meio da gravação
     if (L.mon.hp < L.mon.stats.hp * 0.3) L.mon.hp = L.mon.stats.hp;
   }, 33);

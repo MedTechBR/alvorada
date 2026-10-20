@@ -96,7 +96,7 @@ export class Visual3D {
   }
   #luzUpdate(dt) {
     if (!this.flash) return;
-    if (this.flashT > 0) { this.flashT -= dt; const k = Math.max(0, this.flashT / this.flashVida); this.flash.intensity = this.flashMax * 9000 * k * k; }
+    if (this.flashT > 0) { this.flashT -= dt; const k = Math.max(0, this.flashT / this.flashVida); this.flash.intensity = this.flashMax * 5200 * k * k; /* clarão do golpe, mais contido: antes lavava a tela inteira */ }
     else this.flash.intensity = 0;
   }
   // troca o desenho do Pixi pelo nosso (o quadro do jogo continua o mesmo)
