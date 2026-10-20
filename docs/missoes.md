@@ -152,8 +152,8 @@ Mesmos filtros do `capturar`. Se vários servem, o jogador escolhe. O Pokémon f
 Batalha da própria missão (o NPC desafia na conversa):
 
 ```js
-{ tipo: 'vencer', npc: 'kid_camp1', texto: 'Vença o Tiago',
-  batalha: { id: 'sq_tiago', nome: 'Menino Tiago', dinheiro: 240, equipe: [[16, 9, ['tackle', 'gust']], [659, 10]] },
+{ tipo: 'vencer', npc: 'kid_camp1', texto: 'Vença o Rafa',
+  batalha: { id: 'sq_tiago', nome: 'Menino Rafa', dinheiro: 240, equipe: [[16, 9, ['tackle', 'gust']], [659, 10]] },
   agora: true,          // logo depois de aceitar, já batalha
   perguntar: false,     // sem "Vamos? / Agora não"
   falas: ['Vai, Pidgey!'], vitoria: ['Aaah!'], derrota: ['Ganhei!'] }

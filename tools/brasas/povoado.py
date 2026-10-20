@@ -306,7 +306,7 @@ def basalto(ctx, C):
     C.obj('sign', 948, 643, forcar=True, text='Embarcadouro da Ilha do Basalto. Barco das Brasas, às 15h: Vila Termas e Vila Siri.')
     C.pessoa(id='barqueiro_basalto', name='Marujo Dino', look=OLHA['marujo'], x=955, y=641, dir='right', viagem='barco_brasas_basalto',
              lines=['Aqui é parada. O barco encosta às três da tarde. Para o Planalto não levo ninguém: a tempestade lá em cima não deixa nem gaivota passar.'])
-    C.pessoa(id='basalto_surfista', name='Surfista Lúcio', look={'preset': 'treinador', 'hairStyle': 'spiky', 'hair': '#e8c060', 'hat': None, 'outfit': 'shirt', 'top': '#4ab0c0', 'legs': 'shorts', 'pants': '#e0782e', 'shoes': '#f2f2f2', 'bagStyle': None},
+    C.pessoa(id='basalto_surfista', name='Surfista Zeno', look={'preset': 'treinador', 'hairStyle': 'spiky', 'hair': '#e8c060', 'hat': None, 'outfit': 'shirt', 'top': '#4ab0c0', 'legs': 'shorts', 'pants': '#e0782e', 'shoes': '#f2f2f2', 'bagStyle': None},
              x=852, y=642, dir='left', wander=1,
              lines=['A onda aqui bate na pedra preta e volta dourada. Já tentei surfar no vulcão, mas a onda é de lava.'])
     C.pessoa(id='basalto_catador', name='Catadora Marlene', look=OLHA['banhista'], x=880, y=668, dir='down', wander=2,

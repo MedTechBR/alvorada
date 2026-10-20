@@ -89,7 +89,7 @@ const TREINADORES = [
     [[478, 47, ['iceBeam', 'shadowBall', 'hex']], [87, 46, ['icyWind', 'surf', 'headbutt']]]],
   ['gt_alp3', 'Alpinista Zilda', 'Rota 16, Campos Nevados', 'Adiante fica o paredão. Antes, mostre que sabe escalar!', 'Escalou bem. Boa subida.', 'Ainda falta fôlego. Treine mais.',
     [[221, 46, ['iceFang', 'earthquake', 'rockSlide']], [473, 48, ['earthquake', 'iceShard', 'stoneEdge']]]],
-  ['gt_guarda1', 'Guarda Dora', 'Rota 16, Campos Nevados', 'Em nome do parque, ninguém passa sem treino. Mostre o que sabe!', 'Pode seguir. Cuidado lá em cima.', 'Treine mais. A Geleira não perdoa.',
+  ['gt_guarda1', 'Guarda Ênio', 'Rota 16, Campos Nevados', 'Em nome do parque, ninguém passa sem treino. Mostre o que sabe!', 'Pode seguir. Cuidado lá em cima.', 'Treine mais. A Geleira não perdoa.',
     [[713, 46, ['avalanche', 'crunch', 'bodySlam']], [362, 47, ['blizzard', 'crunch', 'iceFang']]]],
   ['gt_lenhador', 'Lenhador Ivo', 'Atalho do Lenhador', 'Você achou o meu atalho! Quem acha, enfrenta.', 'Perdi o atalho. Pode usar, mas não conte a ninguém.', 'O atalho é meu! Volte pela Rota 16.',
     [[68, 46, ['closeCombat', 'rockSlide', 'earthquake']], [460, 47, ['blizzard', 'energyBall', 'iceShard']]]],

@@ -320,7 +320,7 @@ export const NPCS = {
     "treinador": {
       "batalha": {
         "id": "sq_tr_sertao_dalva",
-        "nome": "Cangaceira Dalva",
+        "nome": "Cangaceira Maura",
         "equipe": [
           [
             336,
@@ -452,7 +452,7 @@ export const NPCS = {
     "treinador": {
       "batalha": {
         "id": "sq_tr_sertao_tome",
-        "nome": "Ciclista Tomé",
+        "nome": "Ciclista Rômulo",
         "equipe": [
           [
             965,
@@ -1210,7 +1210,7 @@ export const NPCS = {
     "treinador": {
       "batalha": {
         "id": "sq_tr_sertao_lucio",
-        "nome": "Catador Lúcio",
+        "nome": "Catador Edson",
         "equipe": [
           [
             341,
