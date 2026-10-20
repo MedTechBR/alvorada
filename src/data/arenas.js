@@ -41,7 +41,7 @@ export const ARENAS = {
   // ------------------------------------------------------------------ Lia (Inseto): estufa-teia
   leader_lia: {
     id: 'lia', nome: 'Estufa-Teia', tipo: 'bug', cor: '#9ad83a',
-    sala: 'estufa_lia', area: [1, 2, 21, 15], posicoes: { jogador: [11, 15], lider: [11, 2.5] },
+    sala: 'estufa_lia', area: [1, 2, 21, 14], posicoes: { jogador: [11, 14.6], lider: [11, 2.5] }, // 21×14: o tapete de saída (linha 16) fica fora da luta
     abertura: 'Cuidado onde pisa! A teia prende, as plantas mordem e os casulos estão quase prontos.',
     gritos: { teia: ['Fios, agora!', 'Tece, tece!'], casulo: 'Acordem, pequenos!' },
     as: { titulo: 'O ás de Lia', fala: 'Scyther, corta o ar!', grito: 'Scyther!', corFx: 0x7ad83a },

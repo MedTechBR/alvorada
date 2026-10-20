@@ -11,7 +11,7 @@ import { launch, open, until, sleep } from './teste-3d/chrome.mjs';
 
 const PORTA = process.env.PORTA ?? 8752, URL = `http://127.0.0.1:${PORTA}/?teste&nosw`;
 const args = process.argv.slice(2), quem = args.find((a) => !a.startsWith('--')) ?? 'todos';
-const CEL = args.includes('--celular'), FOTOS = args.includes('--fotos'), VEZES = +(args.find((a) => a.startsWith('--vezes='))?.split('=')[1] ?? 1);
+const CEL = args.includes('--celular'), FOTOS = args.includes('--fotos'), PAISAGEM = args.includes('--paisagem'), VEZES = +(args.find((a) => a.startsWith('--vezes='))?.split('=')[1] ?? 1);
 
 // equipe do jogador (dex, nível) e como chegar na luta
 const CASOS = {
@@ -32,8 +32,8 @@ const lista = quem === 'todos' ? ORDEM : quem === 'existentes' ? ORDEM.slice(0, 
 async function caso(b, nome, rodada) {
   const C = CASOS[nome]; if (!C) throw new Error('caso desconhecido ' + nome);
   const p = await open(b, URL, nome);
-  if (CEL) {
-    await p.raw('Emulation.setDeviceMetricsOverride', { width: 412, height: 860, deviceScaleFactor: 2, mobile: true });
+  if (CEL || PAISAGEM) {
+    await p.raw('Emulation.setDeviceMetricsOverride', PAISAGEM ? { width: 844, height: 390, deviceScaleFactor: 2, mobile: true } : { width: 412, height: 860, deviceScaleFactor: 2, mobile: true });
     await p.raw('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
     await p.raw('Page.reload', {});
   }
