@@ -832,7 +832,7 @@ export class GameMenu {
           <div class="gm-lm-p">${typePills([v.type])}<span class="gm-type" style="background:${cc}">${cat}</span></div>
           <div class="gm-lm-g"><div><small>Poder</small><b>${num(v.power)}</b></div><div><small>Precisão</small><b>${precisao}</b></div><div><small>PP</small><b>${num(v.pp)}</b></div><div><small>Recarga</small><b>${String(v.cd ?? 1).replace('.', ',')} s</b></div></div>
           <p class="gm-lm-t">${esc(v.desc || 'Sem descrição.')}</p>
-          <div class="gm-soft gm-lm-k">${KIND_PT[v.kind] ?? ''}${moveEffect(v) ? ' · ' + esc(moveEffect(v)) : ''}</div></div>`;
+          <div class="gm-soft gm-lm-k">${KIND_PT[v.kind] ?? ''}${!v.desc && moveEffect(v) ? ' · ' + esc(moveEffect(v)) : ''}</div></div>`;
       };
       const linha = (x, k, novo) => { const v = MOVES[x]; const [cat, cc] = CAT_PT[v?.cat] ?? ['—', '#999'];
         return `<div class="nav gm-row gm-lm-r ${novo ? 'novo' : ''}" data-k="${k}" style="--c:${TYPE_COLOR[v?.type]}"><span class="gm-cur">▶</span><span class="gm-lm-n">${esc(nome(x))}</span>${novo ? '<span class="gm-lm-tag">NOVO</span>' : ''}<span class="gm-lm-dot" style="background:${cc}" title="${cat}"></span><span class="gm-lm-pw">${v?.power ?? '—'}</span></div>`; };

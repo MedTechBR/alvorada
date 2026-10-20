@@ -16,8 +16,8 @@ export class TitleScreen {
     this.ui = ui;
     const el = document.createElement('div');
     el.id = 'title'; el.className = 'title';
-    el.innerHTML = `<div class="tt-sky"><div class="tt-sun"></div><div class="tt-hill h1"></div><div class="tt-hill h2"></div></div>
-      <div class="tt-wrap"><div class="tt-logo"><small>Pokémon</small><b>Alvorada</b><span>${(() => { const q = new URLSearchParams(location.search).get('visual'); let v = q; if (!v) { try { v = localStorage.getItem('alvorada.visual'); } catch { /* */ } } return v === '2d' ? 'edição 2D' : 'edição 3D'; })()}</span></div><div class="tt-panel"></div>
+    el.innerHTML = `<div class="tt-sky"><div class="tt-stars"></div><div class="tt-rays"></div><div class="tt-sun"></div><div class="tt-cloud c1"></div><div class="tt-cloud c2"></div><div class="tt-cloud c3"></div><div class="tt-mtn"></div><div class="tt-hill h1"></div><div class="tt-hill h2"></div><div class="tt-fire">${'<i></i>'.repeat(9)}</div><div class="tt-vig"></div></div>
+      <div class="tt-wrap"><div class="tt-logo"><i class="tt-ball"></i><small>Pokémon</small><b>Alvorada</b><span>${(() => { const q = new URLSearchParams(location.search).get('visual'); let v = q; if (!v) { try { v = localStorage.getItem('alvorada.visual'); } catch { /* */ } } return v === '2d' ? 'edição 2D' : 'edição 3D'; })()}</span></div><div class="tt-panel"></div>
       <div class="tt-foot">Jogo de fã, pessoal e sem fins comerciais.</div></div>`;
     document.getElementById('ui').appendChild(el);
     this.el = el; this.panel = el.querySelector('.tt-panel');

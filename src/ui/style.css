@@ -441,3 +441,60 @@ body.touch:not(.mais-on) #zoom { display: flex; }
   .dlg-box, .dlg-choices, .dlg-next, .tt-panel.pop, .chapter, .chapter *, .objective.flash, .fo-fase.final, #saved.on, #toasts div, .ld-ball, .evo-rays, .tt-sun, #moves .mv .cd, .evo, .evo-ring, .evo-spark i { animation: none !important; }
   #toasts div { transition: none; }
 }
+
+/* =====================================================================================================
+   Tela de título e criador, acabamento: céu com estrelas, nuvens, raios e vaga-lumes; logo com brilho; botões com relevo
+   ===================================================================================================== */
+.tt-sky { background: linear-gradient(#1c1e52 0%, #5b3a86 26%, #c25f86 46%, #f58a68 62%, #ffc878 78%, #ffe9ac 100%); }
+.tt-stars { position: absolute; inset: 0 0 52% 0; opacity: .9;
+  background: radial-gradient(1.4px 1.4px at 8% 22%, #fff, transparent), radial-gradient(1.2px 1.2px at 19% 54%, #fff, transparent), radial-gradient(1.6px 1.6px at 31% 14%, #fff, transparent), radial-gradient(1px 1px at 42% 40%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 55% 20%, #fff, transparent), radial-gradient(1.1px 1.1px at 63% 58%, #fff, transparent), radial-gradient(1.6px 1.6px at 74% 12%, #fff, transparent), radial-gradient(1.2px 1.2px at 85% 44%, #fff, transparent), radial-gradient(1.3px 1.3px at 94% 26%, #fff, transparent), radial-gradient(1px 1px at 12% 80%, #fff, transparent), radial-gradient(1px 1px at 48% 74%, #fff, transparent);
+  animation: ttstars 5s ease-in-out infinite alternate; -webkit-mask-image: linear-gradient(#000 40%, transparent); mask-image: linear-gradient(#000 40%, transparent); }
+@keyframes ttstars { to { opacity: .45; } }
+.tt-rays { position: absolute; left: 50%; bottom: 18%; width: 160vmax; height: 160vmax; margin: 0 0 -80vmax -80vmax; background: repeating-conic-gradient(from 0deg, rgba(255,236,170,.16) 0 7deg, transparent 7deg 20deg); border-radius: 50%; animation: ttspin 90s linear infinite; -webkit-mask-image: radial-gradient(circle, #000 0, transparent 38%); mask-image: radial-gradient(circle, #000 0, transparent 38%); }
+@keyframes ttspin { to { transform: rotate(360deg); } }
+.tt-sun { box-shadow: 0 0 80px 30px rgba(255,214,120,.45); }
+.tt-cloud { position: absolute; height: 5vmin; width: 26vmin; border-radius: 99px; background: linear-gradient(rgba(255,255,255,.55), rgba(255,220,200,.35)); filter: blur(2px); animation: ttcloud 60s linear infinite; }
+.tt-cloud::before, .tt-cloud::after { content: ''; position: absolute; border-radius: 50%; background: inherit; }
+.tt-cloud::before { width: 11vmin; height: 8vmin; left: 18%; top: -4vmin; } .tt-cloud::after { width: 8vmin; height: 6vmin; left: 52%; top: -3vmin; }
+.tt-cloud.c1 { top: 24%; left: -30vmin; } .tt-cloud.c2 { top: 36%; left: -30vmin; animation-duration: 85s; animation-delay: -30s; transform: scale(.7); opacity: .8; } .tt-cloud.c3 { top: 14%; left: -30vmin; animation-duration: 110s; animation-delay: -70s; transform: scale(.5); opacity: .7; }
+@keyframes ttcloud { to { translate: calc(100vw + 70vmin) 0; } }
+.tt-mtn { position: absolute; left: 0; right: 0; bottom: 8%; height: 26vmin; background: #5a4a8a; opacity: .75; clip-path: polygon(0 100%, 0 60%, 9% 38%, 17% 56%, 27% 24%, 38% 58%, 48% 40%, 58% 62%, 69% 30%, 80% 56%, 90% 36%, 100% 58%, 100% 100%); filter: blur(.4px); }
+.tt-hill.h1 { background: linear-gradient(#4fa05a, #3f8a4a 40%); } .tt-hill.h2 { background: linear-gradient(#3b7c47, #2f6a3a 40%); }
+.tt-fire { position: absolute; inset: 55% 0 0 0; pointer-events: none; }
+.tt-fire i { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #ffeaa0; box-shadow: 0 0 10px 3px rgba(255,230,140,.8); opacity: 0; animation: ttfire 6s ease-in-out infinite; }
+.tt-fire i:nth-child(1) { left: 8%; top: 40%; animation-delay: .2s; } .tt-fire i:nth-child(2) { left: 18%; top: 70%; animation-delay: 1.4s; } .tt-fire i:nth-child(3) { left: 29%; top: 30%; animation-delay: 3s; }
+.tt-fire i:nth-child(4) { left: 41%; top: 80%; animation-delay: 2.2s; } .tt-fire i:nth-child(5) { left: 55%; top: 50%; animation-delay: .8s; } .tt-fire i:nth-child(6) { left: 66%; top: 74%; animation-delay: 3.6s; }
+.tt-fire i:nth-child(7) { left: 76%; top: 36%; animation-delay: 1.9s; } .tt-fire i:nth-child(8) { left: 87%; top: 66%; animation-delay: 4.4s; } .tt-fire i:nth-child(9) { left: 94%; top: 28%; animation-delay: 2.7s; }
+@keyframes ttfire { 0%, 100% { opacity: 0; transform: translate(0, 0); } 30% { opacity: 1; } 60% { opacity: .8; transform: translate(14px, -22px); } }
+.tt-vig { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(8,10,40,.45)); pointer-events: none; }
+.tt-logo { position: relative; }
+.tt-logo b { background: linear-gradient(180deg, #fff27a 0%, #ffcb05 46%, #ff9f0a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: 0; text-shadow: none; position: relative;
+  filter: drop-shadow(0 0 0 #2a5aa8) drop-shadow(3px 0 0 #2a5aa8) drop-shadow(-3px 0 0 #2a5aa8) drop-shadow(0 3px 0 #2a5aa8) drop-shadow(0 -3px 0 #2a5aa8) drop-shadow(0 7px 0 #1d3f7a) drop-shadow(0 14px 14px rgba(0,0,0,.35)); }
+.tt-logo b::after { content: 'Alvorada'; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,.95) 50%, transparent 62%) -150% 0 / 60% 100% no-repeat; -webkit-background-clip: text; background-clip: text; color: transparent; animation: ttshine 4.2s ease-in-out 1.5s infinite; }
+@keyframes ttshine { 0% { background-position: -150% 0; } 45%, 100% { background-position: 250% 0; } }
+.tt-logo small { text-shadow: 0 2px 0 #2a5aa8, 0 0 14px rgba(255,255,255,.4); font-weight: 900; }
+.tt-ball { display: block; width: clamp(26px, 5vw, 38px); height: clamp(26px, 5vw, 38px); margin: 0 auto 6px; border-radius: 50%; border: 3px solid #1d2340; background: linear-gradient(#e5383b 0 44%, #1d2340 44% 56%, #fff 56%); box-shadow: 0 3px 0 rgba(0,0,0,.3), inset -3px -3px 0 rgba(0,0,0,.12); position: relative; animation: ttbob 2.6s ease-in-out infinite; }
+.tt-ball::after { content: ''; position: absolute; left: 50%; top: 50%; width: 34%; height: 34%; margin: -17% 0 0 -17%; border-radius: 50%; background: #fff; border: 3px solid #1d2340; box-sizing: border-box; }
+@keyframes ttbob { 50% { transform: translateY(-4px) rotate(8deg); } }
+.tt-panel { background: linear-gradient(180deg, #fffefa, #eef1fa); border-color: #2b3550; box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 6px #cfd9ef, 0 8px 0 rgba(15,20,48,.4), 0 22px 36px -10px rgba(10,14,40,.6); }
+.tt-h { color: #2b3550; position: relative; padding-bottom: 6px; } .tt-h::after { content: ''; position: absolute; left: 0; bottom: 0; width: 44px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, #e5383b, #ffb347); }
+.tt-btn { background: linear-gradient(#ffffff, #e9edf8); border-color: #2b3550; transition: transform .1s, box-shadow .1s, filter .12s; }
+.tt-btn:hover { filter: brightness(1.05); transform: translateY(-1px); } .tt-btn:active { transform: translateY(3px) scale(.99); box-shadow: 0 1px 0 rgba(29,35,64,.25); filter: brightness(.96); }
+.tt-btn.primary { background: linear-gradient(#ff6a6d, #e5383b 55%, #c42428); border-color: #7a1013; text-shadow: 0 2px 0 rgba(0,0,0,.28); box-shadow: 0 4px 0 #7a1013, 0 8px 16px -4px rgba(229,56,59,.55), inset 0 2px 0 rgba(255,255,255,.4); position: relative; overflow: hidden; }
+.tt-btn.primary::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(105deg, transparent, rgba(255,255,255,.5), transparent); animation: ttbtn 3.4s ease-in-out 1s infinite; }
+@keyframes ttbtn { 0% { left: -60%; } 40%, 100% { left: 130%; } }
+.tt-btn.primary:active { box-shadow: 0 1px 0 #7a1013, inset 0 2px 0 rgba(255,255,255,.3); }
+.tt-acc { background: linear-gradient(#fff, #f4f7fd); transition: transform .1s, border-color .12s, background .12s; } .tt-acc:active { transform: scale(.985); } .tt-acc:hover { transform: translateY(-1px); }
+.tt-f input:focus, .tt-f textarea:focus, .cc-name:focus { box-shadow: 0 0 0 4px rgba(239,197,74,.35); }
+/* criador */
+.cc-prev { background: radial-gradient(ellipse at 50% 30%, rgba(255,255,255,.85), transparent 55%), radial-gradient(ellipse at 50% 100%, #bfe0a0, #d9eec4 60%); border: 3px solid #a7ca8a; box-shadow: inset 0 0 0 2px #fff, 0 3px 0 rgba(60,100,40,.25); overflow: hidden; }
+.cc-prev::before { content: ''; position: absolute; left: 50%; bottom: 27%; width: 80%; height: 14%; margin-left: -40%; border-radius: 50%; border: 3px solid rgba(255,255,255,.7); box-shadow: 0 0 0 2px rgba(120,170,90,.35); background: radial-gradient(ellipse, rgba(255,255,255,.55), transparent 70%); animation: ttring 3s ease-in-out infinite alternate; }
+@keyframes ttring { to { transform: scale(1.08); opacity: .7; } }
+.cc-row > span { color: #2b3550; font-weight: 900; font-size: 12px; position: relative; padding-left: 10px; width: 104px; margin-right: 6px; } .cc-row > span::before { content: ''; position: absolute; left: 0; top: 50%; width: 5px; height: 5px; margin-top: -2.5px; border-radius: 50%; background: #e5383b; }
+.tt-sw button { transition: transform .12s, box-shadow .12s; } .tt-sw button:hover { transform: scale(1.14); } .tt-sw button:active { transform: scale(.92); }
+.tt-sw button.on { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #e5383b, 0 3px 6px rgba(0,0,0,.3); transform: scale(1.04); }
+.tt-seg button { background: linear-gradient(#fff, #edf1fa); border-color: #2b3550; font-weight: 900; transition: transform .1s, background .12s; } .tt-seg button:active { transform: scale(.94); }
+.tt-seg button.on { background: linear-gradient(#4a5a8c, #2b3550); box-shadow: 0 2px 0 #151c34; }
+@media (prefers-reduced-motion: reduce) { .tt-stars, .tt-rays, .tt-cloud, .tt-fire i, .tt-logo b::after, .tt-ball, .tt-btn.primary::after, .cc-prev::before { animation: none !important; } .tt-fire i { opacity: .6; } }
+@media (max-height: 480px) { .tt-ball { display: none; } .tt-cloud { display: none; } }
