@@ -4,7 +4,7 @@ import { WATER_FRAMES, TALL, CORN } from '../world/art.js';
 import { TALL_SNOW, TALL_DRY, TALL_REED } from '../world/arte-biomas.js';
 import { PAREDE } from './relevo.js';
 import { Modelos } from './modelos.js';
-import { paredesDasSalas, pisosDasSalas, materialSala, luzDasJanelas } from './salas.js';
+import { paredesDasSalas, pisosDasSalas, materialSala, luzDasJanelas, enfeitesDasSalas } from './salas.js';
 import { comNuvens } from './ceu.js';
 import { comPixel } from './pixel.js';
 import { CURVA_GLSL } from './curva.js';
@@ -222,7 +222,7 @@ export class Setores {
     if (s.salas) { for (const m of s.salas) { s.grupo.remove(m); m.geometry.dispose(); } s.salas = null; }
     if (s.luzJanela) { s.grupo.remove(s.luzJanela); s.luzJanela.geometry.dispose(); s.luzJanela = null; }
     if (this.v.amb && s.sy * CH + CH > L.externoH) { s.salas = []; // piso e paredes das salas: uma malha por textura
-      for (const { chave, g } of [...pisosDasSalas(this.v, s.sx, s.sy), ...paredesDasSalas(this.v, s.sx, s.sy)]) { const m = new THREE.Mesh(g, materialSala(this.v, chave)); m.receiveShadow = true; m.castShadow = !chave.startsWith('floor'); s.grupo.add(m); s.salas.push(m); }
+      for (const { chave, g, mat } of [...pisosDasSalas(this.v, s.sx, s.sy), ...paredesDasSalas(this.v, s.sx, s.sy), ...enfeitesDasSalas(this.v, s.sx, s.sy)]) { const m = new THREE.Mesh(g, mat ?? materialSala(this.v, chave)); m.receiveShadow = true; m.castShadow = !chave.startsWith('floor') && !mat; s.grupo.add(m); s.salas.push(m); }
       s.luzJanela = luzDasJanelas(this.v, s.sx, s.sy); if (s.luzJanela) s.grupo.add(s.luzJanela); }
   }
   matParedeNovo() { const m = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide }); return this.v.pixel ? comPixel(m, this.v, { forca: 0.6 }) : m; }

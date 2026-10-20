@@ -113,6 +113,12 @@ export class Ceu {
       A.ceu.hemi.groundColor.lerp(this.chaoNoite ??= new THREE.Color(0x3a2418), nt * 0.8);
       A.ceu.sol.color.lerp(this.luaCor ??= new THREE.Color(0xd8b090), nt * 0.7);
     }
+    // dentro de casa: luz quente de lâmpada (casa de boneca aconchegante, como nos remakes)
+    if (room && !room.dark && !room.escuro) {
+      A.ceu.hemi.color.lerp(this.quenteH ??= new THREE.Color(0xffe2bc), 0.4);
+      A.ceu.sol.color.lerp(this.quenteS ??= new THREE.Color(0xffd6a0), 0.35);
+      if (P.quente) P.quente.value = 0.3;
+    }
     if (A.pos.u.exposicao) A.pos.u.exposicao.value = room ? 1.0 : 0.96 + nt * 0.25;
     if (room) { A.ceu.hemi.intensity = room.escuro ? 0.25 : room.dark ? 0.6 : 1.35; A.ceu.sol.intensity = room.escuro ? 0.2 : room.dark ? 0.5 : 1.9; }
     const ls = v.u.luzSprite.value;

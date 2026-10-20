@@ -39,6 +39,8 @@ export const KINDS = {
   bed: { tex: 'bed', fw: 1, fh: 2, oy: 0 }, table: { tex: 'table', fw: 2, fh: 1, oy: 0 }, tv: { tex: 'tv', fw: 1, fh: 1, oy: 0 },
   shelf: { tex: 'shelf', fw: 1, fh: 1, oy: 0 }, plant: { tex: 'plant', fw: 1, fh: 1, oy: 0 }, pc: { tex: 'pc', fw: 1, fh: 1, oy: 0 },
   machine: { tex: 'machine', fw: 2, fh: 1, oy: 0 }, counter: { tex: 'counter', fw: 4, fh: 1, oy: 0 }, balltable: { tex: 'balltable', fw: 3, fh: 1, oy: 0 },
+  // sofá e geladeira de loja/casa (modelos GLB em kit/glb.js; o 2D reaproveita a arte mais próxima)
+  sofa: { tex: 'bench', fw: 2, fh: 1, oy: 0 }, geladeira: { tex: 'shelf', fw: 1, fh: 1, oy: 0 },
   // ---------- biomas (arte em arte-biomas.js; mecânicas em masmorra.js; lista em assets/maps/LEIAME.md) ----------
   // plantas
   snowPine: tree('snowPine'), snowPineBig: tree('snowPineBig', { oy: 2 }), cactus: { tex: 'cactus', fw: 1, fh: 1, oy: 1 }, mandacaru: { tex: 'mandacaru', fw: 2, fh: 1, oy: 2 },

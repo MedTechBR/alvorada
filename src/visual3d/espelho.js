@@ -27,7 +27,14 @@ const VERT = `attribute vec4 aCor; attribute vec3 aBase; attribute float aBranco
     if (uPlano > 0.5) pw = curvar(position);
     vec4 mvPosition = viewMatrix * vec4(pw, 1.0);
     gl_Position = projectionMatrix * mvPosition;
-    if (uPlano < 0.5) { vec4 b = projectionMatrix * viewMatrix * vec4(cb, 1.0); gl_Position.z = (b.z / b.w - 0.0006) * gl_Position.w; }
+    // profundidade de uma placa EM PÉ no pé do sprite (plano vertical z = pé): o que está atrás do pé (balcão, estante,
+    // mesa ao norte) nunca corta o corpo; o que está na frente cobre. Cada canto vai para onde o raio da câmera
+    // fura esse plano (a profundidade de um plano é afim na tela, então a interpolação fica exata).
+    if (uPlano < 0.5) {
+      float dz = pw.z - cameraPosition.z;
+      vec3 q = abs(dz) > 0.001 ? cameraPosition + (pw - cameraPosition) * ((cb.z - cameraPosition.z) / dz) : cb;
+      vec4 b = projectionMatrix * viewMatrix * vec4(q, 1.0); gl_Position.z = (b.z / b.w - 0.0004) * gl_Position.w;
+    }
     #include <fog_vertex>
   }`;
 const FRAG = `uniform sampler2D map; uniform vec3 luz; uniform float uCorte; uniform float uSil; varying vec2 vUv; varying vec4 vCor; varying float vBranco;

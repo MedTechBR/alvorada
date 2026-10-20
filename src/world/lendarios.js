@@ -16,8 +16,9 @@ export class Lendarios {
     this.checando = false;
   }
 
-  // Quem já foi resolvido (capturado ou derrotado) não aparece mais
-  feito(id) { return !!this.g.flags?.[`lend.${id}`]; }
+  // Quem já foi resolvido (capturado ou derrotado) não aparece mais. Guardado em flags.lend.<id> (aninhado,
+  // como as outras flags de caminho: masmorras leem 'lend.mewtwo')
+  feito(id) { return !!this.g.flags?.lend?.[id]; }
 
   // Chamado a cada quadro: vê se o jogador está num lugar com lendário pronto para aparecer
   update() {
@@ -35,8 +36,8 @@ export class Lendarios {
   }
 
   #flag(nome) {
-    const [a, b] = nome.split('.');
-    return a === 'trainers' ? !!this.g.flags?.trainers?.[b] : !!this.g.flags?.[nome];
+    let v = this.g.flags; for (const k of nome.split('.')) v = v?.[k];
+    return !!v;
   }
 
   #estaNo(lugar, x, y) {
@@ -63,6 +64,7 @@ export class Lendarios {
     this.checando = true;
     try {
       const ponto = this.#pontoDe(L);
+      if (L.deslocar) { ponto.x += L.deslocar[0] * T; ponto.y += L.deslocar[1] * T; }
       const mon = new Mon(L.dex, L.nivel);
       const e = new PokeEntity(g, mon, 'wild', ponto.x, ponto.y);
       await e.ready;
@@ -86,7 +88,7 @@ export class Lendarios {
   concluir(id, como) {
     const g = this.g;
     if (!id || this.feito(id)) return;
-    (g.flags ??= {})[`lend.${id}`] = como;
+    ((g.flags ??= {}).lend ??= {})[id] = como;
     this.vivos.delete(id);
   }
 }

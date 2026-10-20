@@ -36,7 +36,9 @@
     {"op": "comment", "_": "passagem p_ocaso_rio: Rio do Poente (Pantanal -> Salar)"},
     {"op": "rect", "t": "deep", "x": 475, "y": 120, "w": 5, "h": 41},
     {"op": "comment", "_": "passagem p_ocaso_sul: Costa austral do Ocaso"},
-    {"op": "rect", "t": "deep", "x": 475, "y": 600, "w": 5, "h": 120}
+    {"op": "rect", "t": "deep", "x": 475, "y": 600, "w": 5, "h": 120},
+    {"op": "set", "t": "O", "pts": [[110, 90]]},
+    {"op": "set", "t": "O", "pts": [[290, 250]]}
   ],
   "areas": [
     {"id": "rota_tropas", "name": "Estrada das Tropas", "biome": "planalto", "rect": [380, 280, 100, 60]},
@@ -51,16 +53,25 @@
   ],
   "spots": {
     "ninho_vila_altiplana": [305, 250, "down"],
-    "ninho_vila_fim_mundo": [345, 620, "down"]
-  },
+    "ninho_vila_fim_mundo": [345, 620, "down"], "cratera_entrada": [110, 95, "down"], "altiplano_entrada": [290, 255, "down"], "ninho_cratera_tempo": [120, 112, "down"]},
   "ninhos": [
     {"id": "vila_altiplana", "nome": "Vila Altiplana", "spot": "ninho_vila_altiplana"},
-    {"id": "vila_fim_mundo", "nome": "Vila Fim-do-Mundo", "spot": "ninho_vila_fim_mundo"}
+    {"id": "vila_fim_mundo", "nome": "Vila Fim-do-Mundo", "spot": "ninho_vila_fim_mundo"},
+    {"id": "cratera_tempo", "nome": "Vulcão Sentinela", "spot": "ninho_cratera_tempo"}
   ],
   "objects": [],
-  "interiors": [],
+  "interiors": [
+    {"id": "cratera_tempo_1", "name": "Cratera do Tempo: Borda do Relógio", "rows": ["UUUUUUUUUUUUUUUUUUUU", "UvvvvvvvvvvvvvvvvvvU", "UvllvvvvvvvvvvvvllvU", "UvlvvvvvvvvvvvvvvlvU", "UvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvU", "UUUUUUUUUUmUUUUUUUUU"], "biome": "vulcao", "wild": false, "objects": [{"kind": "lavaRock", "x": 6, "y": 5}, {"kind": "lavaRock", "x": 13, "y": 5}, {"kind": "mural", "x": 10, "y": 3, "text": "Os ponteiros de basalto apontam para o centro. Cada um marca uma hora que já passou."}], "decor": [], "people": [], "items": [{"x": 4, "y": 8, "item": "revive"}], "warps": [{"x": 10, "y": 1, "dir": "up", "to": ["cratera_tempo_2", 10, 10], "face": "up", "label": "Escada"}, {"x": 10, "y": 11, "dir": "down", "to": "cratera_entrada", "face": "down", "label": "Saída: Vulcão Sentinela"}]},
+    {"id": "cratera_tempo_2", "name": "Cratera do Tempo: Câmara do Futuro", "rows": ["UUUUUUUUUUUUUUUUUUUU", "UvvvvvvvvvvvvvvvvvvU", "UvllvvvvvvvvvvvvllvU", "UvlvvvvvvvvvvvvvvlvU", "UvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvU", "UUUUUUUUUUmUUUUUUUUU"], "biome": "vulcao", "wild": false, "objects": [{"kind": "obsidianRock", "x": 4, "y": 8}, {"kind": "obsidianRock", "x": 15, "y": 8}], "decor": [], "people": [], "items": [{"x": 3, "y": 9, "item": "ultraBall"}], "warps": [{"x": 10, "y": 1, "dir": "up", "to": ["cratera_tempo_3", 10, 10], "face": "up", "label": "Escada"}, {"x": 10, "y": 11, "dir": "down", "to": ["cratera_tempo_1", 10, 2], "face": "down", "label": "Descer"}]},
+    {"id": "cratera_tempo_3", "name": "Cratera do Tempo: Salão das Duas Faces", "rows": ["UUUUUUUUUUUUUUUUUUUUUUUU", "UvvvvvvvvvvvvvvvvvvvvvvU", "UlllvvvvvvvvvvvvvvvvlllU", "UlllvvvvvvvvvvvvvvvvlllU", "UvvvvvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvvvvvU", "UvvvvvvvvvvvvvvvvvvvvvvU", "UUUUUUUUUUmUUUUUUUUUUUUU"], "biome": "vulcao", "wild": false, "objects": [{"kind": "obsidianRock", "x": 2, "y": 8}, {"kind": "obsidianRock", "x": 21, "y": 8}, {"kind": "mural", "x": 12, "y": 3, "text": "Um lado da sala é o passado, cheio de sombra. O outro é o futuro, cheio de luz. No meio, o tempo parou."}], "decor": [], "people": [], "items": [{"x": 12, "y": 9, "item": "maxPotion"}], "warps": [{"x": 10, "y": 1, "dir": "up", "to": ["cratera_tempo_3", 10, 10], "face": "up", "label": "Escada"}, {"x": 10, "y": 11, "dir": "down", "to": ["cratera_tempo_2", 10, 2], "face": "down", "label": "Descer"}]},
+    {"id": "altiplano_fenda_1", "name": "Altiplano: Fenda de Cristal", "rows": ["$$$$$$$$$$$$$$$$$$$$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$$$$$$$$$$m$$$$$$$$$"], "biome": "cristal", "wild": false, "objects": [{"kind": "crystal", "x": 4, "y": 2}, {"kind": "crystal", "x": 16, "y": 2}, {"kind": "crystalPink", "x": 4, "y": 8}, {"kind": "crystalPink", "x": 15, "y": 8}], "decor": [], "people": [], "items": [{"x": 3, "y": 3, "item": "maxPotion"}], "warps": [{"x": 10, "y": 1, "dir": "up", "to": ["altiplano_fenda_2", 10, 10], "face": "up", "label": "Escada"}, {"x": 10, "y": 11, "dir": "down", "to": "altiplano_entrada", "face": "down", "label": "Saída: Altiplano do Condor"}]},
+    {"id": "altiplano_fenda_2", "name": "Altiplano: Fenda Mais Funda", "rows": ["$$$$$$$$$$$$$$$$$$$$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$ZZZZZZZZZZZZZZZZZZ$", "$$$$$$$$$$m$$$$$$$$$"], "biome": "cristal", "wild": false, "objects": [{"kind": "crystalPink", "x": 4, "y": 2}, {"kind": "crystalPink", "x": 15, "y": 2}, {"kind": "mural", "x": 10, "y": 3, "text": "O céu do cristal reflete estrelas que não estão no céu de fora."}], "decor": [], "people": [], "items": [{"x": 3, "y": 3, "item": "revive"}], "warps": [{"x": 10, "y": 11, "dir": "down", "to": ["altiplano_fenda_1", 10, 2], "face": "down", "label": "Descer"}]}
+  ],
   "people": [],
-  "warps": [],
+  "warps": [
+    {"x": 110, "y": 90, "dir": "down", "to": ["cratera_tempo_1", 10, 10], "face": "down", "label": "Cratera do Tempo", "requer": ["liga_campeao"], "msg": "O calor da cratera não deixa ninguém entrar. Volte depois da Liga."},
+    {"x": 290, "y": 250, "dir": "down", "to": ["altiplano_fenda_1", 10, 10], "face": "down", "label": "Fenda do Altiplano", "requer": ["liga_campeao"], "msg": "A fenda de cristal está fechada. Depois da Liga ela se abre."}
+  ],
   "items": [],
   "viagens": []
 }

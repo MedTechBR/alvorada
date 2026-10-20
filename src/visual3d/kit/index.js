@@ -4,6 +4,8 @@ import { NATUREZA } from './natureza.js';
 import { OBJETOS } from './objetos.js';
 import { PREDIOS } from './predios.js';
 import { INTERIOR, paredeInterior } from './interior.js';
+import { GLB_TIPOS, glbPronto } from './glb.js';
+import { MOVEIS, MODOS_KIT, pcCentro } from './moveis.js';
 
 // Kit de modelos 3D low-poly (HD-2D) gerados por código. Interface em docs/visual-3d-kit.md.
 //
@@ -19,7 +21,12 @@ import { INTERIOR, paredeInterior } from './interior.js';
 // A geometria devolvida é COMPARTILHADA (cache): não altere nem descarte; para posicionar, use kit.mesclar.
 // Origem = ponto do pé do objeto (o.x, chão, o.y); pegada de x = -fw*8..fw*8 e z = -fh*16..0, igual ao 2D.
 
-const TIPOS = { ...NATUREZA, ...OBJETOS, ...PREDIOS, ...INTERIOR };
+const TIPOS = { ...NATUREZA, ...OBJETOS, ...PREDIOS, ...INTERIOR, ...MOVEIS };
+// o PC do Centro Pokémon é um terminal (o.estilo = 'centro'); nas casas, o computador de mesa
+TIPOS.gondola3 = MOVEIS.gondola; TIPOS.estanteLarga = MOVEIS.estanteAlta;
+// estantes e sofá antigos com o desenho novo (mesma pegada)
+TIPOS.shelf = MOVEIS.estanteAlta; TIPOS.estante = MOVEIS.estanteAlta; TIPOS.sofa = MOVEIS.sofaCasa;
+TIPOS.pc = { f: (m, c) => (c.estado === 'centro' ? pcCentro(m) : INTERIOR.pc.f(m, c)) };
 const cache = new Map();
 const uNoite = { value: 0 };
 let mat = null;
@@ -37,14 +44,16 @@ export const kit = {
   tipos: () => Object.keys(TIPOS),
   ficha,
   chave(kind, obj) {
+    if (GLB_TIPOS[kind] && glbPronto(kind) && !MODOS_KIT[kind]?.(obj)) return `${kind}|glb`; // modelo GLB carregado (kit/glb.js)
     const T = TIPOS[kind]; if (!T) return null;
-    const v = T.var ? hashVar(obj) % T.var : 0, e = T.estado ? T.estado(obj ?? {}, ficha(kind)) : '';
+    const v = T.var ? hashVar(obj) % T.var : 0, e = T.estado ? T.estado(obj ?? {}, ficha(kind)) : MODOS_KIT[kind]?.(obj) ?? '';
     return `${kind}|${v}|${e}`;
   },
   modelo(kind, obj = {}) {
     const T = TIPOS[kind]; if (!T) return null;
     const k = this.chave(kind, obj);
     let r = cache.get(k); if (r) return r;
+    if (k.endsWith('|glb')) { const g = glbPronto(kind); r = { geometry: g.geometry, topo: g.topo, variante: 0, tris: g.geometry.index.count / 3, altura: g.topo.y, chave: k }; cache.set(k, r); return r; }
     const K = ficha(kind), v = T.var ? hashVar(obj) % T.var : 0;
     const t0 = performance.now();
     let seed = v * 7919 + 13; for (const ch of kind) seed = (seed * 31 + ch.charCodeAt(0)) % 2147483000;

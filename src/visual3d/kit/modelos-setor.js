@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { kit } from './index.js';
+import { GLB_TIPOS, glbPronto, pedirGLB, onGLB } from './glb.js';
 
 // Ponte entre o kit de modelos e os setores do visual 3D (src/visual3d/setores.js).
 // Mesma interface do Modelos provisório: new ModelosKit(v); setor(s); liberar(s); update(); temModelo(kind);
@@ -15,6 +16,8 @@ const MOVEL = (K) => !!(K && (K.breakable || K.push || K.strength || K.cart || K
 export class ModelosKit {
   constructor(v) {
     this.v = v; this.mat = kit.material(); this.donos = new Set(); this.setores = new Set();
+    // modelo GLB que chegou: refaz os setores montados (troca o bloco pelo móvel real)
+    onGLB(() => { for (const s of [...this.setores]) this.setor(s); });
   }
   temModelo(kind) { return kit.temModelo(kind); }
   donosDeSprite() { return this.donos; }
@@ -24,6 +27,7 @@ export class ModelosKit {
   setor(s) {
     this.liberar(s);
     const L = this.v.L, itens = [], moveis = [], donos = [];
+    for (const o of L.objetosDoSetor(s.sx, s.sy)) if (GLB_TIPOS[o.kind] && !glbPronto(o.kind)) pedirGLB(o.kind, kit.ficha(o.kind));
     for (const o of L.objetosDoSetor(s.sx, s.sy)) {
       // cenário vivo: caído, toco, broto ou quebrado usa o sprite 2D (que gira, troca para o toco, cresce)
       if (o.dead || !kit.temModelo(o.kind) || this.v.g.vivo?.mexido?.(o)) continue;
