@@ -56,11 +56,12 @@ export default {
       local: 'templo_raizes_1',
       gatilho: { tipo: 'vencer', alvo: 'c5_ebano' },
       falas: [
-        ['ebano', 'Hm. A raiz fica com você, por enquanto. A Aurora vai querer de volta, e a Aurora cobra caro.'],
+        ['ebano', 'Hm. Então a raiz fica onde está. A Aurora vai querer cobrar por isso, e eu vou esperar a conta.'],
         ['narrador', 'O Ébano recua pelo túnel. Atrás da raiz, uma fresta mostra um cabo de metal com etiqueta dourada: "Companhia Aurora. Luzita, linha 2."'],
         ['aruan', 'Está vendo? A luz de vocês atravessa a terra da minha selva. Desde que o cabo chegou, as raízes secam por baixo.'],
         ['jogador', 'Então a Aurora passou um cabo debaixo do templo. E a Crepúsculo tenta levar o que a Aurora deixou.'],
-        ['aruan', 'Os dois querem a mesma coisa: a luz que não é deles. Leve esta raiz para a Lia, em Vila Sussurro. Ela sabe o que fazer com ela.'],
+        ['aruan', 'Os dois querem a mesma coisa: a luz que não é deles. A raiz fica aqui, na terra da selva. Enquanto estiver no lugar, a selva resiste ao cabo.'],
+        ['aruan', 'Não tente arrancá-la. Quem tira a raiz, tira a selva inteira junto. Cuide do cabo, se puder, mas deixe a raiz em paz.'],
       ],
       depois: {
         flags: { 'nh.cabosAurora': true },

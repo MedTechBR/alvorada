@@ -85,10 +85,11 @@ export default {
       falas: [
         ['zelia', 'Querido, o Solano me ligou antes de você. Eu não queria que descobrisse assim, pelo telefone dele.'],
         ['zelia', 'A Vela Eterna é a oitava chave do Relógio. As outras sete estavam nos ginásios, e a chama ficou com a minha família.'],
+        ['zelia', 'A pedra da lanterna do casarão é a de Lamparina, a que o Ébano tentou levar. Ela ficou comigo, e o Solano não sabe disso.'],
         ['jogador', 'Então eu tenho a oitava chave desde Lamparina. A senhora me deu para guardar.'],
         ['zelia', 'Dei porque achei que você guardaria melhor do que eu. Você não acendeu, e ainda bem. Agora só a chama diz se o Relógio está fechado.'],
         ['jogador', 'O Solano quer que eu acenda a vela no Relógio, para abrir o cadeado e capturar o Necrozma. Não é isso?'],
-        ['zelia', 'É isso, querido. E as sete pedras já estão com ele, por causa do Sereno. Você precisa chegar ao topo antes dele.'],
+        ['zelia', 'É isso, querido. E as pedras dos outros ginásios já estão com ele, por causa do Sereno. Você precisa chegar ao topo antes dele.'],
       ],
       depois: {
         flags: { 'nh.reviravolta5': true, 'nh.velaSelo': true },
