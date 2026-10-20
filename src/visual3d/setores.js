@@ -4,7 +4,7 @@ import { WATER_FRAMES, TALL, CORN } from '../world/art.js';
 import { TALL_SNOW, TALL_DRY, TALL_REED } from '../world/arte-biomas.js';
 import { PAREDE } from './relevo.js';
 import { Modelos } from './modelos.js';
-import { paredesDasSalas, luzDasJanelas } from './salas.js';
+import { paredesDasSalas, pisosDasSalas, materialSala, luzDasJanelas } from './salas.js';
 import { comNuvens } from './ceu.js';
 import { comPixel } from './pixel.js';
 import { CURVA_GLSL } from './curva.js';
@@ -219,15 +219,17 @@ export class Setores {
     const gm = A && !this.v.pixel ? null : this.#geometriaMato(s);
     if (gm) { s.mato = new THREE.Mesh(gm, this.matMato); s.mato.receiveShadow = true; s.grupo.add(s.mato); }
     this.modelos.setor(s);
-    if (s.paredes) { s.grupo.remove(s.paredes); s.paredes.geometry.dispose(); s.paredes = null; }
+    if (s.salas) { for (const m of s.salas) { s.grupo.remove(m); m.geometry.dispose(); } s.salas = null; }
     if (s.luzJanela) { s.grupo.remove(s.luzJanela); s.luzJanela.geometry.dispose(); s.luzJanela = null; }
-    if (this.v.amb && s.sy * CH + CH > L.externoH) { const g = paredesDasSalas(this.v, s.sx, s.sy); if (g) { s.paredes = new THREE.Mesh(g, this.modelos.matParede ??= this.v.curvar(this.v.setores.matParedeNovo())); s.paredes.castShadow = s.paredes.receiveShadow = true; s.grupo.add(s.paredes); }
+    if (this.v.amb && s.sy * CH + CH > L.externoH) { s.salas = []; // piso e paredes das salas: uma malha por textura
+      for (const { chave, g } of [...pisosDasSalas(this.v, s.sx, s.sy), ...paredesDasSalas(this.v, s.sx, s.sy)]) { const m = new THREE.Mesh(g, materialSala(this.v, chave)); m.receiveShadow = true; m.castShadow = !chave.startsWith('floor'); s.grupo.add(m); s.salas.push(m); }
       s.luzJanela = luzDasJanelas(this.v, s.sx, s.sy); if (s.luzJanela) s.grupo.add(s.luzJanela); }
   }
   matParedeNovo() { const m = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide }); return this.v.pixel ? comPixel(m, this.v, { forca: 0.6 }) : m; }
   #liberar(s) {
     this.v.scene.remove(s.grupo); this.grupo.remove(s.grupo);
-    for (const m of [s.chao, s.agua, s.mato, s.paredes]) m?.geometry.dispose();
+    for (const m of [s.chao, s.agua, s.mato]) m?.geometry.dispose();
+    for (const m of s.salas ?? []) m.geometry.dispose();
     this.modelos.liberar(s);
     if (this.v.amb) this.v.amb.liberarSetor(s.matChao, s.grama, s.arbustos); else s.matChao.dispose();
     if (s.tex !== this.texVazia) s.tex.dispose(); s.matAgua.dispose();

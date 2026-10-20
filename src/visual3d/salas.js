@@ -7,6 +7,49 @@ import { TILE } from '../world/tiles.js';
 // Cada sala é montada pelo setor que contém o canto de cima à esquerda dela.
 const ALTA = 54, BAIXA = 7, ESP = 7;
 const C = (h) => { const c = new THREE.Color(h); return [c.r, c.g, c.b]; };
+// texturas de piso e parede (assets/hgss/texturas/interior, 32x32): uma imagem por tile de 16 unidades, pixel seco
+const texs = new Map();
+function texInterior(nome) {
+  if (!texs.has(nome)) {
+    const t = new THREE.TextureLoader().load(new URL(`../../assets/hgss/texturas/interior/${nome}.webp`, import.meta.url).href);
+    t.magFilter = t.minFilter = THREE.NearestFilter; t.generateMipmaps = false; t.colorSpace = THREE.SRGBColorSpace;
+    texs.set(nome, t);
+  }
+  return texs.get(nome);
+}
+// material de piso ou parede por textura (compartilhado entre os setores)
+export function materialSala(v, chave) {
+  const mats = v.salasMats ??= new Map();
+  if (!mats.has(chave)) {
+    const piso = chave.startsWith('floor');
+    const m = v.curvar(piso ? new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }) : v.setores.matParedeNovo());
+    m.map = texInterior(chave); m.needsUpdate = true; mats.set(chave, m);
+  }
+  return mats.get(chave);
+}
+function pisoDe(r) {
+  const id = (r.id ?? '') + ' ' + (r.name ?? '');
+  if (/centro|center/i.test(id)) return 'floor_center';
+  if (/loja|mart|mercado/i.test(id)) return 'floor_mart';
+  if (/lab|escritorio|redacao|estufa/i.test(id)) return 'floor_lab';
+  if (/mina|caverna|gruta|toca/i.test(id) || r.dark) return 'floor_rock';
+  return 'floor_wood';
+}
+function paredeDe(r) { return /lab|escritorio|redacao/i.test((r.id ?? '') + ' ' + (r.name ?? '')) ? 'wall_lab' : 'wallpaper_cream'; }
+// uv de um quad: faces verticais pelo eixo horizontal (x ou z) e pela altura, em tiles de 16; tampos sem textura
+function uvDe(uv, a, b, c, d) {
+  if (a[1] === b[1] && a[1] === c[1] && a[1] === d[1]) { uv.push(0, 0, 0, 0, 0, 0, 0, 0); return; }
+  const hz = a[0] === b[0] && b[0] === c[0] ? 2 : 0;
+  for (const p of [a, b, c, d]) uv.push(p[hz] / 16, p[1] / 16);
+}
+function geometriaDe(b) {
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(b.pos, 3));
+  g.setAttribute('color', new THREE.Float32BufferAttribute(b.cor, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(b.uv, 2));
+  g.setIndex(b.idx); g.computeVertexNormals(); g.computeBoundingSphere();
+  return g;
+}
 // paleta por bioma da sala (papel, listra, rodapé, faixa)
 const PALETA = {
   padrao: ['#f2e8d2', '#e6d8b8', '#8a5a34', '#c8a874'],
@@ -53,8 +96,11 @@ export function luzDasJanelas(v, sx, sy) {
 }
 
 export function paredesDasSalas(v, sx, sy) {
-  const L = v.L, R = v.relevo, pos = [], cor = [], idx = [];
-  const quad = (a, b, c, d, k) => { const n = pos.length / 3; pos.push(...a, ...b, ...c, ...d); for (let i = 0; i < 4; i++) cor.push(...k); idx.push(n, n + 1, n + 2, n, n + 2, n + 3); };
+  const L = v.L, R = v.relevo;
+  // uma malha por textura (papel de parede ou parede de laboratório)
+  const baldes = new Map(), bucket = (chave) => { if (!baldes.has(chave)) baldes.set(chave, { chave, pos: [], cor: [], uv: [], idx: [] }); return baldes.get(chave); };
+  let B = bucket('wallpaper_cream');
+  const quad = (a, b, c, d, k) => { const n = B.pos.length / 3; B.pos.push(...a, ...b, ...c, ...d); uvDe(B.uv, a, b, c, d); for (let i = 0; i < 4; i++) B.cor.push(...k); B.idx.push(n, n + 1, n + 2, n, n + 2, n + 3); };
   // caixa com a face principal virada para +z (sul); rot = 0 sul, 1 leste (+x), -1 oeste (-x)
   const caixa = (x0, y0, z0, x1, y1, z1, k, kt = k.map((q) => q * 0.55)) => {
     const ks = k.map((q) => q * 0.8);
@@ -69,6 +115,7 @@ export function paredesDasSalas(v, sx, sy) {
   for (const r of L.interiores ?? []) {
     if (Math.floor(r.x / 16) !== sx || Math.floor(r.y / 16) !== sy) continue;
     const [papel, listra, rodape, faixa] = paleta(r).map(C);
+    B = bucket(paredeDe(r));
     const topo = C('#3a3430');
     const h = R.em(r.x * 16 + r.w * 8, r.y * 16 + r.h * 8);
     // parede de fundo: para cada coluna, o primeiro piso de cima para baixo
@@ -101,6 +148,7 @@ export function paredesDasSalas(v, sx, sy) {
     }
   }
   // moldura e vidro das janelas (o vidro brilha de leve; a luz no chão é janelaLuz, aditiva)
+  B = bucket('wallpaper_cream');
   for (const j of janelas) {
     const X0 = j.x - 13, X1 = j.x + 13, Y0 = j.h + 22, Y1 = j.h + 46, Z = j.z + 0.15, mold = C('#8a5a34'), vidro = [1.15, 1.25, 1.35];
     quad([X0 - 2, Y0 - 2, Z], [X1 + 2, Y0 - 2, Z], [X1 + 2, Y1 + 2, Z], [X0 - 2, Y1 + 2, Z], mold);
@@ -110,10 +158,27 @@ export function paredesDasSalas(v, sx, sy) {
     quad([X0 - 4, Y0 - 3, Z], [X1 + 4, Y0 - 3, Z], [X1 + 4, Y0 - 1, Z + 3], [X0 - 4, Y0 - 1, Z + 3], C('#f4eee2'));
   }
   v.salasJanelas = (v.salasJanelas ?? new Map()); v.salasJanelas.set(sx + ',' + sy, janelas);
-  if (!idx.length) return null;
-  const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-  g.setAttribute('color', new THREE.Float32BufferAttribute(cor, 3));
-  g.setIndex(idx); g.computeVertexNormals(); g.computeBoundingSphere();
-  return g;
+  return [...baldes.values()].filter((b) => b.idx.length).map((b) => ({ chave: b.chave, g: geometriaDe(b) }));
+}
+
+// Piso das salas: um quad por tile andável, com a textura do tipo da sala (centro, mercado, laboratório, madeira).
+// Fica um pouco acima do chão do relevo (o polygonOffset do material evita z-fighting). Cor levemente quente.
+export function pisosDasSalas(v, sx, sy) {
+  const L = v.L, R = v.relevo, baldes = new Map();
+  for (const r of L.interiores ?? []) {
+    if (Math.floor(r.x / 16) !== sx || Math.floor(r.y / 16) !== sy) continue;
+    const chave = pisoDe(r);
+    if (!baldes.has(chave)) baldes.set(chave, { chave, pos: [], cor: [], uv: [], idx: [] });
+    const b = baldes.get(chave);
+    for (let y = r.y; y < r.y + r.h; y++) for (let x = r.x; x < r.x + r.w; x++) {
+      if (Math.floor(x / 16) !== sx || Math.floor(y / 16) !== sy) continue;
+      const t = L.bloco(x, y); if (t !== TILE.FLOOR && t !== TILE.TILEFLOOR) continue;
+      const hn = R.n(x, y) + 0.6, hs = R.s(x, y) + 0.6, x0 = x * 16, x1 = x0 + 16, z0 = y * 16, z1 = z0 + 16, n = b.pos.length / 3;
+      b.pos.push(x0, hn, z0, x1, hn, z0, x0, hs, z1, x1, hs, z1);
+      b.uv.push(0, 0, 1, 0, 0, 1, 1, 1);
+      for (let i = 0; i < 4; i++) b.cor.push(1, 0.93, 0.82);
+      b.idx.push(n, n + 1, n + 2, n + 1, n + 3, n + 2);
+    }
+  }
+  return [...baldes.values()].filter((b) => b.idx.length).map((b) => ({ chave: b.chave, g: geometriaDe(b) }));
 }

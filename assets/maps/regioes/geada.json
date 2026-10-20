@@ -647,8 +647,8 @@
         "wffffffmffffffw",
         "wwwwwwwwwwwwwww"
       ],
-      "objects": [{"kind": "fogao", "x": 1, "y": 2, "text": "O fogão a lenha. A sopa de peixe do Seu Olavo ferve o dia todo."}, {"kind": "table", "x": 5, "y": 4, "text": "Um prato fundo com sopa e uma colher de pau. O Seu Olavo come em pé."}, {"kind": "shelf", "x": 4, "y": 2, "text": "Varas curtas de pesca no gelo, enfileiradas por tamanho."}, {"kind": "shelf", "x": 5, "y": 2, "text": "Uma serra de gelo, longa e dentada. Com ela se abre o buraco de pesca."}, {"kind": "bed", "x": 12, "y": 2}, {"kind": "barrel", "x": 1, "y": 6}, {"kind": "crate", "x": 13, "y": 6, "text": "Iscas congeladas. Não abra: fede mesmo gelada."}, {"kind": "plant", "x": 10, "y": 2}, {"kind": "lampiao", "x": 9, "y": 6}, {"kind": "sign", "x": 10, "y": 6, "text": "PERIGO: o buraco da cozinha dá no lago.\nPule por sua conta e risco. (Assinado: a esposa do Olavo)"}],
-      "decor": [{"kind": "rug", "x": 5, "y": 5}],
+      "objects": [{"kind": "table", "x": 1, "y": 2, "text": "Um prato fundo com sopa e uma colher de pau. O Seu Olavo come em pé."}, {"kind": "plant", "x": 13, "y": 5}, {"kind": "pc", "x": 12, "y": 5}, {"kind": "shelf", "x": 3, "y": 2, "text": "Varas curtas de pesca no gelo, enfileiradas por tamanho."}, {"kind": "bed", "x": 4, "y": 2}],
+      "decor": [{"kind": "rug", "x": 6, "y": 6}],
       "people": [{"id": "olavo", "name": "Seu Olavo", "look": "pescador", "x": 8, "y": 4, "dir": "down", "wander": 1, "lines": ["Sou o Olavo. Pesco no buraco desde antes de você nascer.", "Aquele buraco no chão da cozinha liga direto com o lago. Pulo nele e já estou no gelo. É o meu atalho.", "Peixe de gelo é o mais saboroso, e o mais difícil de achar."]}],
       "spots": {"olavo": [8, 5, "up"]},
       "warps": [{"x": 11, "y": 7, "dir": "any", "to": "geada_lago_buraco", "face": "down", "label": "Buraco de pesca"}, {"x": 12, "y": 7, "dir": "any", "to": "geada_lago_buraco", "face": "down", "label": "Buraco de pesca"}]
@@ -690,8 +690,8 @@
         "wfffffmffffffw",
         "wwwwwwwwwwwwww"
       ],
-      "objects": [{"kind": "bed", "x": 1, "y": 2}, {"kind": "bed", "x": 3, "y": 2}, {"kind": "table", "x": 6, "y": 4, "text": "Um tabuleiro de dama com peças de gelo e pedrinhas. O Tor e a Tora brigam por causa dele."}, {"kind": "shelf", "x": 8, "y": 2, "text": "Troféus de 'Batalha na Neve': todos dados por eles mesmos."}, {"kind": "fogao", "x": 10, "y": 2, "text": "Chocolate quente borbulhando. A mãe dos gêmeos não deixa esfriar."}, {"kind": "plant", "x": 12, "y": 6}, {"kind": "lampiao", "x": 1, "y": 6}, {"kind": "tv", "x": 12, "y": 2, "text": "Passando um desenho de Vanillite brincando de esconde-esconde."}],
-      "decor": [{"kind": "rug", "x": 5, "y": 5}],
+      "objects": [{"kind": "bench", "x": 11, "y": 5}, {"kind": "plant", "x": 10, "y": 5}, {"kind": "shelf", "x": 8, "y": 5, "text": "Troféus de 'Batalha na Neve': todos dados por eles mesmos."}, {"kind": "table", "x": 6, "y": 5, "text": "Um tabuleiro de dama com peças de gelo e pedrinhas. O Tor e a Tora brigam por causa dele."}, {"kind": "estante", "x": 5, "y": 5}],
+      "decor": [{"kind": "rug", "x": 5, "y": 6}],
       "people": [{"id": "mae_nev", "name": "Dona Lívia Nev", "look": "mae", "x": 9, "y": 5, "dir": "left", "lines": ["Meus gêmeos vivem lá fora, na neve. Eu só sei que estão vivos pela quantidade de lenço sujo.", "Se encontrar o Tor e a Tora, mande-os para casa antes de escurecer."]}, {"id": "pai_nev", "name": "Seu Hélio Nev", "look": "montanhista", "x": 3, "y": 6, "dir": "right", "lines": ["Eu lidero as caravanas até a Geleira. Os gêmeos acham que vão me herdar o ofício. Tomara."]}],
       "spots": {}
     },

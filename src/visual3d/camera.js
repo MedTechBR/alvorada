@@ -66,7 +66,7 @@ export class CameraDinamica {
     }
     // interior: mais alto, preso ao cômodo
     if (room) {
-      incl = 56; dist *= 0.92;
+      incl = 56; dist *= 0.74;
       const rx0 = room.x * 16, rx1 = (room.x + room.w) * 16, rz0 = room.y * 16, rz1 = (room.y + room.h) * 16;
       const meiaW = (innerWidth / Math.max(1, g.zoom)) * 0.42, meiaH = (innerHeight / Math.max(1, g.zoom)) * 0.36;
       alvoX = rx1 - rx0 < meiaW * 2 ? (rx0 + rx1) / 2 : Math.min(rx1 - meiaW, Math.max(rx0 + meiaW, alvoX));
