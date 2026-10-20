@@ -132,6 +132,7 @@ export class WorldLife {
     const pk = g.mode === 'pokemon' && g.lead?.alive, p = pk ? g.lead : g.player;
     this.warpCool -= dt;
     if (this.warping || this.warpCool > 0) return;
+    if (g.story?.battle && !g.story.battle.done) return; // no meio de uma batalha de treinador ninguém sai por porta ou passagem
     const tx = Math.floor(p.x / T), ty = Math.floor((p.y - 2) / T);
     const w = this.map.warpAt.get(tx + ty * this.map.w);
     if (!w) return;
