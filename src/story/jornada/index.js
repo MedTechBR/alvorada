@@ -38,9 +38,14 @@ import s12 from './12-relogio.js';
 import s13 from './13-geada.js';
 import s14 from './14-liga.js';
 import sPJ from './pos-jogo.js';
+import MANTIDAS from '../script/mantidas.js';
+import { ELENCO } from '../elenco.js';
+import { aplicarExtras } from './atores-extra.js';
 
 // Ordem de leitura (a ordem do jogo vem dos gatilhos, veja o README acima)
 export const JORNADA = [s00, s01, s02, s03, s04, s05, s06, s07, s08, s09, s10, s11, s12, s13, s14, sPJ];
+// atores e vozes (telefone, rádio) que as cenas não declaram: tudo em atores-extra.js (auditoria: tools/auditar-falantes.mjs)
+aplicarExtras([...JORNADA, MANTIDAS], ELENCO);
 
 // Elenco da jornada: une os atores de todas as cenas pelo id. Um ator que aparece em mais de uma cena fica visível em
 // todas elas; se algum deles for permanente (líder, treinador com visão, morador de cidade), fica sempre no mapa.
@@ -63,7 +68,7 @@ export function montarElenco(jornadas = JORNADA) {
   });
 }
 
-export const ELENCO_JORNADA = montarElenco(JORNADA);
+export const ELENCO_JORNADA = montarElenco([...JORNADA, MANTIDAS]);
 
 // Lista plana de todas as cenas (usada pelo teste e para conferir ids)
 export const CENAS = JORNADA.flatMap((seg) => seg.cenas.map((c) => ({ ...c, capitulo: seg.id, jornadaSeg: seg.jornada })));

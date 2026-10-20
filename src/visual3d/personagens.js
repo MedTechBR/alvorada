@@ -24,6 +24,14 @@ const PAPEL_FRLG = [
   [/cientista|scientist|bia_lab|lab_assistente|dr_icaro/i, 'frlg_scientist'],
   [/guia_(gin|ginasio)|gym_guide/i, 'frlg_gym_guide'],
   [/leader_(graca|bras)/i, 'frlg_brock'],
+  // a Equipe Crepúsculo (looks de objeto no 2D não chegam ao 3D: sem isto o recruta saía com a folha de um morador qualquer)
+  [/^recruta2_/i, 'npc_185_rocket_grunt_f'],
+  [/^recruta(_|\d|$)/i, 'npc_184_rocket_grunt_m'],
+  [/^ebano(_|$)/i, 'npc_187_rocket_executive_proton'],
+  [/^sereno(_|$)/i, 'npc_186_rocket_executive_petrel'],
+  [/^vespera(_|$)/i, 'npc_188_rocket_executive_ariana'],
+  [/^solano(_|$)/i, 'npc_189_rocket_executive_archer'],
+  [/^lucio(_|$)/i, 'frlg_scientist'],
 ];
 
 export class Personagens {

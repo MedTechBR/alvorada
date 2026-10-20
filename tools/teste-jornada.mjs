@@ -65,6 +65,8 @@ for (const seg of JORNADA) {
 }
 const repetidas = battleIdsDoc.filter((x, i) => battleIdsDoc.indexOf(x) !== i);
 for (const r of new Set(repetidas)) erro(`batalha com id repetido: ${r}`);
+const MANTIDAS = (await abrir('src/story/script/mantidas.js')).default;
+for (const s of MANTIDAS.cenas) if (!ids.has(s.id)) ids.set(s.id, 'mantidas'); // atores-extra.js também põe atores nas cenas mantidas
 const elencoIds = new Set([...ELENCO.map((e) => e.id), ...ELENCO_JORNADA.map((e) => e.id)]);
 
 // ---------------------------------------------------------------- validações de condição (requer / semFlag)

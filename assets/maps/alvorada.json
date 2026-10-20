@@ -1015,7 +1015,7 @@
       ],
       "objects": [{"kind": "plant", "x": 1, "y": 2}, {"kind": "plant", "x": 21, "y": 2}],
       "decor": [],
-      "spots": {"lider_lia": [11, 2.5, "down"], "aprendiz_nando": [4, 7, "right"], "aprendiz_bel": [16, 9, "left"], "estufa_arena": [11, 4, "up"]},
+      "spots": {"lider_lia": [11, 2.5, "down"], "aprendiz_nando": [4, 6, "down"], "aprendiz_bel": [16, 9, "left"], "estufa_arena": [11, 4, "up"]},
       "trap": {"tile": "x", "to": [11, 15]}
     },
     {
