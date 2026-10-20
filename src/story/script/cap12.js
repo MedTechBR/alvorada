@@ -99,12 +99,12 @@ export default {
         batalha: {
           id: 'elite_aurelio', nome: 'Aurélio da Madrugada', dinheiro: 11000,
           equipe: [
-            [262, 55, ['crunch', 'suckerPunch', 'playRough']],
-            [510, 55, ['nightSlash', 'fakeOut', 'uTurn']],
-            [302, 56, ['shadowClaw', 'foulPlay', 'willOWisp'], { item: 'sablenite' }], // Mega Sableye
-            [430, 56, ['nightSlash', 'braveBird', 'suckerPunch']],
-            [461, 57, ['iceShard', 'nightSlash', 'iceFang']],
-            [861, 59, ['spiritBreak', 'darkestLariat', 'thunderWave', 'suckerPunch']],
+            [262, 51, ['crunch', 'suckerPunch', 'playRough']],
+            [510, 51, ['nightSlash', 'fakeOut', 'uTurn']],
+            [302, 52, ['shadowClaw', 'foulPlay', 'willOWisp'], { item: 'sablenite' }], // Mega Sableye
+            [430, 52, ['nightSlash', 'braveBird', 'suckerPunch']],
+            [461, 53, ['iceShard', 'nightSlash', 'iceFang']],
+            [861, 54, ['spiritBreak', 'darkestLariat', 'thunderWave', 'suckerPunch']],
           ],
         },
       },
@@ -128,12 +128,12 @@ export default {
         batalha: {
           id: 'elite_clarice', nome: 'Clarice da Manhã', dinheiro: 11000,
           equipe: [
-            [927, 55, ['playRough', 'crunch', 'bodyPress']],
-            [547, 56, ['moonblast', 'energyBall', 'tailwind']],
-            [303, 56, ['playRough', 'ironHead', 'suckerPunch'], { item: 'mawilite' }], // Mega Mawile
-            [671, 57, ['moonblast', 'petalBlizzard', 'psychic']],
-            [959, 57, ['gigatonHammer', 'playRough', 'stoneEdge']],
-            [700, 59, ['moonblast', 'hyperVoice', 'drainingKiss', 'calmMind']],
+            [927, 52, ['playRough', 'crunch', 'bodyPress']],
+            [547, 53, ['moonblast', 'energyBall', 'tailwind']],
+            [303, 53, ['playRough', 'ironHead', 'suckerPunch'], { item: 'mawilite' }], // Mega Mawile
+            [671, 54, ['moonblast', 'petalBlizzard', 'psychic']],
+            [959, 54, ['gigatonHammer', 'playRough', 'stoneEdge']],
+            [700, 55, ['moonblast', 'hyperVoice', 'drainingKiss', 'calmMind']],
           ],
         },
       },
@@ -157,12 +157,12 @@ export default {
         batalha: {
           id: 'elite_brasa', nome: 'Seu Brasa do Meio-dia', dinheiro: 11000,
           equipe: [
-            [324, 56, ['heatWave', 'bodyPress', 'stealthRock']],
-            [952, 56, ['flamethrower', 'gigaDrain', 'crunch']],
-            [323, 57, ['earthPower', 'flamethrower', 'rockSlide'], { item: 'cameruptite' }], // Mega Camerupt
-            [851, 57, ['fireLash', 'leechLife', 'crunch']],
-            [936, 58, ['armorCannon', 'psyshock', 'flameCharge']],
-            [59, 60, ['flareBlitz', 'extremeSpeed', 'crunch', 'wildCharge']],
+            [324, 53, ['heatWave', 'bodyPress', 'stealthRock']],
+            [952, 53, ['flamethrower', 'gigaDrain', 'crunch']],
+            [323, 54, ['earthPower', 'flamethrower', 'rockSlide'], { item: 'cameruptite' }], // Mega Camerupt
+            [851, 54, ['fireLash', 'leechLife', 'crunch']],
+            [936, 55, ['armorCannon', 'psyshock', 'flameCharge']],
+            [59, 56, ['flareBlitz', 'extremeSpeed', 'crunch', 'wildCharge']],
           ],
         },
       },
@@ -188,12 +188,12 @@ export default {
         batalha: {
           id: 'elite_ibere', nome: 'Iberê do Entardecer', dinheiro: 11000,
           equipe: [
-            [330, 57, ['dragonClaw', 'earthquake', 'uTurn']],
-            [230, 58, ['dragonPulse', 'surf', 'focusEnergy']],
-            [706, 58, ['dragonPulse', 'sludgeBomb', 'thunderbolt']],
-            [612, 59, ['outrage', 'dragonDance', 'earthquake']],
-            [715, 59, ['dragonPulse', 'airSlash', 'boomburst']],
-            [149, 61, ['dragonClaw', 'extremeSpeed', 'hurricane', 'dragonDance'], { item: 'dragoninite' }], // Mega Dragonite
+            [330, 55, ['dragonClaw', 'earthquake', 'uTurn']],
+            [230, 56, ['dragonPulse', 'surf', 'focusEnergy']],
+            [706, 56, ['dragonPulse', 'sludgeBomb', 'thunderbolt']],
+            [612, 57, ['outrage', 'dragonDance', 'earthquake']],
+            [715, 57, ['dragonPulse', 'airSlash', 'boomburst']],
+            [149, 58, ['dragonClaw', 'extremeSpeed', 'hurricane', 'dragonDance'], { item: 'dragoninite' }], // Mega Dragonite
           ],
         },
       },
@@ -232,12 +232,12 @@ export default {
         batalha: {
           id: 'campea_dalva', nome: 'Campeã Dalva', dinheiro: 20000,
           equipe: [
-            [196, 62, ['psychic', 'dazzlingGleam', 'shadowBall', 'morningSun']],
-            [468, 62, ['airSlash', 'dazzlingGleam', 'auraSphere', 'roost']],
-            [745, 63, ['accelerock', 'stoneEdge', 'crunch', 'closeCombat'], { forma: 'diurna' }],
-            [282, 63, ['moonblast', 'psychic', 'mysticalFire']],
-            [445, 64, ['earthquake', 'dragonClaw', 'stoneEdge', 'swordsDance'], { item: 'garchompite' }], // Mega Garchomp
-            [637, 66, ['fieryDance', 'bugBuzz', 'quiverDance', 'gigaDrain']],
+            [196, 58, ['psychic', 'dazzlingGleam', 'shadowBall', 'morningSun']],
+            [468, 58, ['airSlash', 'dazzlingGleam', 'auraSphere', 'roost']],
+            [745, 59, ['accelerock', 'stoneEdge', 'crunch', 'closeCombat'], { forma: 'diurna' }],
+            [282, 59, ['moonblast', 'psychic', 'mysticalFire']],
+            [445, 60, ['earthquake', 'dragonClaw', 'stoneEdge', 'swordsDance'], { item: 'garchompite' }], // Mega Garchomp
+            [637, 62, ['fieryDance', 'bugBuzz', 'quiverDance', 'gigaDrain']],
           ],
         },
       },

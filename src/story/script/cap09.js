@@ -217,11 +217,11 @@ export default {
         batalha: {
           id: 'leader_celeste', nome: 'Líder Celeste', dinheiro: 4400, dynamax: true, // ginásio de Dynamax: o Braviary dela cresce no fim
           equipe: [
-            [277, 40, ['aerialAce', 'quickAttack', 'endeavor']],
-            [227, 41, ['steelWing', 'airCutter', 'spikes']],
-            [334, 42, ['dragonPulse', 'cottonGuard', 'airSlash']],
-            [663, 42, ['flameCharge', 'acrobatics', 'quickAttack']],
-            [628, 44, ['braveBird', 'crushClaw', 'airSlash', 'superpower']],
+            [277, 41, ['aerialAce', 'quickAttack', 'endeavor']],
+            [227, 42, ['steelWing', 'airCutter', 'spikes']],
+            [334, 43, ['dragonPulse', 'cottonGuard', 'airSlash']],
+            [663, 43, ['flameCharge', 'acrobatics', 'quickAttack']],
+            [628, 45, ['braveBird', 'crushClaw', 'airSlash', 'superpower']],
           ],
         },
       },
@@ -244,7 +244,7 @@ export default {
         ['narrador', 'A Ventania abre as asas. Agora {jogador} pode VOAR sobre o mapa e viajar rápido para qualquer Ninho!'],
         ['nina', 'Cuida dela! E dá uma voltinha por cima das nuvens. É a coisa mais bonita do mundo.'],
       ],
-      depois: { insignia: 'mirante', mt: 'aerialAce', montaria: 'corviknight', flags: { 'badges.mirante': true, 'mounts.voar': true } },
+      depois: { insignia: 'mirante', mt: 'aerialAce', montaria: 'mantine', flags: { 'badges.mirante': true, 'mounts.mergulhar': true } }, // Mergulhar: a partir da 8ª insígnia
     },
     {
       id: 'fim',

@@ -122,11 +122,11 @@ export default {
         batalha: {
           id: 'leader_graca', nome: 'Líder Graça', dinheiro: 3800,
           equipe: [
-            [525, 35, ['rockBlast', 'headbutt', 'sandAttack']],
-            [933, 36, ['rockSlide', 'saltCure', 'headbutt']],
-            [95, 36, ['rockSlide', 'bind', 'dragonBreath']],
-            [476, 37, ['rockSlide', 'thunderWave', 'ironDefense']],
-            [745, 38, ['accelerock', 'rockSlide', 'crunch', 'quickAttack'], { forma: 'crepusculo' }],
+            [525, 38, ['rockBlast', 'headbutt', 'sandAttack']],
+            [933, 39, ['rockSlide', 'saltCure', 'headbutt']],
+            [95, 39, ['rockSlide', 'bind', 'dragonBreath']],
+            [476, 40, ['rockSlide', 'thunderWave', 'ironDefense']],
+            [745, 41, ['accelerock', 'rockSlide', 'crunch', 'quickAttack'], { forma: 'crepusculo' }],
           ],
         },
       },
@@ -148,7 +148,7 @@ export default {
         ['graca', 'O meu Lycanroc é da forma Crepúsculo. Ele evoluiu no pôr do sol, na hora exata em que o dia descansa.'],
         ['graca', 'Tem gente que acha que o crepúsculo é vilão. Não é. É a hora em que o dia descansa. O vilão é quem não deixa o dia descansar. Nem a noite.'],
       ],
-      depois: { insignia: 'escarpa', mt: 'rockSlide', flags: { 'badges.escarpa': true } },
+      depois: { insignia: 'escarpa', mt: 'rockSlide', montaria: 'corviknight', flags: { 'badges.escarpa': true, 'mounts.voar': true } }, // Voar: a partir da 7ª insígnia (progressao.js)
     },
     {
       id: 'invasao',

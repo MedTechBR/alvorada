@@ -179,11 +179,11 @@ export default {
         batalha: {
           id: 'leader_zelia', nome: 'Dona Zélia', dinheiro: 3300,
           equipe: [
-            [353, 17, ['shadowSneak', 'nightShade', 'willOWisp']],
-            [425, 18, ['ominousWind', 'gust', 'astonish']],
-            [708, 18, ['hex', 'leechSeed', 'astonish']],
-            [607, 18, ['ember', 'hex', 'confuseRay']],
-            [608, 20, ['hex', 'flameBurst', 'willOWisp', 'confuseRay']],
+            [353, 29, ['shadowSneak', 'nightShade', 'willOWisp']],
+            [425, 30, ['ominousWind', 'gust', 'astonish']],
+            [708, 30, ['hex', 'leechSeed', 'astonish']],
+            [607, 30, ['ember', 'hex', 'confuseRay']],
+            [608, 32, ['hex', 'flameBurst', 'willOWisp', 'confuseRay']],
           ],
         },
       },

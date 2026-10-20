@@ -230,10 +230,10 @@ export default {
         batalha: {
           id: 'leader_lia', nome: 'Líder Lia', dinheiro: 1800,
           equipe: [
-            [415, 18, ['bugBite', 'gust', 'sweetScent']],
-            [167, 19, ['stringShot', 'poisonSting', 'absorb', 'nightShade']],
-            [48, 19, ['confusion', 'poisonPowder', 'supersonic']],
-            [123, 21, ['quickAttack', 'furyCutter', 'leer', 'wingAttack']],
+            [415, 16, ['bugBite', 'gust', 'sweetScent']],
+            [167, 17, ['stringShot', 'poisonSting', 'absorb', 'nightShade']],
+            [48, 17, ['confusion', 'poisonPowder', 'supersonic']],
+            [123, 19, ['quickAttack', 'furyCutter', 'leer', 'wingAttack']],
           ],
         },
       },
