@@ -21,6 +21,7 @@ export default {
         ['narrador', 'Lá em cima, o vulcão Tição solta uma fumaça fina. Os moradores dizem que, desde a semana passada, o ronco do vulcão não para mais.'],
         ['jogador', 'Se o Ébano está aqui, deve ser para o vulcão. A Graça disse que ele quer acordá-lo.'],
         ['jogador', 'Se o vulcão está acordando, a Graça não exagerava quando falou do vento.'],
+        ['narrador', 'Uma nuvem de vapor sobe das fontes quentes e se espalha pelas rochas, molhando as suas botas.'],
       ],
       depois: {
         flags: { 'nh.chegouBrasas': true },

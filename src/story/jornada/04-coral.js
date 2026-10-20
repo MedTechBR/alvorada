@@ -21,6 +21,7 @@ export default {
         ['narrador', 'O Líder Jonas cuida do farol e da insígnia Faísca. Mas as luzes do farol estão apagadas há dois dias, e ninguém sabe dizer por quê.'],
         ['jogador', 'Antes de falar com o Jonas, preciso ver o que está acontecendo no farol.'],
         ['jogador', 'Um farol apagado e um líder que não quer falar. Isso não cheira bem.'],
+        ['narrador', 'Você desce do barco no cais e sente o vento salgado no rosto. A cidade inteira parece estar esperando alguma coisa.'],
       ],
       depois: {
         flags: { 'nh.chegouCoral': true },

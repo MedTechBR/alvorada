@@ -147,8 +147,8 @@ golpes e itens das batalhas, objetivo com texto e lugar em toda cena que move o 
 o resumo "Descoberta:"), a ordem do sol nos boletins (sobe até o 8º e volta depois do Relógio), e o elenco (sem colisão).
 Avisos são de conteúdo e não reprovam.
 
-Caixas de fala: 139 cenas. 70 têm de 3 a 8 caixas, a reveal da mina (reviravolta 1) tem 10, e as 20 restantes são de
-treinador que avista o jogador (uma ou duas caixas, como no cap02): são as únicas abaixo do combinado de 3 a 8.
+Caixas de fala: 139 cenas. 120 têm de 3 a 8 caixas. A reveal da mina (reviravolta 1) tem 10, por ser a cena que explica
+tudo. As 18 restantes são de treinador que avista o jogador (uma caixa, como no cap02): são as únicas abaixo do combinado.
 
 ---
 
@@ -523,6 +523,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *O Líder Jonas cuida do farol e da insígnia Faísca. Mas as luzes do farol estão apagadas há dois dias, e ninguém sabe dizer por quê.*
 - **Ravi:** Antes de falar com o Jonas, preciso ver o que está acontecendo no farol.
 - **Ravi:** Um farol apagado e um líder que não quer falar. Isso não cheira bem.
+- *Você desce do barco no cais e sente o vento salgado no rosto. A cidade inteira parece estar esperando alguma coisa.*
 - *Depois:* flags `nh.chegouCoral=true`
 - *Objetivo no painel:* Suba ao Farol Coral, na ponta do morro, e veja o que aconteceu com as luzes → `farol_entrada`
 
@@ -1057,6 +1058,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *Lá em cima, o vulcão Tição solta uma fumaça fina. Os moradores dizem que, desde a semana passada, o ronco do vulcão não para mais.*
 - **Ravi:** Se o Ébano está aqui, deve ser para o vulcão. A Graça disse que ele quer acordá-lo.
 - **Ravi:** Se o vulcão está acordando, a Graça não exagerava quando falou do vento.
+- *Uma nuvem de vapor sobe das fontes quentes e se espalha pelas rochas, molhando as suas botas.*
 - *Depois:* flags `nh.chegouBrasas=true`
 - *Objetivo no painel:* Suba ao Vulcão Tição e veja a equipe de perfuração da Crepúsculo → `vulcao_ticao`
 
@@ -1561,7 +1563,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 ## Saída do teste (`node tools/teste-jornada.mjs`)
 
 ```
-História nova: 16 segmentos, 139 cenas, 568 falas, 93 atores, 50 batalhas.
+História nova: 16 segmentos, 139 cenas, 570 falas, 93 atores, 50 batalhas.
 Reviravoltas: 1=j07_mina_medidor · 2=j07_prof_telefone · 3=j08_sina_revela · 4=j09_traducoes · 5=j11_vela_revelada · 6=j12_vespera_aliada · 7=j14_irma_revela
 Boletins do sol: 6h05 → 6h12 → 6h19 → 6h27 → 6h34 → 6h42 → 6h51 → 7h03 → 7h11 → 6h04
 Pendências do mapa (solidos) aceitas: relogio_pedra
