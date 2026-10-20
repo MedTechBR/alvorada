@@ -193,6 +193,23 @@ export const ELENCO = [
     apos: ['Desço para a mina cedo e subo tarde. A luz lá em baixo é muito estranha, sabia?'] },
   { id: 'r7_g', quem: 'treinador', nome: 'Pescador Juno', look: LOOKS.pescador, spot: 'r7_g', visao: 5,
     apos: ['A ravina tem um rio subterrâneo. Ninguém sabe onde ele nasce.'] },
+  // ---------------- Rota 8 (Escalada do Paredão): treinadores da escalada e da cova ----------------
+  { id: 'r8_ricardo', quem: 'treinador', nome: 'Alpinista Ricardo', look: LOOKS.operario, spot: 'r8_ricardo', visao: 6,
+    apos: ['Ainda estou aqui. Ainda descendo pela corda.'] },
+  { id: 'r8_lena', quem: 'treinador', nome: 'Montanhista Lena', look: LOOKS.nadadora, spot: 'r8_lena', visao: 6,
+    apos: ['Aqui em cima o ar é fino e as batalhas são grossas!'] },
+  { id: 'r8_b', quem: 'treinador', nome: 'Escalador Matias', look: LOOKS.pescador, spot: 'r8_b', visao: 5,
+    apos: ['Subi com um Rufflet e um pouco de sorte.'] },
+  { id: 'r8_c', quem: 'treinador', nome: 'Caçadora Vitória', look: LOOKS.cacadora, spot: 'r8_c', visao: 5,
+    apos: ['Os Vullaby do platô são espertos. Eles roubam a comida do acampamento.'] },
+  { id: 'r8_d', quem: 'treinador', nome: 'Mineiro Caio', look: LOOKS.mineiro, spot: 'r8_d', visao: 5,
+    apos: ['A cova atrás da cachoeira tem veio de luzita. Morna. Não gosto disso.'] },
+  { id: 'r8_e', quem: 'treinador', nome: 'Observador Pedro', look: LOOKS.observador, spot: 'r8_e', visao: 5,
+    apos: ['Um Hawlucha me olhou feio. Dizem que ele dá uma aula de musculação.'] },
+  { id: 'r8_f', quem: 'treinador', nome: 'Campista Bia', look: LOOKS.campista, spot: 'r8_f', visao: 5,
+    apos: ['Dormi no platô e acordei com o sol atrasado. De novo.'] },
+  { id: 'r8_g', quem: 'treinador', nome: 'Montanhista Tomaz', look: LOOKS.operario, spot: 'r8_g', visao: 5,
+    apos: ['Quem escala sem corda aprende a respeitar o Paredão.'] },
 ];
 
 // Treinadores das regiões novas do mundo grande (cada região traz o seu arquivo; veja docs/construir-regiao.md)

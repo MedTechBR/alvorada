@@ -203,6 +203,51 @@
    446,
    158,
    "left"
+  ],
+  "paredao_base": [
+   185,
+   146,
+   "up"
+  ],
+  "r8_ricardo": [
+   192,
+   118,
+   "left"
+  ],
+  "r8_lena": [
+   178,
+   124,
+   "right"
+  ],
+  "r8_b": [
+   200,
+   108,
+   "down"
+  ],
+  "r8_c": [
+   164,
+   112,
+   "right"
+  ],
+  "r8_d": [
+   208,
+   126,
+   "left"
+  ],
+  "r8_e": [
+   172,
+   100,
+   "down"
+  ],
+  "r8_f": [
+   196,
+   98,
+   "down"
+  ],
+  "r8_g": [
+   212,
+   112,
+   "left"
   ]
  },
  "ninhos": [
@@ -327,6 +372,16 @@
    "x": 318,
    "y": 156,
    "text": "RAVINA DO ROCHEDO\nTrilha perigosa. Paredão à direita: só com as garras certas."
+  },
+  {
+   "kind": "boulder",
+   "x": 168,
+   "y": 121
+  },
+  {
+   "kind": "boulder2",
+   "x": 174,
+   "y": 121
   }
  ],
  "people": [
@@ -563,6 +618,58 @@
      "left"
     ]
    }
+  },
+  {
+   "id": "cova_paredao",
+   "name": "Cova do Paredão",
+   "biome": "caverna",
+   "rows": [
+    "rrrrrrrrrrrrrr",
+    "rkkkkkkkkkkkkr",
+    "rkkkrrrrrrkkkr",
+    "rkkkkkkkkkkkkr",
+    "rkkkkkkkkkkkkr",
+    "rkkkkkkkkkkkkr",
+    "rkkrrrkkkkkkkr",
+    "rrrrrkkkkkkrrr",
+    "rrrrrrmmrrrrrr"
+   ],
+   "objects": [
+    {
+     "kind": "crystal",
+     "x": 2,
+     "y": 2
+    },
+    {
+     "kind": "lamp",
+     "x": 11,
+     "y": 1
+    },
+    {
+     "kind": "sign",
+     "x": 3,
+     "y": 1,
+     "text": "COVA DO PAREDÃO\nA trepadeira leva ao alto. A cova leva a um veio de luzita."
+    }
+   ],
+   "decor": [],
+   "people": [],
+   "spots": {
+    "cova_entrada": [
+     7,
+     6.5,
+     "up"
+    ]
+   }
+  }
+ ],
+ "warps": [
+  {
+   "x": 171,
+   "y": 120,
+   "dir": "up",
+   "to": "cova_entrada",
+   "label": "Cova do Paredão"
   }
  ]
 }
