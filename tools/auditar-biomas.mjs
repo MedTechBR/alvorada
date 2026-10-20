@@ -45,6 +45,18 @@ for (const l of linhas) {
     if (n < 6 || n > 12) variedade.push(`${l.id} ${t}: ${n}`);
   }
 }
+// União por área (dia + noite): até 18
+const uniaoAcima = [];
+for (const l of linhas) {
+  const u = new Set([...atual.AREAS[l.id].dia, ...atual.AREAS[l.id].noite].map((r) => r[0])).size;
+  if (u > 18) uniaoAcima.push(`${l.id} ${u}`);
+}
+// Cobertura: toda espécie que era selvagem no commit base (dia ou noite) tem de continuar selvagem em alguma área
+const selvBase = new Set();
+for (const a of Object.values(antigo.AREAS_ENCONTROS)) for (const t of ["dia", "noite"]) for (const r of a[t] || []) selvBase.add(r[0]);
+const selvAgora = new Set();
+for (const l of linhas) for (const t of ["dia", "noite"]) for (const r of atual.AREAS[l.id][t] || []) selvAgora.add(r[0]);
+const semFonte = [...selvBase].filter((d) => !selvAgora.has(d)).sort((p, q) => p - q);
 // Rara: ao menos uma espécie de peso 1 na tabela de dia
 const semRara = linhas.filter((l) => !(atual.AREAS[l.id].dia || []).some((r) => r[3] <= 1)).map((l) => l.id);
 // Níveis: cada área dentro da faixa do seu segmento
@@ -82,7 +94,7 @@ const alfaFora = linhas.filter((l) => detalhe[l.id].some((x) => x.tabela === 'al
 
 const resumo = {
   areas: linhas.length, antesLinhas, antesAreas, depoisLinhas, depoisAreas,
-  variedade: variedade.length, semRara: semRara.length, foraDaFaixa: foraDaFaixa.length,
+  variedade: variedade.length, uniaoAcima: uniaoAcima.length, semRara: semRara.length, coberturaPerdida: semFonte.length, selvBase: selvBase.size, foraDaFaixa: foraDaFaixa.length,
   assinaturaOk: assinatura.filter((x) => x.ok).length, assinatura: assinatura.length, alfaFora: alfaFora.length,
 };
 console.log(JSON.stringify(resumo));
@@ -98,6 +110,8 @@ L.push(`| Linhas fora do bioma (dia, noite e alfa) | ${antesLinhas} | ${depoisLi
 L.push(`| Áreas com ao menos um desvio | ${antesAreas} de ${linhas.length} | ${depoisAreas} de ${linhas.length} |`);
 L.push(`| Áreas com tabela de dia/noite fora de 6–12 espécies | — | ${variedade.length} |`);
 L.push(`| Áreas sem espécie rara (peso 1) no dia | — | ${semRara.length} |`);
+L.push(`| Áreas com união dia+noite acima de 18 | — | ${uniaoAcima.length} |`);
+L.push(`| Espécies selvagens no commit base sem nenhuma fonte selvagem | ${selvBase.size} espécies selvagens | ${semFonte.length} |`);
 L.push(`| Níveis fora da faixa do segmento | — | ${foraDaFaixa.length} |`);
 L.push(`| Regiões com a assinatura de tipos | — | ${resumo.assinaturaOk} de ${assinatura.length} |`);
 L.push(`| Alfas fora do bioma (mantidos por regra de missão) | — | ${alfaFora.length} |`, '');
@@ -130,6 +144,8 @@ else for (const [id, v] of sobra) L.push(`- \`${id}\`: ${v.map((x) => `${x.tabel
 L.push('', '## Alfas', '', 'Alfa não muda de espécie (regra de missão). Quando a espécie do alfa não combina com o bioma, aparece aqui para decisão.', '');
 for (const x of alfaFora) L.push(`- ${x}`);
 if (!alfaFora.length) L.push('Nenhum alfa fora do bioma.');
+L.push('', '## Cobertura', '');
+L.push(semFonte.length ? 'Sem fonte selvagem (deveria ser 0): ' + semFonte.map((d) => `#${d} ${atual.ESPECIES[d].name}`).join(', ') : `Todas as ${selvBase.size} espécies que eram selvagens no commit base continuam selvagens em alguma área que combina com o bioma.`, '');
 L.push('', '## Variedade e raridade', '');
 L.push(variedade.length ? variedade.map((x) => `- ${x}`).join('\n') : 'Todas as tabelas têm de 6 a 12 espécies distintas.');
 L.push('', semRara.length ? `Áreas sem rara no dia: ${semRara.join(', ')}` : 'Toda área tem uma espécie rara (peso 1) na tabela de dia.', '');
