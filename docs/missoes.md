@@ -252,7 +252,7 @@ Itens e Pokémon aparecem no diálogo clássico ("Ravi recebeu…"). Equipe chei
 ## Conversa com a história
 
 - Ao aceitar: `flags[id] = 'ativa'`. Ao concluir: `flags[id] = 'completa'` e `flags[id + '_completa'] = true`.
-- Se uma cena do roteiro puser `flags[id] = 'ativa'`, a missão começa sozinha (é o caso de `sq_pipoca`).
+- Se uma cena do roteiro puser `flags[id] = 'ativa'`, a missão começa sozinha (cena solta do roteiro; hoje nenhuma missão usa isso).
 - Missão só da história (as cenas fazem tudo e dão a recompensa): use `historia`. O diário acompanha:
 
 ```js
@@ -303,15 +303,22 @@ export const NPCS = {
 ```
 
 - **presente**: dá uma vez e lembra (`flags.missoes.npcs[id].p`).
-- **diario**: uma vez por dia; `itens` dá tudo, `sorteio` escolhe um.
+- **diario**: uma vez por dia; `itens` dá tudo, `sorteio` escolhe um, `recompensa` (objeto ou função) dá itens e Pokémon
+  (o ovo da Creche da Vó Iara é assim).
+- **treinador**: `{ batalha: { id, nome, equipe, dupla }, falas, vitoria, derrota, depois, dinheiro, requer }`. Treinador de rota
+  que luta uma vez ao conversar e depois só fala (`depois`). NÃO é missão: não entra no diário nem ganha "!". Os treinadores do
+  Sertão, da Geada, das praias de Jandaia e outros usam isto. Quem já tinha vencido o "desafio" antigo (`tr_<id>` ou `sq_tr_<id>`)
+  conta como vencido.
+- **reviver**: `{ fosseis: [{ item, dex, nivel }], falas: { um, qual, pronto, depois } }`. Serviço do Dr. Ícaro: devolve a vida aos
+  fósseis que o jogador carrega (Âmbar, Garra, Raiz e Vela). Aparece o `…` quando há fóssil na mochila.
 - **troca**: o Pokémon recebido guarda o treinador original (`mon.ot`, aparece no Resumo) e o apelido; o item
   equipado do Pokémon que foi volta para a mochila.
 - **tutor**: escolhe o golpe, o Pokémon e paga; com 4 golpes abre a tela clássica de "Aprender golpe".
 - **reage**: fala sobre o Pokémon que está fora da bola.
 - **falas**: a primeira cuja condição vale. Falas com `se` que o jogador ainda não ouviu acendem o ícone `…`.
 
-Ordem numa conversa: etapa de missão com esta pessoa → missão para oferecer → presente → presente diário →
-troca → tutor → reação ao Pokémon em campo → falas → lembrete da missão que ela deu → falas do mapa.
+Ordem numa conversa: etapa de missão com esta pessoa → missão para oferecer → treinador não vencido → presente → presente
+diário → reviver fósseis → troca → tutor → reação ao Pokémon em campo → falas → lembrete da missão que ela deu → falas do mapa.
 
 Ícones sobre a cabeça: `?` (tem etapa com você), `!` (tem missão para oferecer), `…` (conversa nova ou presente).
 
@@ -356,11 +363,18 @@ Tudo fica em `flags.missoes` (vai no save junto com as flags):
 Save antigo sem missões, campo corrompido, missão que sumiu dos dados (fica guardada e ignorada) e missão que mudou
 de `versao` (recomeça) são tratados ao carregar.
 
-## Exemplo completo
+## O que NÃO é missão
+
+Regra de 20/10/2026 (docs/jornada-classica.md, seção 1b; lista final em docs/jornada-roteiro.md): missão no diário só com
+começo, meio e fim ligados a personagem ou à trama, ou que dê algo marcante (montaria, Pokémon raro, golpe especial). Entrega
+de cesta, "traga N frutas", "derrote N selvagens", ronda noturna, desafio de treinador de rota e tarefa repetível NÃO são missão:
+se o treinador deve lutar, use `treinador` em NPCS; se é presente diário, use `diario`.
+
+## Exemplo completo (fictício; a missão real saiu)
 
 ```js
 export const MISSOES = [{
-  id: 'sq_lampioes', titulo: 'Os lampiões de Lamparina', regiao: 'Vila Lamparina', de: 'lamp_acendedor',
+  id: 'sq_exemplo', titulo: 'Os lampiões de Lamparina', regiao: 'Vila Lamparina', de: 'lamp_acendedor',
   resumo: 'O Acendedor torceu o pé. Alguém precisa conferir os lampiões de noite.',
   oferta: ['Torci o pé no brejo.', 'Passa nos três cantos da vila depois que escurecer?'],
   lembrete: ['Depois que escurecer: os três cantos da vila.'],
