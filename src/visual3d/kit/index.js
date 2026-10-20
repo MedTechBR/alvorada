@@ -4,6 +4,7 @@ import { NATUREZA } from './natureza.js';
 import { OBJETOS } from './objetos.js';
 import { PREDIOS } from './predios.js';
 import { INTERIOR, paredeInterior } from './interior.js';
+import { GLB_TIPOS, glbPronto } from './glb.js';
 
 // Kit de modelos 3D low-poly (HD-2D) gerados por código. Interface em docs/visual-3d-kit.md.
 //
@@ -37,6 +38,7 @@ export const kit = {
   tipos: () => Object.keys(TIPOS),
   ficha,
   chave(kind, obj) {
+    if (GLB_TIPOS[kind] && glbPronto(kind)) return `${kind}|glb`; // modelo GLB carregado (kit/glb.js)
     const T = TIPOS[kind]; if (!T) return null;
     const v = T.var ? hashVar(obj) % T.var : 0, e = T.estado ? T.estado(obj ?? {}, ficha(kind)) : '';
     return `${kind}|${v}|${e}`;
@@ -45,6 +47,7 @@ export const kit = {
     const T = TIPOS[kind]; if (!T) return null;
     const k = this.chave(kind, obj);
     let r = cache.get(k); if (r) return r;
+    if (k.endsWith('|glb')) { const g = glbPronto(kind); r = { geometry: g.geometry, topo: g.topo, variante: 0, tris: g.geometry.index.count / 3, altura: g.topo.y, chave: k }; cache.set(k, r); return r; }
     const K = ficha(kind), v = T.var ? hashVar(obj) % T.var : 0;
     const t0 = performance.now();
     let seed = v * 7919 + 13; for (const ch of kind) seed = (seed * 31 + ch.charCodeAt(0)) % 2147483000;
