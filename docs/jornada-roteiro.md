@@ -83,37 +83,59 @@ As batalhas 2 a 5 usam o estágio do inicial dele (`rival:N`, o mesmo esquema de
 
 ## Missões secundárias
 
-Regra (seção 1b do doc): no máximo duas por cidade, cada uma com começo, meio e fim, ligada a um personagem ou a uma
-reviravolta, ou que dê algo marcante. Dentro do roteiro há três missões novas, todas com o texto no campo `secundaria`
-(vai para o diário, não mexe no painel principal):
+**Lista final (20/10/2026).** O Matheus jogou e disse "ainda há muitas sidequests bestas". Regra (seção 1b do doc da jornada): fica só
+missão com começo, meio e fim ligados a um personagem ou a uma reviravolta, ou que dê algo marcante (Pokémon raro, item, golpe). No
+máximo duas por cidade. Tudo que era entrega, "traga N frutas", "derrote N selvagens", ronda, tarefa repetível ou "Desafio: fulano"
+saiu do jogo (dados, NPCs de entrega, marcadores e entradas do diário). São **14 missões** no total: 11 no diário do motor de missões
+(`src/story/missoes/regiao-*.js`) e 3 como cenas da história (campo `secundaria`, nos arquivos `jornada/02`, `03` e `04`).
 
-- **Pipoca do Tito** (Vila Sussurro, `j02_sq_pipoca_inicio`, `j02_sq_pipoca_achado`, `j02_sq_pipoca_fim`): o Skwovet
-  do Tito some no bosque. Recompensa: noz de ouro (`rareCandy`).
-- **Garrafa do Seu Nestor** (Porto Espelho, `j03_sq_garrafa_inicio`, `j03_sq_garrafa_achada`, `j03_sq_garrafa_fim`): a garrafa
-  no manguezal traz um bilhete de **Heitor**, pai do Téo, preso no nível 4 da Mina. Recompensa: 2× superRepel.
-- **Diário da Iracema** (Cidade Coral, `j04_sq_diario_inicio`, `j04_sq_diario_achado`, `j04_sq_diario_fim`): o diário do farol
-  prova que o Solano assinou a troca do gerador. Recompensa: 3× superPoção.
+| Missão | Cidade | Gancho | Recompensa | Por que interessa |
+|---|---|---|---|---|
+| **Os relógios do Seu Zé** (`sq_relogios`) | Vila Alvorada | Os relógios da rádio marcam horas diferentes. De manhã, olhe o sol na Lagoa Dourada. | 5 Bolas Cronômetro, o relógio de bolso do pai do Seu Zé | É a primeira prova de que o sol atrasa, antes do professor explicar. Fecha com o Seu Zé sorrindo por estar certo. |
+| **O Tauros de olhos vermelhos** (`sq_tauros`) | Rota 1 (Campina) | O Tauros manso do Seu Bento virou Alfa. Alguma coisa mexeu com a cabeça dele. | ₽3.000, Leite Moomoo, Reviver, o Caco de Pedra Azul | Mistério: o caco azul e morno é um aviso da luz que enlouquece os bichos (Mina Aurora). |
+| **A viola do Seu Juca** (`sq_viola`) | Vila Sussurro | A viola era da esposa dele. Depois do sol atrasado, as árvores pararam de responder. | Viola do Seu Juca, Pó Prateado | O fim é emocional: o bosque responde de novo, e o Juca fala da Zefa. |
+| **Cadê o Pipoca?** (cenas `j02_sq_pipoca_*`) | Vila Sussurro | O Skwovet do Tito sumiu no bosque. | Ovo da Sorte | O Pipoca não estava perdido: juntava uma noz de cada árvore como presente para o Tito. |
+| **A garrafa do Seu Nestor** (cenas `j03_sq_garrafa_*`) | Porto Espelho | Uma das garrafas que ele joga no mar voltou, presa no manguezal. | 3 Ultra Bolas | A resposta é do Heitor, pai do Téo, preso no nível 4 da Mina. O Téo reage ao bilhete na cena de Jandaias (`j05_rival3_fim`). |
+| **O diário do farol** (cenas `j04_sq_diario_*`) | Cidade Coral | A Iracema esconde 40 anos de diário no quarto do topo do farol. | Rotom (Nv 25), 3 Superpoções | O diário prova que a Aurora trocou o gerador (assinado pelo Solano), e uma lâmpada pede S-O-C-O-R-R-O: tem um Rotom preso. |
+| **A casa dos Solano** (`sq_solano`) | Vila Lamparina | A Vó Benta pede para alguém entrar na casa abandonada dos dois meninos Solano. | Duskull (Nv 30), Diário do Tiago, Etiqueta Enfeitiçada, 3 Bolas do Crepúsculo | Revela quem é o Augusto Solano: o irmão grande que prometeu acender o mundo para o Tiago não ter mais medo do escuro. O Solano responde ao diário na luta do Relógio (`j12_solano_cai`). Antes estava morta (dependia de cenas antigas desligadas). |
+| **O mapa do templo** (`sq_ybi`) | Ilhas Jandaias | A Dra. Ybi: o Templo das Raízes foi construído em volta de uma câmara escondida, e a Companhia quer abri-la. | Pedra da Folha, Fóssil Raiz, Venusaurita, MT Leaf Storm | Passa pelas mesmas salas da cena do Ébano: as tabuletas formam o mapa. |
+| **O guardião das raízes** (`sq_tapu_bulu`) | Ilhas Jandaias | Quatro raízes acordam com golpes de Planta e o guardião desce. Pede seis insígnias (é desafio de volta). | Semente Milagrosa, 2 Doces Raros, o Alfa Tapu Bulu (Nv 60, capturável) | Lendário de verdade, atrás de um enigma de golpes. |
+| **O vulcão acordado** (`sq_sismografo`) | Arquipélago das Brasas | A Vulcanóloga Jaciara quer três sensores no caminho que o jogador já sobe (cratera, Rio de Lava, Forja Antiga). | Rocha Quente, Charizardita Y | Liga com a cena do Ébano (`nh.explicouTempestade`); a terceira leitura mostra algo vivo respirando. |
+| **O coração do vulcão** (`sq_heatran`) | Templo da Chama | Algo grande e pesado respira na câmara do fundo. | 2 Reviver Máximo, ₽5.000, Heatran (Nv 70, capturável) | Fecha a leitura do sismógrafo. Os tremores eram o Heatran respirando. |
+| **O anel da rainha** (`sq_hoopa`) | Cidade Buriti | Seis anéis sumiram da tenda da Zuleica numa noite. O espelho mostra dois olhinhos rindo. | Hoopa (Nv 50) | O ladrão era o Hoopa. Cada anel achado mostra a mão enorme que o levou. |
+| **Alpinistas perdidos** (`sq_avalanche`) | Vila Geada | Três nomes no mural da estalagem ficaram presos na Geleira do Uivo. | Pedra de Gelo, 3 Reviver Máximo | A Dona Inês risca três nomes e deixa um, o do marido (Jacinto), que a Geleira nunca devolveu. |
+| **A luz que dança** (`sq_aurora_boreal`) | Vila Geada | A Dra. Hanna mede a aurora em três pontos altos, de noite. | Pedra da Alvorada, Glalitita | Os três pontos batem no mesmo compasso: o Coração respira debaixo da Geleira. Corrigido: um dos pontos ficava fora do mapa. |
 
-### Missões genéricas a REMOVER do mundo (não apagadas; só listadas)
+**Serviços que continuam, mas não são missão** (não aparecem no diário nem ganham "!"): o **Dr. Ícaro** revive os quatro fósseis
+(Âmbar, Garra, Raiz e Vela) pelo `NPCS.dr_icaro.reviver`; a **Vó Iara** dá um ovo de bebê por dia (Creche, `NPCS.vo_iara.diario`); o
+**Seu Brasa** ensina Onda de Calor e Lança-Chamas por ₽500 a quem tem 2 insígnias; as trocas de Alola (Kiana, Kaleo, Tupã, Tor e Tora); os
+presentes diários de fruta (Dona Flor, Padeiro, Padre Pedro, Gaudêncio). **Treinadores de rota** (Sertão, Geada e as praias de Jandaia) lutam
+uma vez ao conversar (`NPCS[id].treinador`); não há mais "Desafio: fulano" no diário.
 
-As missões abaixo são de entrega ou coleta genérica, ou não têm ligação com a trama. Ficam no arquivo, mas saem da lista
-das missões do mundo (tirando da lista `MISSOES` de cada região, na etapa de ligação).
-O que fica é o que tem história ou algo marcante (até duas por cidade).
+### O que saiu do jogo (116 entradas do motor de missões: 127 antes, 11 agora)
 
-| Arquivo | Manter (história ou marcante) | Remover |
-|---|---|---|
-| `missoes/regiao-alvorada.js` | `sq_relogios` (Seu Zé e o sol) | `sq_cesta`, `sq_pesquisa1`, `sq_pesquisa2`, `sq_isca` |
-| `missoes/regiao-campina.js` | `sq_tauros` (Pokémon marcante), `sq_medalhao` (Sol) | `sq_guloso`, `sq_espantalho`, `sq_revanche`, `sq_carta` |
-| `missoes/regiao-espelho.js` | `sq_magikarp` (marcante) | `sq_garrafas_lago` (trocada pela garrafa do Nestor), `sq_psyduck`, `sq_moqueca` |
-| `missoes/regiao-sul.js` | `sq_farol` (farol de Coral), `sq_solano` (casa dos Solano) | `sq_acaraje`, `sq_lampioes`, `sq_torres` |
-| `missoes/regiao-sussurro.js` | `sq_viola` (Seu Juca) | `sq_pipoca` (trocada pela missão nova do segmento 02), `sq_ronda` |
-| `missoes/regiao-jandaia.js` | `sq_ybi` (mapa do templo), `sq_tapu_bulu` (guardião das raízes) | `sq_ovos`, `sq_coco`, `sq_tapu_koko`, `sq_troca_tupa`, `sq_gemeas`, `sq_miragem` |
-| `missoes/regiao-geada.js` | `sq_aurora_boreal` (marcante), `sq_avalanche` (alpinistas) | `sq_pesca_gelo`, `sq_vento_branco`, `sq_zero_absoluto`, `sq_banquisa` |
-| `missoes/regiao-brasas.js` | `sq_sismografo` (o vulcão acordado, ligado ao Ébano), `sq_heatran` (marcante) | `sq_armaduras`, `sq_armaduras_m`, `sq_ovo_vapor`, `sq_camerupt`, `sq_moltres`, `sq_volcanion`, `sq_tapu_lele`, `sq_perolas_negras` |
-| `missoes/regiao-sertao.js` | `sq_reviver_ambar`, `sq_reviver_garra` (Dr. Ícaro, fósseis), `sq_hoopa` (anel da rainha) | `sq_tepig`, `sq_cacimba`, `sq_forro`, `sq_tutor_brasa`, `sq_quermesse`, `sq_caravana`, `sq_tempestade`, `sq_caranguejo`, `sq_mare`, `sq_seismitoad`, `sq_canoa`, `sq_alfa_galeria`, `sq_regirock`, e os 31 `sq_tr_sertao_*` ("Desafio: ...") |
+| Região | Removidas |
+|---|---|
+| Vila Alvorada e Rota 1 | `sq_cesta`, `sq_pesquisa1`, `sq_pesquisa2` (dava o Eevee), `sq_isca` |
+| Campina | `sq_guloso` (dava o Teddiursa), `sq_espantalho`, `sq_revanche` (diária; o Tiago virou treinador comum), `sq_medalhao` (achar e devolver, sem história), `sq_carta` |
+| Sussurro | `sq_pipoca` (virou cena da história), `sq_ronda` |
+| Porto Espelho | `sq_garrafas_lago` (virou a garrafa do Nestor), `sq_magikarp` (repetível), `sq_psyduck`, `sq_moqueca` |
+| Coral e Lamparina | `sq_farol` (era a mesma ideia do diário da Iracema e dependia de cenas antigas desligadas), `sq_acaraje`, `sq_lampioes`, `sq_torres` |
+| Jandaias | `sq_ovos` (virou serviço diário da Vó Iara), `sq_coco`, `sq_tapu_koko` (os 4 capitães viraram treinadores), `sq_troca_tupa` (a troca fica no NPC), `sq_gemeas`, `sq_miragem` |
+| Geada | `sq_pesca_gelo`, `sq_vento_branco`, `sq_zero_absoluto`, `sq_banquisa`, e os **33 "desafios"** `tr_gt_*` (não estavam na lista de 78: eram o mesmo vício) |
+| Brasas | `sq_armaduras`, `sq_armaduras_m` (as armaduras do Charcadet passaram para o Mercado de Vila Termas), `sq_ovo_vapor`, `sq_camerupt`, `sq_moltres`, `sq_volcanion`, `sq_tapu_lele`, `sq_perolas_negras` |
+| Sertão | `sq_tepig`, `sq_cacimba`, `sq_forro` (o trio virou 3 treinadores), `sq_tutor_brasa` (o tutor ficou), `sq_quermesse`, `sq_caravana`, `sq_tempestade` (o Mestre da Arena virou treinador), `sq_caranguejo`, `sq_mare`, `sq_seismitoad`, `sq_canoa`, `sq_alfa_galeria`, `sq_regirock`, e os 31 `sq_tr_sertao_*` |
+| Fósseis | `sq_reviver_ambar` e `sq_reviver_garra` viraram o serviço do Dr. Ícaro (agora com Raiz e Vela também) |
 
-Total: **78 missões a remover** (44 delas no Sertão). Os treinadores em si não saem do mapa: só os "desafios" que embrulham
-a luta. O arquivo `regiao-sertao.js` é gerado por `tools/regioes/gerar-sertao.py`: a remoção deve ser feita no gerador.
+Total: **78** da lista original + **33** desafios da Geada + `sq_medalhao`, `sq_magikarp`, `sq_farol` + os 2 de fósseis (convertidos em serviço).
+Pokémon e itens que só vinham dessas missões e deixaram de existir: Tapu Koko, Tapu Lele, Moltres, Volcanion, Regirock, Cloyster gigante,
+Teddiursa, Eevee de presente, Mega Camerupt (cameruptita), Mega Garchomp (garchompita), Pena de Brasa, Vara de Gelo. Rocha do Rei e as duas
+armaduras do Charcadet passaram para os mercados (Porto Espelho e Vila Termas), para não quebrar as evoluções.
+
+Mapa: o NPC duplicado "Dra. Lava" saiu da casa da vulcanóloga (a Jaciara da história a substitui) e algumas falas de moradores que falavam
+das missões removidas foram trocadas por falas de ambiente. Geradores alinhados: `tools/regioes/sertao-missoes.py` (e o
+`regiao-sertao.js` que ele escreve), `tools/regioes/jandaia-vila.mjs` e `tools/brasas/povoado.py`. Saves antigos: missão com id que não existe
+mais fica guardada e é ignorada; quem já tinha vencido um "desafio" antigo continua contando como vencido.
 
 ## Pendências (o que falta para a história rodar)
 
@@ -393,28 +415,28 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 
 ### `j02_sq_pipoca_inicio`
 *Gatilho:* falar `tito` (sem nh.sqPipoca)
-- **Tito:** O Pipoca sumiu! Ele é um Skwovet e foi buscar noz no bosque e não voltou. Ele sempre volta. Sempre.
-- **Tito:** Se você achar ele, fala que eu não tô bravo. Só um pouquinho.
-- **Ravi:** Acho que vi um Skwovet correndo para a mata. Pode ser ele?
-- **Tito:** Pode, sim! Ele adora a mata de jequitibá. Se achar, traga de volta com cuidado.
+- **Tito:** O Pipoca sumiu! Ele é um Skwovet, o meu melhor amigo, e saiu de manhã para buscar noz no bosque. Ele sempre volta antes do almoço. Sempre.
+- **Tito:** Já é de tarde, e esse sol que atrasa deixa todo bicho do bosque perdido. Se você achar ele, fala que eu não tô bravo. Só um pouquinho.
+- **Ravi:** Acho que vi um Skwovet correndo para a mata dos jequitibás. Pode ser ele?
+- **Tito:** Pode, sim! Ele adora aquela mata. Se achar, traga de volta com cuidado: ele é medroso.
 - *Depois:* flags `nh.sqPipoca=true` · só conta a história
 - *Missão secundária (diário):* Procure o Pipoca, o Skwovet do Tito, na Mata dos Jequitibás, no bosque → `mata_jequitibas`
 
 ### `j02_sq_pipoca_achado`
 *Gatilho:* pisar `mata_jequitibas` (exige nh.sqPipoca, sem nh.achouPipoca)
-- *Entre as raízes de um jequitibá, um Skwovet roliço segura uma noz quase do tamanho dele. Ele vira a cabeça e reconhece a cara de quem o procura.*
-- *Ele tem uma coleira de barbante com um pequeno sino. Está faltando um pedaço. Parece que alguém tentou puxar o pelo dele, lá na estufa.*
-- **Ravi:** Vem comigo, Pipoca. O Tito está preocupado.
-- *O Skwovet ouve o seu nome e para de roer a noz. Ele dá dois passos na sua direção, desconfiado.*
+- *Entre as raízes de um jequitibá, um Skwovet roliço guarda um monte de nozes maior do que ele. Na coleira de barbante, um sininho amassado.*
+- *Ele não está perdido. O monte tem uma noz de cada árvore do bosque, arrumadinha por tamanho, como quem prepara um presente.*
+- **Ravi:** Era para o Tito, não era? Vem comigo, Pipoca. Ele está preocupado, mas vai gostar.
+- *O Skwovet escolhe a maior noz, enfia na bochecha e anda na sua frente, desconfiado, de volta para a vila.*
 - *Depois:* flags `nh.achouPipoca=true` · só conta a história
 - *Missão secundária (diário):* Leve o Pipoca de volta ao Tito, na Vila Sussurro → `vila_sussurro`
 
 ### `j02_sq_pipoca_fim`
 *Gatilho:* falar `tito` (exige nh.achouPipoca, sem nh.sqPipocaFim)
 - **Tito:** Pipoca! Seu maluco! Eu não estava bravo. Eu estava só um pouquinho bravo, mas agora passou.
-- **Tito:** Tome, leve esta noz de ouro. Ela é a melhor noz da vila. Guardo desde que nasci. Não conta pra minha mãe.
+- *O Pipoca tira a noz da bochecha e põe na mão do Tito. O Tito olha para a noz, olha para o Skwovet e esfrega o nariz na manga.*
+- **Tito:** Você passou o dia fora para me trazer isso? Então toma o meu Ovo da Sorte. Eu guardo desde que ele era filhote. Eu ia dar um dia, e acho que o dia é hoje.
 - *O Pipoca sobe no ombro do Tito e começa a roer a orelha dele. Os dois estão felizes.*
-- **Ravi:** Ele fez um bom trabalho. Mas agora eu quero saber se o Tito sabe mesmo guardar segredo.
 - *Depois:* itens 1× rareCandy · flags `nh.sqPipocaFim=true` · só conta a história
 
 ## 03 · O espelho partido
@@ -483,28 +505,29 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 
 ### `j03_sq_garrafa_inicio`
 *Gatilho:* falar `nestor` (sem nh.sqGarrafa)
-- **Seu Nestor:** Cada garrafa tem uma história. Essa aqui só tem areia. Mas é uma areia muito bonita.
-- **Seu Nestor:** Eu jogo uma garrafa no mar desde o ano em que a Aurora chegou. Uma delas voltou com um bilhete de um mineiro. Você pode achar a outra no manguezal?
-- **Ravi:** Uma garrafa no manguezal? Isso parece coisa de pescador com saudade.
-- **Seu Nestor:** É saudade, sim, e também de quem não sabe quem chega do mar. Vai lá, filho.
+- **Seu Nestor:** Cada garrafa tem uma história. Eu jogo uma no mar todo ano desde que a Aurora chegou, com um bilhete dentro, para quem achar.
+- **Seu Nestor:** Quase nunca volta nenhuma. Mas esta semana a maré trouxe uma de volta, presa nas raízes do manguezal, a oeste do porto. Eu não consigo andar na lama com estas costas.
+- **Ravi:** Uma das suas garrafas voltando… Isso parece coisa de pescador com saudade.
+- **Seu Nestor:** É saudade, sim. E é curiosidade também: eu quero saber quem leu o meu bilhete e respondeu. Vai lá, filho.
 - *Depois:* flags `nh.sqGarrafa=true` · só conta a história
-- *Missão secundária (diário):* Ache a garrafa do Seu Nestor no manguezal, a oeste do porto → `manguezal`
+- *Missão secundária (diário):* Ache a garrafa que voltou, presa nas raízes do manguezal, a oeste do porto → `manguezal`
 
 ### `j03_sq_garrafa_achada`
 *Gatilho:* pisar `manguezal` (exige nh.sqGarrafa, sem nh.achouGarrafa)
-- *Entre as raízes dos mangues, uma garrafa verde está presa numa rede de pesca. Dentro, um papel enrolado, molhado e pálido.*
-- *A letra é torta, de quem escreve no escuro: "Estamos no nível 4. A luz daqui não é limpa, é a mesma que sai dos nossos cabos. Heitor."*
+- *Entre as raízes dos mangues, uma garrafa verde está presa numa rede de pesca. Dentro, o bilhete do Nestor e, enrolado junto, um segundo papel, molhado e pálido.*
+- *A letra é torta, de quem escreve no escuro: "Recebi o seu bilhete, mas não posso responder à vista. Estamos no nível 4. A luz daqui não é limpa, é a mesma que sai dos nossos cabos. Heitor."*
 - **Ravi:** Heitor. Esse é o nome do pai do Téo. O Téo disse que ele trabalha na Mina Aurora.
-- *O papel está úmido, e a tinta escorre nas bordas. Você guarda o bilhete no bolso com cuidado.*
+- *O papel está úmido, e a tinta escorre nas bordas. Você guarda os dois bilhetes no bolso com cuidado.*
 - *Depois:* flags `nh.achouGarrafa=true` · só conta a história
-- *Missão secundária (diário):* Leve o bilhete ao Seu Nestor, no porto de Porto Espelho → `nestor`
+- *Missão secundária (diário):* Leve a garrafa de volta ao Seu Nestor, no porto de Porto Espelho → `nestor`
 
 ### `j03_sq_garrafa_fim`
 *Gatilho:* falar `nestor` (exige nh.achouGarrafa, sem nh.sqGarrafaFim)
-- **Seu Nestor:** Heitor! Esse nome eu conheço. O menino da Aurora que cantava no barco quando era pequeno. Ele é pai do Téo, não é?
-- **Seu Nestor:** Se ele escreveu isso, não é coisa de quem está doente. É coisa de quem está preso lá embaixo. Leve o papel ao Téo, antes que a Aurora o encontre.
+- **Seu Nestor:** Heitor! Esse nome eu conheço. O menino da Aurora que cantava no barco quando era pequeno. É o pai do Téo, não é?
+- **Seu Nestor:** Se ele escreveu isso, não é coisa de quem está doente. É coisa de quem está preso lá embaixo e achou um jeito de pedir ajuda. Respondeu a minha garrafa, filho. A minha!
+- **Seu Nestor:** Leve o bilhete com você, para o Téo. Eu copio a letra para a minha caixa. Garrafa que responde merece um lugar de honra.
 - **Ravi:** Eu levo. E eu vou descer até lá.
-- *O Seu Nestor guarda o bilhete numa caixa de madeira, junto com as outras garrafas. Parece um pequeno museu do mar.*
+- *O Seu Nestor copia o bilhete num papel limpo e guarda a cópia numa caixa de madeira, junto com as outras garrafas. Parece um pequeno museu do mar.*
 - *Depois:* flags `nh.sqGarrafaFim=true`, `nh.bilheteHeitor=true` · só conta a história
 
 ### `j03_boletim3`
@@ -591,27 +614,29 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 
 ### `j04_sq_diario_inicio`
 *Gatilho:* falar `iracema` (exige nh.viuSolano, sem nh.sqDiario)
-- **Iracema:** Eu escrevia tudo que acontecia no farol. Todo dia, desde que me contrataram. O diário está lá no quarto do topo, onde ficam os geradores.
-- **Iracema:** Se a Aurora mexeu nas peças, o registro está lá. Eu não consigo subir mais aquela escada com estes joelhos.
-- **Ravi:** Um diário de farol? Isso pode ser o que a Iracema estava escondendo.
-- **Iracema:** Pode ser. Eu escrevi tudo por medo de esquecer. Agora é hora de lembrar.
+- **Iracema:** Eu escrevi tudo que aconteceu neste farol, todo dia, desde que me contrataram. Quarenta anos de caderno. Ficou lá em cima, no quarto dos geradores.
+- **Iracema:** A Aurora trocou as peças do farol sem avisar ninguém, e agora a luz pisca fora de hora. Se tem prova, está no meu diário. Mas estes joelhos não sobem mais aquela escada.
+- **Ravi:** Um diário de farol? Isso pode ser o que a senhora estava escondendo.
+- **Iracema:** Eu não escondia. Eu esperava alguém que quisesse ler.
 - *Depois:* flags `nh.sqDiario=true` · só conta a história
 - *Missão secundária (diário):* Encontre o diário da Iracema no quarto do topo do Farol Coral → `farol_topo`
 
 ### `j04_sq_diario_achado`
 *Gatilho:* entrar `farol_topo` (exige nh.sqDiario, sem nh.diarioFarol)
-- *No quarto dos geradores, um caderno de capa verde está preso debaixo de uma caixa de ferramentas. As páginas do fim são de outra letra.*
+- *No quarto dos geradores, um caderno de capa verde está preso debaixo de uma caixa de ferramentas. As últimas páginas são de outra letra.*
 - *"Dia 3: o gerador três foi trocado por ordem da Companhia Aurora. Peça nova, sem número de série. Assinado: A. Solano."*
-- *"Dia 14: a luz gira sozinha. Ela acende mais cedo lá embaixo e mais tarde aqui em cima. Não é o farol que está errado. É o sol."*
-- **Ravi:** Então o Solano assinou o diário com as próprias mãos. Ele achou que ninguém leria.
-- *Você fecha o caderno. Lá embaixo, o mar bate nas pedras do farol, e a luz do topo ainda gira fora de hora.*
-- *Depois:* flags `nh.diarioFarol=true` · só conta a história
+- *"Dia 14: a luz gira sozinha. Acende mais cedo lá embaixo e mais tarde aqui em cima. Não é o farol que está errado. É o sol."*
+- *Atrás da caixa, a lâmpada de luzita pisca em código: S-O-C-O-R-R-O. Dentro dela, uma bolinha de plasma com olhos bate no vidro.*
+- **Ravi:** Então era isso que a Iracema ouvia pelo rádio. Tem um Rotom preso aí dentro.
+- *Você gira o parafuso da lâmpada. O vidro estala, o Rotom sai faiscando de alívio e se agarra ao seu ombro. Lá embaixo, o mar bate nas pedras, e a luz do topo ainda gira fora de hora.*
+- *Depois:* Pokémon #479 Nv 25 · flags `nh.diarioFarol=true` · só conta a história
 - *Missão secundária (diário):* Leve o diário da Iracema de volta a ela, no pé do farol → `farol_entrada`
 
 ### `j04_sq_diario_fim`
 *Gatilho:* falar `iracema` (exige nh.diarioFarol, sem nh.sqDiarioFim)
-- **Iracema:** Eu sabia. O Solano assinou o diário, e ninguém tem direito de assinar no farol da cidade. Agora é só a gente mostrar isso à Cidade Coral.
-- **Iracema:** Tome, leve estas poções. São as últimas que eu tenho guardadas. Vai precisar delas no caminho.
+- **Iracema:** Eu sabia. Ele esteve aqui, trocou o meu gerador e deixou o nome no meu diário, como quem não tem medo de ser lido.
+- **Iracema:** E o Rotom! Ele pedia socorro desde a semana passada, e eu pensando que era o rádio. Cuide dele: gente presa na luz aprende a gostar de quem abre a porta.
+- **Iracema:** Tome estas poções. São as últimas que eu tenho guardadas. Vai precisar delas no caminho.
 - **Ravi:** Eu conto ao Jonas. Ele disse que quer ajudar, mesmo que não queira admitir.
 - *A Iracema guarda o diário debaixo do braço e olha para o farol com um sorriso pequeno.*
 - *Depois:* flags `nh.sqDiarioFim=true` · só conta a história
@@ -673,6 +698,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - **Téo:** Tá bom, você ganhou. Mas eu não estou convencido. Meu pai nunca mentiu para mim.
 - **Ravi:** Eu não disse que ele mentiu. Eu disse que a Aurora cortou a selva para passar um cabo.
 - **Téo:** Então me mostra a prova. Mas se eu ver que é mentira, eu vou ser o primeiro a te enfrentar de novo.
+- **Ravi:** O Seu Nestor, do porto, achou uma garrafa no manguezal. Tinha um bilhete: "Estamos no nível 4. A luz daqui não é limpa". Assinado Heitor. *(só se nh.bilheteHeitor)*
+- **Téo:** Essa letra torta é do meu pai. Ele escreve assim no escuro, desde que eu era pequeno… Ele nunca me contou nada de nível quatro. Eu preciso pensar. *(só se nh.bilheteHeitor)*
 - *Depois:* flags `nh.teoDuvida=true`
 - *Objetivo no painel:* Volte à Cidade Coral pela balsa e siga pela Rota 5 até a Vila Lamparina, a oeste → `vila_lamparina`
 
@@ -1240,6 +1267,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 ### `j12_solano_cai`
 *Gatilho:* vencer `c12_solano`
 - **Augusto Solano:** Não… Eu comprei o amanhecer de cada cidade desta região. Não posso perder agora.
+- **Ravi:** Eu li o diário do Tiago, em Lamparina. O desenho do menino grande com o sol na mão. Ele ainda tem medo do escuro, Solano? *(só se sq_solano_completa)*
+- **Augusto Solano:** Quem deixou você entrar naquela casa? … Eu só queria que ninguém no mundo ficasse no escuro de novo. *(só se sq_solano_completa)*
 - *O Solano cai de joelhos. O Sereno, ao lado dele, deixa cair a caixa com as sete pedras, e elas rolam até os pedestais.*
 - **Prof. Jatobá:** Ravi! Me solta, por favor. A chave da gaiola está no bolso do Lúcio, ele não vai reagir.
 - *O Lúcio levanta as mãos, sem olhar para ninguém. A gaiola abre. O professor corre até você e segura seu braço com força.*
