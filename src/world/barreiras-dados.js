@@ -9,18 +9,15 @@
 //   rects      [[x, y, w, h], ...] em blocos, no mundo indicado
 //   msg        frase curta mostrada ao encostar (texto de jogo, pt-BR)
 
+// Só as saídas que não cortam a cidade do ginásio (um retângulo dentro da cidade poderia trancar o líder).
+// PENDENTES (conferir no mapa, uma passada na tela): Porto Espelho (Marina), Cidade Coral (Jonas), Vila Lamparina
+// (Zélia): a saída certa fica no limite da cidade, ainda sem ponto seguro; Forte Rochedo, Cidade Escarpa e Mirante
+// dos Ventos (Brás, Graça, Celeste) não estão desenhados no mapa.
 export const BARREIRAS = [
-  { id: 'guarda_rota2', mundo: 'alvorada', liberaPor: 'campina', rects: [[94, 297, 32, 2], [138, 262, 2, 36], [140, 275, 170, 2]],
+  { id: 'guarda_rota2', mundo: 'alvorada', liberaPor: 'campina', rects: [[94, 296, 32, 2], [138, 262, 2, 36], [140, 275, 170, 2]],
     msg: 'Guarda da Rota 2: "Só passa quem vencer o Líder Tomé, em Cidade Campina."' },
-  { id: 'ponte_rota3', mundo: 'alvorada', liberaPor: 'sussurro', rects: [[328, 333, 2, 33]],
+  { id: 'ponte_rota3', mundo: 'alvorada', liberaPor: 'sussurro', rects: [[329, 333, 2, 33]],
     msg: 'Ponte da Rota 3 em obras: "Liberada depois que a Líder Lia ganhar a insígnia."' },
-  { id: 'obra_rota4', mundo: 'alvorada', liberaPor: 'espelho', rects: [[435, 324, 2, 44]],
-    msg: 'Obra na Rota 4: "A passagem abre quando a Líder Marina entregar a Insígnia Gota."' },
-  { id: 'balsa_coral', mundo: 'alvorada', liberaPor: 'coral', rects: [[299, 372, 2, 42]],
-    msg: 'Balsa interditada: "Só depois que o Líder Jonas ganhar a insígnia da Cidade Coral."' },
-  { id: 'obra_rota6', mundo: 'alvorada', liberaPor: 'lamparina', rects: [[355, 206, 2, 20]],
-    msg: 'Ferrovia da Aurora fechada: "A Dona Zélia ainda não liberou a passagem."' },
-  // Brás, Graça e Celeste: saídas das cidades ainda não desenhadas no mapa (Forte Rochedo, Cidade Escarpa, Mirante)
 ];
 
 // Zonas com flag de término: tempestade (andar e voar) e neblina (andar, nadar e navegar)
