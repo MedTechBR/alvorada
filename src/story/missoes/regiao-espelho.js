@@ -9,10 +9,10 @@ export const MISSOES = [
   {
     id: 'sq_garrafa', titulo: 'A garrafa que voltou', regiao: 'Porto Espelho',
     historia: { ativa: 'nh.sqGarrafa', feita: 'nh.sqGarrafaFim' },
-    resumo: 'Seu Nestor joga cartas ao mar há trinta anos. Pela primeira vez, uma garrafa voltou: está presa nas raízes do manguezal.',
+    resumo: 'Seu Nestor joga cartas ao mar há trinta anos e nunca teve resposta. Agora uma garrafa voltou e está presa nas raízes do manguezal.',
     etapas: [
-      { tipo: 'flag', flag: 'nh.achouGarrafa', lugar: 'manguezal', texto: 'Ache a garrafa presa nas raízes do manguezal, a oeste do porto' },
-      { tipo: 'flag', flag: 'nh.sqGarrafaFim', npc: 'nestor', texto: 'Leve a garrafa ao Seu Nestor, no porto' },
+      { tipo: 'flag', flag: 'nh.achouGarrafa', lugar: 'manguezal', texto: 'Procure a garrafa presa nas raízes do manguezal, a oeste do porto' },
+      { tipo: 'flag', flag: 'nh.sqGarrafaFim', npc: 'nestor', texto: 'Volte ao porto e leve a garrafa ao Seu Nestor' },
     ],
     recompensa: { texto: '3 Ultra Bolas e o bilhete de quem respondeu' },
   },
@@ -20,10 +20,10 @@ export const MISSOES = [
 
 export const NPCS = {
   marujo: {
-    presente: { itens: [['diveBall', 3]], falas: ['Treinador! Vai para a água? Fique com estas Bolas de Mergulho. Lá em Coral a gente usa de monte.'], depois: ['No mar, Pokémon que mergulha é pego melhor com essas.'] },
+    presente: { itens: [['diveBall', 3]], falas: ['Treinador! Vai para a água? Fique com estas Bolas de Mergulho. Em Coral a gente usa aos montes.'], depois: ['Pokémon que vive no fundo se pega melhor com elas.'] },
   },
   pescadora_porto: {
-    reage: { tipo: { water: ['Esse {pokemon} nada bonito! Peixe bom é peixe livre, mas nadador bom é nadador treinado.'] } },
-    falas: [{ se: { hora: 'manha' }, linhas: ['Bom dia! De manhã o lago fica tão parado que dá para ver o céu duas vezes.'] }],
+    reage: { tipo: { water: ['Que {pokemon} bonito de nadar! Peixe bom é peixe livre, mas nadador bom é nadador treinado.'] } },
+    falas: [{ se: { hora: 'manha' }, linhas: ['Bom dia! O lago fica tão parado que dá para ver o céu duas vezes. O sol é que demora a aparecer.'] }],
   },
 };
