@@ -17,7 +17,7 @@ export default {
       local: 'ilha_basalto',
       gatilho: { tipo: 'entrar', alvo: ['ilha_basalto', 'vila_termas'], requer: ['badges.escarpa'], semFlag: ['nh.chegouBrasas'] },
       falas: [
-        ['narrador', 'Ilha do Basalto: rochas negras, fontes de água quente saindo do chão e um cheiro forte de enxofre que chega até o barco.'],
+        ['narrador', 'Ilha do Basalto: rochas negras, fontes de água quente e um cheiro forte de enxofre que chega até o barco.'],
         ['narrador', 'Lá em cima, o vulcão Tição solta uma fumaça fina. Os moradores dizem que o ronco não para desde a semana passada.'],
         ['jogador', 'Se o Ébano está aqui, deve ser por causa do vulcão. A Graça disse que ele quer acordá-lo.'],
         ['jogador', 'Se o vulcão está acordando, a Graça não exagerava quando falou da cinza.'],
@@ -33,9 +33,9 @@ export default {
       local: 'vulcao_ticao',
       gatilho: { tipo: 'entrar', alvo: 'vulcao_ticao', requer: ['nh.chegouBrasas'], semFlag: ['nh.ebanoBrasas'] },
       falas: [
-        ['narrador', 'Na borda da cratera, um trator de perfuração treme sobre o chão quente. Dois recrutas empurram um tubo de metal para dentro da rocha.'],
+        ['narrador', 'Na borda da cratera, um trator de perfuração treme sobre o chão quente. Dois recrutas empurram um tubo para dentro da rocha.'],
         ['recruta', 'Mais uma camada e o vulcão acorda. Aí a cinza sobe para o céu e o Planalto some no escuro.'],
-        ['ebano', 'Admin Ébano. Você é insistente. Quando o Tição acordar, a cinza vai cobrir o Planalto, e ninguém vai conseguir subir ao Relógio.'],
+        ['ebano', 'Admin Ébano. Você é insistente. Quando o Tição acordar, a cinza cobre o Planalto e ninguém sobe ao Relógio.'],
         ['jogador', 'A cinza é obra sua? Por que a Crepúsculo quer o Planalto no escuro?'],
         ['ebano', 'Porque a Véspera quer o Relógio longe de quem vai abri-lo. Agora, saia do caminho.'],
       ],
@@ -58,10 +58,10 @@ export default {
       gatilho: { tipo: 'vencer', alvo: 'c10_ebano' },
       falas: [
         ['vulcanologa', 'Eu registro o vulcão há vinte anos. A tempestade sobre o Planalto nunca veio do Tição, e isso me preocupa.'],
-        ['vulcanologa', 'O Relógio puxa o ar de cima para dentro dele, toda noite. O calor do Tição empurra esse ar de volta. Sem esse calor, a tempestade fica parada sobre o Relógio.'],
-        ['vulcanologa', 'O Templo da Chama fica onde o calor do vulcão chega mais perto da superfície. Se alguém acender a pira lá em cima, o ar volta a girar e a tempestade se desfaz.'],
+        ['vulcanologa', 'O Relógio puxa o ar de cima para dentro dele, toda noite. O calor do Tição empurra esse ar de volta. Sem calor, a tempestade fica parada.'],
+        ['vulcanologa', 'O Templo da Chama fica onde o calor do vulcão chega mais perto da superfície. Se alguém acender a pira, o ar volta a girar.'],
         ['jogador', 'Então o Ébano quer o Planalto no escuro, e a tempestade é a cortina dele.'],
-        ['vulcanologa', 'Ou quer que ninguém chegue ao Relógio antes dele. Não sei qual dos dois é pior. Vá ao Templo e acenda a pira. Não deixe ninguém apagá-la.'],
+        ['vulcanologa', 'Ou quer que ninguém chegue ao Relógio antes dele. Não sei qual dos dois é pior. Vá ao Templo e acenda a pira.'],
       ],
       depois: {
         flags: { 'nh.explicouTempestade': true },
@@ -76,8 +76,8 @@ export default {
       local: 'templo_chama_1',
       gatilho: { tipo: 'entrar', alvo: 'templo_chama_1', requer: ['nh.explicouTempestade'], semFlag: ['nh.temploChama'] },
       falas: [
-        ['narrador', 'O Templo da Chama é uma escada de pedra negra que sobe pelo lado de dentro do vulcão. Em cada andar, uma fresta mostra o brilho laranja da lava lá embaixo.'],
-        ['narrador', 'No topo, uma pira de pedra está apagada há séculos. Ao lado dela, um Pokémon de fogo, pequeno e com a respiração ofegante, espera por alguém que acenda a chama.'],
+        ['narrador', 'O Templo da Chama é uma escada de pedra negra por dentro do vulcão. Em cada andar, uma fresta mostra a lava lá embaixo.'],
+        ['narrador', 'No topo, uma pira está apagada há séculos. Um Pokémon de fogo, pequeno e ofegante, espera por alguém que a acenda.'],
         ['jogador', 'Vou acender a chama. Vamos juntos.'],
         ['narrador', 'A pira se acende de uma vez, com um estalo grave. O calor sobe pelas paredes, e a tempestade lá em cima começa a girar ao contrário.'],
       ],
