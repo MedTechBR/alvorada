@@ -453,6 +453,8 @@ export class Missoes {
     if (id) {
       const sala = m.interiors.find((r) => r.id === id);
       if (sala) { const s = m.spots?.['dentro_' + id] ?? { x: (sala.x + (sala.w ?? 10) / 2) * T, y: (sala.y + (sala.h ?? 8) / 2) * T }; return { ...s, map: id, sala: id }; }
+      // etapa de cena da história ("flag"): a cena dispara no PONTO com esse nome, não em qualquer lugar da área
+      if (e.tipo === 'flag' && m.spots?.[id]) { const s = m.spots[id]; return { x: s.x, y: s.y, r: s.r ?? 3 * T, map: s.map ?? this.#mapaDe(s.x, s.y) }; }
       const ar = m.areas.filter((a) => a.id === id);
       if (ar.length) return this.#centro(ar[0]);
       const s = m.spots?.[id];

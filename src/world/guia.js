@@ -84,11 +84,11 @@ export class CampoGuia {
     }
     return best;
   }
-  // caminho desde k: { pts: [k...], passagens: [índices em pts onde o passo seguinte é uma passagem] }
+  // caminho desde k: { pts: [k...], passagens: [índices em pts onde o passo seguinte é uma porta ou escada] }
   caminho(k, max = 400) {
     const pts = [k], passagens = [];
     for (let i = 0; i < max; i++) {
-      if (this.dir[k] === 5) passagens.push(pts.length - 1);
+      if (this.dir[k] === 5 && this.G?.boca?.[k] === 1) passagens.push(pts.length - 1); // porta/escada (salto e barco não cortam o trecho)
       const n = this.proximo(k); if (n < 0) break;
       pts.push(n); k = n;
     }
@@ -228,10 +228,10 @@ export class Guia {
   #caps() { const m = this.g.mount; return MONTARIAS.filter((k) => m?.has?.(k)); }
   #sinal() {
     const f = this.g.flags ?? {};
-    return `${(f.badges ?? []).length}|${Object.keys(f.trainers ?? {}).length}|${Object.keys(f.nh ?? {}).length}|${f.minaN2 ? 1 : 0}|${f.brasas_resolvido ? 1 : 0}|${f.relogio_vencido ? 1 : 0}|${f.geada_vencida ? 1 : 0}`;
+    return `${this.g.barreiras?.assinatura ?? ''}|${(f.badges ?? []).length}|${Object.keys(f.trainers ?? {}).length}|${Object.keys(f.nh ?? {}).length}|${f.minaN2 ? 1 : 0}|${f.brasas_resolvido ? 1 : 0}|${f.relogio_vencido ? 1 : 0}|${f.geada_vencida ? 1 : 0}`;
   }
   // grafo do mapa atual com as montarias liberadas (refeito quando muda alguma coisa)
-  #grafo(caps) {
+  #grafo(caps, saltos = false) {
     const g = this.g, m = g.map, W = m.w, H = m.h, f = g.flags ?? {};
     const passa = new Set(); for (const k of caps) for (const t of this.MOUNT_PASS[k] ?? []) passa.add(t);
     const KINDS = this.KINDS;
@@ -258,7 +258,7 @@ export class Guia {
     }
     const D = { W, H, tiles: m.tiles, block: m.block, passa, SOLID: this.SOLID, TIDE: this.TILE.TIDE, ehEnigma, salaDe, flags: f, passagens, barcos, barreira: m.barreiraCells, objeto: (k) => !!m.cellObj?.get(k) };
     const G0 = grafoDe(D);
-    if (caps.includes('correr')) {
+    if (saltos && caps.includes('correr')) {
       const salt = []; for (const [k, o] of m.cellObj ?? []) if (!o.dead && (o.jump || JUMPABLE.has(o.kind))) salt.push(k);
       D.saltos = saltosDe(D, salt, G0.livre);
       return grafoDe(D);
@@ -294,8 +294,9 @@ export class Guia {
     if (!this.campo || this.campo.W !== m.w || this.campo.H !== m.h) this.campo = new CampoGuia(m.w, m.h);
     // o grafo só é remontado quando muda o mapa, as montarias ou as flags (ou a cada minuto: portões de enigma)
     const agora = performance.now();
-    if (!this.Gc || this.Gc.base !== base || agora - this.Gc.t > 60000) this.Gc = { base, t: agora, G: this.#grafo(caps) };
-    const G = this.Gc.G;
+    // primeiro sem os saltos do Mudbray (caminho a pé, que todo mundo segue); se não der, com eles
+    if (!this.Gc || this.Gc.base !== base || agora - this.Gc.t > 60000) this.Gc = { base, t: agora, G: this.#grafo(caps), caps };
+    const G = this.Gc.G; this.comSaltos = false;
     // sementes (sementesDe): numa área, o chão andável dela (mato alto primeiro); num ponto, o bloco livre mais perto
     const T0 = this.TILE, sem = sementesDe({ W: m.w, H: m.h, OH: m.outdoorH ?? m.h, tiles: m.tiles, ALTO: new Set([T0.TALL, T0.TALLSNOW, T0.TALLDRY, T0.REED]) }, G, ax, ay, area);
     this.campo.iniciar(G, sem);
@@ -309,6 +310,11 @@ export class Guia {
     const k = c.achar(px, py, 2);
     if (k < 0) {
       if (!c.terminou) return { pronto: false, alvo };
+      // sem caminho a pé: tenta de novo deixando o Mudbray saltar toras e cercas baixas
+      if (!this.comSaltos && this.Gc?.caps?.includes('correr')) {
+        this.comSaltos = true; this.Gc.Gs ??= this.#grafo(this.Gc.caps, true); this.G = this.Gc.Gs;
+        c.iniciar(this.G, c.semente); return { pronto: false, alvo };
+      }
       // masmorra: o alvo está atrás de um quebra-cabeça. Dentro da sala do quebra-cabeça, a seta vai reto para a
       // escada/porta que leva adiante (resolver é com o jogador); de fora, o guia leva até a entrada dela.
       const G = this.G, aqui = G.salaDe(px + py * W);
@@ -326,6 +332,7 @@ export class Guia {
           return { pronto: false, alvo };
         }
       }
+      this.tRefaz = Math.min(this.tRefaz, 3); // sem caminho: tenta de novo logo (um portão de enigma pode ter aberto)
       return { pronto: true, ok: false, alvo, motivo: this.#motivo(px, py) };
     }
     const cam = c.caminho(k, 600);
@@ -350,7 +357,7 @@ export class Guia {
       const m = g.map;
       for (const k of MONTARIAS.filter((q) => !tem.includes(q))) {
         const C = new CampoGuia(m.w, m.h);
-        C.iniciar(this.#grafo([...tem, k]), this.campo.semente); C.expandir(m.w * m.h);
+        C.iniciar(this.#grafo([...tem, k], true), this.campo.semente); C.expandir(m.w * m.h);
         if (C.achar(px, py, 2) < 0) continue;
         const b = insigniaFaltando(k, f);
         txt = b ? `Caminho fechado: para chegar lá falta ${MONTARIA_NOME[k]} (Insígnia ${insigniaNome(b)}).` : `Caminho fechado: falta um Pokémon que saiba ${MONTARIA_NOME[k]} na equipe ou no PC.`;

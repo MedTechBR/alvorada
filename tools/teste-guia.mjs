@@ -36,8 +36,9 @@ function grafo(f, caps) {
   const D = { W, H, tiles: A.tiles, block: B.block, passa, SOLID, TIDE: TILE.TIDE, flags: f,
     ehEnigma: (k) => A.puzzle[k] === 1 && A.salaIdx[k] >= 0, salaDe: (k) => A.salaIdx[k], objeto: (k) => A.cellObj.has(k),
     passagens: A.warps.map((w) => ({ x: w.x, y: w.y, to: w.to, requer: w.requer })), barcos: A.barcos };
-  let G = grafoDe(D);
-  if (caps.correr) { D.saltos = saltosDe(D, saltaveis, G.livre); G = grafoDe(D); }
+  const G = grafoDe(D);
+  // como o jogo: primeiro o caminho a pé; os saltos do Mudbray só se não houver outro
+  if (caps.correr) { D.saltos = saltosDe(D, saltaveis, G.livre); G.comSaltos = grafoDe(D); }
   return G;
 }
 // alvo por nome: { x, y, area? } em blocos
@@ -49,7 +50,11 @@ function alvoDe(nome) {
 }
 const C = new CampoGuia(W, H);
 // guia do ponto (sx, sy) até o alvo: { ok, dist, wpDist, reta } ou { ok: false, motivo }
-function guiar(G, alvo, sx, sy) {
+function guiar(G0, alvo, sx, sy) {
+  const r = guiar1(G0, alvo, sx, sy);
+  return r.ok || !G0.comSaltos ? r : { ...guiar1(G0.comSaltos, alvo, sx, sy), saltos: true };
+}
+function guiar1(G, alvo, sx, sy) {
   const sem = sementesDe({ W, H, OH: A.OH, tiles: A.tiles, ALTO }, G, alvo.x, alvo.y, alvo.area);
   if (!sem.length) return { ok: false, motivo: 'sem semente andável perto do alvo' };
   if (alvo.area) for (const k of sem) if (!G.anda(k)) return { ok: false, motivo: `semente sólida em ${k % W},${Math.floor(k / W)}` };
