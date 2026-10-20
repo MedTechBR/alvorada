@@ -32,7 +32,7 @@ try {
   const antes = await piso(); console.log('piso antes:', JSON.stringify(antes));
   if (!antes.webs || !antes.armadilhas || antes.flag) erros.push('o piso devia estar ativo na entrada');
   console.log('foto:', await foto('piso-lia-antes'));
-  await p.ev(`(() => { const G = window.game, r = G.map.interiors.find((q) => q.id === 'estufa_lia'); tp(r.x + 11, r.y + 5); })()`);
+  await p.ev(`(() => { const G = window.game, r = G.map.interiors.find((q) => q.id === 'estufa_lia'); tp(r.x + 11, r.y + 3); })()`);
   await sleep(1500);
   const depois = await piso(); console.log('piso depois:', JSON.stringify(depois));
   if (depois.webs || depois.fios || depois.armadilhas || !depois.flag) erros.push('o piso não desligou ao chegar à Lia');

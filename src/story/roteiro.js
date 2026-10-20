@@ -60,6 +60,9 @@ export const JOGAVEIS = ['regiao_jandaia'];
 const T = 16;
 const DIRV = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// Pokémon que falam e o dex de cada um (aparecem perto do jogador quando falam, em #garantir)
+const SEM_CORPO = new Set(['narrador', 'jogador', 'radio', 'pokedex', 'inicial']); // quem fala sem aparecer na tela
+const FALANTES_PK = { absol: 359, lunala: 792, solgaleo: 791, necrozma: 800 };
 const MONTARIA = { mudbray: 'correr', lapras: 'nadar', sneasler: 'escalar', corviknight: 'voar', mantine: 'mergulhar' };
 // Pokémon do Téo que luta ao seu lado nas batalhas em dupla (Mina Aurora): lado próprio, inimigo dos selvagens e dos
 // Pokémon de treinador, aliado do seu time (não acerta você nem o seu Pokémon)
@@ -110,17 +113,17 @@ export class Roteiro {
     n.e = e; n.padrao = e.padrao ?? lines; n.visible = false; n.home = { x, y, dir };
     this.atores.set(e.id, n);
   }
-  #visivel(e) {
+  #visivel(e, n) {
     const f = this.f;
     if ((e.mundo ?? 'alvorada') !== (this.g.map.id ?? 'alvorada')) return false; // outro continente (src/world/viagem.js)
     if (!e.sempre && !this.ativo) return false; // sempre: também antes do primeiro Pokémon
     if (e.mostrar && !this.#cond(e.mostrar)) return false;
-    if (e.cena) return e.cena.some((id) => this.ativas.has(id));
+    if (e.cena) return e.cena.some((id) => this.ativas.has(id)) || (n?.extra && [...n.extra].some((id) => this.ativas.has(id)));
     return true;
   }
   #refresh() {
     for (const n of this.atores.values()) {
-      const v = this.#visivel(n.e);
+      const v = this.#visivel(n.e, n);
       if (v !== n.visible) { n.visible = v; if (!v && n.e.cena) this.g.fx?.burst?.(n.x, n.y - 10, 0x9a7ac8, 0.6); }
     }
     for (const a of this.atoresPk ?? []) {
@@ -144,20 +147,28 @@ export class Roteiro {
 
   // atores que só existem na cena entram em cena perto do jogador
   async #entrar(cena) {
-    const g = this.g, p = g.player, novos = [];
+    const novos = [];
     for (const n of this.atores.values()) if (n.e.cena?.includes(cena.id) && !n.visible) novos.push(n);
     this.ativas.add(cena.id);
     if (!novos.length) { this.#refresh(); return; }
-    // Posição de cada ator: 2 a 5 blocos do jogador (3,5 na vertical, a tela é mais larga que alta), na mesma sala, num
-    // lado com espaço (à frente, atrás, dos lados) e com a linha até o jogador livre de parede. O ponto nomeado da cena
-    // (`spot`) só vale se ficar nessa faixa: antes ele valia mesmo em cima do jogador (o ponto "dentro_<sala>" é a
-    // entrada, onde o jogador acabou de chegar) e os atores nasciam escondidos atrás dele.
-    const sala = this.#mapaDe(p.x, p.y), n = novos.length;
+    this.#posicionar(novos);
+    for (const n of novos) this.#lembrar(n);
+    this.g.player.dir = this.s.dirTo(this.g.player, novos[0]);
+    this.#refresh();
+    await sleep(250);
+  }
+  #lembrar(n) { if (n.e?.quem) (this.recentes ??= new Map()).set(n.e.quem, n.e.id); }
+  // Posição de cada ator: 2 a 5 blocos do jogador (3,5 na vertical, a tela é mais larga que alta), na mesma sala, num
+  // lado com espaço e com a linha até o jogador livre de parede. O ponto nomeado da cena (`spot`) só vale como reserva:
+  // antes ele valia sempre, mesmo em cima do jogador (o ponto "dentro_<sala>" é a entrada, onde ele acabou de chegar),
+  // e os atores nasciam escondidos atrás dele. A caixa de fala cobre o terço de baixo da tela: de preferência em cima ou
+  // dos lados (à frente do jogador primeiro), embaixo só se não houver outro lugar. Serve a humanos e a Pokémon.
+  #posicionar(novos) {
+    const g = this.g, p = g.player, sala = this.#mapaDe(p.x, p.y), n = novos.length;
     const livreEm = (x, y) => !g.map.solidAt(x, y) && this.#mapaDe(x, y) === sala;
     const caminhoLivre = (x, y) => { for (let k = 1; k <= 4; k++) if (g.map.solidAt(p.x + (x - p.x) * k / 4, p.y + (y - p.y) * k / 4)) return false; return true; };
-    // a caixa de fala cobre o terço de baixo da tela: de preferência em cima ou dos lados (à frente do jogador primeiro), embaixo só se não houver outro lugar
     const ordem = [p.dir !== 'down' ? p.dir : null, 'up', 'right', 'left', 'down'].filter((d, i, a) => d && a.indexOf(d) === i);
-    const longe0 = Math.max(...novos.map((a) => a.e.longe ?? 3));
+    const longe0 = Math.max(...novos.map((a) => a.e?.longe ?? 3));
     const dentro = (d, v) => Math.min(Math.max(v, 2), d === 'up' || d === 'down' ? 3.5 : 5);
     let pos = null;
     for (const dist of [longe0, 3, 2.5, 2]) for (const d of ordem) {
@@ -167,15 +178,47 @@ export class Roteiro {
     }
     novos.forEach((a, i) => {
       let alvo = pos?.[i];
-      const s = a.e.spot && g.map.spots?.[a.e.spot];
+      const s = a.e?.spot && g.map.spots?.[a.e.spot];
       if (!alvo && s && this.#mapaDe(s.x, s.y) === sala) { const d = Math.hypot(s.x - p.x, s.y - p.y) / T; const sx = s.x + (i - (n - 1) / 2) * 22; if (d >= 2 && d <= 5 && livreEm(sx, s.y) && caminhoLivre(sx, s.y)) alvo = { x: sx, y: s.y }; }
       alvo ??= { x: p.x + 2 * T * (i % 2 ? 1 : -1), y: p.y + 2 * T };
       const livre = this.#livre(alvo.x, alvo.y); a.place(livre.x, livre.y); a.faceTo(p.x, p.y);
       g.fx?.burst?.(livre.x, livre.y - 10, 0x9a7ac8, 0.5);
     });
-    p.dir = this.s.dirTo(p, novos[0]);
-    this.#refresh();
-    await sleep(250);
+  }
+  // Garante que quem fala está na tela (regra de todas as cenas): se não há ninguém com esse papel perto do jogador, na
+  // mesma sala, traz o ator que a história usou por último (ou o da mesma jornada, ou o de qualquer cena, ou o do
+  // elenco fixo) para 2 a 5 blocos dele. Ator de cena some quando a cena acaba; o do elenco fixo volta ao lugar dele.
+  // Quem fala de longe (telefone, rádio, voz fora de cena) se declara na cena em `telefone` ou `fora`.
+  #garantir(quem) {
+    const g = this.g, p = g.player, cena = this.cenaObj; if (!cena) return;
+    if (cena.telefone?.includes(quem) || cena.fora?.includes(quem)) return;
+    const sala = this.#mapaDe(p.x, p.y);
+    const perto = (a) => a.visible && this.#mapaDe(a.x, a.y) === sala && Math.hypot(a.x - p.x, a.y - p.y) <= 10 * T;
+    if (FALANTES_PK[quem]) {
+      if (perto(this.absol) && quem === 'absol') return;
+      if (this.atoresPk.some((a) => a.e.quem === quem && perto(a))) return;
+      const a = (this.pkFal ??= {})[quem] ??= Object.assign(new AtorPokemon(g, FALANTES_PK[quem]), { e: { quem } });
+      if (perto(a)) return;
+      this.#posicionar([a]); a.visible = true; (this.pkTemp ??= []).push({ a, id: cena.id });
+      return;
+    }
+    const todos = [...this.atores.values()].filter((a) => a.e.quem === quem);
+    if (todos.some(perto)) { this.#lembrar(todos.find(perto)); return; }
+    if (!todos.length) return console.warn('roteiro: ninguém faz o papel', quem, 'na cena', cena.id);
+    const pref = cena.id.slice(0, 3);
+    const n = todos.find((a) => a.e.id === this.recentes?.get(quem)) ?? todos.find((a) => a.e.cena?.some((id) => id.startsWith(pref)))
+      ?? todos.find((a) => a.e.cena) ?? todos.find((a) => !a.e.visao && !a.e.batalha) ?? todos[0];
+    this.#posicionar([n]); this.#lembrar(n);
+    if (n.e.cena) { (n.extra ??= new Set()).add(cena.id); this.ativas.add(cena.id); this.#refresh(); }
+    else { n.visible = true; (this.movidos ??= []).push({ n, id: cena.id }); }
+  }
+  // fim da cena: some quem foi trazido só para ela
+  #dispensar(id) {
+    for (const m of this.movidos ?? []) if (m.id === id) m.n.goHome?.();
+    this.movidos = (this.movidos ?? []).filter((m) => m.id !== id);
+    for (const m of this.pkTemp ?? []) if (m.id === id) m.a.visible = false;
+    this.pkTemp = (this.pkTemp ?? []).filter((m) => m.id !== id);
+    for (const n of this.atores.values()) n.extra?.delete(id);
   }
   #livre(x, y) {
     const m = this.g.map;
@@ -269,6 +312,7 @@ export class Roteiro {
     }
     this.#absol(dt);
     for (const a of this.atoresPk) a.update(dt);
+    for (const a of Object.values(this.pkFal ?? {})) a.update(dt);
     this.#seguir(dt);
     this.#aliado(dt);
     this.enigmas.update(dt);
@@ -409,9 +453,12 @@ export class Roteiro {
       if (quem === 'narrador' && linhas.length === 1 && /^Jornada: /.test(linhas[0])) { await g.ui.chapterCard(linhas[0]); continue; }
       // falas genéricas de treinador ('treinador', 'aprendiz') saem com o nome de quem está na cena
       const generico = quem === 'treinador' || quem === 'aprendiz';
+      if (!generico && !SEM_CORPO.has(quem) && PERSONAGENS[quem]?.papel !== 'narrador') this.#garantir(quem);
       const n = generico ? (this.atorCena?.visible ? this.atorCena : null) : quem !== 'narrador' && quem !== 'jogador' ? this.#porQuem(quem) : null;
       if (n && Math.hypot(n.x - g.player.x, n.y - g.player.y) < 12 * T) { n.faceTo(g.player.x, g.player.y); g.player.dir = this.s.dirTo(g.player, n); }
       if (quem === 'absol' && this.absol.visible) g.player.dir = this.s.dirTo(g.player, this.absol);
+      const pk = FALANTES_PK[quem] && [...this.atoresPk, ...Object.values(this.pkFal ?? {})].filter((a) => a.visible && (a.e?.quem ?? quem) === quem).sort((a, b) => Math.hypot(a.x - g.player.x, a.y - g.player.y) - Math.hypot(b.x - g.player.x, b.y - g.player.y))[0];
+      if (pk) { pk.faceTo(g.player.x, g.player.y); g.player.dir = this.s.dirTo(g.player, pk); }
       const papel = PERSONAGENS[quem]?.papel;
       const portrait = quem === 'absol' ? 359 : quem === 'inicial' ? this.f.starter : null;
       const nome = papel === 'narrador' ? '' : generico && n ? n.name : nomeDe(quem, V);
@@ -430,7 +477,7 @@ export class Roteiro {
     const recusa = s.depois?.batalha ? recusaLider(this.f, s.depois.batalha.id) : null;
     if (recusa) { await g.ui.say([recusa.texto], { name: s.depois.batalha.nome ?? '' }); this.s.refreshObjective?.(); return false; }
     this.rodando = s.id;
-    const atorAntes = this.atorCena;
+    const atorAntes = this.atorCena, cenaAntes = this.cenaObj; this.cenaObj = s;
     const gt = s.gatilho ?? {}, bid = s.depois?.batalha?.id;
     this.atorCena = (gt.tipo === 'avistar' && this.atores.get(gt.alvo)) || (bid && this.atores.get(bid)) || atorAntes;
     try {
@@ -455,7 +502,8 @@ export class Roteiro {
       return ok;
     } finally {
       this.ativas.delete(s.id);
-      this.rodando = pai; this.atorCena = atorAntes;
+      this.rodando = pai; this.atorCena = atorAntes; this.cenaObj = cenaAntes;
+      this.#dispensar(s.id);
       this.#refresh();
       this.s.refreshObjective();
     }
