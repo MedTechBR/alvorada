@@ -62,7 +62,7 @@ export default {
       local: 'ninho_liga_zenite',
       gatilho: { tipo: 'falar', alvo: 'clarice', requer: ['trainers.elite_aurelio'], semFlag: ['trainers.elite_clarice'] },
       falas: [
-        ['clarice', 'O Aurélio perdeu para você? Ele vai ficar insuportável no café da manhã. Eu sou a Clarice, e eu acordo cedo para vencer.'],
+        ['clarice', 'O Aurélio perdeu para você? Ele vai ficar insuportável no café. Eu sou a Clarice, e acordo cedo para vencer.'],
         ['clarice', 'Minha equipe é de tipo Fada e treina pesado. Se você não tem fôlego, perde rápido.'],
         ['jogador', 'Eu passei pelo Aurélio. Não sei se aguento outra luta, mas vou tentar.'],
         ['clarice', 'Então vamos lá!'],
@@ -214,12 +214,12 @@ export default {
       gatilho: { tipo: 'apos', cena: 'j14_dalva_vencida' },
       falas: [
         ['vespera', 'Dalva. Você me deixou esperar dezesseis anos por uma resposta. Não sei se vou te perdoar hoje.'],
-        ['dalva', 'Eu também não sei, irmã. Mas o sol nasceu na hora hoje, e isso é mais do que a gente conseguiu juntas há muito tempo.'],
+        ['dalva', 'Eu também não sei, irmã. Mas o sol nasceu na hora hoje, e isso já é muito.'],
         ['vespera', 'O sol nasceu. E agora eu posso olhar para ele sem medo de que ele atrase de novo.'],
         ['prof', 'Devo desculpas à Lia, ao Tomé, à Iracema e à Dona Zélia. Escondi a luzita por medo, e o medo custou caro.'],
         ['teo', 'Pai, você está bem? A Aurora fechou a mina, e o Senhor Solano vai responder pelo medidor e pelo sequestro.'],
         ['heitor', 'Estou bem, filho. Obrigado, {jogador}, por descobrir a verdade.'],
-        ['mae', '{jogador}! Eu ouvi tudo no rádio. Você ganhou a Liga, e o sol nasceu hoje às seis e quatro. Eu fiz bolo, e está quentinho.'],
+        ['mae', '{jogador}! Ouvi tudo no rádio. Você ganhou a Liga, e o sol nasceu às seis e quatro. Fiz bolo, está quentinho.'],
         ['narrador', 'No Planalto, a Sina olha para o sol e, pela primeira vez, não tem aviso nenhum a dar. Ao sul, uma neblina cobre o Mar do Sul.'],
       ],
       depois: {
