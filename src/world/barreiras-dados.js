@@ -16,6 +16,10 @@
 export const BARREIRAS = [
   { id: 'guarda_rota2', mundo: 'alvorada', liberaPor: 'campina', rects: [[94, 296, 32, 2], [138, 262, 2, 36], [140, 275, 170, 2]],
     msg: 'Guarda da Rota 2: "Só passa quem vencer o Líder Tomé, em Cidade Campina."' },
+  { id: 'porto_saida_sul', mundo: 'alvorada', liberaPor: 'espelho', rects: [[410, 337, 40, 1]],
+    msg: 'Obra na estrada do Rio Lúmen: "Liberada depois que o Líder Marina ganhar a insígnia."' },
+  { id: 'coral_escadaria_norte', mundo: 'alvorada', liberaPor: 'coral', rects: [[306, 368, 2, 2]],
+    msg: 'Escadaria da Rota 5 bloqueada por desmoronamento: "Passa quando o Líder Jonas ganhar a insígnia."' },
   { id: 'ponte_rota3', mundo: 'alvorada', liberaPor: 'sussurro', rects: [[329, 333, 2, 33]],
     msg: 'Ponte da Rota 3 em obras: "Liberada depois que a Líder Lia ganhar a insígnia."' },
 ];
