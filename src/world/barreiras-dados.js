@@ -14,7 +14,7 @@
 // (Zélia): a saída certa fica no limite da cidade, ainda sem ponto seguro; Forte Rochedo, Cidade Escarpa e Mirante
 // dos Ventos (Brás, Graça, Celeste) não estão desenhados no mapa.
 export const BARREIRAS = [
-  { id: 'guarda_rota2', mundo: 'alvorada', liberaPor: 'campina', rects: [[94, 296, 32, 2], [138, 262, 2, 36], [140, 275, 170, 2]],
+  { id: 'guarda_rota2', mundo: 'alvorada', liberaPor: 'campina', rects: [[0, 276, 138, 2], [138, 262, 2, 36], [140, 275, 170, 2]],
     msg: 'Guarda da Rota 2: "Só passa quem vencer o Líder Tomé, em Cidade Campina."' },
   { id: 'porto_saida_sul', mundo: 'alvorada', liberaPor: 'espelho', rects: [[410, 337, 40, 1]],
     msg: 'Obra na estrada do Rio Lúmen: "Liberada depois que o Líder Marina ganhar a insígnia."' },
@@ -40,17 +40,28 @@ export const NEVOAS = [
     msg: 'Neblina densa no mar: a navegação só volta depois da Liga.' },
 ];
 
-// barreira ativa? (ainda não liberada)
+// Zonas onde a montaria Voar não pousa enquanto a etapa anterior não estiver feita (o voo passa por cima de cercas e
+// guardas; sem isso, depois da 7ª insígnia daria para pular a ordem pousando do outro lado). Mesmo formato das zonas.
+export const ZONAS_SEM_POUSO = [];
+
+// flag do save por caminho com pontos ('nh.mapaParedao' lê f.nh.mapaParedao; 'brasas_resolvido' lê f.brasas_resolvido)
+export const lerFlag = (f, k) => String(k).split('.').reduce((o, p) => (o == null ? undefined : o[p]), f);
+
+// barreira ativa? (ainda não liberada). liberaPor: insígnia; ate: flag de história; as duas juntas: precisa das duas.
 export function ativa(def, f) {
-  if (def.liberaPor) return !(f?.badges ?? []).includes(def.liberaPor);
-  if (def.ate) return !f?.[def.ate];
+  if (def.liberaPor && !(f?.badges ?? []).includes(def.liberaPor)) return true;
+  if (def.ate && !lerFlag(f, def.ate)) return true;
   return false;
+}
+// chave que muda quando alguma barreira muda (o jogo só regrava os blocos quando ela muda)
+export function assinatura(f) {
+  return [...BARREIRAS, ...TEMPESTADES, ...NEVOAS, ...ZONAS_SEM_POUSO].map((d) => (ativa(d, f) ? 1 : 0)).join('');
 }
 
 // Grava os blocos das barreiras ativas em `block` (Uint8Array de W x H, como map.block) e desfaz as que saíram.
 // memo: Map(índice → valor original) guardado por quem chama, para não apagar blocos que já existiam.
 export function aplicar(block, W, mundo, f, memo) {
-  const todas = [...BARREIRAS, ...TEMPESTADES, ...NEVOAS].filter((d) => d.mundo === mundo);
+  const todas = [...BARREIRAS, ...TEMPESTADES, ...NEVOAS].filter((d) => d.mundo === mundo && d.rects);
   const quer = new Set();
   for (const d of todas) if (ativa(d, f)) for (const [x, y, w, h] of d.rects) for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) quer.add(x + i + (y + j) * W);
   for (const [k, v] of [...memo]) if (!quer.has(k)) { block[k] = v; memo.delete(k); }

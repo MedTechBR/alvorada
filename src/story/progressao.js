@@ -13,17 +13,28 @@ export const ORDEM = [
   { n: 4, badge: 'coral', lider: 'Líder Jonas', cidade: 'Cidade Coral', rota: 'Rota 4, Rio Lúmen', tipo: 'Elétrico', ace: 28, alvo: 'farol_coral', jornada: 'coral' },
   { n: 5, badge: 'lamparina', lider: 'Dona Zélia', cidade: 'Vila Lamparina', rota: 'Rota 5, Brejo das Lamparinas', tipo: 'Fantasma', ace: 32, alvo: 'casarao_velas', jornada: 'lamparina' },
   { n: 6, badge: 'rochedo', lider: 'Líder Brás', cidade: 'Forte Rochedo', rota: 'Rota 6, Ferrovia da Aurora, e a Rota 7, Ravina do Rochedo', tipo: 'Lutador', ace: 37, alvo: 'leader_bras', jornada: 'aurora' },
-  { n: 7, badge: 'escarpa', lider: 'Líder Graça', cidade: 'Cidade Escarpa', rota: 'Rota 8, o Paredão', tipo: 'Pedra', ace: 41, alvo: 'leader_graca', jornada: null },
-  { n: 8, badge: 'mirante', lider: 'Líder Celeste', cidade: 'Mirante dos Ventos', rota: 'Rota 9 e Rota 11, no Planalto dos Ventos', tipo: 'Voador', ace: 45, alvo: 'leader_celeste', jornada: null },
+  { n: 7, badge: 'escarpa', lider: 'Líder Graça', cidade: 'Cidade Escarpa', rota: 'Rota 8, o Paredão', tipo: 'Pedra', ace: 41, alvo: 'leader_graca', jornada: 'escarpa' },
+  { n: 8, badge: 'mirante', lider: 'Líder Celeste', cidade: 'Mirante dos Ventos', rota: 'Rota 9 e Rota 11, no Planalto dos Ventos', tipo: 'Voador', ace: 45, alvo: 'leader_celeste', jornada: 'mirante' },
 ];
 
 // Etapas depois dos 8 ginásios: Brasas (fim da tempestade), Relógio, Geada (Estrada da Vitória) e a Liga.
+// jornada: a jornada da história nova (src/story/jornada) que o painel acompanha nessa etapa.
 export const POS_GINASIOS = [
-  { id: 'brasas', flag: 'brasas_resolvido', texto: 'Vá ao Arquipélago das Brasas, o vulcão, e ponha fim à tempestade do Planalto', alvo: null },
-  { id: 'relogio', flag: 'relogio_vencido', texto: 'Suba ao Relógio de Pedra, no topo do Planalto dos Ventos, e enfrente a Dra. Véspera e o Necrozma', alvo: null },
-  { id: 'geada', flag: 'geada_vencida', texto: 'Atravesse a Cordilheira Geada pela Estrada da Vitória até o Cume do Vento Branco', alvo: null },
-  { id: 'liga', flag: 'liga_campeao', texto: 'Vá à Liga do Zênite e enfrente a Elite 4 e a Campeã Dalva', alvo: null },
+  { id: 'brasas', flag: 'brasas_resolvido', texto: 'Vá ao Arquipélago das Brasas, o vulcão, e ponha fim à tempestade do Planalto', alvo: 'ninho_ilha_basalto', jornada: 'brasas' },
+  { id: 'relogio', flag: 'relogio_vencido', texto: 'Suba ao Relógio de Pedra, no topo do Planalto dos Ventos, e enfrente a Dra. Véspera e o Necrozma', alvo: 'relogio_pedra', jornada: 'relogio' },
+  { id: 'geada', flag: 'geada_vencida', texto: 'Atravesse a Cordilheira Geada pela Estrada da Vitória até o Cume do Vento Branco', alvo: 'geada_entrada_oeste', jornada: 'geada' },
+  { id: 'liga', flag: 'liga_campeao', texto: 'Vá à Liga do Zênite e enfrente a Elite 4 e a Campeã Dalva', alvo: 'zenite_entrada', jornada: 'liga' },
 ];
+
+// Arcos de região no meio dos ginásios (docs/jornada-classica.md, seção 2): as Ilhas Jandaias vêm entre o 4º e o 5º
+// ginásio e o Sertão do Levante entre o 6º e o 7º. depois: insígnia que abre o arco; flag: o arco terminou.
+export const ARCOS = [
+  { id: 'jandaias', depois: 'coral', antes: 'lamparina', flag: 'nh.teoDuvida', jornada: 'jandaias', alvo: 'cais_coral',
+    texto: 'Pegue a balsa no cais de Cidade Coral até as Ilhas Jandaias e descubra o que a Crepúsculo quer no Templo das Raízes' },
+  { id: 'sertao', depois: 'rochedo', antes: 'escarpa', flag: 'nh.mapaParedao', jornada: 'sertao', alvo: 'ninho_vila_mandacaru',
+    texto: 'Siga para o leste, pela Rota 14, até Vila Mandacaru no Sertão do Levante, e procure o mapa do Paredão' },
+];
+const lerFlag = (f, k) => String(k).split('.').reduce((o, p) => (o == null ? undefined : o[p]), f);
 
 // Batalha do roteiro (depois.batalha.id) → ginásio dela. Um líder recusa a luta enquanto a insígnia anterior faltar.
 export const GINASIO_DA_BATALHA = {
@@ -80,7 +91,10 @@ export function proximoPasso(f) {
   if (g) {
     const pos = ORDEM.indexOf(g) + 1;
     // Brasas vem entre o 7º e o 8º ginásio (a tempestade do Planalto cai até lá)
-    if (g.badge === 'mirante' && !f.brasas_resolvido) return { ...POS_GINASIOS[0], key: 'brasas', title: 'Próximo passo', texto: POS_GINASIOS[0].texto, sub: `Insígnias: ${n}/8`, alvo: null };
+    if (g.badge === 'mirante' && !f.brasas_resolvido) return { ...POS_GINASIOS[0], key: 'brasas', title: 'Próximo passo', texto: POS_GINASIOS[0].texto, sub: `Insígnias: ${n}/8` };
+    // arcos de região: Jandaias antes da Zélia, Sertão antes da Graça
+    const arco = ARCOS.find((a) => a.antes === g.badge && badges(f).includes(a.depois) && !lerFlag(f, a.flag));
+    if (arco) return { key: arco.id, title: 'Próximo passo', texto: arco.texto, sub: `Insígnias: ${n}/8`, alvo: arco.alvo, jornada: arco.jornada };
     return {
       key: g.badge, gym: true, title: `Ginásio ${pos} de 8: ${g.lider}`,
       texto: `Vá a ${g.cidade}, pela ${g.rota}, e desafie o ${g.lider} (tipo ${g.tipo}).`,
@@ -89,7 +103,7 @@ export function proximoPasso(f) {
   }
   const prox = POS_GINASIOS.find((p) => !f[p.flag]);
   if (!prox) return null;
-  return { key: prox.id, title: 'Reta final', texto: prox.texto, sub: `Insígnias: ${n}/8`, alvo: null };
+  return { key: prox.id, title: 'Reta final', texto: prox.texto, sub: `Insígnias: ${n}/8`, alvo: prox.alvo, jornada: prox.jornada };
 }
 
 // Uma jornada de cidade só começa quando chega a sua vez: a da cidade de um ginásio precisa que os anteriores estejam
@@ -104,7 +118,6 @@ export function emOrdem(j, f) {
 // Save antigo com insígnias fora de ordem: nada é tirado; o objetivo passa a ser o primeiro ginásio que falta.
 // Devolve a jornada que o painel deve acompanhar (ou null). Pura: quem chama grava o resultado no save.
 export function jornadaDoProximo(f) {
-  const p = proximoPasso(f);
-  return p?.gym ? p.jornada ?? null : null;
+  return proximoPasso(f)?.jornada ?? null;
 }
 

@@ -1,7 +1,7 @@
 // Barreiras da progressão no mundo (dados em barreiras-dados.js): grava os blocos sólidos no mapa, desenha uma faixa
 // listrada em cada uma e avisa quando o jogador encosta. Chamado pelo roteiro a cada 0,5 s e ao trocar de mapa.
 import * as PIXI from 'pixi.js';
-import { BARREIRAS, TEMPESTADES, NEVOAS, aplicar, barreiraEm } from './barreiras-dados.js';
+import { BARREIRAS, TEMPESTADES, NEVOAS, aplicar, barreiraEm, ativa, assinatura } from './barreiras-dados.js';
 
 const T = 16;
 export class Barreiras {
@@ -12,10 +12,11 @@ export class Barreiras {
     const g = this.g, m = g.map, f = g.flags ?? {};
     if (!m?.block || !m.w) return;
     if (this.mundo !== m.id) { this.mundo = m.id; this.memo = new Map(); this.assinatura = ''; this.#limpar(); }
-    const chave = m.id + '|' + (f.badges ?? []).join(',') + '|' + !!f.brasas_resolvido + '|' + !!f.liga_campeao;
+    const chave = m.id + '|' + assinatura(f);
     if (chave === this.assinatura) return;
     this.assinatura = chave;
     aplicar(m.block, m.w, m.id, f, this.memo);
+    m.barreiraCells = this.memo; // blocos de barreira ativa (o salto do Mudbray não passa por cima deles)
     this.#desenhar();
   }
 
@@ -25,8 +26,7 @@ export class Barreiras {
     if (!g.world) return;
     for (const d of [...BARREIRAS, ...TEMPESTADES, ...NEVOAS]) {
       if (d.mundo !== m.id) continue;
-      const ativa = d.liberaPor ? !(f.badges ?? []).includes(d.liberaPor) : d.ate ? !f[d.ate] : false;
-      if (!ativa) continue;
+      if (!d.rects || !ativa(d, f)) continue;
       const cor = d.liberaPor ? 0xf2c03a : d.ate && TEMPESTADES.includes(d) ? 0x6b5a8a : 0xbfd8e8;
       for (const [x, y, w, h] of d.rects) {
         const gfx = new PIXI.Graphics();

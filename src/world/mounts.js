@@ -813,6 +813,7 @@ export class Mounts {
       if (!o || o.dead || !(o.jump || JUMPABLE.has(o.kind))) { if (manual && !this.zHop) { this.zHop = { t: 0 }; g.audio?.sfx('dodge'); } return; }
       for (let n = 2; n <= 4; n++) {
         const x = tx + dx * n, y = ty + dy * n;
+        if (m.barreiraCells?.has(x + y * m.w)) break; // barreira da progressão (guarda, obra): o salto não passa por cima
         if (m.cellObj?.get(x + y * m.w) || m.solidAt(x * T + 8, y * T + 8) || g.grade.ocupado(x, y)) continue;
         this.jump = { x0: p.x, y0: p.y, x1: ancoraX(x), y1: ancoraY(y), t: 0, dur: 0.28 + n * T / 300, h: 10 + n * T * 0.16 };
         g.audio?.sfx('dodge');
@@ -830,6 +831,7 @@ export class Mounts {
     // primeiro ponto livre do outro lado (até 3 blocos)
     for (let d = 16; d <= 100; d += 4) {
       const x = p.x + n[0] * d, y = p.y + n[1] * d, kk = Math.floor(x / T) + Math.floor(y / T) * m.w;
+      if (m.barreiraCells?.has(kk)) break; // barreira da progressão: o salto não passa por cima
       if (m.cellObj?.get(kk)) continue;
       if (this.#fits(x, y, 5, (a, b) => !m.solidAt(a, b))) {
         this.jump = { x0: p.x, y0: p.y, x1: x, y1: y, t: 0, dur: 0.28 + d / 300, h: 10 + d * 0.16 };
