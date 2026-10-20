@@ -53,7 +53,7 @@ Online, a troca continua valendo. Offline, cada uma tem o jeito abaixo.
 | Dusclops (#356) | Dusknoir (#477) | Tecido Ceifador (troca) | nível 37, segurando Tecido Ceifador |
 | Clamperl (#366) | Huntail (#367) | Dente do Mar Profundo (troca) | nível 25, segurando Dente do Mar Profundo |
 | Clamperl (#366) | Gorebyss (#368) | Escama do Mar Profundo (troca) | nível 25, segurando Escama do Mar Profundo |
-| Boldore (#525) | Gigalith (#526) | Cordão de Ligação (troca) | nível 40, em fenda_prismatica ou fenda_prismatica_3 |
+| Boldore (#525) | Gigalith (#526) | Cordão de Ligação (troca) | nível 40, em fenda_prismatica |
 | Gurdurr (#533) | Conkeldurr (#534) | Cordão de Ligação (troca) | nível 25, segurando Bola de Ferro |
 | Karrablast (#588) | Escavalier (#589) | Cordão de Ligação (troca) | nível 30, com Shelmet na equipe |
 | Shelmet (#616) | Accelgor (#617) | Cordão de Ligação (troca) | nível 30, com Karrablast na equipe |

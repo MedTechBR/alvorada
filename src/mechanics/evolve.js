@@ -13,7 +13,7 @@ export const FRIENDSHIP_EVOLVE = 160;
 export const LUGARES_NOME = {
   forte_rochedo: 'Forte Rochedo', vulcao_ticao: 'Vulcão Tição', mina_aurora_n1: 'Mina Aurora', mina_aurora_n2: 'Mina Aurora',
   mina_aurora_n3: 'Mina Aurora', mina_aurora_n4: 'Mina Aurora', cemiterio_velas: 'Cemitério das Velas',
-  fenda_prismatica: 'Fenda Prismática', fenda_prismatica_3: 'Fenda Prismática', bosque_sussurrante: 'Bosque Sussurrante',
+  fenda_prismatica: 'Fenda Prismática', bosque_sussurrante: 'Bosque Sussurrante',
   mata_jequitibas: 'Mata dos Jequitibás',
 };
 

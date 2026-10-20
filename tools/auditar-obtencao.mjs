@@ -25,6 +25,22 @@ const I = await import('../src/data/items.js');
 const ESP = await import('./mundo/especiais.mjs');
 const { SPECIES } = S;
 const { ITEMS } = I;
+// ids de lugar que as regras de evolução usam (place): têm de existir como área ou sala nos mapas
+const IDS_MAPA = new Set();
+{
+  const pastaMapas = path.join(RAIZ, 'assets/maps');
+  const varre = (dir) => { for (const f of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, f.name);
+    if (f.isDirectory()) varre(p);
+    else if (f.name.endsWith('.json')) { try { const d = JSON.parse(fs.readFileSync(p, 'utf8')); for (const k of ['areas', 'interiors']) for (const a of d[k] ?? []) if (a?.id) IDS_MAPA.add(a.id); } catch { /* ignora */ } }
+  } };
+  varre(pastaMapas);
+}
+const LUGARES_USADOS = new Set();
+for (const s of Object.values(SPECIES)) for (const v of [s, ...Object.values(s.forms)]) for (const r of v.evo ?? []) for (const l of r.place ?? []) LUGARES_USADOS.add(l);
+// salas que a história e as obtenções precisam: Laboratório de Fósseis (Cidade Buriti) e a Creche da Vó Iara
+const SALAS_OBRIGATORIAS = ['lab_fosseis', 'creche_iara'];
+const LUGARES_SEM_MAPA = [...LUGARES_USADOS, ...SALAS_OBRIGATORIAS].filter((l) => !IDS_MAPA.has(l));
 
 const TOTAL = 1025;
 const CATEGORIAS = {
@@ -189,4 +205,6 @@ console.log(`Trocas: ${linhasTroca.length} regras de troca; sem alternativa: ${s
 console.log(`Babies fora da Creche: ${bebesFora.length}`);
 if (inativos.length) console.log('Inativas:', inativos.map((d) => `${d} ${nomeDe(d)}`).join(', '));
 if (!SO_CONTAR) console.log(`Gravado: ${path.relative(RAIZ, destino)}`);
-process.exitCode = inativos.length || semAlternativa.length ? 1 : 0;
+if (LUGARES_SEM_MAPA.length) console.log(`ERRO: lugares das regras de evolução que não existem nos mapas: ${LUGARES_SEM_MAPA.join(', ')}`);
+console.log(`Lugares das regras de evolução: ${LUGARES_USADOS.size} ids, ${LUGARES_SEM_MAPA.length} sem mapa`);
+process.exitCode = inativos.length || semAlternativa.length || LUGARES_SEM_MAPA.length ? 1 : 0;
