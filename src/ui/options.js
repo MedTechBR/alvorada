@@ -1,12 +1,14 @@
 // Opções do jogador (ficam neste aparelho, em localStorage). Sempre com try/catch:
 // em janela anônima ou com o armazenamento bloqueado, o jogo segue com os valores padrão.
 const KEY = 'alvorada2d.opcoes';
-export const DEFAULT_OPTS = { music: 7, sfx: 8, textSpeed: 'normal', vibrate: true, uiScale: 100, fps: false, quality: 'auto', camCinema: true, visual: '3d', online: true, dicas: true, movimento: 'classico', toque: 'analogico', expShare: true };
+export const DEFAULT_OPTS = { music: 7, sfx: 8, textSpeed: 'normal', vibrate: true, uiScale: 100, fps: false, quality: 'auto', camCinema: true, visual: '3d', online: true, dicas: true, movimento: 'classico', toque: 'analogico', expShare: true, estilo3d: 'zona' };
 export const QUALITY_PT = { auto: 'Automática', alta: 'Alta', baixa: 'Baixa' };
 export const TEXT_SPEED = { lenta: 24, normal: 46, rapida: 95 };
 export const TEXT_SPEED_PT = { lenta: 'Lenta', normal: 'Normal', rapida: 'Rápida' };
 export const MOVIMENTO_PT = { classico: 'Clássico (grade)', livre: 'Livre' };
 export const TOQUE_PT = { analogico: 'Analógico', cruz: 'Direcional em cruz' };
+// estilo do visual 3D (src/visual3d/letsgo): o Let's Go no começo da jornada (piloto), o voxel em tudo ou o Let's Go em tudo
+export const ESTILO3D_PT = { zona: "Let's Go até o 2º ginásio", voxel: 'Voxel em tudo', letsgo: "Let's Go em tudo (teste)" };
 export const UI_SCALES = [80, 90, 100, 115, 130, 145];
 
 function load() {

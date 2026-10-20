@@ -129,6 +129,7 @@ export class Setores {
     this.uAgua.ceu.value.copy(v.ceu.fundo);
     // trocas de bloco (mato cortado, chão queimado, ponte sobre a lava): refaz o setor (a arte o 2D já refez)
     for (const [x, y] of L.mudancas()) {
+      this.v.lg?.relevo.sujo(x, y);
       for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) { const s = this.mapa.get(this.#k(Math.floor((x + i) / CH), Math.floor((y + j) / CH))); if (s) { s.sujo = true; s.trocouBloco = true; } }
     }
     // setores que a câmera vê (pela pegada 3D, não pelo 2D)
@@ -147,7 +148,7 @@ export class Setores {
         if (s && s.pintar) { if (!pintou) { pintou = true; this.#pintar(s); } continue; }
         if (s) {
           if (!v.pixel && arte && s.arte !== arte) { if (s.tex === this.texVazia) s.tex = texDe(arte, true, true); else { s.tex.image = arte; s.tex.needsUpdate = true; } s.arte = arte; s.matAgua.uniforms.chao.value = s.tex; s.matAgua.uniforms.temChao.value = 1; }
-          if (s.sujo && refeitos < 2) { s.sujo = false; refeitos++; if (v.pixel && s.trocouBloco) { s.trocouBloco = false; this.repintar(s); continue; } this.#refazer(s); }
+          if (s.sujo && refeitos < 2) { s.sujo = false; refeitos++; if (s.lg && s.trocouBloco) { s.trocouBloco = false; v.lg.chao.preencher(s.matChao.userData.mascaraLG); } else if (v.pixel && s.trocouBloco) { s.trocouBloco = false; this.repintar(s); continue; } this.#refazer(s); }
           s.visto = v.t; s.grupo.visible = true;
           // nível de detalhe: grama só perto, arbustos um pouco mais longe
           if (s.grama) s.grama.grupo.visible = d < this.lodGrama;
@@ -169,16 +170,17 @@ export class Setores {
   #k(sx, sy) { return sx + sy * 4096; }
 
   #montar(sx, sy) {
-    const v = this.v, A = v.amb, px = v.pixel;
+    const v = this.v, A = v.amb, lg = !!v.lg?.setor(sx, sy), px = v.pixel && !lg; // lg: setor no estilo Let's Go (src/visual3d/letsgo)
     let arte = this.L.arteDoSetor(sx, sy), tex;
     if (px) {
       // estilo pixel (HGSS/FireRed): o chão é a arte de blocos de 16 px, filtro nearest, pintada aos poucos pelo 3D
       const cv = document.createElement('canvas'); cv.width = cv.height = CPX;
       arte = cv; tex = texDe(cv, true, false);
     } else tex = arte ? texDe(arte, true, true) : this.texVazia ??= new THREE.DataTexture(new Uint8Array(4), 1, 1);
-    const s = { sx, sy, arte, tex, grupo: new THREE.Group(), visto: v.t };
+    const s = { sx, sy, arte, tex, grupo: new THREE.Group(), visto: v.t, lg };
     if (px) { s.pintar = { img: cv2img(arte), row: 0 }; s.grupo.visible = false; }
-    if (A && !px) s.matChao = v.curvar(A.materialChao(sx, sy, { lados: THREE.DoubleSide })); // chão pintado da ambientação
+    if (lg) s.matChao = v.curvar(v.lg.chao.material(sx, sy));
+    else if (A && !px) s.matChao = v.curvar(A.materialChao(sx, sy, { lados: THREE.DoubleSide })); // chão pintado da ambientação
     else { s.matChao = v.curvar(new THREE.MeshLambertMaterial({ map: tex, vertexColors: true, alphaTest: 0.5, side: THREE.DoubleSide, color: px ? 0xc8d8c0 : 0xffffff })); s.matChao.customProgramCacheKey = () => 'mt-chao-px'; }
     s.matAgua = this.matAguaBase.clone();
     Object.assign(s.matAgua.uniforms, this.matAguaBase.uniforms, { chao: { value: tex }, temChao: { value: arte ? 1 : 0 } });
@@ -199,8 +201,8 @@ export class Setores {
     this.nRefaz = (this.nRefaz ?? 0) + 1;
     for (const m of [s.chao, s.agua, s.mato]) if (m) { s.grupo.remove(m); m.geometry.dispose(); }
     s.chao = s.agua = s.mato = null;
-    const A = this.v.amb, L = this.L, R = this.v.relevo;
-    if (A && !this.v.pixel) {
+    const A = this.v.amb, L = this.L, R = this.v.relevo, lg = s.lg ? this.v.lg : null;
+    if (A && !this.v.pixel && !lg) {
       if (s.grama) { s.grupo.remove(s.grama.grupo); s.grama.liberar(); }
       if (s.arbustos) { s.grupo.remove(s.arbustos.grupo); s.arbustos.liberar(); }
       const masc = s.matChao.userData.mascara; if (masc && s.feito) A.terreno.preencher(masc);
@@ -212,12 +214,12 @@ export class Setores {
       s.grupo.add(s.arbustos.grupo);
       for (const gr of [s.grama.grupo, s.arbustos.grupo]) gr.traverse((m) => { if (m.material) { this.v.curvar(m.material); m.frustumCulled = false; } });
     }
-    const g = this.#geometriaChao(s.sx, s.sy);
+    const g = lg ? lg.chao.geometria(this, s.sx, s.sy) : this.#geometriaChao(s.sx, s.sy);
     s.chao = new THREE.Mesh(g, s.matChao); s.chao.receiveShadow = true; s.chao.castShadow = true; s.grupo.add(s.chao);
-    const ga = this.#geometriaAgua(s.sx, s.sy);
-    if (ga) { s.agua = new THREE.Mesh(ga, s.matAgua); s.agua.renderOrder = -1; s.grupo.add(s.agua); }
-    const gm = A && !this.v.pixel ? null : this.#geometriaMato(s);
-    if (gm) { s.mato = new THREE.Mesh(gm, this.matMato); s.mato.receiveShadow = true; s.grupo.add(s.mato); }
+    const ga = lg ? lg.geometriaAgua(s.sx, s.sy) : this.#geometriaAgua(s.sx, s.sy);
+    if (ga) { s.agua = new THREE.Mesh(ga, lg ? lg.matAgua : s.matAgua); s.agua.renderOrder = -1; s.grupo.add(s.agua); }
+    const gm = lg ? lg.geometriaGrama(s) : A && !this.v.pixel ? null : this.#geometriaMato(s);
+    if (gm) { s.mato = new THREE.Mesh(gm, lg ? lg.matGrama : this.matMato); s.mato.receiveShadow = true; s.grupo.add(s.mato); }
     this.modelos.setor(s);
     if (s.salas) { for (const m of s.salas) { s.grupo.remove(m); m.geometry.dispose(); } s.salas = null; }
     if (s.luzJanela) { s.grupo.remove(s.luzJanela); s.luzJanela.geometry.dispose(); s.luzJanela = null; }
@@ -231,7 +233,8 @@ export class Setores {
     for (const m of [s.chao, s.agua, s.mato]) m?.geometry.dispose();
     for (const m of s.salas ?? []) m.geometry.dispose();
     this.modelos.liberar(s);
-    if (this.v.amb) this.v.amb.liberarSetor(s.matChao, s.grama, s.arbustos); else s.matChao.dispose();
+    if (s.lg) this.v.lg.chao.liberar(s.matChao);
+    else if (this.v.amb) this.v.amb.liberarSetor(s.matChao, s.grama, s.arbustos); else s.matChao.dispose();
     if (s.tex !== this.texVazia) s.tex.dispose(); s.matAgua.dispose();
   }
 

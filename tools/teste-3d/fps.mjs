@@ -12,6 +12,7 @@ try {
   await until(() => P.ev('!!(window.game && game.ui && game.ui.state === "play")'), 90000, 300);
   await sleep(3000);
   if (process.env.Q) { await P.ev(`game.quality.setMode('${process.env.Q}'), 1`); await sleep(7000); }
+  if (process.env.POS) { const [x, y] = process.env.POS.split(',').map(Number); await P.ev(`(() => { const g = game; g.player.x = ${x} * 16 + 8; g.player.y = ${y} * 16 + 8; g.cam.x = g.player.x; g.cam.y = g.player.y; return 1; })()`); await sleep(4000); } // POS=x,y: começa noutro lugar (blocos)
   await P.raw('Emulation.setCPUThrottlingRate', { rate: +lent });
   // anda em volta da vila e pela Rota 1 (posição mexida direto; a câmera e o mundo seguem)
   await P.ev(`(() => { const g = game, p = g.player, x0 = p.x, y0 = p.y; let t = 0;
