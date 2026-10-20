@@ -97,7 +97,7 @@ export const ARENAS = {
     fases: [
       { id: 'mares', nome: 'As marés' },
       { id: 'mare_alta', nome: 'Maré alta', final: true, quando: { desmaios: 1, psEquipe: 0.6 }, titulo: 'MARÉ ALTA!', fala: 'Segura firme! Agora a água vem de verdade. Quem não nada, fica no barco!', musica: 'gymFinal',
-        ajusta: { inundacao: { ciclo: [[3, 12], [2, 4]] }, correnteza: { forca: 70, periodo: 9 } } },
+        ajusta: { inundacao: { ciclo: [[3, 8], [1, 7]] }, correnteza: { forca: 70, periodo: 9 } } }, // no estádio, a maré alta dá folga (os pontos altos ficam longe)
     ],
   },
   // a revanche no píer, depois do assalto (cap03: leader_marina_pier)

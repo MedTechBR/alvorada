@@ -28,7 +28,7 @@ const CASOS = {
   marina: { equipe: [[25, 15], [1, 15], [4, 14]], batalha: 'leader_marina', sala: 'galpao_barcos', em: [10, 13], lider: [10, 2.6] },
   marina_pier: { equipe: [[25, 15], [1, 15], [4, 14]], batalha: 'leader_marina_pier', perto: [435, 306], lider: [436, 303.5] },
   jonas: { equipe: [[4, 13], [7, 12], [1, 12]], batalha: 'leader_jonas', sala: 'farol_topo', em: [4, 8], lider: [12, 2.6] },
-  zelia: { equipe: [[5, 21], [8, 21], [25, 20]], batalha: 'leader_zelia', sala: 'casarao_velas', em: [40, 13], lider: [40, 16.6], noite: true },
+  zelia: { equipe: [[197, 21], [229, 21], [59, 20]], batalha: 'leader_zelia', sala: 'casarao_velas', em: [40, 13], lider: [40, 16.6], noite: true },
   bras: { equipe: [[17, 39], [5, 38], [8, 38]], batalha: 'leader_bras', sala: 'roda_capoeira', em: [10, 3.5], lider: [10, 2.5] },
   graca: { equipe: [[9, 44], [3, 43], [6, 43]], batalha: 'leader_graca', sala: 'mina_velha', em: [10, 3.5], lider: [10, 2.5] },
   celeste: { equipe: [[26, 47], [6, 46], [9, 46]], batalha: 'leader_celeste', sala: 'torre_vento', em: [10, 3.5], lider: [10, 2.5] },
@@ -154,7 +154,14 @@ async function caso(b, nome, rodada) {
   // fotos no meio da ação (duas, em momentos diferentes)
   if (FOTOS) { await sleep(9000); await foto('1'); await sleep(14000); await foto('2'); }
   const fim = await until(() => p.ev(`!!window.__arenaUltima || (window.game.arenaGinasio?.t ?? 0) > ${LIMITE}`), (LIMITE + 120) * 1000, 1000);
-  if (!(await p.ev('!!window.__arenaUltima'))) await p.ev(`window.game.story.battle?.finish('limite')`);
+  if (!(await p.ev('!!window.__arenaUltima'))) {
+    // luta que não acabou: como estava (quem do líder sobrou, onde, PS; o seu Pokémon)
+    const est = await p.ev(`(() => { const G = window.game, b = G.story.battle, A = G.arenaGinasio, rel = (e) => [+((e.x - A.R.x0) / 16).toFixed(1), +((e.y - A.R.y0) / 16).toFixed(1)];
+      return { lider: b.active.map((e) => ({ n: e.mon.name, ps: e.mon.hp + '/' + e.mon.stats.hp, em: rel(e), chao: G.map.at(Math.floor(e.x / 16), Math.floor(e.y / 16)) })), resta: b.team.length - b.next,
+        seu: G.lead && { n: G.lead.mon.name, ps: G.lead.mon.hp + '/' + G.lead.mon.stats.hp, em: rel(G.lead) }, treinador: rel(G.player) }; })()`);
+    console.log(nome, 'não acabou:', JSON.stringify(est));
+    await p.ev(`window.game.story.battle?.finish('limite')`);
+  }
   await until(() => p.ev('!!window.__arenaUltima'), 10000, 500);
   await sleep(2500); // volta do estádio (escurece e volta ao ginásio)
   const r = await p.ev(`(() => { const s = window.__arenaUltima, G = window.game, C = window.__cont, n0 = window.__npc0, n = window.__npc; return s && { ...s, porPerigo: s.porPerigo, minAviso: s.minAviso === Infinity ? null : +s.minAviso.toFixed(2), bot: window.bot.stats, perf: { logicaMs: +(window.__perf.ms / window.__perf.n).toFixed(2), logicaMax: +window.__perf.max.toFixed(1) }, equipeViva: G.party.filter((m) => !m.fainted).length,
