@@ -53,10 +53,11 @@
   ],
   "spots": {
     "ninho_vila_altiplana": [305, 250, "down"],
-    "ninho_vila_fim_mundo": [345, 620, "down"], "cratera_entrada": [110, 95, "down"], "altiplano_entrada": [290, 255, "down"]},
+    "ninho_vila_fim_mundo": [345, 620, "down"], "cratera_entrada": [110, 95, "down"], "altiplano_entrada": [290, 255, "down"], "ninho_cratera_tempo": [120, 112, "down"]},
   "ninhos": [
     {"id": "vila_altiplana", "nome": "Vila Altiplana", "spot": "ninho_vila_altiplana"},
-    {"id": "vila_fim_mundo", "nome": "Vila Fim-do-Mundo", "spot": "ninho_vila_fim_mundo"}
+    {"id": "vila_fim_mundo", "nome": "Vila Fim-do-Mundo", "spot": "ninho_vila_fim_mundo"},
+    {"id": "cratera_tempo", "nome": "Vulcão Sentinela", "spot": "ninho_cratera_tempo"}
   ],
   "objects": [],
   "interiors": [

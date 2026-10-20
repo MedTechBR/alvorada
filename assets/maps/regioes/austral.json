@@ -40,9 +40,11 @@
   ],
   "spots": {
     "ninho_estacao_austral": [540, 865, "down"],
-    "cais_austral": [540, 847, "up"], "mares_entrada": [600, 745, "down"], "recife_entrada": [520, 655, "down"], "fossa_entrada": [680, 765, "down"], "iceberg_entrada": [470, 845, "down"], "farol_morto_entrada": [710, 645, "down"]},
+    "cais_austral": [540, 847, "up"], "mares_entrada": [600, 745, "down"], "recife_entrada": [520, 655, "down"], "fossa_entrada": [680, 765, "down"], "iceberg_entrada": [470, 845, "down"], "farol_morto_entrada": [710, 645, "down"], "ninho_farol_morto": [700, 648, "down"], "ninho_iceberg_austral": [462, 852, "down"]},
   "ninhos": [
-    {"id": "estacao_austral", "nome": "Estação Austral", "spot": "ninho_estacao_austral"}
+    {"id": "estacao_austral", "nome": "Estação Austral", "spot": "ninho_estacao_austral"},
+    {"id": "farol_morto", "nome": "Ilha do Farol Morto", "spot": "ninho_farol_morto"},
+    {"id": "iceberg_austral", "nome": "Caverna do Iceberg", "spot": "ninho_iceberg_austral"}
   ],
   "objects": [],
   "interiors": [

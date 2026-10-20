@@ -63,11 +63,12 @@
     "ninho_estancia_ventania": [725, 320, "down"],
     "ninho_cidadela_poente": [790, 500, "down"],
     "porto_rubro_cais": [945, 358, "left"],
-    "chegada": [932, 359, "left"], "cataratas_entrada": [860, 45, "down"], "santuario_entrada": [775, 490, "down"]},
+    "chegada": [932, 359, "left"], "cataratas_entrada": [860, 45, "down"], "santuario_entrada": [775, 490, "down"], "ninho_cataratas": [880, 60, "down"]},
   "ninhos": [
     {"id": "porto_rubro", "nome": "Porto Rubro", "spot": "ninho_porto_rubro"},
     {"id": "estancia_ventania", "nome": "Estância Ventania", "spot": "ninho_estancia_ventania"},
-    {"id": "cidadela_poente", "nome": "Cidadela do Poente", "spot": "ninho_cidadela_poente"}
+    {"id": "cidadela_poente", "nome": "Cidadela do Poente", "spot": "ninho_cidadela_poente"},
+    {"id": "cataratas", "nome": "Cataratas do Trovão", "spot": "ninho_cataratas"}
   ],
   "objects": [],
   "interiors": [
