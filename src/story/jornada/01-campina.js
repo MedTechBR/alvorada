@@ -17,8 +17,8 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'campina', requer: ['nh.explicouRelogio'], semFlag: ['badges.campina'] },
       falas: [
         ['narrador', 'Cidade Campina: ruas de terra, uma feira de abóboras e, no fim da praça, uma quadra coberta. Ali fica o ginásio.'],
-        ['narrador', 'Você veio pela Rota 1 para conquistar a Insígnia Espiga, a primeira das oito pedras que a Crepúsculo cobiça.'],
-        ['jogador', 'O Líder Tomé é o primeiro desafio. Mas antes preciso saber o que os recrutas estão fazendo por aqui.'],
+        ['narrador', 'Você veio pela Rota 1 para o primeiro ginásio. O líder guarda a Pedra do Alvorecer da cidade, e a Crepúsculo a cobiça.'],
+        ['jogador', 'O Líder Tomé é o primeiro desafio. Mas esta cidade parece nervosa. O que está acontecendo por aqui?'],
         ['narrador', 'Um feirante aponta para a Fazenda do Tomé, a leste da cidade: "Tem gente de capa roxa rondando o celeiro desde cedo."'],
       ],
       depois: {
@@ -32,12 +32,12 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'fazenda_tome', requer: ['nh.chegouCampina'], semFlag: ['nh.ebanoCampina'] },
       falas: [
         ['tome', 'Ah, você é o treinador do Prof. Jatobá! Chegou bem na hora. Uns sujeitos de capa roxa estão no celeiro.'],
-        ['lili', 'Eles pegaram os tambores de leite e falaram que é para a chefe deles. Eu falei que leite é de vaca, não de patrão!'],
-        ['recruta', 'Passa, velho. A pedra não é sua. A pedra vai para quem sabe o que fazer com ela.'],
-        ['tome', 'A pedra é do ginásio! Ela está comigo há quarenta anos, não é nada de outro mundo.'],
-        ['ebano', 'Admin Ébano, da Equipe Crepúsculo. A Dra. Véspera quer as oito pedras longe de quem as vende. Você não entende, garoto.'],
+        ['lili', 'Eles reviraram o celeiro atrás de uma pedra! Eu disse que aqui só tem leite, milho e galinha.'],
+        ['recruta', 'Saia da frente, velho. A pedra não é sua. Ela vai para quem sabe o que fazer com ela.'],
+        ['tome', 'A pedra é do ginásio, e está comigo há quarenta anos. Não vou entregar a ninguém.'],
+        ['ebano', 'Admin Ébano, da Equipe Crepúsculo. A Dra. Véspera quer as oito pedras longe de quem as vende. Você não entende o que está em jogo.'],
         ['jogador', 'Vender? A pedra é do ginásio, não é de vocês.'],
-        ['ebano', 'Então prova. Se você vencer, eu levo o recado. Se perder, eu levo a pedra e você explica para o Tomé.'],
+        ['ebano', 'Então prove. Se você me vencer, eu vou embora e deixo o celeiro em paz. Se perder, a pedra vem comigo.'],
       ],
       depois: {
         batalha: {
@@ -63,9 +63,9 @@ export default {
       local: 'fazenda_tome',
       gatilho: { tipo: 'vencer', alvo: 'c1_ebano' },
       falas: [
-        ['ebano', 'Hm. Não deveria ter sido tão rápido. Pode ficar com o celeiro. A Dra. Véspera só queria ver se você se importava.'],
-        ['narrador', 'O Admin Ébano recolhe a bola de um Murkrow derrotado e some atrás do celeiro, mas não leva a pedra.'],
-        ['tome', 'Você segurou eles. Eu já ia pegar o forcado. Mas a minha pedra fica no ginásio, e lá é onde eu quero você amanhã.'],
+        ['ebano', 'Hm. Não esperava tanta resistência. Fique com a pedra por enquanto. A Dra. Véspera só queria ver quem se importa com elas.'],
+        ['narrador', 'O Admin Ébano recolhe o Murkrow derrotado e some atrás do celeiro. A pedra continua no lugar.'],
+        ['tome', 'Você segurou eles, garoto! Eu já ia pegar o forcado. Agora vá ao ginásio, que quero ver se luta tão bem quanto segura um celeiro.'],
       ],
       depois: { ambiente: true },
       atores: [
@@ -81,9 +81,9 @@ export default {
       gatilho: { tipo: 'flag', alvo: 'badges.campina', semFlag: ['nh.pedraCampina'] },
       falas: [
         ['tome', 'Olha só! A Insígnia Espiga é sua. Ela lembra que, para crescer, a gente precisa de paciência e de chuva.'],
-        ['tome', 'Escuta, vou falar sério. A pedra da cidade é a última coisa que eu guardo para mim. Eu não consigo ficar de olho nela sozinho.'],
-        ['tome', 'Cuida dela com a mesma atenção que você cuidou dessa insígnia. Quando a Crepúsculo voltar, e vai voltar, eu conto com você.'],
-        ['tome', 'A Rota 2 sai da fazenda para o norte, depois do lamaçal. Com um Pokémon que tenha patas fortes você passa sem se afundar.'],
+        ['tome', 'Escuta, vou ser sincero. A pedra da cidade é o que eu tenho de mais precioso, e não dou conta de vigiá-la sozinho.'],
+        ['tome', 'Fique de olho nela. Quando a Crepúsculo voltar, e vai voltar, eu conto com você.'],
+        ['tome', 'A Rota 2 começa ao norte da fazenda, depois do lamaçal. Cuidado com o barro: ele engole quem anda distraído.'],
       ],
       depois: {
         flags: { 'nh.pedraCampina': true },
@@ -95,7 +95,7 @@ export default {
       id: 'j01_boletim1',
       gatilho: { tipo: 'apos', cena: 'j01_tome_insignia', semFlag: ['nh.boletim.1'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e doze minutos. Sete minutos depois do esperado.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e doze minutos. Sete minutos mais tarde do que ontem.'],
         ['mae', 'Ravi, ouviu? Seis e doze. Você já ganhou uma insígnia e o sol atrasou mais um pouco. Coincidência, não acha?'],
         ['jogador', 'Mãe, eu não acredito em coincidência. Mas ainda não sei o que é.'],
       ],
