@@ -165,11 +165,16 @@ const concha = (m, c) => {
   for (let k = 0; k < 5; k++) m.com({ x: 4, z: -5, ry: k * 1.2566 }, () => m.bloco(2, 0, 0, 4, 1.2, 1.6, '#ff8a4a', { ao: false }));
   return topoDe(3, 5);
 };
-const pedraMar = pedra({ w: 28, h: 14, d: 15, pal: ['#4e5a5e', '#6a7a7c', '#8a9a98'], brilho: (m, cz) => {
-  m.bloco(-6, 0, cz + 7, 20, 2.5, 1.5, '#3a4a42', { ao: false }); // linha molhada
-  m.bloco(4, 13, cz, 6, 1.5, 5, '#e8e4dc', { ao: false }); // cracas
-  m.bloco(-8, 6, cz + 6.6, 3, 2, 0.6, '#5a8a4a', { ao: false });
-} });
+const pedraMar = (m, c) => {
+  // pedras da arrebentação: blocos arredondados, base molhada escura, cracas e um tufo de alga
+  const pal = ['#56646a', '#6e7e82', '#8a9a9a'];
+  m.cil(-3, 0, -9, 10, 8, 9 + c.v * 2, 7, pal[1], { achata: 0.6, fase: c.v, topo: pal[2], var: 0.06 });
+  m.cil(7, 0, -6, 6, 4.5, 6, 6, pal[0], { achata: 0.7, fase: 1 + c.v, topo: pal[1] });
+  m.cil(-3, 0, -9, 10.4, 10.2, 2, 7, '#3a4a46', { achata: 0.6, fase: c.v, tampa: false, ao: false });
+  m.bloco(-5, 9 + c.v * 2, -9, 5, 1.2, 4, '#e8e4dc', { ao: false });
+  m.bloco(1, 3, -3.6, 3, 2, 0.8, '#5a8a4a', { ao: false });
+  return topoDe(11 + c.v * 2, 9);
+};
 const barco = (m, c) => {
   const cor = ['#d8584a', '#3a8ad8', '#e8c44a'][c.v % 3];
   m.com({ z: -8 }, () => {
