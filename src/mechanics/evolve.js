@@ -4,10 +4,18 @@
 //   hora do dia → ambiente.timeOfDay(); golpe → subir de nível sabendo o golpe; chuva → clima do mapa.
 import { SPECIES } from '../data/species.js';
 import { MOVES } from '../data/moves.js';
-import { itemId } from '../data/items.js';
+import { itemId, itemInfo } from '../data/items.js';
 import * as amb from './ambiente.js';
 
 export const FRIENDSHIP_EVOLVE = 160;
+
+// Nomes para a Pokédex (a chave é o id do lugar: área do mapa ou sala)
+export const LUGARES_NOME = {
+  forte_rochedo: 'Forte Rochedo', vulcao_ticao: 'Vulcão Tição', mina_aurora_n1: 'Mina Aurora', mina_aurora_n2: 'Mina Aurora',
+  mina_aurora_n3: 'Mina Aurora', mina_aurora_n4: 'Mina Aurora', cemiterio_velas: 'Cemitério das Velas',
+  fenda_prismatica: 'Fenda Prismática', fenda_prismatica_3: 'Fenda Prismática', bosque_sussurrante: 'Bosque Sussurrante',
+  mata_jequitibas: 'Mata dos Jequitibás',
+};
 
 const splitOf = (mon) => { let h = 0; for (const c of String(mon.uid ?? '')) h = (h * 31 + c.charCodeAt(0)) | 0; return Math.abs(h) % 2; };
 
@@ -32,6 +40,11 @@ function conditionsOk(mon, e, ctx) {
   if (e.natures && !e.natures.includes(mon.nature)) return false;
   if (e.split != null && splitOf(mon) !== e.split) return false;
   if (e.region && e.region !== (ctx.region !== undefined ? ctx.region : amb.regiao())) return false; // o mundo informa a região (ambiente.js)
+  // troca substituída por jeito de subir de nível (docs/obtencao.md, tabela de trocas): segurar um item (que não é
+  // gasto), subir de nível dentro de certos lugares e saber N golpes de um tipo
+  if (e.hold && itemId(mon.item) !== e.hold) return false;
+  if (e.place && !e.place.includes(ctx.lugar ?? null)) return false;
+  if (e.movesOfType && mon.moves.filter((m) => MOVES[m]?.type === e.movesOfType.type).length < e.movesOfType.n) return false;
   return true;
 }
 
@@ -50,7 +63,8 @@ export function evolutionFor(mon, trigger = 'level', ctx = {}) {
   for (const e of rules) {
     if (!SPECIES[e.to]) continue;
     if (trigger === 'item') {
-      if (!e.item || e.item !== item) continue;
+      // troca não se resolve usando item (o Cordão de Ligação foi substituído pelos jeitos de cada espécie)
+      if (!e.item || e.item !== item || e.trade) continue;
     } else if (trigger === 'trade') {
       // troca de verdade (online): evolui como nos jogos; com item segurado quando a regra pede
       if (!e.trade || (e.item !== 'linkingCord' && itemId(mon.item) !== e.item)) continue;
@@ -83,5 +97,8 @@ export function describeEvolution(e) {
   if (e.atkDef != null) p.push(e.atkDef > 0 ? 'Ataque maior que a Defesa' : e.atkDef < 0 ? 'Defesa maior que o Ataque' : 'Ataque igual à Defesa');
   if (e.natures) p.push('conforme a natureza');
   if (e.region) p.push(`na região de ${e.region[0].toUpperCase()}${e.region.slice(1)}`);
+  if (e.hold) p.push(`segurando ${itemInfo(e.hold)?.name ?? e.hold} (o item não é gasto)`);
+  if (e.place) p.push(`subindo de nível em ${e.place.map((l) => LUGARES_NOME[l] ?? l).join(' ou em ')}`);
+  if (e.movesOfType) p.push(`sabendo ${e.movesOfType.n} golpes do tipo ${e.movesOfType.type}`);
   return p.join(', ');
 }

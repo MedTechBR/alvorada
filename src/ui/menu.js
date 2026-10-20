@@ -13,6 +13,7 @@ import { portraitURL, SILHOUETTE } from './portrait.js';
 import { ICONS } from './hud.js';
 import { exportCode, importCode, Auth } from '../net/auth.js';
 import { NATURES } from '../data/natures.js';
+import { describeEvolution } from '../mechanics/evolve.js';
 import { abilityInfo } from '../data/abilities.js';
 import { serialize, writeSave } from '../save.js';
 import { drawLook, FW, FH } from './looks.js';
@@ -80,6 +81,15 @@ function dexGeneric(sp) {
 // Formas conhecidas (regionais, Mega, Gigantamax…), sem as que só mudam a cor
 function formsTxt(sp) {
   return Object.values(sp.forms ?? {}).filter((f) => f.kind !== 'visual').map((f) => esc(f.name)).join(', ');
+}
+// Dica de evolução além do nível: troca substituída, lugar, item segurado, hora, amizade, golpes ou companheiro na equipe.
+// Ex.: "Evolui para Gengar: nível 25, de noite, subindo de nível em Cemitério das Velas."
+function evoDica(sp, conhecido = () => true) {
+  const CHAVES = ['hold', 'place', 'movesOfType', 'partySpecies', 'time', 'friendship'];
+  return (sp.evo ?? []).filter((r) => SPECIES[r.to] && CHAVES.some((k) => r[k] != null)).map((r) => {
+    const nome = conhecido(r.to) ? esc(SPECIES[r.to].name) : '???';
+    return `Evolui para ${nome}: ${esc(describeEvolution(r))}.`;
+  }).join(' ');
 }
 function prevo(dex) {
   if (!PREVO) { PREVO = {}; for (const [k, s] of Object.entries(SPECIES)) if (s.evolve) PREVO[s.evolve.to] = { from: +k, level: s.evolve.level }; }
@@ -539,7 +549,7 @@ export class GameMenu {
     const hab = habitat(n, g);
     const habTxt = Object.entries(hab).map(([b, e]) => `<li><b>${esc(BIOME_PT[b] ?? b)}</b> <span class="gm-soft">${e.day && e.night ? 'dia e noite' : e.night ? 'só à noite' : 'só de dia'} · Nv. ${e.lo}–${e.hi}</span></li>`).join('');
     const pv = prevo(n), ev = sp.evolve && SPECIES[sp.evolve.to];
-    const evo = [pv ? `Evolui de ${esc(SPECIES[pv.from].name)} no Nv. ${pv.level}.` : '', ev ? `Evolui para ${(g.flags.dex?.[sp.evolve.to] ?? 0) ? esc(ev.name) : '???'} no Nv. ${sp.evolve.level}.` : ''].filter(Boolean).join(' ');
+    const evo = [pv ? `Evolui de ${esc(SPECIES[pv.from].name)} no Nv. ${pv.level}.` : '', ev ? `Evolui para ${(g.flags.dex?.[sp.evolve.to] ?? 0) ? esc(ev.name) : '???'} no Nv. ${sp.evolve.level}.` : '', evoDica(sp, (d) => !!(g.flags.dex?.[d] ?? 0))].filter(Boolean).join(' ');
     const caught = s >= 2;
     box.innerHTML = `<div class="gm-dexhead">${slot(n, '', !caught)}
       <div><div class="gm-big">${num} · ${esc(sp.name)}</div><div class="gm-types">${typePills(sp.types)}</div>
@@ -1002,7 +1012,7 @@ export class GameMenu {
             ['Condição', m.fainted ? '<span class="status st-slp">K.O.</span> Desmaiado' : m.status ? `<span class="status ${stPT(m.status)[2]}">${stPT(m.status)[0]}</span> ${stPT(m.status)[1]}` : 'Saudável'],
             ['XP total', m.xp.toLocaleString('pt-BR')],
             ['Para o Nv. ' + (m.level + 1), m.level >= 100 ? '—' : (m.xpToNext() - m.xp).toLocaleString('pt-BR') + ' XP'],
-            ['Evolução', ev ? `${esc(ev.name)} no Nv. ${sp.evolve.level}` : '—'],
+            ['Evolução', [ev ? `${esc(ev.name)} no Nv. ${sp.evolve.level}` : '', evoDica(sp)].filter(Boolean).join('<br>') || '—'],
             ['Montaria', this.#mountInfo(m)],
             ['Próximo golpe', next ? `${esc(MOVES[next[1]]?.name ?? next[1])} no Nv. ${next[0]}` : '—'],
           ];
