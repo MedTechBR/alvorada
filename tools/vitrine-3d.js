@@ -5,13 +5,14 @@ import { NATUREZA } from '../src/visual3d/kit/natureza.js';
 import { OBJETOS } from '../src/visual3d/kit/objetos.js';
 import { PREDIOS } from '../src/visual3d/kit/predios.js';
 import { INTERIOR } from '../src/visual3d/kit/interior.js';
+import { VESTIR } from '../src/visual3d/kit/vestir.js';
 import { KINDS } from '../src/world/objects.js';
 
 // Vitrine do kit de modelos 3D: grade com todos os tipos, câmera do jogo (55°, campo de 30°), dia e noite,
 // contagem de triângulos e tempo de geração por modelo. Só para desenvolvimento.
 const Q = new URLSearchParams(location.search);
 const INCL = 55 * Math.PI / 180, FOV = 30;
-const CATS = { natureza: NATUREZA, objetos: OBJETOS, predios: PREDIOS, interior: INTERIOR };
+const CATS = { natureza: NATUREZA, objetos: OBJETOS, predios: PREDIOS, interior: INTERIOR, vestir: VESTIR };
 let zoom = +(Q.get('zoom') ?? 2), noite = Q.get('noite') === '1', verPegada = Q.get('pegada') !== '0';
 const filtro = Q.get('f'), soCat = Q.get('cat');
 

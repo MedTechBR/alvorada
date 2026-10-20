@@ -1,0 +1,16 @@
+austral-campo=540,866
+austral-neve=540,886
+geada-neve=900,130
+rota1=210,338
+floresta-rota2=125,290
+brejo-rota5=350,255
+praia=950,445
+deserto=900,380
+vulcao=1000,730
+planalto=350,70
+selva=150,780
+canion=700,320
+coral=340,392
+vila-geada=790,125
+vila-termas=990,650
+cidade-buriti=1040,272
