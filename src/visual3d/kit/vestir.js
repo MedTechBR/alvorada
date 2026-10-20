@@ -117,11 +117,13 @@ const cactoBarril = (m, c) => {
 };
 const duna = (m, c) => {
   // duna: monte de areia em prismas achatados, crista deslocada para o leste e sombra no sopé (3x2)
-  const a = '#e2b878', b = '#f2d49a', cr = '#fbe4b0', dx = (c.v - 1) * 3;
-  m.cil(0, 0, -16, 23, 20, 5, 10, a, { achata: 0.62, topo: b, ao: false, fase: 0 });
-  m.cil(dx + 2, 5, -17, 18, 12, 6, 10, b, { achata: 0.6, topo: cr, ao: false, fase: 0 });
-  m.cil(dx + 4, 11, -17, 10, 3, 4, 8, cr, { achata: 0.55, ao: false });
-  return topoDe(15, 18, -16);
+  const a = '#d8a868', b = '#f0cf92', cr = '#fbe6b8', dx = (c.v - 1) * 3, k = [0.8, 1, 1.25][c.v % 3];
+  m.com({ s: k }, () => {
+    m.cil(0, 0, -16, 23, 20, 5, 10, a, { achata: 0.62, topo: b, ao: false, fase: 0 });
+    m.cil(dx + 2, 5, -17, 18, 12, 6, 10, b, { achata: 0.6, topo: cr, ao: false, fase: 0 });
+    m.cil(dx + 4, 11, -17, 10, 3, 4, 8, cr, { achata: 0.55, ao: false });
+  });
+  return topoDe(15 * k, 18, -16);
 };
 
 // ---------- vulcão
@@ -358,7 +360,18 @@ const moita = (pal, neve) => (m, c) => {
 };
 const pedrinha = (pal) => pedra({ w: 14, h: 10, d: 11, pal });
 
+// degrau (ledge): beirada baixa de pedra com o topo do chão do bioma; em fila forma o "pulinho" das rotas clássicas
+const degrau = (topo, face) => (m, c) => {
+  m.caixa(-8.1, 0, -15, 8.1, 9, -3, face[0], { cores: { topo, frente: face[1], lado: face[0] } });
+  m.caixa(-8.1, 9, -15.5, 8.1, 11, -2.4, topo, { cores: { frente: tom(topo, 0.82) }, ao: false });
+  m.bloco(-4 + c.v * 3, 2, -2.6, 4, 3, 0.6, face[2], { ao: false });
+  return { y: 11, x0: -8, x1: 8, z0: -15, z1: -3 };
+};
+
 export const VESTIR = {
+  degrau: { f: degrau('#7cb04a', ['#7a6a58', '#94826c', '#5e5044']), var: 3 },
+  degrauNeve: { f: degrau('#eef4fc', ['#6e7684', '#8a929e', '#56606c']), var: 3 },
+  degrauAreia: { f: degrau('#e8c88a', ['#b0784a', '#c8905a', '#8a5a36']), var: 3 },
   moita: { f: moita(['#2a7a34', '#3e9a46', '#6ac05a']), var: 3 },
   moitaNeve: { f: moita(['#2a5a3e', '#3a6e4a', '#ffffff'], true), var: 3 },
   pedrinha: { f: pedrinha(['#746e7e', '#9393a3', '#bcafc0']), var: 3 },
