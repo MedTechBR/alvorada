@@ -1,3 +1,7 @@
+// RELÓGIO DOS BOLETINS (âncora única): dia 1 = nascer do sol às 6h05; +7 minutos a cada insígnia.
+//   0: 6h05 · 1: 6h12 · 2: 6h19 · 3: 6h26 · 4: 6h33 · 5: 6h40 · 6: 6h47 · 7: 6h54 · 8: 7h01 · fim do Relógio: 6h04.
+//   Os campos `sol` dos segmentos, as flags nh.sol e as falas dos boletins seguem esta tabela.
+//
 // História nova ("Pokémon Alvorada", nova jornada clássica): docs/jornada-classica.md e docs/jornada-roteiro.md.
 //
 // LIGADA (2026-10-20): src/story/roteiro.js roda [mantidas, regiões, ...JORNADA]; o elenco do mapa vem de

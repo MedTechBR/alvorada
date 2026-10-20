@@ -11,7 +11,7 @@ export default {
   id: 'nova11',
   jornada: 'mirante',
   titulo: 'Asas do Mirante',
-  sol: '7h11',
+  sol: '7h01',
   cenas: [
     {
       id: 'j11_chegada',
@@ -89,7 +89,7 @@ export default {
         ['jogador', 'Então eu tenho a oitava chave desde Lamparina. A senhora me deu para guardar.'],
         ['zelia', 'Dei porque você ia guardar melhor do que eu. Ainda bem que não acendeu. Ela só deve ser acesa no Relógio.'],
         ['jogador', 'O Solano quer que eu acenda a vela no Relógio, para abrir o cadeado e capturar o Necrozma. Não é isso?'],
-        ['zelia', 'É isso. As outras sete pedras já estão com ele, por causa do Sereno. Você precisa chegar ao topo antes dele.'],
+        ['zelia', 'É isso. Mas as suas oito insígnias podem fechar o cadeado de novo. Chegue ao topo antes do Solano.'],
       ],
       depois: {
         flags: { 'nh.reviravolta5': true, 'nh.velaSelo': true },
@@ -175,11 +175,11 @@ export default {
       id: 'j11_boletim8',
       gatilho: { tipo: 'flag', alvo: 'badges.mirante', semFlag: ['nh.boletim.8'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às sete e onze. A tempestade do Planalto acabou, mas o sol segue atrasado.'],
-        ['mae', '{jogador}, sete e onze. Eu não entendo mais nada. O Prof. Jatobá não atende o telefone desde ontem.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às sete e um. A tempestade do Planalto acabou, mas o sol segue atrasado.'],
+        ['mae', '{jogador}, sete e um. Eu não entendo mais nada. O Prof. Jatobá não atende o telefone desde ontem.'],
         ['jogador', 'Mãe, eu vou atrás dele. O Solano está no Relógio, e eu prometo que volto com o professor.'],
       ],
-      depois: { flags: { 'nh.boletim.8': true, 'nh.sol': '7h11' }, ambiente: true },
+      depois: { flags: { 'nh.boletim.8': true, 'nh.sol': '7h01' }, ambiente: true },
     },
   ],
 };

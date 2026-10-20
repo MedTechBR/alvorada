@@ -11,7 +11,7 @@ export default {
   id: 'nova06',
   jornada: 'lamparina',
   titulo: 'A noite que não acaba',
-  sol: '6h42',
+  sol: '6h40',
   cenas: [
     {
       id: 'j06_chegada',
@@ -180,11 +180,11 @@ export default {
       id: 'j06_boletim5',
       gatilho: { tipo: 'flag', alvo: 'badges.lamparina', semFlag: ['nh.boletim.5'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e quarenta e dois. Vila Lamparina teve a noite mais longa da região.'],
-        ['mae', '{jogador}, seis e quarenta e dois. Quase quarenta minutos de atraso desde o primeiro boletim. Não gosto nada disso.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e quarenta. Vila Lamparina teve a noite mais longa da região.'],
+        ['mae', '{jogador}, seis e quarenta. Trinta e cinco minutos de atraso desde o primeiro boletim. Não gosto nada disso.'],
         ['jogador', 'Mãe, a Dona Zélia me deu uma vela para guardar. Ela parece saber mais do que diz.'],
       ],
-      depois: { flags: { 'nh.boletim.5': true, 'nh.sol': '6h42' }, ambiente: true },
+      depois: { flags: { 'nh.boletim.5': true, 'nh.sol': '6h40' }, ambiente: true },
     },
   ],
 };

@@ -17,7 +17,7 @@ export default {
       gatilho: { tipo: 'flag', alvo: 'balls', semFlag: ['nh.sol'] },
       falas: [
         ['mae', '{jogador}! Liga o rádio, o boletim do sol já está no ar. Ouve isso, é importante.'],
-        ['radio', 'Bom dia, Vila Alvorada. Hoje o sol nasceu às seis horas e cinco minutos. Três minutos mais tarde do que ontem.'],
+        ['radio', 'Bom dia, Vila Alvorada. Hoje o sol nasceu às seis horas e cinco minutos. Três minutos mais tarde do que no dia anterior.'],
         ['mae', 'Isso já é o quinto dia seguido. O Seu Zé diz que os relógios dele estão certos. Então quem está atrasado é o sol.'],
         ['jogador', 'Ouvi os vizinhos falando de uma tal Equipe Crepúsculo. Dizem que andam de capa roxa pela região.'],
         ['mae', 'Quem anda de capa roxa só traz encrenca. Vai com cuidado e volta para o almoço!'],
