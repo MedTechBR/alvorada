@@ -130,7 +130,7 @@ export class Story {
       g.toast('Recebeu 2 Frutas Oran e 1 Fruta Pecha!');
       this.busy = false;
       g.ui.save('começo');
-    } else if (!isNew) g.toast(`Bem-vindo de volta, ${this.pname}!`);
+    } else if (!isNew) g.toast(`Que bom ver você de novo, ${this.pname}!`);
     this.refreshObjective();
   }
 
@@ -498,14 +498,14 @@ const PROF_MUNDO = {
     return [
       `A região é sua para explorar, mas tem uma ordem. O primeiro ginásio é o de ${p.cidade}, pela ${p.rota}.`,
       'Os líderes não lutam com quem não tem a insígnia anterior. Sem caminho claro? O painel de objetivo mostra o próximo passo.',
-      'Água, paredões e céu têm regras. Para atravessá-los, você precisa de Pokémon que nadem, escalem ou voem.',
+      'Para cruzar água, paredões e o céu, você vai precisar de Pokémon que nadem, escalem ou voem.',
     ];
   },
   // dica do professor depois da primeira conversa: o próximo passo da ordem
   dica(f) {
     const p = primeiroFaltando(f), r = proximoPasso(f);
     return p
-      ? ['Os Pokémon selvagens vivem no mato alto, no bosque e perto da água.', `O próximo ginásio é o de ${p.cidade}, pela ${p.rota}. Lá você desafia o ${p.lider}.`, 'Os líderes só lutam com quem tem a insígnia anterior. Liberado o modo, um Pokémon que nade, escale ou voe vira montaria.']
+      ? ['Os Pokémon selvagens vivem no mato alto, no bosque e perto da água.', `O próximo ginásio é o de ${p.cidade}, pela ${p.rota}. Lá você desafia o ${p.lider}.`, 'Os líderes só lutam com quem tem a insígnia anterior. Depois de certas insígnias, um Pokémon que nade, escale ou voe poderá levar você.']
       : [r ? `Você está na reta final: ${r.texto}` : 'Você venceu a Liga! Eu tenho orgulho, sabia?'];
   },
 };
