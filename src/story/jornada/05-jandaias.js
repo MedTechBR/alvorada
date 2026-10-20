@@ -90,7 +90,7 @@ export default {
         flags: { 'nh.rival3': true },
       },
       atores: [
-        { id: 'teo_selva', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'selva_grande', longe: 3 },
+        { id: 'teo_selva', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'ninho_acampamento_selva', longe: 3 },
       ],
     },
     {
@@ -107,7 +107,7 @@ export default {
         objetivo: { texto: 'Volte à Cidade Coral pela balsa e siga pela Rota 5 até a Vila Lamparina, a oeste', alvo: 'vila_lamparina' },
       },
       atores: [
-        { id: 'teo_selva', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'selva_grande', longe: 3 },
+        { id: 'teo_selva', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'ninho_acampamento_selva', longe: 3 },
       ],
     },
   ],

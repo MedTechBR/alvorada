@@ -69,9 +69,9 @@ export default {
       },
       atores: [
         { id: 'iracema_farol', quem: 'iracema', nome: 'Iracema', look: LOOKS.iracema, spot: 'farol_entrada', permanente: true },
-        { id: 'recruta_farol', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'farol_topo', longe: 3 },
-        { id: 'recruta2_farol', quem: 'recruta2', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'farol_topo', longe: 3 },
-        { id: 'ebano_farol', quem: 'ebano', nome: 'Admin Ébano', look: LOOKS.ebano, spot: 'farol_topo', longe: 3 },
+        { id: 'recruta_farol', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'dentro_farol_topo', longe: 3 },
+        { id: 'recruta2_farol', quem: 'recruta2', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'dentro_farol_topo', longe: 3 },
+        { id: 'ebano_farol', quem: 'ebano', nome: 'Admin Ébano', look: LOOKS.ebano, spot: 'dentro_farol_topo', longe: 3 },
       ],
     },
     {

@@ -27,13 +27,15 @@ const arquivosMapa = ['assets/maps/alvorada.json',
   ...readdirSync(join(raiz, 'assets/maps/regioes')).filter((f) => f.endsWith('.json')).map((f) => 'assets/maps/regioes/' + f),
   'assets/maps/ocaso/leste.json', 'assets/maps/ocaso/oeste.json'];
 const lugares = new Set();
+const SPOTS = new Set(); // só pontos (spots): é onde o motor põe um NPC
 for (const arq of arquivosMapa) {
   const M = JSON.parse(readFileSync(join(raiz, arq), 'utf8'));
-  for (const k of Object.keys(M.spots ?? {})) lugares.add(k);
+  for (const k of Object.keys(M.spots ?? {})) { lugares.add(k); SPOTS.add(k); }
   for (const a of M.areas ?? []) lugares.add(a.id);
   for (const r of M.interiors ?? []) {
     lugares.add(r.id); lugares.add('dentro_' + r.id); lugares.add('porta_' + r.id);
-    for (const k of Object.keys(r.spots ?? {})) lugares.add(k);
+    SPOTS.add('dentro_' + r.id); SPOTS.add('porta_' + r.id);
+    for (const k of Object.keys(r.spots ?? {})) { lugares.add(k); SPOTS.add(k); }
   }
 }
 // zonas de pisar/entrar podem usar o nome base de um ponto com sufixo (alvo__qualquer); aceita o base
@@ -213,7 +215,8 @@ if (finalSol && mins(finalSol) >= mins('7h00')) erro('o último boletim deve tra
 // ---------------------------------------------------------------- elenco da jornada
 for (const e of ELENCO_JORNADA) {
   if (!PERSONAGENS[e.quem]) erro(`ator ${e.id}: personagem desconhecido "${e.quem}"`);
-  if (e.spot && !lugarValido(e.spot)) erro(`ator ${e.id}: ponto do mapa desconhecido "${e.spot}"`);
+  // ator precisa de um PONTO (spot) do mapa: o motor não coloca NPC em sala ou área
+  if (e.spot && !SPOTS.has(e.spot)) erro(`ator ${e.id}: ponto do mapa desconhecido "${e.spot}"`);
   if (e.cena) for (const c of e.cena) if (!ids.has(c)) erro(`ator ${e.id}: cena inexistente "${c}"`);
   if (e.pokemon && !SPECIES[e.pokemon]) erro(`ator ${e.id}: espécie inexistente #${e.pokemon}`);
 }

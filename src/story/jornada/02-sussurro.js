@@ -132,8 +132,8 @@ export default {
         },
       },
       atores: [
-        { id: 'recruta_estufa_n', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'estufa_lia', longe: 3 },
-        { id: 'recruta2_estufa_n', quem: 'recruta2', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'estufa_lia', longe: 3 },
+        { id: 'recruta_estufa_n', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'dentro_estufa_lia', longe: 3 },
+        { id: 'recruta2_estufa_n', quem: 'recruta2', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'dentro_estufa_lia', longe: 3 },
       ],
     },
     {
@@ -166,7 +166,7 @@ export default {
         objetivo: { texto: 'Vença os aprendizes Nando e Bel e desafie a Líder Lia na Estufa-Teia', alvo: 'lia', treinadores: ['g2_nando', 'g2_bel'], rotulo: 'Aprendizes' },
       },
       atores: [
-        { id: 'vespera_estufa', quem: 'vespera', nome: 'Dra. Véspera', look: LOOKS.vespera, spot: 'estufa_lia', longe: 4 },
+        { id: 'vespera_estufa', quem: 'vespera', nome: 'Dra. Véspera', look: LOOKS.vespera, spot: 'dentro_estufa_lia', longe: 4 },
       ],
     },
     {
@@ -224,7 +224,7 @@ export default {
         },
       },
       atores: [
-        { id: 'lia_estufa', quem: 'lia', nome: 'Líder Lia', look: LOOKS.lia, spot: 'estufa_lia', permanente: true, padrao: ['Os casulos da estufa dormem de dia. De noite eles conversam. Bem baixinho.'] },
+        { id: 'lia_estufa', quem: 'lia', nome: 'Líder Lia', look: LOOKS.lia, spot: 'dentro_estufa_lia', permanente: true, padrao: ['Os casulos da estufa dormem de dia. De noite eles conversam. Bem baixinho.'] },
       ],
     },
     {
@@ -244,7 +244,7 @@ export default {
         objetivo: { texto: 'Siga pela Rota 3 (ponte reconstruída) até Porto Espelho, a leste', alvo: 'porto_espelho' },
       },
       atores: [
-        { id: 'lia_estufa', quem: 'lia', nome: 'Líder Lia', look: LOOKS.lia, spot: 'estufa_lia', permanente: true },
+        { id: 'lia_estufa', quem: 'lia', nome: 'Líder Lia', look: LOOKS.lia, spot: 'dentro_estufa_lia', permanente: true },
       ],
     },
     {

@@ -52,10 +52,10 @@ export default {
         flags: { 'nh.ebanoLamparina': true },
       },
       atores: [
-        { id: 'zelia_casarao', quem: 'zelia', nome: 'Dona Zélia', look: LOOKS.zelia, spot: 'casarao_velas', longe: 3 },
-        { id: 'recruta_casarao', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'casarao_velas', longe: 4 },
-        { id: 'recruta2_casarao', quem: 'recruta2', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'casarao_velas', longe: 4 },
-        { id: 'ebano_casarao', quem: 'ebano', nome: 'Admin Ébano', look: LOOKS.ebano, spot: 'casarao_velas', longe: 3 },
+        { id: 'zelia_casarao', quem: 'zelia', nome: 'Dona Zélia', look: LOOKS.zelia, spot: 'dentro_casarao_velas', longe: 3 },
+        { id: 'recruta_casarao', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'dentro_casarao_velas', longe: 4 },
+        { id: 'recruta2_casarao', quem: 'recruta2', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'dentro_casarao_velas', longe: 4 },
+        { id: 'ebano_casarao', quem: 'ebano', nome: 'Admin Ébano', look: LOOKS.ebano, spot: 'dentro_casarao_velas', longe: 3 },
       ],
     },
     {
@@ -72,7 +72,7 @@ export default {
         objetivo: { texto: 'Siga para o Cemitério das Velas, a noroeste, e veja quem a Dra. Véspera está esperando', alvo: 'cemiterio_velas' },
       },
       atores: [
-        { id: 'zelia_casarao', quem: 'zelia', nome: 'Dona Zélia', look: LOOKS.zelia, spot: 'casarao_velas', permanente: true },
+        { id: 'zelia_casarao', quem: 'zelia', nome: 'Dona Zélia', look: LOOKS.zelia, spot: 'dentro_casarao_velas', permanente: true },
       ],
     },
     {
@@ -113,7 +113,7 @@ export default {
         objetivo: { texto: 'Vença os médiuns Odete e Ciro e desafie a Dona Zélia no Casarão das Velas', alvo: 'zelia', treinadores: ['g5_odete', 'g5_ciro'], rotulo: 'Médiuns' },
       },
       atores: [
-        { id: 'zelia_casarao', quem: 'zelia', nome: 'Dona Zélia', look: LOOKS.zelia, spot: 'casarao_velas', permanente: true },
+        { id: 'zelia_casarao', quem: 'zelia', nome: 'Dona Zélia', look: LOOKS.zelia, spot: 'dentro_casarao_velas', permanente: true },
       ],
     },
     {
@@ -150,7 +150,7 @@ export default {
         },
       },
       atores: [
-        { id: 'zelia_casarao', quem: 'zelia', nome: 'Dona Zélia', look: LOOKS.zelia, spot: 'casarao_velas', permanente: true, padrao: ['Chá? Tem de erva-cidreira e de assombração. O de assombração é de erva-cidreira também.'] },
+        { id: 'zelia_casarao', quem: 'zelia', nome: 'Dona Zélia', look: LOOKS.zelia, spot: 'dentro_casarao_velas', permanente: true, padrao: ['Chá? Tem de erva-cidreira e de assombração. O de assombração é de erva-cidreira também.'] },
       ],
     },
     {
@@ -169,7 +169,7 @@ export default {
         objetivo: { texto: 'Siga pela Rota 6 (ferrovia) até a Cidade Aurora, a leste', alvo: 'cidade_aurora' },
       },
       atores: [
-        { id: 'zelia_casarao', quem: 'zelia', nome: 'Dona Zélia', look: LOOKS.zelia, spot: 'casarao_velas', permanente: true },
+        { id: 'zelia_casarao', quem: 'zelia', nome: 'Dona Zélia', look: LOOKS.zelia, spot: 'dentro_casarao_velas', permanente: true },
       ],
     },
     {

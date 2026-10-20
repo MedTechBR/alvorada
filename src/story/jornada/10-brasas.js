@@ -45,9 +45,9 @@ export default {
         flags: { 'nh.ebanoBrasas': true },
       },
       atores: [
-        { id: 'ebano_vulcao', quem: 'ebano', nome: 'Admin Ébano', look: LOOKS.ebano, spot: 'vulcao_ticao', longe: 3 },
-        { id: 'recruta_vulcao', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'vulcao_ticao', longe: 4 },
-        { id: 'recruta2_vulcao', quem: 'recruta2', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'vulcao_ticao', longe: 4 },
+        { id: 'ebano_vulcao', quem: 'ebano', nome: 'Admin Ébano', look: LOOKS.ebano, spot: 'ninho_vulcao', longe: 3 },
+        { id: 'recruta_vulcao', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'ninho_vulcao', longe: 4 },
+        { id: 'recruta2_vulcao', quem: 'recruta2', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'ninho_vulcao', longe: 4 },
       ],
     },
     {
@@ -66,7 +66,7 @@ export default {
         objetivo: { texto: 'Suba ao Templo da Chama e acenda a chama do topo, para desfazer a tempestade do Planalto', alvo: 'templo_chama_1' },
       },
       atores: [
-        { id: 'vulcanologa_casa', quem: 'vulcanologa', nome: 'Vulcanóloga Jaciara', look: LOOKS.benta, spot: 'casa_vulcanologa', permanente: true },
+        { id: 'vulcanologa_casa', quem: 'vulcanologa', nome: 'Vulcanóloga Jaciara', look: LOOKS.benta, spot: 'dentro_casa_vulcanologa', permanente: true },
       ],
     },
     {

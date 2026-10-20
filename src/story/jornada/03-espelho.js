@@ -49,10 +49,10 @@ export default {
         flags: { 'nh.ebanoEspelho': true },
       },
       atores: [
-        { id: 'marina_galpao_ataque', quem: 'marina', nome: 'Líder Marina', look: LOOKS.marina, spot: 'galpao_barcos', longe: 3 },
-        { id: 'recruta_galpao', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'galpao_barcos', longe: 4 },
-        { id: 'recruta2_galpao', quem: 'recruta2', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'galpao_barcos', longe: 4 },
-        { id: 'ebano_galpao', quem: 'ebano', nome: 'Admin Ébano', look: LOOKS.ebano, spot: 'galpao_barcos', longe: 3 },
+        { id: 'marina_galpao_ataque', quem: 'marina', nome: 'Líder Marina', look: LOOKS.marina, spot: 'dentro_galpao_barcos', longe: 3 },
+        { id: 'recruta_galpao', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'dentro_galpao_barcos', longe: 4 },
+        { id: 'recruta2_galpao', quem: 'recruta2', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'dentro_galpao_barcos', longe: 4 },
+        { id: 'ebano_galpao', quem: 'ebano', nome: 'Admin Ébano', look: LOOKS.ebano, spot: 'dentro_galpao_barcos', longe: 3 },
       ],
     },
     {
@@ -110,7 +110,7 @@ export default {
         },
       },
       atores: [
-        { id: 'marina_galpao_lider', quem: 'marina', nome: 'Líder Marina', look: LOOKS.marina, spot: 'galpao_barcos', permanente: true, padrao: ['Você vai nadar, de qualquer jeito. Vai ser bom para o seu cansaço.'] },
+        { id: 'marina_galpao_lider', quem: 'marina', nome: 'Líder Marina', look: LOOKS.marina, spot: 'dentro_galpao_barcos', permanente: true, padrao: ['Você vai nadar, de qualquer jeito. Vai ser bom para o seu cansaço.'] },
       ],
     },
     {
@@ -129,7 +129,7 @@ export default {
         objetivo: { texto: 'Pegue a Rota 4, na água, e siga para a Cidade Coral, a leste', alvo: 'cidade_coral' },
       },
       atores: [
-        { id: 'marina_galpao_lider', quem: 'marina', nome: 'Líder Marina', look: LOOKS.marina, spot: 'galpao_barcos', permanente: true },
+        { id: 'marina_galpao_lider', quem: 'marina', nome: 'Líder Marina', look: LOOKS.marina, spot: 'dentro_galpao_barcos', permanente: true },
       ],
     },
     {

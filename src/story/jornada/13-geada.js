@@ -41,7 +41,7 @@ export default {
         objetivo: { texto: 'Siga pela Rota 16 até a Caverna de Gelo, no meio da cordilheira', alvo: 'caverna_gelo_1' },
       },
       atores: [
-        { id: 'prof_geada', quem: 'prof', nome: 'Prof. Jatobá', look: LOOKS.lazaro, spot: 'observatorio_boreal', longe: 4 },
+        { id: 'prof_geada', quem: 'prof', nome: 'Prof. Jatobá', look: LOOKS.lazaro, spot: 'dentro_observatorio_boreal', longe: 4 },
       ],
     },
     {
@@ -85,7 +85,7 @@ export default {
         flags: { 'nh.rival5': true },
       },
       atores: [
-        { id: 'teo_cume', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'cume_vento_branco', longe: 3 },
+        { id: 'teo_cume', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'ninho_cume', longe: 3 },
       ],
     },
     {
@@ -103,7 +103,7 @@ export default {
         objetivo: { texto: 'Siga pela Rota 12 até a Liga do Zênite, no alto da cordilheira', alvo: 'ninho_liga_zenite' },
       },
       atores: [
-        { id: 'teo_cume', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'cume_vento_branco', longe: 3 },
+        { id: 'teo_cume', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'ninho_cume', longe: 3 },
       ],
     },
   ],

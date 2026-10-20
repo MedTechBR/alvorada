@@ -85,7 +85,7 @@ export default {
         objetivo: { texto: 'Descoberta: o Absol que aparece antes de cada desastre é a Sina, a parceira da Dra. Véspera, presa à luz do Relógio. Vá ao Paredão, na Cidade Escarpa, e procure a Líder Graça', alvo: 'ninho_cidade_escarpa' },
       },
       atores: [
-        { id: 'sina_ruinas', quem: 'absol', pokemon: 359, nome: 'Sina', spot: 'ruinas_pintada_2', cena: ['j08_sina_revela'] },
+        { id: 'sina_ruinas', quem: 'absol', pokemon: 359, nome: 'Sina', spot: 'dentro_ruinas_pintada_2', cena: ['j08_sina_revela'] },
       ],
     },
     {
