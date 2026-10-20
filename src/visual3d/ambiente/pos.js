@@ -123,9 +123,9 @@ export class PosHD {
     }
     if (paleta) {
       u.corRaio.value.copy(paleta.corRaio).lerp(new THREE.Color(1, 0.9, 0.7), 0.3);
-      u.raios.value = paleta.raios * (this.nivel.raios ?? 1) * 0.55;
-      u.raiosR.value = paleta.raios * (this.nivel.raios ?? 1) * 1.6;
-      u.limiar.value = 0.85 - paleta.noite * 0.4;
+      u.raios.value = paleta.raios * (this.nivel.raios ?? 1) * 0.42; // raios mais discretos (cortam menos a tela, sem lavar o verde)
+      u.raiosR.value = paleta.raios * (this.nivel.raios ?? 1) * 1.4;
+      u.limiar.value = 0.88 - paleta.noite * 0.4; // bloom só nos claros de verdade: menos estouro de branco
       u.bloomK.value = (this.nivel.bloom ?? 1) * (0.55 + paleta.noite * 0.4);
     }
   }
