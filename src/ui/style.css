@@ -268,20 +268,34 @@ body.at-title #net, body.menu-open #net { visibility: hidden; }
 #net-quick { left: 50% !important; transform: translateX(-50%); top: calc(var(--st) + 54px) !important; }
 #net-emos { left: 50% !important; transform: translateX(-50%); top: calc(var(--st) + 98px) !important; }
 
-/* Cena de evolução (src/ui/evolucao.js) */
-.evo { position: fixed; inset: 0; z-index: 60; background: radial-gradient(circle at 50% 42%, #2c3a78 0%, #10142c 70%); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity .25s; }
+/* Cena de evolução (src/ui/evolucao.js): tela cheia no estilo clássico, fundo escuro, silhueta branca que alterna as formas */
+.evo { position: fixed; inset: 0; z-index: 60; background: radial-gradient(circle at 50% 44%, #1c2a66 0%, #0a0e24 62%, #03040c 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity .3s; overflow: hidden; animation: evo-in .5s ease-out; }
+@keyframes evo-in { from { opacity: 0; } }
+.evo::before, .evo::after { content: ''; position: absolute; left: 0; right: 0; height: 9vh; background: #000; z-index: 2; }
+.evo::before { top: 0; } .evo::after { bottom: 0; }
 .evo.out { opacity: 0; }
-.evo-rays { position: absolute; inset: -50%; background: repeating-conic-gradient(from 0deg, rgba(255,255,255,.07) 0 8deg, transparent 8deg 22deg); animation: evo-spin 9s linear infinite; opacity: 0; transition: opacity .6s; }
+.evo-rays { position: absolute; inset: -60%; background: repeating-conic-gradient(from 0deg, rgba(190,220,255,.12) 0 6deg, transparent 6deg 18deg); animation: evo-spin 8s linear infinite; opacity: 0; transition: opacity .8s; -webkit-mask-image: radial-gradient(circle, #000 8%, transparent 55%); mask-image: radial-gradient(circle, #000 8%, transparent 55%); }
 .evo.glow .evo-rays { opacity: 1; }
 @keyframes evo-spin { to { transform: rotate(360deg); } }
-.evo-stage { position: relative; width: min(42vh, 60vw); height: min(42vh, 60vw); }
-.evo-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; transition: opacity .05s, filter .3s; }
-.evo.glow .evo-stage img { filter: brightness(0) invert(1) drop-shadow(0 0 18px #bfe0ff); }
-.evo.flash::after { content: ''; position: absolute; inset: 0; background: #fff; animation: evo-flash .6s ease-out forwards; }
+.evo-stage { position: relative; width: min(44vh, 60vw); height: min(44vh, 60vw); margin-top: -4vh; z-index: 1; }
+.evo-stage::before { content: ''; position: absolute; left: 50%; bottom: 4%; width: 70%; height: 10%; margin-left: -35%; border-radius: 50%; background: radial-gradient(ellipse, rgba(120,170,255,.45), transparent 70%); }
+.evo-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; transition: opacity .06s, filter .35s, transform .12s; }
+.evo.glow .evo-stage img { filter: brightness(0) invert(1) drop-shadow(0 0 16px #bfe0ff) drop-shadow(0 0 40px #6aa8ff); }
+.evo.flash .evo-stage img { filter: none; transition: filter .6s; }
+.evo-fl { position: absolute; inset: 0; background: #fff; opacity: 0; z-index: 5; pointer-events: none; }
+.evo.flash .evo-fl { animation: evo-flash .7s ease-out forwards; }
 @keyframes evo-flash { from { opacity: 1; } to { opacity: 0; } }
-.evo-box { position: absolute; left: 50%; bottom: 6vh; transform: translateX(-50%); width: min(720px, 92vw); background: #fbfbff; border: 4px solid #36426b; border-radius: 14px; padding: 16px 22px; font: 800 20px/1.35 var(--font); color: #1d2340; display: flex; justify-content: space-between; gap: 12px; box-shadow: 0 6px 0 rgba(0,0,0,.3); }
+.evo-ring { position: absolute; left: 50%; top: 46%; width: 10px; height: 10px; margin: -5px; border-radius: 50%; border: 6px solid #cfe6ff; opacity: 0; z-index: 3; }
+.evo.flash .evo-ring { animation: evo-ring .9s ease-out forwards; } .evo.flash .evo-ring.r2 { animation-delay: .15s; }
+@keyframes evo-ring { 0% { opacity: .95; transform: scale(1); } 100% { opacity: 0; transform: scale(60); border-width: 1px; } }
+.evo-spark { position: absolute; left: 50%; top: 46%; width: 0; height: 0; z-index: 3; }
+.evo-spark i { position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; background: #fff; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); opacity: 0; filter: drop-shadow(0 0 6px #9cc8ff); }
+.evo.flash .evo-spark i { animation: evo-spark 1.1s ease-out forwards; animation-delay: var(--d); }
+@keyframes evo-spark { 0% { opacity: 1; transform: translate(0, 0) scale(.5); } 100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(2.4) rotate(120deg); } }
+.evo-box { position: absolute; left: 50%; bottom: calc(9vh + 10px); transform: translateX(-50%); width: min(720px, 92vw); z-index: 4; background: linear-gradient(180deg, #fffefa, #eef1fb); border: 4px solid #2b3550; border-radius: 16px; padding: 14px 24px 16px; font: 800 20px/1.35 var(--font); color: #1d2340; display: flex; justify-content: space-between; gap: 12px; box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 5px #cfd9f0, 0 6px 0 rgba(0,0,0,.4); min-height: 3.2em; align-items: center; }
 .evo-n { visibility: hidden; color: #e5383b; animation: evo-blink .8s steps(2) infinite; }
 @keyframes evo-blink { 50% { opacity: 0; } }
+@media (max-height: 460px) { .evo-box { font-size: 15px; padding: 8px 18px 10px; bottom: calc(9vh + 4px); } .evo-stage { width: min(48vh, 60vw); height: min(48vh, 60vw); margin-top: -2vh; } }
 
 /* minimapa (src/world/minimap.js): canto superior direito, abaixo do botão do menu;
    no celular deitado vai para o lado do botão (sobra altura para os botões de golpe) */
@@ -424,6 +438,6 @@ body.touch:not(.mais-on) #zoom { display: flex; }
 
 /* movimento reduzido (ajuste do aparelho): as pulsações e os deslizes param; textos e painéis continuam */
 @media (prefers-reduced-motion: reduce) {
-  .dlg-box, .dlg-choices, .dlg-next, .tt-panel.pop, .chapter, .chapter *, .objective.flash, .fo-fase.final, #saved.on, #toasts div, .ld-ball, .evo-rays, .tt-sun, #moves .mv .cd { animation: none !important; }
+  .dlg-box, .dlg-choices, .dlg-next, .tt-panel.pop, .chapter, .chapter *, .objective.flash, .fo-fase.final, #saved.on, #toasts div, .ld-ball, .evo-rays, .tt-sun, #moves .mv .cd, .evo, .evo-ring, .evo-spark i { animation: none !important; }
   #toasts div { transition: none; }
 }

@@ -555,19 +555,26 @@ export class GameMenu {
   #party() {
     const g = this.g;
     const L = this.#screen({
-      title: 'Pokémon', cls: 'gm-party', cols: 2,
+      title: 'Pokémon', cls: 'gm-party',
+      // como no HeartGold/FireRed: o primeiro em destaque à esquerda, os outros cinco em fila à direita, com as vagas vazias à mostra
+      ud: (d) => { const n = g.party.length; if (n > 1) this.#focus((L.sel + d + n) % n); },
+      lr: (d) => { if (d > 0 && L.sel === 0 && g.party.length > 1) this.#focus(1); else if (d < 0 && L.sel > 0) this.#focus(0); },
       extra: () => (L.swap != null ? '<span class="gm-chip hot">Escolha a nova posição</span>' : `<span class="gm-chip">${g.party.length}/6</span>`),
       foot: '<b>Setas</b> mover · <b>Enter</b> opções · <b>Esc</b> voltar',
       draw: (body) => {
-        body.innerHTML = `<div class="gm-grid">${g.party.map((m, i) => {
-          const f = m.hp / m.stats.hp, st = m.status ? `<span class="status ${stPT(m.status)[2]}">${stPT(m.status)[0]}</span>` : '';
-          return `<div class="nav gm-box gm-pcard ${m.fainted ? 'ko' : ''} ${L.swap === i ? 'swap' : ''}" data-i="${i}" style="--tc:${TYPE_COLOR[m.types[0]] ?? '#8d93ab'}">
-            <span class="gm-cur">▶</span>${slot(m.spriteKey ?? m.dex, '', false, TYPE_COLOR[m.types[0]])}
-            <div class="gm-pmain"><div class="gm-pline"><span class="gm-pn">${esc(m.name)}</span>${i === g.leadIdx && g.lead?.alive ? '<span class="gm-tag">Em campo</span>' : ''}${st}${heldKey(m) ? `<span class="gm-ic sm" title="${esc(itemName(heldKey(m)))}">${itemIcon(heldKey(m))}</span>` : ''}</div>
-              <div class="gm-pline"><span class="gm-lv">Nv. ${m.level}</span><span class="gm-types">${typePills(m.types)}</span></div>
-              <div class="gm-hp"><span>PS</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div></div>
-              <div class="gm-hpt">${m.hp} / ${m.stats.hp}</div></div></div>`;
-        }).join('')}</div>${g.box.length ? `<div class="gm-soft gm-pc">No PC: ${g.box.map((m) => `${esc(m.name)} Nv. ${m.level}`).join(' · ')}</div>` : ''}`;
+        const card = (m, i) => {
+          const f = m.hp / m.stats.hp, st = m.status ? `<span class="status ${stPT(m.status)[2]}">${stPT(m.status)[0]}</span>` : '', big = i === 0;
+          const campo = i === g.leadIdx && g.lead?.alive ? '<span class="gm-tag">Em campo</span>' : '';
+          const held = heldKey(m) ? `<span class="gm-ic sm" title="${esc(itemName(heldKey(m)))}">${itemIcon(heldKey(m))}</span>` : '';
+          return `<div class="nav gm-box gm-pcard ${big ? 'big' : ''} ${m.fainted ? 'ko' : ''} ${L.swap === i ? 'swap' : ''}" data-i="${i}" style="--tc:${TYPE_COLOR[m.types[0]] ?? '#8d93ab'}">
+            <span class="gm-cur">▶</span>${slot(m.spriteKey ?? m.dex, big ? 'big' : '', false, TYPE_COLOR[m.types[0]])}
+            <div class="gm-pmain"><div class="gm-pline"><span class="gm-pn">${esc(m.name)}</span><span class="gm-lv">Nv. ${m.level}</span>${st}${held}${campo}</div>
+              ${big ? `<div class="gm-pline"><span class="gm-types">${typePills(m.types)}</span></div>` : ''}
+              <div class="gm-hp"><span>PS</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div><span class="gm-hpt">${m.hp} / ${m.stats.hp}</span></div></div></div>`;
+        };
+        const vazio = () => '<div class="gm-pcard gm-vazio"><span class="gm-vb"></span>Vaga livre</div>';
+        const rest = [1, 2, 3, 4, 5].map((i) => (g.party[i] ? card(g.party[i], i) : vazio())).join('');
+        body.innerHTML = `<div class="gm-hgrid">${g.party[0] ? card(g.party[0], 0) : vazio()}${rest}</div>${g.box.length ? `<div class="gm-soft gm-pc">No PC: ${g.box.map((m) => `${esc(m.name)} Nv. ${m.level}`).join(' · ')}</div>` : ''}`;
         body.querySelectorAll('.nav').forEach((n) => { const i = +n.dataset.i; n._act = () => this.#partyAct(L, i); });
         fillPortraits(body);
       },
@@ -793,7 +800,9 @@ export class GameMenu {
     return true;
   }
 
-  // ---------- Aprender golpe (já sabe 4): tela clássica para escolher qual esquecer ----------
+  // ---------- Aprender golpe (já sabe 4): fluxo clássico ----------
+  // "X quer aprender Y. Mas X já sabe 4 golpes." → "Esquecer um golpe?" → tela com os 4 golpes + o novo, cada um com
+  // tipo, categoria, poder, precisão, PP/recarga e a descrição → "1, 2 e... Pronto!". Desistir pede confirmação.
   // Devolve true se aprendeu. Funciona com o menu fechado (subir de nível no mapa) ou aberto (Doce Raro).
   askLearn(m, id) {
     const mv = MOVES[id];
@@ -803,47 +812,65 @@ export class GameMenu {
     const own = this.#openBare(), base = this.layers.length;
     return new Promise((res) => {
       this.pendingClose = () => res(false);
-      const finish = async (ok, text) => {
-        await this.#msg(text);
+      let fim = false;
+      const finish = async (ok, textos) => {
+        if (fim) return; fim = true;
+        for (const t of [].concat(textos)) await this.#msg(t);
         this.pendingClose = null;
         while (this.layers.length > base) this.layers.pop();
         if (own) this.close(); else this.#show();
         res(ok);
       };
-      const card = (x, cls = '') => {
+      const nome = (x) => MOVES[x]?.name ?? x;
+      const num = (v, suf = '') => (v == null ? '—' : v + suf);
+      const detalhe = (x, novo) => {
         const v = MOVES[x]; if (!v) return '';
         const [cat, cc] = CAT_PT[v.cat] ?? ['—', '#999'];
-        return `<div class="gm-move ${cls}" style="--c:${TYPE_COLOR[v.type]}"><div class="gm-mline"><b>${esc(v.name)}</b>${typePills([v.type])}<span class="gm-type" style="background:${cc}">${cat}</span></div>
-          <div class="gm-soft">Poder <b>${v.power ?? '—'}</b> · Recarga <b>${String(v.cd ?? 1).replace('.', ',')} s</b> · ${KIND_PT[v.kind] ?? ''}</div>${moveEffect(v) ? `<div class="gm-eff">${moveEffect(v)}</div>` : ''}</div>`;
+        const precisao = v.cat === 'status' && v.acc == null ? '—' : v.acc == null ? 'Não erra' : Math.round(v.acc * 100) + '%';
+        return `<div class="gm-lm-d ${novo ? 'novo' : ''}" style="--c:${TYPE_COLOR[v.type]}">
+          <div class="gm-lm-h"><b>${esc(v.name)}</b>${novo ? '<span class="gm-lm-tag">Golpe novo</span>' : ''}</div>
+          <div class="gm-lm-p">${typePills([v.type])}<span class="gm-type" style="background:${cc}">${cat}</span></div>
+          <div class="gm-lm-g"><div><small>Poder</small><b>${num(v.power)}</b></div><div><small>Precisão</small><b>${precisao}</b></div><div><small>PP</small><b>${num(v.pp)}</b></div><div><small>Recarga</small><b>${String(v.cd ?? 1).replace('.', ',')} s</b></div></div>
+          <p class="gm-lm-t">${esc(v.desc || 'Sem descrição.')}</p>
+          <div class="gm-soft gm-lm-k">${KIND_PT[v.kind] ?? ''}${moveEffect(v) ? ' · ' + esc(moveEffect(v)) : ''}</div></div>`;
       };
+      const linha = (x, k, novo) => { const v = MOVES[x]; const [cat, cc] = CAT_PT[v?.cat] ?? ['—', '#999'];
+        return `<div class="nav gm-row gm-lm-r ${novo ? 'novo' : ''}" data-k="${k}" style="--c:${TYPE_COLOR[v?.type]}"><span class="gm-cur">▶</span><span class="gm-lm-n">${esc(nome(x))}</span>${novo ? '<span class="gm-lm-tag">NOVO</span>' : ''}<span class="gm-lm-dot" style="background:${cc}" title="${cat}"></span><span class="gm-lm-pw">${v?.power ?? '—'}</span></div>`; };
+      const desistir = async () => { const c = await this.#choose(`Desistir de aprender ${esc(mv.name)}?`, ['Sim', 'Não']); if (c === 0) finish(false, `${m.name} não aprendeu ${mv.name}.`); };
       const L = this.#screen({
-        title: 'Aprender golpe', cls: 'gm-sum gm-learn',
-        foot: '<b>↑↓</b> escolher · <b>Enter</b> esquecer este · <b>Esc</b> não aprender',
+        title: 'Aprender golpe', cls: 'gm-sum gm-learn', sel: 4,
+        foot: '<b>↑↓</b> ver o golpe · <b>Enter</b> esquecer este · <b>Esc</b> não aprender',
         draw: (body) => {
-          body.innerHTML = `<div class="gm-box gm-sumleft">${slot(m.spriteKey ?? m.dex, 'big')}<div class="gm-big">${esc(m.name)}</div><div class="gm-soft">Nv. ${m.level}</div>
-              <p class="gm-desc">${esc(m.name)} quer aprender <b>${esc(mv.name)}</b>, mas já sabe 4 golpes.<br>Esquecer um golpe para dar lugar a ${esc(mv.name)}?</p></div>
-            <div class="gm-box gm-sumright gm-moves"><div class="gm-sub-t">Golpe novo</div>${card(id, 'gm-new')}
-              <div class="gm-sub-t">Esquecer qual?</div>
-              ${m.moves.map((x, k) => `<div class="nav gm-row gm-learnrow" data-k="${k}"><span class="gm-cur">▶</span>${card(x)}</div>`).join('')}
-              <div class="nav gm-row" data-k="-1"><span class="gm-cur">▶</span>Não aprender ${esc(mv.name)}</div></div>`;
+          body.innerHTML = `<div class="gm-box gm-lm-lista"><div class="gm-lm-quem">${slot(m.spriteKey ?? m.dex, 'mini')}<div><b>${esc(m.name)}</b><div class="gm-soft">Nv. ${m.level} · esquecer qual?</div></div></div>
+              ${m.moves.map((x, k) => linha(x, k, false)).join('')}${linha(id, 4, true)}</div>
+            <div class="gm-box gm-lm-det"></div>`;
+          const det = body.querySelector('.gm-lm-det');
+          L.onFocus = (el) => { const k = +(el?.dataset.k ?? 4); det.innerHTML = detalhe(k === 4 ? id : m.moves[k], k === 4); };
           body.querySelectorAll('.nav').forEach((n) => {
             const k = +n.dataset.k;
             n._act = async () => {
-              if (k < 0) { const c = await this.#choose(`Desistir de aprender ${esc(mv.name)}?`, ['Sim', 'Não']); if (c === 0) finish(false, `${m.name} não aprendeu ${mv.name}.`); return; }
-              const old = MOVES[m.moves[k]]?.name ?? m.moves[k];
+              if (k === 4) { await desistir(); return; }
+              const old = nome(m.moves[k]);
               const c = await this.#choose(`Esquecer ${esc(old)} e aprender ${esc(mv.name)}?`, ['Sim', 'Não']);
               if (c !== 0) return;
               m.moves[k] = id; m.noteMoves?.();
               this.g.audio?.sfx?.('levelup');
               this.ui.partyChanged();
-              finish(true, `1, 2 e… pronto! ${m.name} esqueceu ${old} e aprendeu ${mv.name}!`);
+              finish(true, ['1, 2 e… … … Pronto!', `${m.name} esqueceu ${old} e aprendeu ${mv.name}!`]);
             };
           });
           fillPortraits(body);
         },
-        onBack: async () => { const c = await this.#choose(`Desistir de aprender ${esc(mv.name)}?`, ['Sim', 'Não']); if (c === 0) finish(false, `${m.name} não aprendeu ${mv.name}.`); },
+        onBack: desistir,
       });
       this.#push(L);
+      // o texto de sempre, por cima da tela: quem quer aprender, por que não cabe, e a pergunta
+      (async () => {
+        await this.#msg(`${m.name} quer aprender ${mv.name}.`);
+        await this.#msg(`Mas ${m.name} já sabe 4 golpes.`);
+        const c = await this.#choose(`Esquecer um golpe para aprender ${esc(mv.name)}?`, ['Sim', 'Não']);
+        if (c !== 0) await desistir();
+      })();
     });
   }
 
