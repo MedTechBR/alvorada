@@ -19,9 +19,9 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'liga_zenite', requer: ['nh.teoFinalPronto'], semFlag: ['nh.chegouLiga'] },
       falas: [
         ['narrador', 'O Caminho do Zênite é uma escada branca, com bandeiras de todas as regiões. No topo, o Portão da Liga brilha ao sol.'],
-        ['teo', '{jogador}! Cheguei antes, como prometi. Olhei a Elite de longe, e eles são bem mais assustadores do que no treino.'],
-        ['teo', 'Quando o Aurélio perguntar quem te trouxe até aqui, diga o meu nome. Eu fiz essa promessa lá em cima.'],
-        ['jogador', 'Eu digo, Téo. E fique do meu lado na batalha contra a Clarice, se ela deixar.'],
+        ['teo', '{jogador}! Cheguei antes, como combinamos. A Elite parece bem forte.'],
+        ['teo', 'São quatro treinadores da Elite, um depois do outro. No fim, vem a Campeã.'],
+        ['jogador', 'Valeu, Téo. Vou dar o meu melhor.'],
       ],
       depois: {
         flags: { 'nh.chegouLiga': true },
@@ -38,7 +38,7 @@ export default {
       falas: [
         ['aurelio', 'Seu nome, desafiante? Eu gosto de saber quem vai cair na minha frente.'],
         ['jogador', 'Eu sou {jogador}. Vim pelas oito insígnias, e pelo sol que estava atrasado.'],
-        ['aurelio', 'Eu cresci vendo o sol nascer por aqui. Se ele voltou, foi por gente que não desistiu. Veremos se você sustenta isso.'],
+        ['aurelio', 'Eu cresci vendo o sol nascer por aqui. Fico feliz que ele tenha voltado. Veremos se você luta tão bem quanto fala.'],
       ],
       depois: {
         batalha: {
@@ -54,7 +54,7 @@ export default {
         },
       },
       atores: [
-        { id: 'aurelio_liga', quem: 'aurelio', nome: 'Aurélio da Madrugada', look: LOOKS.mediumH, spot: 'ninho_liga_zenite', permanente: true, padrao: ['Perdi para quem não desistiu. Vá, a Clarice já está de olho em você, e ela não espera ninguém.'] },
+        { id: 'aurelio_liga', quem: 'aurelio', nome: 'Aurélio da Madrugada', look: LOOKS.mediumH, spot: 'ninho_liga_zenite', permanente: true, padrao: ['Você venceu. Siga para a Clarice, a próxima da Elite.'] },
       ],
     },
     {
@@ -63,9 +63,9 @@ export default {
       gatilho: { tipo: 'falar', alvo: 'clarice', requer: ['trainers.elite_aurelio'], semFlag: ['trainers.elite_clarice'] },
       falas: [
         ['clarice', 'O Aurélio perdeu para você? Ele vai ficar insuportável no café da manhã. Eu sou a Clarice, e eu acordo cedo para vencer.'],
-        ['clarice', 'Minha equipe é de treino pesado. Se você não tem fôlego, a manhã termina antes de você.'],
+        ['clarice', 'Minha equipe é de tipo Fada e treina pesado. Se você não tem fôlego, perde rápido.'],
         ['jogador', 'Eu passei pelo Aurélio. Não sei se aguento outra luta, mas vou tentar.'],
-        ['clarice', 'Então tenta. A manhã não espera quem dorme no caminho.'],
+        ['clarice', 'Então vamos lá!'],
       ],
       depois: {
         batalha: {
@@ -81,7 +81,7 @@ export default {
         },
       },
       atores: [
-        { id: 'clarice_liga', quem: 'clarice', nome: 'Clarice da Manhã', look: LOOKS.tecnica, spot: 'ninho_liga_zenite', permanente: true, padrao: ['Bem ganho. Agora vá ao Brasa. Ao meio-dia ele não perdoa quem chega cansado.'] },
+        { id: 'clarice_liga', quem: 'clarice', nome: 'Clarice da Manhã', look: LOOKS.tecnica, spot: 'ninho_liga_zenite', permanente: true, padrao: ['Bem ganho. Agora vá ao Seu Brasa, o próximo da Elite.'] },
       ],
     },
     {
@@ -89,9 +89,9 @@ export default {
       local: 'ninho_liga_zenite',
       gatilho: { tipo: 'falar', alvo: 'brasa', requer: ['trainers.elite_clarice'], semFlag: ['trainers.elite_brasa'] },
       falas: [
-        ['brasa', 'Ao meio-dia o sol bate no talo, sem sombra e sem desculpa. Eu sou o Seu Brasa, e o meu fogo não tem medo de ninguém.'],
-        ['jogador', 'O senhor também sabia que a luz estava atrasada?'],
-        ['brasa', 'Sabia que o sol devia estar às doze, e não às sete. Sabia e não falei. Por isso estou aqui, para ouvir você.'],
+        ['brasa', 'Eu sou o Seu Brasa, da Elite. Meu time é de Fogo, e eu não pego leve.'],
+        ['jogador', 'O senhor também notou que o sol estava atrasado?'],
+        ['brasa', 'Notei, sim, mas nunca descobri o motivo. Você descobriu. Agora vamos ver se luta à altura.'],
       ],
       depois: {
         batalha: {
@@ -107,7 +107,7 @@ export default {
         },
       },
       atores: [
-        { id: 'brasa_liga', quem: 'brasa', nome: 'Seu Brasa do Meio-dia', look: LOOKS.operario, spot: 'ninho_liga_zenite', permanente: true, padrao: ['Passei anos calado, e você me fez falar. Vá ao Iberê. Ele é o último, e o mais teimoso.'] },
+        { id: 'brasa_liga', quem: 'brasa', nome: 'Seu Brasa do Meio-dia', look: LOOKS.operario, spot: 'ninho_liga_zenite', permanente: true, padrao: ['Você venceu. Vá ao Iberê, o último da Elite.'] },
       ],
     },
     {
@@ -115,10 +115,10 @@ export default {
       local: 'ninho_liga_zenite',
       gatilho: { tipo: 'falar', alvo: 'ibere', requer: ['trainers.elite_brasa'], semFlag: ['trainers.elite_ibere'] },
       falas: [
-        ['ibere', 'Entardecer é quando a luz vai embora devagar. Eu sou o Iberê, o último da Elite. Vi o sol atrasar do meu jardim.'],
-        ['ibere', 'Quem chega até mim com a equipe ainda de pé merece uma luta de dragão. Vamos ver se você aguenta a pressão.'],
-        ['jogador', 'O Brasa é o meio-dia, e o senhor é o fim da tarde. Vocês combinam em tudo, menos no humor.'],
-        ['ibere', 'Exato. No entardecer a luz cai devagar, e quem se distrai perde o dragão. Vamos.'],
+        ['ibere', 'Eu sou o Iberê, o último da Elite. Do meu jardim, vi o sol atrasar.'],
+        ['ibere', 'Quem chega até mim merece uma luta de Dragões. Meu time é difícil.'],
+        ['jogador', 'O senhor é o último da Elite. Estou pronto.'],
+        ['ibere', 'Ótimo. Vamos começar!'],
       ],
       depois: {
         batalha: {
@@ -134,7 +134,7 @@ export default {
         },
       },
       atores: [
-        { id: 'ibere_liga', quem: 'ibere', nome: 'Iberê do Entardecer', look: LOOKS.lazaro, spot: 'ninho_liga_zenite', permanente: true, padrao: ['A luz foi embora devagar, como eu gosto. A Campeã está no salão ao fundo, e sabe mais do que aparenta.'] },
+        { id: 'ibere_liga', quem: 'ibere', nome: 'Iberê do Entardecer', look: LOOKS.lazaro, spot: 'ninho_liga_zenite', permanente: true, padrao: ['Você venceu. A Campeã espera no salão ao fundo.'] },
       ],
     },
     {
@@ -146,12 +146,12 @@ export default {
       falas: [
         ['narrador', 'Um anfiteatro de vidro, com o céu aberto no teto. No centro, uma mulher de casaco longo espera de pé.'],
         ['narrador', 'Ela tem o mesmo rosto da Dra. Véspera.'],
-        ['dalva', 'Sou a Campeã Dalva. Você deve estar confuso, porque eu tenho o mesmo rosto da mulher que conheceu no Relógio.'],
-        ['dalva', 'Somos gêmeas. Ela é a estrela-vésper, que aparece ao anoitecer.'],
-        ['dalva', 'Eu sou a estrela-d\'alva, que aparece antes do sol. É o mesmo astro, visto de dois lados.'],
-        ['jogador', 'Então você sabia da Aurora. Enquanto sua irmã tentava parar a luz, você ficou aqui, vencendo torneios.'],
+        ['dalva', 'Sou a Campeã Dalva. Meu rosto é igual ao da Dra. Véspera porque somos irmãs gêmeas.'],
+        ['dalva', 'O nome dela vem da estrela-vésper, que aparece ao anoitecer.'],
+        ['dalva', 'O meu vem da estrela-d\'alva, que aparece antes do sol. É o mesmo astro, visto em dois momentos.'],
+        ['jogador', 'Então você sabia da Aurora e não fez nada, enquanto sua irmã tentava impedi-la?'],
         ['dalva', 'Eu sabia desde o começo. Minha irmã descobriu a luzita com o professor, e eu escolhi o silêncio.'],
-        ['dalva', 'Denunciar a região arruinaria a minha carreira. Eu preferi ficar calada e vencer.'],
+        ['dalva', 'Denunciar a Aurora arruinaria a minha carreira. Eu escolhi ficar calada, e foi um erro.'],
         ['dalva', 'Antes da última batalha, quero que saiba: a Véspera nunca parou de me procurar. Eu nunca respondi.'],
       ],
       depois: {
@@ -167,10 +167,10 @@ export default {
       local: 'ninho_liga_zenite',
       gatilho: { tipo: 'falar', alvo: 'dalva', requer: ['nh.irmaRevelada'], semFlag: ['trainers.campea_dalva'] },
       falas: [
-        ['dalva', 'Você chegou até aqui com o sol de volta nas costas. Isso é mais do que eu esperava de alguém.'],
-        ['dalva', 'Agora, a última batalha. Não vou pegar leve, porque minha irmã nunca me perdoaria se eu pegasse.'],
-        ['jogador', 'Não vou recuar agora, Dalva. Eu vi o que a sua irmã fez, e não vou desistir do meu caminho.'],
-        ['dalva', 'Então venha. Espero que você saiba o que está fazendo, porque eu já não sei mais.'],
+        ['dalva', 'Você chegou até aqui e trouxe o sol de volta. Isso é mais do que eu esperava de qualquer um.'],
+        ['dalva', 'Agora, a última batalha. Não vou pegar leve.'],
+        ['jogador', 'Não vou recuar, Dalva. Vamos lutar!'],
+        ['dalva', 'Então venha! Esta é a minha melhor equipe.'],
       ],
       depois: {
         batalha: {
@@ -194,9 +194,9 @@ export default {
       local: 'ninho_liga_zenite',
       gatilho: { tipo: 'vencer', alvo: 'campea_dalva' },
       falas: [
-        ['dalva', 'Você venceu. A Liga tem um novo campeão, e o sol nasce na hora. Não é pouca coisa.'],
+        ['dalva', 'Você venceu, e o sol nasce na hora. Não é pouca coisa.'],
         ['narrador', 'A Campeã Dalva tira do peito uma medalha de estrela, com um ponto de luz azul no centro, e a coloca na sua mão.'],
-        ['dalva', 'Esta é a medalha do Zênite. Ela não vale nada para quem desiste, e vale tudo para quem chega até aqui.'],
+        ['dalva', 'Esta é a medalha do Zênite. Ela prova que você venceu a Liga.'],
         ['narrador', '{jogador} é o novo Campeão da Liga do Zênite!'],
       ],
       depois: {
@@ -218,9 +218,9 @@ export default {
         ['vespera', 'O sol nasceu. E agora eu posso olhar para ele sem medo de que ele atrase de novo.'],
         ['prof', 'Devo desculpas à Lia, ao Tomé, à Iracema e à Dona Zélia. Escondi a luzita por medo, e o medo custou caro.'],
         ['teo', 'Pai, você está bem? A Aurora fechou a mina, e o Senhor Solano vai responder pelo medidor e pelo sequestro.'],
-        ['heitor', 'Estou bem, filho, e estou em casa. Obrigado, {jogador}, por ter encontrado a verdade antes de todo mundo.'],
+        ['heitor', 'Estou bem, filho. Obrigado, {jogador}, por descobrir a verdade.'],
         ['mae', '{jogador}! Eu ouvi tudo no rádio. Você ganhou a Liga, e o sol nasceu hoje às seis e quatro. Eu fiz bolo, e está quentinho.'],
-        ['narrador', 'No Planalto, a Sina olha para o sol e, pela primeira vez, não traz aviso nenhum. Ao sul, a neblina começa a se mexer.'],
+        ['narrador', 'No Planalto, a Sina olha para o sol e, pela primeira vez, não tem aviso nenhum a dar. Ao sul, uma neblina cobre o Mar do Sul.'],
       ],
       depois: {
         flags: { 'nh.epilogo': true },
