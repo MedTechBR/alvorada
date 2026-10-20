@@ -233,7 +233,7 @@ export class Espetaculo {
       const st = 10 + (parseFloat(cs.getPropertyValue('--st')) || 0);
       this.hHud = bar?.height ? bar.bottom : Math.max(st, fundo(['#foe'])); // (o painel do treinador fica no meio, em cima)
       this.hEu = bar?.height ? bar.bottom : Math.max(st, fundo(['#lead', '#objective']));
-      this.hEle = bar?.height ? bar.bottom : Math.max(st, fundo(['#minimapa', '#menu-btn']));
+      this.hEle = bar?.height ? Math.max(bar.bottom, fundo(['#menu-btn'])) : Math.max(st, fundo(['#minimapa', '#menu-btn'])); // o botão do menu desce um pouco abaixo da barra fina
     }
     return lado === 'eu' ? this.hEu : lado === 'ele' ? this.hEle : this.hHud;
   }
