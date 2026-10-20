@@ -23,7 +23,7 @@ export const ROUTE_TRAINERS = [
     team: [[915, 5], [403, 6]], money: 180,
     intro: ['Você vai para Campina? Primeiro tem que passar por mim!'],
     win: ['Que força! Você vai dar trabalho para o Tomé.'],
-    after: ['O Líder Tomé usa Pokémon do tipo Normal. Não têm fraqueza fácil… só Lutador!'],
+    after: ['O Líder Tomé usa Pokémon do tipo Normal. Eles não têm fraqueza fácil… só Lutador!'],
   },
 ];
 
@@ -52,17 +52,17 @@ export const LEADER1 = {
   prize: { potion: 3, pokeball: 5, oran: 2 },
   locked: ['Opa, calma lá! Antes de falar comigo, vença os meus dois aprendizes.', 'Quem pula etapa colhe o trigo verde.'],
   intro: [
-    'Então você é o novo treinador que o Prof. Jatobá mandou! Eu sou Tomé, Líder do Ginásio de Campina.',
+    'Então você é o treinador que enfrentou a Crepúsculo no meu celeiro! Eu sou Tomé, líder do Ginásio de Campina.',
     'Aqui a gente planta, colhe e batalha com Pokémon do tipo Normal. Simples, mas firme como raiz de ipê.',
     'Mostre o que você tem! Valendo a Insígnia Espiga!',
   ],
   win: [
     'Ha! Que colheita! Você venceu de forma justa.',
-    'Leve a Insígnia Espiga. Ela foi lapidada de uma lasca da Pedra do Alvorecer de Campina, como manda a tradição.',
+    'Leve a Insígnia Espiga. Ela foi lapidada de uma lasca da Pedra do Alvorecer, e a pedra inteira continua comigo.',
   ],
   lose: ['Ainda não está maduro, mas a semente é boa. Descanse e volte quando quiser.'],
   after: [
-    'Cada ginásio de Alvorada guarda uma Pedra do Alvorecer. As oito juntas são as chaves do Relógio de Pedra, lá no Planalto.',
-    'Ultimamente o sol tem nascido tarde… e a Equipe Crepúsculo andou rondando a minha fazenda atrás da pedra. Fique de olho.',
+    'Cada ginásio de Alvorada guarda uma Pedra do Alvorecer. Nenhuma delas deve sair do seu lugar sem um bom motivo.',
+    'Ultimamente o sol nasce tarde, e a Crepúsculo andou rondando a minha fazenda. Se alguém perguntar da pedra, não diga onde ela está.',
   ],
 };
