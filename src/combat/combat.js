@@ -949,7 +949,7 @@ export class Combat {
     if (perfect && (this.perfectT ?? 0) < g.time) {
       this.perfectT = g.time + 1;
       g.fx.number(who.x, who.y - 40, 'Esquiva perfeita!', 0x9ad0ff, true, 'banner');
-      g.fx.hitStop = Math.max(g.fx.hitStop, 0.12); g.fx.screenFlash(0x9ad0ff, 0.15);
+      g.fx.hitStop = Math.max(g.fx.hitStop, 0.06); g.fx.screenFlash(0x9ad0ff, 0.15);
       this.sfx('perfect');
     }
   }

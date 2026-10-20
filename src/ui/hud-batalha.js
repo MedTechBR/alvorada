@@ -203,7 +203,7 @@ export class HudBatalha {
   // nem para selvagem, Alfa ou chefe selvagem (pedido do dono: a faixa "TREINADOR VS DESAFIANTE" no meio da luta)
   #intro(l, alvo) {
     const g = this.g, b = g.story?.battle;
-    if (!b || b.done || b.opts?.semBola || b.opts?.alfa || this.introDe === b) return;
+    if (!b || b.done || b.opts?.semBola || b.opts?.alfa || b.arena || this.introDe === b) return; // ginásio: a arena já tem o VS dela, na abertura
     this.introDe = b;
     if ((b.fainted ?? 0) > 0 || g.time - (b.t0 ?? g.time) > 6) return; // já no meio da luta (ex.: barra religou): sem VS
     const duelo = true, def = b.def;
