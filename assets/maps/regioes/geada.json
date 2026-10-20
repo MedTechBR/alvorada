@@ -608,7 +608,7 @@
   ],
   "spots": {
     "ninho_vila_geada": [790, 125, "down"],
-    "geada_entrada_oeste": [762, 124, "right"],
+    "geada_entrada_oeste": [761, 123, "right"],
     "geada_lago_buraco": [722, 154, "down"],
     "geada_caverna_porta": [1000.5, 61.5, "down"],
     "geada_posto_neve": [905, 111, "down"],

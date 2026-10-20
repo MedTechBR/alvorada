@@ -116,7 +116,7 @@ export class PokeEntity {
     if (this.dead) { this.vx *= 0.8; this.vy *= 0.8; }
     // em passos curtos com colisão a cada passo (empurrão de golpe, esquiva e investida não atravessam parede)
     const alt = this.g.combat?.alt, rr = this.r * 0.8;
-    this.g.map.andar(this, (this.vx + this.kx) * dt, (this.vy + this.ky) * dt, rr, this.swim, () => { if (!alt?.resolve(this, rr)) this.g.map.resolve(this, rr, this.swim); });
+    this.g.map.andar(this, (this.vx + this.kx) * dt, (this.vy + this.ky) * dt, rr, this.swim, () => { if (!alt?.resolve(this, rr)) { this.g.map.resolve(this, rr, this.swim); this.g.grade?.separaGente(this, rr, this); } });
     this.kx *= 1 - Math.min(1, dt * 7); this.ky *= 1 - Math.min(1, dt * 7);
     alt?.seguro(this);
     // piso: altura do chão onde está (0, ou a do telhado/copa/rocha em que subiu: src/world/vivo.js)

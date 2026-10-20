@@ -44,7 +44,41 @@ export class Grade {
       if (q === ignora || !q.view?.visible || q.d?.perch) continue;
       if (Math.abs(q.x - ancoraX(tx)) < 9 && Math.abs(q.y - ancoraY(ty)) < 9) return true;
     }
+    // Pokémon selvagem vivo e o aliado que segue o treinador também ocupam o bloco
+    for (const w of [...(this.g.wilds ?? []), this.g.lead].filter(Boolean)) {
+      if (w === ignora || !w.alive || w.saindo) continue;
+      if (Math.floor(w.x / T) === tx && Math.floor((w.y - 2) / T) === ty) return true;
+    }
     return false;
+  }
+
+  // ---------- gente em pé no movimento livre (círculos) ----------
+  // Jogador, moradores, personagens da história, Pokémon selvagens, aliado e Pokémon do mundo: ninguém atravessa ninguém.
+  // No clássico a conta é o bloco (ocupado); aqui é a distância entre os pés (raio de cada um, 6 px por padrão).
+  #corpos(ignora) {
+    const g = this.g, out = [];
+    const add = (o) => { if (o && o !== ignora && o.alive !== false && !o.saindo && !o.dead) out.push(o); };
+    if (g.player && g.player !== ignora) out.push(g.player);
+    for (const n of this.#fontes()) if (n !== ignora && n.visible !== false) out.push(n);
+    for (const w of g.wilds ?? []) add(w);
+    if (g.lead) add(g.lead);
+    for (const q of g.mundo?.people?.pets ?? []) if (q !== ignora && q.view?.visible && !q.d?.perch) out.push(q);
+    return out;
+  }
+  // (x, y) com raio r bate em alguém?
+  colideGente(x, y, r = 6, ignora = null) {
+    for (const o of this.#corpos(ignora)) { if (Math.hypot(o.x - x, o.y - y) < r + (o.r ?? 6)) return true; }
+    return false;
+  }
+  // Empurra e para fora de quem estiver em cima dela (depois do passo livre; o corpo que anda é o que cede)
+  separaGente(e, r = 6, ignora = e) {
+    for (const o of this.#corpos(ignora)) {
+      if (o === e) continue;
+      const min = r + (o.r ?? 6), dx = e.x - o.x, dy = e.y - o.y, d = Math.hypot(dx, dy);
+      if (d >= min) continue;
+      if (d < 1e-4) { e.x = o.x + min; e.y = o.y; continue; }
+      e.x = o.x + (dx / d) * min; e.y = o.y + (dy / d) * min;
+    }
   }
   // O bloco aceita alguém? (mapa sólido, objetos, gente em pé nele)
   pode(tx, ty, swim = false, ignora = null) {

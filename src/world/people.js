@@ -56,7 +56,7 @@ export class People {
           else {
             const R = n.def.wander * T, a = Math.random() * Math.PI * 2, r = Math.random() * R;
             const tx = n.home.x + Math.cos(a) * r, ty = n.home.y + Math.sin(a) * r;
-            if (!this.map.solidAt(tx, ty) && Math.hypot(tx - pl.x, ty - pl.y) > 14) n.walkTo(tx, ty, n.def.kid ? 70 : 34);
+            if (!this.map.solidAt(tx, ty) && Math.hypot(tx - pl.x, ty - pl.y) > 14 && !g.grade?.colideGente(tx, ty, n.r ?? 6, n)) n.walkTo(tx, ty, n.def.kid ? 70 : 34);
           }
         }
       }
@@ -94,7 +94,7 @@ export class People {
       }
       if (Math.hypot(p.x + p.vx * dt - p.home.x, p.y + p.vy * dt - p.home.y) > p.d.wander * T) { p.vx = (p.home.x - p.x) * 0.8; p.vy = (p.home.y - p.y) * 0.8; }
       p.x += p.vx * dt; p.y += p.vy * dt;
-      this.map.resolve(p, 5);
+      this.map.resolve(p, 5); g.grade?.separaGente(p, 5, p);
     }
     const moving = Math.hypot(p.vx, p.vy) > 4 && !p.d.perch;
     if (moving) p.dir = dir8(p.vx, p.vy);
