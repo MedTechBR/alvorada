@@ -20,11 +20,12 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'vila_sussurro', requer: ['badges.campina'], semFlag: ['nh.chegouSussurro'] },
       falas: [
         ['narrador', 'Vila Sussurro: casas entre as raízes dos jequitibás, passarelas de corda e lanternas de vaga-lume nos galhos.'],
-        ['narrador', 'Você veio para a Insígnia Casulo. A Lia é a líder, mas o motivo de você estar aqui está escrito no mapa: a pedra da Lia fica na estufa.'],
-        ['lia', 'Cuidado com a passarela! Tem um Wurmple atravessando. Ele está nisso desde ontem.'],
-        ['lia', 'Eu sou a Lia, pesquisadora, bióloga e babá de lagarta. Também sou a líder do ginásio. Ouvi falar de você: o Tomé me mandou um bilhete.'],
-        ['lia', 'Tem gente de capa roxa rondando minha estufa. Eles perguntaram da "pedra da Lia". Pedra! Como se eu fosse uma pedreira!'],
-        ['jogador', 'Então eu vou ver a estufa. Mas antes me diz: você sabe quem são esses sujeitos de capa roxa?'],
+        ['narrador', 'Você veio pela Insígnia Casulo. A Líder Lia guarda a pedra da cidade numa estufa de vidro, nos fundos da vila.'],
+        ['lia', 'Cuidado com a passarela! Tem um Wurmple atravessando, e ele não sai do meio do caminho desde ontem.'],
+        ['lia', 'Eu sou a Lia, líder do ginásio, bióloga e babá de lagarta. O Tomé mandou um bilhete falando de você.'],
+        ['lia', 'Tem gente de capa roxa rondando minha estufa, perguntando pela "pedra da Lia". Pedra! Eu sou bióloga, não pedreira!'],
+        ['jogador', 'Eles são da Equipe Crepúsculo? Você sabe o que querem com a pedra?'],
+        ['lia', 'Não sei quem são, mas o bosque anda estranho. Vá até o Bosque Sussurrante e descubra com seus próprios olhos.'],
       ],
       depois: {
         flags: { 'nh.chegouSussurro': true },
@@ -39,7 +40,7 @@ export default {
         ['narrador', 'Atrás de um jequitibá, duas pessoas de capa roxa cochicham. A capa de um deles tem uma lua minguante bordada.'],
         ['recruta', 'A pedra da Lia fica na estufa. Hoje à noite, quando a vila dormir.'],
         ['recruta2', 'E se o tal Absol aparecer de novo? Ele me olhou ontem. Me olhou com julgamento.'],
-        ['recruta', 'Absol não morde. Só avisa. E a gente já sabe o aviso. Vamos.'],
+        ['recruta', 'Absol não morde. Ele só aparece antes de alguma desgraça. Vamos antes que ele apareça de novo.'],
         ['narrador', 'Eles somem entre as árvores. Você corre de volta para a vila.'],
       ],
       depois: {
@@ -75,11 +76,11 @@ export default {
       local: 'toca_absol',
       gatilho: { tipo: 'entrar', alvo: 'toca_absol', requer: ['nh.seguiuAbsol'], semFlag: ['nh.tocaEntrou'] },
       falas: [
-        ['narrador', 'Uma gruta coberta de musgo. Nas paredes, veios de cristal brilham com a mesma luz morna do chaveiro da Aurora.'],
+        ['narrador', 'Uma gruta coberta de musgo. Nas paredes, veios de cristal brilham com uma luz morna, como a de um lampião.'],
         ['narrador', 'Só que aqui a luz pulsa. Devagar. Como se respirasse.'],
         ['narrador', 'Lá do fundo vem um barulho de teia rasgando.'],
         ['jogador', 'Esse barulho não é normal. Eu vou até o fundo.'],
-        ['absol', 'Absol.'],
+        ['absol', '…'],
       ],
       depois: {
         flags: { 'nh.tocaEntrou': true },
@@ -92,8 +93,8 @@ export default {
       gatilho: { tipo: 'pisar', alvo: 'toca_absol', requer: ['nh.tocaEntrou'], semFlag: ['nh.ariadosVencido'] },
       falas: [
         ['narrador', 'No fundo, um Ariados enorme se debate entre as teias. Os olhos estão vermelhos. Ele não parece bravo, parece assustado.'],
-        ['absol', 'Absol.'],
-        ['narrador', 'O cristal atrás dele pulsa mais forte a cada vez que ele se mexe. O Absol se põe entre você e o Ariados.'],
+        ['absol', '…'],
+        ['narrador', 'O cristal atrás dele pulsa mais forte a cada vez que ele se mexe. O Absol olha para você e depois para o Ariados, como quem pede ajuda.'],
       ],
       depois: {
         batalha: { id: 'alfa_ariados', nome: 'Ariados Alfa', alfa: true, perder: 'repete', equipe: [[168, 20, ['poisonSting', 'nightShade', 'stringShot', 'bugBite']]] },
@@ -107,7 +108,7 @@ export default {
       falas: [
         ['narrador', 'O Ariados se encolhe. O vermelho dos olhos vai sumindo até virar um amarelo cansado. Ele foge pela fresta do teto.'],
         ['narrador', 'O Absol encosta o chifre num veio de cristal. A luz treme. Depois ele olha para você por um bom tempo, e some no mato.'],
-        ['jogador', 'As árvores daqui estão mesmo morrendo perto dessa luz? Eu preciso contar isso para a Lia.'],
+        ['jogador', 'Essa luz vem das raízes. O Absol me trouxe até aqui para eu ver. Preciso contar isso para a Lia.'],
         ['pokedex', 'Bzzz… Registro novo: veio de cristal luminoso. A luz não é igual à de nenhuma pedra conhecida.'],
       ],
       depois: {
@@ -121,11 +122,11 @@ export default {
       local: 'estufa_lia',
       gatilho: { tipo: 'entrar', alvo: 'estufa_lia', hora: 'noite', requer: ['nh.ouviuRecrutas'], semFlag: ['nh.defendeuEstufa'] },
       falas: [
-        ['narrador', 'A estufa está escura. Dois vultos de capa roxa abrem o cofre de vidro onde a Lia guarda o fragmento.'],
+        ['narrador', 'A estufa está escura. Dois vultos de capa roxa abrem a vitrine onde a Lia guarda a pedra.'],
         ['recruta', 'Pronto, peguei. Que pedra mais sem graça, parece pedaço de telha.'],
         ['recruta2', 'Ih. Tem um moleque olhando pra gente.'],
         ['recruta', 'Moleque, a Equipe Crepúsculo não tem nada contra você. A gente só quer guardar a noite. Sai da frente.'],
-        ['jogador', 'Guardar a noite? Isso aí é da Lia.'],
+        ['jogador', 'Guardar a noite? Essa pedra é da Lia, e ela não está à venda.'],
         ['recruta', 'Então vem pegar!'],
       ],
       depois: {
@@ -144,9 +145,9 @@ export default {
       local: 'estufa_lia',
       gatilho: { tipo: 'vencer', alvo: 'c2_recruta' },
       falas: [
-        ['recruta2', 'Deixa comigo! Houndour, morde a canela dele! Com carinho, que ele é criança!'],
+        ['recruta2', 'Chega de brincadeira. Houndour, para cima dele!'],
         ['recruta', 'Agora você me deixou sem graça. Vou dar o troco na Lia!'],
-        ['jogador', 'Então vem. Aqui a gente não precisa de capa roxa para proteger o que é da Lia.'],
+        ['jogador', 'Então vem. A pedra é da Lia, e esta noite não é de vocês.'],
       ],
       depois: {
         batalha: {
@@ -160,10 +161,10 @@ export default {
       local: 'estufa_lia',
       gatilho: { tipo: 'vencer', alvo: 'c2_recruta2' },
       falas: [
-        ['recruta', 'Tá bom! Fica com a telha! Mas escuta: a gente não é o problema. O problema está brilhando no seu bolso.'],
+        ['recruta', 'Tá bom, fica com a telha! Mas a gente só cumpre ordem. Quem manda quer saber da luz do bosque, não da pedra.'],
         ['narrador', 'Os recrutas fogem pela janela. Na copa de uma árvore lá fora, uma mulher de casaco longo observa a cena. Um Absol está ao lado dela.'],
         ['vespera', 'Bom trabalho, menino. A Lia tem sorte de ter alguém que se importa com a pedra. Espero que a sorte dure.'],
-        ['vespera', 'Mas a luz do bosque não espera ninguém. Pergunte à Lia o que ela viu nas raízes.'],
+        ['vespera', 'Mas a luz do bosque não espera ninguém. Pergunte à Lia o que ela sabe sobre essas raízes.'],
         ['narrador', 'Ela some entre os galhos. Só a voz fica.'],
       ],
       depois: {
@@ -178,14 +179,14 @@ export default {
       id: 'j02_nando',
       local: 'estufa_lia',
       gatilho: { tipo: 'avistar', alvo: 'g2_nando' },
-      falas: [['aprendiz', 'Pisou no fio prateado? Não? Então ainda dá pra me enfrentar! Fio dourado é seguro, fio prateado é encrenca.']],
+      falas: [['aprendiz', 'Você chegou até aqui sem cair nas teias? Ótimo, agora vai cair nas minhas!']],
       depois: { batalha: { id: 'g2_nando', nome: 'Caçador Nando', dinheiro: 520, equipe: [[664, 16, ['tackle', 'stringShot', 'struggleBug']], [401, 17, ['growl', 'bide', 'furyCutter']]] } },
     },
     {
       id: 'j02_bel',
       local: 'estufa_lia',
       gatilho: { tipo: 'avistar', alvo: 'g2_bel' },
-      falas: [['aprendiz', 'Os casulos apontam para a próxima folha. Eu não devia ter falado isso. Agora vou ter que te vencer pra compensar!']],
+      falas: [['aprendiz', 'Eu não devia ter falado da Lia com você. Agora vou ter que te vencer para compensar!']],
       depois: { batalha: { id: 'g2_bel', nome: 'Caçadora Bel', dinheiro: 560, equipe: [[595, 17, ['stringShot', 'absorb', 'thunderShock']], [415, 18, ['gust', 'bugBite', 'sweetScent']]] } },
     },
     {
@@ -194,7 +195,7 @@ export default {
       local: 'vila_sussurro',
       gatilho: { tipo: 'entrar', alvo: 'vila_sussurro', requer: ['nh.defendeuEstufa'], semFlag: ['nh.rival2'] },
       falas: [
-        ['teo', 'Ei! Você está na minha frente de novo. Eu passei a semana toda ouvindo que você tem sorte.'],
+        ['teo', 'Ei! Você está sempre na minha frente. Toda a vila diz que você tem sorte.'],
         ['jogador', 'Sorte não ganha ginásio, Téo.'],
         ['teo', 'Então vamos ver o que ganha. Meu {rival_inicial} está pronto desde o laboratório!'],
       ],
@@ -217,7 +218,7 @@ export default {
         ['lia', 'Chegou ao centro da teia! Pouca gente chega sem ser puxada de volta pelo Spinarak. Ele está meio decepcionado.'],
         ['lia', 'Inseto é pequeno, é quieto, é fácil de ignorar. E é por isso que ganha. Vamos lá!'],
         ['jogador', 'Eu estou pronto, Lia. Mas antes me diz: a sua estufa sempre foi assim, tão escura?'],
-        ['lia', 'Não. Antes de a Aurora pedir o cristal, a estufa tinha sol de manhã. Agora tem só essa penumbra.'],
+        ['lia', 'Não. Até uns meses atrás a estufa pegava sol de manhã. Depois vieram uns homens da Companhia Aurora com a luzita, e tudo escureceu.'],
       ],
       depois: {
         batalha: {
@@ -242,8 +243,8 @@ export default {
         ['lia', 'Você foi rápido como um Yanma! A Insígnia Casulo é sua. Ela lembra que toda mudança começa quietinha, por dentro.'],
         ['narrador', '{jogador} recebeu a Insígnia Casulo!'],
         ['lia', 'E esta MT: Picada. Pega o Pokémon desprevenido e ainda come a fruta dele. Grosseiro, mas eficiente.'],
-        ['lia', 'Você viu a gruta. Eu sabia que o bosque estava doente perto daqueles veios. As árvores com raiz em cima deles estão secando.'],
-        ['lia', 'A Aurora diz que a luzita é limpa. Mas o bosque não concorda, e eu confio mais no bosque. Vai até a Rota 3, perto de Porto Espelho. Lá a gente conversa de novo.'],
+        ['lia', 'Você viu a gruta. Eu já desconfiava que o bosque estava doente perto daqueles veios. As árvores com raiz em cima deles estão secando.'],
+        ['lia', 'A Companhia Aurora diz que a luzita é limpa. O bosque discorda, e eu confio mais no bosque. Siga pela Rota 3, a leste, até Porto Espelho.'],
       ],
       depois: {
         insignia: 'sussurro', mt: 'bugBite',
@@ -260,8 +261,8 @@ export default {
       gatilho: { tipo: 'apos', cena: 'j02_lia_insignia' },
       falas: [
         ['bia', '{jogador}! É a Bia! Analisei o registro do cristal da gruta. A luz dele não brilha, ela vaza. Como se viesse de outro lugar.'],
-        ['bia', 'Nenhuma pedra que eu conheço faz isso. O Professor ficou branco quando eu contei. Disse "deve ser nada" e foi tomar banho.'],
-        ['bia', 'Ele nunca toma banho por tanto tempo. Fica de olho nele e me avisa se alguém perguntar da luzita.'],
+        ['bia', 'Nenhuma pedra que eu conheço faz isso. Quando contei ao Professor, ele ficou branco e disse que devia ser nada.'],
+        ['bia', 'Depois saiu sem dizer para onde. Se alguém perguntar da luzita, me avisa.'],
         ['jogador', 'Então ela não é só luz. É algo que vem de fora da terra.'],
         ['bia', 'Isso mesmo. Eu vou tentar descobrir de onde.'],
       ],
@@ -271,9 +272,9 @@ export default {
       id: 'j02_boletim2',
       gatilho: { tipo: 'flag', alvo: 'badges.sussurro', semFlag: ['nh.boletim.2'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e dezenove minutos. O atraso já passa de quinze minutos desde o começo da semana.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e dezenove minutos. São catorze minutos de atraso desde o começo da semana.'],
         ['mae', 'Ravi, seis e dezenove. Você está ganhando insígnias, e o sol está ficando mais preguiçoso. Isso não é normal.'],
-        ['jogador', 'Então o sol atrasa desde a primeira vitória. Foi isso que eu vi no Sussurro.'],
+        ['jogador', 'Ele já atrasava antes da minha primeira insígnia, Mãe. Então não é por causa das minhas vitórias.'],
       ],
       depois: { flags: { 'nh.boletim.2': true, 'nh.sol': '6h19' }, ambiente: true },
     },
@@ -283,8 +284,8 @@ export default {
       local: 'vila_sussurro',
       gatilho: { tipo: 'falar', alvo: 'tito', semFlag: ['nh.sqPipoca'] },
       falas: [
-        ['tito', 'O Pipoca sumiu! Ele é um Skwovet, o meu melhor amigo, e saiu de manhã para buscar noz no bosque. Ele sempre volta antes do almoço. Sempre.'],
-        ['tito', 'Já é de tarde, e esse sol que atrasa deixa todo bicho do bosque perdido. Se você achar ele, fala que eu não tô bravo. Só um pouquinho.'],
+        ['tito', 'O Pipoca sumiu! É o meu Skwovet, saiu de manhã para buscar noz no bosque. Ele sempre volta antes do almoço. Sempre.'],
+        ['tito', 'Já é de tarde, e ele nunca se atrasa. Se você achar, diz que eu não tô bravo. Só um pouquinho.'],
         ['jogador', 'Acho que vi um Skwovet correndo para a mata dos jequitibás. Pode ser ele?'],
         ['tito', 'Pode, sim! Ele adora aquela mata. Se achar, traga de volta com cuidado: ele é medroso.'],
       ],
@@ -314,7 +315,7 @@ export default {
       falas: [
         ['tito', 'Pipoca! Seu maluco! Eu não estava bravo. Eu estava só um pouquinho bravo, mas agora passou.'],
         ['narrador', 'O Pipoca tira a noz da bochecha e põe na mão do Tito. O Tito olha para a noz, olha para o Skwovet e esfrega o nariz na manga.'],
-        ['tito', 'Você passou o dia fora para me trazer isso? Então toma o meu Ovo da Sorte. Eu guardo desde que ele era filhote. Eu ia dar um dia, e acho que o dia é hoje.'],
+        ['tito', 'Você passou o dia inteiro atrás dele? Então toma o meu Ovo da Sorte. Guardo desde que ele era filhote, e acho que o dia de dar é hoje.'],
         ['narrador', 'O Pipoca sobe no ombro do Tito e começa a roer a orelha dele. Os dois estão felizes.'],
       ],
       depois: {
