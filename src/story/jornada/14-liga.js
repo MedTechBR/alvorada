@@ -18,7 +18,7 @@ export default {
       local: 'ninho_liga_zenite',
       gatilho: { tipo: 'entrar', alvo: 'liga_zenite', requer: ['nh.teoFinalPronto'], semFlag: ['nh.chegouLiga'] },
       falas: [
-        ['narrador', 'O Caminho do Zênite é uma escada de degraus brancos, com bandeiras de todas as regiões. No topo, o Portão da Liga brilha ao sol da manhã.'],
+        ['narrador', 'O Caminho do Zênite é uma escada branca, com bandeiras de todas as regiões. No topo, o Portão da Liga brilha ao sol.'],
         ['teo', 'Ravi! Cheguei antes, como prometi. Olhei a Elite de longe, e eles são bem mais assustadores do que no treino.'],
         ['teo', 'Quando o Aurélio perguntar quem te trouxe até aqui, diga o meu nome. Eu fiz essa promessa lá em cima.'],
         ['jogador', 'Eu digo, Téo. E fique do meu lado na batalha contra a Clarice, se ela deixar.'],
@@ -91,7 +91,7 @@ export default {
       falas: [
         ['brasa', 'Ao meio-dia o sol bate no talo, sem sombra e sem desculpa. Eu sou o Seu Brasa, e o meu fogo não tem medo de ninguém.'],
         ['jogador', 'O senhor também sabia que a luz estava atrasada?'],
-        ['brasa', 'Eu sabia que o sol devia estar na minha cabeça às doze, e não às sete. Sabia, e não falei. Por isso estou aqui, para ouvir você.'],
+        ['brasa', 'Sabia que o sol devia estar às doze, e não às sete. Sabia e não falei. Por isso estou aqui, para ouvir você.'],
       ],
       depois: {
         batalha: {
@@ -144,12 +144,14 @@ export default {
       gatilho: { tipo: 'flag', alvo: 'trainers.elite_ibere', requer: ['trainers.elite_aurelio', 'trainers.elite_clarice', 'trainers.elite_brasa'], semFlag: ['nh.irmaRevelada'] },
       reviravolta: 7,
       falas: [
-        ['narrador', 'O salão da Campeã é um anfiteatro de vidro, com o céu aberto no teto. No centro, uma mulher de cabelos claros e casaco longo espera de pé.'],
+        ['narrador', 'Um anfiteatro de vidro, com o céu aberto no teto. No centro, uma mulher de casaco longo espera de pé.'],
         ['narrador', 'Ela tem o mesmo rosto da Dra. Véspera.'],
         ['dalva', 'Sou a Campeã Dalva. Você deve estar confuso, porque eu tenho o mesmo rosto da mulher que conheceu no Relógio.'],
-        ['dalva', 'Somos gêmeas. Véspera é a estrela-vésper, que aparece ao anoitecer. Eu sou a estrela-d\'alva, que aparece antes do sol. É o mesmo astro, visto de dois lados.'],
+        ['dalva', 'Somos gêmeas. Ela é a estrela-vésper, que aparece ao anoitecer.'],
+        ['dalva', 'Eu sou a estrela-d\'alva, que aparece antes do sol. É o mesmo astro, visto de dois lados.'],
         ['jogador', 'Então você sabia da Aurora. Enquanto sua irmã tentava parar a luz, você ficou aqui, vencendo torneios.'],
-        ['dalva', 'Eu sabia desde o começo. Minha irmã descobriu a luzita com o professor, e eu escolhi o silêncio. Uma campeã que denuncia a própria região perde tudo.'],
+        ['dalva', 'Eu sabia desde o começo. Minha irmã descobriu a luzita com o professor, e eu escolhi o silêncio.'],
+        ['dalva', 'Denunciar a região arruinaria a minha carreira. Eu preferi ficar calada e vencer.'],
         ['dalva', 'Antes da última batalha, quero que saiba: a Véspera nunca parou de me procurar. Eu nunca respondi.'],
       ],
       depois: {
@@ -214,11 +216,11 @@ export default {
         ['vespera', 'Dalva. Você me deixou esperar dezesseis anos por uma resposta. Não sei se vou te perdoar hoje.'],
         ['dalva', 'Eu também não sei, irmã. Mas o sol nasceu na hora hoje, e isso é mais do que a gente conseguiu juntas há muito tempo.'],
         ['vespera', 'O sol nasceu. E agora eu posso olhar para ele sem medo de que ele atrase de novo.'],
-        ['prof', 'Eu devo desculpas a todos vocês. À Lia, ao Tomé, à Iracema e à Dona Zélia. Escondi a luzita por medo, e o medo custou caro.'],
+        ['prof', 'Devo desculpas à Lia, ao Tomé, à Iracema e à Dona Zélia. Escondi a luzita por medo, e o medo custou caro.'],
         ['teo', 'Pai, você está bem? A Aurora fechou a mina, e o Senhor Solano vai responder pelo medidor e pelo sequestro.'],
         ['heitor', 'Estou bem, filho, e estou em casa. Obrigado, Ravi, por ter encontrado a verdade antes de todo mundo.'],
         ['mae', 'Ravi! Eu ouvi tudo no rádio. Você ganhou a Liga, e o sol nasceu hoje às seis e quatro. Eu fiz bolo, e está quentinho.'],
-        ['narrador', 'Lá no Planalto, a Sina olha para o sol e, pela primeira vez, não traz nenhum aviso. Ao sul, a neblina do mar começa a se mexer.'],
+        ['narrador', 'No Planalto, a Sina olha para o sol e, pela primeira vez, não traz aviso nenhum. Ao sul, a neblina começa a se mexer.'],
       ],
       depois: {
         flags: { 'nh.epilogo': true },
