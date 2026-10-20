@@ -50,6 +50,8 @@ export default {
       falas: [
         ['narrador', 'A Rota 1 começa logo depois da última casa. Dá para ver a Cidade Campina lá no fundo, no meio dos campos.'],
         ['narrador', 'Antes de sair, o Prof. Jatobá gritou da janela: "Passa no laboratório antes! Você ainda não sabe o que é o Relógio!"'],
+        ['jogador', 'Então é melhor ir logo. Mas antes eu quero entender o que o professor quer dizer.'],
+        ['narrador', 'Você olha para o céu. O sol ainda está baixo e pálido, como se tivesse esquecido de subir.'],
       ],
       depois: {
         objetivo: { texto: 'Volte ao laboratório do Prof. Jatobá antes de seguir para a Rota 1', alvo: 'lab' },

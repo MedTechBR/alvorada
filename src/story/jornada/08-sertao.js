@@ -20,6 +20,7 @@ export default {
         ['narrador', 'Vila Mandacaru: casas de barro, uma cacimba no centro da praça e um vento seco que levanta areia até o meio da rua.'],
         ['narrador', 'A Crepúsculo escava as Ruínas de Pedra Pintada há uma semana, e a Aurora diz que não é nada. Ninguém na vila acredita na Aurora.'],
         ['jogador', 'Eu preciso chegar às ruínas antes deles. O Prof. Jatobá disse que a pedra daqui é ligada ao Relógio.'],
+        ['narrador', 'Um menino de chapéu de palha vende água de cacimba numa caneca de lata. Ele aponta para o cânion, do outro lado da vila.'],
       ],
       depois: {
         flags: { 'nh.chegouSertao': true },
@@ -58,6 +59,7 @@ export default {
         ['narrador', 'Numa das pinturas, um Absol branco fica ao lado de uma mulher de casaco longo. Os dois olham para um relógio gigante, com sete estrelas na borda.'],
         ['narrador', 'Em outra, duas mulheres idênticas aparecem sob a mesma estrela, uma de cada lado do relógio. A legenda está apagada, exceto por uma palavra: "irmãs".'],
         ['jogador', 'O Absol que aparece antes de cada desastre. Ele está em todas as pinturas. Quem é ele?'],
+        ['narrador', 'Você passa a mão pela parede. A tinta ainda está fresca em alguns pontos, como se alguém tivesse pintado ontem.'],
       ],
       depois: {
         flags: { 'nh.pinturas': true },
@@ -116,6 +118,7 @@ export default {
         ['narrador', 'O Museu do Sertão guarda um mapa de papel, dobrado em quatro, que mostra o caminho de escalada do Paredão. Uma faixa de cor marca a trilha, e o nome da Cidade Escarpa está escrito em caneta.'],
         ['narrador', 'No verso, um recado de letra miúda: "Quem sobe o Paredão sem mapa cai no vento. Quem sobe com a Sina encontra a pedra certa."'],
         ['teo', 'Eu conheço esse mapa. Meu pai tinha uma cópia parecida na garagem. Ele dizia que o Paredão era o caminho para o Relógio.'],
+        ['jogador', 'Então o caminho do Paredão é o mesmo que o seu pai desenhou.'],
       ],
       depois: {
         flags: { 'nh.mapaParedao': true },

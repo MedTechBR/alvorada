@@ -22,6 +22,7 @@ export default {
         ['narrador', 'A Dona Zélia é a líder da cidade. Ela guarda o casarão com as velas e um ginásio em que a luz só entra quando a noite cai.'],
         ['benta', 'Chegou! Come mais um pedaço. Aqui a gente janta cedo, porque a noite chega antes do sono.'],
         ['benta', 'Ouvi no rádio que tem gente de capa roxa rondando o casarão. Vá ver. Mas volte antes de dar meia-noite.'],
+        ['jogador', 'Vou ao casarão e volto antes da meia-noite. Prometo, Vó Benta.'],
       ],
       depois: {
         flags: { 'nh.chegouLamparina': true },
@@ -107,6 +108,7 @@ export default {
         ['zelia', 'Um homem de terno branco veio aqui ontem, perguntou dela e foi embora sorrindo. Eu não gostei do sorriso dele.'],
         ['zelia', 'Você tem cara de quem sabe guardar uma coisa. Leve a vela e não deixe ninguém acender ela antes de eu mandar.'],
         ['narrador', 'A Dona Zélia coloca uma vela de cera escura nas suas mãos. A chama é pequena, azulada, e não tremeu nem com o vento da porta.'],
+        ['jogador', 'Uma vela que não treme com o vento. Isso não é cera comum.'],
       ],
       depois: {
         flags: { 'nh.velaEterna': true },
@@ -137,6 +139,8 @@ export default {
       falas: [
         ['zelia', 'Você passou pelos meus médiuns. Eles são teimosos, como a vela, e como eu. Agora é a minha vez.'],
         ['zelia', 'Não vou perguntar se você está pronto. Eu já vi a sua cara de noite, e ela é de quem vai vencer.'],
+        ['jogador', 'Dona Zélia, antes de começar: a vela ainda está na minha mochila. Ela precisa ficar apagada?'],
+        ['zelia', 'Está, querido. E não é hora de acender. Você vai precisar dela quando a noite for mais escura.'],
       ],
       depois: {
         batalha: {
@@ -178,6 +182,7 @@ export default {
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e quarenta e dois minutos. Os moradores de Vila Lamparina dizem que a noite foi a mais longa da região.'],
         ['mae', 'Ravi, seis e quarenta e dois. Isso já é quase meia hora de atraso em cinco dias. Eu não gosto nada disso, filho.'],
+        ['jogador', 'Dona Zélia disse que a noite foi a mais longa da região. Eu acredito nela.'],
       ],
       depois: { flags: { 'nh.boletim.5': true, 'nh.sol': '6h42' }, ambiente: true },
     },

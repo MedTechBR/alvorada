@@ -23,6 +23,7 @@ export default {
         ['narrador', 'O sol mal aparece entre os prédios. Todo mundo aqui tem uma lanterna de luzita no bolso, acesa de dia.'],
         ['pipa', 'Você chegou! Eu sou a Pipa, repórter do Jornal Farol. Estou fazendo uma matéria sobre a Torre Aurora e preciso de alguém que não seja da empresa.'],
         ['pipa', 'Vamos lá. O gerente Lúcio vai fazer uma visita guiada. Ele adora mostrar as tubulações, principalmente para quem não pergunta de onde vem a luz.'],
+        ['jogador', 'Uma repórter e um prédio de cristal. Não sei qual dos dois está mais disposto a me enganar.'],
       ],
       depois: {
         flags: { 'nh.chegouAurora': true },
@@ -187,6 +188,7 @@ export default {
         ['narrador', 'Uma pasta de couro está marcada com "Luzita: estudos, 2010". Dentro, cartas escritas à mão por dois autores: o Prof. Jatobá e a Dra. Véspera.'],
         ['narrador', 'As cartas falam de um cristal que vaza luz, e de uma reunião com um homem chamado Augusto Solano, que queria comprar a amostra.'],
         ['jogador', 'Essas cartas são de 16 anos atrás. O professor participou disso desde o começo?'],
+        ['narrador', 'O cheiro de papel velho e de cera vem das prateleiras. Um rádio antigo está ligado num canto, sem som.'],
       ],
       depois: {
         flags: { 'nh.arquivo': true },
@@ -238,6 +240,8 @@ export default {
       falas: [
         ['bras', 'Ê, camará! Abriu os três portões! O berimbau gostou de você.'],
         ['bras', 'Agora a luta é a sério. Eu sou o último degrau antes da escalada. Quem passa daqui sobe o Paredão sem medo.'],
+        ['jogador', 'Eu passei pelos seus três portões. Agora quero o último degrau.'],
+        ['bras', 'Então sobe, camará. Mas traz o berimbau de volta, que ele é emprestado do Mestre.'],
       ],
       depois: {
         batalha: {
@@ -279,6 +283,7 @@ export default {
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e cinquenta e um minutos. A Companhia Aurora nega qualquer relação com o atraso.'],
         ['mae', 'Ravi, seis e cinquenta e um. A Aurora nega? Filho, isso quer dizer que alguém está fazendo alguma coisa. Cuidado com o que você ouve.'],
+        ['jogador', 'Se a Aurora nega, é porque tem alguma coisa para negar. Eu vou descobrir o que é.'],
       ],
       depois: { flags: { 'nh.boletim.6': true, 'nh.sol': '6h51' }, ambiente: true },
     },

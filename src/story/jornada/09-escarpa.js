@@ -20,6 +20,7 @@ export default {
         ['narrador', 'Cidade Escarpa: casas penduradas na rocha, escadas esculpidas no paredão e um ateliê de pedra com estátuas pela calçada.'],
         ['narrador', 'Dá para ver o Planalto dos Ventos lá em cima, com o Relógio de Pedra no topo, pequeno, contra o céu. A tempestade está parada sobre ele.'],
         ['jogador', 'A Líder Graça guarda a pedra da cidade. Mas a Sina me disse que ela já foi levada. Preciso descobrir por quem.'],
+        ['narrador', 'Na praça, um ateliê de pedra está com a porta aberta. Uma escultora de avental cinza acena para você, sem sorrir.'],
       ],
       depois: {
         flags: { 'nh.chegouEscarpa': true },
@@ -95,6 +96,8 @@ export default {
       falas: [
         ['graca', 'Você chegou ao fundo da Mina Velha, e não ficou com a cara de quem apanhou das pedras. Isso é bom.'],
         ['graca', 'A minha pedra sumiu com o Sereno ontem. Não vou negar que fiquei com raiva. Então agora você vai levar uma pancada de rocha.'],
+        ['jogador', 'Eu sinto muito pela pedra, Graça. Eu vou trazer ela de volta.'],
+        ['graca', 'Traz mesmo. E não deixa o Sereno enganar você com cara de bonzinho.'],
       ],
       depois: {
         batalha: {
@@ -138,6 +141,7 @@ export default {
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às sete horas e três minutos. Pela primeira vez, a Companhia Aurora fala no rádio sobre o horário do sol: diz que é uma "variação passageira".'],
         ['mae', 'Ravi, sete e três. Passageira? Filho, faz mais de uma semana. Você está conseguindo ver o que está acontecendo lá em cima?'],
+        ['jogador', 'Eu vou procurar o que a Aurora esconde no Relógio. Se o sol atrasou por isso, quero ver com meus próprios olhos.'],
       ],
       depois: { flags: { 'nh.boletim.7': true, 'nh.sol': '7h03' }, ambiente: true },
     },

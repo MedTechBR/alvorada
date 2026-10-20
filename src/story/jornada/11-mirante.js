@@ -21,6 +21,7 @@ export default {
         ['narrador', 'Mirante dos Ventos: uma torre de vidro no topo do Planalto, com o vento vindo de todos os lados. Lá do alto, dá para ver o Relógio de Pedra, pequeno e escuro, do outro lado do vale.'],
         ['narrador', 'O Prof. Jatobá tinha marcado de encontrar você aqui. Ele disse, pelo rádio, que queria mostrar a pedra da Celeste antes de subir.'],
         ['jogador', 'O professor não se atrasou nunca. Algo está errado.'],
+        ['narrador', 'Um vento frio sobe pelo vale e faz as bandeiras do mirante estalarem como velas de barco.'],
       ],
       depois: {
         flags: { 'nh.chegouMirante': true },
@@ -129,6 +130,8 @@ export default {
       falas: [
         ['celeste', 'Você veio até a Torre do Vento, depois de passar por todo o Planalto. Eu vi isso no vento antes de você chegar.'],
         ['celeste', 'Hoje o meu Braviary vai crescer. Não é para te assustar. É porque a torre só aceita voadores que estão de pé.'],
+        ['jogador', 'Eu passei por todos os seus pilotos. Agora quero ver o que o vento diz de mim.'],
+        ['celeste', 'O vento diz que você ainda tem o que aprender sobre esperar. Vamos ver se ele aguenta a sua pressa.'],
       ],
       depois: {
         batalha: {
@@ -173,6 +176,7 @@ export default {
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às sete horas e onze minutos. A tempestade do Planalto acabou ontem à noite, mas o horário continua atrasado.'],
         ['mae', 'Ravi, sete e onze. Eu não entendo mais nada, filho. O Prof. Jatobá não atende o telefone desde ontem. Por favor, me diga que você vai trazê-lo para casa.'],
+        ['jogador', 'Mãe, eu vou atrás dele. Ele está no Relógio, e eu prometo que volto com ele.'],
       ],
       depois: { flags: { 'nh.boletim.8': true, 'nh.sol': '7h11' }, ambiente: true },
     },

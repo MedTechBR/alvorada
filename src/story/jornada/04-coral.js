@@ -20,6 +20,7 @@ export default {
         ['narrador', 'Cidade Coral: um farol enorme na ponta do morro, feira de conchas e um calçadão cheio de turistas.'],
         ['narrador', 'O Líder Jonas cuida do farol e da insígnia Faísca. Mas as luzes do farol estão apagadas há dois dias, e ninguém sabe dizer por quê.'],
         ['jogador', 'Antes de falar com o Jonas, preciso ver o que está acontecendo no farol.'],
+        ['jogador', 'Um farol apagado e um líder que não quer falar. Isso não cheira bem.'],
       ],
       depois: {
         flags: { 'nh.chegouCoral': true },
@@ -113,6 +114,8 @@ export default {
       falas: [
         ['jonas', 'Você trouxe a pedra de volta, e ainda passou pelos meus aprendizes. Ninguém faz isso sem levar um choque.'],
         ['jonas', 'Eu já ia pedir ajuda. Mas vamos batalhar primeiro. Eu sou eletricidade, e eletricidade não espera ninguém terminar de falar.'],
+        ['jogador', 'Eu trouxe a pedra. E trouxe também os recados da Iracema e do Solano.'],
+        ['jonas', 'Então é melhor a gente batalhar primeiro. Não quero conversa sem eletricidade.'],
       ],
       depois: {
         batalha: {
@@ -156,6 +159,8 @@ export default {
       falas: [
         ['iracema', 'Eu escrevia tudo que acontecia no farol. Todo dia, desde que me contrataram. O diário está lá no quarto do topo, onde ficam os geradores.'],
         ['iracema', 'Se a Aurora mexeu nas peças, o registro está lá. Eu não consigo subir mais aquela escada com estes joelhos.'],
+        ['jogador', 'Um diário de farol? Isso pode ser o que a Iracema estava escondendo.'],
+        ['iracema', 'Pode ser. Eu escrevi tudo por medo de esquecer. Agora é hora de lembrar.'],
       ],
       secundaria: { texto: 'Encontre o diário da Iracema no quarto do topo do Farol Coral', alvo: 'farol_topo' },
       depois: { flags: { 'nh.sqDiario': true }, ambiente: true },
@@ -171,6 +176,8 @@ export default {
         ['narrador', 'No quarto dos geradores, um caderno de capa verde está preso debaixo de uma caixa de ferramentas. As páginas do fim são de outra letra.'],
         ['narrador', '"Dia 3: o gerador três foi trocado por ordem da Companhia Aurora. Peça nova, sem número de série. Assinado: A. Solano."'],
         ['narrador', '"Dia 14: a luz gira sozinha. Ela acende mais cedo lá embaixo e mais tarde aqui em cima. Não é o farol que está errado. É o sol."'],
+        ['jogador', 'Então o Solano assinou o diário com as próprias mãos. Ele achou que ninguém leria.'],
+        ['narrador', 'Você fecha o caderno. Lá embaixo, o mar bate nas pedras do farol, e a luz do topo ainda gira fora de hora.'],
       ],
       secundaria: { texto: 'Leve o diário da Iracema de volta a ela, no pé do farol', alvo: 'farol_entrada' },
       depois: { flags: { 'nh.diarioFarol': true }, ambiente: true },
@@ -183,6 +190,7 @@ export default {
         ['iracema', 'Eu sabia. O Solano assinou o diário, e ninguém tem direito de assinar no farol da cidade. Agora é só a gente mostrar isso à Cidade Coral.'],
         ['iracema', 'Tome, leve estas poções. São as últimas que eu tenho guardadas. Vai precisar delas no caminho.'],
         ['jogador', 'Eu conto ao Jonas. Ele disse que quer ajudar, mesmo que não queira admitir.'],
+        ['narrador', 'A Iracema guarda o diário debaixo do braço e olha para o farol com um sorriso pequeno.'],
       ],
       itens: [['superPotion', 3]],
       depois: { flags: { 'nh.sqDiarioFim': true }, ambiente: true },
@@ -193,6 +201,7 @@ export default {
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e trinta e quatro minutos. O farol de Cidade Coral voltou a piscar, mas com atraso, segundo os marinheiros.'],
         ['mae', 'Ravi, seis e trinta e quatro. De manhã a casa fica escura por mais tempo. Anda, filho, volta logo.'],
+        ['jogador', 'Mãe, não sei quanto tempo mais essa história dura. Mas estou voltando para casa.'],
       ],
       depois: { flags: { 'nh.boletim.4': true, 'nh.sol': '6h34' }, ambiente: true },
     },

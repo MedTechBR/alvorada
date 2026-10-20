@@ -29,6 +29,8 @@ export default {
       falas: [
         ['narrador', 'O Farol Morto está apagado há décadas. Mas, dentro da torre, uma lâmpada de cristal brilha com uma cor que você nunca viu antes, quente e solar.'],
         ['narrador', 'Sob a lâmpada, um Pokémon de luz espera imóvel, com as asas abertas. A luz é a dele. Ele não parece bravo, só curioso.'],
+        ['jogador', 'Um Pokémon de luz numa torre apagada. Isso não é coisa do vento.'],
+        ['narrador', 'O Pokémon inclina a cabeça, como se tivesse entendido, e dá um passo para trás em direção ao mar.'],
       ],
       depois: {
         flags: { 'nh.pjFarol': true },
@@ -42,6 +44,8 @@ export default {
       falas: [
         ['narrador', 'Vila Fim-do-Mundo: casas de pedra no fim de uma estrada que parece não ter fim, com o sol se pondo do outro lado do vale.'],
         ['narrador', 'Ninguém aqui conhece o Relógio. Mas todos sabem que o sol nasce aqui uma hora depois de Alvorada, e que o horário é o mais justo do mundo.'],
+        ['jogador', 'Uma vila onde o sol nasce depois de Alvorada. Isso parece piada, mas eu não estou rindo.'],
+        ['narrador', 'Um pescador ri baixinho e aponta para o vale, onde a luz já começa a dourar a estrada.'],
       ],
       depois: {
         flags: { 'nh.pjOcaso': true },

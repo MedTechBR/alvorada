@@ -20,6 +20,7 @@ export default {
         ['narrador', 'Ilha do Basalto: rochas negras, fontes de água quente saindo do chão e um cheiro forte de enxofre que chega até o barco.'],
         ['narrador', 'Lá em cima, o vulcão Tição solta uma fumaça fina. Os moradores dizem que, desde a semana passada, o ronco do vulcão não para mais.'],
         ['jogador', 'Se o Ébano está aqui, deve ser para o vulcão. A Graça disse que ele quer acordá-lo.'],
+        ['jogador', 'Se o vulcão está acordando, a Graça não exagerava quando falou do vento.'],
       ],
       depois: {
         flags: { 'nh.chegouBrasas': true },

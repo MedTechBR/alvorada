@@ -96,6 +96,8 @@ export default {
       falas: [
         ['marina', 'Você chegou ao fundo do galpão. Pouca gente chega sem ficar molhado. Os meus Pokémon estão bem treinados.'],
         ['marina', 'Água não tem forma. Ela pega o formato de quem a segura. Vamos ver se você sabe segurar.'],
+        ['jogador', 'Então eu não vou ficar molhado à toa. Vamos ver quem nada melhor.'],
+        ['marina', 'Esse é o espírito! Pode começar com o Basculin, que ele já está ansioso.'],
       ],
       depois: {
         batalha: {
@@ -140,6 +142,8 @@ export default {
       falas: [
         ['nestor', 'Cada garrafa tem uma história. Essa aqui só tem areia. Mas é uma areia muito bonita.'],
         ['nestor', 'Eu jogo uma garrafa no mar desde o ano em que a Aurora chegou. Uma delas voltou com um bilhete de um mineiro. Você pode achar a outra no manguezal?'],
+        ['jogador', 'Uma garrafa no manguezal? Isso parece coisa de pescador com saudade.'],
+        ['nestor', 'É saudade, sim, e também de quem não sabe quem chega do mar. Vai lá, filho.'],
       ],
       secundaria: { texto: 'Ache a garrafa do Seu Nestor no manguezal, a oeste do porto', alvo: 'manguezal' },
       depois: { flags: { 'nh.sqGarrafa': true }, ambiente: true },
@@ -155,6 +159,7 @@ export default {
         ['narrador', 'Entre as raízes dos mangues, uma garrafa verde está presa numa rede de pesca. Dentro, um papel enrolado, molhado e pálido.'],
         ['narrador', 'A letra é torta, de quem escreve no escuro: "Estamos no nível 4. A luz daqui não é limpa, é a mesma que sai dos nossos cabos. Heitor."'],
         ['jogador', 'Heitor. Esse é o nome do pai do Téo. O Téo disse que ele trabalha na Mina Aurora.'],
+        ['narrador', 'O papel está úmido, e a tinta escorre nas bordas. Você guarda o bilhete no bolso com cuidado.'],
       ],
       secundaria: { texto: 'Leve o bilhete ao Seu Nestor, no porto de Porto Espelho', alvo: 'nestor' },
       depois: { flags: { 'nh.achouGarrafa': true }, ambiente: true },
@@ -167,6 +172,7 @@ export default {
         ['nestor', 'Heitor! Esse nome eu conheço. O menino da Aurora que cantava no barco quando era pequeno. Ele é pai do Téo, não é?'],
         ['nestor', 'Se ele escreveu isso, não é coisa de quem está doente. É coisa de quem está preso lá embaixo. Leve o papel ao Téo, antes que a Aurora o encontre.'],
         ['jogador', 'Eu levo. E eu vou descer até lá.'],
+        ['narrador', 'O Seu Nestor guarda o bilhete numa caixa de madeira, junto com as outras garrafas. Parece um pequeno museu do mar.'],
       ],
       itens: [['superRepel', 2]],
       depois: { flags: { 'nh.sqGarrafaFim': true, 'nh.bilheteHeitor': true }, ambiente: true },
@@ -177,6 +183,7 @@ export default {
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e vinte e sete minutos. Os pescadores do porto dizem que o lago está mais escuro de manhã.'],
         ['mae', 'Ravi, seis e vinte e sete. O Capitão Ivo disse que nunca viu o sol tão preguiçoso. Ele mandou um abraço, aliás.'],
+        ['jogador', 'Mãe, eu vou ver o lago de manhã. Se o sol atrasar mais, eu conto.'],
       ],
       depois: { flags: { 'nh.boletim.3': true, 'nh.sol': '6h27' }, ambiente: true },
     },

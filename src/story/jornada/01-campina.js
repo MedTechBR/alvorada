@@ -80,6 +80,8 @@ export default {
       falas: [
         ['tome', 'Você veio pelo caminho certo, e chegou com a cara de quem pensa que já ganhou. Eu gosto disso.'],
         ['tome', 'Quarenta anos de colheita me ensinaram uma coisa: a gente planta devagar e colhe rápido. Vamos ver a sua colheita.'],
+        ['jogador', 'Não vou pegar leve, Tomé. Prometi à Lili que voltava com a pedra no bolso.'],
+        ['tome', 'Ótimo! Então prepare o seu melhor pão. Eu já estou com o meu pronto.'],
       ],
       depois: {
         batalha: {

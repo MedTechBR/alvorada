@@ -24,6 +24,7 @@ export default {
         ['lia', 'Cuidado com a passarela! Tem um Wurmple atravessando. Ele está nisso desde ontem.'],
         ['lia', 'Eu sou a Lia, pesquisadora, bióloga e babá de lagarta. Também sou a líder do ginásio. Ouvi falar de você: o Tomé me mandou um bilhete.'],
         ['lia', 'Tem gente de capa roxa rondando minha estufa. Eles perguntaram da "pedra da Lia". Pedra! Como se eu fosse uma pedreira!'],
+        ['jogador', 'Então eu vou ver a estufa. Mas antes me diz: você sabe quem são esses sujeitos de capa roxa?'],
       ],
       depois: {
         flags: { 'nh.chegouSussurro': true },
@@ -77,6 +78,8 @@ export default {
         ['narrador', 'Uma gruta coberta de musgo. Nas paredes, veios de cristal brilham com a mesma luz morna do chaveiro da Aurora.'],
         ['narrador', 'Só que aqui a luz pulsa. Devagar. Como se respirasse.'],
         ['narrador', 'Lá do fundo vem um barulho de teia rasgando.'],
+        ['jogador', 'Esse barulho não é normal. Eu vou até o fundo.'],
+        ['absol', 'Absol.'],
       ],
       depois: {
         flags: { 'nh.tocaEntrou': true },
@@ -142,6 +145,8 @@ export default {
       gatilho: { tipo: 'vencer', alvo: 'c2_recruta' },
       falas: [
         ['recruta2', 'Deixa comigo! Houndour, morde a canela dele! Com carinho, que ele é criança!'],
+        ['recruta', 'Agora você me deixou sem graça. Vou dar o troco na Lia!'],
+        ['jogador', 'Então vem. Aqui a gente não precisa de capa roxa para proteger o que é da Lia.'],
       ],
       depois: {
         batalha: {
@@ -211,6 +216,8 @@ export default {
       falas: [
         ['lia', 'Chegou ao centro da teia! Pouca gente chega sem ser puxada de volta pelo Spinarak. Ele está meio decepcionado.'],
         ['lia', 'Inseto é pequeno, é quieto, é fácil de ignorar. E é por isso que ganha. Vamos lá!'],
+        ['jogador', 'Eu estou pronto, Lia. Mas antes me diz: a sua estufa sempre foi assim, tão escura?'],
+        ['lia', 'Não. Antes de a Aurora pedir o cristal, a estufa tinha sol de manhã. Agora tem só essa penumbra.'],
       ],
       depois: {
         batalha: {
@@ -255,6 +262,8 @@ export default {
         ['bia', '{jogador}! É a Bia! Analisei o registro do cristal da gruta. A luz dele não brilha, ela vaza. Como se viesse de outro lugar.'],
         ['bia', 'Nenhuma pedra que eu conheço faz isso. O Professor ficou branco quando eu contei. Disse "deve ser nada" e foi tomar banho.'],
         ['bia', 'Ele nunca toma banho por tanto tempo. Fica de olho nele e me avisa se alguém perguntar da luzita.'],
+        ['jogador', 'Então ela não é só luz. É algo que vem de fora da terra.'],
+        ['bia', 'Isso mesmo. Eu vou tentar descobrir de onde.'],
       ],
       depois: { ambiente: true },
     },
@@ -264,6 +273,7 @@ export default {
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e dezenove minutos. O atraso já passa de quinze minutos desde o começo da semana.'],
         ['mae', 'Ravi, seis e dezenove. Você está ganhando insígnias, e o sol está ficando mais preguiçoso. Isso não é normal.'],
+        ['jogador', 'Então o sol atrasa desde a primeira vitória. Foi isso que eu vi no Sussurro.'],
       ],
       depois: { flags: { 'nh.boletim.2': true, 'nh.sol': '6h19' }, ambiente: true },
     },
@@ -275,6 +285,8 @@ export default {
       falas: [
         ['tito', 'O Pipoca sumiu! Ele é um Skwovet e foi buscar noz no bosque e não voltou. Ele sempre volta. Sempre.'],
         ['tito', 'Se você achar ele, fala que eu não tô bravo. Só um pouquinho.'],
+        ['jogador', 'Acho que vi um Skwovet correndo para a mata. Pode ser ele?'],
+        ['tito', 'Pode, sim! Ele adora a mata de jequitibá. Se achar, traga de volta com cuidado.'],
       ],
       secundaria: { texto: 'Procure o Pipoca, o Skwovet do Tito, na Mata dos Jequitibás, no bosque', alvo: 'mata_jequitibas' },
       depois: { flags: { 'nh.sqPipoca': true }, ambiente: true },
@@ -290,6 +302,7 @@ export default {
         ['narrador', 'Entre as raízes de um jequitibá, um Skwovet roliço segura uma noz quase do tamanho dele. Ele vira a cabeça e reconhece a cara de quem o procura.'],
         ['narrador', 'Ele tem uma coleira de barbante com um pequeno sino. Está faltando um pedaço. Parece que alguém tentou puxar o pelo dele, lá na estufa.'],
         ['jogador', 'Vem comigo, Pipoca. O Tito está preocupado.'],
+        ['narrador', 'O Skwovet ouve o seu nome e para de roer a noz. Ele dá dois passos na sua direção, desconfiado.'],
       ],
       secundaria: { texto: 'Leve o Pipoca de volta ao Tito, na Vila Sussurro', alvo: 'vila_sussurro' },
       depois: { flags: { 'nh.achouPipoca': true }, ambiente: true },
@@ -302,6 +315,7 @@ export default {
         ['tito', 'Pipoca! Seu maluco! Eu não estava bravo. Eu estava só um pouquinho bravo, mas agora passou.'],
         ['tito', 'Tome, leve esta noz de ouro. Ela é a melhor noz da vila. Guardo desde que nasci. Não conta pra minha mãe.'],
         ['narrador', 'O Pipoca sobe no ombro do Tito e começa a roer a orelha dele. Os dois estão felizes.'],
+        ['jogador', 'Ele fez um bom trabalho. Mas agora eu quero saber se o Tito sabe mesmo guardar segredo.'],
       ],
       depois: {
         itens: [['rareCandy', 1]],

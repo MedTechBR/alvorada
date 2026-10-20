@@ -63,6 +63,8 @@ export default {
       falas: [
         ['clarice', 'O Aurélio perdeu para você? Ele vai ficar insuportável no café da manhã. Eu sou a Clarice, e eu acordo cedo para vencer.'],
         ['clarice', 'Minha equipe é de treino pesado. Se você não tem fôlego, a manhã termina antes do sol.'],
+        ['jogador', 'Eu passei pelo Aurélio. Não sei se aguento outra luta, mas vou tentar.'],
+        ['clarice', 'Então tenta. A manhã não espera quem dorme no caminho.'],
       ],
       depois: {
         batalha: {
@@ -114,6 +116,8 @@ export default {
       falas: [
         ['ibere', 'Entardecer é quando a luz vai embora devagar. Eu sou o Iberê, o último da Elite. Eu vi o sol atrasar lá do meu jardim.'],
         ['ibere', 'Quem chega até mim com a equipe inteira ainda de pé merece uma luta de dragão. Vamos ver se você aguenta a pressão.'],
+        ['jogador', 'Eu vi o Brasa lá fora. Se ele é do meio-dia, o senhor é do fim da tarde?'],
+        ['ibere', 'Exato. E o entardecer é a parte da luta em que o dragão finalmente tem razão. Vamos.'],
       ],
       depois: {
         batalha: {
@@ -161,6 +165,8 @@ export default {
       falas: [
         ['dalva', 'Você chegou ao fim da Liga, e ainda tem o sol nas costas. Isso é mais do que eu esperava.'],
         ['dalva', 'Agora, a última batalha. Eu não vou pegar leve, porque a minha irmã nunca me perdoaria se eu pegasse.'],
+        ['jogador', 'Eu não vou recuar agora, Dalva. Eu vi o que a sua irmã fez e não vou desistir.'],
+        ['dalva', 'Então vem. Espero que você saiba o que está fazendo, porque eu já não sei.'],
       ],
       depois: {
         batalha: {

@@ -20,6 +20,7 @@ export default {
         ['narrador', 'A Cordilheira Geada começa numa estrada de terra batida, com a neve já acumulada nas margens. Ao longe, os picos brancos parecem recortados no céu.'],
         ['narrador', 'Esta é a Estrada da Vitória. Quem quer chegar à Liga do Zênite precisa atravessar a cordilheira inteira, com frio, vento e uma vila escondida no alto.'],
         ['jogador', 'Depois do Relógio, o caminho para a Liga é este. Não há outro jeito de chegar lá sem passar pelo gelo.'],
+        ['narrador', 'Um vento seco desce do alto da cordilheira e enche a estrada de neve fina, que brilha como açúcar.'],
       ],
       depois: {
         flags: { 'nh.chegouGeada': true },
@@ -35,6 +36,7 @@ export default {
         ['prof', 'Ravi, está me ouvindo? Eu estou no observatório da vila. Um rapaz da estalagem me emprestou o telefone.'],
         ['prof', 'Vá com cuidado na Caverna de Gelo. Dizem que o eco do gelo repete as vozes de quem passou por lá, e ninguém volta sem ouvir a própria voz de volta.'],
         ['prof', 'E o Téo subiu para o Cume ontem. Ele disse que quer enfrentar você lá em cima, antes da Liga. Não deixe ele te achar despreparado.'],
+        ['jogador', 'O professor no observatório. Eu não imaginava que ele fosse tão animado lá em cima.'],
       ],
       depois: {
         flags: { 'nh.vilaGeada': true },
@@ -97,6 +99,8 @@ export default {
         ['teo', 'Então escuta. Meu pai vai sair da mina e voltar para casa, e eu vou com ele, se ele quiser. A Aurora não vai mais dar as ordens lá embaixo.'],
         ['teo', 'Quando você chegar à Liga, a Elite vai te pedir o seu nome. Diga o nome do Téo. Eu estou lá antes de você, no Portão da Liga.'],
         ['jogador', 'Eu digo, Téo. Até lá.'],
+        ['narrador', 'O Téo estende a mão sem muita cerimônia. A luta não resolve tudo, mas ajuda a chegar mais perto.'],
+        ['jogador', 'Eu aperto, Téo. Até a Liga.'],
       ],
       depois: {
         flags: { 'nh.teoFinalPronto': true },

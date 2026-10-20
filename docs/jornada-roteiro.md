@@ -145,8 +145,10 @@ a luta. O arquivo `regiao-sertao.js` é gerado por `tools/regioes/gerar-sertao.p
 insígnias e treinadores que existem, personagens das falas, lugares do mapa (com a lista de pendências acima), espécies,
 golpes e itens das batalhas, objetivo com texto e lugar em toda cena que move o painel, reviravoltas (uma por número, com
 o resumo "Descoberta:"), a ordem do sol nos boletins (sobe até o 8º e volta depois do Relógio), e o elenco (sem colisão).
-Avisos são de conteúdo e não reprovam: cenas de uma caixa (sobretudo treinadores que avistam o jogador, como no cap02) e
-frases de objetivo sem verbo de ação.
+Avisos são de conteúdo e não reprovam.
+
+Caixas de fala: 139 cenas. 70 têm de 3 a 8 caixas, a reveal da mina (reviravolta 1) tem 10, e as 20 restantes são de
+treinador que avista o jogador (uma ou duas caixas, como no cap02): são as únicas abaixo do combinado de 3 a 8.
 
 ---
 
@@ -180,6 +182,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* pisar `saida_vila_oeste` (exige balls, sem nh.explicouRelogio)
 - *A Rota 1 começa logo depois da última casa. Dá para ver a Cidade Campina lá no fundo, no meio dos campos.*
 - *Antes de sair, o Prof. Jatobá gritou da janela: "Passa no laboratório antes! Você ainda não sabe o que é o Relógio!"*
+- **Ravi:** Então é melhor ir logo. Mas antes eu quero entender o que o professor quer dizer.
+- *Você olha para o céu. O sol ainda está baixo e pálido, como se tivesse esquecido de subir.*
 - *Objetivo no painel:* Volte ao laboratório do Prof. Jatobá antes de seguir para a Rota 1 → `lab`
 
 ## 01 · Colheita em Campina
@@ -219,6 +223,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* falar `tome` (exige nh.ebanoCampina, sem badges.campina)
 - **Líder Tomé:** Você veio pelo caminho certo, e chegou com a cara de quem pensa que já ganhou. Eu gosto disso.
 - **Líder Tomé:** Quarenta anos de colheita me ensinaram uma coisa: a gente planta devagar e colhe rápido. Vamos ver a sua colheita.
+- **Ravi:** Não vou pegar leve, Tomé. Prometi à Lili que voltava com a pedra no bolso.
+- **Líder Tomé:** Ótimo! Então prepare o seu melhor pão. Eu já estou com o meu pronto.
 - *Batalha* `leader_tome`: Líder Tomé, prêmio ₽1400.
   - Equipe: Patrat Nv 12 (Investida, Chicote de Cauda, Ataque Rápido); Lillipup Nv 13 (Investida, Olhar Malicioso, Mordida); Skitty Nv 14 (Pancadinha, Enrolar-se, Ataque Rápido)
 
@@ -249,6 +255,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - **Líder Lia:** Cuidado com a passarela! Tem um Wurmple atravessando. Ele está nisso desde ontem.
 - **Líder Lia:** Eu sou a Lia, pesquisadora, bióloga e babá de lagarta. Também sou a líder do ginásio. Ouvi falar de você: o Tomé me mandou um bilhete.
 - **Líder Lia:** Tem gente de capa roxa rondando minha estufa. Eles perguntaram da "pedra da Lia". Pedra! Como se eu fosse uma pedreira!
+- **Ravi:** Então eu vou ver a estufa. Mas antes me diz: você sabe quem são esses sujeitos de capa roxa?
 - *Depois:* flags `nh.chegouSussurro=true`
 - *Objetivo no painel:* Entre no Bosque Sussurrante, a oeste, e descubra quem está rondando a estufa → `bosque_sussurrante`
 
@@ -276,6 +283,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *Uma gruta coberta de musgo. Nas paredes, veios de cristal brilham com a mesma luz morna do chaveiro da Aurora.*
 - *Só que aqui a luz pulsa. Devagar. Como se respirasse.*
 - *Lá do fundo vem um barulho de teia rasgando.*
+- **Ravi:** Esse barulho não é normal. Eu vou até o fundo.
+- **Absol:** Absol.
 - *Depois:* flags `nh.tocaEntrou=true`
 - *Objetivo no painel:* Vá até o fundo da Toca do Absol → `toca_absol`
 
@@ -311,6 +320,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 ### `j02_estufa_fim`
 *Gatilho:* vencer `c2_recruta`
 - **Recruta Crepúsculo:** Deixa comigo! Houndour, morde a canela dele! Com carinho, que ele é criança!
+- **Recruta Crepúsculo:** Agora você me deixou sem graça. Vou dar o troco na Lia!
+- **Ravi:** Então vem. Aqui a gente não precisa de capa roxa para proteger o que é da Lia.
 - *Batalha* `c2_recruta2`: Recruta Crepúsculo, prêmio ₽500. Se perder, volta a esta cena.
   - Equipe: Houndour Nv 17 (Brasa, Olhar Malicioso, Mordida); Gastly Nv 18 (Lambida, Hipnose)
 
@@ -349,6 +360,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* falar `lia` (exige nh.defendeuEstufa, exige trainers.g2_nando, exige trainers.g2_bel, sem badges.sussurro)
 - **Líder Lia:** Chegou ao centro da teia! Pouca gente chega sem ser puxada de volta pelo Spinarak. Ele está meio decepcionado.
 - **Líder Lia:** Inseto é pequeno, é quieto, é fácil de ignorar. E é por isso que ganha. Vamos lá!
+- **Ravi:** Eu estou pronto, Lia. Mas antes me diz: a sua estufa sempre foi assim, tão escura?
+- **Líder Lia:** Não. Antes de a Aurora pedir o cristal, a estufa tinha sol de manhã. Agora tem só essa penumbra.
 - *Batalha* `leader_lia`: Líder Lia, prêmio ₽1800.
   - Equipe: Combee Nv 17 (Picada, Lufada de Vento, Aroma Doce); Spinarak Nv 18 (Fio de Seda, Ferrão Venenoso, Absorver, Sombra Noturna); Venonat Nv 18 (Confusão, Pó Venenoso, Supersônico); Scyther Nv 19 (Ataque Rápido, Cortador de Fúria, Olhar Malicioso, Ataque de Asa)
 
@@ -367,18 +380,23 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - **Bia:** {jogador}! É a Bia! Analisei o registro do cristal da gruta. A luz dele não brilha, ela vaza. Como se viesse de outro lugar.
 - **Bia:** Nenhuma pedra que eu conheço faz isso. O Professor ficou branco quando eu contei. Disse "deve ser nada" e foi tomar banho.
 - **Bia:** Ele nunca toma banho por tanto tempo. Fica de olho nele e me avisa se alguém perguntar da luzita.
+- **Ravi:** Então ela não é só luz. É algo que vem de fora da terra.
+- **Bia:** Isso mesmo. Eu vou tentar descobrir de onde.
 - *Depois:* só conta a história
 
 ### `j02_boletim2`
 *Gatilho:* a flag `badges.sussurro` virar verdadeira (sem nh.boletim.2)
 - **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e dezenove minutos. O atraso já passa de quinze minutos desde o começo da semana.
 - **Mãe:** Ravi, seis e dezenove. Você está ganhando insígnias, e o sol está ficando mais preguiçoso. Isso não é normal.
+- **Ravi:** Então o sol atrasa desde a primeira vitória. Foi isso que eu vi no Sussurro.
 - *Depois:* flags `nh.boletim.2=true`, `nh.sol=6h19` · só conta a história
 
 ### `j02_sq_pipoca_inicio`
 *Gatilho:* falar `tito` (sem nh.sqPipoca)
 - **Tito:** O Pipoca sumiu! Ele é um Skwovet e foi buscar noz no bosque e não voltou. Ele sempre volta. Sempre.
 - **Tito:** Se você achar ele, fala que eu não tô bravo. Só um pouquinho.
+- **Ravi:** Acho que vi um Skwovet correndo para a mata. Pode ser ele?
+- **Tito:** Pode, sim! Ele adora a mata de jequitibá. Se achar, traga de volta com cuidado.
 - *Depois:* flags `nh.sqPipoca=true` · só conta a história
 - *Missão secundária (diário):* Procure o Pipoca, o Skwovet do Tito, na Mata dos Jequitibás, no bosque → `mata_jequitibas`
 
@@ -387,6 +405,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *Entre as raízes de um jequitibá, um Skwovet roliço segura uma noz quase do tamanho dele. Ele vira a cabeça e reconhece a cara de quem o procura.*
 - *Ele tem uma coleira de barbante com um pequeno sino. Está faltando um pedaço. Parece que alguém tentou puxar o pelo dele, lá na estufa.*
 - **Ravi:** Vem comigo, Pipoca. O Tito está preocupado.
+- *O Skwovet ouve o seu nome e para de roer a noz. Ele dá dois passos na sua direção, desconfiado.*
 - *Depois:* flags `nh.achouPipoca=true` · só conta a história
 - *Missão secundária (diário):* Leve o Pipoca de volta ao Tito, na Vila Sussurro → `vila_sussurro`
 
@@ -395,6 +414,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - **Tito:** Pipoca! Seu maluco! Eu não estava bravo. Eu estava só um pouquinho bravo, mas agora passou.
 - **Tito:** Tome, leve esta noz de ouro. Ela é a melhor noz da vila. Guardo desde que nasci. Não conta pra minha mãe.
 - *O Pipoca sobe no ombro do Tito e começa a roer a orelha dele. Os dois estão felizes.*
+- **Ravi:** Ele fez um bom trabalho. Mas agora eu quero saber se o Tito sabe mesmo guardar segredo.
 - *Depois:* itens 1× rareCandy · flags `nh.sqPipocaFim=true` · só conta a história
 
 ## 03 · O espelho partido
@@ -447,6 +467,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* falar `marina` (exige trainers.g3_zeca, exige trainers.g3_taina, exige nh.viuVesperaPier, sem badges.espelho)
 - **Líder Marina:** Você chegou ao fundo do galpão. Pouca gente chega sem ficar molhado. Os meus Pokémon estão bem treinados.
 - **Líder Marina:** Água não tem forma. Ela pega o formato de quem a segura. Vamos ver se você sabe segurar.
+- **Ravi:** Então eu não vou ficar molhado à toa. Vamos ver quem nada melhor.
+- **Líder Marina:** Esse é o espírito! Pode começar com o Basculin, que ele já está ansioso.
 - *Batalha* `leader_marina`: Líder Marina, prêmio ₽2200.
   - Equipe: Psyduck Nv 20 (Revólver d'Água, Confusão, Arranhão); Buizel Nv 21 (Jato Aquático, Ataque Rápido, Revólver d'Água); Basculin Nv 22 (Jato Aquático, Mordida, Pulso d'Água, Cabeçada); Staryu Nv 23 (Jato de Bolhas, Escaldar, Recuperação); Mantine Nv 24 (Jato de Bolhas, Cachoeira, Recuperação)
 
@@ -463,6 +485,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* falar `nestor` (sem nh.sqGarrafa)
 - **Seu Nestor:** Cada garrafa tem uma história. Essa aqui só tem areia. Mas é uma areia muito bonita.
 - **Seu Nestor:** Eu jogo uma garrafa no mar desde o ano em que a Aurora chegou. Uma delas voltou com um bilhete de um mineiro. Você pode achar a outra no manguezal?
+- **Ravi:** Uma garrafa no manguezal? Isso parece coisa de pescador com saudade.
+- **Seu Nestor:** É saudade, sim, e também de quem não sabe quem chega do mar. Vai lá, filho.
 - *Depois:* flags `nh.sqGarrafa=true` · só conta a história
 - *Missão secundária (diário):* Ache a garrafa do Seu Nestor no manguezal, a oeste do porto → `manguezal`
 
@@ -471,6 +495,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *Entre as raízes dos mangues, uma garrafa verde está presa numa rede de pesca. Dentro, um papel enrolado, molhado e pálido.*
 - *A letra é torta, de quem escreve no escuro: "Estamos no nível 4. A luz daqui não é limpa, é a mesma que sai dos nossos cabos. Heitor."*
 - **Ravi:** Heitor. Esse é o nome do pai do Téo. O Téo disse que ele trabalha na Mina Aurora.
+- *O papel está úmido, e a tinta escorre nas bordas. Você guarda o bilhete no bolso com cuidado.*
 - *Depois:* flags `nh.achouGarrafa=true` · só conta a história
 - *Missão secundária (diário):* Leve o bilhete ao Seu Nestor, no porto de Porto Espelho → `nestor`
 
@@ -479,12 +504,14 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - **Seu Nestor:** Heitor! Esse nome eu conheço. O menino da Aurora que cantava no barco quando era pequeno. Ele é pai do Téo, não é?
 - **Seu Nestor:** Se ele escreveu isso, não é coisa de quem está doente. É coisa de quem está preso lá embaixo. Leve o papel ao Téo, antes que a Aurora o encontre.
 - **Ravi:** Eu levo. E eu vou descer até lá.
+- *O Seu Nestor guarda o bilhete numa caixa de madeira, junto com as outras garrafas. Parece um pequeno museu do mar.*
 - *Depois:* flags `nh.sqGarrafaFim=true`, `nh.bilheteHeitor=true` · só conta a história
 
 ### `j03_boletim3`
 *Gatilho:* a flag `badges.espelho` virar verdadeira (sem nh.boletim.3)
 - **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e vinte e sete minutos. Os pescadores do porto dizem que o lago está mais escuro de manhã.
 - **Mãe:** Ravi, seis e vinte e sete. O Capitão Ivo disse que nunca viu o sol tão preguiçoso. Ele mandou um abraço, aliás.
+- **Ravi:** Mãe, eu vou ver o lago de manhã. Se o sol atrasar mais, eu conto.
 - *Depois:* flags `nh.boletim.3=true`, `nh.sol=6h27` · só conta a história
 
 ## 04 · Faísca na Costa Coral
@@ -495,6 +522,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *Cidade Coral: um farol enorme na ponta do morro, feira de conchas e um calçadão cheio de turistas.*
 - *O Líder Jonas cuida do farol e da insígnia Faísca. Mas as luzes do farol estão apagadas há dois dias, e ninguém sabe dizer por quê.*
 - **Ravi:** Antes de falar com o Jonas, preciso ver o que está acontecendo no farol.
+- **Ravi:** Um farol apagado e um líder que não quer falar. Isso não cheira bem.
 - *Depois:* flags `nh.chegouCoral=true`
 - *Objetivo no painel:* Suba ao Farol Coral, na ponta do morro, e veja o que aconteceu com as luzes → `farol_entrada`
 
@@ -546,6 +574,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* falar `jonas` (exige nh.pedraCoral, exige trainers.g4_saulo, exige trainers.g4_duda, sem badges.coral)
 - **Líder Jonas:** Você trouxe a pedra de volta, e ainda passou pelos meus aprendizes. Ninguém faz isso sem levar um choque.
 - **Líder Jonas:** Eu já ia pedir ajuda. Mas vamos batalhar primeiro. Eu sou eletricidade, e eletricidade não espera ninguém terminar de falar.
+- **Ravi:** Eu trouxe a pedra. E trouxe também os recados da Iracema e do Solano.
+- **Líder Jonas:** Então é melhor a gente batalhar primeiro. Não quero conversa sem eletricidade.
 - *Batalha* `leader_jonas`: Líder Jonas, prêmio ₽2800.
   - Equipe: Electrike Nv 26 (Choque do Trovão, Mordida, Ataque Rápido); Electabuzz Nv 26 (Choque do Trovão, Ataque Rápido, Olhar Malicioso); Magnemite Nv 27 (Choque do Trovão, Supersônico, Investida); Ampharos Nv 28 (Relâmpago, Descarga, Raio Confuso)
 
@@ -562,6 +592,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* falar `iracema` (exige nh.viuSolano, sem nh.sqDiario)
 - **Iracema:** Eu escrevia tudo que acontecia no farol. Todo dia, desde que me contrataram. O diário está lá no quarto do topo, onde ficam os geradores.
 - **Iracema:** Se a Aurora mexeu nas peças, o registro está lá. Eu não consigo subir mais aquela escada com estes joelhos.
+- **Ravi:** Um diário de farol? Isso pode ser o que a Iracema estava escondendo.
+- **Iracema:** Pode ser. Eu escrevi tudo por medo de esquecer. Agora é hora de lembrar.
 - *Depois:* flags `nh.sqDiario=true` · só conta a história
 - *Missão secundária (diário):* Encontre o diário da Iracema no quarto do topo do Farol Coral → `farol_topo`
 
@@ -570,6 +602,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *No quarto dos geradores, um caderno de capa verde está preso debaixo de uma caixa de ferramentas. As páginas do fim são de outra letra.*
 - *"Dia 3: o gerador três foi trocado por ordem da Companhia Aurora. Peça nova, sem número de série. Assinado: A. Solano."*
 - *"Dia 14: a luz gira sozinha. Ela acende mais cedo lá embaixo e mais tarde aqui em cima. Não é o farol que está errado. É o sol."*
+- **Ravi:** Então o Solano assinou o diário com as próprias mãos. Ele achou que ninguém leria.
+- *Você fecha o caderno. Lá embaixo, o mar bate nas pedras do farol, e a luz do topo ainda gira fora de hora.*
 - *Depois:* flags `nh.diarioFarol=true` · só conta a história
 - *Missão secundária (diário):* Leve o diário da Iracema de volta a ela, no pé do farol → `farol_entrada`
 
@@ -578,12 +612,14 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - **Iracema:** Eu sabia. O Solano assinou o diário, e ninguém tem direito de assinar no farol da cidade. Agora é só a gente mostrar isso à Cidade Coral.
 - **Iracema:** Tome, leve estas poções. São as últimas que eu tenho guardadas. Vai precisar delas no caminho.
 - **Ravi:** Eu conto ao Jonas. Ele disse que quer ajudar, mesmo que não queira admitir.
+- *A Iracema guarda o diário debaixo do braço e olha para o farol com um sorriso pequeno.*
 - *Depois:* flags `nh.sqDiarioFim=true` · só conta a história
 
 ### `j04_boletim4`
 *Gatilho:* a flag `badges.coral` virar verdadeira (sem nh.boletim.4)
 - **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e trinta e quatro minutos. O farol de Cidade Coral voltou a piscar, mas com atraso, segundo os marinheiros.
 - **Mãe:** Ravi, seis e trinta e quatro. De manhã a casa fica escura por mais tempo. Anda, filho, volta logo.
+- **Ravi:** Mãe, não sei quanto tempo mais essa história dura. Mas estou voltando para casa.
 - *Depois:* flags `nh.boletim.4=true`, `nh.sol=6h34` · só conta a história
 
 ## 05 · As raízes das Jandaias
@@ -648,6 +684,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *A Dona Zélia é a líder da cidade. Ela guarda o casarão com as velas e um ginásio em que a luz só entra quando a noite cai.*
 - **Vó Benta:** Chegou! Come mais um pedaço. Aqui a gente janta cedo, porque a noite chega antes do sono.
 - **Vó Benta:** Ouvi no rádio que tem gente de capa roxa rondando o casarão. Vá ver. Mas volte antes de dar meia-noite.
+- **Ravi:** Vou ao casarão e volto antes da meia-noite. Prometo, Vó Benta.
 - *Depois:* flags `nh.chegouLamparina=true`
 - *Objetivo no painel:* Vá ao Casarão das Velas depois que escurecer e veja quem está rondando a Dona Zélia → `casarao_velas`
 
@@ -688,6 +725,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - **Dona Zélia:** Um homem de terno branco veio aqui ontem, perguntou dela e foi embora sorrindo. Eu não gostei do sorriso dele.
 - **Dona Zélia:** Você tem cara de quem sabe guardar uma coisa. Leve a vela e não deixe ninguém acender ela antes de eu mandar.
 - *A Dona Zélia coloca uma vela de cera escura nas suas mãos. A chama é pequena, azulada, e não tremeu nem com o vento da porta.*
+- **Ravi:** Uma vela que não treme com o vento. Isso não é cera comum.
 - *Depois:* flags `nh.velaEterna=true`
 - *Objetivo no painel:* Vença os médiuns Odete e Ciro e desafie a Dona Zélia no Casarão das Velas → `zelia` (treinadores: g5_odete, g5_ciro)
 
@@ -707,6 +745,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* falar `zelia` (exige nh.velaEterna, exige trainers.g5_odete, exige trainers.g5_ciro, sem badges.lamparina)
 - **Dona Zélia:** Você passou pelos meus médiuns. Eles são teimosos, como a vela, e como eu. Agora é a minha vez.
 - **Dona Zélia:** Não vou perguntar se você está pronto. Eu já vi a sua cara de noite, e ela é de quem vai vencer.
+- **Ravi:** Dona Zélia, antes de começar: a vela ainda está na minha mochila. Ela precisa ficar apagada?
+- **Dona Zélia:** Está, querido. E não é hora de acender. Você vai precisar dela quando a noite for mais escura.
 - *Batalha* `leader_zelia`: Dona Zélia, prêmio ₽3200.
   - Equipe: Lampent Nv 30 (Lança-Chamas, Bola Sombria, Fogo-Fátuo); Gengar Nv 31 (Bola Sombria, Hipnose, Maldição); Dusknoir Nv 32 (Soco Sombrio, Hipnose, Golpe Baixo); Chandelure Nv 32 (Lança-Chamas, Bola Sombria, Fogo-Fátuo)
 
@@ -723,6 +763,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* a flag `badges.lamparina` virar verdadeira (sem nh.boletim.5)
 - **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e quarenta e dois minutos. Os moradores de Vila Lamparina dizem que a noite foi a mais longa da região.
 - **Mãe:** Ravi, seis e quarenta e dois. Isso já é quase meia hora de atraso em cinco dias. Eu não gosto nada disso, filho.
+- **Ravi:** Dona Zélia disse que a noite foi a mais longa da região. Eu acredito nela.
 - *Depois:* flags `nh.boletim.5=true`, `nh.sol=6h42` · só conta a história
 
 ## 07 · O preço da luz
@@ -734,6 +775,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *O sol mal aparece entre os prédios. Todo mundo aqui tem uma lanterna de luzita no bolso, acesa de dia.*
 - **Pipa:** Você chegou! Eu sou a Pipa, repórter do Jornal Farol. Estou fazendo uma matéria sobre a Torre Aurora e preciso de alguém que não seja da empresa.
 - **Pipa:** Vamos lá. O gerente Lúcio vai fazer uma visita guiada. Ele adora mostrar as tubulações, principalmente para quem não pergunta de onde vem a luz.
+- **Ravi:** Uma repórter e um prédio de cristal. Não sei qual dos dois está mais disposto a me enganar.
 - *Depois:* flags `nh.chegouAurora=true`
 - *Objetivo no painel:* Vá à Torre Aurora, no centro da cidade, e acompanhe a visita guiada → `torre_aurora`
 
@@ -817,6 +859,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *Uma pasta de couro está marcada com "Luzita: estudos, 2010". Dentro, cartas escritas à mão por dois autores: o Prof. Jatobá e a Dra. Véspera.*
 - *As cartas falam de um cristal que vaza luz, e de uma reunião com um homem chamado Augusto Solano, que queria comprar a amostra.*
 - **Ravi:** Essas cartas são de 16 anos atrás. O professor participou disso desde o começo?
+- *O cheiro de papel velho e de cera vem das prateleiras. Um rádio antigo está ligado num canto, sem som.*
 - *Depois:* flags `nh.arquivo=true`
 - *Objetivo no painel:* Espere o Prof. Jatobá ligar, ou procure-o no laboratório de Vila Alvorada → `lab`
 
@@ -847,6 +890,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* falar `bras` (exige nh.reviravolta2, exige trainers.g6_dandara, exige trainers.g6_tiao, sem badges.rochedo)
 - **Líder Brás:** Ê, camará! Abriu os três portões! O berimbau gostou de você.
 - **Líder Brás:** Agora a luta é a sério. Eu sou o último degrau antes da escalada. Quem passa daqui sobe o Paredão sem medo.
+- **Ravi:** Eu passei pelos seus três portões. Agora quero o último degrau.
+- **Líder Brás:** Então sobe, camará. Mas traz o berimbau de volta, que ele é emprestado do Mestre.
 - *Batalha* `leader_bras`: Líder Brás, prêmio ₽3400.
   - Equipe: Machoke Nv 33 (Golpe de Caratê, Chute Baixo, Energia Focada); Hawlucha Nv 34 (Ataque de Asa, Golpe de Caratê, Pouso); Riolu Nv 35 (Palma de Força, Ataque Rápido, Contra-Ataque); Heracross Nv 36 (Quebra-Tijolo, Ataque de Chifre, Projétil de Sementes); Hitmontop Nv 37 (Giro Rápido, Chute Triplo, Ataque Rápido, Detectar)
 
@@ -863,6 +908,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* a flag `badges.rochedo` virar verdadeira (sem nh.boletim.6)
 - **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e cinquenta e um minutos. A Companhia Aurora nega qualquer relação com o atraso.
 - **Mãe:** Ravi, seis e cinquenta e um. A Aurora nega? Filho, isso quer dizer que alguém está fazendo alguma coisa. Cuidado com o que você ouve.
+- **Ravi:** Se a Aurora nega, é porque tem alguma coisa para negar. Eu vou descobrir o que é.
 - *Depois:* flags `nh.boletim.6=true`, `nh.sol=6h51` · só conta a história
 
 ## 08 · Pedra pintada
@@ -873,6 +919,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *Vila Mandacaru: casas de barro, uma cacimba no centro da praça e um vento seco que levanta areia até o meio da rua.*
 - *A Crepúsculo escava as Ruínas de Pedra Pintada há uma semana, e a Aurora diz que não é nada. Ninguém na vila acredita na Aurora.*
 - **Ravi:** Eu preciso chegar às ruínas antes deles. O Prof. Jatobá disse que a pedra daqui é ligada ao Relógio.
+- *Um menino de chapéu de palha vende água de cacimba numa caneca de lata. Ele aponta para o cânion, do outro lado da vila.*
 - *Depois:* flags `nh.chegouSertao=true`
 - *Objetivo no painel:* Atravesse o Cânion e chegue às Ruínas de Pedra Pintada, ao norte → `sertao_ruinas_entrada`
 
@@ -893,6 +940,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *Numa das pinturas, um Absol branco fica ao lado de uma mulher de casaco longo. Os dois olham para um relógio gigante, com sete estrelas na borda.*
 - *Em outra, duas mulheres idênticas aparecem sob a mesma estrela, uma de cada lado do relógio. A legenda está apagada, exceto por uma palavra: "irmãs".*
 - **Ravi:** O Absol que aparece antes de cada desastre. Ele está em todas as pinturas. Quem é ele?
+- *Você passa a mão pela parede. A tinta ainda está fresca em alguns pontos, como se alguém tivesse pintado ontem.*
 - *Depois:* flags `nh.pinturas=true`
 - *Objetivo no painel:* Procure o Absol branco nas Ruínas de Pedra Pintada: ele está escondido no salão do fundo → `ruinas_pintada_2`
 
@@ -923,6 +971,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *O Museu do Sertão guarda um mapa de papel, dobrado em quatro, que mostra o caminho de escalada do Paredão. Uma faixa de cor marca a trilha, e o nome da Cidade Escarpa está escrito em caneta.*
 - *No verso, um recado de letra miúda: "Quem sobe o Paredão sem mapa cai no vento. Quem sobe com a Sina encontra a pedra certa."*
 - **Téo:** Eu conheço esse mapa. Meu pai tinha uma cópia parecida na garagem. Ele dizia que o Paredão era o caminho para o Relógio.
+- **Ravi:** Então o caminho do Paredão é o mesmo que o seu pai desenhou.
 - *Depois:* flags `nh.mapaParedao=true` · só conta a história
 
 ## 09 · Acima do Paredão
@@ -933,6 +982,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *Cidade Escarpa: casas penduradas na rocha, escadas esculpidas no paredão e um ateliê de pedra com estátuas pela calçada.*
 - *Dá para ver o Planalto dos Ventos lá em cima, com o Relógio de Pedra no topo, pequeno, contra o céu. A tempestade está parada sobre ele.*
 - **Ravi:** A Líder Graça guarda a pedra da cidade. Mas a Sina me disse que ela já foi levada. Preciso descobrir por quem.
+- *Na praça, um ateliê de pedra está com a porta aberta. Uma escultora de avental cinza acena para você, sem sorrir.*
 - *Depois:* flags `nh.chegouEscarpa=true`
 - *Objetivo no painel:* Procure a Líder Graça na Mina Velha, no fim da rua de pedra → `ninho_cidade_escarpa`
 
@@ -977,6 +1027,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* falar `graca` (exige nh.reviravolta4, exige trainers.g7_juvenal, exige trainers.g7_rita, sem badges.escarpa)
 - **Líder Graça:** Você chegou ao fundo da Mina Velha, e não ficou com a cara de quem apanhou das pedras. Isso é bom.
 - **Líder Graça:** A minha pedra sumiu com o Sereno ontem. Não vou negar que fiquei com raiva. Então agora você vai levar uma pancada de rocha.
+- **Ravi:** Eu sinto muito pela pedra, Graça. Eu vou trazer ela de volta.
+- **Líder Graça:** Traz mesmo. E não deixa o Sereno enganar você com cara de bonzinho.
 - *Batalha* `leader_graca`: Líder Graça, prêmio ₽3800.
   - Equipe: Rhyperior Nv 39 (Terremoto, Gume de Pedra, Cabeçada); Tyranitar Nv 40 (Triturar, Gume de Pedra, Terremoto); Gigalith Nv 39 (Rajada de Rochas, Cabeçada, Giro Rápido); Probopass Nv 41 (Tumba de Rochas, Onda de Trovão, Terremoto)
 
@@ -993,6 +1045,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* a flag `badges.escarpa` virar verdadeira (sem nh.boletim.7)
 - **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu hoje às sete horas e três minutos. Pela primeira vez, a Companhia Aurora fala no rádio sobre o horário do sol: diz que é uma "variação passageira".
 - **Mãe:** Ravi, sete e três. Passageira? Filho, faz mais de uma semana. Você está conseguindo ver o que está acontecendo lá em cima?
+- **Ravi:** Eu vou procurar o que a Aurora esconde no Relógio. Se o sol atrasou por isso, quero ver com meus próprios olhos.
 - *Depois:* flags `nh.boletim.7=true`, `nh.sol=7h03` · só conta a história
 
 ## 10 · Brasas no vulcão
@@ -1003,6 +1056,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *Ilha do Basalto: rochas negras, fontes de água quente saindo do chão e um cheiro forte de enxofre que chega até o barco.*
 - *Lá em cima, o vulcão Tição solta uma fumaça fina. Os moradores dizem que, desde a semana passada, o ronco do vulcão não para mais.*
 - **Ravi:** Se o Ébano está aqui, deve ser para o vulcão. A Graça disse que ele quer acordá-lo.
+- **Ravi:** Se o vulcão está acordando, a Graça não exagerava quando falou do vento.
 - *Depois:* flags `nh.chegouBrasas=true`
 - *Objetivo no painel:* Suba ao Vulcão Tição e veja a equipe de perfuração da Crepúsculo → `vulcao_ticao`
 
@@ -1051,6 +1105,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *Mirante dos Ventos: uma torre de vidro no topo do Planalto, com o vento vindo de todos os lados. Lá do alto, dá para ver o Relógio de Pedra, pequeno e escuro, do outro lado do vale.*
 - *O Prof. Jatobá tinha marcado de encontrar você aqui. Ele disse, pelo rádio, que queria mostrar a pedra da Celeste antes de subir.*
 - **Ravi:** O professor não se atrasou nunca. Algo está errado.
+- *Um vento frio sobe pelo vale e faz as bandeiras do mirante estalarem como velas de barco.*
 - *Depois:* flags `nh.chegouMirante=true`
 - *Objetivo no painel:* Procure o Prof. Jatobá no Mirante dos Ventos, perto da torre de vidro → `ninho_mirante_ventos`
 
@@ -1115,6 +1170,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* falar `celeste` (exige nh.velaSelo, exige trainers.r9_bruno, exige trainers.r9_celia, exige trainers.g8_gael, exige trainers.g8_iris, sem badges.mirante)
 - **Líder Celeste:** Você veio até a Torre do Vento, depois de passar por todo o Planalto. Eu vi isso no vento antes de você chegar.
 - **Líder Celeste:** Hoje o meu Braviary vai crescer. Não é para te assustar. É porque a torre só aceita voadores que estão de pé.
+- **Ravi:** Eu passei por todos os seus pilotos. Agora quero ver o que o vento diz de mim.
+- **Líder Celeste:** O vento diz que você ainda tem o que aprender sobre esperar. Vamos ver se ele aguenta a sua pressa.
 - *Batalha* `leader_celeste`: Líder Celeste, prêmio ₽4400, Dynamax.
   - Equipe: Pidgeot Nv 43 (Ataque de Asa, Tornado, Ataque Rápido); Pelipper Nv 43 (Lufada de Vento, Lâmina de Ar, Hipnose); Corviknight Nv 45 (Lâmina de Ar, Pouso, Pássaro Bravo); Braviary Nv 45 (Pássaro Bravo, Ataque de Asa, Hipnose)
 
@@ -1131,6 +1188,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* a flag `badges.mirante` virar verdadeira (sem nh.boletim.8)
 - **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu hoje às sete horas e onze minutos. A tempestade do Planalto acabou ontem à noite, mas o horário continua atrasado.
 - **Mãe:** Ravi, sete e onze. Eu não entendo mais nada, filho. O Prof. Jatobá não atende o telefone desde ontem. Por favor, me diga que você vai trazê-lo para casa.
+- **Ravi:** Mãe, eu vou atrás dele. Ele está no Relógio, e eu prometo que volto com ele.
 - *Depois:* flags `nh.boletim.8=true`, `nh.sol=7h11` · só conta a história
 
 ## 12 · O Relógio de Pedra
@@ -1152,6 +1210,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* depois da cena `j12_chegada`
 - **Dra. Véspera:** Antes de você acender qualquer coisa, eu quero saber quem está do outro lado da chama.
 - **Dra. Véspera:** Eu não sou da Aurora. Mas também não sou sua amiga. Vamos ver se você segura a luz quando ela pesa.
+- **Ravi:** Então eu vou segurar a luz com a mão aberta. Não vou fechar o punho.
+- **Dra. Véspera:** Esse é o primeiro pensamento sensato que eu ouço hoje. Vamos.
 - *Batalha* `c12_vespera`: Dra. Véspera, prêmio ₽4800. Se perder, volta a esta cena.
   - Equipe: Murkrow Nv 46 (Bicada, Assustar, Perseguição); Honchkrow Nv 47 (Talho Noturno, Pássaro Bravo, Golpe Baixo); Sableye Nv 47 (Garra Sombria, Jogo Sujo, Fogo-Fátuo); Grimmsnarl Nv 48 (Quebra-Espírito, Laço Sombrio, Onda de Trovão, Golpe Baixo)
 
@@ -1171,6 +1231,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - **Augusto Solano:** Vocês acham que uma pedra e um garoto vão deter a luz da Aurora? A luz é a única coisa que nunca deixou ninguém no escuro.
 - **Augusto Solano:** Lúcio, Sereno, às pedras. Eu vou cuidar do garoto pessoalmente. A Véspera pode continuar sonhando com a noite.
 - **Dra. Véspera:** Eu sonho com a noite porque é ela que nos protege da sua luz, Solano.
+- *O Lúcio e o Sereno se afastam para as bordas do círculo de pedra. O Téo e o Heitor ficam de pé ao seu lado, sem dizer nada.*
 - *Batalha* `c12_solano`: Augusto Solano, prêmio ₽9000, com o Téo ao seu lado. Se perder, volta a esta cena.
   - Equipe: Magnezone Nv 45 (Canhão de Luz, Relâmpago, Bomba Magnética); Klinklang Nv 45 (Engrenagem Dupla, Relâmpago, Troca de Marcha); Glimmora Nv 46 (Gema de Poder, Bomba de Lodo, Rochas Furtivas); Corviknight Nv 46 (Lâmina de Ar, Pouso, Pássaro Bravo); Weavile Nv 47 (Caco de Gelo, Talho Noturno, Presa de Gelo)
 
@@ -1235,6 +1296,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *A Cordilheira Geada começa numa estrada de terra batida, com a neve já acumulada nas margens. Ao longe, os picos brancos parecem recortados no céu.*
 - *Esta é a Estrada da Vitória. Quem quer chegar à Liga do Zênite precisa atravessar a cordilheira inteira, com frio, vento e uma vila escondida no alto.*
 - **Ravi:** Depois do Relógio, o caminho para a Liga é este. Não há outro jeito de chegar lá sem passar pelo gelo.
+- *Um vento seco desce do alto da cordilheira e enche a estrada de neve fina, que brilha como açúcar.*
 - *Depois:* flags `nh.chegouGeada=true`
 - *Objetivo no painel:* Atravesse a Rota 15, pelo lago congelado, até a Vila Geada → `ninho_vila_geada`
 
@@ -1244,6 +1306,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - **Prof. Jatobá:** Ravi, está me ouvindo? Eu estou no observatório da vila. Um rapaz da estalagem me emprestou o telefone.
 - **Prof. Jatobá:** Vá com cuidado na Caverna de Gelo. Dizem que o eco do gelo repete as vozes de quem passou por lá, e ninguém volta sem ouvir a própria voz de volta.
 - **Prof. Jatobá:** E o Téo subiu para o Cume ontem. Ele disse que quer enfrentar você lá em cima, antes da Liga. Não deixe ele te achar despreparado.
+- **Ravi:** O professor no observatório. Eu não imaginava que ele fosse tão animado lá em cima.
 - *Depois:* flags `nh.vilaGeada=true`
 - *Objetivo no painel:* Siga pela Rota 16 até a Caverna de Gelo, no meio da cordilheira → `caverna_gelo_1`
 
@@ -1274,6 +1337,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - **Téo:** Então escuta. Meu pai vai sair da mina e voltar para casa, e eu vou com ele, se ele quiser. A Aurora não vai mais dar as ordens lá embaixo.
 - **Téo:** Quando você chegar à Liga, a Elite vai te pedir o seu nome. Diga o nome do Téo. Eu estou lá antes de você, no Portão da Liga.
 - **Ravi:** Eu digo, Téo. Até lá.
+- *O Téo estende a mão sem muita cerimônia. A luta não resolve tudo, mas ajuda a chegar mais perto.*
+- **Ravi:** Eu aperto, Téo. Até a Liga.
 - *Depois:* flags `nh.teoFinalPronto=true`
 - *Objetivo no painel:* Siga pela Rota 12 até a Liga do Zênite, no alto da cordilheira → `ninho_liga_zenite`
 
@@ -1301,6 +1366,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* falar `clarice` (exige trainers.elite_aurelio, sem trainers.elite_clarice)
 - **Clarice da Manhã:** O Aurélio perdeu para você? Ele vai ficar insuportável no café da manhã. Eu sou a Clarice, e eu acordo cedo para vencer.
 - **Clarice da Manhã:** Minha equipe é de treino pesado. Se você não tem fôlego, a manhã termina antes do sol.
+- **Ravi:** Eu passei pelo Aurélio. Não sei se aguento outra luta, mas vou tentar.
+- **Clarice da Manhã:** Então tenta. A manhã não espera quem dorme no caminho.
 - *Batalha* `elite_clarice`: Clarice da Manhã, prêmio ₽11000. Se perder, volta a esta cena.
   - Equipe: Dachsbun Nv 54 (Brincadeira Bruta, Triturar, Prensa Corporal); Whimsicott Nv 55 (Explosão Lunar, Bola de Energia, Vento a Favor); Mawile Nv 55 (Brincadeira Bruta, Cabeça de Ferro, Golpe Baixo); Florges Nv 56 (Explosão Lunar, Nevasca de Pétalas, Psíquico); Tinkaton Nv 57 (Martelo Gigaton, Brincadeira Bruta, Gume de Pedra); Sylveon Nv 58 (Explosão Lunar, Hipervoz, Beijo Drenante, Mente Calma)
 
@@ -1316,6 +1383,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* falar `ibere` (exige trainers.elite_brasa, sem trainers.elite_ibere)
 - **Iberê do Entardecer:** Entardecer é quando a luz vai embora devagar. Eu sou o Iberê, o último da Elite. Eu vi o sol atrasar lá do meu jardim.
 - **Iberê do Entardecer:** Quem chega até mim com a equipe inteira ainda de pé merece uma luta de dragão. Vamos ver se você aguenta a pressão.
+- **Ravi:** Eu vi o Brasa lá fora. Se ele é do meio-dia, o senhor é do fim da tarde?
+- **Iberê do Entardecer:** Exato. E o entardecer é a parte da luta em que o dragão finalmente tem razão. Vamos.
 - *Batalha* `elite_ibere`: Iberê do Entardecer, prêmio ₽11000. Se perder, volta a esta cena.
   - Equipe: Flygon Nv 54 (Garra de Dragão, Terremoto, Meia-Volta); Kingdra Nv 55 (Pulso do Dragão, Surfar, Energia Focada); Goodra Nv 56 (Pulso do Dragão, Bomba de Lodo, Relâmpago); Haxorus Nv 56 (Ultraje, Dança do Dragão, Terremoto); Noivern Nv 57 (Pulso do Dragão, Lâmina de Ar, Estrondo); Dragonite Nv 58 (Garra de Dragão, Velocidade Extrema, Furacão, Dança do Dragão)
 
@@ -1334,6 +1403,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* falar `dalva` (exige nh.irmaRevelada, sem trainers.campea_dalva)
 - **Campeã Dalva:** Você chegou ao fim da Liga, e ainda tem o sol nas costas. Isso é mais do que eu esperava.
 - **Campeã Dalva:** Agora, a última batalha. Eu não vou pegar leve, porque a minha irmã nunca me perdoaria se eu pegasse.
+- **Ravi:** Eu não vou recuar agora, Dalva. Eu vi o que a sua irmã fez e não vou desistir.
+- **Campeã Dalva:** Então vem. Espero que você saiba o que está fazendo, porque eu já não sei.
 - *Batalha* `campea_dalva`: Campeã Dalva, prêmio ₽20000. Se perder, volta a esta cena.
   - Equipe: Espeon Nv 62 (Psíquico, Brilho Deslumbrante, Bola Sombria, Sol Matinal); Togekiss Nv 62 (Lâmina de Ar, Brilho Deslumbrante, Esfera de Aura, Pouso); Lycanroc Nv 63 (Acelerrocha, Gume de Pedra, Triturar, Combate Corpo a Corpo); Gardevoir Nv 63 (Explosão Lunar, Psíquico, Fogo Místico); Garchomp Nv 64 (Terremoto, Garra de Dragão, Gume de Pedra, Dança das Espadas) [garchompite]; Volcarona Nv 66 (Dança Ardente, Zumbido de Inseto, Dança Vibrante, Gigadreno)
 
@@ -1374,6 +1445,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* entrar `ilha_farol_morto` (exige nh.pjNeblina, sem nh.pjFarol)
 - *O Farol Morto está apagado há décadas. Mas, dentro da torre, uma lâmpada de cristal brilha com uma cor que você nunca viu antes, quente e solar.*
 - *Sob a lâmpada, um Pokémon de luz espera imóvel, com as asas abertas. A luz é a dele. Ele não parece bravo, só curioso.*
+- **Ravi:** Um Pokémon de luz numa torre apagada. Isso não é coisa do vento.
+- *O Pokémon inclina a cabeça, como se tivesse entendido, e dá um passo para trás em direção ao mar.*
 - *Depois:* flags `nh.pjFarol=true`
 - *Objetivo no painel:* Passe pela neblina das Terras do Ocaso, a oeste, e procure a Vila Fim-do-Mundo → `vila_fim_mundo`
 
@@ -1381,6 +1454,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* entrar `vila_fim_mundo` (exige nh.pjFarol, sem nh.pjOcaso)
 - *Vila Fim-do-Mundo: casas de pedra no fim de uma estrada que parece não ter fim, com o sol se pondo do outro lado do vale.*
 - *Ninguém aqui conhece o Relógio. Mas todos sabem que o sol nasce aqui uma hora depois de Alvorada, e que o horário é o mais justo do mundo.*
+- **Ravi:** Uma vila onde o sol nasce depois de Alvorada. Isso parece piada, mas eu não estou rindo.
+- *Um pescador ri baixinho e aponta para o vale, onde a luz já começa a dourar a estrada.*
 - *Depois:* flags `nh.pjOcaso=true` · só conta a história
 
 ## Atores (elenco novo)
@@ -1486,49 +1561,30 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 ## Saída do teste (`node tools/teste-jornada.mjs`)
 
 ```
-História nova: 16 segmentos, 139 cenas, 495 falas, 93 atores, 50 batalhas.
+História nova: 16 segmentos, 139 cenas, 568 falas, 93 atores, 50 batalhas.
 Reviravoltas: 1=j07_mina_medidor · 2=j07_prof_telefone · 3=j08_sina_revela · 4=j09_traducoes · 5=j11_vela_revelada · 6=j12_vespera_aliada · 7=j14_irma_revela
 Boletins do sol: 6h05 → 6h12 → 6h19 → 6h27 → 6h34 → 6h42 → 6h51 → 7h03 → 7h11 → 6h04
 Pendências do mapa (solidos) aceitas: relogio_pedra
 
-Avisos (37):
-  - j01_tome_ginasio: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j02_estufa_fim: cena de uma caixa só (ok se for treinador que avista o jogador)
+Avisos (18):
   - j02_nando: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j02_bel: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j02_lia_ginasio: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j02_bia_luz: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j02_sq_pipoca_inicio: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j03_zeca: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j03_taina: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j03_marina_ginasio: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j03_sq_garrafa_inicio: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j04_saulo: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j04_duda: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j04_jonas_ginasio: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j04_sq_diario_inicio: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j04_sq_diario_achado: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j06_odete: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j06_ciro: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j06_zelia_ginasio: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j07_rota7_jairo: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j07_rota7_soraia: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j07_dandara: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j07_tiao: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j07_bras_ginasio: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j09_juvenal: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j09_rita: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j09_graca_ginasio: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j11_bruno: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j11_celia: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j11_gael: cena de uma caixa só (ok se for treinador que avista o jogador)
   - j11_iris: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j11_celeste_ginasio: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j12_vespera_desafio: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j14_clarice: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j14_ibere: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - j14_dalva_luta: cena de uma caixa só (ok se for treinador que avista o jogador)
-  - pj_ocaso: cena de uma caixa só (ok se for treinador que avista o jogador)
 
 OK: nenhum erro estrutural.
 ```

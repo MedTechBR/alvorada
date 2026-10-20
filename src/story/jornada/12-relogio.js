@@ -45,6 +45,8 @@ export default {
       falas: [
         ['vespera', 'Antes de você acender qualquer coisa, eu quero saber quem está do outro lado da chama.'],
         ['vespera', 'Eu não sou da Aurora. Mas também não sou sua amiga. Vamos ver se você segura a luz quando ela pesa.'],
+        ['jogador', 'Então eu vou segurar a luz com a mão aberta. Não vou fechar o punho.'],
+        ['vespera', 'Esse é o primeiro pensamento sensato que eu ouço hoje. Vamos.'],
       ],
       depois: {
         batalha: {
@@ -94,6 +96,7 @@ export default {
         ['solano', 'Vocês acham que uma pedra e um garoto vão deter a luz da Aurora? A luz é a única coisa que nunca deixou ninguém no escuro.'],
         ['solano', 'Lúcio, Sereno, às pedras. Eu vou cuidar do garoto pessoalmente. A Véspera pode continuar sonhando com a noite.'],
         ['vespera', 'Eu sonho com a noite porque é ela que nos protege da sua luz, Solano.'],
+        ['narrador', 'O Lúcio e o Sereno se afastam para as bordas do círculo de pedra. O Téo e o Heitor ficam de pé ao seu lado, sem dizer nada.'],
       ],
       depois: {
         batalha: {
