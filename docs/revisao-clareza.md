@@ -71,7 +71,9 @@ Regras aplicadas: linguagem simples, vilões com objetivo concreto ("A chefe man
 | jornada/pos-jogo.js | 10 |
 | script/mantidas.js | 11 |
 | script/cap12.js | 1 |
-| **Total** | **340** |
+| script/regiao-jandaia.js | 11 |
+| script/regiao-brasas.js | 15 |
+| **Total** | **366** |
 
 ## Todas as mudanças, por arquivo
 
@@ -857,8 +859,8 @@ Regras aplicadas: linguagem simples, vilões com objetivo concreto ("A chefe man
   *Por quê:* REVIRAVOLTA 5 em uma frase
 - **j11_vela_revelada**: "Dei porque achei que você guardaria melhor do que eu. Você não acendeu, e ainda bem. Agora só a chama diz se o Relógio está fechado." → "Dei porque você ia guardar melhor do que eu. Ainda bem que não acendeu. Ela só deve ser acesa no Relógio."  
   *Por quê:* última frase era vaga
-- **j11_vela_revelada**: "É isso, querido. E as pedras dos outros ginásios já estão com ele, por causa do Sereno. Você precisa chegar ao topo antes dele." → "É isso. As outras sete pedras já estão com ele, por causa do Sereno. Você precisa chegar ao topo antes dele."  
-  *Por quê:* 'querido' marca gênero
+- **j11_vela_revelada**: "É isso, querido. E as pedras dos outros ginásios já estão com ele, por causa do Sereno. Você precisa chegar ao topo antes dele." → "É isso. Mas as suas oito insígnias podem fechar o cadeado de novo. Chegue ao topo antes do Solano."  
+  *Por quê:* 'querido' marca gênero; decisão: avisar antes do clímax que as oito insígnias fecham o cadeado
 
 **Cena j11_celeste_ginasio**
 
@@ -1230,11 +1232,76 @@ Regras aplicadas: linguagem simples, vilões com objetivo concreto ("A chefe man
 - **veterano1**: "Vinte anos tentando chegar na Liga. Sabe o que eu aprendi? Que a montanha só deixa passar quem já passou por ela uma vez por dentro." → "Vinte anos tentando chegar na Liga e eu ainda não passei daqui. Hoje eu mostro que melhorei."  
   *Por quê:* charada sem sentido
 
-## Pontos da trama que ainda precisam de ajuste estrutural
+### src/story/script/regiao-jandaia.js
 
-1. **Por que o jogador acende a Vela Eterna depois que o Solano caiu** (12-relogio, j12_vela_acesa). O Solano já foi vencido, então nada obriga a abrir o Relógio. O texto agora diz que o cadeado está se soltando sozinho e que as oito insígnias fecham de novo, mas isso é invenção minha: precisa de uma decisão de roteiro (ou as sete pedras soltam o cadeado sozinhas, ou o Solano acende a vela e o jogador a toma dele).
-2. **A Zélia sabe que as insígnias fecham o cadeado?** Só a cena do selo mostra isso. Se a regra é essa, o professor ou a Véspera deveriam explicá-la antes, em uma frase, no Mirante ou no Relógio.
-3. **O objetivo da Véspera muda de cena em cena.** Hoje: tirar as pedras do alcance da Aurora (Mina), depois "proteger" (recrutas), depois soltar o Necrozma para a noite não acabar (premissa do doc). O doc jornada-classica.md ainda diz que ela quer a noite eterna; o texto novo segue a reviravolta 1. Vale alinhar o doc.
-4. **A Sina (Absol) aparece só em algumas cenas** (bosque, gruta, cemitério, mina, Relógio). A fala da revelação citava o templo, onde não há Absol; troquei por cemitério. Se a intenção é o Absol guiar o jogador a cada pedra ameaçada (Campina, Porto, Coral, Jandaias), faltam aparições nessas cidades.
-5. **cap01.js, trama.js e cap02 a cap12 (não jogáveis) e regiao-jandaia.js / regiao-brasas.js** ainda têm texto antigo (e conflitos: "Há meses" x "alguns dias", 6h11 x 6h05). Só as cenas mantidas foram revistas; o resto fica para outra rodada.
-6. **Os boletins de rádio** dão horas (6h05, 6h12, 6h19...) que dependem do dia em que o jogador joga; o boletim 1 diz "sete minutos mais tarde do que ontem" logo depois de "três minutos". Convém um único relógio na documentação.
+**Cena regiao_jandaia**
+
+- **regiao_jandaia**: "Estava pescando um Wailmer. Você é maior do que ele, só que menos molhado!" → "Estava pescando um Wailmer e dei de cara com você. Vamos lutar!"  
+  *Por quê:* frase sem nexo
+- **regiao_jandaia**: "Guardo a ilha do oeste desde que o primeiro barco chegou. Quem passa por mim, passa com respeito." → "Eu vigio a ilha do oeste. Quem quiser passar vai ter que lutar comigo."  
+  *Por quê:* vago
+- **regiao_jandaia**: "Guardo a ilha do leste. Se a minha irmã me contar que você lutou com ela, eu volto de mau humor." → "Eu vigio a ilha do leste, e minha irmã vigia a do oeste. Quero ver se você vence nós duas."  
+  *Por quê:* vago
+- **regiao_jandaia**: "A onda de hoje vem de longe! A minha batalha, também!" → "A onda de hoje está grande! Vamos ver se a batalha é maior."  
+  *Por quê:* vago
+- **regiao_jandaia**: "Se eu pegar um Wailord, volto para casa. Se não, volto também. Mas luta primeiro!" → "Vim pescar um Wailord e não peguei nada. Vamos lutar!"  
+  *Por quê:* frase sem nexo
+- **regiao_jandaia**: "Cuido para ninguém levar os cipós para casa. Você parece honesto, mas luta primeiro." → "Cuido para ninguém levar os cipós para casa. Você parece de confiança, mas luta primeiro."  
+  *Por quê:* gênero
+- **regiao_jandaia**: "O mirante da Lagartixa é meu! A lagartixa também! Peça licença!" → "Este mirante é meu! Peça licença com uma batalha!"  
+  *Por quê:* frase sem nexo
+- **regiao_jandaia**: "A água do poço é geladinha. Cada mergulho é uma batalha." → "A água do poço é geladinha. Quer mergulhar numa batalha?"  
+  *Por quê:* vago
+- **regiao_jandaia**: "Quem rega a flor sem pedir licença às raízes tem de me enfrentar." → "Sou guardião do templo. Quem quiser passar tem que me enfrentar."  
+  *Por quê:* charada
+- **regiao_jandaia**: "A água do templo ouve quem a respeita. Prove que respeita." → "Sou a monja do templo. Mostre em batalha que respeita a selva."  
+  *Por quê:* charada
+- **regiao_jandaia**: "Poucos chegam à Câmara da Semente. Menos ainda saem sem aprender." → "Poucos chegam à Câmara da Semente. Quero ver se você merece."  
+  *Por quê:* vago
+
+### src/story/script/regiao-brasas.js
+
+**Cena regiao_brasas**
+
+- **regiao_brasas**: "Catei tanta concha que os Pokémon acharam que eu era um deles. Vem ver!" → "Catei tantas conchas hoje! Vem ver se eu também luto bem!"  
+  *Por quê:* frase sem nexo
+- **regiao_brasas**: "Cheguei antes do vulcão e antes da vila. Se quer a minha cadeira, vai ter que merecer!" → "Esta é a minha cadeira na fonte termal. Se quer sentar, vai ter que me vencer!"  
+  *Por quê:* frase sem nexo
+- **regiao_brasas**: "Sou estagiário da Dra. Lava! Estou medindo os Camerupt, e você está no meio da medição!" → "Sou estagiário da Dra. Lava! Estou medindo os Camerupt, e você entrou no meio da medição!"  
+  *Por quê:* mais claro
+- **regiao_brasas**: "O Tição é sagrado para nós. Quem quer subir precisa provar valor com fogo e coragem!" → "O Tição é sagrado para nós. Quem quer subir precisa me vencer em batalha!"  
+  *Por quê:* vago
+- **regiao_brasas**: "Perdi meu navio neste banco. Mas ainda tenho os Pokémon, e a vontade de vingança!" → "Perdi meu navio neste banco. Mas ainda tenho meus Pokémon e vontade de lutar!"  
+  *Por quê:* mais claro
+- **regiao_brasas**: "Vigio o mar do sul para não aparecer ninguém sem aviso. E você acabou de aparecer!" → "Vigio o mar do sul para ninguém chegar sem aviso. E você chegou sem avisar!"  
+  *Por quê:* frase torta
+
+**Cena ?**
+
+- **?**: "Se está muito quente, molhe os pés e as ideias." → "Se estiver muito quente, molhe os pés."  
+  *Por quê:* metáfora vaga
+- **?**: "A água quente derrete até a ansiedade. Experimente, é de graça." → "A água quente relaxa. Experimente, é de graça."  
+  *Por quê:* metáfora vaga
+- **?**: "As ninfas dizem que a água daqui vem do coração da montanha." → "Dizem que a água daqui vem do fundo da montanha."  
+  *Por quê:* metáfora vaga
+- **?**: "A Dra. Lava diz que a cinza é a memória do vulcão. Eu só varro." → "A Dra. Lava diz que a cinza mostra o que o vulcão andou fazendo. Eu só varro."  
+  *Por quê:* metáfora vaga
+- **?**: "O fogo bom aquece. O fogo mau queima. O vulcão sabe a diferença." → "Fogo de fogueira aquece, fogo de vulcão queima. Fique longe das crateras."  
+  *Por quê:* enigma
+- **?**: "Pedra de lava resfria devagar. Cada pedra daqui tem um coração quente." → "Pedra de lava demora a esfriar. Cuidado onde pisa."  
+  *Por quê:* metáfora vaga
+- **?**: "A lava corre devagar quando está com preguiça. Hoje ela está de bom humor." → "A lava hoje corre devagar. Mesmo assim, mantenha distância."  
+  *Por quê:* metáfora vaga
+- **?**: "Quanto mais fundo, mais silêncio. O mar daqui fala baixinho." → "Quanto mais fundo o mar, mais silêncio."  
+  *Por quê:* metáfora vaga
+- **?**: "Quando a névoa chega do sul, dá para ouvir os sinos de um navio que nunca atraca." → "Quando a névoa chega do sul, dá para ouvir sinos de um navio. Ninguém sabe qual."  
+  *Por quê:* mais claro
+
+## Decisões aplicadas na segunda rodada
+
+- **Vela Eterna:** a justificativa (o cadeado já está se soltando; as oito insígnias o fecham de novo) foi mantida, e a Zélia avisa isso antes, no Mirante (11, j11_vela_revelada).
+- **Doc:** docs/jornada-classica.md agora diz que a Véspera quer tirar as pedras do alcance da Aurora e manter o Relógio fechado.
+- **Sina:** nenhuma aparição nova; a fala da revelação cita só lugares onde o Absol aparece (bosque, gruta, cemitério, mina).
+- **Regiões:** regiao-jandaia.js e regiao-brasas.js revistos (e os geradores tools/regioes/jandaia-treinadores.mjs e tools/brasas/rotas.py).
+- **Boletins:** âncora única (dia 1 = 6h05, +7 minutos por insígnia: 6h12, 6h19, 6h26, 6h33, 6h40, 6h47, 6h54, 7h01; fim 6h04) em src/story/jornada/index.js. Os campos sol, as flags nh.sol e as falas dos boletins 3 a 8 foram ajustados (ex.: 6h27 virou 6h26, 7h11 virou 7h01). O boletim 1 agora compara com o primeiro boletim, não com "ontem".
+- **Fora de cobertura:** cap01 a cap12 e trama.js estão desligados. A Dra. Lava (mundo) e a Vulcanóloga Jaciara (cena j10) são a mesma pessoa com dois nomes: vale unificar.

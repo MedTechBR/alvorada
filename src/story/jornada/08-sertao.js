@@ -10,7 +10,7 @@ export default {
   id: 'nova08',
   jornada: 'sertao',
   titulo: 'Pedra pintada',
-  sol: '6h51',
+  sol: '6h47',
   cenas: [
     {
       id: 'j08_chegada',

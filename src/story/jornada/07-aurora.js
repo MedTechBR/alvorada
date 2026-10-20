@@ -12,7 +12,7 @@ export default {
   id: 'nova07',
   jornada: 'aurora',
   titulo: 'O preço da luz',
-  sol: '6h51',
+  sol: '6h47',
   cenas: [
     {
       id: 'j07_chegada',
@@ -281,11 +281,11 @@ export default {
       id: 'j07_boletim6',
       gatilho: { tipo: 'flag', alvo: 'badges.rochedo', semFlag: ['nh.boletim.6'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e cinquenta e um. A Companhia Aurora nega relação com o atraso.'],
-        ['mae', '{jogador}, seis e cinquenta e um. A Aurora nega? Quem nega tanto deve ter algo a esconder.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e quarenta e sete. A Companhia Aurora nega relação com o atraso.'],
+        ['mae', '{jogador}, seis e quarenta e sete. A Aurora nega? Quem nega tanto deve ter algo a esconder.'],
         ['jogador', 'Eu sei por quê, Mãe. Quanto mais luzita a Aurora tira da mina, mais tarde o sol nasce.'],
       ],
-      depois: { flags: { 'nh.boletim.6': true, 'nh.sol': '6h51' }, ambiente: true },
+      depois: { flags: { 'nh.boletim.6': true, 'nh.sol': '6h47' }, ambiente: true },
     },
   ],
 };

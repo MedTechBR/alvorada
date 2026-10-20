@@ -10,7 +10,7 @@ export default {
   id: 'nova05',
   jornada: 'jandaias',
   titulo: 'As raízes das Jandaias',
-  sol: '6h34',
+  sol: '6h33',
   cenas: [
     {
       id: 'j05_chegada',

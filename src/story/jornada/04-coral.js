@@ -10,7 +10,7 @@ export default {
   id: 'nova04',
   jornada: 'coral',
   titulo: 'Faísca na Costa Coral',
-  sol: '6h34',
+  sol: '6h33',
   cenas: [
     {
       id: 'j04_chegada',
@@ -202,11 +202,11 @@ export default {
       id: 'j04_boletim4',
       gatilho: { tipo: 'flag', alvo: 'badges.coral', semFlag: ['nh.boletim.4'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e trinta e quatro. O farol de Cidade Coral segue piscando fora de hora.'],
-        ['mae', '{jogador}, seis e trinta e quatro. Cada manhã está mais escura aqui em casa. Volte logo.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e trinta e três. O farol de Cidade Coral segue piscando fora de hora.'],
+        ['mae', '{jogador}, seis e trinta e três. Cada manhã está mais escura aqui em casa. Volte logo.'],
         ['jogador', 'Não sei quanto tempo vai demorar, Mãe. Mas prometo voltar quando o sol nascer na hora.'],
       ],
-      depois: { flags: { 'nh.boletim.4': true, 'nh.sol': '6h34' }, ambiente: true },
+      depois: { flags: { 'nh.boletim.4': true, 'nh.sol': '6h33' }, ambiente: true },
     },
   ],
 };

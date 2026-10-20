@@ -11,7 +11,7 @@ export default {
   id: 'nova12',
   jornada: 'relogio',
   titulo: 'O Relógio de Pedra',
-  sol: '7h11',
+  sol: '7h01',
   cenas: [
     {
       id: 'j12_chegada',

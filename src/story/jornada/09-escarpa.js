@@ -10,7 +10,7 @@ export default {
   id: 'nova09',
   jornada: 'escarpa',
   titulo: 'Acima do Paredão',
-  sol: '7h03',
+  sol: '6h54',
   cenas: [
     {
       id: 'j09_chegada',
@@ -139,11 +139,11 @@ export default {
       id: 'j09_boletim7',
       gatilho: { tipo: 'flag', alvo: 'badges.escarpa', semFlag: ['nh.boletim.7'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às sete e três. A Aurora diz, pela primeira vez, que é uma "variação passageira".'],
-        ['mae', '{jogador}, sete e três. Passageira? Faz mais de uma semana. Você sabe o que está acontecendo?'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e cinquenta e quatro. A Aurora diz, pela primeira vez, que é uma "variação passageira".'],
+        ['mae', '{jogador}, seis e cinquenta e quatro. Passageira? Faz mais de uma semana. Você sabe o que está acontecendo?'],
         ['jogador', 'A Aurora está mentindo, Mãe. Vou ao Relógio de Pedra resolver isso.'],
       ],
-      depois: { flags: { 'nh.boletim.7': true, 'nh.sol': '7h03' }, ambiente: true },
+      depois: { flags: { 'nh.boletim.7': true, 'nh.sol': '6h54' }, ambiente: true },
     },
   ],
 };

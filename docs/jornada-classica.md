@@ -19,8 +19,9 @@ que a Crepúsculo quer.
 **O que está acontecendo (revelado aos poucos, sempre explicado na tela):**
 - No alto do Planalto dos Ventos fica o **Relógio de Pedra**, que prende **Necrozma**, um Pokémon que come luz.
   As oito Pedras do Alvorecer são as chaves do Relógio; por isso cada ginásio guarda uma.
-- A **Dra. Véspera**, chefe da Crepúsculo, quer juntar as oito pedras e libertar o Necrozma para que a noite
-  nunca acabe ("a luz só trouxe ganância").
+- A **Dra. Véspera**, chefe da Crepúsculo, quer tirar as oito pedras do alcance da Companhia Aurora e, com elas,
+  manter o Relógio fechado. Ela acredita que juntar as pedras no Relógio vai fechar o cadeado (as traduções falsas
+  do Sereno, na reviravolta 4, trocam isso por "abrir"). O Necrozma só é libertado pelo plano do Solano.
 - O jogador e o rival **Téo** atrapalham a Crepúsculo ginásio após ginásio. Cada líder, ao perder, entrega a
   insígnia E pede ajuda para proteger a pedra da cidade.
 
@@ -30,12 +31,12 @@ resume em uma frase o que mudou. Nada fica implícito.
 
 | # | Quando | Reviravolta | Como o jogador descobre |
 |---|---|---|---|
-| 1 | Mina Aurora (antes da 6ª insígnia) | **Quem rouba o sol não é a Crepúsculo, é a Companhia Aurora.** A "luz limpa" da Aurora vem da luzita, a raiz do cadeado do Relógio. Cada tonelada extraída atrasa o nascer do sol. A Crepúsculo roubava as pedras para tirá-las do alcance da Aurora. | Medidor da própria empresa no fundo da mina; Véspera, presa no desabamento junto com o jogador, conta a versão dela |
+| 1 | Mina Aurora (antes da 6ª insígnia) | **Quem rouba o sol não é a Crepúsculo, é a Companhia Aurora.** A "luz limpa" da Aurora vem da luzita, a peça que mantém o Relógio fechado. Cada tonelada extraída atrasa o nascer do sol. A Crepúsculo roubava as pedras para tirá-las do alcance da Aurora. | Medidor da própria empresa no fundo da mina; Véspera, presa no desabamento junto com o jogador, conta a versão dela |
 | 2 | Arquivo do Forte Rochedo | **O Prof. Jatobá ajudou a criar a Aurora.** Ele e Véspera descobriram a luzita 16 anos atrás; foi ele quem vendeu a amostra para Solano. A "Noite Longa de Lamparina" foi a primeira extração. | Cartas antigas no arquivo; o professor confessa por telefone |
 | 3 | Sertão, Ruínas de Pedra Pintada | **O Absol que aparece antes de cada desastre é Sina, a parceira de Véspera,** que ficou presa à luz do Relógio e virou sentinela. Ela vinha guiando o jogador às pedras ameaçadas. | Pinturas das ruínas + Sina deixa o jogador tocar nela |
 | 4 | Cidade Escarpa (7ª insígnia) | **Sereno, o braço direito de Véspera, é espião de Solano.** As traduções que guiavam a Crepúsculo foram falsificadas: juntar as oito pedras no Relógio não faz o sol "dormir", ABRE o cadeado. Solano deixou a Crepúsculo fazer o trabalho sujo para capturar o Necrozma e vender luz infinita. | Sereno trai Véspera na frente do jogador e foge com sete pedras |
 | 5 | Mirante (8ª insígnia) | **A oitava chave sempre esteve com o jogador:** a Vela Eterna que a Dona Zélia lhe deu "para guardar" em Lamparina. Solano sequestra o professor para trocar pela vela. | Zélia explica; Solano liga para o jogador |
-| 6 | Relógio de Pedra | Véspera e Téo se aliam ao jogador contra Solano. Mesmo assim o Necrozma escapa: batalha com o lendário (pode capturar). As insígnias do jogador fecham o cadeado de novo. | Clímax |
+| 6 | Relógio de Pedra | Véspera e Téo se aliam ao jogador contra Solano. Mesmo assim o Necrozma escapa: batalha com o lendário (pode capturar). As insígnias do jogador fecham o cadeado de novo (a Zélia avisa isso antes, no Mirante). | Clímax |
 | 7 | Salão da Campeã | **A Campeã Dalva é a irmã gêmea de Véspera** (estrela-d'alva e estrela-vésper, o mesmo astro). Ela sabia da Aurora e escolheu o silêncio. | Fala antes da última batalha; epílogo com as duas |
 
 Vilões: **Equipe Crepúsculo** (Véspera, Admin Ébano) na primeira metade; **Companhia Aurora** (Augusto Solano,
@@ -78,6 +79,9 @@ Pedido: "os Pokémon de cada região precisam casar com os cenários". Regra par
 | 8 líderes | Tomé, Lia, Marina, Jonas, Zélia, Brás, Graça, Celeste |
 | Elite 4 + Campeã | Aurélio, Clarice, Seu Brasa, Iberê; Campeã Dalva |
 
+
+**Boletins da Rádio Alvorada (âncora única):** dia 1 = sol às 6h05; +7 minutos a cada insígnia (6h12, 6h19, 6h26,
+6h33, 6h40, 6h47, 6h54, 7h01); depois do Relógio volta às 6h04. A tabela está em `src/story/jornada/index.js`.
 
 **Regra de clareza:** o painel de objetivo SEMPRE diz o próximo passo concreto ("Vá à Cidade Campina pela Rota 1
 e desafie o líder Tomé"). Cada cidade abre com uma cena curta (3–6 falas) que diz por que você está ali.

@@ -9,7 +9,7 @@ export default {
   id: 'nova03',
   jornada: 'espelho',
   titulo: 'O espelho partido',
-  sol: '6h27',
+  sol: '6h26',
   cenas: [
     {
       id: 'j03_chegada',
@@ -183,11 +183,11 @@ export default {
       id: 'j03_boletim3',
       gatilho: { tipo: 'flag', alvo: 'badges.espelho', semFlag: ['nh.boletim.3'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e vinte e sete. Em Porto Espelho, os pescadores saíram no escuro.'],
-        ['mae', '{jogador}, seis e vinte e sete. O sol atrasa a cada dia. Você está bem?'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e vinte e seis. Em Porto Espelho, os pescadores saíram no escuro.'],
+        ['mae', '{jogador}, seis e vinte e seis. O sol atrasa a cada dia. Você está bem?'],
         ['jogador', 'Estou bem, Mãe. Se eu descobrir o motivo do atraso, te conto.'],
       ],
-      depois: { flags: { 'nh.boletim.3': true, 'nh.sol': '6h27' }, ambiente: true },
+      depois: { flags: { 'nh.boletim.3': true, 'nh.sol': '6h26' }, ambiente: true },
     },
   ],
 };

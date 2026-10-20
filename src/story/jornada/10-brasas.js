@@ -10,7 +10,7 @@ export default {
   id: 'nova10',
   jornada: 'brasas',
   titulo: 'Brasas no vulcão',
-  sol: '7h03',
+  sol: '6h54',
   cenas: [
     {
       id: 'j10_chegada',

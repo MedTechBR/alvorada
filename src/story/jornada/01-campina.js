@@ -95,7 +95,7 @@ export default {
       id: 'j01_boletim1',
       gatilho: { tipo: 'apos', cena: 'j01_tome_insignia', semFlag: ['nh.boletim.1'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e doze minutos. Sete minutos mais tarde do que ontem.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e doze minutos. Sete minutos mais tarde do que no primeiro boletim.'],
         ['mae', '{jogador}, ouviu? Seis e doze. O sol atrasou mais um pouco. Alguma coisa está errada.'],
         ['jogador', 'Eu sei, Mãe. Vou descobrir o motivo nas próximas cidades.'],
       ],
