@@ -13,7 +13,7 @@ export default {
       local: 'mar_do_sul',
       gatilho: { tipo: 'flag', alvo: 'nh.epilogo', semFlag: ['nh.pjNeblina'] },
       falas: [
-        ['narrador', 'Do Planalto, a neblina do mar do sul parece cada manhã mais clara. Os pescadores dizem que ela começou a recuar depois do Relógio.'],
+        ['narrador', 'Do Planalto, a neblina do mar do sul parece mais clara a cada manhã. Dizem os pescadores que ela recua desde o Relógio.'],
         ['pokedex', 'Registro novo: uma luz sem origem conhecida sob as águas do sul. A intensidade cresce a cada hora.'],
         ['jogador', 'Então ainda há algo lá embaixo. Vou descobrir o que é.'],
       ],
@@ -27,7 +27,7 @@ export default {
       local: 'ilha_farol_morto',
       gatilho: { tipo: 'entrar', alvo: 'ilha_farol_morto', requer: ['nh.pjNeblina'], semFlag: ['nh.pjFarol'] },
       falas: [
-        ['narrador', 'O Farol Morto está apagado há décadas. Dentro da torre, porém, uma lâmpada de cristal brilha com uma luz quente e dourada.'],
+        ['narrador', 'O Farol Morto está apagado há décadas. Mas dentro da torre, uma lâmpada de cristal brilha, quente e dourada.'],
         ['narrador', 'Sob a lâmpada, um Pokémon de luz espera imóvel, com as asas abertas. Ele não parece bravo, só curioso.'],
         ['jogador', 'Uma torre apagada e uma luz acesa. Isso não é coisa do vento.'],
         ['narrador', 'O Pokémon inclina a cabeça, como se tivesse entendido, e recua devagar em direção ao mar.'],
