@@ -62,16 +62,20 @@ export const BARREIRAS3D = {
   } },
   // entulho do desmoronamento: pedras empilhadas, cascalho e uma viga quebrada
   barEntulho: { var: 3, f: (m, c) => {
-    const r = m.r, pal = ['#6e6258', '#8a7c6e', '#a89888', '#7a7a84'];
-    m.bloco(0, 0, -8, 16, 5, 14, pal[0], { var: 0.08, cores: { topo: pal[1] } });
-    const n = 4 + c.v;
-    for (let k = 0; k < n; k++) {
-      const rx = 3 + r() * 3.5, ry = 3 + r() * 4, x = -5 + r() * 10, z = -12 + r() * 8;
-      m.octa(x, 4 + ry * 0.6 + (k > 2 ? 4 : 0), z, rx, ry, rx * 0.9, pal[(k + 1) % 4], { var: 0.1, baixo: pal[0] });
-    }
-    if (c.v !== 1) { const y = 7 + r() * 3; m.quad([-7, y, -3], [6, y + 6, -5], [6, y + 7.6, -5], [-7, y + 1.6, -3], MAD[2], { sempre: true }); m.quad([-7, y + 1.6, -3], [6, y + 7.6, -5], [6, y + 7.6, -7], [-7, y + 1.6, -5], MAD[3], { sempre: true }); }
-    for (let k = 0; k < 4; k++) m.bloco(-7 + r() * 14, 0, -2 + r() * 1.5, 1.6, 1.4, 1.6, pal[2]);
-    return t1(16);
+    const r = m.r, pal = ['#6e6258', '#857868', '#a09080', '#7a7a84', '#948e98'];
+    // monte de terra solta e pedras quebradas por cima (blocos chanfrados girados, como as pedras do kit)
+    m.bloco(0, 0, -8, 17, 4, 15, '#7a6650', { cores: { topo: '#8e7a60' }, var: 0.06 });
+    m.bloco(0.5, 4, -8.5, 12, 3, 11, '#6e5a46', { cores: { topo: '#84705a' }, var: 0.06 });
+    const pedra = (x, y, z, w, h, d, k) => m.com({ x, z, ry: (r() - 0.5) * 1.4 }, () => {
+      m.bloco(0, y, 0, w, h * 0.6, d, pal[k % 5], { var: 0.08, cores: { topo: pal[(k + 2) % 5] } });
+      m.bloco(-w * 0.08, y + h * 0.55, 0.4, w * 0.72, h * 0.45, d * 0.75, pal[(k + 1) % 5], { var: 0.08, cores: { topo: pal[(k + 2) % 5] } });
+    });
+    const n = 3 + c.v;
+    for (let k = 0; k < n; k++) pedra(-4.5 + r() * 9, k < 2 ? 3 : 7 + r() * 3, -12.5 + r() * 9, 6.5 + r() * 4.5, 6.5 + r() * 4.5, 5.5 + r() * 4, k + c.v);
+    if (c.v === 2) pedra(1, 0, -9, 12, 13, 10, 3); // pedregulho que rolou
+    if (c.v !== 1) { const y = 8 + r() * 4; m.quad([-8, y, -3], [6, y + 7, -5], [6, y + 8.6, -5], [-8, y + 1.6, -3], MAD[2], { sempre: true }); m.quad([-8, y + 1.6, -3], [6, y + 8.6, -5], [6, y + 8.6, -7], [-8, y + 1.6, -5], MAD[3], { sempre: true }); }
+    for (let k = 0; k < 5; k++) m.bloco(-7 + r() * 14, 0, -2 + r() * 1.5, 1.8, 1.6, 1.8, pal[2]);
+    return t1(18);
   } },
   // cerca de metal da Companhia Aurora: postes, tela, faixa dourada e placa com o sol
   barCerca: { estado: (o) => ori(o) + (o.placa ? 'p' : ''), f: (m, c) => {

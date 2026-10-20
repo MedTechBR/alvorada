@@ -44,11 +44,13 @@ await import(pathToFileURL(fileURLToPath(new URL('src/story/cenario.js', RAIZ)))
 const { dadosDoMundo, MUNDOS } = await import(pathToFileURL(fileURLToPath(new URL('src/world/mundos.js', RAIZ))).href);
 const { prepararMundo, montarParte } = await import(pathToFileURL(fileURLToPath(new URL('src/world/build.js', RAIZ))).href);
 const { TILE, SOLID } = await import(pathToFileURL(fileURLToPath(new URL('src/world/tiles.js', RAIZ))).href);
+const { montarCenario, classe } = await import(pathToFileURL(fileURLToPath(new URL('src/world/barreiras-cenario.js', RAIZ))).href);
+const { BARREIRAS, TEMPESTADES, NEVOAS } = await import(pathToFileURL(fileURLToPath(new URL('src/world/barreiras-dados.js', RAIZ))).href);
 const NOME_TILE = Object.fromEntries(Object.entries(TILE).map(([k, v]) => [v, k]));
 
 // Cada ponto de pessoa, história ou passagem que cai em: objeto sólido (pegada), bloco sólido, porta/passagem
 // ou em outro personagem. Um personagem em cima da própria mesa de balcão também conta.
-function auditar(R) {
+function auditar(R, mundo) {
   const S = prepararMundo(R);
   for (const P of R.partes) montarParte(S, P);
   const W = S.W, H = S.H;
@@ -113,13 +115,29 @@ function auditar(R) {
   const porBloco = new Map();
   for (const d of pessoas) { const k = bloco(d).join(','); if (!porBloco.has(k)) porBloco.set(k, []); porBloco.get(k).push(d); }
   for (const [k, lista] of porBloco) if (lista.length > 1) for (const d of lista.slice(1)) achados.push({ grupo: 'pessoa', id: d.id ?? '?', nome: d.name ?? '', sala: sala(...bloco(d)), x: bloco(d)[0], y: bloco(d)[1], motivos: [`mesmo bloco de ${lista[0].id ?? lista[0].name}`] });
+  // barreiras da progressão (barreiras-cenario.js), todas ativas (jogo novo): o guarda fica DENTRO do retângulo da
+  // barreira dele, num bloco de caminho ou chão livre (sem objeto, parede natural nem porta); os objetos em pé também
+  // ficam dentro dos retângulos (a colisão continua sendo só a da barreira)
+  const leitor = { tile: (x, y) => { const k = pos(x, y); return k < 0 ? -1 : S.tiles[k]; }, ocupado: (x, y) => { const k = pos(x, y); return k >= 0 && (objDe.has(k) || S.block[k] === 1); } };
+  const { props, guardas } = montarCenario(mundo, {}, leitor);
+  const dentro = (id, x, y) => [...BARREIRAS, ...TEMPESTADES, ...NEVOAS].some((d) => d.id === id && d.rects.some(([a, b, w, h]) => x >= a && y >= b && x < a + w && y < b + h));
+  for (const g of guardas) {
+    const motivos = [];
+    if (!dentro(g.bar, g.tx, g.ty)) motivos.push('fora do retângulo da barreira');
+    const cl = classe(leitor, g.tx, g.ty);
+    if (cl !== 'cam' && cl !== 'chao') motivos.push(cl ? `em ${cl}` : `em bloco sólido ou objeto (${NOME_TILE[S.tiles[pos(g.tx, g.ty)]] ?? '?'})`);
+    if (portas.has(pos(g.tx, g.ty))) motivos.push('porta/passagem');
+    if (motivos.length) achados.push({ grupo: 'guarda da barreira', id: g.id, nome: g.nome, sala: 'mundo', x: g.tx, y: g.ty, motivos });
+  }
+  for (const p of props) if (!dentro(p.bar, p.tx, p.ty)) achados.push({ grupo: 'objeto da barreira', id: p.kind, nome: p.bar, sala: 'mundo', x: p.tx, y: p.ty, motivos: ['fora do retângulo da barreira'] });
+  if (guardas.length || props.length) console.log(`${mundo}: barreiras com ${guardas.length} guarda(s) e ${props.length} objeto(s) conferidos`);
   return achados;
 }
 
 const todos = [];
 for (const m of MUNDOS) {
   const R = await dadosDoMundo(m.id);
-  const achados = auditar(R);
+  const achados = auditar(R, m.id);
   todos.push(...achados.map((a) => ({ mundo: m.id, ...a })));
   console.log(`${m.id}: ${achados.length} sobreposição(ões)`);
 }
