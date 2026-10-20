@@ -2,82 +2,30 @@
 // NPCs pelo id do mapa (assets/maps/alvorada.json, "people", também dentro dos interiores).
 
 export const ITENS = {
-  cesta_paes: { name: 'Cesta de Pães', color: '#e0a050', desc: 'Pão de queijo quentinho da Padaria Pão do Sol, para a Dona Cida, da feira de Campina.' },
+  relogio_ze: { name: 'Relógio do Seu Zé', color: '#c8a040', desc: 'Um relógio de bolso que o Seu Zé acertou pelo sol da Lagoa Dourada. Era do pai dele. Atrasa um pouquinho todo dia, e agora o Seu Zé sabe que ele está certo.' },
 };
 
+// Uma só missão solta em Vila Alvorada: o resto (cestas, pesquisas, iscas) era tarefa genérica e saiu (docs/jornada-roteiro.md).
 export const MISSOES = [
   {
     id: 'sq_relogios', titulo: 'Os relógios do Seu Zé', regiao: 'Vila Alvorada', de: 'seu_ze',
     requer: { flags: ['starter'] },
-    resumo: 'Cada relógio da Rádio Alvorada marca uma hora diferente. Seu Zé quer saber como está o sol longe da vila, de manhã.',
+    resumo: 'Os relógios da Rádio Alvorada marcam horas diferentes e o Seu Zé jura que o defeito não é deles. Ele quer ver o sol de manhã, longe das antenas.',
     oferta: [
       'Psiu! Você que vai sair por aí… me faz um favor de cientista?',
-      'Cada relógio meu marca uma hora. Preciso de alguém que veja o sol da Lagoa Dourada de manhã, longe das antenas.',
-      'Vai lá antes do meio-dia, olha bem o céu e volta me contar. Topa?',
+      'Trinta anos acertando relógio, e agora cada um marca uma hora. Os relógios não são. Eu desconfio é do sol.',
+      'Vá à Lagoa Dourada de manhã, longe das antenas, e olhe o céu. Volte e me conte. Topa?',
     ],
-    aceita: ['Isso! A Lagoa Dourada fica no norte da Rota 1, no meio dos campos. De manhã, hein!'],
-    lembrete: ['A Lagoa Dourada, de manhã! Os relógios não vão se acertar sozinhos.'],
+    aceita: ['Isso! A Lagoa Dourada fica no norte da Rota 1, no meio dos campos. De manhã, hein! De tarde todo sol é mentiroso.'],
+    lembrete: ['A Lagoa Dourada, de manhã! Se o sol estiver baixo demais, eu estou certo.'],
     etapas: [
-      { tipo: 'chegar', lugar: 'lagoa_dourada', r: 6, se: { hora: 'manha' }, texto: 'Vá à Lagoa Dourada de manhã (antes do meio-dia)',
-        falas: ['O sol se espelha na lagoa. Ele está mais baixo do que devia para esta hora, como se tivesse dormido demais.', 'Você guarda o que viu para contar ao Seu Zé.'] },
+      { tipo: 'chegar', lugar: 'lagoa_dourada', r: 6, se: { hora: 'manha' }, texto: 'Vá à Lagoa Dourada de manhã (antes do meio-dia) e olhe o sol',
+        falas: ['O sol se espelha na lagoa. Está mais baixo do que devia para esta hora, como se tivesse dormido demais.', 'Você olha o relógio. Está certo. É o céu que está atrasado.'] },
       { tipo: 'falar', npc: 'seu_ze', texto: 'Conte ao Seu Zé o que viu na lagoa',
-        falas: ['E então? Baixo? Mais baixo do que devia?', 'Eu sabia! Não são os meus relógios. É o sol que está atrasado.', 'Tome, isto é para quem tem paciência com o tempo.'] },
+        falas: ['E então? Baixo? Mais baixo do que devia?', 'Eu sabia! Não são os meus relógios. É o sol que está atrasado… e cada dia um pouquinho mais.', 'Trinta anos de ofício, e a primeira vez que o relógio acerta é a hora que o mundo erra. Tome. Este é o relógio de bolso do meu pai. Ele atrasa um pouquinho todo dia, e agora eu sei que ele está certo.'] },
     ],
-    recompensa: { itens: [['timerBall', 3]], flags: { zeHoraCerta: true } },
-  },
-  {
-    id: 'sq_cesta', titulo: 'Pão quentinho para Campina', regiao: 'Vila Alvorada', de: 'padeiro',
-    requer: { flags: ['balls'] },
-    resumo: 'Seu Ramiro, da Padaria Pão do Sol, quer mandar uma cesta de pão de queijo para a Dona Cida, na feira de Campina.',
-    oferta: ['Vai para Campina? Então leva esta cesta para a Dona Cida, da feira. Ela troca meu pão pelas abóboras dela.', 'Pode levar?'],
-    itensIniciais: [['cesta_paes', 1]],
-    aceita: ['Cuidado para não comer no caminho! Eu contei: são doze.'],
-    lembrete: ['A Dona Cida fica na praça de Campina, perto do Mercado.'],
-    etapas: [
-      { tipo: 'entregar', npc: 'feirante', item: 'cesta_paes', texto: 'Entregue a cesta de pães à Dona Cida, na feira de Campina',
-        pergunta: ['Isso é cheiro de pão de queijo do Ramiro? Você trouxe a cesta?'],
-        falas: ['Doze! Ele sempre manda doze. E ainda quentinhos. Diga ao Ramiro que as abóboras vão na próxima carroça.'] },
-      { tipo: 'falar', npc: 'padeiro', texto: 'Volte à Padaria Pão do Sol e fale com o Seu Ramiro',
-        falas: ['Chegaram quentinhos? Que maravilha! Tome, pela viagem.'] },
-    ],
-    recompensa: { dinheiro: 400, itens: [['moomooMilk', 2]] },
-  },
-  {
-    id: 'sq_pesquisa1', titulo: 'Pesquisa de campo', regiao: 'Rota 1', de: 'bia', proxima: 'sq_pesquisa2',
-    requer: { flags: ['balls'] },
-    resumo: 'A Bia está estudando os Pokémon que voam baixo nos Campos de Lúmen e precisa de dados de captura.',
-    oferta: ['Ei! Você já tem Poké Bolas, né? Me ajuda numa pesquisa rapidinho?', 'Preciso de dois Pokémon do tipo Voador capturados nos campos. Os Starly e os Pidgey andam esquisitos com o sol atrasado.'],
-    aceita: ['Valeu! Pode capturar os que quiser, eu só leio os dados da sua Pokédex.'],
-    lembrete: ['Dois Pokémon do tipo Voador! Eles adoram o mato alto da Rota 1.'],
-    etapas: [
-      { tipo: 'capturar', tipoPokemon: 'flying', n: 2, area: 'Rota 1, Campos de Lúmen', texto: 'Capture 2 Pokémon do tipo Voador', rotulo: 'Capturados' },
-      { tipo: 'falar', npc: 'bia', texto: 'Volte e conte para a Bia',
-        falas: ['Deixa eu ver… asas cansadas, sono fora de hora. Eles também estão confusos com o sol!', 'Ótimos dados. Tome, para as próximas capturas.'] },
-    ],
-    recompensa: { itens: [['greatBall', 3]] },
-  },
-  {
-    id: 'sq_pesquisa2', titulo: 'Pesquisa de campo II', regiao: 'Rota 1', de: 'bia',
-    resumo: 'Agora a Bia quer ver de perto um Pokémon do tipo Elétrico, que sente a luz de um jeito diferente.',
-    oferta: ['Próxima fase da pesquisa! Os Pokémon Elétricos sentem a luz de um jeito diferente.', 'Me mostra um? Shinx, Mareep, Pikachu… qualquer um serve!'],
-    lembrete: ['Um Pokémon do tipo Elétrico na sua equipe! Os campos têm vários.'],
-    etapas: [
-      { tipo: 'mostrar', npc: 'bia', tipoPokemon: 'electric', texto: 'Mostre à Bia um Pokémon do tipo Elétrico',
-        falas: ['Olha a estática do {pokemon}! Ele fica eriçado quando o sol aparece, mesmo atrasado.', 'Isso confirma a teoria do professor. Toma, este aqui estava esperando um treinador.'] },
-    ],
-    recompensa: { pokemon: { dex: 133, nivel: 10, golpes: ['tackle', 'quickAttack', 'sandAttack', 'helpingHand'], item: 'sootheBell', bola: 'premierBall' } },
-  },
-  {
-    id: 'sq_isca', titulo: 'Isca de fruta', regiao: 'Vila Alvorada', de: 'pescador',
-    requer: { flags: ['starter'] },
-    resumo: 'Seu Tonho jura que os Magikarp do laguinho da vila mordem isca de Fruta Oran.',
-    oferta: ['Rapaz, com isca de minhoca ninguém morde. Mas com Fruta Oran…', 'Me arruma três Frutas Oran? A Dona Flor sempre tem no quintal, e as árvores de fruta também dão.'],
-    lembrete: ['Três Frutas Oran! Com isso eu pego até o Gyarados do lago.'],
-    etapas: [
-      { tipo: 'entregar', npc: 'pescador', item: 'oran', n: 3, texto: 'Leve 3 Frutas Oran para o Seu Tonho',
-        falas: ['Agora sim! Olha o cheiro… Os Magikarp vão fazer fila.', 'Tome umas bolas de pescador. Na água elas pegam melhor.'] },
-    ],
-    recompensa: { itens: [['diveBall', 2], ['netBall', 2]] },
+    conclusao: [['narrador', 'O Seu Zé guarda o caderno, olha o céu pela janela e anota uma linha. Pela primeira vez em semanas, ele está sorrindo.']],
+    recompensa: { itens: [['relogio_ze', 1], ['timerBall', 5]], flags: { zeHoraCerta: true } },
   },
 ];
 
