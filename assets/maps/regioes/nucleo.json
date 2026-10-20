@@ -414,7 +414,17 @@
    "kind": "houseStone",
    "x": 266,
    "y": 157,
-   "predio": "arquivo_forte"
+   "predio": "arquivo_forte",
+   "interior": {
+    "npc": {
+     "id": "caixa_cartas",
+     "name": "Caixa de cartas",
+     "look": "professor",
+     "lines": [
+      "Uma caixa de lata. Na tampa: \"Para o Jatobá. Se um dia ele quiser lembrar.\""
+     ]
+    }
+   }
   },
   {
    "kind": "houseStone2",

@@ -243,6 +243,8 @@ export const ELENCO = [
   { id: 'g8_iris', quem: 'aprendiz', nome: 'Pilota Íris', look: LOOKS.campista, spot: 'torre_iris', visao: 5,
     apos: ['Ela ganha no tornado. Eu perdi no tornado. Você vai perder também, não vai?'] },
   { id: 'vigia', quem: 'vigia', nome: 'Último Vigia', look: LOOKS.observador, spot: 'vigia' },
+  // caixa de lata com as cartas do Jatobá (cap07): uma morador da sala do arquivo, que dispara a cena "cartas" ao falar
+  { id: 'caixa_cartas', quem: 'caixa_cartas', nome: 'Caixa de cartas', substitui: 'caixa_cartas', look: LOOKS.observador },
 ];
 
 // Treinadores das regiões novas do mundo grande (cada região traz o seu arquivo; veja docs/construir-regiao.md)
