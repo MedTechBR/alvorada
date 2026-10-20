@@ -20,7 +20,7 @@ const PAPEL_FRLG = [
   [/(^|_)(mae|mom)(_|\d|$)/i, 'frlg_mom'],
   [/(^|_)(prof|jatoba|oak)(_|\d|$)/i, 'frlg_oak'],
   [/(^|_)teo(_|\d|$)/i, 'frlg_rival'],
-  [/cientista|scientist/i, 'frlg_scientist'],
+  [/cientista|scientist|bia_lab|lab_assistente|dr_icaro/i, 'frlg_scientist'],
   [/guia_(gin|ginasio)|gym_guide/i, 'frlg_gym_guide'],
   [/leader_(graca|bras)/i, 'frlg_brock'],
 ];
