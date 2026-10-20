@@ -359,3 +359,40 @@ ou com quem for rodar a sessão de teste.
 - Nenhum modelo 3D de neve, gelo, duna, vulcão, coral, junco ou mangue. Usar construtores do kit ou criar.
 - Nenhum tile de ledge unidirecional.
 - Nenhum script de densidade no repositório.
+
+---
+
+## 8. O que foi feito: vestir v2 (outubro de 2026)
+
+O gerador `tools/vestir.mjs` foi reescrito sobre a mesma infraestrutura (camada por região em
+`assets/maps/vestir/<id>.json`, mesclada na carga; `?vestir=0` desliga). Ele é determinístico: depois que alguém
+mexer num mapa de região, basta rodar de novo.
+
+```
+node tools/vestir.mjs              # gera as 6 camadas (nucleo, geada, sertao, jandaia, brasas, austral)
+node tools/vestir.mjs --verificar  # conectividade das âncoras e reservados (tem que dar 0 quebrado)
+node tools/vestir/png.mjs x,y,w,h 6 /tmp/a.png      # o mapa visto de cima (blocos + objetos), sem navegador
+PORT=8771 node tools/vestir/fotos.mjs pref nome=x,y # fotos no celular deitado (844x390, toque)
+tools/vestir/medir.sh              # FPS com e sem o vestir nos lugares densos
+```
+
+Passos do gerador (detalhe no cabeçalho do arquivo):
+1. **Âncoras**: passagens, pontos (ninhos inclusive), portas, NPCs, itens, tocas e uma grade de pontos de exploração
+   a cada ~42 blocos de terra. Reservados (nada sólido a 2 blocos): os mesmos, mais placas, mecanismos e pets.
+2. **Rede de trilhas**: árvore gulosa (cada âncora liga-se ao ponto mais barato da rede), Dijkstra com 8 vizinhos e
+   ruído de custo, preferindo a trilha pronta. Onde não há trilha, pinta: terra (`path`), neve batida (`snow`),
+   cinza (`ash`) ou passarela (`bridge`) por cima da lama do mangue. Linha suavizada (RDP + Chaikin).
+3. **Proteção**: a árvore recalculada preferindo as trilhas; nunca recebe sólido.
+4. **Clareiras com marco** (antes dos paredões, que respeitam a clareira): árvore gigante, santuário, ruína, arco de
+   pedra, cachoeira, fazenda cercada, lago de gelo, oásis, lago de lava, termas, círculo de menires, mesas, barco.
+5. **Paredões** além do raio do bioma (4 a 8 blocos + ruído + clareiras): fileiras em tijolo, frente fechada (até 4
+   blocos de fundo), miolo em grade aberta (memória). Mata, pinheiros nevados, rocha em prismas, dunas, mangue,
+   caatinga, basalto; rios de lava e riachos correm por dentro do paredão.
+6. **Corredor**: mato alto em blocos de 4x3 a 8x5, degraus (ledges) saindo do paredão, borda e peças soltas,
+   manchas de chão, vitórias-régias, linha de onda na praia, touceiras de palmeira.
+7. **Nichos** com item ou árvore de baga; **placas** nos cruzamentos (nome da área).
+8. **Cidades** (tema pelo chão: campo, porto, neve, termas, sertão): chafariz, bancos, postes espaçados, anel de
+   canteiros na praça, barracas de feira, cercas de quintal, horta com espantalho, barco e redes, poço termal.
+
+Peças novas do kit 3D: `src/visual3d/kit/vestir.js` (fichas em `src/world/vestir.js`). Chão 3D: camadas novas
+`NEVE_TRILHA` (bloco `snow`), `NEVE_FUNDA` (`deepsnow`) e `CINZA` (`ash`) em `src/visual3d/ambiente/texturas.js`.

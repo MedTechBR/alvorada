@@ -12,8 +12,9 @@ export const ESCALA = 112;  // px de mundo cobertos por uma camada (7 blocos): ~
 export const CAMADA = {
   GRAMA: 0, GRAMA_ESC: 1, TERRA: 2, AREIA: 3, NEVE: 4, ROCHA: 5, GELO: 6, LAVA: 7,
   DESERTO: 8, MANGUE: 9, CALCADA: 10, BASALTO: 11, MADEIRA: 12, SAL: 13, TERRA_VERM: 14, AREIA_MOLHADA: 15,
+  NEVE_TRILHA: 16, CINZA: 17, NEVE_FUNDA: 18,
 };
-export const N_CAMADAS = 16;
+export const N_CAMADAS = 19;
 
 const rgb = (h) => [(h >> 16) & 255, (h >> 8) & 255, h & 255];
 const mix = (a, b, k) => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k];
@@ -59,6 +60,30 @@ function neve(x, y) {
   let c = mix(rgb(0xc9d6ea), rgb(0xf4f8fc), cl(m * 1.5 - 0.1));
   if (hash(x, y, 87) > 0.96) c = mix(c, [255, 255, 255], 0.8);
   return [...c, 0.6 + (b - 0.5) * 0.5];
+}
+// neve batida da trilha: mais cinza-azulada, com pegadas em pares e pontinhos de terra
+function neveTrilha(x, y) {
+  const m = r(x, y, 32, 3, 161);
+  let c = mix(rgb(0xb4bfd0), rgb(0xd6deea), cl(m * 1.4));
+  const py = ((y % 24) + 24) % 24, lado = Math.floor(((y % 48) + 48) % 48 / 24), px = 52 + lado * 14 + Math.sin(y * 0.05) * 6;
+  const dx = x - px, dy = py - 12, d = (dx * dx) / 9 + (dy * dy) / 25;
+  if (d < 1) c = mix(c, rgb(0x8e9ab0), 0.55 * (1 - d * 0.5));
+  if (hash(x, y, 163) > 0.985) c = mix(c, rgb(0x7a6a5a), 0.5);
+  return [...c, 0.3 + m * 0.2];
+}
+// neve funda: montinhos de vento (sastrugi) com sombra azul
+function neveFunda(x, y) {
+  const m = r(x, y, 32, 4, 171), f = Math.sin((x * 0.7 + y * 2 + r(x, y, 32, 2, 173) * 40) * (Math.PI * 6 / LADO));
+  let c = mix(rgb(0xd2def0), rgb(0xffffff), cl(m * 1.3 + f * 0.25));
+  if (f < -0.7) c = mix(c, rgb(0xa8bcd8), 0.5);
+  return [...c, 0.7 + f * 0.15];
+}
+// cinza vulcânica: pó claro com grãos escuros e brilhos de mica
+function cinza(x, y) {
+  const m = r(x, y, 32, 3, 181), g = hash(x, y, 183);
+  let c = mix(rgb(0x7e7874), rgb(0xa49e98), cl(m * 1.5));
+  if (g > 0.93) c = mix(c, rgb(0x3e3634), 0.6); else if (g < 0.015) c = mix(c, rgb(0xe8e0d8), 0.6);
+  return [...c, 0.3 + m * 0.25];
 }
 function rocha(x, y, base, claro, escuro, s = 0) {
   const m = r(x, y, 16, 4, 91 + s), v = r(x, y, 32, 2, 97 + s);
@@ -124,6 +149,9 @@ export function pintarCamada(i, x, y) {
     case CAMADA.SAL: return areia(x, y, rgb(0xf0ebe4), rgb(0xffffff), rgb(0xd8ccc4), 13);
     case CAMADA.TERRA_VERM: return terra(x, y, rgb(0xc07a4a), rgb(0xdc9a64), rgb(0x8e5232), rgb(0xb07050));
     case CAMADA.AREIA_MOLHADA: return areia(x, y, rgb(0xc2ad7c), rgb(0xd8c69a), rgb(0x9a8660), 17);
+    case CAMADA.NEVE_TRILHA: return neveTrilha(x, y);
+    case CAMADA.CINZA: return cinza(x, y);
+    case CAMADA.NEVE_FUNDA: return neveFunda(x, y);
   }
   return [255, 0, 255, 0.5];
 }
