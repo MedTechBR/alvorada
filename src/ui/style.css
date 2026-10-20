@@ -129,8 +129,11 @@ body.touch #lead { width: 186px; padding: 5px 9px 6px; --hud-k: var(--ui-scale);
 body.touch .ld-nm { font-size: 13px; }
 body.touch .objective { top: calc(var(--g) + var(--st) + 80px); max-width: 220px; --hud-k: var(--ui-scale); }
 body.touch .objective .ot { font-size: 12px; }
-body.touch #toasts { top: calc(var(--st) + 52px); right: auto; left: 50%; transform: translateX(-50%); bottom: auto; align-items: center; flex-direction: column; max-width: min(320px, 44vw); }
-body.touch #toasts div { font-size: 12px; padding: 5px 10px; text-align: center; }
+/* celular deitado: avisos no canto de cima à direita, embaixo do zoom e à esquerda do minimapa (o cacho de golpes começa
+   abaixo de 124 px; o joystick fica embaixo à esquerda); na luta, logo abaixo da barra fina e dos nomes dos golpes */
+body.touch #toasts { top: calc(var(--st) + 44px); right: calc(var(--g) + var(--sr) + 44px * var(--ui-scale) + 112px); left: auto; transform: none; bottom: auto; align-items: flex-end; flex-direction: column; gap: 4px; max-width: min(250px, 34vw); }
+body.touch.hb-on #toasts { top: calc(var(--st) + 80px); right: calc(var(--g) + var(--sr) + 8px); }
+body.touch #toasts div { font-size: 11px; padding: 3px 9px; border-radius: 10px; text-align: right; line-height: 1.25; }
 body.touch .foe { --hud-k: var(--ui-scale); }
 @media (max-height: 430px) {
   body.touch #lead { width: 182px; padding: 4px 8px 5px; }
@@ -343,7 +346,7 @@ body:not(.touch) #zoom { zoom: var(--k, 1); }
 /* celular em pé: nome da área abaixo do painel do Pokémon, zoom embaixo do minimapa, avisos no meio da tela */
 @media (max-width: 520px) {
   body.touch .area { top: calc(var(--st) + 128px); font-size: 14px; }
-  body.touch #toasts { bottom: auto; top: calc(var(--st) + 168px); flex-direction: column; max-width: calc(100vw - 80px); }
+  body.touch #toasts, body.touch.hb-on #toasts { bottom: auto; top: calc(var(--st) + 168px); right: calc(var(--g) + var(--sr)); flex-direction: column; max-width: calc(100vw - 80px); }
 }
 /* online no celular deitado: janela mais compacta (cabe sem rolar na maioria dos casos) */
 @media (max-height: 430px) {

@@ -137,8 +137,8 @@ export class Espetaculo {
   }
 
   // ---------- faixas: "<X> DESMAIOU!", "MEGA <X>!" ----------
-  faixa(texto, tipo = 'ko') {
-    this.faixaAt = { s: texto, tipo, t: 0, life: 1.05 };
+  faixa(texto, tipo = 'ko', cor = null) {
+    this.faixaAt = { s: texto, tipo, cor, t: 0, life: tipo === 'fase' ? 1.7 : 1.05 }; // fase da arena: a mesma pílula, com a cor do ginásio
   }
 
   // ---------- golpe forte ----------
@@ -233,7 +233,7 @@ export class Espetaculo {
       const st = 10 + (parseFloat(cs.getPropertyValue('--st')) || 0);
       this.hHud = bar?.height ? bar.bottom : Math.max(st, fundo(['#foe'])); // (o painel do treinador fica no meio, em cima)
       this.hEu = bar?.height ? bar.bottom : Math.max(st, fundo(['#lead', '#objective']));
-      this.hEle = bar?.height ? bar.bottom : Math.max(st, fundo(['#minimapa', '#menu-btn']));
+      this.hEle = bar?.height ? Math.max(bar.bottom, fundo(['#menu-btn'])) : Math.max(st, fundo(['#minimapa', '#menu-btn'])); // o botão do menu desce um pouco abaixo da barra fina
     }
     return lado === 'eu' ? this.hEu : lado === 'ele' ? this.hEle : this.hHud;
   }
@@ -248,8 +248,8 @@ export class Espetaculo {
     x.globalAlpha = sai;
     x.save(); x.translate(W / 2 - w / 2, topo); x.transform(1, 0, -0.16, 1, 0, 0);
     x.beginPath(); x.roundRect(0, 0, w, h, h / 2); x.fillStyle = mega ? 'rgba(18,48,96,.92)' : 'rgba(16,14,30,.9)'; x.fill();
-    x.lineWidth = 2; x.strokeStyle = mega ? '#7ad8ff' : '#ffd23f'; x.stroke();
-    x.textAlign = 'center'; x.fillStyle = mega ? '#bff0ff' : '#ffd23f';
+    x.lineWidth = 2; x.strokeStyle = mega ? '#7ad8ff' : o.cor ?? '#ffd23f'; x.stroke();
+    x.textAlign = 'center'; x.fillStyle = mega ? '#bff0ff' : o.cor ?? '#ffd23f';
     let s = tam; const mw = w - 20 * E, tw = x.measureText(o.s).width; if (tw > mw) { s *= mw / tw; x.font = `italic 900 ${s.toFixed(1)}px ${FONTE}`; }
     x.fillText(o.s, w / 2, h / 2 + 0.5);
     x.restore(); x.globalAlpha = 1;

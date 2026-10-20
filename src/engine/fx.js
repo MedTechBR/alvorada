@@ -169,7 +169,7 @@ export class Fx {
   }
 
   // ---------- câmera ----------
-  kick(shake = 0.2, stop = 0.05) { this.shake = Math.max(this.shake, shake); this.hitStop = Math.max(this.hitStop, stop); }
+  kick(shake = 0.2, stop = 0.05) { this.shake = Math.max(this.shake, shake); this.hitStop = Math.max(this.hitStop, Math.min(stop, 0.06)); } // pausa no impacto: no máximo 60 ms
   screenFlash(color = 0xffffff, a = 0.35) { this.flashColor = color; this.flash = Math.max(this.flash, Math.min(0.28, a * 0.6)); }
 
   // ---------- quadro ----------

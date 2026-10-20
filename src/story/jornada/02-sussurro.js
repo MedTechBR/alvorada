@@ -25,11 +25,11 @@ export default {
         ['lia', 'Eu sou a Lia, líder do ginásio, bióloga e babá de lagarta. O Tomé mandou um bilhete falando de você.'],
         ['lia', 'Tem gente de capa roxa rondando minha estufa, perguntando pela "pedra da Lia". Pedra! Eu sou bióloga, não pedreira!'],
         ['jogador', 'Eles são da Equipe Crepúsculo? Você sabe o que querem com a pedra?'],
-        ['lia', 'Não sei quem são, mas o bosque anda estranho. Vá até o Bosque Sussurrante e descubra com seus próprios olhos.'],
+        ['lia', 'Não sei. Mas as árvores do bosque estão secando e ninguém sabe por quê. Vá ver o Bosque Sussurrante, por favor.'],
       ],
       depois: {
         flags: { 'nh.chegouSussurro': true },
-        objetivo: { texto: 'Entre no Bosque Sussurrante, a oeste, e descubra quem está rondando a estufa', alvo: 'bosque_sussurrante' },
+        objetivo: { texto: 'Entre no Bosque Sussurrante, a oeste, e descubra quem está rondando a estufa', alvo: 'trilha_jequitiba' },
       },
     },
     {
@@ -39,13 +39,13 @@ export default {
       falas: [
         ['narrador', 'Atrás de um jequitibá, duas pessoas de capa roxa cochicham. A capa de um deles tem uma lua minguante bordada.'],
         ['recruta', 'A pedra da Lia fica na estufa. Hoje à noite, quando a vila dormir.'],
-        ['recruta2', 'E se o tal Absol aparecer de novo? Ele me olhou ontem. Me olhou com julgamento.'],
-        ['recruta', 'Absol não morde. Ele só aparece antes de alguma desgraça. Vamos antes que ele apareça de novo.'],
+        ['recruta2', 'E se aquele Absol aparecer de novo? Ele ficou me encarando ontem.'],
+        ['recruta', 'Absol não ataca. Dizem que ele aparece antes de desastres. Vamos embora antes que ele volte.'],
         ['narrador', 'Eles somem entre as árvores. Você corre de volta para a vila.'],
       ],
       depois: {
         flags: { 'nh.ouviuRecrutas': true },
-        objetivo: { texto: 'Avise a Lia na Vila Sussurro: a estufa será roubada hoje à noite', alvo: 'vila_sussurro' },
+        objetivo: { texto: 'Volte depressa pela trilha até a Vila Sussurro: a estufa da Lia será roubada hoje à noite', alvo: 'bifurcacao' },
       },
       atores: [
         { id: 'recruta_trilha', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'trilha_jequitiba', longe: 4 },
@@ -60,11 +60,11 @@ export default {
       falas: [
         ['jogador', 'Lia! Ouvi dois recrutas dizendo que a sua estufa será roubada hoje à noite, quando a vila dormir.'],
         ['lia', 'Na minha estufa? Obrigada por avisar. Vou pôr alguém de vigia.'],
-        ['lia', 'Fique de olho no fundo da estufa. Se eles querem a pedra, vão tentar quando a vila estiver dormindo.'],
+        ['lia', 'Eu cuido da estufa. Mas se eles andam pelo bosque, quero saber o que procuram lá. Você vê para mim?'],
       ],
       depois: {
         flags: { 'nh.avisouLia': true },
-        objetivo: { texto: 'Vá à estufa da Lia e vigie a noite', alvo: 'estufa_lia' },
+        objetivo: { texto: 'A Lia vai vigiar a estufa. Volte à trilha do bosque e descubra o que os recrutas procuram', alvo: 'bifurcacao' },
       },
     },
     {
@@ -92,9 +92,9 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'toca_absol', requer: ['nh.seguiuAbsol'], semFlag: ['nh.tocaEntrou'] },
       falas: [
         ['narrador', 'Uma gruta coberta de musgo. Nas paredes, veios de cristal brilham com uma luz morna, como a de um lampião.'],
-        ['narrador', 'Só que aqui a luz pulsa. Devagar. Como se respirasse.'],
+        ['narrador', 'Só que aqui a luz pisca devagar, num ritmo regular.'],
         ['narrador', 'Lá do fundo vem um barulho de teia rasgando.'],
-        ['jogador', 'Esse barulho não é normal. Eu vou até o fundo.'],
+        ['jogador', 'Esse barulho não é normal. Vou até o fundo da gruta.'],
         ['absol', '…'],
       ],
       depois: {
@@ -123,41 +123,43 @@ export default {
       falas: [
         ['narrador', 'O Ariados se encolhe. O vermelho dos olhos vai sumindo até virar um amarelo cansado. Ele foge pela fresta do teto.'],
         ['narrador', 'O Absol encosta o chifre num veio de cristal. A luz treme. Depois ele olha para você por um bom tempo, e some no mato.'],
-        ['jogador', 'Essa luz vem das raízes. O Absol me trouxe até aqui para eu ver. Preciso contar isso para a Lia.'],
+        ['jogador', 'Esse cristal deixou o Ariados fora de si. Foi para isso que o Absol me trouxe aqui. Vou contar à Lia.'],
         ['pokedex', 'Bzzz… Registro novo: veio de cristal luminoso. A luz não é igual à de nenhuma pedra conhecida.'],
       ],
       depois: {
         flags: { 'nh.viuCristal': true },
-        objetivo: { texto: 'Conte à Lia o que viu na gruta. Ela está na estufa, na Vila Sussurro', alvo: 'estufa_lia' },
+        objetivo: { texto: 'Leve o que viu da gruta de volta à Lia, na estufa da Vila Sussurro', alvo: 'lia' },
       },
     },
     {
-      // depois da gruta: o jogador conta à Lia o que viu; ela pede para ele ficar de vigia, e a noite chega
-      id: 'j02_lia_relato',
+      // o jogador conta da gruta à Lia (na estufa) e fica com ela para a noite em que os recrutas voltam
+      id: 'j02_lia_cristal',
       local: 'estufa_lia',
-      gatilho: { tipo: 'falar', alvo: 'lia', requer: ['nh.viuCristal'], semFlag: ['nh.liaRelato'] },
+      gatilho: { tipo: 'falar', alvo: 'lia', requer: ['nh.viuCristal'], semFlag: ['nh.defendeuEstufa', 'nh.contouCristal'] },
       falas: [
-        ['jogador', 'Lia, achei um veio de cristal no fundo da Toca do Absol. A luz dele deixava o Ariados de olhos vermelhos.'],
-        ['lia', 'Cristal que brilha sozinho? Então é isso que anda deixando os Pokémon do bosque nervosos.'],
-        ['lia', 'E os recrutas vêm hoje atrás da pedra. Fique aqui comigo. Quando a vila dormir, a gente pega eles no flagra.'],
+        ['jogador', 'Lia! Um Absol branco me levou a uma gruta no bosque. Um Ariados estava fora de si, perto de um cristal que pisca.'],
+        ['lia', 'Um cristal? Então é ele! As árvores perto dele estão secando, e eu não sabia por quê.'],
+        ['lia', 'E os de capa roxa ainda querem a minha pedra. Se eles vierem hoje à noite, eu quero alguém aqui comigo. Você fica?'],
+        ['jogador', 'Fico. Ninguém mexe na sua estufa.'],
+        ['narrador', 'Vocês apagam as lanternas e esperam no escuro, entre os casulos.'],
       ],
       depois: {
-        flags: { 'nh.liaRelato': true },
-        hora: 21,
-        objetivo: { texto: 'Proteja a pedra da estufa da Lia esta noite', alvo: 'estufa_lia' },
+        flags: { 'nh.contouCristal': true },
+        hora: 20,
+        objetivo: { texto: 'Proteja a estufa da Lia: os recrutas da Crepúsculo chegam à noite', alvo: 'estufa_lia' },
       },
     },
     {
       // a noite da estufa: os recrutas tentam roubar a pedra e a Véspera observa de longe
       id: 'j02_estufa_noite',
       local: 'estufa_lia',
-      gatilho: { tipo: 'apos', cena: 'j02_lia_relato', semFlag: ['nh.defendeuEstufa'] },
+      gatilho: { tipo: 'entrar', alvo: 'estufa_lia', hora: 'noite', requer: ['nh.contouCristal'], semFlag: ['nh.defendeuEstufa'] },
       falas: [
         ['narrador', 'A estufa está escura. Dois vultos de capa roxa abrem a vitrine onde a Lia guarda a pedra.'],
-        ['recruta', 'Pronto, peguei. Que pedra mais sem graça, parece pedaço de telha.'],
-        ['recruta2', 'Ih. Tem um moleque olhando pra gente.'],
-        ['recruta', 'Moleque, a Equipe Crepúsculo não tem nada contra você. A gente só quer guardar a noite. Sai da frente.'],
-        ['jogador', 'Guardar a noite? Essa pedra é da Lia, e ela não está à venda.'],
+        ['recruta', 'Peguei! Que pedra sem graça, parece pedaço de telha.'],
+        ['recruta2', 'Ih. Tem alguém olhando pra gente.'],
+        ['recruta', 'Criança, sai da frente. A chefe mandou pegar as pedras dos ginásios. Ela diz que é para proteger a região.'],
+        ['jogador', 'Proteger a região roubando? Essa pedra é da Lia!'],
         ['recruta', 'Então vem pegar!'],
       ],
       depois: {
@@ -176,9 +178,9 @@ export default {
       local: 'estufa_lia',
       gatilho: { tipo: 'vencer', alvo: 'c2_recruta' },
       falas: [
-        ['recruta2', 'Chega de brincadeira. Houndour, para cima dele!'],
-        ['recruta', 'Agora você me deixou sem graça. Vou dar o troco na Lia!'],
-        ['jogador', 'Então vem. A pedra é da Lia, e esta noite não é de vocês.'],
+        ['recruta2', 'Chega de brincadeira. Houndour, vai!'],
+        ['recruta', 'Você me irritou. Agora eu pego a Lia!'],
+        ['jogador', 'Então vem. Eu não deixo vocês levarem a pedra da Lia.'],
       ],
       depois: {
         batalha: {
@@ -192,11 +194,11 @@ export default {
       local: 'estufa_lia',
       gatilho: { tipo: 'vencer', alvo: 'c2_recruta2' },
       falas: [
-        ['recruta', 'Tá bom, fica com a telha! Mas a gente só cumpre ordem. Quem manda quer saber da luz do bosque, não da pedra.'],
+        ['recruta', 'Tá bom, fica com a telha! A gente só segue ordem da chefe.'],
         ['narrador', 'Os recrutas fogem pela janela. Numa árvore lá fora, uma mulher de casaco longo observa. Um Absol está ao lado dela.'],
-        ['vespera', 'Bom trabalho, menino. A Lia tem sorte de ter alguém que se importa com a pedra. Espero que a sorte dure.'],
-        ['vespera', 'Mas a luz do bosque não espera ninguém. Pergunte à Lia o que ela sabe sobre essas raízes.'],
-        ['narrador', 'Ela some entre os galhos. Só a voz fica.'],
+        ['vespera', 'Bom trabalho. Sou a Dra. Véspera, chefe da Crepúsculo. Eu recolho as pedras para que ninguém abuse delas.'],
+        ['vespera', 'Quer entender o que está acontecendo? Pergunte à Lia por que as árvores do bosque estão secando.'],
+        ['narrador', 'Ela some entre os galhos, com o Absol.'],
       ],
       depois: {
         flags: { 'nh.defendeuEstufa': true, 'nh.viuVespera': true },
@@ -248,8 +250,8 @@ export default {
       falas: [
         ['lia', 'Chegou ao centro da teia! Pouca gente chega sem ser puxada de volta pelo Spinarak. Ele está meio decepcionado.'],
         ['lia', 'Inseto é pequeno, é quieto, é fácil de ignorar. E é por isso que ganha. Vamos lá!'],
-        ['jogador', 'Eu estou pronto, Lia. Mas antes me diz: a sua estufa sempre foi assim, tão escura?'],
-        ['lia', 'Não. Até uns meses atrás a estufa pegava sol de manhã. Depois vieram homens da Companhia Aurora, com a luzita.'],
+        ['jogador', 'Estou pronto, Lia. Mas antes: por que a estufa está tão escura hoje?'],
+        ['lia', 'Não. Antes a estufa pegava sol logo cedo. Agora o sol nasce tarde e as plantas sofrem.'],
       ],
       depois: {
         batalha: {
@@ -271,11 +273,11 @@ export default {
       local: 'estufa_lia',
       gatilho: { tipo: 'vencer', alvo: 'leader_lia' },
       falas: [
-        ['lia', 'Você foi rápido como um Yanma! A Insígnia Casulo é sua. Ela lembra que toda mudança começa quietinha, por dentro.'],
+        ['lia', 'Você foi rápido como um Yanma! A Insígnia Casulo é sua. Ela mostra que todo Pokémon muda e evolui.'],
         ['narrador', '{jogador} recebeu a Insígnia Casulo!'],
         ['lia', 'E esta MT: Picada. Pega o Pokémon desprevenido e ainda come a fruta dele. Grosseiro, mas eficiente.'],
-        ['lia', 'Você viu a gruta. Eu já desconfiava que o bosque estava doente perto daqueles veios. As raízes ali estão secando.'],
-        ['lia', 'A Companhia Aurora diz que a luzita é limpa. Eu confio mais no bosque. Siga pela Rota 3 até Porto Espelho.'],
+        ['lia', 'Aquele cristal se chama luzita. As árvores perto dele estão secando, como você viu.'],
+        ['lia', 'A Companhia Aurora, uma empresa de energia, diz que a luzita é segura. Eu duvido. Siga pela Rota 3 até Porto Espelho.'],
       ],
       depois: {
         insignia: 'sussurro', mt: 'bugBite',
@@ -291,11 +293,11 @@ export default {
       id: 'j02_bia_luz',
       gatilho: { tipo: 'apos', cena: 'j02_lia_insignia' },
       falas: [
-        ['bia', '{jogador}! É a Bia! Analisei o cristal da gruta. Ele não brilha, a luz vaza. Como se viesse de outro lugar.'],
-        ['bia', 'Nenhuma pedra que eu conheço faz isso. Quando contei ao Professor, ele ficou branco e disse que devia ser nada.'],
-        ['bia', 'Depois saiu sem dizer para onde. Se alguém perguntar da luzita, me avisa.'],
-        ['jogador', 'Então ela não é só luz. É algo que vem de fora da terra.'],
-        ['bia', 'Isso mesmo. Eu vou tentar descobrir de onde.'],
+        ['bia', '{jogador}! É a Bia! Analisei o cristal da gruta. A energia dele não é de nenhuma pedra comum.'],
+        ['bia', 'Quando contei ao Professor, ele ficou pálido e disse que não era nada.'],
+        ['bia', 'Depois saiu sem dizer para onde. Acho que ele sabe de algo.'],
+        ['jogador', 'Então o Professor está escondendo alguma coisa sobre a luzita.'],
+        ['bia', 'Também acho. Vou investigar o que ele sabe.'],
       ],
       depois: { ambiente: true },
     },
@@ -305,7 +307,7 @@ export default {
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis horas e dezenove minutos. São catorze minutos de atraso desde segunda.'],
         ['mae', '{jogador}, seis e dezenove. Você está ganhando insígnias, e o sol está ficando mais preguiçoso. Isso não é normal.'],
-        ['jogador', 'Ele já atrasava antes da minha primeira insígnia, Mãe. Então não é por causa das minhas vitórias.'],
+        ['jogador', 'Ele já atrasava antes da minha primeira insígnia, Mãe. Não é culpa minha.'],
       ],
       depois: { flags: { 'nh.boletim.2': true, 'nh.sol': '6h19' }, ambiente: true },
     },

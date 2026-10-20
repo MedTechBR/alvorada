@@ -3,14 +3,14 @@
 import { NAMES } from './names.js';
 
 export const WAKE = (p) => [
-  `${p}… ${p}! Acorda, dorminhoco! Os Starly já estão cantando faz tempo.`,
+  `${p}… ${p}! Acorda! Os Starly já estão cantando faz tempo.`,
   `O ${NAMES.profFull} passou aqui bem cedinho. Disse que hoje é um dia especial para você!`,
   'O laboratório dele fica do outro lado da praça. Vá até lá, mas não saia da vila sem um Pokémon, ouviu?',
 ];
 
 export const MOM = {
   noMon: [`O ${NAMES.prof} está esperando por você no laboratório, do outro lado da praça!`],
-  rest: ['Você parece cansado, querido. Descanse um pouco.'],
+  rest: ['Você parece cansado. Descanse um pouco.'],
   door: ['Você entrou em casa e descansou um pouco.'],
   fruits: ['Ah, e leve estas frutas do quintal. Uma Fruta Oran recupera um pouco de HP, e a Pecha cura veneno.'],
   afterBadge: (p) => [`${p}, a vizinhança inteira já sabe da sua insígnia! Estou tão orgulhosa.`, 'Agora descanse. A jornada é longa.'],
@@ -20,7 +20,7 @@ export const PROF = {
   intro: (p) => [
     `Ah, ${p}! Até que enfim! Bom dia!`,
     'Eu sou Jatobá, o professor desta vila. Estudo os Pokémon da região Alvorada… e o próprio alvorecer.',
-    'Há alguns dias o sol nasce um pouquinho mais tarde sobre o Planalto dos Ventos. Ninguém sabe explicar.',
+    'Há alguns dias o sol nasce um pouco mais tarde a cada manhã. Ninguém sabe explicar.',
     'E os Pokémon Alfa, aqueles de olhos vermelhos, nunca apareceram tanto.',
     'Preciso de olhos jovens por toda a região. Por isso, quero que você leve um destes Pokémon.',
     'Na mesa ao meu lado estão Bulbasaur, Charmander e Squirtle. Escolha com o coração!',
@@ -35,7 +35,7 @@ export const PROF = {
     'O mais perto é o de Cidade Campina. Siga a trilha a oeste, pelos Campos de Lúmen. Boa sorte!',
   ],
   hint: ['Os Pokémon selvagens vivem no mato alto, no bosque e perto da água.', 'Enfraqueça-os em batalha e arremesse uma Poké Bola para capturá-los!', 'Cidade Campina fica a oeste, no fim dos Campos de Lúmen.'],
-  afterBadge: (p) => [`${p}! Você conseguiu a Insígnia Espiga! Sabia que podia contar com você.`, 'Os próximos ginásios ficam ao norte, no Bosque Sussurrante, e a leste, no Lago Espelho. Continue explorando!'],
+  afterBadge: (p) => [`${p}! Você conseguiu a Insígnia Espiga! Sabia que podia contar com você.`, 'O próximo ginásio fica ao norte, na Vila Sussurro. Depois vem o de Porto Espelho, a leste.'],
   phone: (p) => [
     `${p}? Aqui é o ${NAMES.prof}! O Tomé me contou da sua vitória. Parabéns!`,
     'Escute: hoje o sol nasceu às seis e doze. E viram um Absol branco na borda do Bosque Sussurrante.',
@@ -51,7 +51,7 @@ export const RIVAL = {
   challenge: (p) => [`Espera aí, ${p}! Vamos ver quem escolheu melhor!`],
   win: ['O quê?! Não acredito! Eu tinha vantagem de tipo!'],
   lose: ['Isso aí! Meu Pokémon é demais!'],
-  leave: ['Vou na frente para a Cidade Campina. A Insígnia Espiga vai ser minha primeiro. Até mais!'],
+  leave: ['Vou na frente para a Cidade Campina. A Insígnia Espiga vai ser minha antes da sua. Até mais!'],
   idle: ['Hehe, meu Pokémon é o mais forte da vila!'],
   campina: (p) => [
     `${p}! Vai encarar o Tomé? Eu ainda não tentei, mas vou ser o primeiro!`,

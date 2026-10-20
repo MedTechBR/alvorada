@@ -11,7 +11,7 @@ export default {
   id: 'nova06',
   jornada: 'lamparina',
   titulo: 'A noite que não acaba',
-  sol: '6h42',
+  sol: '6h40',
   cenas: [
     {
       id: 'j06_chegada',
@@ -19,17 +19,17 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'vila_lamparina', requer: ['nh.teoDuvida'], semFlag: ['nh.chegouLamparina'] },
       falas: [
         ['narrador', 'Vila Lamparina: casas baixas com janelas de vidro colorido, lampiões acesos mesmo de dia e um cheiro de cera de vela.'],
-        ['narrador', 'A Dona Zélia é a líder da cidade. Ela guarda o casarão com as velas e um ginásio em que a luz só entra quando a noite cai.'],
-        ['benta', 'Chegou! Come mais um pedaço. Aqui a gente janta cedo, porque a noite chega antes do sono.'],
-        ['benta', 'Ouvi no rádio que tem gente de capa roxa rondando o casarão. Vá ver. Mas volte antes de dar meia-noite.'],
-        ['jogador', 'Vou ao casarão e volto antes da meia-noite. Prometo, Vó Benta.'],
+        ['narrador', 'A Dona Zélia é a líder do ginásio e cuida do Casarão das Velas, onde fica a pedra da cidade.'],
+        ['benta', 'Chegou! Come mais um pedaço. Aqui a gente janta cedo.'],
+        ['benta', 'Ouvi no rádio que tem gente de capa roxa rondando o Casarão das Velas. Vá ver, mas volte cedo.'],
+        ['jogador', 'Prometo, Vó Benta. Vou ao casarão e volto cedo.'],
       ],
       depois: {
         flags: { 'nh.chegouLamparina': true },
         objetivo: { texto: 'Vá ao Casarão das Velas depois que escurecer e veja quem está rondando a Dona Zélia', alvo: 'casarao_velas' },
       },
       atores: [
-        { id: 'benta_vila', quem: 'benta', nome: 'Vó Benta', look: LOOKS.benta, spot: 'benta', permanente: true, padrao: ['Come mais um pedaço. Neto magro é vergonha pra avó.'] },
+        { id: 'benta_vila', quem: 'benta', nome: 'Vó Benta', look: LOOKS.benta, spot: 'benta', permanente: true, padrao: ['Come mais um pedaço. Gente magra é vergonha pra avó.'] },
       ],
     },
     {
@@ -40,10 +40,10 @@ export default {
       falas: [
         ['narrador', 'Dentro do casarão, a Dona Zélia segura um candelabro. Dois recrutas tentam arrancar do teto a pedra que fica presa na lanterna do salão.'],
         ['zelia', 'Saiam da minha casa! Essa pedra acende as velas da cidade há mais tempo do que vocês têm de vida.'],
-        ['recruta', 'Não é pedra de vela, velha. É chave. E a chave vai para quem faz a noite durar.'],
-        ['recruta2', 'Avisa o Admin Ébano. Ele disse que o garoto ia aparecer por aqui.'],
-        ['ebano', 'Admin Ébano. Vim buscar a pedra, Dona Zélia. E o garoto que sempre aparece no caminho.'],
-        ['jogador', 'Você rouba pedras no escuro, Ébano. Pelo menos tenha coragem de dizer para quem.'],
+        ['recruta', 'Não é pedra de vela, velha. A chefe mandou pegar as pedras dos ginásios. Ela diz que é para proteger a região.'],
+        ['recruta2', 'Avisa o Admin Ébano. Ele disse que alguém ia aparecer por aqui.'],
+        ['ebano', 'Admin Ébano. Vim buscar a pedra, Dona Zélia. E você de novo no meu caminho.'],
+        ['jogador', 'Você rouba pedras no escuro, Ébano. Devolva isso e vá embora!'],
       ],
       depois: {
         batalha: {
@@ -66,7 +66,7 @@ export default {
       falas: [
         ['ebano', 'Você derrubou meus recrutas. Não me faça perder tempo com o resto. A Dra. Véspera vai te encontrar no cemitério.'],
         ['narrador', 'O Ébano recua pela porta dos fundos. A pedra da lanterna continua no lugar, meio solta.'],
-        ['zelia', 'Deixe a pedra onde está, querido. Eu não tenho mais força para segurar a porta se eles voltarem.'],
+        ['zelia', 'Deixe a pedra onde está. Eu não tenho mais força para segurar a porta se eles voltarem.'],
       ],
       depois: {
         flags: { 'nh.casaraoEvento': true },
@@ -83,15 +83,15 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'cemiterio_velas', requer: ['nh.casaraoEvento'], semFlag: ['nh.viuVespera6'] },
       falas: [
         ['narrador', 'Velas acesas em cada túmulo, mesmo sem vento. Ao lado de um laguinho escuro, uma mulher de casaco longo está sentada, com um Absol aos pés.'],
-        ['vespera', 'Você aparece onde ninguém chamou. Isso atrapalha quem quer que a noite dure, menino.'],
+        ['vespera', 'Você aparece onde ninguém chamou. Está atrapalhando o meu trabalho.'],
         ['jogador', 'Você é a Dra. Véspera. O que a Crepúsculo quer de verdade?'],
-        ['vespera', 'Quero que a noite fique como está. Toda luz é uma dívida, e quem toma emprestado sem saber quem cobra paga caro.'],
-        ['vespera', 'Pergunte à Dona Zélia pela vela que a família dela guarda. E depois pergunte quem mais anda atrás dela.'],
+        ['vespera', 'Quero as pedras longe da Companhia Aurora. A luz que ela vende custa mais caro do que parece.'],
+        ['vespera', 'Pergunte à Dona Zélia pela vela que a família dela guarda. Ela é mais importante do que parece.'],
         ['narrador', 'O Absol levanta a cabeça, olha para você por um instante e volta a dormir. A Dra. Véspera se levanta e some entre as lápides.'],
       ],
       depois: {
         flags: { 'nh.viuVespera6': true },
-        objetivo: { texto: 'Volte ao Casarão das Velas e pergunte à Dona Zélia sobre a vela que ela guarda', alvo: 'casarao_velas' },
+        objetivo: { texto: 'Volte ao Casarão das Velas e pergunte à Dona Zélia sobre a vela que ela guarda', alvo: 'zelia' },
       },
       atores: [
         { id: 'vespera_cemiterio', quem: 'vespera', nome: 'Dra. Véspera', look: LOOKS.vespera, spot: 'cemiterio_porta', longe: 3 },
@@ -104,11 +104,11 @@ export default {
       local: 'casarao_velas',
       gatilho: { tipo: 'falar', alvo: 'zelia', requer: ['nh.viuVespera6'], semFlag: ['nh.velaEterna'] },
       falas: [
-        ['zelia', 'Pela vela, então. Ela é a Vela Eterna, querido. Ficou acesa na minha família desde antes da estrada de ferro.'],
+        ['zelia', 'Pela vela, então. É a Vela Eterna. Ela está na minha família desde antes da estrada de ferro.'],
         ['zelia', 'Um homem de terno branco veio aqui ontem, perguntou dela e foi embora sorrindo. Eu não gostei do sorriso dele.'],
-        ['zelia', 'Você tem cara de quem sabe guardar uma coisa. Leve a vela e não a acenda até eu mandar.'],
+        ['zelia', 'Ele quer essa vela, e eu não sei por quê. Aqui ela não está segura. Leve e não a acenda até eu mandar.'],
         ['narrador', 'A Dona Zélia coloca uma vela de cera escura nas suas mãos. O pavio está apagado, mas a cera ainda está morna.'],
-        ['jogador', 'Uma vela que parece estar esperando alguma coisa. Isso não é cera comum.'],
+        ['jogador', 'Pode deixar, eu guardo a vela. Ninguém vai tirá-la de mim.'],
       ],
       depois: {
         flags: { 'nh.velaEterna': true },
@@ -139,8 +139,8 @@ export default {
       falas: [
         ['zelia', 'Você passou pelos meus médiuns. Eles são teimosos, como a vela, e como eu. Agora é a minha vez.'],
         ['zelia', 'Não vou perguntar se você está pronto. Pelo seu jeito, acho que está. Vamos ver se está mesmo.'],
-        ['jogador', 'Dona Zélia, antes de começar: a vela ainda está na minha mochila. Ela precisa ficar apagada?'],
-        ['zelia', 'Precisa, querido. Não é hora de acender. Você vai precisar dela quando a noite for mais escura.'],
+        ['jogador', 'Dona Zélia, antes de começar: a vela precisa ficar apagada mesmo?'],
+        ['zelia', 'Precisa. Só acenda quando eu avisar. Eu digo quando for a hora.'],
       ],
       depois: {
         batalha: {
@@ -162,10 +162,10 @@ export default {
       local: 'casarao_velas',
       gatilho: { tipo: 'vencer', alvo: 'leader_zelia' },
       falas: [
-        ['zelia', 'A Insígnia Vela é sua. Ela diz que a luz não precisa ser grande para ser teimosa. Só precisa ficar acesa.'],
+        ['zelia', 'A Insígnia Vela é sua. Ela lembra que até uma luz pequena enfrenta a escuridão.'],
         ['narrador', '{jogador} recebeu a Insígnia Vela!'],
-        ['zelia', 'A Véspera mandou você perguntar pela vela, mas quem já perguntou foi um homem de branco. Ele sabe onde ela está guardada.'],
-        ['zelia', 'Guarde a vela, querido. A Rota 6 segue pela ferrovia, a leste, e a Aurora pôs carrinhos novos nos trilhos. Olhe antes de pisar.'],
+        ['zelia', 'A Véspera e o homem de branco querem a mesma vela. Nenhum dos dois pode ficar com ela.'],
+        ['zelia', 'Guarde-a bem. A Rota 6 segue pela ferrovia, a leste, e a Aurora pôs carrinhos novos nos trilhos. Olhe antes de pisar.'],
       ],
       depois: {
         insignia: 'lamparina',
@@ -180,11 +180,11 @@ export default {
       id: 'j06_boletim5',
       gatilho: { tipo: 'flag', alvo: 'badges.lamparina', semFlag: ['nh.boletim.5'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e quarenta e dois. Em Vila Lamparina, dizem que foi a noite mais longa da região.'],
-        ['mae', '{jogador}, seis e quarenta e dois. Quase quarenta minutos de atraso desde o primeiro boletim. Eu não gosto nada disso, filho.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e quarenta. Vila Lamparina teve a noite mais longa da região.'],
+        ['mae', '{jogador}, seis e quarenta. Trinta e cinco minutos de atraso desde o primeiro boletim. Não gosto nada disso.'],
         ['jogador', 'Mãe, a Dona Zélia me deu uma vela para guardar. Ela parece saber mais do que diz.'],
       ],
-      depois: { flags: { 'nh.boletim.5': true, 'nh.sol': '6h42' }, ambiente: true },
+      depois: { flags: { 'nh.boletim.5': true, 'nh.sol': '6h40' }, ambiente: true },
     },
   ],
 };

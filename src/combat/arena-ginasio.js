@@ -213,8 +213,19 @@ export class ArenaGinasio {
     await new Promise((r) => g.later(0.8, r));
   }
   // cena curta: câmera vai a um ponto, faixa e fala; ninguém age nem apanha enquanto dura
-  cena({ foco, dur = 1.5, titulo, fala, quem, cor = '#ffe27a', som = null, tremor = 0, forca = 0.8 } = {}) {
+  // livre: no meio da luta (fase nova, entrada do ás) a cena NÃO para ninguém nem tira a câmera: só a pílula pequena
+  // embaixo da barra do topo (espetaculo.faixa), a fala do líder no canto e o som; a luta continua (pedido do dono)
+  cena({ foco, dur = 1.5, titulo, fala, quem, cor = '#ffe27a', som = null, tremor = 0, forca = 0.8, livre = false } = {}) {
     const g = this.g;
+    if (livre) {
+      const c = typeof cor === 'number' ? '#' + cor.toString(16).padStart(6, '0') : cor;
+      if (titulo) { if (g.show?.faixa) g.show.faixa(titulo, 'fase', c); else g.toast(titulo); }
+      if (fala) { g.toast(`${this.b.def.name}: ${fala}`); quem?.exclaim?.('!'); quem?.throwPose?.(); }
+      if (tremor) g.fx.kick(Math.min(tremor, 0.25), 0);
+      if (som) g.audio?.sfx?.(som);
+      this.torcida(forca, true);
+      return Promise.resolve();
+    }
     this.cenaT = dur;
     for (const e of this.lutadores()) { e.lock = Math.max(e.lock, dur); e.iframes = Math.max(e.iframes, dur + 0.35); e.charging = null; e.vx = e.vy = 0; }
     if (foco) g.camFocus = foco;
@@ -309,7 +320,7 @@ export class ArenaGinasio {
     if (silencioso) return;
     for (const id of f.evento ?? []) this.peca(id)?.evento?.(f);
     const foco = f.camera === 'lider' && this.b.npc ? { x: this.b.npc.x, y: this.b.npc.y } : { x: this.R.cx, y: this.R.cy };
-    this.cena({ foco, dur: f.dur ?? 1.8, titulo: f.titulo, fala: f.fala, quem: this.b.npc, cor: f.cor ?? this.cfg.cor, som: f.som ?? 'quake', tremor: f.tremor ?? 0.35, forca: 1 });
+    this.cena({ foco, dur: f.dur ?? 1.8, titulo: f.titulo, fala: f.fala, quem: this.b.npc, cor: f.cor ?? this.cfg.cor, som: f.som ?? 'quake', tremor: f.tremor ?? 0.35, forca: 1, livre: true });
   }
   #condicao(q) {
     if (!q) return false;
@@ -466,9 +477,9 @@ export class ArenaGinasio {
   antesDoAs() {
     const as = this.cfg.as ?? {}, npc = this.b.npc;
     this.pressa = 1.3; // o último Pokémon: a arena pisca mais depressa até o fim
-    this.cena({ foco: npc ? { x: npc.x, y: npc.y } : { x: this.R.cx, y: this.R.cy }, dur: 1.6, titulo: `${this.b.def?.name ?? 'O líder'} está com tudo!`, fala: as.fala, quem: npc, cor: as.cor ?? this.cfg.cor, som: 'howl', forca: 1 });
+    this.cena({ foco: npc ? { x: npc.x, y: npc.y } : { x: this.R.cx, y: this.R.cy }, dur: 1.6, titulo: `${this.b.def?.name ?? 'O líder'} está com tudo!`, fala: as.fala, quem: npc, cor: as.cor ?? this.cfg.cor, som: 'howl', forca: 1, livre: true });
     if (as.musica) this.g.audio?.music?.(as.musica);
-    return 1.5;
+    return 0.3; // só o tempo do grito: o arremesso vem logo, com a luta andando
   }
   // um Pokémon do líder entrou em campo (ultimo = o ás)
   entrou(e, ultimo) {
@@ -477,9 +488,9 @@ export class ArenaGinasio {
     for (const p of this.pecas) p.entrou?.(e, ultimo);
     if (!ultimo) return;
     const as = this.cfg.as ?? {}, cor = as.corFx ?? 0xffe27a;
-    e.lock = Math.max(e.lock, 1.1); e.iframes = Math.max(e.iframes, 1.1);
+    e.lock = Math.max(e.lock, 0.6); e.iframes = Math.max(e.iframes, 0.6); // entrada do ás: efeito, sem congelar a luta
     g.fx.shock(e.x, e.y, cor, 80, 0.7); g.fx.ring(e.x, e.y - 8, 0xffffff, 26, 0.6, { width: 3 });
-    g.fx.light(e.x, e.y - 10, cor, 90, 0.6, 1); g.fx.screenFlash(0xffffff, 0.5); g.fx.kick(0.45, 0.12);
+    g.fx.light(e.x, e.y - 10, cor, 90, 0.6, 1); g.fx.screenFlash(0xffffff, 0.22); g.fx.kick(0.35, 0.05);
     for (let i = 0; i < 24; i++) { const a = i / 24 * TAU; g.fx.emit(e.x + Math.cos(a) * 6, e.y - 8, { tex: 'spark', color: cor, n: 1, speed: 170, dir: a, spread: 0.08, life: 0.55, stretch: 0.012, drag: 3 }); }
     g.fx.emit(e.x, e.y - 4, { tex: 'dust', n: 12, speed: 90, life: 0.8, scale: 0.9, end: 2.2, add: false, alpha: 0.7 });
     g.fx.number(e.x, e.y - (e.topH ?? 24) - 18, as.grito ?? `${e.mon.name}!`, cor, true, 'banner');

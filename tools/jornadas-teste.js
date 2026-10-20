@@ -26,7 +26,7 @@ window.motor = (on = true) => {
       if (k !== ultimo) { ultimo = k; window.falas.push(`${d.name ? d.name + ': ' : ''}${d.lines?.[d.i] ?? ''}`); }
       const box = document.querySelector('.dlg-choices');
       if (d.choices && box && !box.hidden) { d.sel = window.escolhas.length ? window.escolhas.shift() : 0; window.falas.push(`  [escolha] ${d.choices[d.sel]}`); }
-      if (i % 4 === 0) tecla('Enter');
+      if (i % 4 === 0 && !(window.segurar && d.name?.includes(window.segurar))) tecla('Enter'); // segurar = nome de quem fala: não passa a fala (para fotografar)
     }
   }, 16);
 };

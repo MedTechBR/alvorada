@@ -306,16 +306,23 @@ export class Hud {
     }
   }
 
-  toast(text) {
-    // sem textos repetidos: o mesmo aviso não volta antes de 12 s
-    const agora = performance.now(), ult = (this.toastsVistos ??= new Map());
-    if (agora - (ult.get(text) ?? -1e9) < 12000) return;
-    ult.set(text, agora); if (ult.size > 60) ult.delete(ult.keys().next().value);
-    const box = $('toasts');
-    const el = document.createElement('div'); el.textContent = text; box.prepend(el);
-    setTimeout(() => el.classList.add('out'), 3100);
-    setTimeout(() => el.remove(), 3400);
-    while (box.children.length > 4) box.lastChild.remove();
+  // Avisos no CANTO (pilha pequena embaixo do zoom, à esquerda do minimapa; nunca no meio da tela): somem em ~2,6 s.
+  // chave: o aviso com a mesma chave é ATUALIZADO no lugar (ex.: "+120 XP" de um Pokémon soma numa linha só).
+  toast(text, { chave = null } = {}) {
+    const box = $('toasts'), max = document.body.classList.contains('touch') ? 3 : 4;
+    const vida = (el) => { clearTimeout(el.tOut); clearTimeout(el.tRm); el.classList.remove('out'); el.tOut = setTimeout(() => el.classList.add('out'), 2600); el.tRm = setTimeout(() => el.remove(), 2900); };
+    if (chave) {
+      const ja = [...box.children].find((c) => c.dataset.chave === chave);
+      if (ja) { ja.textContent = text; box.prepend(ja); vida(ja); return; }
+    } else {
+      // sem textos repetidos: o mesmo aviso não volta antes de 12 s
+      const agora = performance.now(), ult = (this.toastsVistos ??= new Map());
+      if (agora - (ult.get(text) ?? -1e9) < 12000) return;
+      ult.set(text, agora); if (ult.size > 60) ult.delete(ult.keys().next().value);
+    }
+    const el = document.createElement('div'); el.textContent = text; if (chave) el.dataset.chave = chave; box.prepend(el);
+    vida(el);
+    while (box.children.length > max) box.lastChild.remove();
   }
 
   banner(text, color = '#ffe27a') {

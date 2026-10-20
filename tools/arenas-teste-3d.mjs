@@ -83,6 +83,20 @@ async function caso(b, nome, rodada) {
         const setas = [...(document.querySelector('.arena-setas')?.children ?? [])].filter((d) => d.style.display !== 'none').length;
         C.amostras = (C.amostras ?? 0) + 1; if (fora) { C.foraTela = (C.foraTela ?? 0) + 1; if (setas >= fora) C.comSeta = (C.comSeta ?? 0) + 1; }
       }
+      // INTERRUPÇÕES no meio da luta (do primeiro Pokémon do líder em campo até o fim): tempo com o jogo parado ou
+      // alguém travado por cena (diálogo, menu, cena da arena, câmera tirada, pausa no impacto acima de 60 ms) e textos
+      // grandes no meio da tela (faixa .banner, faixa VS da barra). Tem de dar ~0.
+      const B = G.story.battle;
+      if (A && !A.done && B && !B.done && (B.active.length || B.fainted)) {
+        if (!C.int) for (const bn of document.querySelectorAll('#ui .banner')) (C.vistosB ??= new WeakSet()).add(bn); // a faixa da abertura (antes da luta) vale
+        const I = C.int ??= { ms: 0, n: 0, parado: false, banners: 0, vs: 0, dialogos: 0, hitStopMax: 0, porque: {} };
+        const pq = G.ui.dialog?.open ? 'diálogo' : G.ui.blocking ? 'tela' : A.cenaT > 0 ? 'cena da arena' : G.camFocus ? 'câmera' : G.fx.hitStop > 0.0601 ? 'impacto>60ms' : null;
+        I.hitStopMax = Math.max(I.hitStopMax, G.fx.hitStop);
+        if (pq) { I.ms += dt * 1000; I.porque[pq] = (I.porque[pq] ?? 0) + Math.round(dt * 1000); if (!I.parado) I.n++; if (pq === 'diálogo' && !I.parado) I.dialogos++; }
+        I.parado = !!pq;
+        const bn = document.querySelector('#ui .banner'); if (bn && !C.vistosB?.has(bn)) { (C.vistosB ??= new WeakSet()).add(bn); I.banners++; (I.textos ??= []).push(bn.textContent); }
+        const vs = document.querySelector('#hb .intro.go'); if (vs && !C.vistosV?.has(vs.dataset.k ?? vs) && (B.fainted || G.time - (B.t0 ?? 0) > 8)) { I.vs++; vs.classList.remove('go'); }
+      }
       if (A?.contem && !A.done && A.fase >= 0) { C.quadros++; for (const [n, e] of quem(A)) if (fora(A, e)) { C.violacoes++; if (C.exemplos.length < 8) C.exemplos.push({ quem: n, x: Math.round(e.x), y: Math.round(e.y), R: [A.R.x0, A.R.y0, A.R.x1, A.R.y1], t: +A.t.toFixed(1) }); } }
     };
     motor(true);
@@ -165,7 +179,7 @@ async function caso(b, nome, rodada) {
   await until(() => p.ev('!!window.__arenaUltima'), 10000, 500);
   await sleep(2500); // volta do estádio (escurece e volta ao ginásio)
   const r = await p.ev(`(() => { const s = window.__arenaUltima, G = window.game, C = window.__cont, n0 = window.__npc0, n = window.__npc; return s && { ...s, porPerigo: s.porPerigo, minAviso: s.minAviso === Infinity ? null : +s.minAviso.toFixed(2), bot: window.bot.stats, perf: { logicaMs: +(window.__perf.ms / window.__perf.n).toFixed(2), logicaMax: +window.__perf.max.toFixed(1) }, equipeViva: G.party.filter((m) => !m.fainted).length,
-    cont: { amostras: C.amostras ?? 0, foraTela: C.foraTela ?? 0, comSeta: C.comSeta ?? 0, quadros: C.quadros, violacoes: C.violacoes, nascidos: C.nascidos, nascidosFora: C.nascFora, exemplos: C.exemplos, trocas: C.trocas },
+    int: C.int ?? null, cont: { amostras: C.amostras ?? 0, foraTela: C.foraTela ?? 0, comSeta: C.comSeta ?? 0, quadros: C.quadros, violacoes: C.violacoes, nascidos: C.nascidos, nascidosFora: C.nascFora, exemplos: C.exemplos, trocas: C.trocas },
     eventos: window.__ev, voltou: { sala: G.map.interiorAt(G.player.x, G.player.y)?.id ?? null, x: G.player.x, y: G.player.y, lider: n0 && n ? Math.hypot(n.x - n0.x, n.y - n0.y) < 2 : null, limite: !!G.map.limite } }; })()`);
   await sleep(500);
   const erros = p.logs.filter((s) => /EXC|Error|error|falhou|não montou|desconhecida/.test(s) && !/favicon|ERR_|net::/.test(s));
@@ -190,6 +204,8 @@ try {
     console.log(`   avisos ${r.avisos} · menor aviso antes de acertar ${r.minAviso}s · golpes sem aviso ${r.semAviso}`);
     console.log(`   CONTENÇÃO: violações ${c.violacoes} em ${c.quadros} quadros · Pokémon que entraram ${c.nascidos} (fora: ${c.nascidosFora}) · contidos na borda ${r.contidos ?? 0} · muros ${r.noMuro} · fora (motor) ${r.foraArea}`);
     console.log(`   tela: Pokémon do líder fora da tela em ${c.foraTela} de ${c.amostras} amostras, com seta na borda em ${c.comSeta}`);
+    const I = r.int ?? {};
+    console.log(`   INTERRUPÇÕES no meio da luta: parado ${Math.round(I.ms ?? 0)} ms em ${I.n ?? 0} vezes ${JSON.stringify(I.porque ?? {})} · diálogos ${I.dialogos ?? 0} · faixas grandes ${I.banners ?? 0} ${JSON.stringify(I.textos ?? [])} · VS repetido ${I.vs ?? 0} · maior pausa no impacto ${Math.round((I.hitStopMax ?? 0) * 1000)} ms`);
     if (c.exemplos?.length) console.log('   exemplos:', JSON.stringify(c.exemplos));
     if (c.trocas?.length) console.log('   trocas forçadas:', JSON.stringify(c.trocas));
     console.log(`   robô: ${JSON.stringify(r.bot)} · lógica ${JSON.stringify(r.perf)}`);
@@ -197,6 +213,6 @@ try {
     if (r.erros.length) console.log('   ERROS:', r.erros);
   }
 } finally { b.kill(); }
-const tot = todos.reduce((a, r) => ({ v: a.v + (r.cont?.violacoes ?? 0), f: a.f + (r.cont?.nascidosFora ?? 0), w: a.w + (r.resultado === 'win' ? 1 : 0) }), { v: 0, f: 0, w: 0 });
-console.log(`\nRESUMO: ${todos.length} lutas, ${tot.w} vitórias, violações de contenção ${tot.v}, nascidos fora ${tot.f}`);
+const tot = todos.reduce((a, r) => ({ v: a.v + (r.cont?.violacoes ?? 0), f: a.f + (r.cont?.nascidosFora ?? 0), w: a.w + (r.resultado === 'win' ? 1 : 0), p: a.p + (r.int?.ms ?? 0), d: a.d + (r.int?.dialogos ?? 0), b: a.b + (r.int?.banners ?? 0) + (r.int?.vs ?? 0) }), { v: 0, f: 0, w: 0, p: 0, d: 0, b: 0 });
+console.log(`\nRESUMO: ${todos.length} lutas, ${tot.w} vitórias, violações de contenção ${tot.v}, nascidos fora ${tot.f}, tempo parado no meio da luta ${Math.round(tot.p)} ms, diálogos ${tot.d}, faixas grandes/VS ${tot.b}`);
 if (process.env.JSON) console.log(JSON.stringify(todos));

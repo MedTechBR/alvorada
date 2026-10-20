@@ -31,13 +31,13 @@ export default {
       local: 'fazenda_tome',
       gatilho: { tipo: 'entrar', alvo: 'fazenda_tome', requer: ['nh.chegouCampina'], semFlag: ['nh.ebanoCampina'] },
       falas: [
-        ['tome', 'Ah, você é o treinador do Prof. Jatobá! Chegou bem na hora. Uns sujeitos de capa roxa estão no celeiro.'],
+        ['tome', 'Ah, você é a pessoa do Prof. Jatobá! Chegou na hora. Uns sujeitos de capa roxa estão no meu celeiro.'],
         ['lili', 'Eles reviraram o celeiro atrás de uma pedra! Eu disse que aqui só tem leite, milho e galinha.'],
-        ['recruta', 'Saia da frente, velho. A pedra não é sua. Ela vai para quem sabe o que fazer com ela.'],
+        ['recruta', 'Saia da frente, velho. Viemos buscar a pedra do ginásio.'],
         ['tome', 'A pedra é do ginásio, e está comigo há quarenta anos. Não vou entregar a ninguém.'],
-        ['ebano', 'Admin Ébano, da Equipe Crepúsculo. A Dra. Véspera quer as pedras longe de quem as vende. Você não sabe o que faz.'],
-        ['jogador', 'Vender? A pedra é do ginásio, não é de vocês.'],
-        ['ebano', 'Então prove. Se você me vencer, eu vou embora e deixo o celeiro em paz. Se perder, a pedra vem comigo.'],
+        ['ebano', 'Sou o Admin Ébano, da Equipe Crepúsculo. A chefe mandou pegar as pedras dos ginásios. Ela diz que é para proteger a região.'],
+        ['jogador', 'Proteger? Levar a pedra de um ginásio é roubo. Ela não é de vocês.'],
+        ['ebano', 'Então prove. Se me vencer, eu vou embora. Se perder, a pedra vem comigo.'],
       ],
       depois: {
         batalha: {
@@ -63,9 +63,9 @@ export default {
       local: 'fazenda_tome',
       gatilho: { tipo: 'vencer', alvo: 'c1_ebano' },
       falas: [
-        ['ebano', 'Hm, não esperava tanta resistência. Fique com a pedra por enquanto. A Dra. Véspera só queria testar você.'],
+        ['ebano', 'Hm, você luta bem. Fique com a pedra por enquanto. Mas a Dra. Véspera não vai desistir.'],
         ['narrador', 'O Admin Ébano recolhe o Murkrow derrotado e some atrás do celeiro. A pedra continua no lugar.'],
-        ['tome', 'Você segurou eles, garoto! Agora vá ao ginásio e mostre se luta tão bem quanto segura um celeiro.'],
+        ['tome', 'Você segurou eles! Agora vá ao ginásio e mostre que luta tão bem quanto defende um celeiro.'],
       ],
       depois: { ambiente: true },
       atores: [
@@ -81,9 +81,9 @@ export default {
       gatilho: { tipo: 'flag', alvo: 'badges.campina', semFlag: ['nh.pedraCampina'] },
       falas: [
         ['tome', 'Olha só! A Insígnia Espiga é sua. Ela lembra que, para crescer, a gente precisa de paciência e de chuva.'],
-        ['tome', 'Escuta, vou ser sincero. A pedra da cidade é o que eu tenho de mais precioso, e não dou conta de vigiá-la sozinho.'],
-        ['tome', 'Fique de olho nela. Quando a Crepúsculo voltar, e vai voltar, eu conto com você.'],
-        ['tome', 'A Rota 2 começa ao norte da fazenda, depois do lamaçal. Cuidado com o barro: ele engole quem anda distraído.'],
+        ['tome', 'Escuta, vou ser sincero. A pedra da cidade é muito importante e eu não dou conta de vigiá-la sozinho.'],
+        ['tome', 'Fique de olho nela. A Crepúsculo vai voltar, e eu conto com você.'],
+        ['tome', 'A Rota 2 começa ao norte da fazenda, depois do lamaçal. Cuidado com o barro, ele atrasa quem anda distraído.'],
       ],
       depois: {
         flags: { 'nh.pedraCampina': true },
@@ -95,9 +95,9 @@ export default {
       id: 'j01_boletim1',
       gatilho: { tipo: 'apos', cena: 'j01_tome_insignia', semFlag: ['nh.boletim.1'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e doze minutos. Sete minutos mais tarde do que ontem.'],
-        ['mae', '{jogador}, ouviu? Seis e doze. Você já ganhou uma insígnia e o sol atrasou mais um pouco. Coincidência, não acha?'],
-        ['jogador', 'Mãe, eu não acredito em coincidência. Mas ainda não sei o que é.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e doze minutos. Sete minutos mais tarde do que no primeiro boletim.'],
+        ['mae', '{jogador}, ouviu? Seis e doze. O sol atrasou mais um pouco. Alguma coisa está errada.'],
+        ['jogador', 'Eu sei, Mãe. Vou descobrir o motivo nas próximas cidades.'],
       ],
       depois: {
         flags: { 'nh.boletim.1': true, 'nh.sol': '6h12' },

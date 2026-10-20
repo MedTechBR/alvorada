@@ -229,19 +229,28 @@ class Game {
   // Chama o Pokémon de volta (raio vermelho até o treinador) e volta a controlar o treinador
   recall(silent = false) {
     const l = this.lead; if (!l) { this.mode = 'trainer'; return; }
+    this.#feixe(l);
+    this.ents.removeChild(l.view); this.entities = this.entities.filter((e) => e !== l); this.lead = null;
+    this.mode = 'trainer';
+    if (!silent) { this.toast(`${l.mon.name}, volte!`); this.audio.sfx('pop'); }
+    this.hudLead(); this.hudMoves();
+  }
+  // raio vermelho de volta à bola: feixe reto do Pokémon até o treinador, brilho nas duas pontas e a silhueta vermelha
+  // do Pokémon encolhendo para dentro do raio (só efeito: a troca não espera por ele)
+  #feixe(l) {
     const p = this.player;
-    // raio vermelho de volta à bola: feixe reto do Pokémon até o treinador, brilho nas duas pontas e a silhueta vermelha
-    // do Pokémon encolhendo para dentro do raio
     for (let k = 0; k <= 8; k++) this.fx.emit(l.x + (p.x - l.x) * k / 8, l.y - 8 + (p.y - 12 - l.y + 8) * k / 8, { color: 0xff4a4a, n: 2, speed: 8, size: 4, life: 0.3 });
     this.fx.bolt(l.x, l.y - 8, p.x, p.y - 12, 0xff3a3a, 0.32, { amp: 0, seg: 2, width: 3 });
     this.fx.bolt(l.x, l.y - 8, p.x, p.y - 12, 0xff7a7a, 0.22, { amp: 1.5, width: 1.5 });
     this.fx.light(p.x, p.y - 12, 0xff4a4a, 26, 0.3); this.fx.light(l.x, l.y - 8, 0xff4a4a, 34, 0.3);
     this.combat?.vfx?.afterimage(l, 0xff3a3a, 0.9, 0.3);
     this.fx.burst(l.x, l.y - 8, 0xff5a5a, 0.7);
-    this.ents.removeChild(l.view); this.entities = this.entities.filter((e) => e !== l); this.lead = null;
-    this.mode = 'trainer';
-    if (!silent) { this.toast(`${l.mon.name}, volte!`); this.audio.sfx('pop'); }
-    this.hudLead(); this.hudMoves();
+  }
+  // troca em campo, na hora: raio vermelho no que sai e a bola abre o novo no mesmo lugar (sem pausa nem tela)
+  #trocaEmCampo(i) {
+    const l = this.lead, at = { x: l.x, y: l.y };
+    if (l.alive) this.#feixe(l);
+    this.#sendOut(i, at); this.toast(`Vai, ${this.party[i].name}!`);
   }
   sendOut(i) { return this.#sendOut(i); } // público para o online (equipe do duelo, troca)
   // Libera uma montaria ('mudbray' | 'lapras' | 'sneasler' | 'corviknight' | 'mantine', ou 'correr' | 'nadar' | ...) com aviso
@@ -253,7 +262,7 @@ class Game {
       const i = (this.leadIdx + k) % n;
       if (this.party[i].fainted) continue;
       if (i === this.leadIdx) return;
-      if (this.mode === 'pokemon' && this.lead) { const at = { x: this.lead.x, y: this.lead.y }; this.#sendOut(i, at); this.toast(`Vai, ${this.party[i].name}!`); }
+      if (this.mode === 'pokemon' && this.lead) this.#trocaEmCampo(i);
       else { this.leadIdx = i; this.toast(`Escolhido: ${this.party[i].name} (Q para enviar)`); this.hudLead(); this.hudMoves(); }
       return;
     }
@@ -262,7 +271,7 @@ class Game {
   escolher(i) {
     const m = this.party[i]; if (!m || i === this.leadIdx) return;
     if (m.fainted) { this.toast(`${m.name} não pode lutar.`); return; }
-    if (this.mode === 'pokemon' && this.lead) { const at = { x: this.lead.x, y: this.lead.y }; this.#sendOut(i, at); this.toast(`Vai, ${m.name}!`); }
+    if (this.mode === 'pokemon' && this.lead) this.#trocaEmCampo(i);
     else { this.leadIdx = i; this.toast(`Escolhido: ${m.name}`); this.hudLead(); this.hudMoves(); }
   }
 
@@ -356,13 +365,17 @@ class Game {
       }
       this.later(1.1, () => this.removeEntity(e));
     } else {
+      // numa luta de treinador (ou reide), o próximo saudável sai sozinho depois de um respiro (~0,6 s): o arremesso
+      // automático do #control, sem tela de escolha; nesse respiro dá para tocar outro na faixa da equipe (escolher)
+      const inBattle = (this.story?.battle && !this.story.battle.done) || (this.tocas?.reide && !this.tocas.reide.done);
+      this.koAte = this.time + 0.6;
+      if (inBattle && this.party.some((m) => !m.fainted)) return;
       this.toast(`${e.mon.name} desmaiou!`);
       this.later(0.8, () => {
         const next = this.party.findIndex((m) => !m.fainted);
         if (next < 0) { this.recall(true); this.blackout(); return; }
-        const inBattle = this.story?.battle && !this.story.battle.done;
-        if (inBattle) { const at = { x: e.x, y: e.y }; this.#sendOut(next, at); this.toast(`Vai, ${this.party[next].name}!`); }
-        else { this.recall(true); this.leadIdx = next; this.toast(`Escolha outro Pokémon (Tab) e jogue com Q.`); this.hudLead(); this.hudMoves(); }
+        if (this.lead?.alive) return; // já saiu outro (o jogador escolheu na faixa)
+        this.recall(true); this.leadIdx = next; this.toast(`Escolha outro Pokémon (Tab) e jogue com Q.`); this.hudLead(); this.hudMoves();
       });
     }
   }
@@ -380,15 +393,29 @@ class Game {
   removeEntity(e) { this.ents.removeChild(e.view); e.view.destroy({ children: true }); this.entities = this.entities.filter((o) => o !== e); this.wilds = this.wilds.filter((o) => o !== e); }
   // XP: quem lutou ganha tudo; com o Exp. Compartilhado ligado, o resto da equipe (sem desmaiar) ganha o mesmo, como
   // nos jogos novos. Assim o Pokémon capturado também cresce sem precisar moer.
+  // Os avisos de XP e de nível vão para a pilha do canto (hud.toast com chave): uma linha por Pokémon que soma o XP
+  // ganho em seguida, e uma linha da equipe (Exp. Compartilhado); nada no meio da tela.
   giveXp(mon, xp, { share = true } = {}) {
-    if (this.lead?.mon === mon) this.fx.number(this.lead.x, this.lead.y - 34, `+${xp} XP`, '#9ad0ff');
+    this.#notaXp(mon.name, mon, xp);
     this.#xpEvents(mon, mon.gainXp(xp, this.#evoCtx()), true);
     if (share && OPTIONS.expShare !== false) {
       let n = 0;
       for (const m of this.party) if (m !== mon && !m.fainted && m.level < 100) { this.#xpEvents(m, m.gainXp(xp, this.#evoCtx()), false); n++; }
-      if (n && (this.xpAvisoT ?? 0) < this.time) { this.toast(`Exp. Compartilhado: a equipe também ganhou ${xp} XP.`); this.xpAvisoT = this.time + 20; }
+      if (n) this.#notaXp('Equipe (Exp. Compartilhado)', 'equipe', xp);
     }
     this.hudLead(); this.hudMoves();
+  }
+  #notaXp(nome, quem, xp) {
+    const A = (this.xpAcum ??= new Map()), agora = performance.now(), k = A.get(quem);
+    const tot = k && agora - k.t < 2900 ? k.xp + xp : xp; A.set(quem, { xp: tot, t: agora });
+    const id = quem === 'equipe' ? 'equipe' : ((this.xpIds ??= new WeakMap()).get(quem) ?? (this.xpIds.set(quem, (this.xpN = (this.xpN ?? 0) + 1)), this.xpN));
+    this.toast(`${nome} +${tot} XP`, { chave: 'xp:' + id });
+  }
+  // em luta: treinador, reide, duelo online ou um selvagem bravo perto (as telas de escolha esperam, src/ui/ui.js queue)
+  emLuta() {
+    if ((this.story?.battle && !this.story.battle.done) || (this.tocas?.reide && !this.tocas.reide.done) || this.net?.duel?.active) return true;
+    const l = this.lead ?? this.player;
+    return (this.wilds ?? []).some((w) => w.alive && !w.dead && w.ai?.state === 'aggro' && Math.hypot(w.x - l.x, w.y - l.y) < 12 * 16);
   }
   // lugar: id da sala ou da área onde o jogador está (evoluções que pedem um lugar, como Machoke no Forte Rochedo)
   #evoCtx() {
@@ -399,7 +426,7 @@ class Game {
   #xpEvents(mon, ev, main) {
     for (const v of ev) {
       if (v.type === 'level') {
-        this.toast(`${mon.name} subiu para o nível ${v.level}!`); this.audio.sfx('levelup');
+        this.toast(`${mon.name} subiu para o nível ${v.level}!`, { chave: 'nv:' + mon.name }); this.audio.sfx('levelup');
         if (this.lead?.mon === mon) this.fx.ring(this.lead.x, this.lead.y - 8, 0xffe27a, 16, 0.6);
       }
       if (v.type === 'learn') this.teach(mon, v.move);
@@ -553,6 +580,7 @@ class Game {
     if (this.ui?.frame(rdt)) { this.show.update(0); this.net?.update(rdt, true); this.#camera(rdt); this.map.flushDirty(); this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // o online segue mesmo com o menu aberto
     // pausa no impacto: o mundo congela por alguns milissegundos
     let dt = rdt;
+    if (this.fx.hitStop > 0.06) this.fx.hitStop = 0.06; // pausa no impacto: no máximo 60 ms, de qualquer origem
     if (this.fx.hitStop > 0) { this.fx.hitStop -= rdt; dt = rdt * 0.08; }
     this.time += dt;
     for (const tm of this.timers.slice()) if (tm.t <= this.time) { this.timers.splice(this.timers.indexOf(tm), 1); tm.fn(); }
@@ -602,7 +630,7 @@ class Game {
     if (inp.pressed('zoomOut')) this.setZoom(this.zoom - 1);
     const pk = this.mode === 'pokemon' && this.lead?.alive;
     // numa batalha de treinador da história, o seu Pokémon sai sozinho (como nos jogos)
-    if (!pk && ((this.story?.battle && !this.story.battle.done) || (this.tocas?.reide && !this.tocas.reide.done)) && !this.throwingMon && !(this.sendingOut > 0) && this.party.some((m) => !m.fainted)) {
+    if (!pk && this.time >= (this.koAte ?? 0) && ((this.story?.battle && !this.story.battle.done) || (this.tocas?.reide && !this.tocas.reide.done)) && !this.throwingMon && !(this.sendingOut > 0) && this.party.some((m) => !m.fainted)) {
       const i = this.party[this.leadIdx]?.fainted ? this.party.findIndex((m) => !m.fainted) : this.leadIdx;
       const a = this.#aimPoint(); this.throwMon(i, a.x, a.y);
     }
@@ -860,7 +888,7 @@ class Game {
   hudLead() { this.ui?.hud.lead(); }
   hudMoves() { this.ui?.hud.moves(); }
   hudUpdate(dt) { this.ui?.hud.update(dt); }
-  toast(text) { this.ui?.toast(text); }
+  toast(text, opts) { this.ui?.toast(text, opts); }
   #perf(dt, ms) {
     const P = (this.perfD ??= { n: 0, t: 0, ms: 0 }); P.n++; P.t += dt; P.ms += ms;
     if (P.t >= 0.5) { if (!$('perf').hidden) $('perf').textContent = `${Math.round(P.n / P.t)} FPS · lógica ${(P.ms / P.n).toFixed(2)} ms · ${this.entities.length} Pokémon · ${this.fx.count} partículas · zoom ${this.zoom}x · qualidade ${this.quality.level}`; P.n = 0; P.t = 0; P.ms = 0; }

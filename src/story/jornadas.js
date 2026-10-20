@@ -65,7 +65,7 @@ export const JORNADAS = [
   },
   {
     id: 'coral', nome: 'Faísca na Costa Coral', cidade: 'Cidade Coral', tipo: 'cidade', ginasio: 'coral', fim: 'badges.coral',
-    lugares: ['cidade_coral', 'farol_coral'], padrao: { texto: 'Nade pela Rota 4 até a Cidade Coral', alvo: 'cidade_coral' },
+    lugares: ['cidade_coral', 'farol_coral'], padrao: { texto: 'Nade pela Rota 4 até a Cidade Coral', alvo: 'praca_coral' },
     etapas: [
       { texto: 'Chegue a Cidade Coral', feita: 'nh.chegouCoral' },
       { texto: 'Assista à inauguração da Companhia Aurora na praça', feita: 'nh.viuSolano' },
@@ -76,7 +76,7 @@ export const JORNADAS = [
   },
   {
     id: 'jandaias', nome: 'As raízes das Jandaias', cidade: 'Ilhas Jandaias', tipo: 'regiao', fim: 'nh.teoDuvida',
-    lugares: ['vila_jandaia', 'ilha_jandaia'], padrao: { texto: 'Pegue a balsa no cais de Cidade Coral até as Ilhas Jandaias', alvo: 'cais_coral' },
+    lugares: ['vila_jandaia', 'ilha_jandaia'], padrao: { texto: 'Do cais da ilha, siga a trilha até a Vila Jandaia', alvo: 'vila_jandaia' },
     etapas: [
       { texto: 'Chegue à Vila Jandaia', feita: 'nh.chegouJandaia' },
       { texto: 'Enfrente o Admin Ébano no Templo das Raízes', feita: 'nh.ebanoTemplo' },
@@ -120,7 +120,7 @@ export const JORNADAS = [
   },
   {
     id: 'escarpa', nome: 'Acima do Paredão', cidade: 'Cidade Escarpa', tipo: 'cidade', ginasio: 'escarpa', fim: 'badges.escarpa',
-    lugares: ['cidade_escarpa', 'mina_velha'], padrao: { texto: 'Escale o Paredão pela Rota 8 até a Cidade Escarpa', alvo: 'paredao_base' },
+    lugares: ['cidade_escarpa', 'mina_velha'], padrao: { texto: 'Escale o Paredão pela Rota 8 até a Cidade Escarpa', alvo: 'ninho_cidade_escarpa' },
     etapas: [
       { texto: 'Chegue a Cidade Escarpa', feita: 'nh.chegouEscarpa' },
       { texto: 'Descubra o que o Sereno escondia', feita: 'nh.reviravolta4' },
@@ -130,7 +130,7 @@ export const JORNADAS = [
   },
   {
     id: 'brasas', nome: 'Brasas no vulcão', cidade: 'Arquipélago das Brasas', tipo: 'regiao', fim: 'brasas_resolvido',
-    lugares: ['ilha_basalto', 'vila_termas'], padrao: { texto: 'Vá ao Arquipélago das Brasas: voe para o sudeste ou pegue o Barco das Brasas em Vila Siri', alvo: 'sertao_cais_siri' },
+    lugares: ['ilha_basalto', 'vila_termas'], padrao: { texto: 'Chegue à Vila Termas, no Arquipélago das Brasas', alvo: 'vila_termas' },
     etapas: [
       { texto: 'Chegue ao Arquipélago das Brasas', feita: 'nh.chegouBrasas' },
       { texto: 'Detenha o Admin Ébano no Vulcão Tição', feita: 'nh.ebanoBrasas' },
