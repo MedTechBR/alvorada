@@ -273,7 +273,7 @@ export class GameMenu {
     addEventListener('keydown', (e) => this.#key(e));
   }
 
-  get isOpen() { return !this.el.hidden; }
+  get isOpen() { return !this.el.hidden && !this.closing; }
   get top() { return this.layers[this.layers.length - 1]; }
   get g() { return this.ui.g; }
 
@@ -281,6 +281,7 @@ export class GameMenu {
   open() {
     const g = this.g;
     this.layers = [];
+    clearTimeout(this.tClose); this.closing = false; this.el.classList.remove('closing');
     this.el.hidden = false;
     if (MAIN_ITEMS[this.rootSel]?.[0] === 'close') this.rootSel = 0;
     for (const m of [...g.party, ...g.box]) dexMark(g, m.dex, 2);
@@ -291,9 +292,12 @@ export class GameMenu {
     g.audio?.sfx?.('blip');
   }
   close() {
-    if (this.el.hidden) return;
+    if (this.el.hidden || this.closing) return;
     const pend = this.pendingClose; this.pendingClose = null;
-    this.el.hidden = true;
+    // saída animada: a lógica (isOpen, camadas) acaba já; só a tela some devagar, sem pegar toques
+    const anima = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (anima) { this.closing = true; this.el.classList.add('closing'); this.tClose = setTimeout(() => { this.closing = false; this.el.classList.remove('closing'); if (!this.layers.length) this.el.hidden = true; }, 190); }
+    else this.el.hidden = true;
     this.layers = [];
     this.q('.gm-pop').hidden = true; this.q('.gm-msg').hidden = true;
     clearTimeout(this.dexTimer);
@@ -736,7 +740,7 @@ export class GameMenu {
 
   // ---------- Caixa do PC (aberta no Centro Pokémon) ----------
   openPC() {
-    if (!this.isOpen) { this.el.hidden = false; this.layers = []; this.padPrev = this.#padNow(); this.deaf = performance.now() + 180; }
+    if (!this.isOpen) { clearTimeout(this.tClose); this.closing = false; this.el.classList.remove('closing'); this.el.hidden = false; this.layers = []; this.padPrev = this.#padNow(); this.deaf = performance.now() + 180; }
     const g = this.g;
     const L = this.#screen({
       title: 'PC · Caixa de Pokémon', cls: 'gm-pc', cols: 1,
@@ -782,6 +786,7 @@ export class GameMenu {
   // abre o menu sem a tela principal (PC, loja, aprender golpe); devolve true se fomos nós que abrimos
   #openBare() {
     if (this.isOpen) return false;
+    clearTimeout(this.tClose); this.closing = false; this.el.classList.remove('closing');
     this.el.hidden = false; this.layers = []; this.padPrev = this.#padNow();
     this.deaf = performance.now() + 180;
     document.body.classList.add('menu-open');

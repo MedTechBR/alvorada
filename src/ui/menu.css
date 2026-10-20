@@ -485,3 +485,15 @@
 }
 .gm-mapcv { box-shadow: 0 0 0 2px var(--th2); }
 .gm-key:empty { display: none; }
+
+/* ---- abrir e fechar com animação (a lógica de isOpen acaba na hora; ver GameMenu.close) ---- */
+.gm .gm-side { animation: gmside .26s cubic-bezier(.2,.9,.3,1.08) both; }
+.gm .gm-info { animation: gminfo .3s cubic-bezier(.2,.9,.3,1.08) .05s both; }
+@keyframes gmside { from { translate: 70px 0; opacity: 0; } }
+@keyframes gminfo { from { translate: 0 40px; opacity: 0; } }
+.gm.closing { pointer-events: none; animation: gmout .19s ease-in forwards; }
+.gm.closing .gm-side { animation: gmsideout .19s ease-in forwards; } .gm.closing .gm-info { animation: gminfoout .19s ease-in forwards; }
+.gm.closing .gm-screen { animation: gmscrout .19s ease-in forwards; }
+@keyframes gmout { to { opacity: 0; } }
+@keyframes gmsideout { to { translate: 70px 0; opacity: 0; } } @keyframes gminfoout { to { translate: 0 40px; opacity: 0; } } @keyframes gmscrout { to { transform: translateY(10px) scale(.985); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .gm, .gm .gm-side, .gm .gm-info { animation: none !important; } }
