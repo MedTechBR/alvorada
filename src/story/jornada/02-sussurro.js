@@ -60,11 +60,11 @@ export default {
       falas: [
         ['jogador', 'Lia! Ouvi dois recrutas dizendo que a sua estufa será roubada hoje à noite, quando a vila dormir.'],
         ['lia', 'Na minha estufa? Obrigada por avisar. Vou pôr alguém de vigia.'],
-        ['lia', 'Fique de olho no fundo da estufa. Se eles querem a pedra, vão tentar quando a vila estiver dormindo.'],
+        ['lia', 'Eu cuido da estufa. Mas se eles andam pelo bosque, quero saber o que procuram lá. Você vê para mim?'],
       ],
       depois: {
         flags: { 'nh.avisouLia': true },
-        objetivo: { texto: 'Vá à estufa da Lia e vigie a noite', alvo: 'estufa_lia' },
+        objetivo: { texto: 'A Lia vai vigiar a estufa. Volte à trilha do bosque e descubra o que os recrutas procuram', alvo: 'bifurcacao' },
       },
     },
     {
@@ -153,7 +153,7 @@ export default {
       // a noite da estufa: os recrutas tentam roubar a pedra e a Véspera observa de longe
       id: 'j02_estufa_noite',
       local: 'estufa_lia',
-      gatilho: { tipo: 'entrar', alvo: 'estufa_lia', hora: 'noite', requer: ['nh.ouviuRecrutas'], semFlag: ['nh.defendeuEstufa'] },
+      gatilho: { tipo: 'entrar', alvo: 'estufa_lia', hora: 'noite', requer: ['nh.contouCristal'], semFlag: ['nh.defendeuEstufa'] },
       falas: [
         ['narrador', 'A estufa está escura. Dois vultos de capa roxa abrem a vitrine onde a Lia guarda a pedra.'],
         ['recruta', 'Pronto, peguei. Que pedra mais sem graça, parece pedaço de telha.'],
