@@ -219,8 +219,8 @@ export const ELENCO = [
   { id: 'g7_rita', quem: 'aprendiz', nome: 'Alpinista Rita', look: LOOKS.campista, spot: 'mina_rita', visao: 5,
     apos: ['Os Lycanroc uivam na mina quando o sol atrasa.'] },
   // ---------------- Rota 9 (Estepe dos Ventos) ----------------
-  { id: 'r9_a', quem: 'treinador', nome: 'Ciclista Otto', look: LOOKS.cacador, spot: 'r9_a', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
-  { id: 'r9_b', quem: 'treinador', nome: 'Pastora Lia', look: LOOKS.campista, spot: 'r9_b', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r9_bruno', quem: 'treinador', nome: 'Ciclista Otto', look: LOOKS.cacador, spot: 'r9_a', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  { id: 'r9_celia', quem: 'treinador', nome: 'Pastora Lia', look: LOOKS.campista, spot: 'r9_b', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
   { id: 'r9_c', quem: 'treinador', nome: 'Montanhista Sol', look: LOOKS.operario, spot: 'r9_c', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
   { id: 'r9_d', quem: 'treinador', nome: 'Caçador Remo', look: LOOKS.cacador, spot: 'r9_d', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
   { id: 'r9_e', quem: 'treinador', nome: 'Observadora Ivone', look: LOOKS.observador, spot: 'r9_e', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
@@ -236,6 +236,13 @@ export const ELENCO = [
   { id: 'r11_f', quem: 'treinador', nome: 'Guarda Rui', look: LOOKS.operario, spot: 'r11_f', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
   { id: 'r11_g', quem: 'treinador', nome: 'Viajante Sena', look: LOOKS.campista, spot: 'r11_g', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
   { id: 'r11_h', quem: 'treinador', nome: 'Ermitão Ary', look: LOOKS.pescador, spot: 'r11_h', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+  // ---------------- Mirante dos Ventos e Torre do Vento (ginásio de Celeste; cap09) ----------------
+  { id: 'leader_celeste', quem: 'celeste', nome: 'Líder Celeste', substitui: 'leader_celeste', look: { preset: 'treinadora', hairStyle: 'long', hair: '#7a4a9a', skin: '#f6c9a2', outfit: 'jacket', top: '#9ad0ff', trim: '#f4f4f0', legs: 'pants', pants: '#2a3a5a', shoes: '#f4f4f0', bagStyle: null } },
+  { id: 'g8_gael', quem: 'aprendiz', nome: 'Pilota Gael', look: LOOKS.operario, spot: 'torre_gael', visao: 5,
+    apos: ['O vento da Celeste é de lado. Você precisa de Pokémon que voem em linha reta.'] },
+  { id: 'g8_iris', quem: 'aprendiz', nome: 'Pilota Íris', look: LOOKS.campista, spot: 'torre_iris', visao: 5,
+    apos: ['Ela ganha no tornado. Eu perdi no tornado. Você vai perder também, não vai?'] },
+  { id: 'vigia', quem: 'vigia', nome: 'Último Vigia', look: LOOKS.observador, spot: 'vigia' },
 ];
 
 // Treinadores das regiões novas do mundo grande (cada região traz o seu arquivo; veja docs/construir-regiao.md)

@@ -328,6 +328,16 @@
    293,
    99,
    "up"
+  ],
+  "estepe_inicio": [
+   232,
+   60,
+   "right"
+  ],
+  "vigia": [
+   240,
+   46,
+   "down"
   ]
  },
  "ninhos": [
@@ -511,6 +521,12 @@
    "kind": "column",
    "x": 236,
    "y": 47
+  },
+  {
+   "kind": "torre",
+   "x": 528,
+   "y": 22,
+   "to": "torre_vento"
   }
  ],
  "people": [
@@ -1002,6 +1018,85 @@
      "to": "ruinas_stair_1"
     }
    ]
+  },
+  {
+   "id": "torre_vento",
+   "name": "Torre do Vento — Ginásio de Mirante dos Ventos",
+   "rows": [
+    "wwwwwwwwwwwwwwwwwwww",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wwwwwwwwwmmwwwwwwwww"
+   ],
+   "objects": [
+    {
+     "kind": "lamp",
+     "x": 2,
+     "y": 2
+    },
+    {
+     "kind": "lamp",
+     "x": 17,
+     "y": 2
+    },
+    {
+     "kind": "lamp",
+     "x": 2,
+     "y": 11
+    },
+    {
+     "kind": "lamp",
+     "x": 17,
+     "y": 11
+    },
+    {
+     "kind": "sign",
+     "x": 4,
+     "y": 1,
+     "text": "TORRE DO VENTO — CELESTE\nSe o vento te levar, volte pelo tubo. Ele sempre devolve."
+    }
+   ],
+   "decor": [],
+   "people": [
+    {
+     "id": "leader_celeste",
+     "name": "Líder Celeste",
+     "look": "montanhista",
+     "x": 10,
+     "y": 2,
+     "dir": "down",
+     "lines": [
+      "Aqui em cima o chão é pouco e o vento é muito."
+     ]
+    }
+   ],
+   "spots": {
+    "leader_celeste": [
+     10,
+     2.5,
+     "down"
+    ],
+    "torre_gael": [
+     5,
+     4,
+     "right"
+    ],
+    "torre_iris": [
+     15,
+     9,
+     "left"
+    ]
+   }
   }
  ],
  "warps": [
