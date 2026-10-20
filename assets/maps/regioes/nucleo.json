@@ -966,7 +966,7 @@
    "kind": "sign",
    "x": 355,
    "y": 205,
-   "text": "ROTA 6 — FERROVIA DA AURORA\nEstrada fechada: obras da Aurora na Rota 6."
+   "text": "ROTA 6: FERROVIA DA AURORA\nEstrada fechada: obras da Aurora na Rota 6."
   }
  ],
  "people": [
@@ -984,12 +984,12 @@
    "dir": "up",
    "viagem": "navio_ocaso",
    "lines": [
-    "O Estrela-d’Alva cruza o Mar do Poente."
+    "O Estrela-d’Alva cruza o Mar do Poente até as Terras do Ocaso. Embarque quando estiver pronto."
    ]
   },
   {
    "id": "barqueira_coral",
-   "name": "Barqueira Dalva",
+   "name": "Barqueira Cora",
    "look": {
     "preset": "treinadora",
     "top": "#e8843a",
@@ -1001,7 +1001,7 @@
    "dir": "down",
    "viagem": "barcos_coral",
    "lines": [
-    "A balsa e o navio de pesquisa saem daqui."
+    "A balsa leva às Ilhas Jandaias e o navio de pesquisa vai à Estação Austral."
    ]
   },
   {
@@ -1212,7 +1212,7 @@
      "kind": "sign",
      "x": 4,
      "y": 1,
-     "text": "RODA DE CAPOEIRA — MESTRE BRÁS\nGrave, médio, grave. Entre na roda só no compasso.\nVença a faixa-preta da roda de baixo para abrir o primeiro portão."
+     "text": "RODA DE CAPOEIRA: MESTRE BRÁS\nGrave, médio, grave. Entre na roda só no compasso.\nVença a faixa-preta da roda de baixo para abrir o primeiro portão."
     }
    ],
    "decor": [],
@@ -1358,7 +1358,7 @@
      "kind": "sign",
      "x": 4,
      "y": 1,
-     "text": "MINA VELHA — MESTRA GRAÇA\nDesça com cuidado. Quem perde o passo, o teto cai."
+     "text": "MINA VELHA: MESTRA GRAÇA\nDesça com cuidado. Quem perde o passo, o teto cai."
     }
    ],
    "decor": [],
@@ -1549,7 +1549,7 @@
      "kind": "sign",
      "x": 4,
      "y": 1,
-     "text": "TORRE DO VENTO — CELESTE\nSe o vento te levar, volte pelo tubo. Ele sempre devolve."
+     "text": "TORRE DO VENTO: CELESTE\nSe o vento te levar, volte pelo tubo. Ele sempre devolve."
     }
    ],
    "decor": [],
@@ -1743,7 +1743,7 @@
      "kind": "sign",
      "x": 4,
      "y": 1,
-     "text": "Sala da Madrugada — Aurélio"
+     "text": "Sala da Madrugada: Aurélio"
     }
    ],
    "decor": [],
@@ -1803,7 +1803,7 @@
      "kind": "sign",
      "x": 4,
      "y": 1,
-     "text": "Sala da Manhã — Clarice"
+     "text": "Sala da Manhã: Clarice"
     }
    ],
    "decor": [],
@@ -1863,7 +1863,7 @@
      "kind": "sign",
      "x": 4,
      "y": 1,
-     "text": "Sala do Meio-dia — Seu Brasa"
+     "text": "Sala do Meio-dia: Seu Brasa"
     }
    ],
    "decor": [],
@@ -1923,7 +1923,7 @@
      "kind": "sign",
      "x": 4,
      "y": 1,
-     "text": "Sala do Entardecer — Iberê"
+     "text": "Sala do Entardecer: Iberê"
     }
    ],
    "decor": [],
@@ -1983,7 +1983,7 @@
      "kind": "sign",
      "x": 4,
      "y": 1,
-     "text": "Salão da Campeã — Dalva"
+     "text": "Salão da Campeã: Dalva"
     }
    ],
    "decor": [],
