@@ -490,28 +490,28 @@ export class Story {
 // Falas da abertura em mundo aberto (as de dialogs.js continuam valendo; estas trocam as que mandavam seguir uma ordem)
 const PROF_MUNDO = {
   mudbray: [
-    'E mais uma coisa. Lá fora tem alguém esperando por você: a Paçoca, uma Mudbray da fazenda do Tomé.',
-    'Ela corre mais que o vento, atravessa lama funda e salta cerca baixa. Com este Apito de Montaria, é só chamar.',
+    'E mais uma coisa. Lá fora tem uma amiga esperando por você: a Paçoca, uma Mudbray criada na fazenda do Tomé.',
+    'Ela corre mais que o vento, atravessa lama funda e salta cerca baixa. Use o Apito de Montaria para chamá-la.',
   ],
   livre: () => {
     const p = ORDEM[0];
     return [
-      `Alvorada é sua, mas a região tem uma ordem. Os ginásios são desafiados um por um, como nos jogos clássicos: o primeiro é o de ${p.cidade}, pela ${p.rota}.`,
-      'Os líderes não lutam com quem não tem a insígnia anterior. Quando você precisar de outro caminho, o painel de objetivo sempre mostra o próximo passo.',
-      'E a água, os paredões e o céu? Para isso você vai precisar de Pokémon que nadem, escalem ou voem, e das insígnias que liberam cada modo.',
+      `A região é sua para explorar, mas tem uma ordem. Os ginásios são desafiados um por um. O primeiro é o de ${p.cidade}, pela ${p.rota}.`,
+      'Os líderes não lutam com quem não tem a insígnia anterior. Quando não souber o caminho, o painel de objetivo mostra o próximo passo.',
+      'Água, paredões e céu também têm regras. Para atravessá-los, você precisa de Pokémon que nadem, escalem ou voem, e das insígnias certas.',
     ];
   },
   // dica do professor depois da primeira conversa: o próximo passo da ordem
   dica(f) {
     const p = primeiroFaltando(f), r = proximoPasso(f);
     return p
-      ? ['Os Pokémon selvagens vivem no mato alto, no bosque e perto da água.', `O próximo ginásio é o de ${p.cidade}, pela ${p.rota}. Lá você desafia o ${p.lider}.`, 'Os líderes só lutam com quem tem a insígnia anterior. Qualquer Pokémon seu que nade, escale ou voe também serve de montaria, quando a insígnia liberar o modo.']
+      ? ['Os Pokémon selvagens vivem no mato alto, no bosque e perto da água.', `O próximo ginásio é o de ${p.cidade}, pela ${p.rota}. Lá você desafia o ${p.lider}.`, 'Os líderes só lutam com quem tem a insígnia anterior. Quando a insígnia liberar um modo, um Pokémon seu que nade, escale ou voe pode servir de montaria.']
       : [r ? `Você está na reta final: ${r.texto}` : 'Você venceu a Liga! Eu tenho orgulho, sabia?'];
   },
 };
 const RIVAL_MUNDO = {
   campina: (p) => [
-    `${p}! Você também já tem insígnia? Então estamos empatados. Bom, eu acabei de ganhar a Espiga, então agora eu tô na frente!`,
+    `${p}! Você também já tem insígnia? Então estamos empatados. Eu acabei de ganhar a Espiga, ouviu?`,
     'O Tomé usa Pokémon do tipo Normal. Eles batem firme, mas não têm truque. Só precisa aguentar!',
     'Tchau! Ainda tem muita insígnia por aí e eu quero todas antes de você!',
   ],
