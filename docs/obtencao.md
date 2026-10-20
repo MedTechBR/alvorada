@@ -101,6 +101,35 @@ Trocas sem alternativa: **0**
 | Koraidon (#1007) | 75 | cidadela_poente | pos-jogo |
 | Miraidon (#1008) | 75 | cidadela_poente | pos-jogo |
 | Terapagos (#1024) | 80 | pantanal | pos-jogo |
+| Moltres (#146) | 70 | cratera_ticao | pos-jogo |
+| Registeel (#379) | 60 | mina_aurora_n4 | pos-jogo |
+| Uxie (#480) | 50 | lago_congelado | pos-jogo |
+| Azelf (#482) | 50 | oasis_buriti | pos-jogo |
+| Regigigas (#486) | 75 | campos_gelo_sul | pos-jogo |
+| Cresselia (#488) | 60 | ilha_veu | pos-jogo |
+| Cobalion (#638) | 65 | canion_rio_seco | pos-jogo |
+| Terrakion (#639) | 65 | ruinas_pintada_1 | pos-jogo |
+| Virizion (#640) | 65 | mata_jequitibas | pos-jogo |
+| Landorus (#645) | 70 | altiplano_condor | pos-jogo |
+| Reshiram (#643) | 75 | vulcao_sentinela | pos-jogo |
+| Zekrom (#644) | 75 | vulcao_sentinela | pos-jogo |
+| Xerneas (#716) | 70 | mata_jequitibas | pos-jogo |
+| Yveltal (#717) | 70 | deserto_silencio | pos-jogo |
+| Zygarde (#718) | 70 | fundo_canion | pos-jogo |
+| Volcanion (#721) | 60 | ilhota_fumegante | pos-jogo |
+| Tapu Koko (#785) | 60 | ilha_jandaia | pos-jogo |
+| Tapu Lele (#786) | 60 | ilha_basalto | pos-jogo |
+| Tapu Fini (#788) | 60 | templo_mares_3 | pos-jogo |
+| Eternatus (#890) | 75 | salar_branco | pos-jogo |
+| Regieleki (#894) | 70 | cataratas_trovao | pos-jogo |
+| Regidrago (#895) | 70 | cordilheira_poente | pos-jogo |
+| Glastrier (#896) | 75 | campos_gelo_sul | pos-jogo |
+| Spectrier (#897) | 75 | deserto_silencio | pos-jogo |
+| Wo-Chien (#1001) | 70 | pantanal | pos-jogo |
+| Chien-Pao (#1002) | 70 | campos_gelo_sul | pos-jogo |
+| Ting-Lu (#1003) | 70 | altiplano_condor | pos-jogo |
+| Chi-Yu (#1004) | 70 | vulcao_sentinela | pos-jogo |
+| Ogerpon (#1017) | 70 | pantanal | pos-jogo |
 
 ## Espécies inativas
 

@@ -50,6 +50,7 @@ for (const [chave, lista] of Object.entries(ESP.OBTENCAO)) for (const o of lista
   if (id && !id.startsWith('(') && !IDS_MAPA.has(id) && !['laboratorio', 'clube'].includes(id)) ONDE_SEM_MAPA.push(`${chave}:${id}`);
 }
 const LEND_COM_LUGAR = LENDARIOS.filter((l) => l.lugar);
+const LEND_SO_NO_PAPEL = [];
 const LEND_SEM_MAPA = LEND_COM_LUGAR.filter((l) => !IDS_MAPA.has(l.lugar)).map((l) => `${l.id}@${l.lugar}`);
 const LEND_SEM_ESPECIE = LENDARIOS.filter((l) => !SPECIES[l.dex]).map((l) => l.id);
 const LUGARES_SEM_MAPA = [...LUGARES_USADOS, ...SALAS_OBRIGATORIAS, ...LEND_SEM_MAPA.map((x) => x.split('@')[1])].filter((l) => !IDS_MAPA.has(l));
@@ -103,6 +104,8 @@ for (const [chave, lista] of Object.entries(ESP.OBTENCAO)) {
   for (const o of lista) {
     const como = MAPA_COMO[o.como];
     if (!como) { console.warn(`aviso: como desconhecido em OBTENCAO[${chave}]: ${o.como}`); continue; }
+    // lendário só conta se tiver encontro de verdade em src/data/lendarios.js (ou for o Necrozma da história)
+    if (como === 'lendario' && dex !== 800 && !LENDARIOS.some((l) => l.dex === dex)) { LEND_SO_NO_PAPEL.push(dex); continue; }
     add(dex, como, o.onde);
   }
 }
@@ -224,4 +227,5 @@ console.log(`Lendários: ${LENDARIOS.length} cadastrados, ${LEND_COM_LUGAR.lengt
 if (LUGARES_SEM_MAPA.length) console.log(`ERRO: lugares das regras de evolução que não existem nos mapas: ${LUGARES_SEM_MAPA.join(', ')}`);
 console.log(`Fontes de OBTENCAO em lugares que ainda não existem no mapa: ${ONDE_SEM_MAPA.length} (ex.: ${[...new Set(ONDE_SEM_MAPA)].join(', ')})`);
 console.log(`Lugares das regras de evolução: ${LUGARES_USADOS.size} ids, ${LUGARES_SEM_MAPA.length} sem mapa`);
-process.exitCode = inativos.length || semAlternativa.length || LUGARES_SEM_MAPA.length || LEND_SEM_ESPECIE.length ? 1 : 0;
+if (LEND_SO_NO_PAPEL.length) console.log(`Lendários só no papel (sem encontro em lendarios.js): ${LEND_SO_NO_PAPEL.join(', ')}`);
+process.exitCode = LEND_SO_NO_PAPEL.length || inativos.length || semAlternativa.length || LUGARES_SEM_MAPA.length || LEND_SEM_ESPECIE.length ? 1 : 0;
