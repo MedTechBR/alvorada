@@ -5,6 +5,7 @@ import { loadPokemonSprites, frameOf, dir8 } from '../sprites/pmd.js';
 import { speciesScale } from '../sprites/scale.js';
 import { SPECIES } from '../data/species.js';
 import { LOJAS, estoque } from './lojas.js';
+import { LENDARIOS } from '../data/lendarios.js';
 
 // Moradores e Pokémon das cidades: andam pela vizinhança, falam (dicas e humor) e dão vida às vilas.
 // Dados em assets/maps/alvorada.json: "people" (moradores) e "pets" (Pokémon passivos), também dentro dos interiores.
@@ -12,6 +13,14 @@ import { LOJAS, estoque } from './lojas.js';
 // Pokémon: { dex, x, y, wander, perch?: true (no telhado), say: 'Piu!' }
 
 const NEAR = 30 * T; // só anima quem está perto da câmera
+
+// Rumores de lendário que o morador marcado (rumorCidade, vem de src/world/interiores.js) conta enquanto o lendário
+// da cidade não foi resolvido (mesma flag da Pokédex) e a história já chegou lá (requer; pos-jogo só após o cap. 11)
+function rumoresDe(g, cidade) {
+  if (!cidade) return [];
+  const flag = (nome) => { let v = g.flags; for (const k of nome.split('.')) v = v?.[k]; return !!v; };
+  return LENDARIOS.filter((l) => l.rumor && l.rumorCidade === cidade && !g.flags?.lend?.[l.id] && (l.requer ?? []).every(flag) && (l.etapa !== 'pos-jogo' || g.flags?.ch11Done)).map((l) => l.rumor);
+}
 
 export class People {
   constructor(g, map, defs, pets) {
@@ -136,7 +145,7 @@ export class People {
     }
     // missões e NPCs vivos (src/story/missoes): etapas, ofertas, presentes, troca, tutor e falas que mudam
     if (g.missoes) { let ok = false; try { ok = await g.missoes.conversar(n); } catch (e) { console.warn('missões', e); } if (ok) { n.talking = false; n.wanderT = 2; return; } }
-    const lines = n.def.lines?.length ? n.def.lines : ['…'];
+    const lines = [...(n.def.lines?.length ? n.def.lines : ['…']), ...rumoresDe(g, n.def.rumorCidade)];
     // fala em sequência: cada conversa mostra a próxima frase (ou todas, se forem curtas)
     const all = n.def.all ?? lines.length <= 2;
     const say = all ? lines : [lines[(n.talkI = ((n.talkI ?? -1) + 1) % lines.length)]];

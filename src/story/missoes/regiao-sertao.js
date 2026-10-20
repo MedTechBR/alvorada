@@ -1,5 +1,5 @@
 // Missões e NPCs vivos do Sertão do Levante (Vila Mandacaru, Cidade Buriti, Vila Siri, Ruínas de Pedra Pintada e treinadores das rotas).
-// GERADO por tools/regioes/gerar-sertao.py (edite lá). Formato: docs/missoes.md.
+// GERADO por tools/regioes/gerar-sertao.py (edite lá; os textos revisados estão em tools/regioes/sertao-dialogos.json). Formato: docs/missoes.md.
 
 export const ITENS = {
   "fossil_ambar": {
@@ -320,7 +320,7 @@ export const NPCS = {
     "treinador": {
       "batalha": {
         "id": "sq_tr_sertao_dalva",
-        "nome": "Cangaceira Dalva",
+        "nome": "Cangaceira Maura",
         "equipe": [
           [
             336,
@@ -452,7 +452,7 @@ export const NPCS = {
     "treinador": {
       "batalha": {
         "id": "sq_tr_sertao_tome",
-        "nome": "Ciclista Tomé",
+        "nome": "Ciclista Rômulo",
         "equipe": [
           [
             965,
@@ -1210,7 +1210,7 @@ export const NPCS = {
     "treinador": {
       "batalha": {
         "id": "sq_tr_sertao_lucio",
-        "nome": "Catador Lúcio",
+        "nome": "Catador Edson",
         "equipe": [
           [
             341,

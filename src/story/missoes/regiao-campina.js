@@ -64,7 +64,7 @@ export const NPCS = {
   },
   kid_camp1: {
     treinador: {
-      batalha: { id: 'sq_tiago', nome: 'Menino Tiago', equipe: [[16, 9, ['tackle', 'gust', 'sandAttack']], [659, 10, ['tackle', 'mudSlap', 'quickAttack']]] },
+      batalha: { id: 'sq_tiago', nome: 'Menino Rafa', equipe: [[16, 9, ['tackle', 'gust', 'sandAttack']], [659, 10, ['tackle', 'mudSlap', 'quickAttack']]] },
       falas: ['Ei! Treinei a manhã inteira para isso. Batalha? Vai, Pidgey!'], dinheiro: 240,
       vitoria: ['Aaah! Amanhã eu treino mais. Você é bom mesmo.'], derrota: ['Ganhei! Ganhei! Quando quiser a revanche, é só chamar.'],
       depois: ['Vou ficar mais forte que você! Mas antes, uma corrida até o moinho.'],
