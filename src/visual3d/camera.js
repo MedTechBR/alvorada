@@ -49,8 +49,9 @@ export class CameraDinamica {
     if (lutadores && this.cinema) {
       const { x0, x1, y0, y1 } = lutadores, cx = (x0 + x1) / 2, cz = (y0 + y1) / 2;
       const ext = Math.max((x1 - x0) / (innerWidth / innerHeight), y1 - y0) + 80;
-      alvoX += (cx - alvoX) * 0.4 * this.batalhaK; alvoZ += (cz - alvoZ) * 0.4 * this.batalhaK;
-      const quer = Math.max(1, ext / (innerHeight / Math.max(1, g.zoom)) * 0.9);
+      // a luta no centro (como numa quadra); com os dois perto, aproxima um pouco (sprites maiores, golpes legíveis)
+      alvoX += (cx - alvoX) * 0.6 * this.batalhaK; alvoZ += (cz - alvoZ) * 0.6 * this.batalhaK;
+      const quer = Math.max(0.86, ext / (innerHeight / Math.max(1, g.zoom)) * 0.9);
       dist *= 1 + (Math.min(1.35, quer) - 1) * this.batalhaK;
       incl += 8 * this.batalhaK; // em batalha sobe: os golpes e as alturas ficam legíveis
     }

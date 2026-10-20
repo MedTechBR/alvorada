@@ -115,31 +115,46 @@ export class PokeEntity {
     // movimento (quem controla define vx/vy antes)
     if (this.dead) { this.vx *= 0.8; this.vy *= 0.8; }
     // em passos curtos com colisão a cada passo (empurrão de golpe, esquiva e investida não atravessam parede)
+    // velocidade suavizada: quem controla (IA, jogador) define vx/vy de uma vez; o corpo acelera e freia em ~60-110 ms,
+    // então parar para atacar, virar o lado do círculo ou soltar o analógico não dá tranco (o Pokémon desliza e assenta)
+    const ka = Math.min(1, dt * (this === this.g.lead ? 20 : 10));
+    this.svx = (this.svx ?? this.vx) + (this.vx - (this.svx ?? this.vx)) * ka; this.svy = (this.svy ?? this.vy) + (this.vy - (this.svy ?? this.vy)) * ka;
+    if (this.dead) { this.svx = this.vx; this.svy = this.vy; }
     const alt = this.g.combat?.alt, rr = this.r * 0.8;
-    this.g.map.andar(this, (this.vx + this.kx) * dt, (this.vy + this.ky) * dt, rr, this.swim, () => { if (!alt?.resolve(this, rr)) { this.g.map.resolve(this, rr, this.swim); this.g.grade?.separaGente(this, rr, this); } });
+    this.g.map.andar(this, (this.svx + this.kx) * dt, (this.svy + this.ky) * dt, rr, this.swim, () => { if (!alt?.resolve(this, rr)) { this.g.map.resolve(this, rr, this.swim); this.g.grade?.separaGente(this, rr, this); } });
     this.kx *= 1 - Math.min(1, dt * 7); this.ky *= 1 - Math.min(1, dt * 7);
     alt?.seguro(this);
     // piso: altura do chão onde está (0, ou a do telhado/copa/rocha em que subiu: src/world/vivo.js)
     const piso = this.piso ?? 0, wasUp = this.z > piso;
     this.z = Math.max(piso, this.z + this.vz * dt); this.vz -= 500 * dt; if (this.z === piso) this.vz = 0;
     if (wasUp && this.z === piso && this.spinT <= 0 && !this.alt) this.squash = Math.max(this.squash, 0.15);
-    const moving = Math.hypot(this.vx, this.vy) > 8;
+    const moving = Math.hypot(this.svx, this.svy) > 8;
     if (!this.dead && (this.animLoop || this.anim === 'Idle' || this.anim === 'Walk')) {
       if (this.ai.state === 'sleep' && this.set.anims.Sleep) this.play('Sleep', true);
       else if (!this.charging) this.play(moving ? 'Walk' : 'Idle', true);
     }
-    const f = frameOf(this.set, this.anim, this.dir, this.animT * (this.anim === 'Walk' ? Math.max(0.7, Math.hypot(this.vx, this.vy) / 45) : 1), this.animLoop);
+    const f = frameOf(this.set, this.anim, this.dir, this.animT * (this.anim === 'Walk' ? Math.max(0.7, Math.hypot(this.svx, this.svy) / 45) : 1), this.animLoop);
     if (!this.animLoop && f.done && !this.dead) this.play('Idle', true);
     this.lastFrame = f; this.f = f;
     this.body.texture = f.tex;
     if (f.ax != null) this.body.anchor.set(f.ax, f.ay); // o ponto do chão do quadro fica na posição da entidade
     // posição na tela (y-sort pelo pé)
-    this.view.x = Math.round(this.x); this.view.y = Math.round(this.y);
+    // no 2D a posição vai em pixel inteiro (arte nítida); no 3D não: um pixel do mundo vira vários na tela e o arredondamento
+    // fazia o Pokémon andar aos saltos
+    if (this.g.v3d) { this.view.x = this.x; this.view.y = this.y; } else { this.view.x = Math.round(this.x); this.view.y = Math.round(this.y); }
     let sx = 1, sy = 1, rot = 0, a = this.alpha;
     // respiração ao dormir
     if (this.ai.state === 'sleep' && !this.set.anims.Sleep) { sy = 1 - 0.05 * (0.5 + 0.5 * Math.sin(this.animT * 3)); sx = 2 - sy; }
     // amassa no impacto e na queda
     if (this.squash > 0) { sy *= 1 - this.squash; sx *= 1 + this.squash * 0.8; this.squash = Math.max(0, this.squash - dt * 1.6); }
+    // antecipação do golpe (combat.use põe atkT): agacha rápido e estica quando o golpe sai, depois assenta
+    if (this.atkT > 0 && !this.dead) {
+      this.atkT -= dt; const k = 1 - Math.max(0, this.atkT) / 0.24;
+      if (k < 0.3) { const q = k / 0.3; sy *= 1 - 0.18 * q; sx *= 1 + 0.12 * q; }
+      else { const q = (k - 0.3) / 0.7, e = Math.sin(q * Math.PI) * (1 - q * 0.4); sy *= 1 - 0.18 * (1 - Math.min(1, q * 4)) + 0.16 * e; sx *= 1 - 0.09 * e; }
+    }
+    // entrada (bola aberta): cresce de pequeno, passa um pouco do tamanho e assenta
+    if (this.entrada > 0) { this.entrada -= dt; const k = 1 - Math.max(0, this.entrada) / 0.34, e = k < 0.7 ? 0.15 + (k / 0.7) * 0.97 : 1.12 - (k - 0.7) / 0.3 * 0.12; sx *= e; sy *= e; }
     // giro no ar
     if (this.spinT > 0) { this.spinT -= dt; rot = this.spinDir * (1 - Math.max(0, this.spinT) / 0.6) * Math.PI * 2 * 1.5; if (this.spinT <= 0) rot = 0; }
     if (this.wheelT > 0) { this.wheelT -= dt; rot = this.animT * 22 * (Math.cos(this.angle) >= 0 ? 1 : -1); }
@@ -151,7 +166,10 @@ export class PokeEntity {
       const t = this.faintT;
       const tip = Math.min(1, Math.max(0, (t - 0.12) / 0.25));
       rot = (this.faintDir ?? 1) * tip * tip * 1.45;
-      sy *= 1 - 0.15 * tip; sx *= 1 + 0.08 * tip;
+      // pulinho para cima no golpe, depois cai de lado e achata no chão
+      const hop = t < 0.18 ? Math.sin(t / 0.18 * Math.PI) : 0;
+      sy *= (1 - 0.15 * tip) * (1 + 0.1 * hop) * (t > 0.36 && t < 0.5 ? 0.88 : 1); sx *= 1 + 0.08 * tip;
+      this.faintLift = hop * 6;
       a = t < 0.55 ? 1 : Math.max(0, 1 - (t - 0.55) / 0.45);
       this.alpha = a;
       if (t > 0.36 && !this.faintDust) { this.faintDust = true; this.g.fx.emit(this.x, this.y, { tex: 'dust', n: 7, speed: 40, life: 0.7, scale: 0.8, end: 2, add: false, alpha: 0.7 }); this.g.fx.kick(0.1, 0); }
@@ -163,7 +181,7 @@ export class PokeEntity {
     const hide = this.alt?.mode;
     // giro no ar acontece em volta do meio do corpo; no chão, em volta dos pés
     const mid = this.spinT > 0 || this.wheelT > 0 ? (this.set.top ?? 16) * 0.5 : 0;
-    this.body.y = -this.z / sc - mid + (hide === 'dive' ? 4 : 0);
+    this.body.y = -this.z / sc - mid + (hide === 'dive' ? 4 : 0) - (this.dead ? (this.faintLift ?? 0) / sc : 0);
     if (mid && f.oy != null) this.body.anchor.set(f.ax, (f.oy - mid) / (f.tex.frame.height || 1));
     const zr = this.z - piso, sk = 1 - Math.min(0.45, zr / 120), ss = this.set.shadowScale ?? [1, 1];
     this.shadow.y = -piso / sc; this.shadow.alpha = 0.9 - Math.min(0.6, zr / 40); this.shadow.scale.set(ss[0] * sk, ss[1] * sk); // no alto, a sombra fica no telhado

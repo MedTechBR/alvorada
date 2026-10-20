@@ -181,6 +181,7 @@ export class Poder {
         if (!g.quality?.low) for (let i = 0; i < 26; i++) { const a = (i / 26) * TAU; g.fx.emit(e.x + Math.cos(a) * 8, cy + Math.sin(a) * 8, { tex: 'spark', color: pal[i % pal.length], n: 1, speed: 160, dir: a, spread: 0.1, life: 0.5, stretch: 0.012, drag: 3 }); }
         g.fx.emit(e.x, cy, { tex: 'twinkle', color: 0xffffff, n: g.quality?.low ? 6 : 16, speed: 90, life: 0.8, drag: 2 });
         if (!quiet) g.toast(primal ? `${oldName} fez a Reversão Primitiva!` : `${oldName} Mega Evoluiu para ${sp.name}!`);
+        if (!quiet) { const nm = sp.name ?? oldName; g.show?.faixa(((primal || /mega/i.test(nm)) ? nm : 'Mega ' + nm).toLocaleUpperCase('pt-BR') + '!', 'mega'); } // faixa "MEGA <X>!
         this.#entrada(e);
         if (e === g.lead) { g.hudLead(); g.hudMoves(); }
       },

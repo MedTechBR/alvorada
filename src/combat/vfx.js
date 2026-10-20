@@ -378,9 +378,40 @@ export class Vfx {
     if (id === 'splash') this.E(x, y, { tex: 'drop', n: 10, speed: 40, life: 0.6, vz: 120, grav: 400, add: false });
   }
 
+  // ---------- marcas que ficam no campo (10 a 20 s) e poeira do empurrão ----------
+  // Chamado a cada acerto (combat.hurt): o tipo do golpe deixa a sua marca no chão onde o alvo levou o golpe:
+  // racha e cratera (Pedra, Terra, Lutador, golpes pesados), chamuscado (Fogo, Elétrico), poça (Água), geada (Gelo),
+  // gosma (Veneno). Pouca coisa por acerto e com intervalo por alvo: o campo vai ficando marcado como no vídeo,
+  // sem encher de decalques (o pool do fx tem teto: 90 no celular).
+  marca(type, x, y, power = 1, dx = 0, dy = 0) {
+    const fx = this.fx, g = this.g, now = g.time, P = Math.min(2.4, power);
+    if (P >= 0.9 && (Math.abs(dx) + Math.abs(dy)) > 0.1) { // empurrão: poeira saindo dos pés, para trás
+      this.E(x, y, { tex: 'dust', n: Math.round(2 + 2 * P), speed: 40 * P, dir: Math.atan2(-dy, -dx), spread: 1.4, life: 0.5, scale: 0.6, end: 1.6, add: false, alpha: 0.7, ground: true });
+      if (P >= 1.4) fx.decal('skid', x - dx * 6, y - dy * 6, { rot: Math.atan2(dy, dx), scale: 0.6 + 0.3 * P, alpha: 0.75, life: 12, flip: false });
+    }
+    if ((this.marcaT ?? -9) > now - 0.25) return; this.marcaT = now;
+    const vida = 12 + 6 * Math.min(1, P / 2), r = (n) => (Math.random() - 0.5) * n, rot = Math.random() * TAU;
+    switch (type) {
+      case 'rock': case 'ground': case 'fighting': case 'steel':
+        fx.decal('crack', x + r(6), y + r(3), { scale: 0.55 + 0.3 * P, alpha: 0.85, life: vida });
+        if (P > 1.3) fx.decal('crater', x, y + 1, { scale: 0.35 + 0.2 * P, alpha: 0.7, life: vida });
+        break;
+      case 'fire': fx.decal('scorch', x + r(6), y + r(3), { scale: 0.6 + 0.35 * P, alpha: 0.75, life: vida }); break;
+      case 'electric': fx.decal('scorch', x + r(6), y + r(3), { scale: 0.45 + 0.25 * P, alpha: 0.55, life: vida * 0.8 }); fx.decal('crack', x, y, { scale: 0.4 + 0.2 * P, alpha: 0.5, life: vida * 0.6, rot }); break;
+      case 'water': fx.decal('puddle', x + r(8), y + r(4), { scale: 0.55 + 0.3 * P, alpha: 0.75, life: vida }); break;
+      case 'ice': fx.decal('frost', x + r(6), y + r(3), { scale: 0.55 + 0.3 * P, alpha: 0.85, life: vida }); break;
+      case 'poison': fx.decal('splat', x + r(6), y + r(3), { tint: 0x8a3ac0, scale: 0.7 + 0.3 * P, alpha: 0.65, life: vida }); break;
+      case 'grass': fx.decal('splat', x + r(6), y + r(3), { tint: 0x4a9a2a, scale: 0.6 + 0.25 * P, alpha: 0.5, life: vida * 0.7 }); break;
+      default: if (P > 1.2) fx.decal('crack', x + r(6), y + r(3), { scale: 0.45 + 0.25 * P, alpha: 0.7, life: vida, rot: r(0.6) });
+    }
+  }
+
   // ---------- investida: rastro ----------
   dash(u, mv, id, dt) {
     u.ghostT = (u.ghostT ?? 0) - dt;
+    // rastro no chão ao longo da investida (fica uns 12 s): chamuscado no Fogo, arrasto de terra nos outros
+    u.rastroT = (u.rastroT ?? 0) - dt;
+    if (u.rastroT <= 0 && (u.z ?? 0) < 6) { u.rastroT = 0.05; const a = Math.atan2(u.ky, u.kx); this.fx.decal(mv.type === 'fire' || mv.type === 'electric' ? 'scorch' : 'skid', u.x, u.y, { rot: mv.type === 'fire' || mv.type === 'electric' ? 0 : a, scale: 0.55, alpha: mv.type === 'fire' ? 0.6 : 0.55, life: 12, flip: false }); }
     const t = mv.type, c = typeHex(t), x = u.x, y = u.y - (u.midH ?? 12);
     if (u.ghostT <= 0) { u.ghostT = 0.03; this.afterimage(u, c, 0.5, 0.22); }
     const R = (rate) => Math.floor(dt * rate + Math.random());
