@@ -552,7 +552,7 @@ export class GameMenu {
     const pv = prevo(n), ev = sp.evolve && SPECIES[sp.evolve.to];
     const evo = [pv ? `Evolui de ${esc(SPECIES[pv.from].name)} no Nv. ${pv.level}.` : '', ev ? `Evolui para ${(g.flags.dex?.[sp.evolve.to] ?? 0) ? esc(ev.name) : '???'} no Nv. ${sp.evolve.level}.` : '', evoDica(sp, (d) => !!(g.flags.dex?.[d] ?? 0))].filter(Boolean).join(' ');
     // Lendário ainda não resolvido: a Pokédex dá a pista (o morador da cidade fala do lugar)
-    const lendario = LENDARIOS.find((l) => l.dex === n && l.rumor && !g.flags?.[`lend.${l.id}`]);
+    const lendario = LENDARIOS.find((l) => l.dex === n && l.rumor && !g.flags?.lend?.[l.id]);
     const pista = lendario ? `<div class="gm-soft">Pista: ${esc(lendario.rumor)}</div>` : '';
     const caught = s >= 2;
     box.innerHTML = `<div class="gm-dexhead">${slot(n, '', !caught)}

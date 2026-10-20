@@ -63,7 +63,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.pjRelogio': true },
-        objetivo: { texto: 'O Solgaleo está no topo do Relógio. Ele pode ser capturado. Depois, siga a luz do amanhecer até o santuário sem nome', alvo: 'relogio_pedra' },
+        objetivo: { texto: 'Vá ao topo do Relógio: o Solgaleo está lá e pode ser capturado. Depois, siga a luz do amanhecer até o santuário sem nome', alvo: 'relogio_pedra' },
       },
     },
     {
@@ -76,7 +76,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.pjLunala': true },
-        objetivo: { texto: 'Lunala está no santuário sem nome. Ela pode ser capturada: o dia e a noite estão de novo em equilíbrio', alvo: 'santuario_crepusculo' },
+        objetivo: { texto: 'Vá ao santuário sem nome: a Lunala está lá e pode ser capturada. O dia e a noite voltam ao equilíbrio', alvo: 'santuario_crepusculo' },
       },
     },
   ],

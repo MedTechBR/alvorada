@@ -222,6 +222,6 @@ if (!SO_CONTAR) console.log(`Gravado: ${path.relative(RAIZ, destino)}`);
 if (LEND_SEM_ESPECIE.length) console.log(`ERRO: lendários com espécie inexistente: ${LEND_SEM_ESPECIE.join(', ')}`);
 console.log(`Lendários: ${LENDARIOS.length} cadastrados, ${LEND_COM_LUGAR.length} com lugar, ${LENDARIOS.length - LEND_COM_LUGAR.length} sem lugar ainda`);
 if (LUGARES_SEM_MAPA.length) console.log(`ERRO: lugares das regras de evolução que não existem nos mapas: ${LUGARES_SEM_MAPA.join(', ')}`);
-console.log(`Fontes de OBTENCAO em lugares que ainda não existem no mapa: ${ONDE_SEM_MAPA.length} (ex.: ${[...new Set(ONDE_SEM_MAPA)].slice(0,8).join(', ')})`);
+console.log(`Fontes de OBTENCAO em lugares que ainda não existem no mapa: ${ONDE_SEM_MAPA.length} (ex.: ${[...new Set(ONDE_SEM_MAPA)].join(', ')})`);
 console.log(`Lugares das regras de evolução: ${LUGARES_USADOS.size} ids, ${LUGARES_SEM_MAPA.length} sem mapa`);
 process.exitCode = inativos.length || semAlternativa.length || LUGARES_SEM_MAPA.length || LEND_SEM_ESPECIE.length ? 1 : 0;
