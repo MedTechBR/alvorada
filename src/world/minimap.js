@@ -146,7 +146,7 @@ export class Minimap {
       ctx.beginPath(); let fora = null;
       gi.trecho.forEach((q, i) => { const [x, y] = toS(q.x, q.y); if (!fora && Math.hypot(x - R, y - R) > lim) fora = [x, y]; if (!fora) { if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); } });
       ctx.stroke(); ctx.setLineDash([]);
-      const fim = gi.saida ?? tg;
+      const fim = gi.saida ?? gi.fim ?? tg;
       let [ox, oy] = fim ? toS(fim.x, fim.y) : [R, R];
       if (Math.hypot(ox - R, oy - R) > lim) { const [fx, fy] = fora ?? [ox, oy], dx = fx - R, dy = fy - R, dd = Math.hypot(dx, dy) || 1; ox = R + dx / dd * lim; oy = R + dy / dd * lim; }
       this.#losango(ctx, ox, oy);

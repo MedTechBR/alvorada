@@ -3,9 +3,7 @@
 // (gerado por tools/regioes/jandaia.mjs; as posições dos coqueiros abaixo vêm de lá).
 
 export const ITENS = {
-  tabuleta_raiz_1: { name: 'Tabuleta de Raiz (1)', color: '#9a8a5a', desc: 'Tabuleta de pedra do Átrio do Templo das Raízes. Tem uma flor e uma raiz gravadas. Era para a Dra. Ybi.' },
-  tabuleta_raiz_2: { name: 'Tabuleta de Raiz (2)', color: '#9a8a5a', desc: 'Tabuleta das Galerias Inundadas. Ondas e uma comporta, gravadas à mão. Era para a Dra. Ybi.' },
-  tabuleta_raiz_3: { name: 'Tabuleta de Raiz (3)', color: '#9a8a5a', desc: 'Tabuleta da Câmara da Semente. Uma semente e quatro raízes. Era para a Dra. Ybi.' },
+  decalque_ybi: { name: 'Decalque do Altar', color: '#9a8a5a', desc: 'Papel de seda com o mapa gravado em volta do altar da Câmara da Semente, copiado a carvão. Era para a Dra. Ybi.' },
   fossil_raiz: { name: 'Fóssil Raiz', color: '#8a6a3a', desc: 'Um fóssil em forma de raiz enrolada. Dizem que um Lileep dormiu nele. Revive no Laboratório de Fósseis de Cidade Buriti.' },
 };
 
@@ -17,19 +15,23 @@ const ovoDoDia = () => ({ pokemon: { dex: BEBES[Math.floor(Math.random() * BEBES
 export const MISSOES = [
   {
     id: 'sq_ybi', titulo: 'O mapa do templo', regiao: 'Selva Grande', de: 'dra_ybi',
-    resumo: 'A Dra. Ybi descobriu que o Templo das Raízes foi construído em volta de uma câmara escondida. As três tabuletas, uma por andar, mostram o caminho.',
+    versao: 2,
+    resumo: 'A Dra. Ybi descobriu que o Templo das Raízes foi construído em volta de uma câmara escondida. O mapa dela está gravado em volta do altar da Câmara da Semente, no 3º andar.',
     oferta: [
       'O templo foi construído em volta de uma coisa que ninguém nunca viu. Esse pessoal de capa roxa também sabe: foi isso que eles vieram procurar.',
-      'Cada andar guarda uma tabuleta de pedra. Com as três juntas, o mapa mostra onde a coisa está. Eu não durmo desde que descobri.',
-      'Escalar e nadar não são problemas para você? Então traga as três antes de mim, e antes deles.',
+      'Os antigos gravaram o mapa em volta do altar, lá no 3º andar, na Câmara da Semente. Eu nunca passei das galerias inundadas.',
+      'Escalar e nadar não são problemas para você? Leve este papel e este carvão, e copie o altar para mim, antes que eles cheguem lá.',
     ],
-    lembrete: ['Uma tabuleta por andar: Átrio, Galerias e Câmara da Semente.'],
+    lembrete: ['O altar da Câmara da Semente, no 3º andar do templo. Passe o carvão de leve, que o papel rasga.'],
     etapas: [
-      { tipo: 'ter', item: 'tabuleta_raiz_1', n: 1, texto: 'Pegue a tabuleta do Átrio (1º andar do templo)', falas: ['A primeira está com você.'] },
-      { tipo: 'ter', item: 'tabuleta_raiz_2', n: 1, texto: 'Pegue a tabuleta das Galerias Inundadas (2º andar)', falas: ['A segunda também!'] },
-      { tipo: 'ter', item: 'tabuleta_raiz_3', n: 1, texto: 'Pegue a tabuleta da Câmara da Semente (3º andar)', falas: ['Três tabuletas. Volte à Dra. Ybi.'] },
-      { tipo: 'falar', npc: 'dra_ybi', texto: 'Leve as três tabuletas à Dra. Ybi',
-        falas: ['As três! Olha como elas se encaixam… A flor, a onda, a semente. Isso é um mapa.', 'Tem uma câmara escondida, mais funda ainda, e um guardião que acorda quando as quatro raízes recebem golpes de Planta. Eu sei de quem é a casa agora.', 'Aceite isto. A pedra eu achei na sala dos mosaicos; o fóssil dormia debaixo dela. Ficam melhor com você.'] },
+      { tipo: 'chegar', sala: 'templo_raizes_3', x: 14, y: 12, r: 6, texto: 'Suba à Câmara da Semente (3º andar do Templo das Raízes) e copie o mapa do altar',
+        falas: [
+          ['narrador', 'Em volta do altar, a pedra tem desenhos fundos: uma flor, uma onda, uma semente, e quatro raízes que descem para um quarto lugar que não aparece em nenhum andar.'],
+          ['narrador', 'Você passa o carvão por cima do papel de seda. As raízes do teto estalam baixinho, como se alguém lá em cima tivesse acordado.'],
+        ],
+        recompensa: { itens: [['decalque_ybi', 1]] } },
+      { tipo: 'entregar', npc: 'dra_ybi', item: 'decalque_ybi', texto: 'Leve o decalque do altar à Dra. Ybi, no acampamento da Selva Grande',
+        falas: ['A flor, a onda, a semente… e as quatro raízes. Isso é um mapa.', 'Tem uma câmara escondida, mais funda ainda, e um guardião que acorda quando as quatro raízes recebem golpes de Planta. Eu sei de quem é a casa agora.', 'Aceite isto. A pedra eu achei na sala dos mosaicos; o fóssil dormia debaixo dela. Ficam melhor com você.'] },
     ],
     recompensa: { itens: [['leafStone', 1], ['fossil_raiz', 1], ['venusaurite', 1]], mt: 'leafStorm' },
     proxima: 'sq_tapu_bulu',

@@ -24,7 +24,7 @@ const mem = (M, id) => (M.s.npcs[id] ??= {});
 export function novidadeNpc(M, id, def) {
   const s = M.s.npcs[id] ?? {}; // só lê (não cria memória para quem nunca conversou)
   if (def.presente && !s.p && M.cond(def.presente.requer)) return true;
-  if (def.diario && s.d !== M.hoje() && M.cond(def.diario.requer)) return true;
+  // presente de todo dia (frutas, ovo da Creche) não ganha ícone: é serviço, não tarefa
   if (def.troca && (!s.t || def.troca.repetivel) && M.cond(def.troca.requer) && !s.tv) return true;
   if (def.reviver && def.reviver.fosseis.some((x) => (M.g.bag[x.item] ?? 0) > 0)) return true;
   const f = falaAtual(M, def);

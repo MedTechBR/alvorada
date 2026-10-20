@@ -28,59 +28,47 @@ export const MISSOES = [
     "requer": {
       "insignias": 5
     },
-    "resumo": "Seis anéis sumiram da tenda da Zuleica numa noite só. O espelho dela mostra dois olhinhos rindo lá dentro, e só abre com os seis anéis juntos.",
+    "resumo": "Seis anéis sumiram da tenda da Zuleica numa noite só. O espelho dela mostra dois olhinhos rindo, e toda noite um riso vem do poço seco das Dunas Douradas.",
     "oferta": [
       "Eu conheço todos os desertos, querido, e nenhum me roubou como este. Seis anéis dourados sumiram da minha tenda numa noite só.",
-      "O espelho mostra o que está dentro dele. Faz uma semana que mostra dois olhos pequeninos, rindo. Eu acho que o ladrão mora lá dentro, e que os anéis estão espalhados pelas Dunas Douradas.",
-      "Ache os seis. Com todos juntos o espelho abre. E quando abrir, eu quero que a coisinha saia com você, porque comigo ela só rouba."
+      "O espelho mostra o que está dentro dele. Faz uma semana que mostra dois olhos pequeninos, rindo. E toda noite eu ouço o mesmo riso vindo das Dunas Douradas, do lado do poço seco.",
+      "Vá ao poço seco e veja quem ri. Se os anéis estiverem lá, traga todos: com os seis juntos o espelho abre. E quando abrir, eu quero que a coisinha saia com você, porque comigo ela só rouba."
     ],
     "lembrete": [
-      "Seis anéis dourados, perdidos nas Dunas Douradas. A areia os esconde, mas eles brilham."
+      "O poço seco, no meio das Dunas Douradas. Siga o riso."
     ],
     "etapas": [
       {
-        "tipo": "achar",
-        "item": "anel_dourado",
-        "escondido": true,
-        "pontos": [
+        "tipo": "chegar",
+        "x": 930,
+        "y": 382,
+        "r": 3,
+        "texto": "Siga o riso até o poço seco, no meio das Dunas Douradas",
+        "falas": [
           [
-            880,
-            320
+            "narrador",
+            "No fundo do poço seco, seis anéis dourados giram em roda, no ar, em volta de um buraco que não devia existir."
           ],
           [
-            1040,
-            310
-          ],
-          [
-            1030,
-            365
-          ],
-          [
-            930,
-            382
-          ],
-          [
-            875,
-            350
-          ],
-          [
-            990,
-            304
+            "narrador",
+            "Uma mãozinha de chifres aparece do buraco, conta os anéis, ri e some. Quando você estende a mão, os seis caem na areia, como se alguém tivesse cansado da brincadeira."
           ]
         ],
-        "dica": {
-          "lugar": "dunas_douradas"
-        },
-        "achou": "Um brilho dourado debaixo da areia: um anel! E, por um instante, uma mão enorme some no ar, como quem foi pega.",
-        "texto": "Ache os 6 anéis dourados nas Dunas Douradas",
-        "rotulo": "Anéis"
+        "recompensa": {
+          "itens": [
+            [
+              "anel_dourado",
+              6
+            ]
+          ]
+        }
       },
       {
         "tipo": "entregar",
         "npc": "zuleica",
         "item": "anel_dourado",
         "n": 6,
-        "texto": "Entregue os 6 anéis à Rainha do Bazar",
+        "texto": "Leve os seis anéis à Rainha do Bazar, em Cidade Buriti",
         "pergunta": [
           "Trouxe os seis?"
         ],
@@ -101,7 +89,8 @@ export const MISSOES = [
         "apelido": "Hoopa"
       },
       "texto": "Hoopa, preso no espelho da tenda"
-    }
+    },
+    "versao": 2
   }
 ];
 

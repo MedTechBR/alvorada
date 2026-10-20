@@ -123,22 +123,22 @@ export class Hud {
     const tg = o?.target && Number.isFinite(o.target.x) ? o.target : null;
     let info = null;
     try { info = this.guia.update(dt, tg); } catch (e) { if (!this.guiaErro) { this.guiaErro = true; console.warn('guia', e); } }
-    this.#aviso(info?.pronto && !info.ok ? info.motivo : null);
+    this.#aviso(info?.pronto && !info.ok && !info.enigma ? info.motivo : null);
     const show = tg && this.ui.state === 'play' && !this.ui.blocking && !this.ui.story?.busy;
     if (!show) { m.visible = S.visible = false; return; }
     const p = g.player, W = innerWidth, H = innerHeight;
     const tela = (x, y, h = 0) => (g.worldToScreen ? g.worldToScreen(x, y, h) : { x: g.world.x + x * g.world.scale.x, y: g.world.y + (y - h) * g.world.scale.x });
     // para onde: o próximo trecho do caminho; voando (ou sem caminho a pé, com Voar), em linha reta
-    const voando = g.mount?.flying || (info?.pronto && !info.ok && g.mount?.has?.('voar'));
+    const voando = g.mount?.flying || (info?.pronto && !info.ok && !info.enigma && g.mount?.has?.('voar'));
     let alvo = null, dist = null, perto = false;
-    if (voando) { alvo = tg; dist = Math.round(Math.hypot(tg.x - p.x, tg.y - p.y) / 16); perto = dist < 3; }
+    if (voando || info?.enigma) { alvo = voando ? tg : info.reta; dist = Math.round(Math.hypot(alvo.x - p.x, alvo.y - p.y) / 16); perto = dist < 2; } // sala de quebra-cabeça: reto até a escada
     else if (info?.ok) { alvo = info.wp; dist = info.dist; perto = info.dist < 2; }
     else if (!info?.pronto && performance.now() - this.guia.inicio > 1500) { alvo = tg; } // busca demorando: reta, sem distância
     if (!alvo || perto) { m.visible = S.visible = false; return; }
     const txt = dist == null ? '' : `${dist} m`;
     // alvo perto e à vista (mesmo lugar, sem porta no meio): o losango em cima dele
     if (!voando && info?.ok && !info.saida && info.dist <= 18) {
-      const q = tela(tg.x, tg.y, 26);
+      const q = tela(info.fim?.x ?? tg.x, info.fim?.y ?? tg.y, 26); // numa área: o ponto andável onde o caminho termina
       if (q.x > 30 && q.x < W - 30 && q.y > 40 && q.y < H - 40) {
         S.visible = false; m.visible = true;
         m.x = Math.round(q.x); m.y = Math.round(q.y + Math.sin(g.time * 4) * 3);

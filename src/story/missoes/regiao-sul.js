@@ -5,6 +5,17 @@
 export const ITENS = {};
 
 export const MISSOES = [
+  // cena da história (jornada/04-coral.js): o diário só acompanha pelas flags; a recompensa é da cena
+  {
+    id: 'sq_diario_farol', titulo: 'O diário do farol', regiao: 'Cidade Coral',
+    historia: { ativa: 'nh.sqDiario', feita: 'nh.sqDiarioFim' },
+    resumo: 'A Iracema escreveu quarenta anos de diário no quarto do topo do Farol Coral, e agora quer que alguém leia.',
+    etapas: [
+      { tipo: 'flag', flag: 'nh.diarioFarol', lugar: 'farol_topo', texto: 'Suba ao quarto do topo do Farol Coral e ache o diário da Iracema' },
+      { tipo: 'flag', flag: 'nh.sqDiarioFim', npc: 'iracema', texto: 'Leve o diário de volta à Iracema, no pé do farol' },
+    ],
+    recompensa: { texto: 'Rotom (o que estava preso na lâmpada) e 3 Superpoções' },
+  },
   {
     id: 'sq_solano', titulo: 'A casa dos Solano', regiao: 'Vila Lamparina', de: 'benta',
     requer: { flags: ['nh.chegouLamparina'] },

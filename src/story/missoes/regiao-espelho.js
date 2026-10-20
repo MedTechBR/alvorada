@@ -3,9 +3,20 @@
 
 export const ITENS = {};
 
-// Porto Espelho não tem missão solta no diário: a garrafa do Seu Nestor é cena da história (jornada/03-espelho.js).
+// Porto Espelho: a garrafa do Seu Nestor é cena da história (jornada/03-espelho.js); o diário só acompanha pelas flags.
 // Cartas na garrafa, o maior Magikarp, o Psyduck do Juninho e a moqueca saíram (entrega e coleta genéricas).
-export const MISSOES = [];
+export const MISSOES = [
+  {
+    id: 'sq_garrafa', titulo: 'A garrafa que voltou', regiao: 'Porto Espelho',
+    historia: { ativa: 'nh.sqGarrafa', feita: 'nh.sqGarrafaFim' },
+    resumo: 'Seu Nestor joga cartas ao mar há trinta anos. Pela primeira vez, uma garrafa voltou: está presa nas raízes do manguezal.',
+    etapas: [
+      { tipo: 'flag', flag: 'nh.achouGarrafa', lugar: 'manguezal', texto: 'Ache a garrafa presa nas raízes do manguezal, a oeste do porto' },
+      { tipo: 'flag', flag: 'nh.sqGarrafaFim', npc: 'nestor', texto: 'Leve a garrafa ao Seu Nestor, no porto' },
+    ],
+    recompensa: { texto: '3 Ultra Bolas e o bilhete de quem respondeu' },
+  },
+];
 
 export const NPCS = {
   marujo: {

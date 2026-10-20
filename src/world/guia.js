@@ -119,6 +119,45 @@ export function lerFlag(f, expr) {
 }
 const cumpre = (f, req) => !req || [req].flat().every((q) => lerFlag(f, q));
 
+// Sementes da busca (os blocos onde o caminho pode terminar). Alvo que é uma ÁREA ("vença X no bosque", "vá ao
+// manguezal"): os blocos andáveis dela, de preferência o mato alto (onde aparecem os selvagens) — nunca o centro do
+// retângulo, que pode cair no meio das árvores. Alvo que é um ponto: o bloco dele, ou os nós mais perto (em cima de
+// balcão, de mesa, no meio da água). M = { W, H, OH, tiles, ALTO (Set de blocos de mato alto) }.
+export function sementesDe(M, G, ax, ay, area = null) {
+  const { W, H } = M, out = [];
+  if (area) {
+    const a = area, alto = [], chao = [];
+    const [x0, y0, x1, y1] = a.rect ? [a.rect[0], a.rect[1], a.rect[0] + a.rect[2], a.rect[1] + a.rect[3]] : [a.ellipse[0] - a.ellipse[2], a.ellipse[1] - a.ellipse[3], a.ellipse[0] + a.ellipse[2], a.ellipse[1] + a.ellipse[3]];
+    for (let y = Math.max(0, Math.floor(y0)); y < Math.min(M.OH ?? H, Math.ceil(y1)); y++) for (let x = Math.max(0, Math.floor(x0)); x < Math.min(W, Math.ceil(x1)); x++) {
+      if (a.ellipse && Math.hypot((x - a.ellipse[0]) / a.ellipse[2], (y - a.ellipse[1]) / a.ellipse[3]) >= 1) continue;
+      const k = x + y * W; if (!G.anda(k)) continue;
+      (M.ALTO?.has(M.tiles[k]) ? alto : chao).push(k);
+    }
+    if (alto.length || chao.length) return alto.length ? alto : chao;
+  }
+  for (let r = 0; r <= 14 && !out.length; r++) for (let j = -r; j <= r; j++) for (let i = -r; i <= r; i++) {
+    if (Math.max(Math.abs(i), Math.abs(j)) !== r) continue;
+    const x = ax + i, y = ay + j; if (x < 0 || y < 0 || x >= W || y >= H) continue;
+    const k = x + y * W; if (G.no(k)) out.push(k);
+  }
+  return out;
+}
+
+// Recuo para masmorras: o alvo fica numa sala de quebra-cabeça (portões, pontes, pedras que o jogador ainda vai
+// resolver) e a busca não chega ao jogador. Então o guia mira a ENTRADA dessa sala (onde chegam as escadas e portas
+// que vêm de fora dela); se ainda não der, a entrada da sala anterior, e assim por diante. salas: Set de salas (ids
+// de salaDe) do nível atual. Devolve { sementes, salas, fontes } do nível seguinte (fontes: as bocas das passagens,
+// do lado de fora da sala; vazio quando chega ao ar livre).
+export function recuoDeSala(G, salas) {
+  const sementes = [], antes = new Set(), fontes = [];
+  for (const [de, para] of G.passagens) {
+    const rp = G.salaDe(para), rd = G.salaDe(de);
+    if (rp < 0 || !salas.has(rp) || salas.has(rd)) continue;
+    sementes.push(para); fontes.push(de); if (rd >= 0) antes.add(rd);
+  }
+  return { sementes: [...new Set(sementes)], salas: antes, fontes };
+}
+
 // ------------------------------------------------------------------------------------------------ grafo do mapa
 // Monta o grafo a partir dos dados do mapa (o do jogo ou o de tools/alcance.mjs). D:
 //   W, H, tiles, block (Uint8Array), solid(t) / passa (Set de blocos que as montarias vencem), tide (bloco da maré),
@@ -134,13 +173,13 @@ export function grafoDe(D) {
     return !SOLID.has(t) || passa.has(t);
   };
   const boca = new Uint8Array(W * H); // boca de passagem: pisar leva a outro lugar
-  const pre = new Map();
+  const pre = new Map(), lig = [];
   const liga = (de, para) => { if (!pre.has(para)) pre.set(para, []); pre.get(para).push(de); };
   for (const w of D.passagens ?? []) {
     if (!cumpre(flags, w.requer)) continue;
     const de = w.x + w.y * W, para = w.to[0] + w.to[1] * W;
     if (de < 0 || para < 0 || de >= W * H || para >= W * H) continue;
-    boca[de] = 1; liga(de, para);
+    boca[de] = 1; liga(de, para); lig.push([de, para]);
   }
   for (const b of D.barcos ?? []) {
     if (!cumpre(flags, b.requer)) continue;
@@ -149,7 +188,7 @@ export function grafoDe(D) {
   }
   for (const s of D.saltos ?? []) liga(s.de, s.para);
   return {
-    W, H, livre, boca,
+    W, H, livre, boca, passagens: lig, salaDe: D.salaDe ?? (() => -1),
     no: (k) => boca[k] === 1 || livre(k),
     anda: (k) => boca[k] !== 1 && livre(k),
     pre: (k) => pre.get(k) ?? null,
@@ -196,7 +235,8 @@ export class Guia {
     const g = this.g, m = g.map, W = m.w, H = m.h, f = g.flags ?? {};
     const passa = new Set(); for (const k of caps) for (const t of this.MOUNT_PASS[k] ?? []) passa.add(t);
     const KINDS = this.KINDS;
-    const salaDe = (k) => { const x = k % W, y = (k - x) / W; return m.interiorAt?.(x * T + 8, y * T + 8) ? 1 : -1; };
+    const idx = new Map((m.interiors ?? []).map((r, i) => [r, i]));
+    const salaDe = (k) => { const x = k % W, y = (k - x) / W, r = m.interiorAt?.(x * T + 8, y * T + 8); return r ? idx.get(r) ?? -1 : -1; };
     const ehEnigma = (k) => {
       const o = m.cellObj?.get(k); if (!o) return false;
       const K = KINDS[o.kind] ?? {};
@@ -235,9 +275,9 @@ export class Guia {
     const caps = this.#caps();
     const ax = Math.floor(alvo.x / T), ay = Math.floor(alvo.y / T);
     const base = `${m.id}|${caps.join(',')}|${this.#sinal()}`;
-    const mudouAlvo = !this.ultAlvo || Math.abs(ax - this.ultAlvo[0]) + Math.abs(ay - this.ultAlvo[1]) > 2;
+    const mudouAlvo = !this.ultAlvo || Math.abs(ax - this.ultAlvo[0]) + Math.abs(ay - this.ultAlvo[1]) > 2 || (alvo.area ?? null) !== (this.ultArea ?? null);
     this.tRefaz -= dt;
-    if (mudouAlvo || base !== this.chave || this.tRefaz <= 0) this.#refazer(base, caps, ax, ay);
+    if (mudouAlvo || base !== this.chave || this.tRefaz <= 0) this.#refazer(base, caps, ax, ay, alvo.area);
     // expande a busca até achar o jogador (fatias de ~2 ms)
     const c = this.campo, px = Math.floor(p.x / T), py = Math.floor(p.y / T);
     if (!c.terminou && c.achar(px, py, 1) < 0) {
@@ -248,7 +288,7 @@ export class Guia {
     if (this.tInfo <= 0 || mudouAlvo) { this.tInfo = 0.2; this.info = this.#info(px, py, alvo); }
     return this.info;
   }
-  #refazer(base, caps, ax, ay) {
+  #refazer(base, caps, ax, ay, area = null) {
     const m = this.g.map;
     this.#garantir();
     if (!this.campo || this.campo.W !== m.w || this.campo.H !== m.h) this.campo = new CampoGuia(m.w, m.h);
@@ -256,15 +296,11 @@ export class Guia {
     const agora = performance.now();
     if (!this.Gc || this.Gc.base !== base || agora - this.Gc.t > 60000) this.Gc = { base, t: agora, G: this.#grafo(caps) };
     const G = this.Gc.G;
-    // sementes: o bloco do alvo, ou os nós mais perto dele (alvo em cima de balcão, de mesa, no meio da água)
-    let sem = [];
-    for (let r = 0; r <= 5 && !sem.length; r++) for (let j = -r; j <= r; j++) for (let i = -r; i <= r; i++) {
-      if (Math.max(Math.abs(i), Math.abs(j)) !== r) continue;
-      const x = ax + i, y = ay + j; if (x < 0 || y < 0 || x >= m.w || y >= m.h) continue;
-      const k = x + y * m.w; if (G.no(k)) sem.push(k);
-    }
+    // sementes (sementesDe): numa área, o chão andável dela (mato alto primeiro); num ponto, o bloco livre mais perto
+    const T0 = this.TILE, sem = sementesDe({ W: m.w, H: m.h, OH: m.outdoorH ?? m.h, tiles: m.tiles, ALTO: new Set([T0.TALL, T0.TALLSNOW, T0.TALLDRY, T0.REED]) }, G, ax, ay, area);
     this.campo.iniciar(G, sem);
-    this.G = G; this.chave = base; this.ultAlvo = [ax, ay]; this.tRefaz = 20; this.inicio = performance.now();
+    this.nivel = 0; this.salasNivel = new Set(sem.map((k) => G.salaDe(k)).filter((r) => r >= 0)); this.fontes = null;
+    this.G = G; this.chave = base; this.ultAlvo = [ax, ay]; this.ultArea = area ?? null; this.tRefaz = 20; this.inicio = performance.now();
     this.motivo = undefined;
   }
   // o que o HUD e o minimapa usam
@@ -273,6 +309,23 @@ export class Guia {
     const k = c.achar(px, py, 2);
     if (k < 0) {
       if (!c.terminou) return { pronto: false, alvo };
+      // masmorra: o alvo está atrás de um quebra-cabeça. Dentro da sala do quebra-cabeça, a seta vai reto para a
+      // escada/porta que leva adiante (resolver é com o jogador); de fora, o guia leva até a entrada dela.
+      const G = this.G, aqui = G.salaDe(px + py * W);
+      if (this.salasNivel?.size && this.nivel < 5) {
+        if (aqui >= 0 && this.salasNivel.has(aqui)) {
+          if (!this.fontes) return { pronto: true, ok: false, enigma: true, alvo, reta: alvo }; // na própria sala do alvo
+          let best = null, bd = 1e9;
+          for (const q of this.fontes) { if (G.salaDe(q) !== aqui) continue; const qx = q % W, qy = (q - qx) / W, d = Math.abs(qx - px) + Math.abs(qy - py); if (d < bd) { bd = d; best = q; } }
+          if (best != null) return { pronto: true, ok: false, enigma: true, alvo, reta: { x: (best % W) * T + 8, y: Math.floor(best / W) * T + 8 } };
+        }
+        const r = recuoDeSala(G, this.salasNivel);
+        if (r.sementes.length) {
+          this.nivel++; this.fontes = r.fontes; this.salasNivel = r.salas.size ? r.salas : new Set();
+          c.iniciar(G, r.sementes);
+          return { pronto: false, alvo };
+        }
+      }
       return { pronto: true, ok: false, alvo, motivo: this.#motivo(px, py) };
     }
     const cam = c.caminho(k, 600);
@@ -283,7 +336,8 @@ export class Guia {
     const corte = cam.passagens.find((i) => i > 0) ?? cam.pts.length - 1;
     const trecho = cam.pts.slice(0, corte + 1).filter((_, i) => i % 2 === 0 || i === corte).map(xy);
     const fim = cam.pts.length - 1 <= corte; // o alvo fica neste mesmo lugar (sem porta no meio)
-    return { pronto: true, ok: true, alvo, dist, wp: xy(wp.k), porta: wp.porta, trecho, saida: fim ? null : xy(cam.pts[corte]) };
+    // fim: onde o caminho termina de verdade (numa área, o mato alto mais perto; num ponto, o bloco livre dele)
+    return { pronto: true, ok: true, alvo, dist, wp: xy(wp.k), porta: wp.porta, trecho, saida: fim ? null : xy(cam.pts[corte]), fim: xy(cam.pts[cam.pts.length - 1]) };
   }
   // sem caminho com as montarias de agora: o que falta (montaria e insígnia) — calculado uma vez por busca
   #motivo(px, py) {

@@ -5,14 +5,16 @@
 import { badgeInfo } from './names.js';
 
 // Os 8 ginásios na ordem. ace = nível do Pokémon mais forte do líder (docs/jornada-classica.md, seção 2).
-// alvo: ponto do mapa do ginásio (quando existe); jornada: a jornada de cidade que o painel acompanha, se houver.
+// alvo: ponto do mapa do ginásio (quando existe); antes: { flag, alvo } outro alvo enquanto a flag não vale (o caminho até
+// o ginásio ainda está fechado pela história); jornada: a jornada de cidade que o painel acompanha, se houver.
 export const ORDEM = [
   { n: 1, badge: 'campina', lider: 'Líder Tomé', cidade: 'Cidade Campina', rota: 'Rota 1', tipo: 'Normal', ace: 14, alvo: 'gym', jornada: 'campina' },
   { n: 2, badge: 'sussurro', lider: 'Líder Lia', cidade: 'Vila Sussurro', rota: 'Rota 2 e o Bosque Sussurrante', tipo: 'Inseto', ace: 19, alvo: 'estufa_lia', jornada: 'sussurro' },
   { n: 3, badge: 'espelho', lider: 'Líder Marina', cidade: 'Porto Espelho', rota: 'Rota 3, Margem das Garças', tipo: 'Água', ace: 24, alvo: 'galpao_barcos', jornada: 'espelho' },
   { n: 4, badge: 'coral', lider: 'Líder Jonas', cidade: 'Cidade Coral', rota: 'Rota 4, Rio Lúmen', tipo: 'Elétrico', ace: 28, alvo: 'farol_coral', jornada: 'coral' },
   { n: 5, badge: 'lamparina', lider: 'Dona Zélia', cidade: 'Vila Lamparina', rota: 'Rota 5, Brejo das Lamparinas', tipo: 'Fantasma', ace: 32, alvo: 'casarao_velas', jornada: 'lamparina' },
-  { n: 6, badge: 'rochedo', lider: 'Líder Brás', cidade: 'Forte Rochedo', rota: 'Rota 6, Ferrovia da Aurora, e a Rota 7, Ravina do Rochedo', tipo: 'Lutador', ace: 37, alvo: 'leader_bras', jornada: 'aurora' },
+  { n: 6, badge: 'rochedo', lider: 'Líder Brás', cidade: 'Forte Rochedo', rota: 'Rota 6, Ferrovia da Aurora, e a Rota 7, Ravina do Rochedo', tipo: 'Lutador', ace: 37, alvo: 'leader_bras', jornada: 'aurora',
+    antes: { flag: 'nh.reviravolta1', alvo: 'aurora_praca' } }, // a Ravina só abre depois de Cidade Aurora: até lá, o guia leva à praça de Aurora
   { n: 7, badge: 'escarpa', lider: 'Líder Graça', cidade: 'Cidade Escarpa', rota: 'Rota 8, o Paredão', tipo: 'Pedra', ace: 41, alvo: 'leader_graca', jornada: 'escarpa' },
   { n: 8, badge: 'mirante', lider: 'Líder Celeste', cidade: 'Mirante dos Ventos', rota: 'Rota 9 e Rota 11, no Planalto dos Ventos', tipo: 'Voador', ace: 45, alvo: 'leader_celeste', jornada: 'mirante' },
 ];
@@ -98,7 +100,7 @@ export function proximoPasso(f) {
     return {
       key: g.badge, gym: true, title: `Ginásio ${pos} de 8: ${g.lider}`,
       texto: `Vá a ${g.cidade}, pela ${g.rota}, e desafie o ${g.lider} (tipo ${g.tipo}).`,
-      sub: `Insígnias: ${n}/8 · próxima: ${insigniaNome(g.badge)}`, alvo: g.alvo, jornada: g.jornada,
+      sub: `Insígnias: ${n}/8 · próxima: ${insigniaNome(g.badge)}`, alvo: g.antes && !lerFlag(f, g.antes.flag) ? g.antes.alvo : g.alvo, jornada: g.jornada,
     };
   }
   const prox = POS_GINASIOS.find((p) => !f[p.flag]);
