@@ -12,7 +12,7 @@ try {
   const P = await open(b, `http://127.0.0.1:${process.env.PORT ?? 8750}/index.html?teste=1&${qs}`, 'p');
   await P.raw('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: CEL ? 2 : 1, mobile: CEL });
   if (CEL) { await P.raw('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 }); await P.raw('Emulation.setEmitTouchEventsForMouse', { enabled: true, configuration: 'mobile' }); await P.raw('Page.reload', { ignoreCache: false }); await sleep(1500); }
-  await until(() => P.ev('!!(window.game && game.ui && game.ui.state === "play")'), 60000, 300);
+  await until(() => P.ev('!!(window.game && game.ui && game.ui.state === "play" && game.player && game.cam)'), 60000, 300);
   await sleep(2500);
   if (process.env.PRE) await P.ev(process.env.PRE); // antes de posicionar (flags, insígnias)
   let i = 0;

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { kit } from './index.js';
 import { GLB_TIPOS, glbPronto, pedirGLB, onGLB } from './glb.js';
-import { modeloLG, chaveLG } from '../letsgo/modelos.js';
+import { modeloLG, chaveLG } from '../letsgo/modelos-todos.js';
 
 // Ponte entre o kit de modelos e os setores do visual 3D (src/visual3d/setores.js).
 // Mesma interface do Modelos provisório: new ModelosKit(v); setor(s); liberar(s); update(); temModelo(kind);
@@ -46,8 +46,9 @@ export class ModelosKit {
     // barreiras da progressão ativas (src/world/barreiras.js): cerca, obra, entulho, boias... entram na malha do setor;
     // quando a barreira cai, o setor é refeito sem elas
     for (const p of this.v.g.barreiras?.propsDoSetor?.(s.sx, s.sy) ?? []) {
-      const md = kit.modelo(p.kind, p); if (!md) continue;
-      itens.push({ geometry: md.geometry, x: p.x, y: this.#h(p.x, p.y, 1), z: p.y });
+      const lg = this.lgDe({ tx: Math.floor(p.x / 16), ty: Math.floor((p.y - 1) / 16) }, s) && modeloLG(p.kind, p); // peça lisa (letsgo/modelos-barreiras.js)
+      const md = lg || kit.modelo(p.kind, p); if (!md) continue;
+      (!s.lg && lg ? itensLG : itens).push({ geometry: md.geometry, x: p.x, y: this.#h(p.x, p.y, 1), z: p.y });
     }
     s.kitObjs = L.objetosDoSetor(s.sx, s.sy).length;
     if (itens.length) { s.kitMalha = new THREE.Mesh(kit.mesclar(itens), this.matDe(s)); s.kitMalha.matrixAutoUpdate = false; s.grupo.add(s.kitMalha); }
