@@ -24,7 +24,7 @@ export default {
         ['narrador', 'O professor está numa gaiola de metal, ao lado do Lúcio, com o rosto pálido e os olhos fixos em você.'],
         ['sereno', 'Senhor Solano, as sete pedras já estão nos pedestais. Falta só a chama do oitavo.'],
         ['jogador', 'Não entrego a vela enquanto o professor não sair daí. E não acendo nada antes de entender o Relógio.'],
-        ['solano', 'Quando as oito chaves estiverem no lugar, o cadeado se abre e o Necrozma sai. Eu vou capturá-lo e vender luz sem fim. Entregue a chama.'],
+        ['solano', 'Quando as oito chaves estiverem no lugar, o cadeado abre e o Necrozma sai. Eu vou capturá-lo. Entregue a chama.'],
       ],
       depois: {
         flags: { 'nh.chegouRelogio': true },
