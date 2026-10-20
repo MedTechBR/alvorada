@@ -511,7 +511,7 @@ const PROF_MUNDO = {
 };
 const RIVAL_MUNDO = {
   campina: (p) => [
-    `${p}! Você também já tem insígnia? Então estamos empatados. Eu acabei de ganhar a Espiga, ouviu?`,
+    `${p}! Você já tem insígnia? Então estou atrasado. Vou pegar a Espiga agora!`,
     'O Tomé usa Pokémon do tipo Normal. Eles batem firme, mas não têm truque. Só precisa aguentar!',
     'Tchau! Ainda tem muita insígnia por aí e eu quero todas antes de você!',
   ],
