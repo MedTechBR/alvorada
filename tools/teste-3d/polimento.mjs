@@ -109,13 +109,7 @@ for (const t of TAM) {
       await key('Escape'); await sleep(300); await key('Escape'); await sleep(500); await key('Enter'); await sleep(600); await foto('13e-aprender-desistir', 100);
       await key('Enter'); await sleep(900);
       await ev(`(game.ui.menu.close(), 1)`); await sleep(500);
-      await P.raw('Page.navigate', { url: `http://127.0.0.1:${PORT}/index.html?teste=1` }); await sleep(1500); await prep();
-      ev(`game.evolve(game.party[0], 5)`).catch((e) => console.log('evo', e.message));
-      await until(() => P.ev('document.querySelector(".evo") ? 1 : 0'), 15000, 50);
-      await sleep(700); await foto('14a-evolucao-texto', 0);
-      await sleep(2300); await foto('14b-evolucao-pisca', 0);
-      await sleep(1500); await foto('14c-evolucao-clarao', 0);
-      await sleep(1400); await foto('14d-evolucao-fim', 0);
+      // a evolução tem script próprio: tools/teste-3d/polimento-evolucao.mjs
       console.log(t, 'erros', JSON.stringify([...new Set(P.logs.filter((l) => /EXC|rror/.test(l)))]));
     } catch (e) { console.log(t, 'ERRO B', e.message.slice(0, 300)); } finally { b.kill(); }
   }
