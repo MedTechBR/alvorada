@@ -66,10 +66,10 @@ export function vila(M, C, J) {
   );
   // os 4 Capitães da ilha: um em cada praia (a missão "O guardião da ilha" os usa)
   const cap = (id, nome, look, x, y, dir, fala) => { const [px, py] = perto(M, ['sand'], x, y, 14) ?? [x, y]; ppl.push({ id, name: nome, look, x: px, y: py, dir, lines: fala }); };
-  cap('cap_jandaia_norte', 'Capitã Sereia', LOOK.capitaoa, 70, 572, 'down', ['Eu sou a Capitã do Norte. O mar aqui é manso, mas o meu time não é.', 'Só passa pelo guardião quem passa por nós quatro.']);
-  cap('cap_jandaia_oeste', 'Capitão Pôr-do-Sol', LOOK.capitao, 36, 606, 'right', ['O oeste é onde o dia acaba. O meu time, não.', 'Quer subir a colina? Primeiro, o Pôr-do-Sol.']);
+  cap('cap_jandaia_norte', 'Capitã Sereia', LOOK.capitaoa, 70, 572, 'down', ['Eu sou a Capitã do Norte. O mar aqui é manso, mas o meu time não é.', 'Somos quatro capitães, um por praia. Cada um com a sua maré.']);
+  cap('cap_jandaia_oeste', 'Capitão Pôr-do-Sol', LOOK.capitao, 36, 606, 'right', ['O oeste é onde o dia acaba. O meu time, não.', 'Quem passa pelo oeste ao fim da tarde sempre acaba na minha praia.']);
   cap('cap_jandaia_sul', 'Capitã Maré Cheia', LOOK.capitaoa, 112, 643, 'up', ['No sul a maré sobe duas vezes ao dia. Meus Pokémon sobem mais vezes.', 'Respeite o regulamento: um Pokémon de cada vez.']);
-  cap('cap_jandaia_leste', 'Capitão Nascente', LOOK.capitao, 164, 604, 'left', ['O sol nasce aqui primeiro, depois nasce no resto do mundo.', 'Eu sou o último dos quatro. Depois de mim, só o morro.']);
+  cap('cap_jandaia_leste', 'Capitão Nascente', LOOK.capitao, 164, 604, 'left', ['O sol nasce aqui primeiro, depois nasce no resto do mundo.', 'Eu sou o último dos quatro. Depois de mim, só o morro e o céu.']);
 }
 
 // ======================== salas feitas à mão ========================
