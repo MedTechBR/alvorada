@@ -38,6 +38,9 @@ export class Visual3D {
     r.setPixelRatio(this.#dpr());
     r.setSize(innerWidth, innerHeight, false);
     r.outputColorSpace = THREE.SRGBColorSpace;
+    // sem conferir o log de cada shader compilado: essa leitura obriga o navegador a terminar a compilação na hora e
+    // era ~9% do tempo de CPU numa luta (materiais novos entrando na tela davam engasgo). ?shaders=1 liga de novo.
+    r.debug.checkShaderErrors = new URLSearchParams(location.search).has('shaders');
     r.domElement.id = 'game3d';
     const host = document.getElementById('game'); host.insertBefore(r.domElement, host.firstChild);
     r.domElement.style.pointerEvents = 'none';

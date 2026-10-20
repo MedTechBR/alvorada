@@ -42,7 +42,12 @@ export class Espetaculo {
     this.esc = clamp(Math.min(this.W, this.H * 1.9) / 900, 0.62, 1.25); // tamanho das letras (celular deitado ≈ 0,8)
   }
   // ponto da tela de um ponto do mundo (x, y no chão; h acima dele)
-  #tela(x, y, h = 0) { return this.g.worldToScreen ? this.g.worldToScreen(x, y, h) : { x, y }; }
+  // (no 3D: a altura do chão é lida uma vez por texto e a projeção usa a matriz pronta da câmera, sem alocar)
+  #tela(x, y, h = 0, o = null) {
+    const v = this.g.v3d;
+    if (v?.pv && o) { o.alt ??= v.altura(x, y); return v.paraTelaPlano(x, y, o.alt + h, (this.tmp ??= {})); }
+    return this.g.worldToScreen ? this.g.worldToScreen(x, y, h) : { x, y };
+  }
 
   // ---------- textos que voam ----------
   // texto genérico (fx.number cai aqui): estilo 'dmg' (número em arco), 'banner' (palavra grande) e 'info' (sobe)
@@ -141,17 +146,27 @@ export class Espetaculo {
       if (o.st === 'dmg') { o.vy += 420 * dt; if (o.t > 0.38) { o.vy = Math.min(o.vy, 8); o.vx *= 0.88; } }
       else o.vy *= 1 - Math.min(1, dt * 3.5);
       if (!desenha) continue;
-      const p = this.#tela(o.x, o.y, o.h);
+      const p = this.#tela(o.x, o.y, o.h, o);
       const pop = o.st === 'dmg' ? 1 + Math.max(0, 0.14 - o.t) / 0.14 * 0.7 : o.st === 'banner' ? 1 + Math.max(0, 0.12 - o.t) / 0.12 * 0.5 : 1;
-      const tam = (o.st === 'dmg' ? (o.big ? 30 : 22) : o.st === 'banner' ? 19 : 14) * (o.k ?? 1) * E * pop;
       const a = Math.min(1, (o.life - o.t) / 0.25) * Math.min(1, o.t / 0.04 + 0.3);
+      // cada texto é desenhado UMA vez num canvas pequeno (contorno e sombra custam caro no celular) e depois só copiado
+      const im = o.im ??= this.#bitmap(o, (o.st === 'dmg' ? (o.big ? 30 : 22) : o.st === 'banner' ? 19 : 14) * (o.k ?? 1) * E * 1.35);
+      const k = pop / 1.35, w = im.width / this.dpr * k, h = im.height / this.dpr * k;
       x.globalAlpha = a;
-      x.save(); x.translate(p.x + o.dx, p.y + o.dy + (o.oy ?? 0) * E);
-      if (o.st === 'banner') x.transform(1, 0, -0.18, 1, 0, 0); // inclinadas, como no vídeo
-      this.#letras(x, o.s, 0, 0, tam, o.cor, o.st === 'info' ? 3.5 : 5.5);
-      x.restore();
+      x.drawImage(im, p.x + o.dx - w / 2, p.y + o.dy + (o.oy ?? 0) * E - h / 2, w, h);
     }
     x.globalAlpha = 1;
+  }
+  #bitmap(o, tam) {
+    const c = document.createElement('canvas'), x = c.getContext('2d'), d = this.dpr;
+    x.font = `italic 900 ${tam.toFixed(1)}px ${FONTE}`;
+    const borda = o.st === 'info' ? 3.5 : 5.5, lw = borda * (tam / 22), w = x.measureText(o.s).width + lw * 2 + tam * 0.4, h = tam * 1.5 + lw * 2;
+    c.width = Math.ceil(w * d); c.height = Math.ceil(h * d);
+    x.setTransform(d, 0, 0, d, 0, 0); x.lineJoin = 'round'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.translate(w / 2, h / 2 - tam * 0.05);
+    if (o.st === 'banner') x.transform(1, 0, -0.18, 1, 0, 0); // inclinadas, como no vídeo
+    this.#letras(x, o.s, 0, 0, tam, o.cor, borda);
+    return c;
   }
   // letras grossas com contorno escuro e sombra embaixo
   #letras(x, s, px, py, tam, cor, borda = 5, sombra = true) {

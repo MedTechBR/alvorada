@@ -93,11 +93,26 @@ try {
     await sleep(1500);
     await P.ev(`(() => { window.__fps = { n: 0, t0: performance.now(), q: [] }; let ant = performance.now();
       const f = () => { const a = performance.now(); const F = window.__fps; F.n++; F.q.push(a - ant); ant = a; if (!F.fim) requestAnimationFrame(f); }; requestAnimationFrame(f);
-      window.v3d?.medir(); return 1; })()`);
+      window.v3d?.medir(); window.__prog0 = window.v3d?.renderer.info.programs.length; window.__progs0 = new Set(window.v3d?.renderer.info.programs);
+      // tempo de CPU do quadro do jogo (lógica) e da camada de espetáculo (textos, quadro de impacto)
+      const G = game, M = window.__ms = { fr: 0, show: 0, n: 0, frMax: 0 };
+      if (!G.__frOrig) { G.__frOrig = G.frame.bind(G); G.frame = (dt) => { const a = performance.now(); G.__frOrig(dt); const d = performance.now() - a; window.__ms.fr += d; window.__ms.n++; window.__ms.frMax = Math.max(window.__ms.frMax, d); }; }
+      if (G.show && !G.show.__orig) { G.show.__orig = G.show.update.bind(G.show); G.show.update = (a, b) => { const t = performance.now(); G.show.__orig(a, b); window.__ms.show += performance.now() - t; }; }
+      return 1; })()`);
+    if (process.env.PROF === '1') { await P.raw('Profiler.enable'); await P.raw('Profiler.setSamplingInterval', { interval: 200 }); await P.raw('Profiler.start'); }
     await sleep(+(process.env.SEG ?? 10) * 1000);
+    if (process.env.PROF === '1') { // funções com mais tempo próprio (amostras)
+      const { result } = await P.raw('Profiler.stop'); const pr = result.profile, self = new Map(), por = new Map(pr.nodes.map((n) => [n.id, n]));
+      const dt = pr.timeDeltas, tot = dt.reduce((a, b) => a + b, 0);
+      pr.samples.forEach((id, i) => { const n = por.get(id), f = n.callFrame, k = `${f.functionName || '(anon)'} ${f.url.split('/').slice(-2).join('/')}:${f.lineNumber + 1}`; self.set(k, (self.get(k) ?? 0) + (dt[i] ?? 0)); });
+      const pai = new Map(); for (const n of pr.nodes) for (const c of n.children ?? []) pai.set(c, n);
+      const cadeia = new Map(); // para cada função: quem chamou (3 níveis), a mais comum
+      pr.samples.forEach((id, i) => { const n = por.get(id), f = n.callFrame, k = `${f.functionName || '(anon)'} ${f.url.split('/').slice(-2).join('/')}:${f.lineNumber + 1}`; let p = pai.get(n.id), c = []; for (let j = 0; j < 4 && p; j++) { c.push(p.callFrame.functionName || '(anon)'); p = pai.get(p.id); } const m = cadeia.get(k) ?? new Map(); const ck = c.join('<'); m.set(ck, (m.get(ck) ?? 0) + (dt[i] ?? 0)); cadeia.set(k, m); });
+      res.perfil = [...self].sort((a, b) => b[1] - a[1]).slice(0, 25).map(([k, v]) => `${(v / tot * 100).toFixed(1)}% ${k}  <= ${[...(cadeia.get(k) ?? new Map())].sort((a, b) => b[1] - a[1])[0]?.[0] ?? ''}`);
+    }
     Object.assign(res, await P.ev(`(() => { const F = window.__fps; F.fim = 1; const dt = (performance.now() - F.t0) / 1000, q = F.q.slice(5).sort((a, b) => a - b);
       return { fps: +(F.n / dt).toFixed(1), p50: +q[Math.floor(q.length * 0.5)].toFixed(1), p95: +q[Math.floor(q.length * 0.95)].toFixed(1), pior: +q[q.length - 1].toFixed(1),
-        acima50ms: q.filter((x) => x > 50).length, quadros: q.length, qualidade: game.quality.level, ms3d: window.v3d?.medir(), particulas: game.fx.count, draw: window.v3d?.ultInfo?.calls }; })()`));
+        acima50ms: q.filter((x) => x > 50).length, logicaMs: +(window.__ms.fr / Math.max(1, window.__ms.n)).toFixed(2), logicaMax: +window.__ms.frMax.toFixed(1), showMs: +(window.__ms.show / Math.max(1, window.__ms.n)).toFixed(3), quadros: q.length, qualidade: game.quality.level, ms3d: window.v3d?.medir(), programas: [window.__prog0, window.v3d?.renderer.info.programs.length], novos: (window.v3d?.renderer.info.programs ?? []).filter((p) => !window.__progs0.has(p)).map((p) => p.name + ' | ' + String(p.cacheKey).slice(0, 160)), particulas: game.fx.count, draw: window.v3d?.ultInfo?.calls }; })()`));
     await P.raw('Emulation.setCPUThrottlingRate', { rate: 1 });
     await sleep(800);
   }
