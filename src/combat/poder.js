@@ -262,8 +262,10 @@ export class Poder {
     }
     // Max Golpe: brilho vermelho no botão (recarga única)
     this.#campo(dt);
-    // câmera: afasta enquanto o seu Pokémon está em Dynamax (ou no reide)
-    const want = (g.lead && this.dmax.has(g.lead)) || g.tocas?.reide ? 0.62 : 1;
+    // câmera: afasta enquanto o seu Pokémon está em Dynamax (ou no reide) e um pouco na arena de ginásio (as duas
+    // equipes cabem numa tela de celular deitado)
+    const A = g.arenaGinasio, emGinasio = !!A && !A.done;
+    const want = (g.lead && this.dmax.has(g.lead)) || g.tocas?.reide ? 0.62 : emGinasio ? 0.8 : 1;
     g.camK = (g.camK ?? 1) + (want - (g.camK ?? 1)) * Math.min(1, dt * 2.2);
     if (Math.abs(g.camK - want) < 0.005) g.camK = want;
     // animações

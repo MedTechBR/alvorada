@@ -189,11 +189,11 @@ export default {
         batalha: {
           id: 'leader_jonas', nome: 'Líder Jonas', dinheiro: 2900,
           equipe: [
-            [81, 7, ['thunderShock', 'sonicBoom', 'thunderWave']],
-            [179, 8, ['thunderShock', 'cottonSpore', 'takeDown']],
-            [417, 8, ['spark', 'quickAttack', 'sweetKiss']],
-            [403, 9, ['spark', 'bite', 'leer']],
-            [170, 11, ['spark', 'waterGun', 'confuseRay', 'bubbleBeam']],
+            [81, 13, ['thunderShock', 'sonicBoom', 'thunderWave']],
+            [179, 14, ['thunderShock', 'cottonSpore', 'takeDown']],
+            [417, 14, ['spark', 'quickAttack', 'sweetKiss']],
+            [403, 15, ['spark', 'bite', 'leer']],
+            [170, 16, ['spark', 'waterGun', 'confuseRay', 'bubbleBeam']],
           ],
         },
       },

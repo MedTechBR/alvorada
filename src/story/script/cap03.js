@@ -165,6 +165,7 @@ export default {
         batalha: {
           id: 'leader_marina_pier', nome: 'Líder Marina', dinheiro: 2200,
           equipe: [
+            [418, 13, ['aquaJet', 'quickAttack', 'waterGun']],
             [79, 13, ['waterGun', 'confusion', 'yawn']],
             [550, 15, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
           ],

@@ -11,7 +11,7 @@ import { launch, open, until, sleep } from './teste-3d/chrome.mjs';
 
 const PORTA = process.env.PORTA ?? 8752, URL = `http://127.0.0.1:${PORTA}/?teste&nosw`;
 const args = process.argv.slice(2), quem = args.find((a) => !a.startsWith('--')) ?? 'todos';
-const CEL = args.includes('--celular'), FOTOS = args.includes('--fotos'), VEZES = +(args.find((a) => a.startsWith('--vezes='))?.split('=')[1] ?? 1);
+const CEL = args.includes('--celular'), FOTOS = args.includes('--fotos'), PAISAGEM = args.includes('--paisagem'), VEZES = +(args.find((a) => a.startsWith('--vezes='))?.split('=')[1] ?? 1);
 
 // equipe do jogador (dex, nível) e como chegar na luta
 const CASOS = {
@@ -22,9 +22,9 @@ const CASOS = {
   zelia: { equipe: [[5, 20], [8, 20], [25, 19]], sala: 'casarao_velas', em: [40, 13], flags: { candelabrosAcesos: true, 'trainers.g5_odete': true, 'trainers.g5_ciro': true }, falar: 'zelia', noite: true },
   lia: { equipe: [[5, 21], [8, 21], [2, 20]], sala: 'estufa_lia', em: [11, 15], flags: { defendeuEstufa: true, 'trainers.g2_nando': true, 'trainers.g2_bel': true }, falar: 'lia' },
   // planejadas: mesma arena num campo aberto (prova de que o motor serve para elas)
-  bras: { equipe: [[17, 25], [5, 24], [8, 24]], planejada: { nome: 'Líder Brás', equipe: [[67, 21], [701, 22], [447, 22], [214, 23], [237, 25]], w: 14, h: 12 } },
-  graca: { equipe: [[9, 43], [3, 42], [6, 42]], planejada: { nome: 'Líder Graça', equipe: [[525, 39], [933, 40], [95, 40], [476, 41], [745, 43]], w: 16, h: 12 } },
-  celeste: { equipe: [[26, 41], [6, 40], [9, 40]], planejada: { nome: 'Líder Celeste', equipe: [[277, 37], [227, 38], [334, 39], [663, 39], [628, 41]], w: 16, h: 13 } },
+  bras: { equipe: [[17, 25], [5, 24], [8, 24]], planejada: { nome: 'Líder Brás', equipe: [[67, 21], [701, 22], [447, 22], [214, 23], [237, 25]], w: 18, h: 12 } },
+  graca: { equipe: [[9, 43], [3, 42], [6, 42]], planejada: { nome: 'Líder Graça', equipe: [[525, 39], [933, 40], [95, 40], [476, 41], [745, 43]], w: 18, h: 12 } },
+  celeste: { equipe: [[26, 41], [6, 40], [9, 40]], planejada: { nome: 'Líder Celeste', equipe: [[277, 37], [227, 38], [334, 39], [663, 39], [628, 41]], w: 18, h: 12 } },
 };
 const ORDEM = ['jonas', 'marina', 'marina_pier', 'tome', 'zelia', 'lia', 'bras', 'graca', 'celeste'];
 const lista = quem === 'todos' ? ORDEM : quem === 'existentes' ? ORDEM.slice(0, 6) : quem.split(',');
@@ -32,8 +32,8 @@ const lista = quem === 'todos' ? ORDEM : quem === 'existentes' ? ORDEM.slice(0, 
 async function caso(b, nome, rodada) {
   const C = CASOS[nome]; if (!C) throw new Error('caso desconhecido ' + nome);
   const p = await open(b, URL, nome);
-  if (CEL) {
-    await p.raw('Emulation.setDeviceMetricsOverride', { width: 412, height: 860, deviceScaleFactor: 2, mobile: true });
+  if (CEL || PAISAGEM) {
+    await p.raw('Emulation.setDeviceMetricsOverride', PAISAGEM ? { width: 844, height: 390, deviceScaleFactor: 2, mobile: true } : { width: 412, height: 860, deviceScaleFactor: 2, mobile: true });
     await p.raw('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
     await p.raw('Page.reload', {});
   }
@@ -137,6 +137,7 @@ try {
     console.log('   fases:', (r.fases ?? []).map((f) => `${f.fase}@${f.t}s`).join(' → '));
     console.log(`   perigos que acertaram: seu lado ${r.acertos?.ally}, líder ${r.acertos?.foe} · por perigo ${JSON.stringify(r.porPerigo)}`);
     console.log(`   avisos ${r.avisos} · menor aviso antes de acertar ${r.minAviso}s · golpes sem aviso ${r.semAviso}`);
+    console.log(`   muros (tem que ser 0) ${r.noMuro ?? '?'} · fora da arena (tem que ser 0) ${r.foraArea ?? '?'} · fases vistas ${(r.fases ?? []).length}`);
     console.log(`   robô: ${JSON.stringify(r.bot)} · lógica ${JSON.stringify(r.perf)}${r.fps ? ' · celular ' + JSON.stringify(r.fps) : ''}`);
     if (r.fotos?.length) console.log('   fotos:', r.fotos.join(', '));
     if (r.erros.length) console.log('   ERROS:', r.erros);
