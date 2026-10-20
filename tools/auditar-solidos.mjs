@@ -63,7 +63,7 @@ function auditar(R) {
   const sala = (x, y) => { const r = (R.interiors ?? []).find((q) => x >= q.x && y >= q.y && x < q.x + q.w && y < q.y + q.h); return r ? r.id : 'mundo'; };
   const pessoas = S.people.filter((d) => d.x != null);
   // bloco livre mais perto (até 6 blocos), na mesma sala, sem objeto, parede, porta nem outra pessoa, com passagem
-  const ocupados = new Set(pessoas.map((d) => `${Math.floor(d.x)},${Math.floor(d.y)}`));
+  const ocupados = new Set(pessoas.map((d) => `${Math.floor(d.x + 0.5)},${Math.floor(d.y + 0.5)}`));
   const livreDe = (tx, ty) => {
     const k = pos(tx, ty); if (k < 0) return false;
     if (objDe.has(k) || S.block[k] === 1 || SOLID.has(S.tiles[k]) || portas.has(k) || ocupados.has(`${tx},${ty}`)) return false;
@@ -90,8 +90,10 @@ function auditar(R) {
     if (motivos.length) achados.push({ grupo, id, nome, sala: sala(tx, ty), x: tx, y: ty, motivos, sugestao: sugerir(tx, ty, sala(tx, ty)) });
   };
   // personagens (pessoas do mapa e de salas), pontos de história e passagens
-  for (const d of pessoas) checar('pessoa', d.id ?? '?', d.name ?? '', d.x, d.y);
-  for (const [k, v] of Object.entries(R.spots ?? {})) if (Array.isArray(v) && !/^porta_|^dentro_/.test(k)) checar('ponto', k, '', v[0], v[1]);
+  // o jogo põe a pessoa no bloco floor(x + 0.5), floor(y + 0.5) (people.js: x * 16 + 8, y * 16 + 10); a história usa floor
+  const bloco = (d) => [Math.floor(d.x + 0.5), Math.floor(d.y + 0.5)];
+  for (const d of pessoas) { const [bx, by] = bloco(d); checar('pessoa', d.id ?? '?', d.name ?? '', bx, by); }
+  for (const [k, v] of Object.entries(R.spots ?? {})) if (Array.isArray(v) && !/^porta_|^dentro_/.test(k)) checar('ponto', k, '', Math.floor(v[0]), Math.floor(v[1]));
   // ilhado: do bloco do personagem não dá para chegar a pelo menos 40 blocos livres (porta conta como passagem; balcão e mesa não tapam)
   // balcão, mesa e máquina são de interação: o jogador fala por cima deles, então o alcance passa por eles
   const BALCAO = /counter|table|machine|desk|balcao/i;
@@ -106,11 +108,11 @@ function auditar(R) {
     }
     return false;
   };
-  for (const d of pessoas) if (!alcanca(Math.floor(d.x), Math.floor(d.y)) && !achados.some((q) => q.id === d.id)) achados.push({ grupo: 'pessoa', id: d.id ?? '?', nome: d.name ?? '', sala: sala(d.x, d.y), x: Math.floor(d.x), y: Math.floor(d.y), motivos: ['ilhado (não chega à porta nem ao espaço livre)'] });
+  for (const d of pessoas) if (!alcanca(...bloco(d)) && !achados.some((q) => q.id === d.id)) achados.push({ grupo: 'pessoa', id: d.id ?? '?', nome: d.name ?? '', sala: sala(...bloco(d)), x: bloco(d)[0], y: bloco(d)[1], motivos: ['ilhado (não chega à porta nem ao espaço livre)'] });
   // duas pessoas no mesmo bloco
   const porBloco = new Map();
-  for (const d of pessoas) { const k = `${Math.floor(d.x)},${Math.floor(d.y)}`; if (!porBloco.has(k)) porBloco.set(k, []); porBloco.get(k).push(d); }
-  for (const [k, lista] of porBloco) if (lista.length > 1) for (const d of lista.slice(1)) achados.push({ grupo: 'pessoa', id: d.id ?? '?', nome: d.name ?? '', sala: sala(d.x, d.y), x: Math.floor(d.x), y: Math.floor(d.y), motivos: [`mesmo bloco de ${lista[0].id ?? lista[0].name}`] });
+  for (const d of pessoas) { const k = bloco(d).join(','); if (!porBloco.has(k)) porBloco.set(k, []); porBloco.get(k).push(d); }
+  for (const [k, lista] of porBloco) if (lista.length > 1) for (const d of lista.slice(1)) achados.push({ grupo: 'pessoa', id: d.id ?? '?', nome: d.name ?? '', sala: sala(...bloco(d)), x: bloco(d)[0], y: bloco(d)[1], motivos: [`mesmo bloco de ${lista[0].id ?? lista[0].name}`] });
   return achados;
 }
 
