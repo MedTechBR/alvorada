@@ -14,6 +14,7 @@ import { ICONS } from './hud.js';
 import { exportCode, importCode, Auth } from '../net/auth.js';
 import { NATURES } from '../data/natures.js';
 import { describeEvolution } from '../mechanics/evolve.js';
+import { LENDARIOS } from '../data/lendarios.js';
 import { abilityInfo } from '../data/abilities.js';
 import { serialize, writeSave } from '../save.js';
 import { drawLook, FW, FH } from './looks.js';
@@ -550,10 +551,13 @@ export class GameMenu {
     const habTxt = Object.entries(hab).map(([b, e]) => `<li><b>${esc(BIOME_PT[b] ?? b)}</b> <span class="gm-soft">${e.day && e.night ? 'dia e noite' : e.night ? 'só à noite' : 'só de dia'} · Nv. ${e.lo}–${e.hi}</span></li>`).join('');
     const pv = prevo(n), ev = sp.evolve && SPECIES[sp.evolve.to];
     const evo = [pv ? `Evolui de ${esc(SPECIES[pv.from].name)} no Nv. ${pv.level}.` : '', ev ? `Evolui para ${(g.flags.dex?.[sp.evolve.to] ?? 0) ? esc(ev.name) : '???'} no Nv. ${sp.evolve.level}.` : '', evoDica(sp, (d) => !!(g.flags.dex?.[d] ?? 0))].filter(Boolean).join(' ');
+    // Lendário ainda não resolvido: a Pokédex dá a pista (o morador da cidade fala do lugar)
+    const lendario = LENDARIOS.find((l) => l.dex === n && l.rumor && !g.flags?.[`lend.${l.id}`]);
+    const pista = lendario ? `<div class="gm-soft">Pista: ${esc(lendario.rumor)}</div>` : '';
     const caught = s >= 2;
     box.innerHTML = `<div class="gm-dexhead">${slot(n, '', !caught)}
       <div><div class="gm-big">${num} · ${esc(sp.name)}</div><div class="gm-types">${typePills(sp.types)}</div>
-      <div class="gm-soft">${caught ? `Altura ${String(sp.height).replace('.', ',')} m · Nacional nº ${pad3(n)}` : 'Visto, mas ainda não capturado.'}</div></div></div>
+      ${pista}<div class="gm-soft">${caught ? `Altura ${String(sp.height).replace('.', ',')} m · Nacional nº ${pad3(n)}` : 'Visto, mas ainda não capturado.'}</div></div></div>
       <p class="gm-desc">${caught ? esc(DEX_TEXT[n] ?? dexGeneric(sp)) : 'Capture um para ler os dados completos.'}</p>
       ${evo ? `<p class="gm-soft">${evo}</p>` : ''}
       ${caught && formsTxt(sp) ? `<p class="gm-soft">Formas: ${formsTxt(sp)}</p>` : ''}

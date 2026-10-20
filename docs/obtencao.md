@@ -64,6 +64,44 @@ Online, a troca continua valendo. Offline, cada uma tem o jeito abaixo.
 
 Trocas sem alternativa: **0**
 
+## Lendários fixos (src/data/lendarios.js)
+
+| Espécie | Nível | Lugar | Etapa |
+|---|---:|---|---|
+| Articuno (#144) | 55 | caverna_gelo_3 | jornada |
+| Entei (#244) | 58 | templo_chama_3 | jornada |
+| Heatran (#485) | 60 | vulcao_ticao | jornada |
+| Raikou (#243) | 56 | farol_topo | jornada |
+| Zapdos (#145) | 56 | mirante_ventos | jornada |
+| Suicune (#245) | 56 | lago_congelado | jornada |
+| Regirock (#377) | 56 | ruinas_pintada_3 | jornada |
+| Tapu Bulu (#787) | 58 | templo_raizes_3 | jornada |
+| Solgaleo (#791) | 60 | relogio_pedra | pos-jogo |
+| Lunala (#792) | 60 | santuario_crepusculo | pos-jogo |
+| Ho-Oh (#250) | 75 | ilha_farol_morto | pos-jogo |
+| Kyogre (#382) | 70 | sem lugar ainda | pos-jogo |
+| Groudon (#383) | 70 | sem lugar ainda | pos-jogo |
+| Rayquaza (#384) | 75 | sem lugar ainda | pos-jogo |
+| Lugia (#249) | 75 | sem lugar ainda | pos-jogo |
+| Kyurem (#646) | 72 | sem lugar ainda | pos-jogo |
+| Regice (#378) | 62 | sem lugar ainda | pos-jogo |
+| Manaphy (#490) | 60 | sem lugar ainda | pos-jogo |
+| Dialga (#483) | 75 | sem lugar ainda | pos-jogo |
+| Palkia (#484) | 75 | sem lugar ainda | pos-jogo |
+| Giratina (#487) | 78 | sem lugar ainda | pos-jogo |
+| Mewtwo (#150) | 80 | sem lugar ainda | pos-jogo |
+| Mew (#151) | 50 | sem lugar ainda | pos-jogo |
+| Celebi (#251) | 50 | sem lugar ainda | pos-jogo |
+| Jirachi (#385) | 50 | sem lugar ainda | pos-jogo |
+| Deoxys (#386) | 60 | sem lugar ainda | pos-jogo |
+| Arceus (#493) | 80 | sem lugar ainda | pos-jogo |
+| Zacian (#888) | 70 | sem lugar ainda | pos-jogo |
+| Zamazenta (#889) | 70 | sem lugar ainda | pos-jogo |
+| Calyrex (#898) | 72 | sem lugar ainda | pos-jogo |
+| Koraidon (#1007) | 75 | sem lugar ainda | pos-jogo |
+| Miraidon (#1008) | 75 | sem lugar ainda | pos-jogo |
+| Terapagos (#1024) | 80 | sem lugar ainda | pos-jogo |
+
 ## Espécies inativas
 
 Nenhuma.

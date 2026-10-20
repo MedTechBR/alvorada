@@ -1,0 +1,82 @@
+// Lendários fixos (um só de cada). Cada um aparece quando o jogador entra no lugar (sala de masmorra ou área) e é um
+// Pokémon selvagem de verdade: dá para jogar Poké Bolas e capturar, e luta em tempo real como os outros. Some do mapa
+// quando é capturado ou derrotado; a flag `lend.<id>` guarda o que aconteceu (src/world/lendarios.js).
+//
+// Campos:
+//   id, dex, nome, nivel       o Pokémon e o nível (Pokémon nível 50+ são lendários de fim de jogo)
+//   lugar                      id da sala (interior) ou da área do mapa onde ele vive; null = ainda sem lugar
+//                              (tools/auditar-obtencao.mjs confere que o id existe nos mapas)
+//   requer                     flags da história que precisam estar setadas (ex.: 'trainers.c12_solano'); [] = livre
+//   falas                      3 a 5 falas de entrada: [quem, texto]; 'narrador' sem nome
+//   rumor, rumorCidade         frase que um morador da cidade diz (rumorCidade = id da cidade ou vila)
+//   etapa                      'jornada' (no caminho principal) ou 'pos-jogo'
+export const LENDARIOS = [
+  // ---------------------------------------------------------- arcos de região (no caminho)
+  { id: 'articuno', dex: 144, nome: 'Articuno', nivel: 55, lugar: 'caverna_gelo_3', requer: [], etapa: 'jornada',
+    rumor: 'Dizem que algo enorme dorme no fundo da Caverna de Gelo. Quando o vento vira, a neve sopra para dentro dela.', rumorCidade: 'vila_geada',
+    falas: [['narrador', 'O fundo da caverna é um salão de gelo azul. No centro, uma ave de penas que parecem cristal abre as asas devagar.'],
+      ['narrador', 'O ar fica tão frio que o seu fôlego vira neblina. O Articuno não ataca: ele observa, como se esperasse alguém que merecesse vê-lo.']] },
+  { id: 'entei', dex: 244, nome: 'Entei', nivel: 58, lugar: 'templo_chama_3', requer: [], etapa: 'jornada',
+    rumor: 'Quem chega ao fim do Templo da Chama ouve um rugido que não vem de nenhum vulcão.', rumorCidade: 'vila_termas',
+    falas: [['narrador', 'A última sala do templo é quente como a boca de um forno. Um Pokémon de pelo cor de brasa está deitado sobre as pedras, e levanta a cabeça.'],
+      ['narrador', 'Entei rosna, e o chão treme. Ele não fugiu do fogo: ele é o fogo que guarda este lugar.']] },
+  { id: 'heatran', dex: 485, nome: 'Heatran', nivel: 60, lugar: 'vulcao_ticao', requer: [], etapa: 'jornada',
+    rumor: 'O Vulcão Tição tem uma cratera que não solta fumaça. Quem olha de perto sente o chão quente debaixo dos pés.', rumorCidade: 'vila_termas',
+    falas: [['narrador', 'A cratera do Tição está acesa, e no meio da lava há uma silhueta de metal e rocha.'],
+      ['narrador', 'Heatran abre a boca e o calor arranca o ar dos seus pulmões. Ele só luta com quem consegue ficar de pé.']] },
+  { id: 'raikou', dex: 243, nome: 'Raikou', nivel: 56, lugar: 'farol_topo', requer: [], etapa: 'jornada',
+    rumor: 'Quando a tempestade do Planalto para de repente, o farol treme inteiro, como se algo tivesse passado correndo lá em cima.', rumorCidade: 'cidade_coral',
+    falas: [['narrador', 'No topo do farol, o vento para. Um trovão atravessa o céu sem nuvem, e no meio da luz aparece um Pokémon listrado, veloz como um raio.'],
+      ['narrador', 'Raikou não espera que você se apresente. Ele corre em círculos ao redor da torre, e cada passo solta faíscas.']] },
+  { id: 'zapdos', dex: 145, nome: 'Zapdos', nivel: 56, lugar: 'mirante_ventos', requer: [], etapa: 'jornada',
+    rumor: 'Pescadores dizem que, nas tempestades do Planalto, uma ave dourada voa baixo sobre o mar e some antes do amanhecer.', rumorCidade: 'mirante_ventos',
+    falas: [['narrador', 'No meio da tempestade, uma ave de penas eletrizadas desce do céu e pousa no mirante, com as asas abertas.'],
+      ['narrador', 'Zapdos solta um grito que faz as pedras vibrarem. Ele não quer ser domado, só quer saber se você aguenta a tempestade.']] },
+  { id: 'suicune', dex: 245, nome: 'Suicune', nivel: 56, lugar: 'lago_congelado', requer: [], etapa: 'jornada',
+    rumor: 'No lago que não derrete, dizem que um Pokémon azul corre sobre a água sem afundar, e deixa um rastro de geada.', rumorCidade: 'vila_geada',
+    falas: [['narrador', 'O lago congelado reflete o céu como um espelho. Uma figura azul e prateada atravessa a superfície sem quebrar o gelo.'],
+      ['narrador', 'Suicune para na sua frente e olha fundo nos seus olhos. A água do lago sobe em volta dele, como se o próprio lago respirasse.']] },
+  { id: 'regirock', dex: 377, nome: 'Regirock', nivel: 56, lugar: 'ruinas_pintada_3', requer: [], etapa: 'jornada',
+    rumor: 'As pinturas das ruínas mostram uma estátua de pedra que acorda quando alguém entra na última sala.', rumorCidade: 'cidade_escarpa',
+    falas: [['narrador', 'Na última sala das ruínas, as pinturas viram estátua. Uma das pedras se move, e de dentro dela sai um Pokémon feito de rocha.'],
+      ['narrador', 'Regirock bate no chão com as mãos de pedra. Ele guarda este templo há muito tempo, e não deixa ninguém passar sem luta.']] },
+  { id: 'tapu_bulu', dex: 787, nome: 'Tapu Bulu', nivel: 58, lugar: 'templo_raizes_3', requer: [], etapa: 'jornada',
+    rumor: 'Dizem que a floresta das Jandaias tem um guardião que só aparece quando as flores do templo se abrem.', rumorCidade: 'vila_jandaia',
+    falas: [['narrador', 'No coração do templo, raízes formam um altar. Sobre ele, um Pokémon de pelo verde e um chifre de folhas espera em silêncio.'],
+      ['narrador', 'Tapu Bulu envolve o salão com um vento perfumado. Ele protege a floresta, e antes de lutar ele quer saber por que você veio.']] },
+  { id: 'solgaleo', dex: 791, nome: 'Solgaleo', nivel: 60, lugar: 'relogio_pedra', requer: ['trainers.c12_solano'], etapa: 'pos-jogo',
+    rumor: 'Depois que o Relógio parou, ainda se vê de manhã um clarão dourado no topo do planalto.', rumorCidade: 'cidade_escarpa',
+    falas: [['narrador', 'O topo do Relógio ainda brilha. Uma criatura com crina de fogo e asas de metal desce devagar, como o sol que nasce.'],
+      ['narrador', 'Solgaleo não é inimigo. Ele só quer mostrar que a luz do sol pertence a todo mundo, não a quem a vende.']] },
+  { id: 'lunala', dex: 792, nome: 'Lunala', nivel: 60, lugar: 'santuario_crepusculo', requer: ['trainers.c12_solano'], etapa: 'pos-jogo',
+    rumor: 'Dizem que à noite, no santuário sem nome, a lua fica mais perto do chão do que deveria.', rumorCidade: 'vila_lamparina',
+    falas: [['narrador', 'O santuário está escuro, mas uma luz prateada cresce do chão. Uma criatura de asas e olhos luminosos desce sobre as pedras.'],
+      ['narrador', 'Lunala mantém a luz da noite. Ela só se mostra para quem não tem medo do escuro.']] },
+  { id: 'ho_oh', dex: 250, nome: 'Ho-Oh', nivel: 75, lugar: 'ilha_farol_morto', requer: ['nh.pjFarol'], etapa: 'pos-jogo',
+    rumor: 'Os pescadores do Mar do Sul dizem que o Farol Morto ainda guarda uma chama, e que ela acende quando alguém passa com a Pena Arco-Íris.', rumorCidade: 'porto_espelho',
+    falas: [['narrador', 'A luz da lâmpada de cristal se espalha pela torre. Uma ave de fogo multicolorida desce em espiral, e cada pena brilha de uma cor diferente.'],
+      ['narrador', 'Ho-Oh canta, e a neblina do mar recua. Ele só deixa ver o arco-íris a quem sabe esperar.']] },
+  // ---------------------------------------------------------- sem lugar ainda (pós-jogo: dependem de masmorras novas)
+  { id: 'kyogre', dex: 382, nome: 'Kyogre', nivel: 70, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'groudon', dex: 383, nome: 'Groudon', nivel: 70, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'rayquaza', dex: 384, nome: 'Rayquaza', nivel: 75, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'lugia', dex: 249, nome: 'Lugia', nivel: 75, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'kyurem', dex: 646, nome: 'Kyurem', nivel: 72, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'regice', dex: 378, nome: 'Regice', nivel: 62, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'manaphy', dex: 490, nome: 'Manaphy', nivel: 60, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'dialga', dex: 483, nome: 'Dialga', nivel: 75, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'palkia', dex: 484, nome: 'Palkia', nivel: 75, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'giratina', dex: 487, nome: 'Giratina', nivel: 78, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'mewtwo', dex: 150, nome: 'Mewtwo', nivel: 80, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'mew', dex: 151, nome: 'Mew', nivel: 50, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'celebi', dex: 251, nome: 'Celebi', nivel: 50, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'jirachi', dex: 385, nome: 'Jirachi', nivel: 50, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'deoxys', dex: 386, nome: 'Deoxys', nivel: 60, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'arceus', dex: 493, nome: 'Arceus', nivel: 80, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'zacian', dex: 888, nome: 'Zacian', nivel: 70, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'zamazenta', dex: 889, nome: 'Zamazenta', nivel: 70, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'calyrex', dex: 898, nome: 'Calyrex', nivel: 72, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'koraidon', dex: 1007, nome: 'Koraidon', nivel: 75, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'miraidon', dex: 1008, nome: 'Miraidon', nivel: 75, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+  { id: 'terapagos', dex: 1024, nome: 'Terapagos', nivel: 80, lugar: null, requer: [], etapa: 'pos-jogo', rumor: '', rumorCidade: null, falas: [] },
+];
