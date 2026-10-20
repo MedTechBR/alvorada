@@ -122,6 +122,8 @@ export default {
       gatilho: { tipo: 'vencer', alvo: 'c12_solano' },
       falas: [
         ['solano', 'Não… Eu comprei o amanhecer de cada cidade desta região. Não posso perder agora.'],
+        ['jogador', 'Eu li o diário do Tiago, em Lamparina. O desenho do menino grande com o sol na mão. Ele ainda tem medo do escuro, Solano?', { requer: ['sq_solano_completa'] }],
+        ['solano', 'Quem deixou você entrar naquela casa? … Eu só queria que ninguém no mundo ficasse no escuro de novo.', { requer: ['sq_solano_completa'] }],
         ['narrador', 'O Solano cai de joelhos. O Sereno, ao lado dele, deixa cair a caixa com as sete pedras, e elas rolam até os pedestais.'],
         ['prof', 'Ravi! Me solta, por favor. A chave da gaiola está no bolso do Lúcio, ele não vai reagir.'],
         ['narrador', 'O Lúcio levanta as mãos, sem olhar para ninguém. A gaiola abre. O professor corre até você e segura seu braço com força.'],
