@@ -245,6 +245,11 @@ export const ELENCO = [
   { id: 'vigia', quem: 'vigia', nome: 'Último Vigia', look: LOOKS.observador, spot: 'vigia' },
   // caixa de lata com as cartas do Jatobá (cap07): uma morador da sala do arquivo, que dispara a cena "cartas" ao falar
   { id: 'caixa_cartas', quem: 'caixa_cartas', nome: 'Caixa de cartas', substitui: 'caixa_cartas', look: LOOKS.observador },
+  // ---------------- Relógio de Pedra (cap11) ----------------
+  { id: 'c11_vigilante1', quem: 'treinador', nome: 'Vigilante Aurora', look: LOOKS.aurora, spot: 'vig1', visao: 5,
+    apos: ['A Companhia mandou a gente vigiar o cristal. Só que o cristal vigia a gente de volta.'] },
+  { id: 'c11_vigilante2', quem: 'treinador', nome: 'Vigilante Aurora', look: LOOKS.aurora, spot: 'vig2', visao: 5,
+    apos: ['Não me pergunte o que é o cristal. Eu só recebo o salário.'] },
 ];
 
 // Treinadores das regiões novas do mundo grande (cada região traz o seu arquivo; veja docs/construir-regiao.md)

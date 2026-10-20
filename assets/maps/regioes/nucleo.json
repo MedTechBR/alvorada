@@ -338,6 +338,26 @@
    240,
    46,
    "down"
+  ],
+  "escadaria_base": [
+   296,
+   84,
+   "up"
+  ],
+  "escadaria_meio": [
+   297,
+   77,
+   "up"
+  ],
+  "vig1": [
+   292,
+   68,
+   "right"
+  ],
+  "vig2": [
+   306,
+   78,
+   "left"
   ]
  },
  "ninhos": [
@@ -537,6 +557,62 @@
    "x": 528,
    "y": 22,
    "to": "torre_vento"
+  },
+  {
+   "kind": "menhir",
+   "x": 308,
+   "y": 72
+  },
+  {
+   "kind": "menhir",
+   "x": 306,
+   "y": 78
+  },
+  {
+   "kind": "menhir",
+   "x": 300,
+   "y": 80
+  },
+  {
+   "kind": "menhir",
+   "x": 294,
+   "y": 78
+  },
+  {
+   "kind": "menhir",
+   "x": 292,
+   "y": 72
+  },
+  {
+   "kind": "menhir",
+   "x": 294,
+   "y": 66
+  },
+  {
+   "kind": "menhir",
+   "x": 300,
+   "y": 64
+  },
+  {
+   "kind": "menhir",
+   "x": 306,
+   "y": 66
+  },
+  {
+   "kind": "crystal",
+   "x": 299,
+   "y": 71
+  },
+  {
+   "kind": "crystal",
+   "x": 301,
+   "y": 73
+  },
+  {
+   "kind": "sign",
+   "x": 293,
+   "y": 83,
+   "text": "RELÓGIO DE PEDRA\nOito menires, uma chave para cada ginásio."
   }
  ],
  "people": [
@@ -1107,6 +1183,47 @@
      "left"
     ]
    }
+  },
+  {
+   "id": "camara_coracao",
+   "name": "Câmara do Coração — Relógio de Pedra",
+   "rows": [
+    "$$$$$$$$$$$$$$$$",
+    "$ZZZZZZZZZZZZZZ$",
+    "$ZZZZZZZZZZZZZZ$",
+    "$ZZZZZZZZZZZZZZ$",
+    "$ZZZZZ$$$$ZZZZZ$",
+    "$ZZZZZZZZZZZZZZ$",
+    "$ZZZZZZZZZZZZZZ$",
+    "$ZZZZZZZZZZZZZZ$",
+    "$$$$$$mm$$$$$$$$"
+   ],
+   "objects": [
+    {
+     "kind": "crystal",
+     "x": 7,
+     "y": 3
+    },
+    {
+     "kind": "crystal",
+     "x": 9,
+     "y": 5
+    },
+    {
+     "kind": "lamp",
+     "x": 2,
+     "y": 2
+    }
+   ],
+   "decor": [],
+   "people": [],
+   "spots": {
+    "camara_entrada": [
+     12,
+     4,
+     "left"
+    ]
+   }
   }
  ],
  "warps": [
@@ -1123,6 +1240,13 @@
    "dir": "up",
    "to": "ruinas_entrada",
    "label": "Ruínas dos Vigias"
+  },
+  {
+   "x": 303,
+   "y": 70,
+   "dir": "right",
+   "to": "camara_entrada",
+   "label": "Câmara do Coração"
   }
  ]
 }
