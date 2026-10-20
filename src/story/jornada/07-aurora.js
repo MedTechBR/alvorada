@@ -19,11 +19,11 @@ export default {
       local: 'cidade_aurora',
       gatilho: { tipo: 'entrar', alvo: 'cidade_aurora', requer: ['badges.lamparina'], semFlag: ['nh.chegouAurora'] },
       falas: [
-        ['narrador', 'Cidade Aurora: torres de cristal, outdoors com a palavra "limpa" em letras douradas e um silêncio estranho, como se a cidade inteira prendesse a respiração.'],
+        ['narrador', 'Cidade Aurora: torres de cristal, outdoors com a palavra "limpa" em letras douradas e um silêncio que pesa.'],
         ['narrador', 'O sol mal aparece entre os prédios. Todo mundo aqui tem uma lanterna de luzita no bolso, acesa de dia.'],
-        ['pipa', 'Você chegou! Eu sou a Pipa, repórter do Jornal Farol. Estou fazendo uma matéria sobre a Torre Aurora e preciso de alguém que não seja da empresa.'],
-        ['pipa', 'Vamos lá. O gerente Lúcio vai fazer uma visita guiada. Ele adora mostrar as tubulações, principalmente para quem não pergunta de onde vem a luz.'],
-        ['jogador', 'Uma repórter e um prédio de cristal. Não sei qual dos dois está mais disposto a me enganar.'],
+        ['pipa', 'Você chegou! Eu sou a Pipa, do Jornal Farol. Preciso de alguém que não seja da empresa para uma matéria sobre a Torre.'],
+        ['pipa', 'Vamos lá. O gerente Lúcio faz visitas guiadas. Ele adora mostrar as tubulações, mas nunca fala de onde vem a luz.'],
+        ['jogador', 'Uma repórter e uma visita guiada. Vou prestar atenção no que eles não mostram.'],
       ],
       depois: {
         flags: { 'nh.chegouAurora': true },
@@ -60,7 +60,7 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'torre_aurora', requer: ['nh.visitaTorre'], semFlag: ['nh.lucioVencido'] },
       falas: [
         ['lucio', 'Área restrita! Ninguém desce ao nível quatro sem autorização. O protocolo, o protocolo!'],
-        ['jogador', 'Tem gente presa lá embaixo. Você ouviu a sirene.'],
+        ['jogador', 'Você não quer que ninguém veja o que tem lá embaixo. Por quê?'],
         ['lucio', 'Eu ouvi o protocolo. Se quer descer, vai ter que passar pelos meus Pokémon. Eles são muito bem treinados.'],
       ],
       depois: {
@@ -86,8 +86,8 @@ export default {
       falas: [
         ['narrador', 'A sirene começa a tocar lá embaixo, e o chão da torre vibra. Um homem de capacete grita pelo rádio que o nível três desabou.'],
         ['teo', 'Meu pai está lá embaixo! Ele trabalha no nível quatro! Eu vou descer agora, com ou sem você!'],
-        ['jogador', 'Eu vou com você, Téo. Mas a Aurora não ia deixar ninguém descer sem autorização. Por que a sirene soou tão tarde?'],
-        ['teo', 'Não interessa. Vamos!'],
+        ['jogador', 'Eu vou com você, Téo. Mas por que a sirene só tocou agora, se o desabamento foi antes?'],
+        ['teo', 'Não interessa agora. Vamos!'],
       ],
       depois: {
         flags: { 'nh.sirene': true, 'nh.teoJunto': true },
@@ -103,7 +103,7 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'mina_aurora_n1', requer: ['nh.sirene'], semFlag: ['nh.minaEntrada'] },
       falas: [
         ['narrador', 'O nível um da mina é quente e cheira a ferro. Trilhos de carrinho correm por toda parte, e as lâmpadas de luzita tremem nas paredes.'],
-        ['teo', 'Por aqui! O elevador do nível três é o único caminho. Se ele estiver quebrado, vamos pela escada.'],
+        ['teo', 'Por aqui! O elevador do nível três caiu com o desabamento. A escada do fundo é o único caminho.'],
         ['narrador', 'Um mineiro sai de um corredor lateral, sujo de pó, com a lanterna apagada. Ele aponta para baixo sem dizer nada.'],
       ],
       depois: {
@@ -121,21 +121,21 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'mina_aurora_n4', requer: ['nh.minaEntrada'], semFlag: ['nh.reviravolta1'] },
       reviravolta: 1,
       falas: [
-        ['narrador', 'No nível quatro, o desabamento prendeu três mineiros e uma mulher de casaco longo. Ela está encostada numa viga, com um Absol deitado a seus pés.'],
-        ['heitor', 'Téo! Você veio! Eu disse que eles não iam tirar a gente daqui antes da cota do dia.'],
+        ['narrador', 'No nível quatro, o desabamento prendeu três mineiros e uma mulher de casaco longo, encostada numa viga, com um Absol aos pés.'],
+        ['heitor', 'Téo! Eles disseram que o resgate só chegaria depois da cota do dia. Ainda bem que você veio.'],
         ['teo', 'Pai? Você está ferido? O que a Aurora fez com vocês?'],
         ['vespera', 'Pergunte à sua empresa, menino. Ela tem um medidor bem aqui, pregado na parede, para ver quanta luz sai de cada tonelada de cristal.'],
-        ['narrador', 'Na parede do fundo, uma placa de metal dourada marca a produção da semana. Ao lado, um mostrador de ponteiros registra o horário em que o sol nasceu em Alvorada. A cada tonelada extraída, o ponteiro anda um pouco mais.'],
-        ['jogador', 'O sol nasce mais tarde por causa do que vocês tiram daqui?'],
-        ['vespera', 'A luzita é a raiz do cadeado do Relógio. Cada tonelada tirada da mina solta um pouco mais do cadeado, e o sol demora mais para vencer a noite.'],
-        ['vespera', 'Eu roubava as pedras dos ginásios para tirá-las do alcance da Aurora. Não para deixar a noite durar. Para impedir que a Aurora chegasse até elas.'],
-        ['teo', 'Eu defendi essa empresa desde o começo. Ela pagou o salário do meu pai. Agora ela o deixa preso aqui em baixo, com uma sirene que demorou para tocar.'],
+        ['narrador', 'Na parede, uma placa marca a produção da semana. Ao lado, um mostrador registra a hora do nascer do sol. A cada tonelada, o ponteiro anda mais.'],
+        ['jogador', 'O sol nasce mais tarde por causa do que a Aurora tira daqui?'],
+        ['vespera', 'A luzita é a raiz do cadeado do Relógio. Cada tonelada tirada daqui solta mais um pouco do cadeado, e o sol demora mais para vencer a noite.'],
+        ['vespera', 'Eu roubava as pedras dos ginásios para tirá-las das mãos da Aurora. Se quer saber quem descobriu essa luz, pergunte ao seu professor.'],
+        ['teo', 'Eu defendi essa empresa desde o começo, e ela pagava o salário do meu pai. Agora deixa ele preso aqui embaixo, com uma sirene atrasada.'],
         ['heitor', 'Eles mandaram a gente cavar mais rápido, Téo. Depois que o nível três desabou, o supervisor disse que a cota não podia parar.'],
-        ['teo', 'Então eu não sou mais da Aurora. A partir de agora, eu estou do lado de quem está tirando vocês daqui.'],
+        ['teo', 'Então eu não sou mais da Aurora. Vou ficar do lado de quem está tirando vocês daqui.'],
       ],
       depois: {
         flags: { 'nh.reviravolta1': true, 'nh.teoLadoCerto': true },
-        objetivo: { texto: 'Descoberta: a Companhia Aurora é quem atrasa o sol. Vá ao Forte Rochedo, a oeste pela Rota 7, e procure as cartas antigas do Prof. Jatobá no arquivo', alvo: 'arquivo_forte' },
+        objetivo: { texto: 'Descoberta: a Companhia Aurora é quem atrasa o sol. Vá ao Forte Rochedo, pela Rota 7, e procure as cartas do Prof. Jatobá no arquivo', alvo: 'arquivo_forte' },
       },
       atores: [
         { id: 'vespera_mina', quem: 'vespera', nome: 'Dra. Véspera', look: LOOKS.vespera, longe: 3, permanente: false },
@@ -150,7 +150,7 @@ export default {
       gatilho: { tipo: 'apos', cena: 'j07_mina_medidor' },
       falas: [
         ['narrador', 'Na saída da mina, um homem de terno branco espera de braços cruzados, com um sorriso de quem já sabia o que ia acontecer.'],
-        ['solano', 'Heitor, Téo. Vocês fizeram um bom trabalho em manter a produção. Agora voltem para a superfície e esqueçam essa conversa.'],
+        ['solano', 'Téo, seu pai já está subindo com a equipe de resgate. Agora volte para a superfície e esqueça essa conversa.'],
         ['teo', 'Eu não vou esquecer nada, Senhor Solano. Eu vi o medidor. O sol nasce mais tarde por causa da Aurora.'],
         ['solano', 'O sol nasce quando a luz permite, meu jovem. E a luz agora é nossa. Quem não entender isso vai aprender com o tempo.'],
         ['narrador', 'O Solano dá as costas e sai pela porta da torre. A Pipa, do lado de fora, já está com a câmera apontada para o elevador.'],
@@ -175,7 +175,7 @@ export default {
       id: 'j07_rota7_soraia',
       local: 'rota7',
       gatilho: { tipo: 'avistar', alvo: 'r7_soraia' },
-      falas: [['treinador', 'A capoeira aqui é de graça, mas a luta é cobrada. Vamos!']],
+      falas: [['treinador', 'Você veio da mina e ainda quer passar pela Rota 7? Ginga antes de lutar. Vamos!']],
       depois: { batalha: { id: 'r7_soraia', nome: 'Capoeirista Soraia', dinheiro: 1300, equipe: [[532, 30, ['lowKick', 'rockThrow', 'bulkUp']], [619, 31, ['forcePalm', 'fakeOut', 'uTurn']]] } },
     },
     {
@@ -188,17 +188,17 @@ export default {
         ['narrador', 'Uma pasta de couro está marcada com "Luzita: estudos, 2010". Dentro, cartas escritas à mão por dois autores: o Prof. Jatobá e a Dra. Véspera.'],
         ['narrador', 'As cartas falam de um cristal que vaza luz, e de uma reunião com um homem chamado Augusto Solano, que queria comprar a amostra.'],
         ['jogador', 'Essas cartas são de 16 anos atrás. O professor participou disso desde o começo?'],
-        ['narrador', 'O cheiro de papel velho e de cera vem das prateleiras. Um rádio antigo está ligado num canto, sem som.'],
+        ['narrador', 'O cheiro de papel velho vem das prateleiras. Um telefone antigo começa a tocar num canto da sala.'],
       ],
       depois: {
         flags: { 'nh.arquivo': true },
-        objetivo: { texto: 'Espere o Prof. Jatobá ligar, ou procure-o no laboratório de Vila Alvorada', alvo: 'lab' },
+        objetivo: { texto: 'Descubra o que o Prof. Jatobá sabe sobre estas cartas. Ele está no laboratório de Vila Alvorada', alvo: 'lab' },
       },
       atores: [
         { id: 'r7_jairo', quem: 'treinador', nome: 'Lutador Jairo', look: LOOKS.cacador, spot: 'r7_jairo', visao: 6, apos: ['Eu treino socando pedra. As pedras estão ganhando, mas eu não desisto!'] },
         { id: 'r7_soraia', quem: 'treinador', nome: 'Capoeirista Soraia', look: LOOKS.cacadora, spot: 'r7_soraia', visao: 6, apos: ['Ginga! Ginga! Se você não ginga, você apanha. Primeira lição grátis!'] },
-        { id: 'g6_dandara', quem: 'aprendiz', nome: 'Faixa-preta Dandara', look: LOOKS.cacadora, spot: 'roda_dandara', visao: 5, apos: ['O portão da roda abriu porque eu perdi. Agora ele fica aberto pra todo mundo.'] },
-        { id: 'g6_tiao', quem: 'aprendiz', nome: 'Faixa-preta Tião', look: LOOKS.cacador, spot: 'roda_tiao', visao: 5, apos: ['Meu Crabrawler aprendeu capoeira só de olhar. Ele ginga de lado. Porque ele é caranguejo.'] },
+        { id: 'g6_dandara', quem: 'aprendiz', nome: 'Faixa-preta Dandara', look: LOOKS.cacadora, spot: 'roda_dandara', visao: 5, apos: ['Você me venceu, e o portão da roda abriu. Agora o Brás está esperando você.'] },
+        { id: 'g6_tiao', quem: 'aprendiz', nome: 'Faixa-preta Tião', look: LOOKS.cacador, spot: 'roda_tiao', visao: 5, apos: ['Meu Crabrawler aprendeu a ginga só de olhar. Ele anda de lado, claro, porque é caranguejo.'] },
       ],
     },
     {
@@ -208,15 +208,15 @@ export default {
       reviravolta: 2,
       falas: [
         ['prof', 'Ravi? Eu estava esperando você ler as cartas. Eu deveria ter contado antes. Eu queria proteger você.'],
-        ['prof', 'Há dezesseis anos, eu e a Véspera descobrimos a luzita no Planalto. Eu levei a amostra para o Augusto Solano, achando que ele iria estudá-la. Ele comprou.'],
+        ['prof', 'Há dezesseis anos, eu e a Véspera descobrimos a luzita no Planalto. Levei a amostra ao Augusto Solano, que disse querer estudá-la. Ele comprou.'],
         ['jogador', 'Então o senhor ajudou a criar a Aurora.'],
         ['prof', 'Ajudei. A primeira extração, a Noite Longa de Lamparina, saiu da minha amostra. Eu não sabia que o cristal era a raiz do cadeado.'],
-        ['prof', 'Depois que eu soube, já era tarde. A Véspera saiu da empresa e passou a tirar as pedras das mãos da Aurora. Eu fiquei calado.'],
+        ['prof', 'Depois que eu soube, já era tarde. A Véspera rompeu com a Aurora e passou a tirar as pedras das mãos deles. Eu fiquei calado.'],
         ['jogador', 'Professor, eu não vou fingir que isso não aconteceu. Mas agora eu preciso de você para chegar até o Relógio.'],
       ],
       depois: {
         flags: { 'nh.reviravolta2': true },
-        objetivo: { texto: 'Descoberta: o Prof. Jatobá ajudou a criar a Aurora. Vá à Roda de Capoeira, no Forte Rochedo, vença os faixas-pretas e desafie o Líder Brás', alvo: 'leader_bras', treinadores: ['g6_dandara', 'g6_tiao'], rotulo: 'Faixas-pretas' },
+        objetivo: { texto: 'Descoberta: o Prof. Jatobá ajudou a criar a Aurora. Na Roda de Capoeira, vença os faixas-pretas e desafie o Líder Brás', alvo: 'leader_bras', treinadores: ['g6_dandara', 'g6_tiao'], rotulo: 'Faixas-pretas' },
       },
     },
     {
@@ -238,10 +238,10 @@ export default {
       local: 'ninho_forte_rochedo',
       gatilho: { tipo: 'falar', alvo: 'bras', requer: ['nh.reviravolta2', 'trainers.g6_dandara', 'trainers.g6_tiao'], semFlag: ['badges.rochedo'] },
       falas: [
-        ['bras', 'Ê, camará! Abriu os três portões! O berimbau gostou de você.'],
-        ['bras', 'Agora a luta é a sério. Eu sou o último degrau antes da escalada. Quem passa daqui sobe o Paredão sem medo.'],
-        ['jogador', 'Eu passei pelos seus três portões. Agora quero o último degrau.'],
-        ['bras', 'Então sobe, camará. Mas traz o berimbau de volta, que ele é emprestado do Mestre.'],
+        ['bras', 'Ê, camará! Passou pelos dois portões da roda! O berimbau gostou de você.'],
+        ['bras', 'Agora a luta é a sério. Quem passa por mim está pronto para o Sertão e para o Paredão.'],
+        ['jogador', 'Eu passei pelos seus dois portões. Agora quero o último degrau.'],
+        ['bras', 'Então vem, camará. Mas devolve o berimbau depois, que ele é emprestado do Mestre.'],
       ],
       depois: {
         batalha: {
@@ -266,12 +266,12 @@ export default {
       falas: [
         ['bras', 'Olha só, o berimbau ficou calado de tanto respeito. A Insígnia Punho é sua. Ela deixa você escalar paredões fora da batalha.'],
         ['narrador', '{jogador} recebeu a Insígnia Punho!'],
-        ['bras', 'Eu não sei do sol nem da Aurora. Eu sei da luta. Mas o Prof. Jatobá, o Téo e você, vocês estão no meio de uma coisa grande demais para um forte.'],
-        ['bras', 'O Paredão está lá atrás da Rota 8, e a Graça espera você na Cidade Escarpa. Sobe com cuidado, que a pedra lá em cima é traiçoeira.'],
+        ['bras', 'Eu não entendo do sol nem da Aurora. Mas você, o Téo e o Prof. Jatobá estão no meio de uma coisa grande demais para um forte.'],
+        ['bras', 'Vá ao Sertão do Levante, pela Vila Mandacaru. Lá você acha o mapa do Paredão, e depois a Graça espera você em Escarpa.'],
       ],
       depois: {
         insignia: 'rochedo', montaria: 'sneasler',
-        objetivo: { texto: 'Siga pela Rota 8 (escalada do Paredão) até a Cidade Escarpa', alvo: 'ninho_cidade_escarpa' },
+        objetivo: { texto: 'Siga pela Rota 14 até a Vila Mandacaru, no Sertão do Levante', alvo: 'ninho_cidade_escarpa' },
       },
       atores: [
         { id: 'bras_roda', quem: 'bras', nome: 'Líder Brás', look: LOOKS.tecnico, spot: 'ninho_forte_rochedo', permanente: true },
@@ -282,8 +282,8 @@ export default {
       gatilho: { tipo: 'flag', alvo: 'badges.rochedo', semFlag: ['nh.boletim.6'] },
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e cinquenta e um minutos. A Companhia Aurora nega qualquer relação com o atraso.'],
-        ['mae', 'Ravi, seis e cinquenta e um. A Aurora nega? Filho, isso quer dizer que alguém está fazendo alguma coisa. Cuidado com o que você ouve.'],
-        ['jogador', 'Se a Aurora nega, é porque tem alguma coisa para negar. Eu vou descobrir o que é.'],
+        ['mae', 'Ravi, seis e cinquenta e um. A Aurora nega? Filho, quem nega assim é porque tem alguma coisa a esconder.'],
+        ['jogador', 'Já descobri uma parte, mãe. A Aurora mede cada tonelada que tira da mina, e o sol espera por isso.'],
       ],
       depois: { flags: { 'nh.boletim.6': true, 'nh.sol': '6h51' }, ambiente: true },
     },

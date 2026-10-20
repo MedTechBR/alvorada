@@ -28,14 +28,14 @@ export const MISSOES = [
     "requer": {
       "insignias": 5
     },
-    "resumo": "Seis anéis sumiram da tenda da Zuleica numa noite só. O espelho dela mostra dois olhinhos rindo, e toda noite um riso vem do poço seco das Dunas Douradas.",
+    "resumo": "Seis anéis dourados sumiram da tenda da Zuleica, a Rainha do Bazar, numa só noite. O riso que vem do poço seco das Dunas Douradas pode dizer quem os levou.",
     "oferta": [
       "Eu conheço todos os desertos, querido, e nenhum me roubou como este. Seis anéis dourados sumiram da minha tenda numa noite só.",
-      "O espelho mostra o que está dentro dele. Faz uma semana que mostra dois olhos pequeninos, rindo. E toda noite eu ouço o mesmo riso vindo das Dunas Douradas, do lado do poço seco.",
-      "Vá ao poço seco e veja quem ri. Se os anéis estiverem lá, traga todos: com os seis juntos o espelho abre. E quando abrir, eu quero que a coisinha saia com você, porque comigo ela só rouba."
+      "O espelho mostra dois olhinhos rindo, há uma semana. E toda noite o mesmo riso vem das Dunas Douradas, do lado do poço seco.",
+      "Vá ver quem ri. Se os anéis estiverem lá, traga os seis: só juntos eles abrem o espelho. E leve a coisinha embora, porque comigo ela só rouba."
     ],
     "lembrete": [
-      "O poço seco, no meio das Dunas Douradas. Siga o riso."
+      "O poço seco fica no meio das Dunas Douradas. Siga o riso, querido, ele não sabe se esconder."
     ],
     "etapas": [
       {
@@ -47,11 +47,11 @@ export const MISSOES = [
         "falas": [
           [
             "narrador",
-            "No fundo do poço seco, seis anéis dourados giram em roda, no ar, em volta de um buraco que não devia existir."
+            "O riso para quando você chega. No fundo do poço seco, seis anéis dourados giram em roda, em volta de um buraco no ar."
           ],
           [
             "narrador",
-            "Uma mãozinha de chifres aparece do buraco, conta os anéis, ri e some. Quando você estende a mão, os seis caem na areia, como se alguém tivesse cansado da brincadeira."
+            "Uma mãozinha de chifres sai do buraco, conta os anéis, ri e some. Quando você estende a mão, os seis caem na areia, como se alguém tivesse enjoado da brincadeira."
           ]
         ],
         "recompensa": {
@@ -70,15 +70,15 @@ export const MISSOES = [
         "n": 6,
         "texto": "Leve os seis anéis à Rainha do Bazar, em Cidade Buriti",
         "pergunta": [
-          "Trouxe os seis?"
+          "Já voltou, querido? Trouxe os seis anéis?"
         ],
         "falta": [
-          "Ainda faltam anéis. Seis, querido, seis."
+          "Ainda faltam anéis. Seis, querido, nem um a menos: o espelho só abre com a roda completa."
         ],
         "falas": [
-          "Seis anéis! O espelho acende, acende… e abre.",
-          "Duas mãos enormes saem de um buraco no ar, pegam um anel de volta e somem. Do outro lado, um bichinho de chifres ri na sua cara.",
-          "Ele gostou de você. Cuide dele como se fosse uma jóia, e conte os seus anéis toda noite."
+          "Os seis! Olhe o espelho acender, acender… e abrir.",
+          "Duas mãos enormes saem do vidro, pegam um anel de volta e somem. Do outro lado, um bichinho de chifres ri de mim.",
+          "Ele gostou de você. Cuide dele como de uma jóia, e conte os seus anéis toda noite."
         ]
       }
     ],
@@ -124,13 +124,18 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Eita, forasteiro! Pra passar na minha estrada tem que me ganhar no braço. Quer dizer, no Pokémon!"
+        "Alto lá, forasteiro! Essa estrada é minha e o boi é testemunha.",
+        "Pra passar, tem que me ganhar no Pokémon. É a regra da casa."
       ],
       "vitoria": [
-        "Boa, forasteiro. O boi aprendeu a respeitar você."
+        "Isso! O meu Tauros não respeitava ninguém, e respeitou você.",
+        "Pode seguir. A estrada fica livre."
+      ],
+      "derrota": [
+        "O boi sabe quem manda. Volte quando tiver mais pelo no peito."
       ],
       "depois": [
-        "Boa, forasteiro. O boi aprendeu a respeitar você."
+        "Passou bem, forasteiro. Se o sol sumir de vez, a gente toca o gado no escuro."
       ],
       "dinheiro": 660
     }
@@ -164,13 +169,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Tropeira não passa batida! Quer ver os meus bichos de pelo e de veneno?"
+        "Tropeira não passa batida, não. Eu conheço quem anda por aqui.",
+        "Quer ver meus bichos de pelo e de veneno?"
       ],
       "vitoria": [
-        "Perdi, mas não deixei de rir. Siga, o sol está a pino."
+        "Perdi, mas não perdi o riso. Siga viagem, que o sol está a pino."
+      ],
+      "derrota": [
+        "Esses dois mordem de verdade, viu? Treine e volte."
       ],
       "depois": [
-        "Perdi, mas não deixei de rir. Siga, o sol está a pino."
+        "Os bichos ficaram quietos depois de apanhar de você. Coisa rara."
       ],
       "dinheiro": 690
     }
@@ -204,13 +213,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Eu cavo buraco e acho de tudo! Já achei até uma Pedra do Fogo! Quer apostar?"
+        "Eu cavo buraco e acho de tudo! Já achei até uma Pedra do Fogo.",
+        "Aposto que você não acha nada. Quer ver?"
       ],
       "vitoria": [
-        "Nossa, você é forte! Vou cavar mais fundo para ganhar de você."
+        "Nossa, você é forte! Vou cavar mais fundo e voltar pra te ganhar."
+      ],
+      "derrota": [
+        "Ganhei! Agora conto a todo mundo que venci um forasteiro."
       ],
       "depois": [
-        "Nossa, você é forte! Vou cavar mais fundo para ganhar de você."
+        "Ainda estou cavando. Um dia acho uma pedra que derrote você."
       ],
       "dinheiro": 580
     }
@@ -244,13 +257,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Eu faço repente de tudo, até de batalha: \"Quem perde é o mole, quem ganha é o duro!\" Bora!"
+        "Sou repentista, forasteiro, faço verso de tudo, até de batalha.",
+        "\"Quem perde é o mole, quem ganha é o duro!\" Bora!"
       ],
       "vitoria": [
-        "Perdi, mas fiz a rima. O verso eu não esqueço."
+        "Perdi, mas rimei. O verso sobre você eu não esqueço."
+      ],
+      "derrota": [
+        "Ganhei, e a rima fechou. Volte quando tiver outro verso na ponta da língua."
       ],
       "depois": [
-        "Perdi, mas fiz a rima. O verso eu não esqueço."
+        "Já estou compondo a sua cantiga: o forasteiro que bateu o repentista."
       ],
       "dinheiro": 700
     }
@@ -284,13 +301,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "O Lajedo é meu! Cada pedra aqui eu conheço pelo nome. E você, conhece o seu Pokémon pelo nome?"
+        "O Lajedo é meu. Cada pedra daqui eu conheço pelo nome.",
+        "E você, conhece o seu Pokémon pelo nome?"
       ],
       "vitoria": [
         "Sabe das pedras e dos bichos. Passe, passe."
       ],
+      "derrota": [
+        "As pedras não se mexem, e você também não passou. Tente de novo."
+      ],
       "depois": [
-        "Sabe das pedras e dos bichos. Passe, passe."
+        "As pedras daqui estão contentes com você, moço. Eu também."
       ],
       "dinheiro": 800
     }
@@ -324,13 +345,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "De chapéu e cartucheira! Aqui o que vale é o veneno e o olho vivo. Vem!"
+        "De chapéu e cartucheira! Aqui o que vale é o veneno e o olho vivo.",
+        "Quem pisa nas minhas terras, luta comigo. Vem!"
       ],
       "vitoria": [
         "Ganhou de uma cangaceira. Conte isso nas feiras."
       ],
+      "derrota": [
+        "Olho vivo, forasteiro. O veneno cobra o seu preço."
+      ],
       "depois": [
-        "Ganhou de uma cangaceira. Conte isso nas feiras."
+        "Na feira vão falar de nós duas. Eu perdi, mas fiz bonito."
       ],
       "dinheiro": 840
     }
@@ -364,13 +389,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Eu sou do mato! Quando tem espinho, é comigo mesmo!"
+        "Eu sou do mato! Quando tem espinho no caminho, o dono é eu.",
+        "Quer passar? Passa por cima de mim."
       ],
       "vitoria": [
-        "Ai, espinhou! Mas foi bonito."
+        "Ai, espinhou! Mas foi bonito de ver."
+      ],
+      "derrota": [
+        "Te espetei! Cuidado, que o mato daqui não perdoa."
       ],
       "depois": [
-        "Ai, espinhou! Mas foi bonito."
+        "Tem espinho, tem fruta. Hoje a fruta foi sua."
       ],
       "dinheiro": 640
     }
@@ -404,13 +433,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Ai, que susto! Não pisa no meu canteiro de erva-doce! Se pisou, paga na batalha."
+        "Ai, que susto! Não pise no meu canteiro de erva-doce.",
+        "Se pisou, paga na batalha."
       ],
       "vitoria": [
-        "Hum, você tem pulso. Leva um pouco de erva-doce, para dar sorte."
+        "Hum, você tem pulso. Leve um pouco de erva-doce, para dar sorte."
+      ],
+      "derrota": [
+        "Eu avisei do canteiro. Agora volte pelo outro lado."
       ],
       "depois": [
-        "Hum, você tem pulso. Leva um pouco de erva-doce, para dar sorte."
+        "A erva-doce está florindo bonito depois da nossa briga. Obrigada por ter cuidado."
       ],
       "dinheiro": 760
     }
@@ -444,13 +477,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Vrum, vrum! Meu Varoom corre mais que o vento. E você?"
+        "Vrum, vrum! Meu Varoom corre mais que o vento.",
+        "Mais que o sol, que anda atrasado. E você?"
       ],
       "vitoria": [
-        "Queimei o motor… foi mal. Boa batalha!"
+        "Queimei o motor, foi mal. Boa batalha!"
+      ],
+      "derrota": [
+        "Ganhei na saída! Corra um pouco mais e volte."
       ],
       "depois": [
-        "Queimei o motor… foi mal. Boa batalha!"
+        "Meu Varoom ainda está esfriando. Mas já quer revanche."
       ],
       "dinheiro": 860
     }
@@ -484,13 +521,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Subir parede é fácil. Difícil é encarar um Druddigon lá em cima. Vamos treinar?"
+        "Subir parede é fácil. Difícil é encarar um Druddigon lá em cima.",
+        "Vamos treinar? Eu preciso de prática."
       ],
       "vitoria": [
         "Um dia ainda escalo como você luta."
       ],
+      "derrota": [
+        "Os dragões do penhasco são assim: firmes e teimosos. Treine e tente de novo."
+      ],
       "depois": [
-        "Um dia ainda escalo como você luta."
+        "Na próxima subida, vou pensar na sua batalha, não na altura."
       ],
       "dinheiro": 840
     }
@@ -524,13 +565,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Passei trinta anos cavando. Quero ver se a sua equipe aguenta a poeira!"
+        "Passei trinta anos cavando por aqui, filho. Aguento poeira e pancada.",
+        "Quero ver se a sua equipe aguenta também."
       ],
       "vitoria": [
         "Você tem aço nas pedras. Eu gosto disso."
       ],
+      "derrota": [
+        "Poeira não me derruba, não. Volte quando a sua equipe estiver mais pesada."
+      ],
       "depois": [
-        "Você tem aço nas pedras. Eu gosto disso."
+        "Eu cavava para os outros. Ver você lutar assim vale mais que o pagamento."
       ],
       "dinheiro": 820
     }
@@ -564,13 +609,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Aqui no fundo ninguém me incomoda. Quer me incomodar?"
+        "Aqui no fundo ninguém me incomoda, e é assim que eu gosto.",
+        "Veio me incomodar? Então incomode."
       ],
       "vitoria": [
         "Pode me incomodar mais vezes!"
       ],
+      "derrota": [
+        "Silêncio de novo. Aproveite o caminho, que ele é escuro."
+      ],
       "depois": [
-        "Pode me incomodar mais vezes!"
+        "Já me acostumei com você por aqui. Volte sempre."
       ],
       "dinheiro": 760
     }
@@ -604,13 +653,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Trilha, mirante, eco… o cânion é meu quintal. Quer ver como ele responde às batalhas?"
+        "Trilha, mirante, eco… o cânion é meu quintal.",
+        "Quer ver como ele responde às batalhas?"
       ],
       "vitoria": [
         "O eco levou o seu nome. Já já ele volta."
       ],
+      "derrota": [
+        "Escutou? O cânion repetiu a minha vitória três vezes."
+      ],
       "depois": [
-        "O eco levou o seu nome. Já já ele volta."
+        "O cânion ainda repete o seu nome lá no fundo. Vá devagar nas curvas."
       ],
       "dinheiro": 800
     }
@@ -644,13 +697,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Quem anda de duna aprende a cair e a levantar. Você sabe cair com estilo?"
+        "Quem anda de duna aprende a cair e a levantar.",
+        "Você sabe cair com estilo?"
       ],
       "vitoria": [
         "Caiu com estilo e levantou melhor ainda."
       ],
+      "derrota": [
+        "Caiu na areia e não levantou ainda? Pode levantar, a duna espera."
+      ],
       "depois": [
-        "Caiu com estilo e levantou melhor ainda."
+        "A duna muda de lugar toda noite, mas o seu jeito de lutar eu reconheceria em qualquer uma."
       ],
       "dinheiro": 880
     }
@@ -684,13 +741,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Meus bichos amam areia. E gostam de cuspir nela também. Prepare-se!"
+        "Meus bichos amam areia. E gostam de cuspir nela também.",
+        "Prepare-se, que o vento está a favor."
       ],
       "vitoria": [
         "Você é duro como pedra. Parabéns."
       ],
+      "derrota": [
+        "A areia entrou no seu olho? Limpe e tente de novo."
+      ],
       "depois": [
-        "Você é duro como pedra. Parabéns."
+        "Meus camelos gostaram de você. Eles não gostam de qualquer um."
       ],
       "dinheiro": 900
     }
@@ -734,13 +795,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Eu estudo as ruínas, e as ruínas me estudam. Já é hora de a gente se conhecer em batalha."
+        "Eu estudo as ruínas, e as ruínas me estudam. Ando de olho nos escavadores que invadiram a pedra.",
+        "Está na hora de a gente se conhecer em batalha."
       ],
       "vitoria": [
         "Você vai bem nas ruínas. Eu vou bem nos livros. Equilíbrio!"
       ],
+      "derrota": [
+        "Os livros previam essa derrota? Não, mas anotarei. Volte para a revanche."
+      ],
       "depois": [
-        "Você vai bem nas ruínas. Eu vou bem nos livros. Equilíbrio!"
+        "Anotei no caderno: o forasteiro que bateu o estudioso. Siga para as ruínas, e cuidado com a Crepúsculo."
       ],
       "dinheiro": 920
     }
@@ -774,13 +839,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Eu atravessei as dunas a pé! Duas vezes! Só me perdi uma."
+        "Eu atravessei as dunas a pé! Duas vezes!",
+        "Só me perdi uma. Quer ver como eu luto?"
       ],
       "vitoria": [
         "Perdi, mas eu continuo atravessando."
       ],
+      "derrota": [
+        "Atravessei duas dunas e agora atravessei você. Boa tentativa!"
+      ],
       "depois": [
-        "Perdi, mas eu continuo atravessando."
+        "Da próxima vez eu atravesso as dunas de novo, e não me perco nenhuma vez."
       ],
       "dinheiro": 700
     }
@@ -814,13 +883,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Hoje o Whiscash está esquisito. Será que é da água ou é do meu humor? Vamos descobrir na batalha!"
+        "Hoje o Whiscash está esquisito. Será que é da água ou do meu humor?",
+        "Vamos descobrir na batalha!"
       ],
       "vitoria": [
         "Ganhou de mim e do bigodudo. Muito bem."
       ],
+      "derrota": [
+        "O bigodudo não perde fácil. Tente outra vez, com mais paciência."
+      ],
       "depois": [
-        "Ganhou de mim e do bigodudo. Muito bem."
+        "O Whiscash melhorou do humor depois de apanhar. Eu também, para falar a verdade."
       ],
       "dinheiro": 960
     }
@@ -854,13 +927,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "O oásis é meu spa! Ninguém me tira daqui sem me ganhar!"
+        "O oásis é o meu spa! Ninguém me tira daqui sem me ganhar.",
+        "E olha que eu não saio do banho por pouco."
       ],
       "vitoria": [
         "Tá bom, tá bom, a água é de todos."
       ],
+      "derrota": [
+        "Fica de molho um pouco e tente de novo. A água está ótima."
+      ],
       "depois": [
-        "Tá bom, tá bom, a água é de todos."
+        "Pode beber, mas não faz barulho. Estou terminando de relaxar."
       ],
       "dinheiro": 940
     }
@@ -894,13 +971,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Plantei isso tudo com paciência. Se pisar nas minhas flores, vai ter que enfrentar os meus bichos."
+        "Plantei isso tudo com paciência, filho.",
+        "Se pisar nas minhas flores, vai ter que enfrentar os meus bichos."
       ],
       "vitoria": [
         "Você tem pé leve. Pode passar."
       ],
+      "derrota": [
+        "Eu avisei das flores. Dê a volta, que o caminho está ali."
+      ],
       "depois": [
-        "Você tem pé leve. Pode passar."
+        "As flores se abriram depois da nossa luta. Elas gostam de você."
       ],
       "dinheiro": 980
     }
@@ -934,13 +1015,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Dragões do sertão têm gênio. Vamos ver se o seu aguenta o calor do meu!"
+        "Dragão do sertão tem gênio. Tem que ser firme e ter coragem.",
+        "Vamos ver se o seu aguenta o calor do meu!"
       ],
       "vitoria": [
         "O dragão foi domado… por você."
       ],
+      "derrota": [
+        "Dragão não se doma em um dia. Treine e tente de novo."
+      ],
       "depois": [
-        "O dragão foi domado… por você."
+        "O meu ainda está emburrado, mas gosta de você. Eu vi pelo rabo."
       ],
       "dinheiro": 1100
     }
@@ -974,13 +1059,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Passo as manhãs contando asas. Hoje vou contar as suas derrotas!"
+        "Passo as manhãs contando asas, e as manhãs andam mais curtas.",
+        "Hoje vou contar as suas derrotas!"
       ],
       "vitoria": [
         "Contei as asas: o seu Pokémon voou mais alto."
       ],
+      "derrota": [
+        "Doze asas, nenhuma derrota minha. Volte quando tiver mais penas."
+      ],
       "depois": [
-        "Contei as asas: o seu Pokémon voou mais alto."
+        "Contei de novo. Depois da batalha, o seu time ficou na minha lista de pássaros raros."
       ],
       "dinheiro": 1120
     }
@@ -1014,13 +1103,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "O cume é aqui e mais acima só vento. Quer um duelo de altura?"
+        "O cume é aqui. Mais acima, só vento.",
+        "Quer um duelo de altura?"
       ],
       "vitoria": [
         "Você chegou lá em cima. Respeito."
       ],
+      "derrota": [
+        "Subi um degrau na frente. Suba mais um e tente de novo."
+      ],
       "depois": [
-        "Você chegou lá em cima. Respeito."
+        "Daqui de cima dá para ver o sol atrasado. Cuide dele, ouviu?"
       ],
       "dinheiro": 1140
     }
@@ -1054,13 +1147,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "O vento no sertão não pergunta nada. Eu também não. Só luto!"
+        "O vento no sertão não pergunta nada. Eu também não pergunto.",
+        "Só luto!"
       ],
       "vitoria": [
         "Foi um vento diferente esse. O seu."
       ],
+      "derrota": [
+        "O vento ficou do meu lado hoje. Espere uma brisa melhor."
+      ],
       "depois": [
-        "Foi um vento diferente esse. O seu."
+        "O vento voltou calmo depois da luta. Você deixou um rastro bom por aqui."
       ],
       "dinheiro": 1180
     }
@@ -1094,13 +1191,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Se está no meu mangue, vai ter que me ganhar no remo ou no Pokémon!"
+        "Se está no meu mangue, vai ter que me ganhar no remo ou no Pokémon!",
+        "Escolha logo, que a maré não espera."
       ],
       "vitoria": [
         "Boa! Pode passar com a canoa."
       ],
+      "derrota": [
+        "A maré me ajudou. Volte na próxima baixa."
+      ],
       "depois": [
-        "Boa! Pode passar com a canoa."
+        "A canoa está à sua espera. Remo bom é o que sabe a hora de parar."
       ],
       "dinheiro": 620
     }
@@ -1134,13 +1235,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Cato caranguejo, cato lama, cato tudo. E também cato derrota dos outros!"
+        "Cato caranguejo, cato lama, cato tudo.",
+        "E também cato a derrota dos outros!"
       ],
       "vitoria": [
         "Catei uma derrota hoje. Para mim."
       ],
+      "derrota": [
+        "Catei mais uma! A lama é o meu pergaminho de vitórias."
+      ],
       "depois": [
-        "Catei uma derrota hoje. Para mim."
+        "Hoje a lama me trouxe sorte, e você trouxe a derrota. Foi justo."
       ],
       "dinheiro": 600
     }
@@ -1174,13 +1279,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "O mangue é minha casa. Meus Pokémon são meus irmãos!"
+        "O mangue é a minha casa, e os meus Pokémon são meus irmãos.",
+        "Quem mexe com eles, mexe comigo!"
       ],
       "vitoria": [
         "Meus irmãos perderam, mas aprenderam."
       ],
+      "derrota": [
+        "Eles ficaram felizes com a vitória. Eu também."
+      ],
       "depois": [
-        "Meus irmãos perderam, mas aprenderam."
+        "Eles gostaram de você. Falam de você até na hora de dormir."
       ],
       "dinheiro": 560
     }
@@ -1214,13 +1323,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Tarrafa na mão e paciência no peito. Mas hoje quero batalha!"
+        "Tarrafa na mão e paciência no peito.",
+        "Mas hoje eu quero batalha, não peixe."
       ],
       "vitoria": [
-        "Tarrafei você. E você me tarrafeou. Empate técnico."
+        "Tarrafei você, e você me tarrafeou. Empate técnico."
+      ],
+      "derrota": [
+        "A tarrafa pegou você. Volte mais devagar."
       ],
       "depois": [
-        "Tarrafei você. E você me tarrafeou. Empate técnico."
+        "Estou jogando a tarrafa, mas o peixe ainda é meu. A luta foi sua."
       ],
       "dinheiro": 640
     }
@@ -1254,13 +1367,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Mar flat e coração agitado: a combinação perfeita para uma batalha!"
+        "Mar flat e coração agitado: combinação perfeita para uma batalha!",
+        "Vem pra água, que eu aguento."
       ],
       "vitoria": [
         "Onda boa! Foi tipo pegar um tubo."
       ],
+      "derrota": [
+        "Peguei a onda, perdi você. Volte quando o mar mexer."
+      ],
       "depois": [
-        "Onda boa! Foi tipo pegar um tubo."
+        "A maré virou e levou a minha pranchinha. Nem liguei. A luta foi melhor."
       ],
       "dinheiro": 820
     }
@@ -1294,13 +1411,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Eu salvo vidas, mas hoje vou salvar você… de uma derrota! Ou não."
+        "Eu salvo vidas, mas hoje vou salvar você… de se sentir invencível.",
+        "Entre na água, que a bandeira está verde."
       ],
       "vitoria": [
         "Você resistiu. Pode nadar sossegado."
       ],
+      "derrota": [
+        "Respire fundo, volte para a areia e tente de novo."
+      ],
       "depois": [
-        "Você resistiu. Pode nadar sossegado."
+        "Tudo certo na praia. Pode nadar, que o mar está de olho em você."
       ],
       "dinheiro": 860
     }
@@ -1334,13 +1455,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Vim passear e acabei brigando. Que dia! Bora lá!"
+        "Vim passear e acabei brigando. Que dia!",
+        "Bora lá, que eu tiro foto depois."
       ],
       "vitoria": [
         "Nota dez de turismo. E de batalha também."
       ],
+      "derrota": [
+        "Vou levar essa vitória de lembrança. Tire uma foto comigo antes de ir."
+      ],
       "depois": [
-        "Nota dez de turismo. E de batalha também."
+        "Já tirei foto da vitória de uma pessoa aqui. Foi a sua."
       ],
       "dinheiro": 780
     }
@@ -1374,13 +1499,17 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "A gente toca em trio e briga em trio. Vai, sanfona!"
+        "A gente toca em trio e briga em trio. Eu abro a roda!",
+        "Vai, sanfona!"
       ],
       "vitoria": [
-        "Perdi o compasso. Vai lá no Dedé!"
+        "Perdi o compasso. Vai lá no Dedé, que ele toca a zabumba."
+      ],
+      "derrota": [
+        "Entrei no tempo certo! Vá treinar e volte para o segundo verso."
       ],
       "depois": [
-        "Perdi o compasso, mas toco um xote para você qualquer dia."
+        "Perdi, mas toco um xote para você qualquer dia."
       ],
       "dinheiro": 1600,
       "requer": {
@@ -1417,10 +1546,14 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Zabumba é coração batendo!"
+        "Zabumba é coração batendo, e o meu bate forte!",
+        "Já passou pelo Zé de Nô? Agora é minha vez."
       ],
       "vitoria": [
         "Perdi! A Nenê vai te dar trabalho."
+      ],
+      "derrota": [
+        "O coração bateu no ponto certo. Treine e volte."
       ],
       "depois": [
         "Perdi, mas o coração segue batendo."
@@ -1470,10 +1603,14 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "O triângulo é pequeno, mas quem manda no compasso sou eu!"
+        "O triângulo é pequeno, mas quem manda no compasso sou eu!",
+        "Pronta, forasteiro? É o último verso da noite."
       ],
       "vitoria": [
         "O trio toca um xote só para você. Até o mandacaru balança."
+      ],
+      "derrota": [
+        "Fechei a música, forasteiro. Volte para o próximo forró."
       ],
       "depois": [
         "O triângulo é pequeno, mas o xote saiu grande."
@@ -1533,10 +1670,14 @@ export const NPCS = {
         ]
       },
       "falas": [
-        "Todo dia, às três da tarde, a tempestade de areia entra no salão. Ninguém sai de cabeça baixa. Eu sou o próprio vento!"
+        "Todo dia, às três da tarde, a tempestade de areia entra no salão. Ninguém sai de cabeça baixa.",
+        "Eu sou o próprio vento! Prepare-se."
       ],
       "vitoria": [
         "Campeão da areia! A tempestade perde a graça. O salão aplaude."
+      ],
+      "derrota": [
+        "A tempestade passou por cima de você. Volte às três, quando ela vier de novo."
       ],
       "depois": [
         "A tempestade volta às três. O salão sempre aplaude quem fica de pé."
@@ -1609,7 +1750,8 @@ export const NPCS = {
           ]
         },
         "linhas": [
-          "O espelho agora só mostra o que eu quero. Que alívio."
+          "O espelho agora só mostra o que eu quero. Que alívio, querido.",
+          "Aquele riso de noite fez falta, confesso."
         ]
       }
     ]

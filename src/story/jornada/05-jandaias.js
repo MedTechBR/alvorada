@@ -18,7 +18,7 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'vila_jandaia', requer: ['nh.pedraCoral2'], semFlag: ['nh.chegouJandaia'] },
       falas: [
         ['narrador', 'Vila Jandaia: casas de palha sobre estacas, pontes de cipó e um templo de raízes que cresce por cima da pedra.'],
-        ['narrador', 'Ninguém aqui tem insígnia para mostrar. Mas a Monja Aruã do templo disse ao rádio que as raízes estão secando, e que a seiva está escurecendo.'],
+        ['narrador', 'A Monja Aruã, do templo, disse ao rádio que as raízes estão secando e que a seiva está escurecendo.'],
         ['jogador', 'Raízes secando por causa de quê? Será a mesma luz que a Lia viu no bosque?'],
         ['narrador', 'Uma criança aponta para o templo, do outro lado da lagoa: "Tem gente de capa roxa lá dentro desde ontem."'],
       ],
@@ -33,11 +33,11 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'templo_raizes_porta', requer: ['nh.chegouJandaia'], semFlag: ['nh.ebanoTemplo'] },
       falas: [
         ['narrador', 'Nas paredes do templo, raízes grossas se abrem como cortinas. No centro, uma raiz de cristal brilha com a mesma luz morna das pedras.'],
-        ['ebano', 'Admin Ébano. Esta raiz de cristal é a mesma luz do cadeado do Relógio. A Dra. Véspera precisa dela para fechar a noite.'],
+        ['ebano', 'Admin Ébano. Esta raiz de cristal tem a mesma luz do cadeado do Relógio. A Dra. Véspera precisa dela para manter a noite.'],
         ['aruan', 'Afasta-te da raiz, forasteiro! Ela não é tua, nem dele.'],
         ['ebano', 'A monja tem razão, mas a monja não entende o que a raiz faz com a selva. Eu entendo. Por isso eu levo.'],
         ['jogador', 'Você está destruindo o templo para uma luz que não é sua.'],
-        ['ebano', 'Então me impede. Você é bom em impedir coisas, pelo que o Téo conta.'],
+        ['ebano', 'Então me impede. Você já atrapalhou a Crepúsculo em três cidades. Não vai ser diferente aqui.'],
       ],
       depois: {
         batalha: {
@@ -56,11 +56,11 @@ export default {
       local: 'templo_raizes_1',
       gatilho: { tipo: 'vencer', alvo: 'c5_ebano' },
       falas: [
-        ['ebano', 'Hm. A raiz fica com você, por enquanto. A Dra. Véspera disse que a Aurora vai cobrar, e a Aurora cobra caro.'],
-        ['narrador', 'O Ébano recua pelo túnel do templo. Atrás da raiz, uma fresta deixa ver um cabo de metal com uma etiqueta dourada: "Companhia Aurora. Luzita, linha 2."'],
+        ['ebano', 'Hm. A raiz fica com você, por enquanto. A Aurora vai querer de volta, e a Aurora cobra caro.'],
+        ['narrador', 'O Ébano recua pelo túnel. Atrás da raiz, uma fresta mostra um cabo de metal com etiqueta dourada: "Companhia Aurora. Luzita, linha 2."'],
         ['aruan', 'Está vendo? A luz de vocês atravessa a terra da minha selva. Desde que o cabo chegou, as raízes secam por baixo.'],
         ['jogador', 'Então a Aurora passou um cabo debaixo do templo. E a Crepúsculo tenta levar o que a Aurora deixou.'],
-        ['aruan', 'Os dois querem a mesma coisa: a luz que não é deles. Vá embora daqui, e leve esta raiz de volta para a Lia, no bosque.'],
+        ['aruan', 'Os dois querem a mesma coisa: a luz que não é deles. Leve esta raiz para a Lia, em Vila Sussurro. Ela sabe o que fazer com ela.'],
       ],
       depois: {
         flags: { 'nh.cabosAurora': true },
@@ -76,9 +76,9 @@ export default {
       local: 'selva_grande',
       gatilho: { tipo: 'entrar', alvo: 'selva_grande', requer: ['nh.cabosAurora'], semFlag: ['nh.rival3'] },
       falas: [
-        ['teo', 'Você de novo! Achei que o templo ia te engolir. Pelo jeito a selva é que se cansou de você.'],
-        ['jogador', 'Téo, a Crepúsculo estava roubando a raiz da Aurora. Você sabe o que é isso?'],
-        ['teo', 'Eu sei que meu pai trabalha na Mina Aurora e que ele manda dinheiro todo mês. A Aurora é a única empresa que paga bem aqui em Alvorada.'],
+        ['teo', 'Você de novo! Achei que o templo ia te engolir. Pelo jeito, a selva não te quis.'],
+        ['jogador', 'Téo, a Aurora passou um cabo por dentro do templo, e a Crepúsculo tentou levar a raiz. Você sabia disso?'],
+        ['teo', 'Eu sei que meu pai trabalha na Mina Aurora. A Aurora é a única empresa que paga bem aqui em Alvorada.'],
         ['teo', 'Se a Crepúsculo quer acabar com a luz da Aurora, ela quer acabar com o emprego do meu pai. Eu não vou deixar.'],
         ['jogador', 'Então vamos lutar. Mas depois você vai ouvir o que eu vi no templo.'],
       ],
@@ -99,10 +99,11 @@ export default {
       gatilho: { tipo: 'vencer', alvo: 'nh_rival3' },
       falas: [
         ['teo', 'Tá bom, você ganhou. Mas eu não estou convencido. Meu pai nunca mentiu para mim.'],
-        ['jogador', 'Eu não disse que ele mentiu. Eu disse que a Aurora cortou a selva para passar um cabo.'],
-        ['teo', 'Então me mostra a prova. Mas se eu ver que é mentira, eu vou ser o primeiro a te enfrentar de novo.'],
-        ['jogador', 'O Seu Nestor, do porto, achou uma garrafa no manguezal. Tinha um bilhete: "Estamos no nível 4. A luz daqui não é limpa". Assinado Heitor.', { requer: ['nh.bilheteHeitor'] }],
-        ['teo', 'Essa letra torta é do meu pai. Ele escreve assim no escuro, desde que eu era pequeno… Ele nunca me contou nada de nível quatro. Eu preciso pensar.', { requer: ['nh.bilheteHeitor'] }],
+        ['jogador', 'Eu não disse que ele mentiu. Eu disse que a Aurora passou um cabo pelo templo, e a selva está secando por causa disso.'],
+        ['teo', 'Então me dá uma prova. Se for mentira, eu vou ser o primeiro a te enfrentar de novo.'],
+        ['jogador', 'Achei uma garrafa no manguezal, perto do porto. Dentro, um bilhete do Heitor: "Estamos no nível 4. A luz daqui não é limpa".', { requer: ['nh.bilheteHeitor'] }],
+        ['teo', 'Essa letra torta é do meu pai, de quem escreve no escuro. Mas nível quatro? Ele nunca me contou nada disso. Eu preciso pensar.', { requer: ['nh.bilheteHeitor'] }],
+        ['teo', 'Sem prova, eu continuo do lado da Aurora. Mas vou ficar de olho em você.', { semFlag: ['nh.bilheteHeitor'] }],
       ],
       depois: {
         flags: { 'nh.teoDuvida': true },

@@ -20,61 +20,61 @@
 export const BARREIRAS = [
   // 1 → 2: a Rota 2 e o Bosque Sussurrante (Lia) só depois do Tomé: a borda sul do bosque inteira
   { id: 'guarda_rota2', mundo: 'alvorada', liberaPor: 'campina', rects: [[0, 276, 138, 2], [138, 262, 2, 36], [140, 275, 170, 2]],
-    msg: 'Guarda da Rota 2: "Só passa quem vencer o Líder Tomé, em Cidade Campina."',
+    msg: 'Guarda da Rota 2: "A mata anda perigosa, só entra quem já venceu o Líder Tomé, em Cidade Campina."',
     visual: { tema: 'mata', guardas: [[120, 277, 'down', 'policial', 'Guarda da Rota 2'], [275, 276, 'down', 'policial', 'Guarda do Bosque']] } },
   // 2 → 3: Porto Espelho (Marina) só depois da Lia: obra no campo da Rota 3, do lago até o penhasco de Coral
   { id: 'ponte_rota3', mundo: 'alvorada', liberaPor: 'sussurro', rects: [[404, 287, 2, 81], [329, 333, 2, 33]],
-    msg: 'Obra da ponte da Rota 3: "Liberada depois que a Líder Lia ganhar a insígnia."',
+    msg: 'Obra da ponte da Rota 3: "A ponte está em reforma. Só reabre quando a Líder Lia, de Vila Sussurro, for vencida."',
     visual: { tema: 'obra', guardas: [[329, 351, 'left', 'trabalhador', 'Operário da Ponte'], [404, 344, 'left', 'trabalhador', 'Operário da Obra']] } },
   // 3 → 4: Cidade Coral pela Rota 4 (água, Nadar) só depois da Marina
   { id: 'porto_saida_sul', mundo: 'alvorada', liberaPor: 'espelho', rects: [[410, 337, 40, 1]],
-    msg: 'Obra na estrada do Rio Lúmen: "Liberada depois que a Líder Marina ganhar a insígnia."',
+    msg: 'Obra na estrada do Rio Lúmen: "Estrada fechada. Só reabre quando a Líder Marina, de Porto Espelho, for vencida."',
     visual: { tema: 'obra', guardas: [[435, 337, 'up', 'trabalhador', 'Operário da Estrada']] } },
   // e a escadaria do Mirante, entre Vila Alvorada e Cidade Coral (atalho por terra)
   { id: 'escadaria_coral', mundo: 'alvorada', liberaPor: 'espelho', rects: [[306, 368, 2, 2]],
-    msg: 'Escadaria do Mirante interditada por desmoronamento: "Liberada depois que a Líder Marina ganhar a insígnia."',
+    msg: 'Escadaria do Mirante interditada por desmoronamento: "Perigo de queda. Só reabre depois que a Líder Marina for vencida."',
     visual: { tema: 'entulho' } },
   // 4 → Jandaias: o mar ao sul do continente (só a balsa de Coral atravessa, depois do Jonas)
   { id: 'mar_jandaias', mundo: 'alvorada', liberaPor: 'coral', rects: [[0, 477, 400, 3]],
-    msg: 'Correnteza forte para o sul: só a balsa de Cidade Coral atravessa, depois que o Líder Jonas ganhar a insígnia.',
+    msg: 'Correnteza forte demais para o sul. Só a balsa de Cidade Coral atravessa, e ela só sai depois que o Líder Jonas for vencido.',
     visual: { tema: 'mar' } },
   // Jandaias → 5: o Brejo das Lamparinas (Rota 5) e a Vila Lamparina abrem quando o arco das Jandaias termina
   { id: 'brejo_rota5', mundo: 'alvorada', ate: 'nh.teoDuvida', rects: [[300, 285, 111, 2], [410, 233, 2, 54]],
-    msg: 'Correnteza no Brejo das Lamparinas: "Ninguém atravessa enquanto a Crepúsculo ronda as Jandaias."',
+    msg: 'Correnteza no Brejo das Lamparinas: "Ninguém atravessa agora. Dizem que a Crepúsculo ronda as Jandaias e o brejo virou armadilha."',
     visual: { tema: 'brejo', guardas: [[379, 286, 'down', 'pescador', 'Pescador do Brejo']] } },
   // 5 → 6: saída da Vila Lamparina para a Rota 6 (Ferrovia da Aurora): portão com guarda na borda leste da vila
   // (linha de árvores ao norte e a leste, em assets/maps/regioes/nucleo.json) e a margem norte do lago inteira
   { id: 'lamparina_rota6', mundo: 'alvorada', liberaPor: 'lamparina', rects: [[356, 182, 3, 50], [359, 230, 241, 3]],
-    msg: 'Estrada fechada: obras da Aurora na Rota 6. "Só passa quem tiver a insígnia da Dona Zélia."',
+    msg: 'Operário da Aurora: "Estrada fechada para obras da ferrovia. Só passa quem tiver a insígnia da Dona Zélia."',
     visual: { tema: 'aurora', guardas: [[570, 232, 'down', 'trabalhador', 'Operário da Aurora']] } },
   // 6 (Aurora) → Forte Rochedo: a Rota 7 desmoronou; o túnel da Mina Aurora reabre depois do nível 4
   { id: 'rota7_desmoronada', mundo: 'alvorada', ate: 'nh.reviravolta1', rects: [[330, 143, 2, 46]],
-    msg: 'Desmoronamento na Rota 7: "O caminho para o Forte Rochedo reabre quando a Mina Aurora for liberada."',
+    msg: 'Desmoronamento na Rota 7: "O caminho para o Forte Rochedo está soterrado. Só reabre quando a Mina Aurora for desimpedida."',
     visual: { tema: 'entulho', guardas: [[331, 157, 'right', 'trabalhador', 'Mineiro da Aurora']] } },
   // 6 → Sertão: a divisa leste do continente (Rota 14) abre depois do Brás
   { id: 'divisa_sertao', mundo: 'alvorada', liberaPor: 'rochedo', rects: [[597, 150, 4, 330]],
-    msg: 'Posto da divisa da Rota 14: "O Sertão do Levante só recebe quem tem a Insígnia Punho."',
+    msg: 'Guarda da Divisa: "O Sertão do Levante é perigoso. Só recebe quem tem a Insígnia Punho, do Líder Brás."',
     visual: { tema: 'posto', guardas: [[597, 203, 'left', 'policial', 'Guarda da Divisa']] } },
   // Sertão → 7: a escalada do Paredão precisa de Escalar e do mapa do Paredão (Museu do Sertão)
   { id: 'paredao_mapa', mundo: 'alvorada', ate: 'nh.mapaParedao', rects: [[184, 131, 4, 13], [284, 131, 2, 13], [420, 131, 4, 13]],
-    msg: 'O Paredão é alto demais para subir às cegas. Falta o mapa do Paredão, no Museu do Sertão.',
+    msg: 'O Paredão é alto demais para subir às cegas. Falta o mapa da trilha, guardado no Museu do Sertão.',
     visual: { tema: 'paredao' } },
   // 7 → Brasas: o mar a sudeste (Rota Marítima 19) abre depois da Graça
   { id: 'mar_brasas', mundo: 'alvorada', liberaPor: 'escarpa', rects: [[800, 477, 400, 3]],
-    msg: 'Ondas altas no mar das Brasas: "Só depois da Insígnia Rocha."',
+    msg: 'Ondas altas no mar das Brasas: "Nenhum barco sai com esse mar. Só quem tem a Insígnia Rocha, da Líder Graça, sabe atravessar."',
     visual: { tema: 'mar' } },
   // 8 → Relógio: o anel dos menires fica isolado pela Companhia Aurora até a Celeste
   { id: 'cerco_relogio', mundo: 'alvorada', liberaPor: 'mirante', rects: [[284, 56, 32, 2], [284, 86, 32, 2], [284, 58, 2, 28], [314, 58, 2, 28]],
-    msg: 'Cerco da Companhia Aurora em volta do Relógio de Pedra: "Só com a insígnia da Líder Celeste."',
+    msg: 'Segurança da Aurora: "Área isolada em volta do Relógio de Pedra. Só passa quem tiver a insígnia da Líder Celeste."',
     visual: { tema: 'aurora', guardas: [[296, 87, 'down', 'trabalhador', 'Segurança da Aurora']] } },
 ];
 // Relógio → Geada e Geada → Liga: abrem com as flags de história (relogio_vencido, geada_vencida)
 BARREIRAS.push(
   { id: 'divisa_geada', mundo: 'alvorada', ate: 'relogio_vencido', rects: [[600, 0, 3, 128], [600, 198, 600, 3]],
-    msg: 'Nevasca na divisa da Cordilheira Geada: "Ninguém atravessa enquanto o Relógio de Pedra estiver aberto."',
+    msg: 'Guia da Cordilheira: "Nevasca fechada na divisa. A trilha só abre quando o Relógio de Pedra for contido."',
     visual: { tema: 'neve', guardas: [[600, 71, 'left', 'montanhista', 'Guia da Cordilheira'], [1025, 199, 'down', 'montanhista', 'Guia da Geleira']] } },
   { id: 'portao_zenite', mundo: 'alvorada', ate: 'geada_vencida', rects: [[282, 11, 49, 2]],
-    msg: 'Portão da Cidadela do Zênite: "A Liga recebe quem atravessou a Estrada da Vitória, na Cordilheira Geada."',
+    msg: 'Guarda da Liga: "O portão só abre para quem concluiu a Estrada da Vitória, na Cordilheira Geada."',
     visual: { tema: 'zenite', guardas: [[306, 12, 'down', 'policial', 'Guarda da Liga']] } },
 );
 
@@ -87,11 +87,11 @@ export const TEMPESTADES = [
     [516, 24, 42, 24],  // Mirante dos Ventos
     [288, 60, 24, 24],  // Relógio de Pedra
   ],
-    msg: 'Tempestade no Planalto: nada passa até o vulcão ser contido.', visual: { tema: 'tempestade' } },
+    msg: 'Tempestade sem fim no Planalto: o vento derruba tudo. Ela só cede quando o vulcão de Brasas for contido.', visual: { tema: 'tempestade' } },
 ];
 export const NEVOAS = [
   { id: 'neblina_mar_do_sul', mundo: 'alvorada', ate: 'liga_campeao', rects: [[400, 480, 200, 120], [400, 700, 400, 100], [400, 477, 400, 3], [400, 480, 3, 480], [797, 480, 3, 480]],
-    msg: 'Neblina densa no mar: a navegação só volta depois da Liga.', visual: { tema: 'neblina' } },
+    msg: 'Neblina densa no mar: nenhum barco enxerga o rumo. A navegação só volta depois da Liga.', visual: { tema: 'neblina' } },
 ];
 
 // Zonas onde a montaria Voar não pousa enquanto a etapa anterior não estiver feita (o voo passa por cima de cercas e

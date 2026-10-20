@@ -85,7 +85,7 @@ def salas(R):
                   {'id': 'joy_termas', 'name': 'Enfermeira Joy', 'look': OLHA['joy'], 'x': 7, 'y': 2, 'dir': 'down', 'heal': True, 'all': True,
                    'lines': ['Bem-vindo ao Centro Pokémon de Vila Termas! Aqui a gente cura no vapor.', 'Pronto! Seus Pokémon estão tão relaxados que quase dormiram.']},
                   {'id': 'viajante_termas', 'name': 'Viajante', 'look': 'montanhista', 'x': 3, 'y': 6, 'dir': 'right', 'wander': 1,
-                   'lines': ['Cheguei no Barco das Brasas e o Seu Zé Maré me avisou: o Camerupt dos Campos de Cinza abre cratera onde bem entende. Olhe onde pisa.']},
+                   'lines': ['Cheguei no Barco das Brasas e o Capitão Tonho me avisou: o Camerupt dos Campos de Cinza abre cratera onde bem entende. Olhe onde pisa.']},
                   {'id': 'treinador_termas', 'name': 'Treinador Anselmo', 'look': 'treinador', 'x': 12, 'y': 7, 'dir': 'left', 'wander': 1,
                    'lines': ['Meu Magmar adora o Centro daqui. A temperatura é a de casa.']},
               ],
@@ -118,8 +118,8 @@ def salas(R):
               'decor': [], 'spots': {'banhos_entrada': [8, 9, 'up']},
               'people': [
                   {'id': 'dona_hana', 'name': 'Dona Hana', 'look': OLHA['hana'], 'x': 8, 'y': 2.6, 'dir': 'down',
-                   'lines': ['Bem-vindo à Casa de Banhos. As águas daqui curam a equipe toda. É só entrar na piscina e ficar um pouquinho quieto.',
-                             'O banho custaria trezentos, mas quem sobe o vulcão e volta inteiro merece cortesia da casa.']},
+                   'lines': ['Bem-vinda à Casa de Banhos! As águas daqui curam a equipe toda. É só entrar na piscina e ficar um pouquinho quieta.',
+                             'A entrada é trezentos, mas quem desce do vulcão inteiro ganha cortesia da casa.']},
                   {'id': 'banhista_a', 'name': 'Banhista Tomoe', 'look': OLHA['banhista'], 'x': 2, 'y': 5, 'dir': 'right',
                    'lines': ['Eu fico duas horas na água. Meu Slowpoke fica seis, e ainda diz que foi pouco.']},
                   {'id': 'banhista_b', 'name': 'Vovô Kenji', 'look': 'montanhista', 'x': 14, 'y': 5, 'dir': 'left',
@@ -232,12 +232,12 @@ def vila(ctx, C):
     C.obj('boia', 984, 618, forcar=True); C.obj('boia', 994, 616, forcar=True)
     C.obj('barrel', 987, 622, forcar=True); C.obj('crate', 991, 623, forcar=True)
     C.pessoa(id='barqueiro_termas', name='Barqueiro Tião', look=OLHA['marujo'], x=989, y=614, dir='down', viagem='barco_brasas_termas',
-             lines=['Eu levo o pessoal para Vila Siri. A travessia é tranquila, desde que o vulcão não decida arrotar.'])
+             lines=['Eu levo o pessoal de volta para Vila Siri, no Sertão. A travessia é tranquila, desde que o vulcão não decida arrotar.'])
     # moradores
     C.pessoa(id='termas_menino', name='Menino Haru', look='menino', kid=True, x=991, y=660, dir='down', wander=2,
              lines=['Você viu o vulcão? Ele solta fumaça de manhã e de tarde. Meu pai diz que é o bocejo dele.', 'Eu cozinho ovo na pedra quente da praça e não conto pra ninguém.'])
     C.pessoa(id='termas_idoso', name='Seu Takeshi', look='montanhista', x=1002, y=659, dir='left', wander=1,
-             lines=['Moro aqui há sessenta anos. O vulcão já roncou, já tremeu, já cuspiu. Nunca fez maldade.', 'Os Slowpoke das fontes são os verdadeiros moradores. A gente só aluga o terreno.'])
+             lines=['Moro aqui há sessenta anos. O vulcão já roncou, já tremeu, já cuspiu. Mas nunca como agora, com gente de preto subindo o Tição.', 'Os Slowpoke das fontes são os verdadeiros moradores. A gente só aluga o terreno.'])
     C.pessoa(id='termas_guarda', name='Guarda-Parque Luana', look={'preset': 'treinadora', 'hairStyle': 'ponytail', 'hair': '#2a211c', 'outfit': 'jacket', 'top': '#e8643a', 'trim': '#f2f2f2', 'pants': '#3a4a5a', 'bagStyle': None},
              x=989, y=686, dir='down', wander=0,
              lines=['Os Campos de Cinza são perigosos à noite: o Camerupt abre cratera onde menos se espera.', 'Para chegar ao topo do Tição é preciso escalar o paredão de cipós. Eu não subo, tenho vertigem.'])
@@ -305,7 +305,7 @@ def basalto(ctx, C):
     C.obj('barrel', 949, 639, forcar=True); C.obj('crate', 950, 643, forcar=True)
     C.obj('sign', 948, 643, forcar=True, text='Embarcadouro da Ilha do Basalto. Barco das Brasas, às 15h: Vila Termas e Vila Siri.')
     C.pessoa(id='barqueiro_basalto', name='Marujo Dino', look=OLHA['marujo'], x=955, y=641, dir='right', viagem='barco_brasas_basalto',
-             lines=['Aqui é parada. O barco encosta às três da tarde, quem quiser seguir é só falar comigo.'])
+             lines=['Aqui é parada. O barco encosta às três da tarde. Para o Planalto não levo ninguém: a tempestade lá em cima não deixa nem gaivota passar.'])
     C.pessoa(id='basalto_surfista', name='Surfista Lúcio', look={'preset': 'treinador', 'hairStyle': 'spiky', 'hair': '#e8c060', 'hat': None, 'outfit': 'shirt', 'top': '#4ab0c0', 'legs': 'shorts', 'pants': '#e0782e', 'shoes': '#f2f2f2', 'bagStyle': None},
              x=852, y=642, dir='left', wander=1,
              lines=['A onda aqui bate na pedra preta e volta dourada. Já tentei surfar no vulcão, mas a onda é de lava.'])

@@ -111,6 +111,15 @@ const cenaNova = (t) => ({
 
 // portões dos ginásios (abrem quando os dois aprendizes caem; o líder espera atrás deles)
 const PORTOES = [antiga('cap07', 'roda_portoes', 0), antiga('cap08', 'mina_paredes', 0), antiga('cap09', 'torre_catavento', 0)];
+// falas dos portões de Cidade Escarpa (mina_paredes) e do Mirante (torre_catavento), no tom da história nova
+PORTOES[1].falas = [
+  ['narrador', 'Os mineiros afastam a última parede de escombros com picaretas. O barulho ecoa pelo túnel inteiro.'],
+  ['graca', 'Pronto, a montanha abriu caminho. Agora a conversa é lá dentro, e ela não vai ser fácil.'],
+];
+PORTOES[2].falas = [
+  ['narrador', 'Os cata-ventos da torre param um a um. O vento que sobrava desce pelo tubo central e some.'],
+  ['celeste', 'Você passou pelos meus pilotos e chegou ao topo. Agora o vento decide só metade da luta. A outra metade é sua.'],
+];
 
 // Mina Aurora, nível 2: os Alfa de cristal (lute ao lado do Téo). Sem ela a rampa para o nível 3 não abre (minaN2).
 const MINA = [
@@ -120,11 +129,11 @@ const MINA = [
 MINA[0].depois.batalha.perder = 'repete';
 MINA[0].falas = [
   ['narrador', 'No nível 2, as lâmpadas estão quebradas. Só a luzita ilumina. Pokémon de cristal saem das paredes de olhos vermelhos.'],
-  ['teo', 'Glimmet de olho vermelho! Carbink de olho vermelho! A luz daqui está deixando todo mundo Alfa!'],
-  ['narrador', 'Lute junto com o Téo: o Pokémon dele luta ao lado do seu.'],
+  ['teo', 'Glimmet de olho vermelho! Carbink de olho vermelho! Essa luz está deixando tudo Alfa, até os bichos!'],
+  ['narrador', 'Lute ao lado do Téo: o Pokémon dele entra na batalha junto com o seu.'],
 ];
 MINA[1].gatilho = { tipo: 'vencer', alvo: 'c6_alfas' };
-MINA[1].falas = [['teo', 'Ufa. Eles não eram maus. Era como se a luz estivesse gritando dentro deles. Vamos, a rampa para o nível 3 abriu.']];
+MINA[1].falas = [['teo', 'Ufa. Eles não eram maus, era a luz gritando dentro deles. O nível três desabou, então a escada do fundo é o caminho até o meu pai.']];
 
 export const CENAS_MANTIDAS = [
   ...ROTA.map(([cap, id, max]) => antiga(cap, id, max)),

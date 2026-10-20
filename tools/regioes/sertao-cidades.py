@@ -65,11 +65,11 @@ R.obj('conePlast', 750, 208) if False else None
 R.obj('boulder2', 752, 209)
 # moradores
 R.person('forro_sanfona', 'Sanfoneiro Zé de Nô', LOOK_VAQ, 770, 234, ['Quer ouvir um xote? Só se for depois da batalha!', 'O trio do forró toca o dia todo na praça. A gente só para para descansar o fole.'], 'right', 0)
-R.person('forro_zabumba', 'Zabumbeiro Dedé', {**LOOK_VAQ, 'cap': '#3a5a8a', 'top': '#5a8a4a'}, 773, 236, ['Zabumba é coração batendo. O resto é enfeite.'], 'right', 0)
+R.person('forro_zabumba', 'Zabumbeiro Dedé', {**LOOK_VAQ, 'cap': '#3a5a8a', 'top': '#5a8a4a'}, 773, 236, ['Zabumba é coração batendo. Com o sol chegando atrasado, o meu bate mais tarde também.'], 'right', 0)
 R.person('forro_triangulo', 'Triangueiro Nenê', {**LOOK_SERT_F2}, 776, 234, ['O triângulo é pequeno, mas quem manda no compasso sou eu!'], 'left', 0)
-R.person('mandacaru_vaqueira', 'Vaqueira Cida', LOOK_SERT_F2, 794, 222, ['O Seu Brasa tem as cabras mais teimosas do sertão. Fugiram de novo, vê só.', 'Se achar um Skiddo desgarrado, traga de volta. Elas gostam de sombra de juazeiro.'], 'down', 3)
-R.person('mandacaru_menino', 'Neguinho', 'menino', 783, 241, ['O Seu Brasa já foi campeão! Hoje só cuida das cabras. E das brasas.', 'Eu vou ser da Elite também. Vou ter um Pokémon de fogo bem, bem quente.'], 'down', 4, kid=True)
-R.person('mandacaru_velha', 'Vovó Ana', LOOK_SERT_F, 802, 220, ['Antigamente o trem trazia gente. Hoje traz só o vento.', 'Quando o mandacaru floresce de noite, vem chuva boa. Anota o que eu digo.'], 'left', 0)
+R.person('mandacaru_vaqueira', 'Vaqueira Cida', LOOK_SERT_F2, 794, 222, ['As cabras do Seu Brasa são as mais teimosas do sertão. Fugiram de novo, vê só.', 'Se vir um Skiddo desgarrado, não corra atrás. Ele volta sozinho quando acha sombra de juazeiro.'], 'down', 3)
+R.person('mandacaru_menino', 'Neguinho', 'menino', 783, 241, ['O Seu Brasa é da Elite Quatro, sabia? Mas aqui ele só cuida das cabras. E das brasas.', 'Eu também vou ser da Elite. Vou ter um Pokémon de fogo bem, bem quente.'], 'down', 4, kid=True)
+R.person('mandacaru_velha', 'Vovó Ana', LOOK_SERT_F, 802, 220, ['Antigamente o trem trazia gente. Hoje traz só o vento.', 'O mandacaru floresce de noite quando vem chuva boa. Este ano floresceu de dia. O sol atrasado desnorteou até a planta.'], 'left', 0)
 R.spots['sertao_praca_mandacaru'] = [780, 231, 'down']
 R.spots['sertao_estacao_mandacaru'] = [746, 217, 'down']
 R.spots['sertao_cacimba'] = [872, 224, 'down']
@@ -88,7 +88,7 @@ predio('center', 1000, 256, 'centro_buriti')
 predio('mart', 1012, 256, 'bazar_buriti')
 mao('lab', 1023, 256, 'lab_fosseis')
 mao('houseStone', 1036, 256, 'museu_sertao')
-predio('houseYellow', 1045, 256, 'hotel_oasis', interior={'npc': [{'id': 'kiana', 'name': 'Kiana', 'look': {'preset': 'treinadora', 'hairStyle': 'long', 'hair': '#2a211c', 'skin': '#c98d62', 'outfit': 'shirt', 'top': '#f2c03a', 'legs': 'shorts', 'pants': '#3a8ad8', 'shoes': '#ffffff', 'bagStyle': None}, 'lines': ['Sou de Alola! Aqui o sol é seco; lá, é molhado. Sinto saudade da brisa.', 'Dá para trocar bichinhos de casa por aqueles daqui. Gosto de coisa com cheiro de mar.']}, {'id': 'kaleo', 'name': 'Hóspede Kaleo', 'look': {'preset': 'treinador', 'hairStyle': 'spiky', 'hair': '#e8c060', 'hat': None, 'outfit': 'shirt', 'top': '#e8455a', 'legs': 'shorts', 'pants': '#3a8ad8', 'shoes': '#ffffff', 'bagStyle': None}, 'lines': ['Eu e a Kiana somos de Alola. O hotel tem piscina, mas o calor daqui ainda me derrete.', 'Se você tiver um Vulpix, a gente conversa.']}]})
+predio('houseYellow', 1045, 256, 'hotel_oasis', interior={'npc': [{'id': 'kiana', 'name': 'Kiana', 'look': {'preset': 'treinadora', 'hairStyle': 'long', 'hair': '#2a211c', 'skin': '#c98d62', 'outfit': 'shirt', 'top': '#f2c03a', 'legs': 'shorts', 'pants': '#3a8ad8', 'shoes': '#ffffff', 'bagStyle': None}, 'lines': ['Sou de Alola! Aqui o sol é seco; lá, é molhado. Sinto saudade da brisa.', 'Tem Pokémon aqui que eu nunca vi em Alola. Gosto dos que têm cheiro de mar.']}, {'id': 'kaleo', 'name': 'Hóspede Kaleo', 'look': {'preset': 'treinador', 'hairStyle': 'spiky', 'hair': '#e8c060', 'hat': None, 'outfit': 'shirt', 'top': '#e8455a', 'legs': 'shorts', 'pants': '#3a8ad8', 'shoes': '#ffffff', 'bagStyle': None}, 'lines': ['Eu e a Kiana somos de Alola. O hotel tem piscina, mas o calor daqui ainda me derrete.', 'Se você tiver um Vulpix, a gente conversa.']}]})
 mao('housePink', 1058, 256, 'tenda_rainha')
 predio('taipa', 1067, 256, 'casa_caravana', interior={'tipo': 'casa', 'nome': 'Casa da Caravana', 'npc': {'id': 'bento_duna', 'name': 'Tropeiro Bento Duna', 'look': LOOK_VAQ, 'lines': ['Quarenta anos cruzando as dunas. Sei onde a areia engole e onde ela segura.', 'Se for atravessar, vá em linha reta e não pare. A areia fofa cobra por cada passo.']}})
 # fileira de baixo
@@ -113,7 +113,7 @@ R.sign(1021, 244, 'SUBIDA DA CHAPADA VERMELHA ↑\n(só com trepadeira: Escalar)
 R.sign(1058, 244, 'SUBIDA DA CHAPADA VERMELHA ↑\n(só com trepadeira: Escalar)')
 R.person('buriti_vendedora', 'Dona Lídia', LOOK_SERT_F, 1072, 266, ['Tecidos, tapetes e bugigangas do deserto! Tudo com cheiro de sol.', 'A Rainha do Bazar sabe quanto vale cada anel. Mas só diz depois do chá.'], 'down', 1)
 R.person('buriti_menino', 'Duduzinho', 'menino', 1040, 268, ['Eu cavei na areia e achei um osso! O doutor Ícaro disse que era de um boi. Que decepção.'], 'down', 4, kid=True)
-R.person('buriti_cameleiro', 'Cameleiro Ali', LOOK_VAQ, 1008, 270, ['Meus Camerupt carregam até as pedras do Lajedo. Pedra boa, pedra pesada.', 'No bazar, a Areia Macia é cara de propósito: serve para vender sorriso.'], 'right', 0)
+R.person('buriti_cameleiro', 'Cameleiro Ali', LOOK_VAQ, 1008, 270, ['Meus Camerupt carregam até as pedras do Lajedo. Pedra boa, pedra pesada.', 'No bazar a Areia Macia é cara porque vem de longe. Quem manda no preço é o frete.'], 'right', 0)
 R.person('buriti_idosa', 'Dona Zulmira', LOOK_SERT_F, 1054, 270, ['Vi o céu cair uma noite. Foi um clarão de dar medo. Na manhã seguinte, a cratera estava lá.', 'Dizem que aquilo na cratera é pedra das estrelas. Eu digo que é só uma pedra grande.'], 'left', 0)
 R.spots['sertao_praca_buriti'] = [1039, 268, 'down']
 
@@ -144,7 +144,7 @@ R.sign(735, 390, 'BARCO DAS BRASAS → VILA TERMAS\nSaídas: 7h e 15h · ₽500'
 R.pets += [{'dex': 98, 'x': 710, 'y': 384, 'wander': 3, 'say': 'Krabby sai de baixo da tábua e levanta a garra.'},
            {'dex': 99, 'x': 719, 'y': 384, 'wander': 3, 'say': 'Kingler segura um caranguejinho de brinquedo.'},
            {'dex': 278, 'x': 699, 'y': 376, 'wander': 3, 'perch': False, 'say': 'Wingull grasna, de olho nas redes de pesca.'}]
-R.person('siri_barqueiro', 'Capitão Tonho', {'preset': 'montanhista', 'hat': 'cap', 'cap': '#f2f2f2', 'capLogo': '#3a8ad8', 'hair': '#e8e4dc', 'skin': '#c98d62', 'top': '#3a6ad8', 'trim': '#f2f2f2', 'pants': '#f2f2f2', 'shoes': '#5a3a24', 'bagStyle': None}, 735, 392, ['O Barco das Brasas sai às sete e às três.'], 'down', 0, viagem='barco_brasas')
+R.person('siri_barqueiro', 'Capitão Tonho', {'preset': 'montanhista', 'hat': 'cap', 'cap': '#f2f2f2', 'capLogo': '#3a8ad8', 'hair': '#e8e4dc', 'skin': '#c98d62', 'top': '#3a6ad8', 'trim': '#f2f2f2', 'pants': '#f2f2f2', 'shoes': '#5a3a24', 'bagStyle': None}, 735, 392, ['O Barco das Brasas sai às sete e às três. A das sete agora sai no escuro, por causa do sol atrasado.'], 'down', 0, viagem='barco_brasas')
 R.person('siri_menina', 'Naiara', 'menina', 713, 386, ['Eu remo mais rápido que o Iraci! Quase.', 'Se escutar um barulho de sapo gigante no mangue, não vá lá. É o Alfa. Ele afunda canoa.'], 'down', 4, kid=True)
 R.person('siri_pescador', 'Pescador Zeca', LOOK_VAQ, 700, 376, ['A pesca no mangue é paciência e botas altas.', 'De noite o mangue brilha. Dizem que é vaga-lume. Eu acho que é Chinchou.'], 'right', 0)
 R.spots['sertao_cais_siri'] = [733, 392, 'right']
@@ -172,7 +172,7 @@ ob(s, 'table', 5, 5, 'Na mesa, um mapa da Cidadela do Zênite todo riscado de br
 ob(s, 'bed', 12, 5, 'A cama de rede é maior que a cama de verdade. Ele dorme na rede, claro.')
 ob(s, 'plant', 1, 6); ob(s, 'plant', 13, 8)
 s['decor'] += [{'kind': 'rug', 'x': 6, 'y': 6}, {'kind': 'window', 'x': 3, 'y': 1, 'oy': 3}, {'kind': 'window', 'x': 10, 'y': 1, 'oy': 3}]
-pp(s, 'seu_brasa', 'Seu Brasa', LOOK_BRASA, 8, 4, ['Sou da Elite. É, o de Fogo. Mas só às quartas, ao meio-dia, lá na Cidadela. O resto da semana eu cuido de cabra.', 'Sol a pino é a hora do fogo. De manhã ele ainda acorda; à tarde, já cansou. Ao meio-dia, não tem pra ninguém.'], 'down', 0)
+pp(s, 'seu_brasa', 'Seu Brasa', LOOK_BRASA, 8, 4, ['Sou da Elite, o de Fogo. Mas só nos dias de Liga, lá no Zênite. No resto do tempo eu cuido de cabra.', 'Sol a pino é a hora do fogo. De manhã ele ainda acorda; à tarde, já cansou. Ao meio-dia, não tem pra ninguém.'], 'down', 0)
 s['pets'] += [{'dex': 672, 'x': 3, 'y': 6, 'wander': 2, 'say': 'Skiddo cochila em cima de um tapete de lã.'}, {'dex': 58, 'x': 10, 'y': 7, 'wander': 1, 'sleep': True, 'say': 'Growlithe dorme esparramado, com o rabo no ar.'}]
 s['spots']['brasa_dentro'] = [8, 6, 'up']
 R.interiors.append(s)
@@ -188,7 +188,7 @@ ob(s, 'table', 3, 6, 'Uma mesa com lupas, pincéis e um fragmento de concha. Um 
 ob(s, 'table', 12, 6, 'Bandejas com fósseis catalogados. Todos têm etiquetas manuscritas em letra de cientista (ilegível).')
 ob(s, 'plant', 1, 8); ob(s, 'plant', 15, 8)
 s['decor'] += [{'kind': 'window', 'x': 8, 'y': 1, 'oy': 3}]
-pp(s, 'dr_icaro', 'Dr. Ícaro', {'preset': 'professor', 'hair': '#3a3a3a', 'skin': '#efc19b', 'outfit': 'coat', 'top': '#f4f4f0', 'trim': '#8a2a6a', 'pants': '#6a4a34', 'shoes': '#4a3428'}, 8, 5, ['Seja bem-vindo ao melhor laboratório de fósseis a leste do Rio Seco. Também o único.', 'Traga qualquer fóssil que encontrar. Eu devolvo a vida a ele: Âmbar, Garra, Raiz, Vela. A máquina é teimosa, mas fiel.'], 'down', 0)
+pp(s, 'dr_icaro', 'Dr. Ícaro', {'preset': 'professor', 'hair': '#3a3a3a', 'skin': '#efc19b', 'outfit': 'coat', 'top': '#f4f4f0', 'trim': '#8a2a6a', 'pants': '#6a4a34', 'shoes': '#4a3428'}, 8, 5, ['Seja bem-vindo ao melhor laboratório de fósseis a leste do Rio Seco. Também o único.', 'Se encontrar um fóssil, traga aqui. Eu devolvo a vida a ele: Âmbar, Garra, Raiz ou Vela. A máquina é teimosa, mas fiel.'], 'down', 0)
 pp(s, 'lab_assistente', 'Assistente Pati', 'menina', 4, 8, ['O doutor deixa a gente limpar o pó com pincel. Eu acho que é só para a gente não conversar.'], 'right', 0)
 s['spots']['lab_fosseis_maquina'] = [7, 4, 'up']
 R.interiors.append(s)
@@ -203,7 +203,7 @@ ob(s, 'bench', 4, 7); ob(s, 'bench', 11, 7)
 ob(s, 'shelf', 1, 5, 'Vitrine com cacos de cerâmica do Sertão, colados um a um. Dos mil pedaços, faltam vinte.')
 ob(s, 'plant', 17, 8); ob(s, 'plant', 1, 8)
 s['decor'] += [{'kind': 'rug', 'x': 8, 'y': 6}]
-pp(s, 'museu_curadora', 'Curadora Verônica', {'preset': 'treinadora', 'hairStyle': 'bun', 'hair': '#3a2a22', 'skin': '#c98d62', 'outfit': 'coat', 'top': '#e8e0d0', 'trim': '#8a5a2a', 'legs': 'skirt', 'pants': '#4a4a5a', 'shoes': '#4a3428'}, 6, 5, ['Cada peça aqui foi achada no Sertão. Algumas, cavando. Outras, caindo do céu.', 'O Tyrantrum foi achado por um menino, brincando de cavar. Hoje ele é professor.'], 'right', 0)
+pp(s, 'museu_curadora', 'Curadora Verônica', {'preset': 'treinadora', 'hairStyle': 'bun', 'hair': '#3a2a22', 'skin': '#c98d62', 'outfit': 'coat', 'top': '#e8e0d0', 'trim': '#8a5a2a', 'legs': 'skirt', 'pants': '#4a4a5a', 'shoes': '#4a3428'}, 6, 5, ['Cada peça aqui foi achada no Sertão. Algumas, cavando. Outras, caindo do céu.', 'O fóssil de Tyrantrum foi achado por um menino brincando de cavar. Hoje esse menino é o Dr. Ícaro.'], 'right', 0)
 pp(s, 'museu_guarda', 'Guarda Tadeu', 'treinador', 12, 5, ['Pode olhar, mas não pode encostar. Principalmente na pedra do meteoro. Ela esquenta.'], 'left', 0)
 R.interiors.append(s)
 
