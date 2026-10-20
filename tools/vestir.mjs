@@ -341,7 +341,9 @@ function gerarRegiao(reg) {
     if (!lista.length) lista = c.muro;
     const kind = esc(lista, x, y, 41 + (y & 1)), K = KINDS[kind];
     if ((K?.fw ?? 1) >= 2 && ((x + y) & 1) && livre(k + 1)) continue; // a próxima casa começa a peça
-    if (!pe(kind, x, y) && prof < 4 && c.um) pe(esc(c.um, x, y, 43), x, y);
+    // sem sombra de contato depois da primeira fileira (a copa cobre o chão; poupa transparência na GPU)
+    const ss = prof > 1.5 && !sulDe ? { ss: 1 } : undefined;
+    if (!pe(kind, x, y, ss) && prof < 4 && c.um) pe(esc(c.um, x, y, 43), x, y, ss);
   }
 
   // ----- b. corredor: mato alto em blocos, borda, solto, manchas de chão, decoração
@@ -529,7 +531,15 @@ function vestirCidades(reg, { t, blk, dentro, pe, setT, livre, seed, out }) {
 // ---------- escrita e verificação
 function gravar(id, V) {
   const url = new URL(`${id}.json`, VEST);
-  const dados = { regiao: id, comment: 'Camada vestir: enfeite gerado por tools/vestir.mjs (não editar à mão; regere com node tools/vestir.mjs ' + id + ').', ...V };
+  // objetos simples em lista compacta (tipos + [tipo, x, y, ss] em sequência); os que têm texto ficam em "objects"
+  const tipos = [], idx = new Map(), d = [], soltos = [];
+  for (const o of V.objects) {
+    const extra = Object.keys(o).filter((k) => k !== 'kind' && k !== 'x' && k !== 'y' && k !== 'ss');
+    if (extra.length) { soltos.push(o); continue; }
+    if (!idx.has(o.kind)) { idx.set(o.kind, tipos.length); tipos.push(o.kind); }
+    d.push(idx.get(o.kind), o.x, o.y, o.ss ? 1 : 0);
+  }
+  const dados = { regiao: id, comment: 'Camada vestir: enfeite gerado por tools/vestir.mjs (não editar à mão; regere com node tools/vestir.mjs ' + id + ').', tiles: V.tiles, objs: { tipos, d }, objects: soltos, decor: V.decor, items: V.items };
   writeFileSync(url, JSON.stringify(dados) + '\n');
   console.log(`gravado: assets/maps/vestir/${id}.json (${V.objects.length} objetos, ${V.decor.length} decor, ${V.items.length} itens, ${V.tiles.reduce((s, t) => s + t.xy.length / 2, 0)} blocos)`);
 }

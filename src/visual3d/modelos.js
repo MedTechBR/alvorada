@@ -31,7 +31,7 @@ class ModelosNoMundo extends ModelosKit {
     if (s.contato) { s.grupo.remove(s.contato); s.contato.geometry.dispose(); s.contato = null; }
     const pos = [], idx = [], uv = [], sala = s.sy * 16 + 16 > this.v.L.externoH;
     for (const o of this.v.L.objetosDoSetor(s.sx, s.sy)) {
-      if (o.dead || !kit.temModelo(o.kind)) continue;
+      if (o.dead || !kit.temModelo(o.kind) || o.ss) continue; // ss: sem sombra de contato (miolo do paredão do vestir: a copa já cobre o chão)
       const K = kit.ficha(o.kind), w = (K.fw ?? 1) * 8 + 3, d = (K.fh ?? 1) * 8 + 2, cz = o.y - (K.fh ?? 1) * 8, y = this.v.altura(o.x, cz) + 0.4, n = pos.length / 3;
       if (!sala && (K.fw ?? 1) > 3) continue; // prédios lá fora já têm a sombra do sol
       const k = sala ? 1 : 0.8;

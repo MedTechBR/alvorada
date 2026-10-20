@@ -4,15 +4,18 @@ import { KINDS } from './objects.js';
 // blocos, marcos, nichos com item, cidades com praça e canteiros, peças de cada bioma). Gerada por tools/vestir.mjs e
 // guardada em assets/maps/vestir/<id da região>.json, separada dos JSON de mapa para não colidir com quem edita NPCs
 // e barreiras. Formato:
-//   { "regiao": "<id>", "tiles": [{ "t": "tall", "xy": [x, y, x, y, ...] }], "objects": [{ kind, x, y, ... }],
-//     "decor": [{ kind, x, y }], "items": [...] }
+//   { "regiao": "<id>", "tiles": [{ "t": "tall", "xy": [x, y, x, y, ...] }],
+//     "objs": { "tipos": ["tree", ...], "d": [tipo, x, y, ss, tipo, x, y, ss, ...] },   (ss = 1: sem sombra de contato)
+//     "objects": [{ kind, x, y, text }], "decor": [{ kind, x, y }], "items": [...] }
 // mesclarVestir junta a camada ao arquivo da região ANTES de a região ser montada: os blocos da camada entram como
 // operações "set" depois das operações da própria região, e os objetos, a decoração e os itens entram nas listas dela.
 export function mesclarVestir(F, V) {
   if (!V) return F;
   const pares = (xy) => { const p = new Array(xy.length >> 1); for (let i = 0; i < p.length; i++) p[i] = [xy[2 * i], xy[2 * i + 1]]; return p; };
   F.ops = [...(F.ops ?? []), ...(V.tiles ?? []).map((g) => ({ op: 'set', t: g.t, pts: g.pts ?? pares(g.xy) }))];
-  F.objects = [...(F.objects ?? []), ...(V.objects ?? [])];
+  const objs = [];
+  if (V.objs) { const { tipos, d } = V.objs; for (let i = 0; i < d.length; i += 4) objs.push(d[i + 3] ? { kind: tipos[d[i]], x: d[i + 1], y: d[i + 2], ss: 1 } : { kind: tipos[d[i]], x: d[i + 1], y: d[i + 2] }); }
+  F.objects = [...(F.objects ?? []), ...objs, ...(V.objects ?? [])];
   F.decor = [...(F.decor ?? []), ...(V.decor ?? [])];
   F.items = [...(F.items ?? []), ...(V.items ?? [])];
   return F;

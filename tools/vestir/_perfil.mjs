@@ -8,6 +8,11 @@ try {
   ws.addEventListener('message', (ev) => { const m = JSON.parse(ev.data); if (m.id && wait.has(m.id)) { wait.get(m.id)(m); wait.delete(m.id); } });
   await send('Profiler.enable'); await send('Profiler.setSamplingInterval', { interval: 1000 });
   await sleep(+(process.env.ANTES ?? 8000));
+  await send('Emulation.setDeviceMetricsOverride', { width: 740, height: 360, deviceScaleFactor: 2, mobile: true });
+  await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
+  await sleep(3000);
+  await send('Emulation.setCPUThrottlingRate', { rate: 4 });
+  await send('Runtime.evaluate', { expression: `(() => { const g = game, p = g.player, x0 = p.x, y0 = p.y; let t = 0; window.__anda = setInterval(() => { t += 1 / 60; p.x = x0 + Math.sin(t * 0.25) * 260; p.y = y0 - 120 + Math.cos(t * 0.18) * 300; }, 16); return 1; })()` });
   await send('Profiler.start');
   await sleep(+(process.env.DUR ?? 12000));
   const r = await send('Profiler.stop');
@@ -16,5 +21,5 @@ try {
   for (const [nid, c] of cnt) { const n = byId.get(nid), f = n.callFrame, k = `${f.functionName || '(anon)'} ${f.url.replace(/^.*?:\d+/, '')}:${f.lineNumber + 1}`; self.set(k, (self.get(k) ?? 0) + c); }
   const tot = P.samples.length;
   console.log('amostras', tot);
-  for (const [k, c] of [...self].sort((a, b) => b[1] - a[1]).slice(0, 25)) console.log(String(Math.round(c / tot * 1000) / 10).padStart(5), '%', k);
+  for (const [k, c] of [...self].sort((a, b) => b[1] - a[1]).slice(0, 30)) console.log(String(Math.round(c / tot * 1000) / 10).padStart(5), '%', k);
 } finally { b.kill(); }
