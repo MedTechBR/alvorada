@@ -30,9 +30,20 @@ export class Grade {
 
   // ---------- consulta de blocos ----------
   // Quem ocupa blocos além do mapa: moradores, personagens da história, treinadores e os Pokémon das vilas.
+  // (a lista é refeita uma vez por quadro: antes era montada a cada consulta, e a rota da grade consulta milhares de blocos)
   #fontes() {
     const g = this.g;
-    return [...(g.story?.npcs?.values?.() ?? []), ...(g.story?.roteiro?.atores?.values?.() ?? []), ...(g.mundo?.people?.list ?? [])];
+    if (this.fontesT === g.time && this.fontesL) return this.fontesL;
+    this.fontesT = g.time;
+    return (this.fontesL = [...(g.story?.npcs?.values?.() ?? []), ...(g.story?.roteiro?.atores?.values?.() ?? []), ...(g.mundo?.people?.list ?? [])]);
+  }
+  // blocos ocupados por gente e Pokémon agora (para a rota: uma passada só, em vez de varrer todo mundo por bloco)
+  #ocupados() {
+    const g = this.g, W = g.map.w, S = new Set(), b = (x, y) => S.add(Math.floor(x / T) + Math.floor((y - 2) / T) * W);
+    for (const n of this.#fontes()) { if (!n.visible) continue; b(n.x, n.y); if (n.walk) b(n.walk.x, n.walk.y); }
+    for (const q of g.mundo?.people?.pets ?? []) if (q.view?.visible && !q.d?.perch) { b(q.x, q.y + 2); b(q.x - 8, q.y + 2); b(q.x + 8, q.y + 2); b(q.x, q.y - 6); b(q.x, q.y + 10); }
+    for (const w of [...(g.wilds ?? []), g.lead]) if (w && w.alive && !w.saindo) b(w.x, w.y);
+    return S;
   }
   ocupado(tx, ty, ignora = null) {
     for (const n of this.#fontes()) {
@@ -105,6 +116,7 @@ export class Grade {
     vis[k(x0, y0)] = 1;
     const nomes = ['up', 'down', 'left', 'right'];
     let melhor = null, bd = 1e9;
+    const m = this.g.map, oc = this.#ocupados(), livre = (tx, ty) => tx >= 0 && ty >= 0 && tx < m.w && ty < m.h && !m.solidAt(tx * T + 8, ty * T + 8, swim) && !(m.limite && !m.dentroDoLimite(tx * T + 8, ty * T + 8, 4)) && !oc.has(tx + ty * m.w);
     for (let i = 0; i < fila.length; i++) {
       const [a, b] = fila[i];
       const d = Math.abs(a - x1) + Math.abs(b - y1); if (d < bd) { bd = d; melhor = i; }
@@ -113,7 +125,7 @@ export class Grade {
         const [dx, dy] = DIRV[nomes[j]], na = a + dx, nb = b + dy;
         if (Math.abs(na - x0) > R || Math.abs(nb - y0) > R || vis[k(na, nb)]) continue;
         // o destino em si pode estar ocupado (alguém parado nele): chegar ao lado já basta
-        if (!(na === x1 && nb === y1) && !this.pode(na, nb, swim)) continue;
+        if (!(na === x1 && nb === y1) && !livre(na, nb)) continue; // mesma regra de pode(), com os ocupados de uma vez
         if (na === x1 && nb === y1 && this.g.map.solidAt(na * T + 8, nb * T + 8, swim)) continue;
         vis[k(na, nb)] = 1; from[k(na, nb)] = j; fila.push([na, nb, i]);
       }

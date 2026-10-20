@@ -38,6 +38,9 @@ export class Visual3D {
     r.setPixelRatio(this.#dpr());
     r.setSize(innerWidth, innerHeight, false);
     r.outputColorSpace = THREE.SRGBColorSpace;
+    // sem conferir o log de cada shader compilado: essa leitura obriga o navegador a terminar a compilação na hora e
+    // era ~9% do tempo de CPU numa luta (materiais novos entrando na tela davam engasgo). ?shaders=1 liga de novo.
+    r.debug.checkShaderErrors = new URLSearchParams(location.search).has('shaders');
     r.domElement.id = 'game3d';
     const host = document.getElementById('game'); host.insertBefore(r.domElement, host.firstChild);
     r.domElement.style.pointerEvents = 'none';
@@ -99,7 +102,7 @@ export class Visual3D {
   }
   #luzUpdate(dt) {
     if (!this.flash) return;
-    if (this.flashT > 0) { this.flashT -= dt; const k = Math.max(0, this.flashT / this.flashVida); this.flash.intensity = this.flashMax * 9000 * k * k; }
+    if (this.flashT > 0) { this.flashT -= dt; const k = Math.max(0, this.flashT / this.flashVida); this.flash.intensity = this.flashMax * 5200 * k * k; /* clarão do golpe, mais contido: antes lavava a tela inteira */ }
     else this.flash.intensity = 0;
   }
   // troca o desenho do Pixi pelo nosso (o quadro do jogo continua o mesmo)

@@ -217,13 +217,15 @@ export class WildAI {
     if (ai.phaseT <= 0) { ai.phaseT = 2 + Math.random() * 2.5; ai.press = melee && (!ranged || Math.random() < 0.5); ai.side = Math.random() < 0.5 ? 1 : -1; }
     if (melee && !rangedReady) ai.press = true;
     const want = ai.press ? e.r + (tg.r ?? 6) + 10 : 76 + (e.isAlpha ? 10 : 0);
-    let vx = 0, vy = 0;
+    // aproxima/recua proporcional à distância que falta (antes era anda-para-anda-para nas bordas da faixa) e sempre
+    // contorna o alvo; o lado do contorno troca devagar (ai.lado vai até ai.side), sem meia-volta seca
     ai.retreat = (ai.retreat ?? 0) - dt;
-    if (ai.retreat > 0 && ai.retreat < 0.35) { vx = -dx / d; vy = -dy / d; }
-    else if (d > want + 10) { vx = dx / d; vy = dy / d; }
-    else if (d < want - 16) { vx = -dx / d * 0.8; vy = -dy / d * 0.8; }
-    const circ = ai.press && d < want + 14 ? 0.35 : 0.75;
-    vx += -dy / d * circ * ai.side; vy += dx / d * circ * ai.side;
+    let radial = clamp((d - want) / 26, -0.85, 1);
+    if (ai.retreat > 0 && ai.retreat < 0.35) radial = -1;
+    ai.lado = (ai.lado ?? ai.side) + (ai.side - (ai.lado ?? ai.side)) * Math.min(1, dt * 2.5);
+    const circ = (ai.press && d < want + 14 ? 0.4 : 0.75) * (0.85 + 0.15 * Math.sin(g.time * 1.7 + e.x * 0.05));
+    let vx = dx / d * radial + -dy / d * circ * ai.lado, vy = dy / d * radial + dx / d * circ * ai.lado;
+    const vl = Math.hypot(vx, vy); if (vl > 1) { vx /= vl; vy /= vl; }
     const s = e.speed(1.05);
     return { vx: vx * s, vy: vy * s };
   }
@@ -252,3 +254,4 @@ export class WildAI {
   }
 }
 const Z = { vx: 0, vy: 0 };
+const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);

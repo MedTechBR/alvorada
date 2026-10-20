@@ -114,6 +114,13 @@ export class Combat {
     this.sfxT[k] = now; this.g.audio?.sfx?.(name, type);
   }
 
+  // anúncio do golpe (pílula "Nome!" do lado de quem usou): só na luta em que o seu Pokémon está
+  anunciar(user, mv) {
+    const g = this.g, l = g.lead; if (!g.show || !mv?.name || !user?.mon) return;
+    if (user === l) g.show.anuncio('eu', mv.name, mv.type);
+    else if (l?.alive && (user.side === 'foe' || user.side === 'rival' || (user.side === 'wild' && (user.aggroTarget === l || user.aggroTarget === g.player)))) g.show.anuncio('ele', mv.name, mv.type);
+  }
+
   // ---------- telegrafia (selvagens avisam antes de atacar) ----------
   windup(user, slot, target) {
     const { id, mv } = this.moveAt(user, slot);
@@ -127,6 +134,7 @@ export class Combat {
     if (kind === 'self' || kind === 'shield') W = 0.25;
     const ang = Math.atan2(target.y - user.y, target.x - user.x);
     user.charging = { slot, id, mv, kind, t: 0, W, ang, tx: target.x, ty: target.y, target, lockAt: W * 0.62, A: animFor(id) };
+    this.anunciar(user, mv);
     user.lock = W + 0.05;
     user.play(this.pickAnim(user, ['Charge', 'Idle']), true);
     this.sfx('warn', null, 0.35); // vários selvagens avisando juntos não viram um apito contínuo
@@ -199,6 +207,8 @@ export class Combat {
     if (user.mon.status === 'par' && Math.random() < 0.15) { this.g.fx.number(user.x, user.y - 24, 'Paralisado!', '#fff27a'); user.lock = 0.5; return true; }
     let dx = ax - user.x, dy = ay - user.y; const d = Math.hypot(dx, dy) || 1; dx /= d; dy /= d;
     user.face(dx, dy);
+    if (!opts.charged) this.anunciar(user, mv);
+    user.atkT = 0.24; // antecipação: encolhe e estica antes do golpe sair (pokemon.js)
     const g = this.g, color = typeHex(mv.type), A = animFor(id);
     const kind = opts.asDash ? 'dash' : kindOf(id, mv);
     if (user.pouso && (kind === 'melee' || kind === 'multi' || kind === 'dash')) g.vivo?.saltarAtacando(user, ax, ay); // corpo a corpo lá de cima: salta no alvo
@@ -390,6 +400,7 @@ export class Combat {
     g.fx.light(x, y, 0xffffff, 70, 0.3, 1);
     g.fx.screenFlash(0xffffff, 0.35); g.fx.kick(0.5, 0.12);
     this.sfx('boom'); this.ai.noise(x, y, 180, a.user);
+    if (a.user?.side === 'ally' || b.user?.side === 'ally') g.show?.impacto({ a: a.user, b: b.user, x, y: y + 12, h: 12, choque: true, tipo: a.mv?.type });
     this.arena.blast(x, y + 10, 26, a.mv, a.user);
     // empurra quem estiver perto
     for (const e of [...g.entities, g.player]) { const dx = e.x - x, dy = e.y - (y + 10), d = Math.hypot(dx, dy); if (d < 50 && d > 0.1 && e.alive !== false) { e.kx += dx / d * 220; e.ky += dy / d * 220; } }
@@ -609,6 +620,7 @@ export class Combat {
     g.fx.shock(x, y + 8, 0xffffff, 30, 0.3); g.fx.light(x, y, 0xffffff, 40, 0.15);
     g.fx.kick(0.3, 0.1); this.sfx('clash');
     g.fx.number(x, y - 16, 'CHOQUE!', '#ffffff', true, 'banner');
+    if (a.side === 'ally' || b.side === 'ally') g.show?.impacto({ a, b, x, y: (a.y + b.y) / 2, h: 12, choque: true, tipo: null });
     for (const [e, o] of [[a, b], [b, a]]) { const dx = e.x - o.x, dy = e.y - o.y, d = Math.hypot(dx, dy) || 1; e.kx += dx / d * 240; e.ky += dy / d * 240; e.lock = Math.max(e.lock, 0.25); e.play('Hurt'); }
     this.ai.noise(x, y, 120, a);
   }
@@ -867,16 +879,23 @@ export class Combat {
         g.fx.kick(eff > 1 || crit ? 0.34 : 0.12 + 0.05 * power, eff > 1 || crit ? 0.09 : 0.03 + 0.012 * power);
         this.sfx(eff > 1 ? 'hit-super' : eff < 1 ? 'hit-weak' : pw >= 70 ? 'hit-heavy' : 'hit', null, 0.03);
       } else if (Math.random() < 0.3) this.sfx('hit-weak', null, 0.08);
-      g.fx.number(t.x + (Math.random() - 0.5) * 6, ty, String(dmg), eff > 1 ? 0xffb347 : eff < 1 ? 0xb8b8b8 : crit ? 0xff6a4a : 0xffffff, eff > 1 || crit || pw >= 80);
-      if (eff > 1 && (t.superT ?? 0) < g.time) {
-        t.superT = g.time + 0.6;
-        g.fx.number(t.x, ty - 16, 'Super efetivo!', 0xffd84a, true, 'banner');
+      // dano e eficácia: na camada de tela (src/ui/espetaculo.js), número grande com contorno e a cor da eficácia
+      const palavra = (eff > 1 && (t.superT ?? 0) < g.time) || (eff < 1 && !quiet) || crit;
+      if (eff > 1 && (t.superT ?? 0) < g.time) t.superT = g.time + 0.6;
+      if (g.show) g.show.dano(t, dmg, { eff: palavra ? eff : 1, crit, forte: pw >= 80 });
+      else g.fx.number(t.x + (Math.random() - 0.5) * 6, ty, String(dmg), eff > 1 ? 0xffb347 : eff < 1 ? 0xb8b8b8 : crit ? 0xff6a4a : 0xffffff, eff > 1 || crit || pw >= 80);
+      if (eff > 1 && palavra) {
         g.fx.emit(t.x, ty - 16, { tex: 'star', color: 0xffe27a, n: 10, speed: 90, life: 0.5, spin: 6 });
         g.fx.screenFlash(0xffe8a0, 0.22);
         g.fx.light(t.x, this.centerY(t), 0xffd84a, 50, 0.25);
-      } else if (eff > 0 && eff < 1 && !quiet) g.fx.number(t.x, ty - 14, 'Pouco efetivo', 0xbbbbbb);
-      else if (eff === 0) g.fx.number(t.x, ty - 14, 'Não afeta...', 0xbbbbbb);
-      if (crit) { g.fx.number(t.x, ty - 28, 'Crítico!', 0xff7a5a, true, 'banner'); g.fx.screenFlash(0xffffff, 0.15); }
+      }
+      if (crit) g.fx.screenFlash(0xffffff, 0.15);
+      // quadro de impacto (estilo mangá) nos golpes fortes da SUA luta: crítico, super efetivo, golpe que tira muito ou nocaute
+      const ko = t.mon.hp <= 0, pesado = dmg >= t.mon.stats.hp * 0.3 || (pw >= 90 && dmg >= t.mon.stats.hp * 0.15);
+      if (g.show && by && (ko || !quiet) && (by.side === 'ally' || t.side === 'ally') && (ko || crit || eff > 1 || pesado))
+        g.show.impacto({ a: by, b: t, x: t.x, y: t.y, h: t.midH ?? 12, dano: dmg, eff, crit, ko, tipo: mv?.type });
+      // chão marcado e poeira do empurrão (vfx.js): o golpe deixa rastro no campo
+      this.vfx.marca?.(mv?.type, t.x, t.y, power * knock, dx, dy);
       if (note && (t.noteT ?? 0) < g.time) { t.noteT = g.time + 1.5; g.fx.number(t.x, ty - 40, { água: 'Força da água!', mato: 'Força do mato!', molhado: 'Molhado: choque forte!', apagou: 'A água apagou o fogo' }[note] ?? note, 0x9ad0ff); }
       this.ai.noise(t.x, t.y, 60 + pw, by);
     } else t.flash = 0.08;
@@ -893,6 +912,8 @@ export class Combat {
     this.sfx('faint', null, 0.1);
     this.ai.noise(t.x, t.y, 160, by);
     t.faintT = 0; t.faintDir = (Math.random() < 0.5 ? -1 : 1);
+    // faixa "<NOME> DESMAIOU!" na sua luta (o seu Pokémon ou quem você derrubou)
+    if (g.show && (t.side === 'ally' || by?.side === 'ally' || t.side === 'foe')) g.show.faixa(`${t.mon.name} desmaiou!`.toLocaleUpperCase('pt-BR'), 'ko');
     t.charging = null; t.dashing = null;
     if (t.alt?.mode) this.alt.cancel(t);
     g.onFaint(t, by);

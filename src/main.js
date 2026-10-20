@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import { Lendarios } from './world/lendarios.js';
 import { Input, IS_TOUCH } from './engine/input.js';
 import { Fx } from './engine/fx.js';
+import { Espetaculo } from './ui/espetaculo.js';
 import { makeTiles, T, TILE } from './world/tiles.js';
 import { GameMap, MAP_ID } from './world/map.js';
 import { WorldLife } from './world/life.js';
@@ -59,6 +60,7 @@ class Game {
     await this.map.carregar(Viagem.mundoInicial()); // continente do jogo salvo (assets/maps/mundos.json)
     this.world.addChild(this.map.buildLayer());
     this.fx = new Fx(this);
+    this.show = new Espetaculo(this); // textos da luta, anúncio do golpe, faixas e quadro de impacto (src/ui/espetaculo.js)
     this.world.addChild(this.fx.ground);
     this.ents = new PIXI.Container(); this.ents.sortableChildren = true;
     this.world.addChild(this.ents);
@@ -180,10 +182,20 @@ class Game {
     if (A && !A.done) ({ x: e.x, y: e.y } = this.#ondeEntra(A, e.x, e.y));
     this.map.resolve(e, e.r);
     this.lead = e; this.entities.push(e); this.ents.addChild(e.view);
-    this.fx.burst(e.x, e.y - 8, 0xffffff, 1); this.fx.ring(e.x, e.y, 0xffffff, 12, 0.35); e.vz = 90;
+    this.#bolaAbre(e); e.vz = 90; e.entrada = 0.34;
     this.mode = 'pokemon';
     this.audio.sfx('pop');
     this.hudLead(); this.hudMoves();
+  }
+  // bola se abrindo no campo: clarão, faíscas vermelhas e brancas, anel de choque no chão e poeira
+  #bolaAbre(e) {
+    const fx = this.fx, cy = e.y - 8;
+    fx.burst(e.x, cy, 0xffffff, 1); fx.light(e.x, cy, 0xffffff, 46, 0.3, 0.9);
+    fx.shock(e.x, e.y, 0xffffff, 34, 0.4); fx.ring(e.x, e.y, 0xff5a5a, 10, 0.45, { width: 2 });
+    fx.emit(e.x, cy, { tex: 'spark', color: 0xff4a4a, n: 10, speed: 130, life: 0.32, stretch: 0.012, drag: 4 });
+    fx.emit(e.x, cy, { tex: 'twinkle', color: 0xffffff, n: 10, speed: 70, life: 0.5, drag: 2 });
+    fx.emit(e.x, e.y, { tex: 'dust', n: 6, speed: 45, life: 0.5, scale: 0.6, end: 1.6, add: false, alpha: 0.6, ground: true });
+    fx.kick(0.12, 0);
   }
   // arena de ginásio: lugar livre dentro dela, a no máximo 3 blocos do treinador (do lado de onde a bola foi)
   #ondeEntra(A, x, y) {
@@ -218,7 +230,13 @@ class Game {
   recall(silent = false) {
     const l = this.lead; if (!l) { this.mode = 'trainer'; return; }
     const p = this.player;
+    // raio vermelho de volta à bola: feixe reto do Pokémon até o treinador, brilho nas duas pontas e a silhueta vermelha
+    // do Pokémon encolhendo para dentro do raio
     for (let k = 0; k <= 8; k++) this.fx.emit(l.x + (p.x - l.x) * k / 8, l.y - 8 + (p.y - 12 - l.y + 8) * k / 8, { color: 0xff4a4a, n: 2, speed: 8, size: 4, life: 0.3 });
+    this.fx.bolt(l.x, l.y - 8, p.x, p.y - 12, 0xff3a3a, 0.32, { amp: 0, seg: 2, width: 3 });
+    this.fx.bolt(l.x, l.y - 8, p.x, p.y - 12, 0xff7a7a, 0.22, { amp: 1.5, width: 1.5 });
+    this.fx.light(p.x, p.y - 12, 0xff4a4a, 26, 0.3); this.fx.light(l.x, l.y - 8, 0xff4a4a, 34, 0.3);
+    this.combat?.vfx?.afterimage(l, 0xff3a3a, 0.9, 0.3);
     this.fx.burst(l.x, l.y - 8, 0xff5a5a, 0.7);
     this.ents.removeChild(l.view); this.entities = this.entities.filter((e) => e !== l); this.lead = null;
     this.mode = 'trainer';
@@ -532,7 +550,7 @@ class Game {
     if (inp.pressed('perf')) $('perf').hidden = !$('perf').hidden;
     if (this.viagem?.ocupada) { this.viagem.quadro(rdt); this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // trocando de mundo
     // título, menu e diálogo param o mundo (a câmera e o desenho continuam)
-    if (this.ui?.frame(rdt)) { this.net?.update(rdt, true); this.#camera(rdt); this.map.flushDirty(); this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // o online segue mesmo com o menu aberto
+    if (this.ui?.frame(rdt)) { this.show.update(0); this.net?.update(rdt, true); this.#camera(rdt); this.map.flushDirty(); this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // o online segue mesmo com o menu aberto
     // pausa no impacto: o mundo congela por alguns milissegundos
     let dt = rdt;
     if (this.fx.hitStop > 0) { this.fx.hitStop -= rdt; dt = rdt * 0.08; }
@@ -550,6 +568,7 @@ class Game {
     this.#crowd();
     this.arenaGinasio?.conterTodos(); // arena de ginásio: no fim do quadro, ninguém da luta fica fora dela
     this.fx.update(dt);
+    this.show.update(rdt, dt);
     this.#camera(rdt);
     this.map.flushDirty();
     this.mundo.update(rdt);

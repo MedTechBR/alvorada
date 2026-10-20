@@ -126,6 +126,7 @@ export class Fx {
   // ---------- textos em fonte pixel ----------
   // estilo: 'dmg' (salta em arco), 'info' (sobe), 'banner' (letreiro grande que treme)
   number(x, y, text, color = '#ffffff', big = false, style = null) {
+    if (this.g.show) return this.g.show.texto(x, y, text, color, big, style); // textos na camada de tela (nítidos também no 3D)
     const keys = glyphKeys(String(text), this.T);
     const c = typeof color === 'string' ? parseInt(color.replace('#', ''), 16) : color;
     const st = style ?? (/^[0-9]+$/.test(String(text)) ? 'dmg' : 'info');

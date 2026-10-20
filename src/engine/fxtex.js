@@ -117,6 +117,10 @@ export function buildFxAtlas() {
   add('scorch', 22, 12, (g) => { g.fillStyle = 'rgba(30,20,12,.5)'; g.beginPath(); g.ellipse(11, 6, 10.5, 5.5, 0, 0, 7); g.fill(); g.fillStyle = 'rgba(14,8,4,.5)'; g.beginPath(); g.ellipse(11, 6, 6, 3, 0, 0, 7); g.fill(); for (let i = 0; i < 9; i++) P(g, 'rgba(60,40,24,.6)', 2 + ((i * 7) % 18), 2 + ((i * 5) % 8), 2, 1); });
   add('crack', 24, 14, (g) => { g.strokeStyle = 'rgba(40,26,14,.75)'; g.lineWidth = 1; const L = [[12, 7, 2, 2], [12, 7, 22, 3], [12, 7, 4, 13], [12, 7, 20, 12], [12, 7, 12, 0]]; for (const [a, b, c2, d] of L) { g.beginPath(); g.moveTo(a, b); g.lineTo((a + c2) / 2 + 1, (b + d) / 2 - 1); g.lineTo(c2, d); g.stroke(); } });
   add('splat', 16, 9, (g) => { g.fillStyle = 'rgba(255,255,255,.55)'; g.beginPath(); g.ellipse(8, 4.5, 6, 3.2, 0, 0, 7); g.fill(); [[2, 2], [14, 3], [3, 7], [13, 7], [8, 0]].forEach(([a, b]) => P(g, 'rgba(255,255,255,.55)', a, b, 2, 1)); });
+  // marcas que ficam no campo da luta (vfx.marca): poça, geada, gosma e o arrasto de uma investida
+  add('puddle', 24, 12, (g) => { g.fillStyle = 'rgba(40,110,200,.55)'; g.beginPath(); g.ellipse(12, 6, 11, 5, 0, 0, 7); g.fill(); g.beginPath(); g.ellipse(4, 3, 3, 1.6, 0, 0, 7); g.ellipse(21, 9.5, 2.4, 1.3, 0, 0, 7); g.fill(); g.fillStyle = 'rgba(190,230,255,.7)'; g.fillRect(8, 4, 5, 1); g.fillRect(14, 7, 3, 1); });
+  add('frost', 24, 14, (g) => { g.fillStyle = 'rgba(200,240,255,.45)'; g.beginPath(); g.ellipse(12, 7, 11, 6, 0, 0, 7); g.fill(); g.strokeStyle = 'rgba(255,255,255,.9)'; g.lineWidth = 1; for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2; g.beginPath(); g.moveTo(12, 7); g.lineTo(12 + Math.cos(a) * 10, 7 + Math.sin(a) * 5.5); g.stroke(); } P(g, '#fff', 11, 6, 2, 2); });
+  add('skid', 16, 6, (g) => { for (let i = 0; i < 16; i++) { const a = (0.15 + 0.45 * Math.sin(i / 15 * Math.PI)).toFixed(2); P(g, `rgba(40,28,16,${a})`, i, 1, 1, 1); P(g, `rgba(40,28,16,${a})`, i, 4, 1, 1); } });
   add('turf', 12, 8, (g) => pix(g, ['...####.....', '.##dddd##...', '#ddmmmmdd#..', '#dmmmmmmd#..', '.#ddmmdd#...', '..######....', '............', '............'], { '#': '#5a4028', d: '#7a5a38', m: '#9a7448' }));
   add('stump', 10, 6, (g) => pix(g, ['..######..', '.#llllll#.', '#lddddddl#', '#bbbbbbbb#', '.#bbbbbb#.', '..######..'], { '#': '#4a3220', l: '#c8a070', d: '#a07a4c', b: '#6b4a2e' }));
 
@@ -138,6 +142,7 @@ export function buildFxAtlas() {
     });
   }
 
+  if (cy + rowH > ATLAS_H) console.error('[fx] atlas de efeitos cheio: aumente ATLAS_H', cy + rowH);
   const tex = PIXI.Texture.from(c); tex.source.scaleMode = 'nearest';
   const src = tex.source;
   const out = { source: src, tex: {}, size: {} };
