@@ -18,10 +18,10 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'cidade_coral', requer: ['nh.nadar'], semFlag: ['nh.chegouCoral'] },
       falas: [
         ['narrador', 'Cidade Coral: um farol enorme na ponta do morro, feira de conchas e um calçadão cheio de turistas.'],
-        ['narrador', 'O Líder Jonas cuida do farol e da insígnia Faísca. Mas as luzes do farol estão apagadas há dois dias, e ninguém sabe dizer por quê.'],
+        ['narrador', 'Você desce do barco no cais e sente o vento salgado no rosto. O Líder Jonas cuida do farol e da insígnia Faísca.'],
+        ['narrador', 'Mas as luzes do farol piscam fora de hora há dois dias, e ninguém na cidade quer falar sobre isso.'],
         ['jogador', 'Antes de falar com o Jonas, preciso ver o que está acontecendo no farol.'],
-        ['jogador', 'Um farol apagado e um líder que não quer falar. Isso não cheira bem.'],
-        ['narrador', 'Você desce do barco no cais e sente o vento salgado no rosto. A cidade inteira parece estar esperando alguma coisa.'],
+        ['jogador', 'Um farol que pisca sozinho e uma cidade que faz silêncio. Isso não cheira bem.'],
       ],
       depois: {
         flags: { 'nh.chegouCoral': true },
@@ -56,11 +56,11 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'farol_coral', requer: ['nh.viuSolano'], semFlag: ['nh.ebanoCoral'] },
       falas: [
         ['iracema', 'Você veio! Olha, o gerador três foi trocado de noite. A peça nova não é do farol. É da Aurora.'],
-        ['narrador', 'No topo do farol, dois recrutas de capa roxa seguram a pedra do farol, uma pedra azul do tamanho de uma noz. Um deles tem a outra mão na alavanca dos geradores.'],
-        ['recruta', 'Tarde demais, velha. A pedra vai pro Relógio. Quando o sol parar de nascer, todo mundo vai entender por quê.'],
-        ['ebano', 'Admin Ébano. Se você está aqui, então ouviu o rádio. A Dra. Véspera quer as pedras longe da Aurora. Você não vai entender enquanto não ver o que ela vê.'],
+        ['narrador', 'No topo do farol, dois recrutas de capa roxa seguram a pedra, uma pedra azul do tamanho de uma noz. Um deles mexe na alavanca dos geradores.'],
+        ['recruta', 'Tarde demais, velha. A pedra vai para o Relógio. Quando o sol deixar de nascer, você vai entender por quê.'],
+        ['ebano', 'Admin Ébano. A Dra. Véspera quer as pedras longe da Aurora. Você não vai entender enquanto não ver o que ela vê.'],
         ['jogador', 'Eu vejo a Aurora trocando geradores em cima de um farol. Esta é a sua explicação?'],
-        ['ebano', 'Então vem pegar a pedra!'],
+        ['ebano', 'Então vem tirar a pedra de mim!'],
       ],
       depois: {
         batalha: {
@@ -81,9 +81,9 @@ export default {
       local: 'farol_coral',
       gatilho: { tipo: 'vencer', alvo: 'c4_ebano' },
       falas: [
-        ['narrador', 'O Ébano recua. Ao cair, a pedra do farol rola pela escada, e a Iracema a segura com as duas mãos antes que ela caia no mar.'],
+        ['narrador', 'O Ébano recua. A pedra escapa da mão do recruta, rola pela escada, e a Iracema a segura com as duas mãos antes que caia no mar.'],
         ['iracema', 'Pronto. Está comigo de novo. O gerador, porém, continua girando sozinho. Quem mexeu nele foi a Aurora, não a Crepúsculo.'],
-        ['jogador', 'Então a Crepúsculo e a Aurora estão do mesmo lado?'],
+        ['jogador', 'Então a Crepúsculo e a Aurora estão trabalhando juntas aqui?'],
         ['iracema', 'Não sei. Eu só sei que quem troca peça de farol à noite não é amigo de ninguém. Leve a pedra ao Jonas. Ele precisa saber.'],
       ],
       depois: {
@@ -98,14 +98,14 @@ export default {
       id: 'j04_saulo',
       local: 'farol_coral',
       gatilho: { tipo: 'avistar', alvo: 'g4_saulo' },
-      falas: [['aprendiz', 'O Jonas usa um Lanturn no final. Ele nada e dá choque ao mesmo tempo. Golpe de Terra resolve, se você tiver.']],
+      falas: [['aprendiz', 'O Jonas fecha com um Ampharos, puro choque. Golpe de Terra resolve, se você tiver um.']],
       depois: { batalha: { id: 'g4_saulo', nome: 'Técnico Saulo', dinheiro: 900, equipe: [[125, 22, ['thunderShock', 'quickAttack', 'leer']], [81, 23, ['thunderShock', 'supersonic', 'tackle']]] } },
     },
     {
       id: 'j04_duda',
       local: 'farol_coral',
       gatilho: { tipo: 'avistar', alvo: 'g4_duda' },
-      falas: [['aprendiz', 'Lá em cima, os três geradores. A ordem? A Iracema sabe. Ela sabe tudo deste farol.']],
+      falas: [['aprendiz', 'Os três geradores precisam girar na mesma ordem. Só a Iracema sabe qual é, e ela não conta para ninguém.']],
       depois: { batalha: { id: 'g4_duda', nome: 'Técnica Duda', dinheiro: 950, equipe: [[309, 23, ['thunderShock', 'bite', 'quickAttack']], [181, 24, ['confuseRay', 'thunderbolt', 'discharge']]] } },
     },
     {
@@ -114,9 +114,9 @@ export default {
       gatilho: { tipo: 'falar', alvo: 'jonas', requer: ['nh.pedraCoral', 'trainers.g4_saulo', 'trainers.g4_duda'], semFlag: ['badges.coral'] },
       falas: [
         ['jonas', 'Você trouxe a pedra de volta, e ainda passou pelos meus aprendizes. Ninguém faz isso sem levar um choque.'],
-        ['jonas', 'Eu já ia pedir ajuda. Mas vamos batalhar primeiro. Eu sou eletricidade, e eletricidade não espera ninguém terminar de falar.'],
-        ['jogador', 'Eu trouxe a pedra. E trouxe também os recados da Iracema e do Solano.'],
-        ['jonas', 'Então é melhor a gente batalhar primeiro. Não quero conversa sem eletricidade.'],
+        ['jonas', 'Eu ia pedir ajuda, mas antes vamos batalhar. Eletricidade não espera ninguém terminar de falar.'],
+        ['jogador', 'Eu trouxe a pedra. E a Iracema mandou dizer que a Aurora trocou o gerador três.'],
+        ['jonas', 'Então me mostra o que você aprendeu. Depois a gente conversa.'],
       ],
       depois: {
         batalha: {
@@ -130,7 +130,7 @@ export default {
         },
       },
       atores: [
-        { id: 'jonas_ginasio', quem: 'jonas', nome: 'Líder Jonas', look: LOOKS.jonas, spot: 'jonas', permanente: true, padrao: ['Religue os três geradores e a gente conversa! Eu estou com preguiça de consertar.'] },
+        { id: 'jonas_ginasio', quem: 'jonas', nome: 'Líder Jonas', look: LOOKS.jonas, spot: 'jonas', permanente: true, padrao: ['Ajuste os três geradores e a gente conversa! Eu entendo de choque, não de engrenagem.'] },
       ],
     },
     {
@@ -159,8 +159,8 @@ export default {
       local: 'farol_coral',
       gatilho: { tipo: 'falar', alvo: 'iracema', requer: ['nh.viuSolano'], semFlag: ['nh.sqDiario'] },
       falas: [
-        ['iracema', 'Eu escrevi tudo que aconteceu neste farol, todo dia, desde que me contrataram. Quarenta anos de caderno. Ficou lá em cima, no quarto dos geradores.'],
-        ['iracema', 'A Aurora trocou as peças do farol sem avisar ninguém, e agora a luz pisca fora de hora. Se tem prova, está no meu diário. Mas estes joelhos não sobem mais aquela escada.'],
+        ['iracema', 'Eu anoto tudo que acontece neste farol há trinta anos. O caderno ficou lá em cima, no quarto dos geradores.'],
+        ['iracema', 'A Aurora trocou as peças sem avisar. Se tem prova, está no meu diário. Mas estes joelhos não sobem mais a escada.'],
         ['jogador', 'Um diário de farol? Isso pode ser o que a senhora estava escondendo.'],
         ['iracema', 'Eu não escondia. Eu esperava alguém que quisesse ler.'],
       ],
@@ -177,10 +177,10 @@ export default {
       falas: [
         ['narrador', 'No quarto dos geradores, um caderno de capa verde está preso debaixo de uma caixa de ferramentas. As últimas páginas são de outra letra.'],
         ['narrador', '"Dia 3: o gerador três foi trocado por ordem da Companhia Aurora. Peça nova, sem número de série. Assinado: A. Solano."'],
-        ['narrador', '"Dia 14: a luz gira sozinha. Acende mais cedo lá embaixo e mais tarde aqui em cima. Não é o farol que está errado. É o sol."'],
+        ['narrador', '"Dia 14: o farol gira no horário que a Aurora mandou, não no do sol. Não é o farol que está errado. É o sol que está atrasado."'],
         ['narrador', 'Atrás da caixa, a lâmpada de luzita pisca em código: S-O-C-O-R-R-O. Dentro dela, uma bolinha de plasma com olhos bate no vidro.'],
-        ['jogador', 'Então era isso que a Iracema ouvia pelo rádio. Tem um Rotom preso aí dentro.'],
-        ['narrador', 'Você gira o parafuso da lâmpada. O vidro estala, o Rotom sai faiscando de alívio e se agarra ao seu ombro. Lá embaixo, o mar bate nas pedras, e a luz do topo ainda gira fora de hora.'],
+        ['jogador', 'Então é isso que faz o farol piscar fora de hora. Tem um Rotom preso aí dentro.'],
+        ['narrador', 'Você gira o parafuso. O vidro estala, e o Rotom sai faiscando de alívio e se agarra ao seu ombro. Lá em cima, a luz ainda gira fora de hora.'],
       ],
       secundaria: { texto: 'Leve o diário da Iracema de volta a ela, no pé do farol', alvo: 'farol_entrada' },
       depois: { flags: { 'nh.diarioFarol': true }, pokemon: [479, 25], ambiente: true },
@@ -190,10 +190,10 @@ export default {
       local: 'farol_entrada',
       gatilho: { tipo: 'falar', alvo: 'iracema', requer: ['nh.diarioFarol'], semFlag: ['nh.sqDiarioFim'] },
       falas: [
-        ['iracema', 'Eu sabia. Ele esteve aqui, trocou o meu gerador e deixou o nome no meu diário, como quem não tem medo de ser lido.'],
-        ['iracema', 'E o Rotom! Ele pedia socorro desde a semana passada, e eu pensando que era o rádio. Cuide dele: gente presa na luz aprende a gostar de quem abre a porta.'],
+        ['iracema', 'Eu sabia. Ele esteve aqui, trocou o meu gerador e assinou a troca no meu próprio caderno, como quem não tem medo de ser lido.'],
+        ['iracema', 'E o Rotom! Ele pedia socorro desde a semana passada, e eu achando que era interferência. Cuide dele, por favor.'],
         ['iracema', 'Tome estas poções. São as últimas que eu tenho guardadas. Vai precisar delas no caminho.'],
-        ['jogador', 'Eu conto ao Jonas. Ele disse que quer ajudar, mesmo que não queira admitir.'],
+        ['jogador', 'Eu levo o diário ao Jonas. A cidade precisa saber disso.'],
         ['narrador', 'A Iracema guarda o diário debaixo do braço e olha para o farol com um sorriso pequeno.'],
       ],
       depois: { itens: [['superPotion', 3]], flags: { 'nh.sqDiarioFim': true }, ambiente: true },
@@ -202,9 +202,9 @@ export default {
       id: 'j04_boletim4',
       gatilho: { tipo: 'flag', alvo: 'badges.coral', semFlag: ['nh.boletim.4'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e trinta e quatro minutos. O farol de Cidade Coral voltou a piscar, mas com atraso, segundo os marinheiros.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e trinta e quatro. O farol de Cidade Coral segue piscando fora de hora.'],
         ['mae', 'Ravi, seis e trinta e quatro. De manhã a casa fica escura por mais tempo. Anda, filho, volta logo.'],
-        ['jogador', 'Mãe, não sei quanto tempo mais essa história dura. Mas estou voltando para casa.'],
+        ['jogador', 'Mãe, não sei quanto tempo essa história ainda dura. Mas prometo voltar para casa quando o sol estiver no lugar.'],
       ],
       depois: { flags: { 'nh.boletim.4': true, 'nh.sol': '6h34' }, ambiente: true },
     },
