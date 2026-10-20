@@ -79,7 +79,7 @@ const TEXTOS = {
 };
 
 export function gerarInteriores(R, { KINDS, ids, parteDe }) {
-  const out = [];
+  const out = [], rumorDado = new Set(); // cidades cujo morador do rumor de lendário já foi escolhido
   const areaEm = (x, y) => { let best = null; for (const a of R.areas) { if (a.rect) { const [ax, ay, aw, ah] = a.rect; if (x >= ax && y >= ay && x < ax + aw && y < ay + ah) best = a; } else if (a.ellipse) { const [cx, cy, rx, ry] = a.ellipse; if (Math.hypot((x - cx) / rx, (y - cy) / ry) < 1) best = a; } } return best; };
   const cidadeEm = (x, y) => {
     for (let i = R.areas.length - 1; i >= 0; i--) { const a = R.areas[i]; if (!a.id || !CIDADES[a.id]) continue; const r = a.rect; if (r ? x >= r[0] - 6 && y >= r[1] - 6 && x < r[0] + r[2] + 6 && y < r[1] + r[3] + 6 : Math.hypot((x - a.ellipse[0]) / (a.ellipse[2] + 6), (y - a.ellipse[1]) / (a.ellipse[3] + 6)) < 1) return { id: a.id, ...CIDADES[a.id] }; }
@@ -95,7 +95,7 @@ export function gerarInteriores(R, { KINDS, ids, parteDe }) {
     let id = o.predio ?? o.interior?.id ?? `${PREFIXO[tipo] ?? 'casa'}_${o.x}_${o.y}`;
     while (ids.has(id)) id += '_b';
     ids.add(id);
-    const ctx = { o, r, id, tipo, area, cid, plano, cidade: cid?.nome ?? area?.name ?? R.nome, parte: parteDe(o.x, o.y), kind: o.kind };
+    const ctx = { o, r, id, tipo, area, cid, plano, rumorDado, cidade: cid?.nome ?? area?.name ?? R.nome, parte: parteDe(o.x, o.y), kind: o.kind };
     const salas = montar(ctx);
     o.to = id;
     for (const s of salas) out.push({ parte: ctx.parte, gerado: true, ...s });
@@ -169,6 +169,7 @@ function falas(c, papel) {
   for (const f of c.o.interior?.falas ?? []) L.push(f);
   return L.slice(0, 5);
 }
+const CASAS = new Set(['casa', 'sala', 'cozinha', 'quarto', 'sobrado']);
 function moradores(c, salaId, pontos) {
   const I = c.o.interior ?? {}, r = c.r, out = [];
   if (I.moradores) return I.moradores.map((d) => ({ ...d }));
@@ -179,7 +180,10 @@ function moradores(c, salaId, pontos) {
     let name; do name = jovem ? pick(r, JOVENS) : pick(r, ADULTOS); while (usados.has(name)); usados.add(name);
     // cada morador começa a conversa por um assunto diferente
     const L = falas(c, jovem ? 'jovem' : 'adulto'), k = i * 2 % Math.max(1, L.length), lines = [...L.slice(k), ...L.slice(0, k)];
-    out.push({ id: `${salaId}_m${i + 1}`, name, look, x, y, dir: 'down', wander: 1, ...(jovem ? { kid: true } : {}), lines, gerado: true });
+    // rumor de lendário: só um morador por cidade (o 1º adulto da 1ª casa gerada) carrega a marca; a fala entra em
+    // src/world/people.js na hora da conversa (precisa saber se o lendário já foi resolvido)
+    const marca = !jovem && c.cid?.id && !c.rumorDado?.has(c.cid.id) && CASAS.has(c.tipo) ? (c.rumorDado.add(c.cid.id), { rumorCidade: c.cid.id }) : {};
+    out.push({ id: `${salaId}_m${i + 1}`, name, look, x, y, dir: 'down', wander: 1, ...(jovem ? { kid: true } : {}), ...marca, lines, gerado: true });
   }
   return out;
 }
