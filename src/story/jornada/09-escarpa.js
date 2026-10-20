@@ -69,7 +69,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.reviravolta4': true },
-        objetivo: { texto: 'Descoberta: juntar as oito pedras no Relógio ABRE o cadeado, e o Solano quer o Necrozma. Vá à Mina Velha, ao fundo da cidade, vença os mineiros e enfrente a Líder Graça', alvo: 'mina_velha', treinadores: ['g7_juvenal', 'g7_rita'], rotulo: 'Mineiros' },
+        objetivo: { texto: 'Descoberta: juntar as oito pedras no Relógio ABRE o cadeado, e o Solano quer o Necrozma. Vá à Mina Velha, ao fundo da cidade, vença os mineiros e enfrente a Líder Graça', alvo: 'leader_graca', treinadores: ['g7_juvenal', 'g7_rita'], rotulo: 'Mineiros' },
       },
       atores: [
         { id: 'vespera_escarpa', quem: 'vespera', nome: 'Dra. Véspera', look: LOOKS.vespera, spot: 'ninho_cidade_escarpa', longe: 3 },

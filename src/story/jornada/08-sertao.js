@@ -84,7 +84,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.sina': true, 'nh.viuSina': true },
-        objetivo: { texto: 'Descoberta: o Absol que aparece antes de cada desastre é a Sina, a parceira da Dra. Véspera, presa à luz do Relógio. Vá ao Paredão, na Cidade Escarpa, e procure a Líder Graça', alvo: 'ninho_cidade_escarpa' },
+        objetivo: { texto: 'Descoberta: o Absol que aparece antes de cada desastre é a Sina, a parceira da Dra. Véspera, presa à luz do Relógio. Volte à praça de Vila Mandacaru: o Téo está lá', alvo: 'sertao_praca_mandacaru' },
       },
       atores: [
         { id: 'sina_ruinas', quem: 'absol', pokemon: 359, nome: 'Sina', spot: 'dentro_ruinas_pintada_2', cena: ['j08_sina_revela'] },
@@ -105,6 +105,7 @@ export default {
           equipe: [[397, 28, ['wingAttack', 'aerialAce', 'quickAttack']], [59, 28, ['flameWheel', 'crunch', 'extremeSpeed']], [197, 29, ['feintAttack', 'confuseRay', 'moonlight']], ['rival:3', 30, []]],
         },
         flags: { 'nh.rival4': true },
+        objetivo: { texto: 'Pegue o mapa do Paredão no Museu do Sertão, em Vila Mandacaru', alvo: 'museu_sertao' },
       },
       atores: [
         { id: 'teo_sertao', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'sertao_praca_mandacaru', longe: 3 },

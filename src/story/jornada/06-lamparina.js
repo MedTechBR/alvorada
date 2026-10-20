@@ -91,7 +91,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.viuVespera6': true },
-        objetivo: { texto: 'Volte ao Casarão das Velas e pergunte à Dona Zélia sobre a vela que ela guarda', alvo: 'casarao_velas' },
+        objetivo: { texto: 'Volte ao Casarão das Velas e pergunte à Dona Zélia sobre a vela que ela guarda', alvo: 'zelia' },
       },
       atores: [
         { id: 'vespera_cemiterio', quem: 'vespera', nome: 'Dra. Véspera', look: LOOKS.vespera, spot: 'cemiterio_porta', longe: 3 },

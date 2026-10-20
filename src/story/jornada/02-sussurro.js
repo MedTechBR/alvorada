@@ -28,7 +28,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.chegouSussurro': true },
-        objetivo: { texto: 'Entre no Bosque Sussurrante, a oeste, e descubra quem está rondando a estufa', alvo: 'bosque_sussurrante' },
+        objetivo: { texto: 'Entre no Bosque Sussurrante, a oeste, e descubra quem está rondando a estufa', alvo: 'trilha_jequitiba' },
       },
     },
     {
@@ -44,7 +44,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.ouviuRecrutas': true },
-        objetivo: { texto: 'Avise a Lia na Vila Sussurro: a estufa será roubada hoje à noite', alvo: 'vila_sussurro' },
+        objetivo: { texto: 'Volte depressa pela trilha até a Vila Sussurro: a estufa da Lia será roubada hoje à noite', alvo: 'bifurcacao' },
       },
       atores: [
         { id: 'recruta_trilha', quem: 'recruta', nome: 'Recruta Crepúsculo', look: LOOKS.crepusculo, spot: 'trilha_jequitiba', longe: 4 },
@@ -112,7 +112,25 @@ export default {
       ],
       depois: {
         flags: { 'nh.viuCristal': true },
-        objetivo: { texto: 'Leve o que viu da gruta de volta à Lia, na Vila Sussurro', alvo: 'vila_sussurro' },
+        objetivo: { texto: 'Leve o que viu da gruta de volta à Lia, na estufa da Vila Sussurro', alvo: 'lia' },
+      },
+    },
+    {
+      // o jogador conta da gruta à Lia (na estufa) e fica com ela para a noite em que os recrutas voltam
+      id: 'j02_lia_cristal',
+      local: 'estufa_lia',
+      gatilho: { tipo: 'falar', alvo: 'lia', requer: ['nh.viuCristal'], semFlag: ['nh.defendeuEstufa', 'nh.contouCristal'] },
+      falas: [
+        ['jogador', 'Lia! Um Absol branco me levou até uma gruta no bosque. Tinha um Ariados fora de si e uns veios de cristal que pulsam, como se respirassem.'],
+        ['lia', 'Veios que pulsam… Então é isso. As árvores com raiz perto deles estão secando, e eu não sabia por quê.'],
+        ['lia', 'E os de capa roxa ainda querem a minha pedra. Se eles vierem hoje à noite, eu quero alguém aqui comigo. Você fica?'],
+        ['jogador', 'Fico. Ninguém mexe na sua estufa.'],
+        ['narrador', 'Vocês apagam as lanternas e esperam no escuro, entre os casulos.'],
+      ],
+      depois: {
+        flags: { 'nh.contouCristal': true },
+        hora: 20,
+        objetivo: { texto: 'Proteja a estufa da Lia: os recrutas da Crepúsculo chegam à noite', alvo: 'estufa_lia' },
       },
     },
     {

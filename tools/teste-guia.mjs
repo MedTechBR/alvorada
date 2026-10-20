@@ -41,11 +41,17 @@ function grafo(f, caps) {
   if (caps.correr) { D.saltos = saltosDe(D, saltaveis, G.livre); G.comSaltos = grafoDe(D); }
   return G;
 }
-// alvo por nome: { x, y, area? } em blocos
+// alvo por nome: { x, y, area? } em blocos (como roteiro.#alvo: ator do elenco, morador do mapa, sala, ponto, área)
+const { ELENCO_ATIVO } = await abrir('src/story/elenco-ativo.js');
+const ATOR = new Map(ELENCO_ATIVO.filter((e) => e.spot && !e.cena && A.spots[e.spot]).map((e) => [e.id, A.spots[e.spot]]));
+const PESSOA = new Map((A.S.people ?? []).filter((d) => d.id).map((d) => [d.id, [Math.floor(d.x + 0.5), Math.floor(d.y + 0.5)]]));
 function alvoDe(nome) {
+  const pa = ATOR.get(nome) ?? PESSOA.get(nome); if (pa && !A.spots[nome]) return { x: pa[0], y: pa[1] };
   const as = A.areas.filter((a) => a.id === nome);
   if (as.length && !A.spots[nome]) { const a = as[0], [cx, cy] = a.rect ? [a.rect[0] + a.rect[2] / 2, a.rect[1] + a.rect[3] / 2] : [a.ellipse[0], a.ellipse[1]]; return { x: Math.floor(cx), y: Math.floor(cy), area: a }; }
   if (A.spots['dentro_' + nome]) { const [x, y] = A.spots['dentro_' + nome]; return { x, y }; }
+  const r = A.salas.find((q) => q.id === nome), na = (x, y) => r && x >= r.x && y >= r.y && x < r.x + r.w && y < r.y + r.h;
+  const w = r && A.warps.find((q) => na(q.to[0], q.to[1]) && !na(q.x, q.y)); if (w) return { x: w.to[0], y: w.to[1] }; // sala sem porta: a escada que entra nela
   const L = lugar(A, nome); return L ? { x: L.x, y: L.y } : null;
 }
 const C = new CampoGuia(W, H);
@@ -107,6 +113,30 @@ for (let i = 0; i < PASSOS.length; i++) {
   linhas.push(L);
   // o próximo passo começa onde este termina: no alvo do painel
   const a = alvoDe(passo?.alvo ?? nomes[0]); if (a) { chegada = [a.x, a.y]; nomeChegada = passo?.alvo ?? nomes[0]; }
+}
+
+// ---------------------------------------------------------------- o alvo do painel em cada passo da história
+// tools/alvos-passos.mjs simula as flags cena a cena e confere que o alvo do painel (resolvido como roteiro.#alvo) fica a
+// até 2 blocos de algo que dispara a cena seguinte: o ator de quem é preciso falar (o mesmo papel do gatilho "falar"), a
+// zona do "pisar", a sala/área do "entrar" ou a porta, escada ou barco que leva a ela. Nunca o centro de uma cidade.
+// Para cada um, o guia também precisa achar caminho até o alvo a partir do começo do passo.
+const { analisarAlvos } = await abrir('tools/alvos-passos.mjs');
+let nAlvosHist = 0, lia = null;
+{
+  const rs = await analisarAlvos(A);
+  for (const r of rs) {
+    if (!r.prox.length) continue; // fim do trecho: o painel passa para o próximo ginásio
+    nAlvosHist++;
+    ok(!!r.dispara, `história [${r.seg}] ${r.origem}: "${r.texto}" → ${r.alvo} ${r.pos ? `(${r.pos.x},${r.pos.y})` : '(desconhecido)'} não fica perto de nada que dispare a próxima cena (${r.prox.join(', ')})`);
+    if (/Leve o que viu da gruta/.test(r.texto ?? '')) lia = r;
+    if (!r.pos || r.origem.startsWith('passo ')) continue; // o alvo do passo seguinte já é conferido acima, com as flags dele
+    const i = PASSOS.findIndex((P) => P.segs.includes(r.seg)), P = PASSOS[Math.max(0, i)], f = flagsDe(P);
+    const de = alvoDe(proximoPasso(f)?.alvo ?? 'inicio') ?? { x: A.spots.inicio[0], y: A.spots.inicio[1] }; // parte do lugar do passo
+    const g = guiar(grafo(f, P.caps), { x: r.pos.x, y: r.pos.y, area: r.pos.area }, de.x, de.y);
+    ok(g.ok, `história [${r.seg}] ${r.origem}: sem caminho até ${r.alvo}: ${g.motivo}`);
+  }
+  ok(lia?.dispara?.startsWith('j02_lia_cristal') && lia.pos.x === A.spots.lider_lia[0], `o passo "Leve o que viu da gruta à Lia" deveria mirar a Lia na estufa e disparar j02_lia_cristal (${lia?.alvo} ${lia?.dispara})`);
+  linhas.push({ passo: 'história', de: 'cena a cena', alvos: nAlvosHist, mediaDist: 0, reta: 0 });
 }
 
 // ---------------------------------------------------------------- casos de interior: saindo de casa e entrando no prédio

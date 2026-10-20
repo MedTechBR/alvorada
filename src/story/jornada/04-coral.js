@@ -25,7 +25,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.chegouCoral': true },
-        objetivo: { texto: 'Suba ao Farol Coral, na ponta do morro, e veja o que aconteceu com as luzes', alvo: 'farol_entrada' },
+        objetivo: { texto: 'Vá à praça da Cidade Coral: a Companhia Aurora está inaugurando alguma coisa lá', alvo: 'praca_coral' },
       },
     },
     {
@@ -88,7 +88,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.pedraCoral': true },
-        objetivo: { texto: 'Leve a pedra do farol ao Líder Jonas, no ginásio da cidade', alvo: 'jonas' },
+        objetivo: { texto: 'Leve a pedra do farol ao Líder Jonas: vença os técnicos Saulo e Duda no ginásio e desafie o Jonas', alvo: 'jonas', treinadores: ['g4_saulo', 'g4_duda'], rotulo: 'Técnicos' },
       },
       atores: [
         { id: 'iracema_farol', quem: 'iracema', nome: 'Iracema', look: LOOKS.iracema, spot: 'farol_entrada', permanente: true },
@@ -146,7 +146,7 @@ export default {
       depois: {
         insignia: 'coral',
         flags: { 'nh.pedraCoral2': true },
-        objetivo: { texto: 'Pegue a balsa no cais de Cidade Coral para as Ilhas Jandaias', alvo: 'cais_coral' },
+        objetivo: { texto: 'Pegue a balsa no cais de Cidade Coral para as Ilhas Jandaias', alvo: 'barqueira_coral' },
       },
       atores: [
         { id: 'jonas_ginasio', quem: 'jonas', nome: 'Líder Jonas', look: LOOKS.jonas, spot: 'jonas', permanente: true },
