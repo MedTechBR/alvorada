@@ -1,5 +1,6 @@
 import { KINDS } from './objects.js';
 import { gerarInteriores } from './interiores.js';
+import { vestirSalas } from './receitas.js';
 
 // Mundos (continentes) e a montagem dos dados de um mapa a partir dos arquivos de assets/maps/.
 //
@@ -109,6 +110,7 @@ async function montar(id) {
   const ids = new Set(salas.map((r) => r.id));
   const novos = gerarInteriores(R, { KINDS, ids, parteDe });
   for (const s of novos) salas.push({ ...s, ...tamanho(s) });
+  vestirSalas(R, salas); // mobília no estilo dos originais (Centro, Mercado, casas, laboratório): src/world/receitas.js
   alocar(R, salas);
   // conteúdo das salas em coordenadas da sala → absolutas (itens, passagens internas)
   const porId = Object.fromEntries(salas.map((r) => [r.id, r]));

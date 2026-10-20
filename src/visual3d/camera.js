@@ -64,13 +64,23 @@ export class CameraDinamica {
       else if (m.under) { dist *= 0.86; incl += 4; }
       else if (this.cinema && corre > 90) { dist *= 1.07; incl -= 3; }
     }
-    // interior: mais alto, preso ao cômodo
+    // interior: mais alto, preso ao cômodo. Sala que cabe na tela: enquadrada inteira, do topo da parede do fundo
+    // (com os cartazes) até a parede baixa da frente, como nos jogos originais; sala grande: segue o jogador.
     if (room) {
-      incl = 56; dist *= 0.74;
-      const rx0 = room.x * 16, rx1 = (room.x + room.w) * 16, rz0 = room.y * 16, rz1 = (room.y + room.h) * 16;
-      const meiaW = (innerWidth / Math.max(1, g.zoom)) * 0.42, meiaH = (innerHeight / Math.max(1, g.zoom)) * 0.36;
-      alvoX = rx1 - rx0 < meiaW * 2 ? (rx0 + rx1) / 2 : Math.min(rx1 - meiaW, Math.max(rx0 + meiaW, alvoX));
-      alvoZ = rz1 - rz0 < meiaH * 2 ? (rz0 + rz1) / 2 + 8 : Math.min(rz1 - meiaH, Math.max(rz0 + meiaH, alvoZ));
+      incl = 56;
+      const tanI = Math.tan(incl * RAD), senI = Math.sin(incl * RAD), fov = 34 * RAD, asp = innerWidth / Math.max(1, innerHeight);
+      const topo = room.__topo ??= Math.max(0, (room.rows ?? []).findIndex((l) => /[^w ]/.test(l)));
+      const zFundo = (room.y + topo) * 16, zFrente = (room.y + room.h - 1) * 16 + 8, zCima = zFundo - 72 / tanI;
+      const alto = (zFrente - zCima) * senI * 1.04 + 26, largo = room.w * 16 * 1.02;
+      const D = Math.max(alto, largo / asp) / (2 * Math.tan(fov / 2)), k = D / Math.max(1, this.v.distancia);
+      if (k <= 1.3) { dist *= Math.max(0.5, k); alvoX = (room.x + room.w / 2) * 16; alvoZ = (zCima + zFrente) / 2; }
+      else {
+        dist *= 0.74;
+        const rx0 = room.x * 16, rx1 = (room.x + room.w) * 16, rz0 = zCima, rz1 = zFrente;
+        const meiaW = (innerWidth / Math.max(1, g.zoom)) * 0.42, meiaH = (innerHeight / Math.max(1, g.zoom)) * 0.36;
+        alvoX = rx1 - rx0 < meiaW * 2 ? (rx0 + rx1) / 2 : Math.min(rx1 - meiaW, Math.max(rx0 + meiaW, alvoX));
+        alvoZ = rz1 - rz0 < meiaH * 2 ? (rz0 + rz1) / 2 : Math.min(rz1 - meiaH, Math.max(rz0 + meiaH, alvoZ));
+      }
     }
     // giro de leve para dar vida (±3°), só explorando
     if (this.cinema && !room && !lutadores) giro = Math.sin(this.v.t * 0.07) * 2.5;

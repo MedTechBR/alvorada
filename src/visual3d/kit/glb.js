@@ -9,21 +9,11 @@ import { carregarHGSS } from '../hgss/carregar.js';
 // da pegada (ou a altura `h`, em px do 2D). `iso`: profundidade igual à largura (TV, rádio: não fica chapada).
 // `encosto`: a traseira do modelo encosta no fundo da pegada (estante, rádio na parede); senão, a frente é o sul.
 // A geometria fica em cache por tipo (uma por tipo, compartilhada) e entra na malha mesclada do setor.
+// Os móveis de sala (balcões, sofás, estantes, mesas, TVs, cozinha, laboratório) são peças sob medida em
+// kit/moveis.js: mesma luz e escala do resto do kit. Do Kenney ficam só os miúdos que combinam com elas.
 export const GLB_TIPOS = {
-  table: { m: 'kenney/furniture/tableCloth', h: 12 },
-  balltable: { m: 'kenney/furniture/tableRound', h: 12 },
-  bed: { m: 'kenney/furniture/bedDouble', h: 12 },
-  tv: { m: 'kenney/furniture/televisionModern', iso: true, encosto: true, h: 16 },
-  shelf: { m: 'kenney/furniture/bookcaseClosedWide', encosto: true, h: 16 },
-  estante: { m: 'kenney/furniture/bookcaseOpen', encosto: true, h: 26 },
-  radio: { m: 'kenney/furniture/radio', iso: true, encosto: true },
-  plant: { m: 'kenney/furniture/pottedPlant' },
-  pc: { m: 'kenney/furniture/desk', h: 12 },
   crate: { m: 'kenney/furniture/cardboardBoxClosed' },
-  fogao: { m: 'kenney/furniture/kitchenStove', encosto: true, h: 15 },
-  sofa: { m: 'kenney/furniture/loungeSofa', encosto: true, h: 14 },
-  bench: { m: 'kenney/furniture/benchCushion', h: 12 },
-  geladeira: { m: 'kenney/furniture/kitchenFridgeLarge', encosto: true, h: 30 },
+  radio: { m: 'kenney/furniture/radio', iso: true, encosto: true },
 };
 
 // ?glb=0 desliga os modelos GLB (só para comparar com o bloco antigo)
