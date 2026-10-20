@@ -32,7 +32,7 @@ export const MISSOES = [
   },
   {
     id: 'sq_aurora_boreal', titulo: 'A luz que dança', regiao: 'Vila Geada', de: 'hanna',
-    requer: { insignias: 2 },
+    requer: { flags: ['relogio_vencido'] },
     versao: 2,
     resumo: 'A Dra. Hanna estuda há onze anos uma aurora que pulsa como um pulmão. Ela já mediu a Geleira e o Passo do Uivo; falta a leitura do ponto mais alto, o Cume do Vento Branco.',
     oferta: [
