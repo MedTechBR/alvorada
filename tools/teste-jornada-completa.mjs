@@ -50,7 +50,7 @@ const PASSOS = [
   { id: 'aurora', badges: 5, nh: { teoDuvida: true }, caps: { correr: true, nadar: true }, segs: [], painel: 'rochedo',
     alvos: ['cidade_aurora', 'torre_aurora', 'r6_wagner', 'r6_yara', 'pipa_aurora', 'aurora_praca'],
     proibidos: ['forte_rochedo', 'roda_capoeira', 'vila_mandacaru', 'cidade_escarpa'] },
-  { id: 'mina', badges: 5, nh: { teoDuvida: true, lucioVencido: true }, caps: { correr: true, nadar: true }, segs: [], painel: 'rochedo',
+  { id: 'mina', badges: 5, nh: { teoDuvida: true, lucioVencido: true, sirene: true }, minaN2: true, caps: { correr: true, nadar: true }, segs: [], painel: 'rochedo',
     alvos: ['mina_aurora_n1', 'mina_aurora_n2', 'mina_aurora_n3', 'mina_aurora_n4'],
     proibidos: ['forte_rochedo', 'roda_capoeira', 'vila_mandacaru'] },
   { id: 'rochedo', badges: 5, nh: { teoDuvida: true, lucioVencido: true, reviravolta1: true }, caps: { correr: true, nadar: true }, segs: ['nova07'], painel: 'rochedo',
@@ -73,14 +73,23 @@ const PASSOS = [
     proibidos: ['vila_geada', 'geada_entrada_oeste', 'caverna_gelo_1', 'portao_liga'] },
   { id: 'geada', badges: 8, nh: { teoDuvida: true, reviravolta1: true, reviravolta2: true, sina: true, mapaParedao: true, tempestadeFim: true, reviravolta5: true, seloFechado: true }, brasas: true, relogio: true, caps: { correr: true, nadar: true, escalar: true, voar: true, mergulhar: true }, segs: ['nova13'], painel: 'geada',
     alvos: ['geada_entrada_oeste', 'ninho_vila_geada', 'caverna_gelo_1', 'caverna_gelo_3', 'cume_vento_branco', 'ninho_cume'],
-    proibidos: ['portao_liga', 'sala_madrugada', 'salao_campea', 'zenite_entrada'] },
+    proibidos: ['portao_liga', 'sala_madrugada', 'salao_campea', 'ninho_liga_zenite'] },
   { id: 'liga', badges: 8, nh: { teoDuvida: true, reviravolta1: true, reviravolta2: true, sina: true, mapaParedao: true, tempestadeFim: true, reviravolta5: true, seloFechado: true, teoFinalPronto: true }, brasas: true, relogio: true, geada: true, caps: { correr: true, nadar: true, escalar: true, voar: true, mergulhar: true }, segs: ['nova14'], painel: 'liga',
     alvos: ['zenite_entrada', 'r12_sonia', 'r12_osvaldo', 'portao_liga', 'sala_madrugada', 'sala_manha', 'sala_meio_dia', 'sala_entardecer', 'salao_campea'],
-    proibidos: ['ilha_farol_morto', 'vila_fim_mundo'] },
+    proibidos: ['ilha_farol_morto', 'estacao_austral', 'mar_do_sul'] },
 ];
 
-const flagsDe = (P) => {
-  const f = { balls: true, starter: 4, badges: B8.slice(0, P.badges), nh: { ...P.nh }, trainers: {} };
+// treinadores já vencidos ao fim de cada passo: os das batalhas dos segmentos até ele (inclusive), os de Campina
+// (src/story/chapter1.js) e os das cenas mantidas da rota; abrem as porteiras e os portões dos ginásios
+const { GYM_TRAINERS, ROUTE_TRAINERS } = await abrir('src/story/chapter1.js');
+const batalhasAte = (i) => {
+  const ids = [...GYM_TRAINERS, ...ROUTE_TRAINERS].map((t) => t.id);
+  for (const P of PASSOS.slice(0, i + 1)) for (const sid of P.segs) for (const c of JORNADA.find((s) => s.id === sid)?.cenas ?? []) if (c.depois?.batalha) ids.push(c.depois.batalha.id);
+  return Object.fromEntries(ids.map((id) => [id, true]));
+};
+const flagsDe = (P, i = PASSOS.indexOf(P)) => {
+  const f = { balls: true, starter: 4, badges: B8.slice(0, P.badges), nh: { ...P.nh }, trainers: batalhasAte(i) };
+  if (P.minaN2 || i > PASSOS.findIndex((q) => q.id === 'mina')) f.minaN2 = true;
   if (P.brasas) f.brasas_resolvido = true;
   if (P.relogio) f.relogio_vencido = true;
   if (P.geada) f.geada_vencida = true;
@@ -157,6 +166,17 @@ for (let i = 0; i < PASSOS.length; i++) {
     ok(L.testa(B), `cena mantida ${s.id}: treinador ${e.id} em ${e.spot} (${L.x},${L.y}) não alcançável nem no fim do jogo`); k++;
   }
   notas.push(`${k} treinadores das cenas mantidas conferidos no fim da jornada`);
+}
+
+// pós-jogo (Liga vencida, todas as montarias): o Mar do Sul e as entradas de mergulho das masmorras austrais
+{
+  const P = PASSOS.at(-1), f = { ...flagsDe(P), liga_campeao: true, nh: { ...P.nh, epilogo: true, pjNeblina: true } };
+  const B = buscar(A, f, P.caps, A.spots.inicio);
+  for (const nome of ['ilha_farol_morto', 'estacao_austral', 'mares_entrada', 'recife_entrada', 'fossa_entrada']) {
+    const L = lugar(A, nome); if (!L) { erros.push(`pós-jogo: lugar desconhecido ${nome}`); continue; }
+    ok(L.testa(B), `pós-jogo: ${nome} (${L.tipo} em ${L.x},${L.y}) não alcançável depois da Liga`);
+  }
+  notas.push('pós-jogo: Mar do Sul, Farol Morto e as três entradas de mergulho alcançáveis depois da Liga');
 }
 
 console.log(`Jornada completa: ${PASSOS.length} passos, ${n} verificações, ${((Date.now() - t0) / 1000).toFixed(1)} s`);

@@ -193,8 +193,7 @@ export default {
         ['jogador', 'Eu conto ao Jonas. Ele disse que quer ajudar, mesmo que não queira admitir.'],
         ['narrador', 'A Iracema guarda o diário debaixo do braço e olha para o farol com um sorriso pequeno.'],
       ],
-      itens: [['superPotion', 3]],
-      depois: { flags: { 'nh.sqDiarioFim': true }, ambiente: true },
+      depois: { itens: [['superPotion', 3]], flags: { 'nh.sqDiarioFim': true }, ambiente: true },
     },
     {
       id: 'j04_boletim4',

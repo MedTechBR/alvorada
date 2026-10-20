@@ -53,8 +53,9 @@ export const ENIGMAS = {
     { sala: 'mina_aurora_n1', x: 3, y: 3, alterna: ['mina_c'], nome: 'Alavanca da rampa' },
     { sala: 'mina_aurora_n3', x: 2, y: 13, manobra: true, nome: 'Alavanca de manobra' },
   ],
-  // carrinhos da Mina (nível 3) somem depois que o Heitor é achado (assim um save no meio não prende ninguém)
-  somem: [{ sala: 'mina_aurora_n3', kind: 'carrinho', flag: 'achouHeitor' }],
+  // carrinhos da Mina (nível 3) somem depois do nível 4 (reviravolta 1; assim um save no meio não prende ninguém)
+  // (o elevador abre ao vencer o Gerente Lúcio; a rampa do nível 2 abre ao acalmar os Alfa de cristal: minaN2)
+  somem: [{ sala: 'mina_aurora_n3', kind: 'carrinho', flag: 'nh.reviravolta1' }],
   portais: [
     // Farol Coral: escadas entre os andares
     { de: ['farol_coral', 13, 2], para: ['farol_coral_2', 13, 10], face: 'up', label: 'escada' },
@@ -62,14 +63,14 @@ export const ENIGMAS = {
     { de: ['farol_coral_2', 14, 2], para: ['farol_topo', 2, 8], face: 'up', label: 'escada' },
     { de: ['farol_topo', 2, 9], para: ['farol_coral_2', 14, 3], face: 'down', label: 'escada' },
     // Torre Aurora ↔ Mina
-    { de: ['torre_aurora', 9, 2], para: ['mina_aurora_n1', 16, 16], face: 'up', requer: ['trainers.c6_lucio'], msg: 'ELEVADOR DE SERVIÇO. Acesso só com crachá da Companhia Aurora.', label: 'elevador' },
-    { de: ['torre_aurora', 10, 2], para: ['mina_aurora_n1', 16, 16], face: 'up', requer: ['trainers.c6_lucio'], msg: 'ELEVADOR DE SERVIÇO. Acesso só com crachá da Companhia Aurora.', label: 'elevador' },
+    { de: ['torre_aurora', 9, 2], para: ['mina_aurora_n1', 16, 16], face: 'up', requer: ['nh.lucioVencido'], msg: 'ELEVADOR DE SERVIÇO. Acesso só com crachá da Companhia Aurora.', label: 'elevador' },
+    { de: ['torre_aurora', 10, 2], para: ['mina_aurora_n1', 16, 16], face: 'up', requer: ['nh.lucioVencido'], msg: 'ELEVADOR DE SERVIÇO. Acesso só com crachá da Companhia Aurora.', label: 'elevador' },
     { de: ['mina_aurora_n1', 16, 18], para: ['torre_aurora', 9, 4], face: 'down', label: 'elevador' },
     { de: ['mina_aurora_n1', 30, 2], para: ['mina_aurora_n2', 3, 16], face: 'down', label: 'rampa' },
     { de: ['mina_aurora_n2', 2, 17], para: ['mina_aurora_n1', 29, 3], face: 'left', label: 'rampa' },
     { de: ['mina_aurora_n2', 31, 2], para: ['mina_aurora_n3', 3, 16], face: 'down', requer: ['minaN2'], msg: 'Os Pokémon de cristal estão agitados demais. Acalme-os primeiro!', label: 'rampa' },
     { de: ['mina_aurora_n3', 2, 17], para: ['mina_aurora_n2', 30, 3], face: 'left', label: 'rampa' },
-    { de: ['mina_aurora_n3', 27, 2], para: ['mina_aurora_n4', 14, 15], face: 'up', requer: ['achouHeitor'], msg: 'Pedras soltas. Melhor ver quem está preso aqui antes de descer.', label: 'poço' },
+    { de: ['mina_aurora_n3', 27, 2], para: ['mina_aurora_n4', 14, 15], face: 'up', label: 'poço' },
     { de: ['mina_aurora_n4', 14, 17], para: ['mina_aurora_n3', 26, 3], face: 'down', label: 'poço' },
     // Casarão: da sala da Zélia de volta ao saguão
     { de: ['casarao_velas', 33, 19], para: ['casarao_velas', 7, 17], face: 'down', label: 'porta' },
@@ -147,7 +148,7 @@ export class Enigmas {
     if (this.esp) { this.esp.oris = st.espelhos ? [...st.espelhos] : this.esp.d.espelhos.map((e) => e[2]); this.#feixe(false); }
     if (this.quad) this.#desenharQuadros();
     for (const a of this.alav) this.#desenharAlavanca(a);
-    for (const s of ENIGMAS.somem) if (this.g.flags[s.flag]) for (const o of this.map.objects) {
+    for (const s of ENIGMAS.somem) if (this.r.flag(s.flag)) for (const o of this.map.objects) {
       if (o.kind !== s.kind || o.dead || this.map.interiorAt(o.x, o.y - 4)?.id !== s.sala) continue;
       this.map.removeObject(o); if (o.sprite) { o.sprite.parent?.removeChild(o.sprite); o.sprite.visible = false; }
     }

@@ -135,7 +135,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.reviravolta1': true, 'nh.teoLadoCerto': true },
-        objetivo: { texto: 'Descoberta: a Companhia Aurora é quem atrasa o sol. Vá ao Forte Rochedo, ao sul da Rota 7, e procure as cartas antigas do Prof. Jatobá', alvo: 'ninho_forte_rochedo' },
+        objetivo: { texto: 'Descoberta: a Companhia Aurora é quem atrasa o sol. Vá ao Forte Rochedo, a oeste pela Rota 7, e procure as cartas antigas do Prof. Jatobá no arquivo', alvo: 'arquivo_forte' },
       },
       atores: [
         { id: 'vespera_mina', quem: 'vespera', nome: 'Dra. Véspera', look: LOOKS.vespera, spot: 'dentro_mina_aurora_n4', longe: 3, permanente: false },
@@ -181,8 +181,8 @@ export default {
     {
       // REVIRAVOLTA 2 (parte 1): as cartas do arquivo do forte
       id: 'j07_arquivo',
-      local: 'ninho_forte_rochedo',
-      gatilho: { tipo: 'entrar', alvo: 'ninho_forte_rochedo', requer: ['nh.reviravolta1'], semFlag: ['nh.arquivo'] },
+      local: 'arquivo_forte',
+      gatilho: { tipo: 'entrar', alvo: 'arquivo_forte', requer: ['nh.reviravolta1'], semFlag: ['nh.arquivo'] },
       falas: [
         ['narrador', 'O Forte Rochedo é uma construção de pedra antiga, com um arquivo no subsolo. Ninguém desce ali há anos, mas a porta está destrancada.'],
         ['narrador', 'Uma pasta de couro está marcada com "Luzita: estudos, 2010". Dentro, cartas escritas à mão por dois autores: o Prof. Jatobá e a Dra. Véspera.'],
@@ -195,10 +195,10 @@ export default {
         objetivo: { texto: 'Espere o Prof. Jatobá ligar, ou procure-o no laboratório de Vila Alvorada', alvo: 'lab' },
       },
       atores: [
-        { id: 'r7_jairo', quem: 'treinador', nome: 'Lutador Jairo', look: LOOKS.cacador, spot: 'ninho_forte_rochedo', visao: 6 },
-        { id: 'r7_soraia', quem: 'treinador', nome: 'Capoeirista Soraia', look: LOOKS.cacadora, spot: 'ninho_forte_rochedo', visao: 6 },
-        { id: 'g6_dandara', quem: 'aprendiz', nome: 'Faixa-preta Dandara', look: LOOKS.cacadora, spot: 'ninho_forte_rochedo', visao: 5 },
-        { id: 'g6_tiao', quem: 'aprendiz', nome: 'Faixa-preta Tião', look: LOOKS.cacador, spot: 'ninho_forte_rochedo', visao: 5 },
+        { id: 'r7_jairo', quem: 'treinador', nome: 'Lutador Jairo', look: LOOKS.cacador, spot: 'r7_jairo', visao: 6, apos: ['Eu treino socando pedra. As pedras estão ganhando, mas eu não desisto!'] },
+        { id: 'r7_soraia', quem: 'treinador', nome: 'Capoeirista Soraia', look: LOOKS.cacadora, spot: 'r7_soraia', visao: 6, apos: ['Ginga! Ginga! Se você não ginga, você apanha. Primeira lição grátis!'] },
+        { id: 'g6_dandara', quem: 'aprendiz', nome: 'Faixa-preta Dandara', look: LOOKS.cacadora, spot: 'roda_dandara', visao: 5, apos: ['O portão da roda abriu porque eu perdi. Agora ele fica aberto pra todo mundo.'] },
+        { id: 'g6_tiao', quem: 'aprendiz', nome: 'Faixa-preta Tião', look: LOOKS.cacador, spot: 'roda_tiao', visao: 5, apos: ['Meu Crabrawler aprendeu capoeira só de olhar. Ele ginga de lado. Porque ele é caranguejo.'] },
       ],
     },
     {
@@ -216,7 +216,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.reviravolta2': true },
-        objetivo: { texto: 'Descoberta: o Prof. Jatobá ajudou a criar a Aurora. Vá à Roda de Capoeira, no Forte Rochedo, e desafie o Líder Brás', alvo: 'ninho_forte_rochedo' },
+        objetivo: { texto: 'Descoberta: o Prof. Jatobá ajudou a criar a Aurora. Vá à Roda de Capoeira, no Forte Rochedo, vença os faixas-pretas e desafie o Líder Brás', alvo: 'roda_capoeira', treinadores: ['g6_dandara', 'g6_tiao'], rotulo: 'Faixas-pretas' },
       },
     },
     {

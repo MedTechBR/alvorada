@@ -74,50 +74,26 @@ export default {
       ],
     },
     {
-      id: 'j01_tome_ginasio',
-      local: 'gym',
-      gatilho: { tipo: 'falar', alvo: 'tome', requer: ['nh.ebanoCampina'], semFlag: ['badges.campina'] },
-      falas: [
-        ['tome', 'Você veio pelo caminho certo, e chegou com a cara de quem pensa que já ganhou. Eu gosto disso.'],
-        ['tome', 'Quarenta anos de colheita me ensinaram uma coisa: a gente planta devagar e colhe rápido. Vamos ver a sua colheita.'],
-        ['jogador', 'Não vou pegar leve, Tomé. Prometi à Lili que voltava com a pedra no bolso.'],
-        ['tome', 'Ótimo! Então prepare o seu melhor pão. Eu já estou com o meu pronto.'],
-      ],
-      depois: {
-        batalha: {
-          id: 'leader_tome', nome: 'Líder Tomé', dinheiro: 1400,
-          equipe: [
-            [504, 12, ['tackle', 'tailWhip', 'quickAttack']],
-            [506, 13, ['tackle', 'leer', 'bite']],
-            [300, 14, ['pound', 'defenseCurl', 'quickAttack']],
-          ],
-        },
-      },
-    },
-    {
+      // a luta com o Tomé é a do story.js (chapter1.js: aprendizes Ícaro e Rui, arena do milharal, insígnia e prêmios);
+      // esta cena é a conversa depois dela, com a pedra da cidade e o caminho para a Rota 2
       id: 'j01_tome_insignia',
       local: 'gym',
-      gatilho: { tipo: 'vencer', alvo: 'leader_tome' },
+      gatilho: { tipo: 'flag', alvo: 'badges.campina', semFlag: ['nh.pedraCampina'] },
       falas: [
         ['tome', 'Olha só! A Insígnia Espiga é sua. Ela lembra que, para crescer, a gente precisa de paciência e de chuva.'],
-        ['narrador', '{jogador} recebeu a Insígnia Espiga!'],
         ['tome', 'Escuta, vou falar sério. A pedra da cidade é a última coisa que eu guardo para mim. Eu não consigo ficar de olho nela sozinho.'],
         ['tome', 'Cuida dela com a mesma atenção que você cuidou dessa insígnia. Quando a Crepúsculo voltar, e vai voltar, eu conto com você.'],
-        ['tome', 'A Rota 2 fica para o oeste, depois do lamaçal. Com um Pokémon que tenha patas fortes você passa sem se afundar.'],
+        ['tome', 'A Rota 2 sai da fazenda para o norte, depois do lamaçal. Com um Pokémon que tenha patas fortes você passa sem se afundar.'],
       ],
       depois: {
-        insignia: 'campina',
         flags: { 'nh.pedraCampina': true },
         objetivo: { texto: 'Siga pela Rota 2 (lamaçal) até a Vila Sussurro, ao norte', alvo: 'vila_sussurro' },
       },
-      atores: [
-        { id: 'tome_ginasio', quem: 'tome', nome: 'Líder Tomé', look: 'leader', spot: 'leader_tome', permanente: true, padrao: ['Cuida da pedra, viu? Ela é a última coisa que eu guardo sozinho.'] },
-      ],
     },
     {
       // boletim da Mãe depois da primeira insígnia: o sol atrasa um pouco mais
       id: 'j01_boletim1',
-      gatilho: { tipo: 'flag', alvo: 'badges.campina', semFlag: ['nh.boletim.1'] },
+      gatilho: { tipo: 'apos', cena: 'j01_tome_insignia', semFlag: ['nh.boletim.1'] },
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e doze minutos. Sete minutos depois do esperado.'],
         ['mae', 'Ravi, ouviu? Seis e doze. Você já ganhou uma insígnia e o sol atrasou mais um pouco. Coincidência, não acha?'],

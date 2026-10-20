@@ -141,6 +141,9 @@ export const ELENCO = [
     apos: ['O osso do Greavard? Nada ainda. Mas achei uma meia de 1987. Já é alguma coisa.', 'Gire os espelhos: a luz da lua acende as velas. A Dona Zélia adora uma charada.'] },
   { id: 'zelia', quem: 'zelia', cap: 5, nome: 'Dona Zélia', look: LOOKS.zelia, spot: 'zelia',
     padrao: ['Acenda os três candelabros, querido. Eu gosto de conversar com luz.', 'Chá? Tem de erva-cidreira e de assombração. O de assombração é de erva-cidreira também.'] },
+  // guarda do portão leste de Vila Lamparina (barreira lamparina_rota6, src/world/barreiras-dados.js): sai com a insígnia
+  { id: 'guarda_lamparina', quem: 'guarda', nome: 'Guarda da Rota 6', look: LOOKS.operario, spot: 'guarda_lamparina', mostrar: { semFlag: ['badges.lamparina'] },
+    padrao: ['Estrada fechada: obras da Aurora na Rota 6. Ordem da Companhia.', 'Só passa quem tiver a insígnia da Dona Zélia. Ela manda aqui mais que a Aurora, ainda bem.'] },
   // ---------------- Capítulo 6 ----------------
   { id: 'r6_wagner', quem: 'treinador', cap: 6, nome: 'Maquinista Wagner', look: LOOKS.maquinista, spot: 'r6_wagner', visao: 6,
     apos: ['O trem leva luzita pro sul e volta vazio. Todo dia. Quarenta vagões. Às vezes eu me pergunto quanto cabe numa montanha.'] },
@@ -169,18 +172,12 @@ export const ELENCO = [
   { id: 'teo_saida', quem: 'teo', cap: 6, nome: 'Téo', look: 'rival', spot: 'teo_torre', cena: ['saida_mina'] },
   // ---------------- Trama principal (trama.js): o Téo das revanches por marco de insígnias ----------------
   { id: 'teo_marco', quem: 'teo', nome: 'Téo', look: 'rival', cena: ['teo_marco2', 'teo_marco2_depois', 'teo_marco4', 'teo_marco4_depois', 'teo_marco6'], longe: 3 },
+  // (Dandara, Tião, Jairo, Soraia, Juvenal, Rita, Otto, Lia da Rota 9, Gael e Íris: definidos uma vez só, na história
+  // nova, src/story/jornada/07-aurora.js, 09-escarpa.js e 11-mirante.js, com os pontos do mapa daqui)
   // ---------------- Forte Rochedo e Rota 7 (ginásio de Brás; capítulos 7 a 12 em src/story/script) ----------------
   { id: 'leader_bras', quem: 'bras', nome: 'Líder Brás', substitui: 'leader_bras', look: { preset: 'montanhista', hat: 'cap', cap: '#e8803a', capLogo: '#f2f2f2', hair: '#2a211c', skin: '#c98d62', top: '#e8803a', trim: '#2a2a2a', pants: '#2a2a2a', shoes: '#f2f2f2', bagStyle: null } },
   { id: 'bras_forte', quem: 'bras', nome: 'Brás', substitui: 'bras_forte', look: { preset: 'montanhista', hat: 'cap', cap: '#e8803a', capLogo: '#f2f2f2', hair: '#2a211c', skin: '#c98d62', top: '#e8803a', trim: '#2a2a2a', pants: '#2a2a2a', shoes: '#f2f2f2', bagStyle: null } },
   { id: 'mestre_cobra', quem: 'cobra', nome: 'Mestre Cobra', substitui: 'mestre_cobra', look: { preset: 'montanhista', hat: null, hair: '#e8e4dc', skin: '#a06a44', top: '#f2f2f2', trim: '#2a2a2a', pants: '#2a2a2a', shoes: '#1a1a22', bagStyle: null } },
-  { id: 'g6_dandara', quem: 'aprendiz', nome: 'Faixa-preta Dandara', look: LOOKS.nadadora, spot: 'roda_dandara', visao: 5,
-    apos: ['O portão da roda abriu porque eu perdi. Agora ele fica aberto pra todo mundo.'] },
-  { id: 'g6_tiao', quem: 'aprendiz', nome: 'Faixa-preta Tião', look: LOOKS.cacador, spot: 'roda_tiao', visao: 5,
-    apos: ['Meu Crabrawler aprendeu capoeira só de olhar. Ele ginga de lado. Porque ele é caranguejo.'] },
-  { id: 'r7_jairo', quem: 'treinador', nome: 'Lutador Jairo', look: LOOKS.operario, spot: 'r7_jairo', visao: 6,
-    apos: ['Eu treino socando pedra. As pedras estão ganhando, mas eu não desisto!'] },
-  { id: 'r7_soraia', quem: 'treinador', nome: 'Capoeirista Soraia', look: LOOKS.cacadora, spot: 'r7_soraia', visao: 6,
-    apos: ['Ginga! Ginga! Se você não ginga, você apanha. Primeira lição grátis!'] },
   { id: 'r7_b', quem: 'treinador', nome: 'Caçador Renan', look: LOOKS.cacador, spot: 'r7_b', visao: 5,
     apos: ['Os Rattata da ravina roubaram meu lanche. Agora eu treino só pra eles não me verem de novo.'] },
   { id: 'r7_c', quem: 'treinador', nome: 'Montanhista Lino', look: LOOKS.pescador, spot: 'r7_c', visao: 5,
@@ -214,13 +211,7 @@ export const ELENCO = [
   { id: 'leader_graca', quem: 'graca', nome: 'Líder Graça', substitui: 'leader_graca', look: { preset: 'montanhista', hat: 'cap', cap: '#c8a070', capLogo: '#f2f2f2', hair: '#7a4a2a', skin: '#c98d62', top: '#8a6a4a', trim: '#e8c040', pants: '#3a3a4a', shoes: '#3a2a1a', bagStyle: null } },
   { id: 'graca_escarpa', quem: 'graca', nome: 'Graça', substitui: 'graca_escarpa', look: { preset: 'montanhista', hat: 'cap', cap: '#c8a070', capLogo: '#f2f2f2', hair: '#7a4a2a', skin: '#c98d62', top: '#8a6a4a', trim: '#e8c040', pants: '#3a3a4a', shoes: '#3a2a1a', bagStyle: null } },
   { id: 'dona_pedrina', quem: 'pedrina', nome: 'Dona Pedrina', substitui: 'dona_pedrina', look: LOOKS.zelia },
-  { id: 'g7_juvenal', quem: 'aprendiz', nome: 'Mineiro Juvenal', look: LOOKS.mineiro, spot: 'mina_juvenal', visao: 5,
-    apos: ['O teto da mina é de pedra, mas a Graça tem pedra na cabeça.'] },
-  { id: 'g7_rita', quem: 'aprendiz', nome: 'Alpinista Rita', look: LOOKS.campista, spot: 'mina_rita', visao: 5,
-    apos: ['Os Lycanroc uivam na mina quando o sol atrasa.'] },
   // ---------------- Rota 9 (Estepe dos Ventos) ----------------
-  { id: 'r9_bruno', quem: 'treinador', nome: 'Ciclista Otto', look: LOOKS.cacador, spot: 'r9_a', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
-  { id: 'r9_celia', quem: 'treinador', nome: 'Pastora Lia', look: LOOKS.campista, spot: 'r9_b', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
   { id: 'r9_c', quem: 'treinador', nome: 'Montanhista Sol', look: LOOKS.operario, spot: 'r9_c', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
   { id: 'r9_d', quem: 'treinador', nome: 'Caçador Remo', look: LOOKS.cacador, spot: 'r9_d', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
   { id: 'r9_e', quem: 'treinador', nome: 'Observadora Ivone', look: LOOKS.observador, spot: 'r9_e', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
@@ -238,10 +229,6 @@ export const ELENCO = [
   { id: 'r11_h', quem: 'treinador', nome: 'Ermitão Ary', look: LOOKS.pescador, spot: 'r11_h', visao: 5, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
   // ---------------- Mirante dos Ventos e Torre do Vento (ginásio de Celeste; cap09) ----------------
   { id: 'leader_celeste', quem: 'celeste', nome: 'Líder Celeste', substitui: 'leader_celeste', look: { preset: 'treinadora', hairStyle: 'long', hair: '#7a4a9a', skin: '#f6c9a2', outfit: 'jacket', top: '#9ad0ff', trim: '#f4f4f0', legs: 'pants', pants: '#2a3a5a', shoes: '#f4f4f0', bagStyle: null } },
-  { id: 'g8_gael', quem: 'aprendiz', nome: 'Pilota Gael', look: LOOKS.operario, spot: 'torre_gael', visao: 5,
-    apos: ['O vento da Celeste é de lado. Você precisa de Pokémon que voem em linha reta.'] },
-  { id: 'g8_iris', quem: 'aprendiz', nome: 'Pilota Íris', look: LOOKS.campista, spot: 'torre_iris', visao: 5,
-    apos: ['Ela ganha no tornado. Eu perdi no tornado. Você vai perder também, não vai?'] },
   { id: 'vigia', quem: 'vigia', nome: 'Último Vigia', look: LOOKS.observador, spot: 'vigia' },
   // caixa de lata com as cartas do Jatobá (cap07): uma morador da sala do arquivo, que dispara a cena "cartas" ao falar
   { id: 'caixa_cartas', quem: 'caixa_cartas', nome: 'Caixa de cartas', substitui: 'caixa_cartas', look: LOOKS.observador },
@@ -260,6 +247,14 @@ export const ELENCO = [
     apos: ['A Liga só recebe quem sobe pelo Caminho do Zênite. Você subiu.'] },
   { id: 'r12_osvaldo', quem: 'treinador', nome: 'Veterano Osvaldo', look: LOOKS.operario, spot: 'r12_osvaldo', visao: 6,
     apos: ['Quarenta anos de neve e vento. Ainda perco pro gelo.'] },
+  // os seis que faltavam no Caminho do Zênite e o eremita da Caverna do Zênite (batalhas em src/story/script/mantidas.js)
+  { id: 'r12_a', quem: 'treinador', nome: 'Veterano Ícaro', look: LOOKS.operario, spot: 'r12_a', visao: 6, apos: ['O Zênite separa quem quer de quem consegue. Você consegue.'] },
+  { id: 'r12_b', quem: 'treinador', nome: 'Veterana Marta', look: LOOKS.campista, spot: 'r12_b', visao: 6, apos: ['Na quarta vez eu entro. Ou na quinta.'] },
+  { id: 'r12_c', quem: 'treinador', nome: 'Montanhista Breno', look: LOOKS.mineiro, spot: 'r12_c', visao: 6, apos: ['A neve não derrete. Mas você derreteu a minha equipe.'] },
+  { id: 'r12_d', quem: 'treinador', nome: 'Ás Diana', look: LOOKS.cacadora, spot: 'r12_d', visao: 6, apos: ['Oito insígnias e um bom coração. Vai lá.'] },
+  { id: 'r12_e', quem: 'treinador', nome: 'Ás Otávio', look: LOOKS.cacador, spot: 'r12_e', visao: 6, apos: ['No Cume, perder é congelar. Aqui é só esquentar a cabeça.'] },
+  { id: 'r12_f', quem: 'treinador', nome: 'Ás Cecília', look: LOOKS.nadadora, spot: 'r12_f', visao: 6, apos: ['A Liga está logo ali. Sobe com calma.'] },
+  { id: 'r12_g', quem: 'treinador', nome: 'Eremita do Zênite', look: LOOKS.observador, spot: 'r12_caverna', visao: 5, apos: ['O vento disse que você estava pronto. Ele raramente erra.'] },
 ];
 
 // Treinadores das regiões novas do mundo grande (cada região traz o seu arquivo; veja docs/construir-regiao.md)

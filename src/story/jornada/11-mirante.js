@@ -146,10 +146,10 @@ export default {
       },
       atores: [
         { id: 'celeste_torre', quem: 'celeste', nome: 'Líder Celeste', look: LOOKS.tecnica, spot: 'ninho_mirante_ventos', permanente: true, padrao: ['O vento aqui sopra para quem sabe esperar. Você ainda não sabe.'] },
-        { id: 'r9_bruno', quem: 'treinador', nome: 'Piloto Bruno', look: LOOKS.observador, spot: 'ninho_mirante_ventos', visao: 6 },
-        { id: 'r9_celia', quem: 'treinador', nome: 'Vaqueira Célia', look: LOOKS.campista, spot: 'ninho_mirante_ventos', visao: 6 },
-        { id: 'g8_gael', quem: 'aprendiz', nome: 'Piloto Gael', look: LOOKS.tecnico, spot: 'ninho_mirante_ventos', visao: 5 },
-        { id: 'g8_iris', quem: 'aprendiz', nome: 'Piloto Íris', look: LOOKS.tecnica, spot: 'ninho_mirante_ventos', visao: 5 },
+        { id: 'r9_bruno', quem: 'treinador', nome: 'Piloto Bruno', look: LOOKS.observador, spot: 'r9_a', visao: 6, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+        { id: 'r9_celia', quem: 'treinador', nome: 'Vaqueira Célia', look: LOOKS.campista, spot: 'r9_b', visao: 6, apos: ['Você ganhou dessa vez. A próxima subida é mais alta.'] },
+        { id: 'g8_gael', quem: 'aprendiz', nome: 'Piloto Gael', look: LOOKS.tecnico, spot: 'torre_gael', visao: 5, apos: ['O vento da Celeste é de lado. Você precisa de Pokémon que voem em linha reta.'] },
+        { id: 'g8_iris', quem: 'aprendiz', nome: 'Piloto Íris', look: LOOKS.tecnica, spot: 'torre_iris', visao: 5, apos: ['Ela ganha no tornado. Eu perdi no tornado. Você vai perder também, não vai?'] },
       ],
     },
     {

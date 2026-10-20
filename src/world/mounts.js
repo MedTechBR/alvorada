@@ -9,7 +9,7 @@ import { ICONES } from '../ui/toque.js';
 import { dir4 } from '../sprites/characters.js';
 import { DIRV, ancoraX, ancoraY, blocoX, blocoY } from './grade.js';
 import { insigniaFaltando, msgInsignia } from '../story/progressao.js'; // montaria liberada por insígnia (docs/jornada-classica.md)
-import { emTempestade } from './barreiras-dados.js';
+import { emTempestade, semPouso } from './barreiras-dados.js';
 
 // Montarias do treinador (como em Legends Arceus, na vista de cima).
 // X (botão de toque ao lado do analógico de golpes, botão Select/Back do controle) chama ou dispensa conforme o terreno:
@@ -607,13 +607,14 @@ export class Mounts {
     let spot = null;
     const tryAt = (x, y) => {
       if (g.map.isIndoor(x, y)) return null;
+      if (semPouso(Math.floor(x / T), Math.floor(y / T), g.map.id, g.flags)) return null; // etapa da história ainda fechada
       if (this.#fits(x, y, 6, (a, b) => this.#walkable(a, b))) return { x, y, water: false };
       if (this.has('nadar') && this.#fits(x, y, 7, (a, b) => this.#swimmable(a, b))) return { x, y, water: true };
       return null;
     };
     spot = tryAt(p.x, p.y);
     for (let r = 8; !spot && r <= 56; r += 8) for (let a = 0; a < 16 && !spot; a++) spot = tryAt(p.x + Math.cos(a / 16 * Math.PI * 2) * r, p.y + Math.sin(a / 16 * Math.PI * 2) * r);
-    if (!spot) { g.toast('Não há lugar livre para pousar aqui.'); g.audio?.sfx('deny'); return false; }
+    if (!spot) { const z = semPouso(Math.floor(p.x / T), Math.floor(p.y / T), g.map.id, g.flags); g.toast(z ? 'Ventos fortes: não dá para pousar aqui ainda. Siga a história até lá.' : 'Não há lugar livre para pousar aqui.'); g.audio?.sfx('deny'); return false; }
     this.flight = { to: 0, speed: 85, spot, then };
     g.audio?.sfx('whoosh');
     return true;

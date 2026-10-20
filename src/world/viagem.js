@@ -198,7 +198,7 @@ export class Viagem {
       await this.ir(d.mundo ?? g.map.id, d.destino, { texto: d.cena ?? `${v.nome} zarpa rumo a ${d.nome}…`, minimo: 1800 });
     } finally { n.talking = false; n.wanderT = 2; }
   }
-  #cond(req) { const f = this.f; return [req].flat().every((k) => { const [a, b] = String(k).split('='); const v = a.split('.').reduce((o, x) => o?.[x], f); return b === undefined ? !!v : String(v) === b; }); }
+  #cond(req) { const f = this.f; return [req].flat().every((k) => { const [a, b] = String(k).split('='); const v = a.startsWith('badges.') ? (f.badges ?? []).includes(a.slice(7)) : a.split('.').reduce((o, x) => o?.[x], f); return b === undefined ? !!v : String(v) === b; }); }
 
   // ---------------------------------------------------------------- mapa de outro continente (menu)
   // mundos que aparecem nas abas: o atual e os que o jogador já visitou

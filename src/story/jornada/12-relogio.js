@@ -157,7 +157,7 @@ export default {
     {
       // o Necrozma: chefe alfa sem treinador, com Lunala ao lado do jogador (como no cap11.js)
       id: 'j12_necrozma',
-      local: 'relogio_pedra',
+      local: 'camara_coracao',
       gatilho: { tipo: 'apos', cena: 'j12_vela_acesa' },
       falas: [
         ['narrador', 'O Necrozma sai do Relógio, pequeno e escuro, com a juba de cristal rachada. O disco do sol no peito dele pulsa fraco, como alguém batendo numa janela por dentro.'],
@@ -166,22 +166,26 @@ export default {
         ['jogador', 'Eu sei que você não quer destruir nada. Você só está preso desde que o Relógio foi fechado.'],
       ],
       depois: {
+        // a luta é na Câmara do Coração (o jogador entra pela porta do Relógio); o Necrozma é um selvagem lendário de
+        // verdade (src/world/lendarios.js: encontro): enfraqueça e capture, ou vença. Perdendo, a cena volta ao entrar na câmara.
+        arena: 'camara_entrada',
         batalha: {
-          id: 'c12_necrozma', nome: 'Necrozma Juba do Crepúsculo', alfa: true, perder: 'repete', chefe: true, captura: true,
-          equipe: [[800, 50, ['sunsteelStrike', 'photonGeyser', 'dragonDance', 'shadowClaw'], { forma: 'dusk' }]],
-          aliado: { nome: 'Lunala', equipe: [[792, 48, ['moongeistBeam', 'airSlash', 'moonblast', 'psyshock']]] },
+          id: 'c12_necrozma', nome: 'Necrozma', perder: 'repete', captura: true, lendario: 'necrozma', ponto: 'necrozma_coracao',
+          equipe: [[800, 50, ['sunsteelStrike', 'photonGeyser', 'dragonDance', 'shadowClaw']]],
         },
       },
     },
     {
       // Necrozma foge pela fenda, como no cap11.js (ou fica com o jogador, se a captura der certo)
       id: 'j12_necrozma_foge',
-      local: 'relogio_pedra',
+      local: 'camara_coracao',
       gatilho: { tipo: 'vencer', alvo: 'c12_necrozma' },
       falas: [
         ['narrador', 'O Necrozma cambaleia. A juba de cristal racha de vez. O disco do sol no peito dele acende, dourado, cada vez mais forte.'],
-        ['narrador', 'CRAC. A armadura se parte e o Necrozma, pequeno de novo, olha para você por um instante. Depois afunda numa fenda aberta no chão do Relógio, e some.'],
-        ['vespera', 'Ele foi embora para a terra. Vai levar muito tempo até ele voltar a comer a luz. Talvez ele nunca volte, se as oito insígnias estiverem fechadas.'],
+        ['narrador', 'CRAC. A armadura se parte e o Necrozma, pequeno de novo, olha para você por um instante. Depois afunda numa fenda aberta no chão do Relógio, e some.', { semFlag: ['lend.necrozma=capturado'] }],
+        ['narrador', 'A Poké Bola para de tremer. O Necrozma, quieto lá dentro, não come mais luz nenhuma: agora ele está com você.', { requer: ['lend.necrozma=capturado'] }],
+        ['vespera', 'Ele foi embora para a terra. Vai levar muito tempo até ele voltar a comer a luz. Talvez ele nunca volte, se as oito insígnias estiverem fechadas.', { semFlag: ['lend.necrozma=capturado'] }],
+        ['vespera', 'Você capturou o Necrozma. Cuida dele: ele passou mil anos com fome de luz.', { requer: ['lend.necrozma=capturado'] }],
         ['narrador', 'As raízes de luz param de puxar. Elas começam a brilhar ao contrário: para fora.'],
       ],
       depois: {
@@ -192,7 +196,7 @@ export default {
     {
       // as insígnias do jogador fecham o cadeado de novo: só com as oito
       id: 'j12_selo_insignias',
-      local: 'relogio_pedra',
+      local: 'camara_coracao',
       gatilho: { tipo: 'apos', cena: 'j12_necrozma_foge', requer: ['insignias>=8'] },
       falas: [
         ['narrador', 'Cada ginásio envia um fio de luz para o círculo de pedra. Tomé, Lia, Marina, Jonas, Lamparina, Brás, Graça, Celeste. Oito fios, uma pedra em cada.'],
@@ -202,23 +206,23 @@ export default {
         ['prof', 'Nasce, Téo. Nasce como sempre nasceu, e ninguém precisa comprar o amanhecer de ninguém.'],
       ],
       depois: {
-        flags: { 'nh.seloFechado': true },
+        flags: { 'nh.seloFechado': true, relogio_vencido: true },
         ambiente: true,
       },
     },
     {
       // REVIRAVOLTA 6 (clímax): a Véspera e o Téo voltam para casa; o sol normaliza
       id: 'j12_boletim_final',
-      local: 'relogio_pedra',
+      local: 'camara_coracao',
       gatilho: { tipo: 'apos', cena: 'j12_selo_insignias' },
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e quatro minutos. O horário voltou ao normal, e a Companhia Aurora anunciou o fim das atividades de extração no Planalto.'],
         ['mae', 'Ravi! Seis e quatro! O sol voltou. Você está aí em cima, não está? Volta logo para casa, que o bolo está quentinho.'],
-        ['jogador', 'Eu chego amanhã cedo, mãe. Mas antes eu preciso ir para a Cordilheira Geada. A Liga não vai esperar.'],
+        ['jogador', 'Eu chego amanhã cedo, mãe. Mas antes eu preciso atravessar a Cordilheira Geada. A Liga não vai esperar.'],
       ],
       depois: {
         flags: { 'nh.boletim.final': true, 'nh.sol': '6h04' },
-        objetivo: { texto: 'Siga pela Rota 12 até a Cordilheira Geada, a oeste da Vila Alvorada', alvo: 'geada_entrada_oeste' },
+        objetivo: { texto: 'Siga para o leste pelo Planalto, depois do Mirante dos Ventos, e entre na Cordilheira Geada pela Rota 15', alvo: 'geada_entrada_oeste' },
       },
     },
   ],

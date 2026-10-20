@@ -55,7 +55,11 @@ export async function montarAlcance(id = 'alvorada') {
   for (const o of [...S.placed, ...(S.novos ?? [])]) for (const k of o.cells ?? []) cellObj.set(k, o);
   // objetos de masmorra (portão, pedra de Força, vagonete, parede rachada...) não contam como parede: o enigma se resolve
   const puzzle = new Uint8Array(W * H);
-  for (const [k, o] of cellObj) { const K = KINDS[o.kind] ?? {}; if (K.gate || K.strength || K.cart || K.cracked || o.pede || o.abre || K.lever || K.chest || K.bell) puzzle[k] = 1; }
+  // portões que abrem por flag (portão de pedra com "flag", porteira com "opens" = treinador vencido): dependem das flags
+  const condicionais = [];
+  for (const o of [...S.placed, ...(S.novos ?? [])]) if ((o.flag || o.opens) && o.cells?.length) condicionais.push({ cells: o.cells, flag: o.flag ?? null, opens: o.opens ?? null, aberto: !!o.aberto });
+  const cond = new Set(condicionais.flatMap((c) => c.cells));
+  for (const [k, o] of cellObj) { if (cond.has(k)) continue; const K = KINDS[o.kind] ?? {}; if (K.gate || K.strength || K.cart || K.cracked || o.pede || o.abre || K.lever || K.chest || K.bell) puzzle[k] = 1; }
   const salas = R.interiors;
   const salaIdx = new Int16Array(W * H).fill(-1);
   salas.forEach((r, i) => { for (let y = r.y; y < r.y + r.h; y++) for (let x = r.x; x < r.x + r.w; x++) if (x >= 0 && y >= 0 && x < W && y < H) salaIdx[x + y * W] = i; });
@@ -97,7 +101,7 @@ export async function montarAlcance(id = 'alvorada') {
       if (to) barcos.push({ x: Math.floor(d.x + 0.5), y: Math.floor(d.y + 0.5), to, requer: dest.requer, nome: `${v.id} → ${dest.nome}` });
     }
   }
-  return { id, R, S, W, H, OH, tiles, block0, cellObj, puzzle, salas, salaIdx, spots, warps, barcos, areas: R.areas };
+  return { id, R, S, W, H, OH, tiles, block0, cellObj, puzzle, condicionais, salas, salaIdx, spots, warps, barcos, areas: R.areas };
 }
 
 // flags no formato do save (f.badges, f.nh.x, f.trainers.x...): o mesmo leitor de src/story/roteiro.js
@@ -119,6 +123,8 @@ export function buscar(A, f, caps, de) {
   const block = new Uint8Array(A.block0);
   const barreira = new Map(); // blocos de barreira ativa (como map.barreiraCells no jogo)
   aplicar(block, W, A.id, f, barreira);
+  // portões condicionais abertos com estas flags
+  for (const c of A.condicionais) if (c.aberto || (c.flag && flagDe(f, c.flag)) || (c.opens && f.trainers?.[c.opens])) for (const k of c.cells) block[k] = 0;
   const passa = new Set();
   for (const [k, lista] of Object.entries(MOUNT_PASS)) if (caps[k]) for (const t of lista) passa.add(t);
   const livre = (x, y) => {
@@ -132,7 +138,7 @@ export function buscar(A, f, caps, de) {
   for (const w of warps) { if (w.requer && !w.requer.every((q) => flagDe(f, q))) continue; const k = w.x + w.y * W; if (!warpDe.has(k)) warpDe.set(k, []); warpDe.get(k).push(w.to); }
   const barcoPerto = barcos.filter((b) => !b.requer || [b.requer].flat().every((q) => flagDe(f, q)));
   const zonas = (ZONAS_SEM_POUSO ?? []).filter((z) => z.mundo === A.id && ativa(z, f));
-  const semPouso = (x, y) => zonas.some((z) => z.rects.some(([zx, zy, zw, zh]) => x >= zx && y >= zy && x < zx + zw && y < zy + zh));
+  const semPouso = (x, y) => zonas.some((z) => z.zona.some(([zx, zy, zw, zh]) => x >= zx && y >= zy && x < zx + zw && y < zy + zh));
   const vis = new Uint8Array(W * H), prev = new Int32Array(W * H).fill(-1);
   const fila = [];
   const salasVistas = new Set();

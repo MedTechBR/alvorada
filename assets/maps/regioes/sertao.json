@@ -734,7 +734,7 @@
     {"x": 1069, "y": 444, "item": "revive", "hidden": true}
   ],
   "viagens": [
-    {"id": "barco_brasas", "nome": "O Barco das Brasas", "fala": ["O Barco das Brasas faz a travessia para Vila Termas, nas Brasas. São ₽500 e uma parada na Ilha do Basalto.", "Embarca?"], "destinos": [{"nome": "Vila Termas (Arquipélago das Brasas)", "destino": "ninho_vila_termas", "preco": 500, "horarios": [7, 15], "cena": "O barco sai do mangue e pega a Rota Marítima 19, com o vulcão fumegando no horizonte…"}]}
+    {"id": "barco_brasas", "nome": "O Barco das Brasas", "fala": ["O Barco das Brasas faz a travessia para Vila Termas, nas Brasas. São ₽500 e uma parada na Ilha do Basalto.", "Embarca?"], "fechado": ["O mar das Brasas está bravo demais. O barco só sai para quem tem a insígnia da Líder Graça."], "destinos": [{"nome": "Vila Termas (Arquipélago das Brasas)", "destino": "ninho_vila_termas", "requer": "badges.escarpa", "preco": 500, "horarios": [7, 15], "cena": "O barco sai do mangue e pega a Rota Marítima 19, com o vulcão fumegando no horizonte…"}]}
   ],
   "tocas": [
     {"id": "toca_canion", "x": 650, "y": 318, "gmax": ["copperajah-gmax"]},

@@ -249,6 +249,7 @@ export class Jornadas {
     if (jornada(id)?.tipo !== 'trama' || !this.ativa(this.f.jornadaHud)) this.f.jornadaHud = id;
   }
   objetivoDe(id) { return this.f.objetivos?.[id] ?? null; }
+  porId(id) { return jornada(id); }
   ativa(id) { const j = id && jornada(id); return !!(j && this.iniciada(j) && !this.concluida(j)); }
   // a jornada acompanhada no painel: a escolhida (diário ou a última mexida); senão a mais recente em andamento
   acompanhada() {

@@ -196,7 +196,7 @@ export default {
         ['narrador', '{jogador} é o novo Campeão da Liga do Zênite!'],
       ],
       depois: {
-        flags: { 'nh.campeao': true },
+        flags: { 'nh.campeao': true, liga_campeao: true },
         objetivo: { texto: 'Veja a Dra. Véspera, que chegou ao salão. As duas irmãs querem falar com você', alvo: 'ninho_liga_zenite' },
       },
       atores: [

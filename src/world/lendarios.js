@@ -87,8 +87,37 @@ export class Lendarios {
   // Resolve o lendário: 'capturado' (Poké Bola) ou 'derrotado' (desmaiou). Chamado pelo main.js
   concluir(id, como) {
     const g = this.g;
+    const espera = this.esperas?.get(id);
+    if (espera) { this.esperas.delete(id); this.vivos.delete(id); espera(como); return; }
     if (!id || this.feito(id)) return;
     ((g.flags ??= {}).lend ??= {})[id] = como;
     this.vivos.delete(id);
+  }
+
+  // Encontro de história (roteiro.js, batalha.captura): o mesmo selvagem lendário, posto num ponto, e a promessa
+  // que resolve quando ele é 'capturado' ou 'derrotado' (ou 'perdeu' se a equipe desmaiar / 'fugiu' se sumir).
+  async encontro({ id, dex, nivel, golpes, x, y, nome }) {
+    const g = this.g;
+    const mon = new Mon(dex, nivel, golpes?.length ? { moves: golpes.slice(0, 4) } : {});
+    const e = new PokeEntity(g, mon, 'wild', x, y);
+    await e.ready;
+    e.lendario = id; e.cvVisto = true; e.alpha = 0; e.fadeIn = true;
+    g.entities.push(e); g.wilds.push(e); g.ents.addChild(e.view);
+    this.vivos.set(id, e);
+    g.fx?.burst?.(e.x, e.y - 8, 0xffe27a, 1.6); g.audio?.sfx?.('howl');
+    g.toast(`${nome ?? mon.name} apareceu! Enfraqueça e jogue uma Poké Bola, ou vença a luta.`);
+    e.provoke?.(g.lead ?? g.player);
+    return new Promise((res) => {
+      (this.esperas ??= new Map()).set(id, res);
+      // sumiu sem ser resolvido (longe demais, troca de mapa) ou a equipe desmaiou: a cena pode ser tentada de novo
+      const olhar = () => {
+        if (!this.esperas.has(id)) return;
+        const fora = !g.wilds.includes(e) || e.dead;
+        const caiu = !g.party.some((m) => !m.fainted);
+        if (fora || caiu) { this.esperas.delete(id); this.vivos.delete(id); if (!fora) { e.dead = true; g.removeEntity?.(e); } res(caiu ? 'perdeu' : 'fugiu'); return; }
+        setTimeout(olhar, 250);
+      };
+      setTimeout(olhar, 500);
+    });
   }
 }

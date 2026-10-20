@@ -218,6 +218,113 @@ ARENAS.leader_bras = arenaEm('leader_bras', { sala: 'roda_capoeira', area: [1, 1
 ARENAS.leader_graca = arenaEm('leader_graca', { sala: 'mina_velha', area: [1, 1, 18, 12], posicoes: { jogador: [10, 12.4], lider: [10, 2.5] } });
 ARENAS.leader_celeste = arenaEm('leader_celeste', { sala: 'torre_vento', area: [1, 1, 18, 12], posicoes: { jogador: [10, 12.4], lider: [10, 2.5] } });
 
+// ================================================================== Relógio de Pedra, Elite 4 e Campeã (jornada clássica)
+// Salas de 20×14 (parede em volta): a luta ocupa 18×12 por dentro (1,1 a 18,12). A Dra. Véspera luta ao ar livre, no
+// anel de menires do Relógio (em volta de 300,72); os menires viram cobertura natural.
+Object.assign(ARENAS, {
+  c12_vespera: {
+    id: 'vespera', nome: 'O Anel dos Menires', tipo: 'dark', cor: '#7a3aa8',
+    sala: null, area: [291, 66, 18, 12], posicoes: { jogador: [300, 76.4], lider: [300, 67.6] },
+    abertura: 'Os menires guardam o Relógio há mil anos. Hoje eles vão ver se você guarda alguma coisa.',
+    gritos: { marcas: ['Cai, sombra!', 'A noite desce!'], giro: 'O vento do Planalto!' },
+    as: { titulo: 'O ás da Dra. Véspera', fala: 'Grimmsnarl! Mostra o que a noite ensina!', grito: 'Grimmsnarl!', corFx: 0x7a3aa8 },
+    pecas: [
+      { tipo: 'marcas', id: 'marcas', n: [1, 2], periodo: [3.2, 4.6], aviso: 1.3, raio: 1.3, dano: 0.1, tipoDano: 'dark', alvo: 'misto' },
+      { tipo: 'cobertura', id: 'menires', visual: 'pilar', rola: false, hp: 5, pos: [[295, 69], [305, 69], [295, 74], [305, 74]] },
+      { tipo: 'giro', id: 'giro', ativo: false, forca: 40, periodo: 11 },
+      { tipo: 'sombras', ativo: false, n: 2, dur: 10, periodo: [15, 19] },
+    ],
+    fases: [
+      { id: 'menires', nome: 'O anel' },
+      { id: 'vento', nome: 'Vento do Planalto', quando: { desmaios: 2, psEquipe: 0.5 }, titulo: 'O VENTO VIROU!', fala: 'Segura a luz agora, menino. O Planalto empurra para o escuro.', liga: ['giro', 'sombras'] },
+      { id: 'final', nome: 'Noite inteira', final: true, quando: { asPS: 0.5 }, titulo: 'NOITE INTEIRA!', fala: 'É assim que a noite pesa. Ainda segura?', musica: 'gymFinal', ajusta: { marcas: { n: [2, 3], periodo: [2.4, 3.4] } } },
+    ],
+  },
+  // o Necrozma é encontro selvagem capturável (lendarios.js, na Câmara do Coração); esta arena vale se ele for lutado
+  // como chefe (sem captura) e serve de palco de teste
+  c12_necrozma: {
+    id: 'necrozma', nome: 'Câmara do Coração', tipo: 'psychic', cor: '#e8c040',
+    sala: 'camara_coracao', area: [1, 1, 18, 12], acende: true, posicoes: { jogador: [9.5, 11.2], lider: [9.5, 3] },
+    abertura: 'KRRRRAAAAAA!',
+    pecas: [
+      { tipo: 'marcas', id: 'raios', n: [1, 2], periodo: [2.8, 4], aviso: 1.2, raio: 1.4, dano: 0.11, tipoDano: 'psychic', visual: 'raio', alvo: 'misto' },
+      { tipo: 'faixa', id: 'luz', orient: 'h', largura: 1, vel: 6, periodo: [7, 10], aviso: 1.4, dano: 0.08, visual: 'rajada', cor: 0xffe27a, rotulo: 'Luz!', corta: false },
+    ],
+    fases: [{ id: 'coracao', nome: 'O coração do Relógio' }, { id: 'final', nome: 'Sol rachado', final: true, quando: { psEquipe: 0.5 }, titulo: 'O SOL RACHA!', fala: 'KRRRAAA!', musica: 'gymFinal', ajusta: { raios: { n: [2, 3] } } }],
+  },
+  elite_aurelio: {
+    id: 'aurelio', nome: 'Sala da Madrugada', tipo: 'dark', cor: '#4a2068',
+    sala: 'sala_madrugada', area: [1, 1, 18, 12], posicoes: { jogador: [9.5, 11.2], lider: [9.5, 2.6] },
+    abertura: 'A madrugada é a hora em que ninguém olha. É a minha hora.',
+    gritos: { escuro: ['Apaga!', 'Escuridão!'], poltergeist: 'Voa, sombra!' },
+    as: { titulo: 'O ás de Aurélio', fala: 'Weavile, corta o frio da madrugada!', grito: 'Weavile!', corFx: 0x4a2068 },
+    pecas: [
+      { tipo: 'escuro', nivel: 0.85, candelabros: [[4, 4], [15, 4], [9, 9]], raio: 3.6, reacende: 1.5 },
+      { tipo: 'poltergeist', periodo: [5, 7], primeiro: 5, aviso: 1.1, dano: 0.08, vel: 230, objetos: ['vaso', 'livro', 'cadeira'] },
+      { tipo: 'sombras', ativo: false, n: 2, dur: 10, periodo: [14, 18] },
+    ],
+    fases: [{ id: 'madrugada', nome: 'Madrugada' }, { id: 'final', nome: 'Hora mais escura', final: true, quando: { desmaios: 3, asPS: 0.5 }, titulo: 'A HORA MAIS ESCURA!', fala: 'Antes do sol, sempre vem isto.', musica: 'gymFinal', liga: ['sombras'], ajusta: { escuro: { nivel: 0.92 } } }],
+  },
+  elite_clarice: {
+    id: 'clarice', nome: 'Sala da Manhã', tipo: 'fairy', cor: '#f0a8d8',
+    sala: 'sala_manha', area: [1, 1, 18, 12], posicoes: { jogador: [9.5, 11.2], lider: [9.5, 2.6] },
+    abertura: 'A manhã é delicada. Mas pisa onde não deve e você vê o espinho da rosa.',
+    gritos: { planta: ['Floresce!', 'Espinhos!'] },
+    as: { titulo: 'O ás de Clarice', fala: 'Sylveon, abre a manhã!', grito: 'Sylveon!', corFx: 0xf0a8d8 },
+    pecas: [
+      { tipo: 'planta', pos: [[4, 4], [15, 4], [4, 9], [15, 9], [9, 6]], raio: 1.3, aviso: 0.9, dano: 0.08, prende: 0.6, recarga: 3.2 },
+      { tipo: 'marcas', id: 'petalas', ativo: false, n: [1, 2], periodo: [3, 4.4], aviso: 1.3, raio: 1.2, dano: 0.09, tipoDano: 'fairy', alvo: 'misto' },
+    ],
+    fases: [{ id: 'jardim', nome: 'O jardim' }, { id: 'final', nome: 'Primeira luz', final: true, quando: { desmaios: 3, asPS: 0.5 }, titulo: 'PRIMEIRA LUZ!', fala: 'Toda manhã tem um sol que machuca os olhos.', musica: 'gymFinal', liga: ['petalas'] }],
+  },
+  elite_brasa: {
+    id: 'brasa', nome: 'Sala do Meio-dia', tipo: 'fire', cor: '#e8603a',
+    sala: 'sala_meio_dia', area: [1, 1, 18, 12], posicoes: { jogador: [9.5, 11.2], lider: [9.5, 2.6] },
+    abertura: 'Meio-dia, sol a pino, chão quente. Aqui ninguém fica parado muito tempo.',
+    gritos: { faixa: ['Abre o forno!', 'Lá vem brasa!'], marcas: 'Chove fagulha!' },
+    as: { titulo: 'O ás de Seu Brasa', fala: 'Charizard! Meio-dia em ponto!', grito: 'Charizard!', corFx: 0xe8603a },
+    pecas: [
+      { tipo: 'faixa', id: 'faixa', orient: 'h', largura: 2, vel: 5.5, periodo: [8, 11], primeiro: 6, aviso: 1.5, dano: 0.1, visual: 'rajada', cor: 0xff7a2a, rotulo: 'Labareda!', tipoDano: 'fire' },
+      { tipo: 'marcas', id: 'marcas', n: [1, 2], periodo: [3.4, 4.8], aviso: 1.3, raio: 1.2, dano: 0.09, tipoDano: 'fire', alvo: 'misto' },
+      { tipo: 'cobertura', id: 'pilares', visual: 'pilar', rola: false, hp: 4, pos: [[5, 6], [14, 6]] },
+    ],
+    fases: [{ id: 'sol', nome: 'Sol a pino' }, { id: 'final', nome: 'Fornalha', final: true, quando: { desmaios: 3, asPS: 0.5 }, titulo: 'FORNALHA!', fala: 'Agora esquenta de verdade!', musica: 'gymFinal', ajusta: { faixa: { periodo: [5, 7] } } }],
+  },
+  elite_ibere: {
+    id: 'ibere', nome: 'Sala do Entardecer', tipo: 'dragon', cor: '#e8a040',
+    sala: 'sala_entardecer', area: [1, 1, 18, 12], posicoes: { jogador: [9.5, 11.2], lider: [9.5, 2.6] },
+    abertura: 'O entardecer é o último sopro do dia. Meus dragões sopram forte.',
+    gritos: { rajada: ['Sopra!', 'Vento de dragão!'] },
+    as: { titulo: 'O ás de Iberê', fala: 'Garchomp! Fecha o dia!', grito: 'Garchomp!', corFx: 0xe8a040 },
+    pecas: [
+      { tipo: 'faixa', id: 'rajada', orient: 'v', largura: 3, vel: 7, periodo: [6, 9], aviso: 1.4, dano: 0.03, empurra: 240, chao: false, corta: false, visual: 'rajada', cor: 0xffe0b0, rotulo: 'Rajada!', som: 'whoosh' },
+      { tipo: 'giro', id: 'tornado', ativo: false, forca: 48, periodo: 9 },
+      { tipo: 'marcas', id: 'marcas', n: [1, 2], periodo: [3.2, 4.4], aviso: 1.3, raio: 1.3, dano: 0.1, tipoDano: 'dragon', visual: 'pedra', alvo: 'misto' },
+    ],
+    fases: [{ id: 'tarde', nome: 'A tarde' }, { id: 'final', nome: 'Pôr do sol', final: true, quando: { desmaios: 3, asPS: 0.5 }, titulo: 'PÔR DO SOL!', fala: 'O dia acaba. Você acaba junto?', musica: 'gymFinal', liga: ['tornado'] }],
+  },
+  campea_dalva: {
+    id: 'dalva', nome: 'Salão da Campeã', tipo: 'flying', cor: '#3a6ad8',
+    sala: 'salao_campea', area: [1, 1, 18, 12], acende: true, posicoes: { jogador: [9.5, 11.2], lider: [9.5, 2.6] },
+    abertura: 'Estrela-d’alva e estrela-vésper são o mesmo astro. Vamos ver qual das duas brilha em você.',
+    gritos: { marcas: ['Estrela cadente!', 'Do alto!'], rajada: 'Vento da alvorada!' },
+    as: { titulo: 'O ás da Campeã Dalva', fala: 'Dragonite! A última luz da manhã é sua!', grito: 'Dragonite!', corFx: 0x3a6ad8 },
+    poder: { tipo: 'dynamax', quando: 'ps', ps: 0.6 },
+    pecas: [
+      { tipo: 'plateia', lugares: [[2, 0, 6, 1], [12, 0, 6, 1]], frases: ['Dalva!', 'Campeã!', 'Que batalha!', 'Uau!'] },
+      { tipo: 'marcas', id: 'marcas', n: [1, 2], periodo: [3, 4.2], aviso: 1.2, raio: 1.3, dano: 0.1, tipoDano: 'flying', visual: 'raio', alvo: 'misto' },
+      { tipo: 'faixa', id: 'rajada', orient: 'v', largura: 3, vel: 7, periodo: [7, 10], aviso: 1.4, dano: 0.03, empurra: 230, chao: false, corta: false, visual: 'rajada', cor: 0xdff4ff, rotulo: 'Rajada!', som: 'whoosh' },
+      { tipo: 'cobertura', id: 'colunas', visual: 'pilar', rola: false, hp: 5, pos: [[4, 6], [15, 6]] },
+      { tipo: 'giro', id: 'giro', ativo: false, forca: 50, periodo: 9 },
+    ],
+    fases: [
+      { id: 'alvorada', nome: 'A estrela-d’alva' },
+      { id: 'vesper', nome: 'A estrela-vésper', quando: { desmaios: 3, psEquipe: 0.5 }, titulo: 'A ESTRELA MUDOU DE LADO!', fala: 'Agora você entende a minha irmã.', liga: ['giro'] },
+      { id: 'final', nome: 'Zênite', final: true, quando: { asPS: 0.5 }, titulo: 'ZÊNITE!', fala: 'É aqui que o sol fica mais alto. Sobe comigo!', musica: 'gymFinal', ajusta: { marcas: { n: [2, 3], periodo: [2.4, 3.2] } } },
+    ],
+  },
+});
+
 // atalho para os testes e para quem constrói as regiões: a mesma arena noutro lugar do mapa
 export function arenaEm(id, { sala = null, area, posicoes } = {}) {
   const a = ARENAS[id]; if (!a) return null;

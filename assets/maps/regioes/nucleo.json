@@ -131,6 +131,128 @@
    "y": 160,
    "w": 2,
    "h": 5
+  },
+  {
+   "op": "comment",
+   "_": "Caverna do Zênite (Rota 12): boca de pedra, entrada em (281,22)"
+  },
+  {
+   "op": "set",
+   "t": "rock",
+   "pts": [
+    [
+     279,
+     20
+    ],
+    [
+     280,
+     20
+    ],
+    [
+     281,
+     20
+    ],
+    [
+     282,
+     20
+    ],
+    [
+     283,
+     20
+    ],
+    [
+     279,
+     21
+    ],
+    [
+     280,
+     21
+    ],
+    [
+     282,
+     21
+    ],
+    [
+     283,
+     21
+    ],
+    [
+     279,
+     22
+    ],
+    [
+     280,
+     22
+    ],
+    [
+     282,
+     22
+    ],
+    [
+     283,
+     22
+    ]
+   ]
+  },
+  {
+   "op": "set",
+   "t": "cavedoor",
+   "pts": [
+    [
+     281,
+     21
+    ],
+    [
+     281,
+     22
+    ]
+   ]
+  },
+  {
+   "op": "comment",
+   "_": "Mata dos Jequitibás: trilha do corredor oeste do bosque até a clareira (missão do Pipoca)"
+  },
+  {
+   "op": "set",
+   "t": "grass",
+   "pts": [
+    [
+     11,
+     179
+    ],
+    [
+     11,
+     180
+    ],
+    [
+     11,
+     181
+    ],
+    [
+     12,
+     179
+    ],
+    [
+     12,
+     180
+    ],
+    [
+     12,
+     181
+    ],
+    [
+     13,
+     179
+    ],
+    [
+     13,
+     180
+    ],
+    [
+     13,
+     181
+    ]
+   ]
   }
  ],
  "spots": {
@@ -373,6 +495,66 @@
    306,
    26,
    "left"
+  ],
+  "relogio_pedra": [
+   300,
+   75,
+   "down"
+  ],
+  "camara_porta": [
+   302,
+   72,
+   "down"
+  ],
+  "cova_porta": [
+   171,
+   121,
+   "down"
+  ],
+  "r12_a": [
+   284,
+   54,
+   "right"
+  ],
+  "r12_b": [
+   302,
+   50,
+   "left"
+  ],
+  "r12_c": [
+   280,
+   44,
+   "right"
+  ],
+  "r12_d": [
+   296,
+   43,
+   "left"
+  ],
+  "r12_e": [
+   286,
+   30,
+   "right"
+  ],
+  "r12_f": [
+   298,
+   20,
+   "down"
+  ],
+  "zenite_caverna_porta": [
+   281,
+   23,
+   "down"
+  ],
+  "zenite_caverna_topo": [
+   283,
+   17,
+   "down"
+  ],
+  "guarda_lamparina": [
+   355,
+   208,
+   "right"
   ]
  },
  "ninhos": [
@@ -634,6 +816,157 @@
    "x": 296,
    "y": 1,
    "to": "portao_liga"
+  },
+  {
+   "kind": "pine",
+   "x": 357,
+   "y": 183
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 185
+  },
+  {
+   "kind": "pine",
+   "x": 357,
+   "y": 186
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 187
+  },
+  {
+   "kind": "pine",
+   "x": 357,
+   "y": 189
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 190
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 191
+  },
+  {
+   "kind": "pine",
+   "x": 357,
+   "y": 192
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 193
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 194
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 196
+  },
+  {
+   "kind": "pine",
+   "x": 357,
+   "y": 198
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 199
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 200
+  },
+  {
+   "kind": "pine",
+   "x": 357,
+   "y": 201
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 202
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 203
+  },
+  {
+   "kind": "pine",
+   "x": 357,
+   "y": 204
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 205
+  },
+  {
+   "kind": "pine",
+   "x": 357,
+   "y": 210
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 211
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 212
+  },
+  {
+   "kind": "pine",
+   "x": 357,
+   "y": 213
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 214
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 215
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 217
+  },
+  {
+   "kind": "pine",
+   "x": 357,
+   "y": 219
+  },
+  {
+   "kind": "tree",
+   "x": 357,
+   "y": 220
+  },
+  {
+   "kind": "pine",
+   "x": 357,
+   "y": 228
+  },
+  {
+   "kind": "sign",
+   "x": 355,
+   "y": 205,
+   "text": "ROTA 6 — FERROVIA DA AURORA\nEstrada fechada: obras da Aurora na Rota 6."
   }
  ],
  "people": [
@@ -759,7 +1092,8 @@
       13,
       18
      ],
-     "cena": "A balsa balança devagar até as Jandaias…"
+     "cena": "A balsa balança devagar até as Jandaias…",
+     "requer": "badges.coral"
     },
     {
      "nome": "Estação Austral",
@@ -768,11 +1102,12 @@
      "horarios": [
       10
      ],
-     "requer": [
-      "liga_campeao"
-     ],
+     "requer": "liga_campeao",
      "cena": "O navio de pesquisa passa pelo Recife Grande e pela Ilha do Farol Morto…"
     }
+   ],
+   "fechado": [
+    "Hoje a balsa não sai. O mar das Jandaias está bravo: o Líder Jonas manda avisar quando abrir."
    ]
   }
  ],
@@ -953,7 +1288,21 @@
      6.5,
      "up"
     ]
-   }
+   },
+   "warps": [
+    {
+     "x": 6,
+     "y": 8,
+     "dir": "down",
+     "to": "cova_porta"
+    },
+    {
+     "x": 7,
+     "y": 8,
+     "dir": "down",
+     "to": "cova_porta"
+    }
+   ]
   },
   {
    "id": "mina_velha",
@@ -1239,42 +1588,71 @@
    "id": "camara_coracao",
    "name": "Câmara do Coração — Relógio de Pedra",
    "rows": [
-    "$$$$$$$$$$$$$$$$",
-    "$ZZZZZZZZZZZZZZ$",
-    "$ZZZZZZZZZZZZZZ$",
-    "$ZZZZZZZZZZZZZZ$",
-    "$ZZZZZ$$$$ZZZZZ$",
-    "$ZZZZZZZZZZZZZZ$",
-    "$ZZZZZZZZZZZZZZ$",
-    "$ZZZZZZZZZZZZZZ$",
-    "$$$$$$mm$$$$$$$$"
+    "$$$$$$$$$$$$$$$$$$$$",
+    "$ZZZZZZZZZZZZZZZZZZ$",
+    "$ZZZZZZZZZZZZZZZZZZ$",
+    "$ZZZZZZZZZZZZZZZZZZ$",
+    "$ZZZZZZZZZZZZZZZZZZ$",
+    "$ZZZZZZZZZZZZZZZZZZ$",
+    "$ZZZZZZZZZZZZZZZZZZ$",
+    "$ZZZZZZZZZZZZZZZZZZ$",
+    "$ZZZZZZZZZZZZZZZZZZ$",
+    "$ZZZZZZZZZZZZZZZZZZ$",
+    "$ZZZZZZZZZZZZZZZZZZ$",
+    "$ZZZZZZZZZZZZZZZZZZ$",
+    "$ZZZZZZZZZZZZZZZZZZ$",
+    "$$$$$$$$$mm$$$$$$$$$"
    ],
    "objects": [
     {
      "kind": "crystal",
-     "x": 7,
-     "y": 3
+     "x": 3,
+     "y": 2
     },
     {
      "kind": "crystal",
-     "x": 9,
-     "y": 5
+     "x": 16,
+     "y": 2
     },
     {
      "kind": "lamp",
      "x": 2,
-     "y": 2
+     "y": 11
+    },
+    {
+     "kind": "lamp",
+     "x": 17,
+     "y": 11
     }
    ],
    "decor": [],
    "people": [],
    "spots": {
     "camara_entrada": [
-     12,
+     9,
+     11,
+     "up"
+    ],
+    "necrozma_coracao": [
+     9,
      4,
-     "left"
+     "down"
     ]
-   }
+   },
+   "warps": [
+    {
+     "x": 9,
+     "y": 13,
+     "dir": "down",
+     "to": "camara_porta"
+    },
+    {
+     "x": 10,
+     "y": 13,
+     "dir": "down",
+     "to": "camara_porta"
+    }
+   ]
   },
   {
    "id": "portao_liga",
@@ -1335,18 +1713,20 @@
    "id": "sala_madrugada",
    "name": "Liga — Sala da Madrugada — Aurélio",
    "rows": [
-    "wwwwwwwwwwwwwwww",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wwwwwwwmmwwwwwww"
+    "wwwwwwwwwwwwwwwwwwww",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wwwwwwwwwmmwwwwwwwww"
    ],
    "objects": [
     {
@@ -1356,12 +1736,12 @@
     },
     {
      "kind": "lamp",
-     "x": 13,
+     "x": 17,
      "y": 2
     },
     {
      "kind": "sign",
-     "x": 5,
+     "x": 4,
      "y": 1,
      "text": "Sala da Madrugada — Aurélio"
     }
@@ -1370,19 +1750,19 @@
    "people": [],
    "spots": {
     "sala_madrugada_entrada": [
-     7,
      9,
+     11,
      "up"
     ],
     "elite_aurelio": [
-     7,
-     4,
+     9,
+     3,
      "down"
     ]
    },
    "warps": [
     {
-     "x": 7,
+     "x": 9,
      "y": 1,
      "dir": "up",
      "to": "sala_manha_entrada"
@@ -1393,18 +1773,20 @@
    "id": "sala_manha",
    "name": "Liga — Sala da Manhã — Clarice",
    "rows": [
-    "wwwwwwwwwwwwwwww",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wwwwwwwmmwwwwwww"
+    "wwwwwwwwwwwwwwwwwwww",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wwwwwwwwwmmwwwwwwwww"
    ],
    "objects": [
     {
@@ -1414,12 +1796,12 @@
     },
     {
      "kind": "lamp",
-     "x": 13,
+     "x": 17,
      "y": 2
     },
     {
      "kind": "sign",
-     "x": 5,
+     "x": 4,
      "y": 1,
      "text": "Sala da Manhã — Clarice"
     }
@@ -1428,19 +1810,19 @@
    "people": [],
    "spots": {
     "sala_manha_entrada": [
-     7,
      9,
+     11,
      "up"
     ],
     "elite_clarice": [
-     7,
-     4,
+     9,
+     3,
      "down"
     ]
    },
    "warps": [
     {
-     "x": 7,
+     "x": 9,
      "y": 1,
      "dir": "up",
      "to": "sala_meio_dia_entrada"
@@ -1451,18 +1833,20 @@
    "id": "sala_meio_dia",
    "name": "Liga — Sala do Meio-dia — Seu Brasa",
    "rows": [
-    "wwwwwwwwwwwwwwww",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wwwwwwwmmwwwwwww"
+    "wwwwwwwwwwwwwwwwwwww",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wwwwwwwwwmmwwwwwwwww"
    ],
    "objects": [
     {
@@ -1472,12 +1856,12 @@
     },
     {
      "kind": "lamp",
-     "x": 13,
+     "x": 17,
      "y": 2
     },
     {
      "kind": "sign",
-     "x": 5,
+     "x": 4,
      "y": 1,
      "text": "Sala do Meio-dia — Seu Brasa"
     }
@@ -1486,19 +1870,19 @@
    "people": [],
    "spots": {
     "sala_meio_dia_entrada": [
-     7,
      9,
+     11,
      "up"
     ],
     "elite_brasa": [
-     7,
-     4,
+     9,
+     3,
      "down"
     ]
    },
    "warps": [
     {
-     "x": 7,
+     "x": 9,
      "y": 1,
      "dir": "up",
      "to": "sala_entardecer_entrada"
@@ -1509,18 +1893,20 @@
    "id": "sala_entardecer",
    "name": "Liga — Sala do Entardecer — Iberê",
    "rows": [
-    "wwwwwwwwwwwwwwww",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wwwwwwwmmwwwwwww"
+    "wwwwwwwwwwwwwwwwwwww",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wwwwwwwwwmmwwwwwwwww"
    ],
    "objects": [
     {
@@ -1530,12 +1916,12 @@
     },
     {
      "kind": "lamp",
-     "x": 13,
+     "x": 17,
      "y": 2
     },
     {
      "kind": "sign",
-     "x": 5,
+     "x": 4,
      "y": 1,
      "text": "Sala do Entardecer — Iberê"
     }
@@ -1544,19 +1930,19 @@
    "people": [],
    "spots": {
     "sala_entardecer_entrada": [
-     7,
      9,
+     11,
      "up"
     ],
     "elite_ibere": [
-     7,
-     4,
+     9,
+     3,
      "down"
     ]
    },
    "warps": [
     {
-     "x": 7,
+     "x": 9,
      "y": 1,
      "dir": "up",
      "to": "salao_campea_entrada"
@@ -1567,18 +1953,20 @@
    "id": "salao_campea",
    "name": "Liga — Salão da Campeã — Dalva",
    "rows": [
-    "wwwwwwwwwwwwwwww",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wffffffffffffffw",
-    "wwwwwwwmmwwwwwww"
+    "wwwwwwwwwwwwwwwwwwww",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wwwwwwwwwmmwwwwwwwww"
    ],
    "objects": [
     {
@@ -1588,12 +1976,12 @@
     },
     {
      "kind": "lamp",
-     "x": 13,
+     "x": 17,
      "y": 2
     },
     {
      "kind": "sign",
-     "x": 5,
+     "x": 4,
      "y": 1,
      "text": "Salão da Campeã — Dalva"
     }
@@ -1602,17 +1990,100 @@
    "people": [],
    "spots": {
     "salao_campea_entrada": [
-     7,
      9,
+     11,
      "up"
     ],
     "campea_dalva": [
-     7,
-     4,
+     9,
+     3,
      "down"
     ]
    },
    "warps": []
+  },
+  {
+   "id": "caverna_zenite",
+   "name": "Caverna do Zênite",
+   "biome": "caverna",
+   "rows": [
+    "rrrrrrrrrrrrrrrrrrrrrr",
+    "rkkkkkkrrrrrkkkkkkkkkr",
+    "rkkkkkkkkrrkkkkrrkkkkr",
+    "rkkrrkkkkkkkkkkrrkkkkr",
+    "rkkrrkkkkkkkkkkkkkkkkr",
+    "rkkkkkkkrrrkkkkkkkkkkr",
+    "rkkkkkkkrrrkkkkkkrrkkr",
+    "rkkkkkkkkkkkkkkkkrrkkr",
+    "rkkkkrrkkkkkkkkkkkkkkr",
+    "rkkkkrrkkkkkkkkkkkkkkr",
+    "rkkkkkkkkkkkkrrkkkkkkr",
+    "rkkkkkkkkkkkkrrkkkkkkr",
+    "rkkkkkkkkkkkkkkkkkkkkr",
+    "rrrrrrrrrrmmrrrrrrrrrr"
+   ],
+   "objects": [
+    {
+     "kind": "crystal",
+     "x": 3,
+     "y": 1
+    },
+    {
+     "kind": "crystal",
+     "x": 18,
+     "y": 1
+    },
+    {
+     "kind": "lamp",
+     "x": 11,
+     "y": 2
+    },
+    {
+     "kind": "sign",
+     "x": 6,
+     "y": 1,
+     "text": "CAVERNA DO ZÊNITE\nO vento da Liga assobia nas pedras. Do outro lado, o caminho segue para o alto."
+    }
+   ],
+   "decor": [],
+   "people": [],
+   "spots": {
+    "zenite_caverna_entrada": [
+     10,
+     11,
+     "up"
+    ],
+    "zenite_caverna_saida": [
+     18,
+     2,
+     "up"
+    ],
+    "r12_caverna": [
+     14,
+     6,
+     "left"
+    ]
+   },
+   "warps": [
+    {
+     "x": 10,
+     "y": 13,
+     "dir": "down",
+     "to": "zenite_caverna_porta"
+    },
+    {
+     "x": 11,
+     "y": 13,
+     "dir": "down",
+     "to": "zenite_caverna_porta"
+    },
+    {
+     "x": 19,
+     "y": 1,
+     "dir": "up",
+     "to": "zenite_caverna_topo"
+    }
+   ]
   }
  ],
  "warps": [
@@ -1636,6 +2107,13 @@
    "dir": "right",
    "to": "camara_entrada",
    "label": "Câmara do Coração"
+  },
+  {
+   "x": 281,
+   "y": 22,
+   "dir": "up",
+   "to": "zenite_caverna_entrada",
+   "label": "Caverna do Zênite"
   }
  ]
 }

@@ -103,8 +103,8 @@ export default {
         ['jogador', 'Eu aperto, Téo. Até a Liga.'],
       ],
       depois: {
-        flags: { 'nh.teoFinalPronto': true },
-        objetivo: { texto: 'Siga pela Rota 12 até a Liga do Zênite, no alto da cordilheira', alvo: 'ninho_liga_zenite' },
+        flags: { 'nh.teoFinalPronto': true, geada_vencida: true },
+        objetivo: { texto: 'Volte ao Planalto e suba o Caminho do Zênite (Rota 12), ao norte do Relógio de Pedra, até a Liga', alvo: 'zenite_entrada' },
       },
       atores: [
         { id: 'teo_cume', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'ninho_cume', longe: 3 },

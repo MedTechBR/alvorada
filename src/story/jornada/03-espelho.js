@@ -174,8 +174,7 @@ export default {
         ['jogador', 'Eu levo. E eu vou descer até lá.'],
         ['narrador', 'O Seu Nestor guarda o bilhete numa caixa de madeira, junto com as outras garrafas. Parece um pequeno museu do mar.'],
       ],
-      itens: [['superRepel', 2]],
-      depois: { flags: { 'nh.sqGarrafaFim': true, 'nh.bilheteHeitor': true }, ambiente: true },
+      depois: { itens: [['ultraBall', 3]], flags: { 'nh.sqGarrafaFim': true, 'nh.bilheteHeitor': true }, ambiente: true },
     },
     {
       id: 'j03_boletim3',

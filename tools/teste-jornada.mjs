@@ -32,6 +32,8 @@ for (const arq of arquivosMapa) {
   const M = JSON.parse(readFileSync(join(raiz, arq), 'utf8'));
   for (const k of Object.keys(M.spots ?? {})) { lugares.add(k); SPOTS.add(k); }
   for (const a of M.areas ?? []) lugares.add(a.id);
+  // prédios com sala gerada (src/world/interiores.js): o id da sala é o campo "predio"
+  for (const o of M.objects ?? []) if (o.predio) { lugares.add(o.predio); lugares.add('dentro_' + o.predio); lugares.add('porta_' + o.predio); SPOTS.add('dentro_' + o.predio); SPOTS.add('porta_' + o.predio); }
   for (const r of M.interiors ?? []) {
     lugares.add(r.id); lugares.add('dentro_' + r.id); lugares.add('porta_' + r.id);
     SPOTS.add('dentro_' + r.id); SPOTS.add('porta_' + r.id);
@@ -111,7 +113,7 @@ for (const seg of JORNADA) {
     // alvo obrigatório, conforme o tipo
     if (['entrar', 'pisar'].includes(gt.tipo)) {
       if (!gt.alvo) erro(`${onde}: gatilho ${gt.tipo} sem alvo`);
-      else if (!lugarValido(gt.alvo)) erro(`${onde}: lugar desconhecido no mapa "${gt.alvo}" (gatilho ${gt.tipo})`);
+      else for (const al of [].concat(gt.alvo)) if (!lugarValido(al)) erro(`${onde}: lugar desconhecido no mapa "${al}" (gatilho ${gt.tipo})`);
     }
     if (gt.tipo === 'falar' && !PERSONAGENS[gt.alvo]) erro(`${onde}: personagem desconhecido em "falar": ${gt.alvo}`);
     if (gt.tipo === 'avistar') {
@@ -228,7 +230,7 @@ if (colisao.length) erro(`ids do elenco que já existem no elenco antigo: ${coli
 // ---------------------------------------------------------------- lugares que ainda faltam no mapa (pendências do solidos)
 // Pontos do mapa que a história pede e que ainda não existem em assets/maps (a cargo do agente 'solidos').
 // O teste aceita só estes; qualquer outro nome desconhecido reprova.
-const PENDENTES = new Set(['relogio_pedra']);
+const PENDENTES = new Set([]); // (relogio_pedra virou ponto em assets/maps/regioes/nucleo.json)
 const faltam = [...new Set(erros.filter((m) => /lugar desconhecido|ponto do mapa desconhecido|alvo do objetivo desconhecido|alvo da missão secundária desconhecido/.test(m)))];
 const pendentesEncontrados = [];
 const errosReais = [];

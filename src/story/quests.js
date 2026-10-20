@@ -16,6 +16,8 @@ export function objetivoCampina(story) {
     const routeDone = ROUTE_TRAINERS.filter((t) => beaten(f, t.id)).length;
     return { id: 'route1', text: 'Siga a trilha a oeste até a Cidade Campina', sub: `Treinadores na trilha: ${routeDone}/${ROUTE_TRAINERS.length}`, target: S('campina') };
   }
+  // a Crepúsculo na Fazenda do Tomé (src/story/jornada/01-campina.js): o painel manda lá primeiro (o Tomé luta mesmo assim)
+  if (f.nh?.chegouCampina && !f.nh?.ebanoCampina) return { id: 'fazenda1', text: 'Vá à Fazenda do Tomé, ao norte da cidade, e veja o que os recrutas querem', target: S('fazenda_tome') };
   const left = GYM_TRAINERS.filter((t) => !beaten(f, t.id));
   if (left.length) return { id: 'gym1', text: 'Vença os aprendizes do ginásio', sub: `Aprendizes: ${GYM_TRAINERS.length - left.length}/${GYM_TRAINERS.length}`, target: npc(left[0].id) ?? S('gym') };
   return { id: 'leader1', text: 'Desafie o Líder Tomé no fundo da quadra', target: npc(LEADER1.id) ?? S('leader_tome') };

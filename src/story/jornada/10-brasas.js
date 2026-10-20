@@ -15,7 +15,7 @@ export default {
     {
       id: 'j10_chegada',
       local: 'ilha_basalto',
-      gatilho: { tipo: 'entrar', alvo: 'ilha_basalto', requer: ['badges.escarpa'], semFlag: ['nh.chegouBrasas'] },
+      gatilho: { tipo: 'entrar', alvo: ['ilha_basalto', 'vila_termas'], requer: ['badges.escarpa'], semFlag: ['nh.chegouBrasas'] },
       falas: [
         ['narrador', 'Ilha do Basalto: rochas negras, fontes de água quente saindo do chão e um cheiro forte de enxofre que chega até o barco.'],
         ['narrador', 'Lá em cima, o vulcão Tição solta uma fumaça fina. Os moradores dizem que, desde a semana passada, o ronco do vulcão não para mais.'],
@@ -82,8 +82,8 @@ export default {
         ['narrador', 'A pira se acende de uma vez, com um estalo grave. O calor sobe pelas paredes, e a tempestade lá em cima, no Planalto, começa a girar ao contrário.'],
       ],
       depois: {
-        flags: { 'nh.temploChama': true, 'nh.tempestadeFim': true },
-        objetivo: { texto: 'Volte ao barco e siga para o Mirante dos Ventos, no Planalto, agora que a tempestade acabou', alvo: 'ninho_mirante_ventos' },
+        flags: { 'nh.temploChama': true, 'nh.tempestadeFim': true, brasas_resolvido: true },
+        objetivo: { texto: 'Voe com o Corviknight até o Mirante dos Ventos, no alto do Planalto: a tempestade acabou', alvo: 'ninho_mirante_ventos' },
       },
     },
     {

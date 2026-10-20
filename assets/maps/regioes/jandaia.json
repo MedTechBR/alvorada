@@ -186,7 +186,9 @@
     {"op": "ellipse", "t": "grass", "cx": 230, "cy": 845, "rx": 5, "ry": 3.5, "noise": 0.4, "on": ["dark"]},
     {"op": "ellipse", "t": "dark", "cx": 201, "cy": 727, "rx": 7, "ry": 5, "noise": 0.4, "on": ["forest", "dark"]},
     {"op": "ellipse", "t": "grass", "cx": 201, "cy": 727, "rx": 5, "ry": 3.5, "noise": 0.4, "on": ["dark"]}
-  ],
+,
+    {"op": "comment", "_": "jornada clássica: as Jandaias vêm antes do Escalar (6ª insígnia); a trepadeira da Selva Grande vira escadaria de pedra"},
+    {"op": "set", "t": "stairs", "pts": [[150, 700], [151, 700], [152, 700], [150, 701], [151, 701], [152, 701], [150, 702], [151, 702], [152, 702], [150, 703], [151, 703], [152, 703], [150, 704], [151, 704], [152, 704], [150, 705], [151, 705], [152, 705], [150, 706], [151, 706], [152, 706], [150, 707], [151, 707], [152, 707]]}   ],
   "areas": [
     {"id": "rota17", "name": "Rota Marítima 17", "biome": "mar", "rect": [100, 480, 200, 100]},
     {"id": "ilha_jandaia", "name": "Ilha Jandaia", "biome": "praia", "rect": [30, 560, 140, 90]},

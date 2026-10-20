@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { CAPITULOS, preencher } from './script/index.js';
 import { PERSONAGENS, nomeDe } from './script/personagens.js';
-import { ELENCO } from './elenco.js';
+import { ELENCO_ATIVO as ELENCO } from './elenco-ativo.js'; // elenco do mapa + o da história nova, um por id
 import { Npc } from './npc.js';
 import { SPECIES } from '../data/species.js';
 import { montarEquipe, nomeBatalha, setDisponiveis } from './especies.js';
@@ -17,7 +17,8 @@ import { dexMark } from '../ui/menu.js';
 import './cenario.js'; // prédios e objetos dos capítulos 4 a 6 (registra no catálogo antes de o mapa ser montado)
 import { Enigmas } from './enigmas.js';
 import { LOJAS, estoque } from '../world/lojas.js';
-import TRAMA from './script/trama.js';
+import { JORNADA } from './jornada/index.js';      // a história nova (docs/jornada-roteiro.md)
+import MANTIDAS from './script/mantidas.js';      // treinadores de rota e portões dos capítulos antigos
 import { Jornadas, jornadaDoScript, migrarSave, porExtenso } from './jornadas.js';
 import { recusaLider, proximoPasso, LIDER_ID } from './progressao.js';
 import { Barreiras } from '../world/barreiras.js';
@@ -29,11 +30,13 @@ Object.assign(LOJAS, {
   vendedor_aurora: { nome: 'Megaloja Aurora', extra: [[0, ['quickBall', 'timerBall', 'repeatBall']], [3, ['maxRevive']]] },
 });
 
-// Motor de roteiro: executa as cenas escritas em dados (src/story/script/capNN.js e trama.js, formato na seção 8 de
-// docs/historia-completa.md). Mundo aberto (docs/jornadas.md): não há capítulos em ordem. Cada arquivo de cenas é
-// uma JORNADA (a de uma cidade, ou a trama principal); todas as cenas valem desde o primeiro Pokémon e só dependem
-// das próprias condições (flags, insígnias, lugar, hora). A abertura em Vila Alvorada e Cidade Campina seguem no
-// story.js; as jornadas (início, fim, objetivo do painel e a lista do diário) ficam em jornadas.js.
+// Motor de roteiro: executa as cenas escritas em dados. A história é a jornada clássica (docs/jornada-classica.md e
+// docs/jornada-roteiro.md): os segmentos de src/story/jornada (00-alvorada … 14-liga e o pós-jogo), mais as cenas
+// mantidas dos capítulos antigos (src/story/script/mantidas.js: treinadores de rota, portões dos ginásios, nível 2 da
+// mina) e os treinadores das regiões (regiao-jandaia.js, regiao-brasas.js). Os capítulos antigos (cap02..cap12,
+// trama.js) não tocam mais. A ordem obrigatória vem dos gatilhos (flags nh.*, insígnias) e das barreiras
+// (src/world/barreiras-dados.js); o painel segue progressao.js. A abertura (inicial, primeira luta com o Téo,
+// presentes) e o ginásio de Campina seguem no story.js; as jornadas (início, fim, objetivo, diário) em jornadas.js.
 //
 // - Gatilhos: inicio, apos (cena ou lista de cenas), entrar (lugar, interior ou lista deles, com hora), pisar
 //   (zona), falar, avistar (treinador), vencer, perder, interromper, flag. Todos aceitam requer/semFlag.
@@ -47,9 +50,12 @@ Object.assign(LOJAS, {
 //   o jogador volta ao último Centro Pokémon e pode tentar de novo.
 // - Quem aparece no mapa: src/story/elenco.js. Lugares: interior (id da sala), área (id em assets/maps) ou ponto
 //   nomeado com raio. Zonas de "pisar": pontos nomeados <alvo> e <alvo>__<qualquer coisa> (vários acessos).
-// Para jogar uma cidade nova: escreva o capNN.js (com `jornada`), ponha o elenco e os pontos no mapa, inclua o id
-// em JOGAVEIS e a jornada em jornadas.js.
-export const JOGAVEIS = ['cap02', 'cap03', 'cap04', 'cap05', 'cap06', 'cap07', 'cap08', 'cap09', 'cap10', 'cap11', 'cap12', 'regiao_jandaia'];
+// - Batalha perdida no meio de uma sequência (cenas "apos"/"vencer"): a cena fica pendente e toca de novo quando o
+//   jogador volta ao lugar dela (campo `local`), em vez de travar a história.
+// - batalha.captura: o Pokémon aparece como selvagem lendário (src/world/lendarios.js), dá para capturar; capturado ou
+//   derrotado, a cena segue como vitória.
+// Capítulos de cenas que o motor roda: a história nova, as mantidas e os de região (treinadores de rota)
+export const JOGAVEIS = ['regiao_jandaia'];
 
 const T = 16;
 const DIRV = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
@@ -66,7 +72,8 @@ export class Roteiro {
   constructor(story) {
     this.s = story; this.g = story.g;
     // a trama vem primeiro na lista: nas buscas (de trás para a frente) as cenas das cidades ganham a vez
-    this.caps = [TRAMA, ...CAPITULOS.filter((c) => JOGAVEIS.includes(c.id) || c.regiao)];
+    // nas buscas (de trás para a frente) a história nova ganha a vez, depois as regiões e as cenas mantidas
+    this.caps = [MANTIDAS, ...CAPITULOS.filter((c) => JOGAVEIS.includes(c.id) || c.regiao), ...JORNADA];
     this.jornadas = new Jornadas(this); // também em game.jornadas (diário: lista() e acompanhar(id))
     this.barreiras = new Barreiras(story.g); // bloqueios da progressão clássica (src/world/barreiras.js)
     this.g.jornadas = this.jornadas;
@@ -84,7 +91,7 @@ export class Roteiro {
   // as cenas valem depois que o professor entrega o primeiro Pokémon e os presentes
   get ativo() { return !!this.f.balls; }
   // jornada de uma cena: a da própria cena, a do arquivo ou a padrão do arquivo (cap02 → sussurro…)
-  jornadaDe(c, s) { return s?.solta ? null : (s?.jornada ?? c.jornada ?? jornadaDoScript(c.id)); }
+  jornadaDe(c, s) { return s?.solta || c.id === 'mantidas' ? null : (s?.jornada ?? c.jornada ?? jornadaDoScript(c.id)); }
 
   // ---------------- elenco no mapa ----------------
   #criar(e) {
@@ -278,6 +285,9 @@ export class Roteiro {
       if (jid) { this.s.cut(() => this.jornadas.iniciar(jid)); return true; }
     }
     let c, s;
+    // batalha perdida no meio de uma sequência: volta a tocar quando o jogador sai e volta ao lugar da cena
+    const pend = this.#pendente();
+    if (pend) { this.s.cut(() => this.tocar(pend[0], pend[1])); return true; }
     [c, s] = this.#primeira('inicio') ?? this.#primeira('flag', (gt) => this.#flag(gt.valor !== undefined ? gt.alvo + '=' + gt.valor : gt.alvo)) ?? [];
     if (!s) [c, s] = this.#primeira('pisar', (gt) => novas.includes(gt.alvo)) ?? [];
     if (!s) {
@@ -308,6 +318,17 @@ export class Roteiro {
       return true;
     }
     return false;
+  }
+  #pendente() {
+    const P = this.f.pendentes; if (!P || !Object.keys(P).length) return null;
+    for (const c of this.caps) for (const s of c.cenas) {
+      if (!P[s.id]) continue;
+      if (this.#feita(c, s)) { delete P[s.id]; continue; }
+      const aqui = s.local && this.#noLugar(s.local);
+      if (!aqui) { (this.pendFora ??= new Set()).add(s.id); continue; }
+      if (this.pendFora?.has(s.id) && this.#cond(s.gatilho ?? {})) { this.pendFora.delete(s.id); return [c, s]; }
+    }
+    return null;
   }
   #hora(gt) { if (!gt.hora) return true; const noite = this.g.mundo?.isNight?.() ?? false; return gt.hora === 'noite' ? noite : !noite; }
   #zonaUsada(z) { return (this.zonas ??= new Set(this.caps.flatMap((c) => c.cenas.filter((s) => s.gatilho?.tipo === 'pisar').map((s) => s.gatilho.alvo)))).has(z); }
@@ -415,10 +436,10 @@ export class Roteiro {
         if (e?.depois) ok = await this.#depois(c, s, e.depois);
       }
       if (ok && s.depois) ok = await this.#depois(c, s, s.depois);
-      if (ok && !s.repete) this.#marcar(c, s);
+      if (ok && !s.repete) { this.#marcar(c, s); if (this.f.pendentes) delete this.f.pendentes[s.id]; }
       this.ativas.delete(s.id);
-      if (s.id === 'absol_trilha' && ok) this.absol.guiar = true;
-      if (ok) for (const [c2, s2] of [...this.#candidatas('apos', (gt) => [].concat(gt.cena).includes(s.id))].filter(([cc]) => cc === c)) await this.tocar(c2, s2);
+      if (s.id === 'j02_sina_trilha' && ok) this.absol.guiar = true;
+      if (ok) for (const [c2, s2] of [...this.#candidatas('apos', (gt) => [].concat(gt.cena).includes(s.id))]) await this.tocar(c2, s2);
       return ok;
     } finally {
       this.ativas.delete(s.id);
@@ -441,7 +462,11 @@ export class Roteiro {
         for (const [c2, s2] of [...this.#candidatas('interromper', (gt) => gt.alvo === b.id)]) await this.tocar(c2, s2);
       } else if (res !== 'win') {
         for (const [c2, s2] of [...this.#candidatas('perder', (gt) => gt.alvo === b.id)]) await this.tocar(c2, s2);
-        if (b.perder !== 'continua') return false;
+        if (b.perder !== 'continua') {
+          // cena encadeada (apos/vencer) não tem como recomeçar sozinha: fica pendente até voltar ao lugar dela
+          if (['apos', 'vencer', 'flag'].includes(s.gatilho?.tipo) && s.local) { (f.pendentes ??= {})[s.id] = true; (this.pendFora ??= new Set()).delete(s.id); }
+          return false;
+        }
         (f.trainers ??= {})[b.id] = true; // a história segue mesmo perdendo
       }
     }
@@ -471,6 +496,15 @@ export class Roteiro {
   async #batalha(b, s) {
     const g = this.g, f = this.f;
     if (!g.party.some((m) => !m.fainted)) { g.toast('Seus Pokémon não têm condições de lutar. Cure a equipe primeiro!'); return 'flee'; }
+    if (b.captura && g.lend?.encontro) {
+      // lendário que dá para capturar: selvagem de verdade (src/world/lendarios.js), luta em tempo real e Poké Bola
+      const [dex, nivel, golpes] = b.equipe[0];
+      const sp = g.map.spots?.[b.ponto] ?? null, p = g.player, [fx, fy] = DIRV[p.dir] ?? [0, -1];
+      const pos = sp ? { x: sp.x, y: sp.y } : this.#livre(p.x + fx * 5 * T, p.y + fy * 5 * T);
+      const r = await g.lend.encontro({ id: b.lendario ?? b.id, dex, nivel, golpes, x: pos.x, y: pos.y, nome: b.nome });
+      if (r === 'capturado' || r === 'derrotado') { (f.trainers ??= {})[b.id] = true; (f.lend ??= {})[b.lendario ?? b.id] ??= r; g.toast(r === 'capturado' ? `${b.nome} agora é seu!` : `Você venceu ${b.nome}!`); return 'win'; }
+      return 'lose';
+    }
     setDisponiveis(g.available);
     const team = montarEquipe(b.equipe, f.rivalStarter);
     const def = { id: b.id, name: nomeBatalha(b.nome, b.equipe), money: 0, team: b.equipe, double: !!b.double, dynamax: !!b.dynamax }; // dynamax: ginásio onde vale o Dynamax (src/combat/poder.js)
@@ -628,8 +662,10 @@ export class Roteiro {
   // objetivo } para as jornadas que o story.js conduz (Cidade Campina).
   objective(proprios = {}) {
     if (!this.ativo) return null;
-    const f = this.f, J = this.jornadas, j = J.acompanhada(), passo = proximoPasso(f);
-    if (!j || !passo || j.id !== passo.jornada || j.tipo === 'trama') return this.#passo(passo);
+    const f = this.f, J = this.jornadas, passo = proximoPasso(f);
+    // a jornada do passo atual (a do ginásio ou do arco de região), assim que ela começou
+    const j = passo?.jornada && J.ativa(passo.jornada) ? J.porId(passo.jornada) : null;
+    if (!j || !passo) return this.#passo(passo);
     if (proprios[j.id]) { const o = proprios[j.id](); if (o) return { ...o, title: passo.title }; }
     const e = J.etapaAtual(j);
     let o = J.objetivoDe(j.id) ?? j.padrao ?? (e ? { texto: e.texto, alvo: e.alvo } : null);
@@ -671,10 +707,11 @@ export class Roteiro {
     const g = this.g, f = this.f, A = this.absol, p = g.player;
     const aqui = this.#mapaDe(p.x, p.y);
     let quer = null;
-    if (this.ativo && f.ouviuRecrutas && !f.tocaLuzita) {
+    // o Absol (Sina) guia o jogador do bosque até a Toca do Absol depois que ele aparece na bifurcação
+    if (this.ativo && f.nh?.seguiuAbsol && !f.nh?.viuCristal) {
       if (aqui === 'toca_absol') quer = g.map.spots?.absol_toca;
       else if (aqui === 'mundo') {
-        if (f.roteiro?.['cap02.absol_trilha'] || A.guiar) quer = 'guia';
+        if (f.nh?.seguiuAbsol || A.guiar) quer = 'guia';
         else {
           let best = null, bd = 1e9;
           for (const [k, s] of Object.entries(g.map.spots ?? {})) if (k === 'absol_espera' || k.startsWith('absol_espera__')) { const d = Math.hypot(s.x - p.x, s.y - p.y); if (d < bd) { bd = d; best = s; } }

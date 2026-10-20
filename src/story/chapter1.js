@@ -58,11 +58,11 @@ export const LEADER1 = {
   ],
   win: [
     'Ha! Que colheita! Você venceu de forma justa.',
-    'Leve a Insígnia Espiga. Ela foi lapidada de uma lasca de Pedra do Alvorecer, como manda a tradição da região.',
+    'Leve a Insígnia Espiga. Ela foi lapidada de uma lasca da Pedra do Alvorecer de Campina, como manda a tradição.',
   ],
   lose: ['Ainda não está maduro, mas a semente é boa. Descanse e volte quando quiser.'],
   after: [
-    'Cada ginásio de Alvorada guarda um Fragmento do Alvorecer. Os oito juntos, dizem, acendem o Relógio de Pedra no Planalto.',
-    'Ultimamente o sol tem nascido tarde… e uns sujeitos de capa escura andaram perguntando do meu fragmento. Fique de olho.',
+    'Cada ginásio de Alvorada guarda uma Pedra do Alvorecer. As oito juntas são as chaves do Relógio de Pedra, lá no Planalto.',
+    'Ultimamente o sol tem nascido tarde… e a Equipe Crepúsculo andou rondando a minha fazenda atrás da pedra. Fique de olho.',
   ],
 };

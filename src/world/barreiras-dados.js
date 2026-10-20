@@ -9,20 +9,57 @@
 //   rects      [[x, y, w, h], ...] em blocos, no mundo indicado
 //   msg        frase curta mostrada ao encostar (texto de jogo, pt-BR)
 
-// Só as saídas que não cortam a cidade do ginásio (um retângulo dentro da cidade poderia trancar o líder).
-// PENDENTES (conferir no mapa, uma passada na tela): Porto Espelho (Marina), Cidade Coral (Jonas), Vila Lamparina
-// (Zélia): a saída certa fica no limite da cidade, ainda sem ponto seguro; Forte Rochedo, Cidade Escarpa e Mirante
-// dos Ventos (Brás, Graça, Celeste) não estão desenhados no mapa.
+// Cada barreira fecha o trecho SEGUINTE da ordem (docs/jornada-classica.md, seção 2) e foi conferida por busca em
+// largura no mapa de verdade (tools/teste-jornada-completa.mjs: o lugar do passo seguinte não é alcançável antes da
+// hora, a pé, nadando, saltando com o Mudbray ou voando). O mapa é aberto (campos e o Lago Espelho ligam quase tudo),
+// então as barreiras são linhas inteiras: na terra (guarda, obra, cerca) e na água (correnteza). O salto do Mudbray
+// não passa por cima de bloco de barreira (src/world/mounts.js) e o voo não pousa nas ZONAS_SEM_POUSO.
 export const BARREIRAS = [
+  // 1 → 2: a Rota 2 e o Bosque Sussurrante (Lia) só depois do Tomé: a borda sul do bosque inteira
   { id: 'guarda_rota2', mundo: 'alvorada', liberaPor: 'campina', rects: [[0, 276, 138, 2], [138, 262, 2, 36], [140, 275, 170, 2]],
     msg: 'Guarda da Rota 2: "Só passa quem vencer o Líder Tomé, em Cidade Campina."' },
+  // 2 → 3: Porto Espelho (Marina) só depois da Lia: obra no campo da Rota 3, do lago até o penhasco de Coral
+  { id: 'ponte_rota3', mundo: 'alvorada', liberaPor: 'sussurro', rects: [[404, 287, 2, 81], [329, 333, 2, 33]],
+    msg: 'Obra da ponte da Rota 3: "Liberada depois que a Líder Lia ganhar a insígnia."' },
+  // 3 → 4: Cidade Coral pela Rota 4 (água, Nadar) só depois da Marina
   { id: 'porto_saida_sul', mundo: 'alvorada', liberaPor: 'espelho', rects: [[410, 337, 40, 1]],
-    msg: 'Obra na estrada do Rio Lúmen: "Liberada depois que o Líder Marina ganhar a insígnia."' },
-  { id: 'coral_escadaria_norte', mundo: 'alvorada', liberaPor: 'coral', rects: [[306, 368, 2, 2]],
-    msg: 'Escadaria da Rota 5 bloqueada por desmoronamento: "Passa quando o Líder Jonas ganhar a insígnia."' },
-  { id: 'ponte_rota3', mundo: 'alvorada', liberaPor: 'sussurro', rects: [[329, 333, 2, 33]],
-    msg: 'Ponte da Rota 3 em obras: "Liberada depois que a Líder Lia ganhar a insígnia."' },
+    msg: 'Obra na estrada do Rio Lúmen: "Liberada depois que a Líder Marina ganhar a insígnia."' },
+  // e a escadaria do Mirante, entre Vila Alvorada e Cidade Coral (atalho por terra)
+  { id: 'escadaria_coral', mundo: 'alvorada', liberaPor: 'espelho', rects: [[306, 368, 2, 2]],
+    msg: 'Escadaria do Mirante interditada por desmoronamento: "Liberada depois que a Líder Marina ganhar a insígnia."' },
+  // 4 → Jandaias: o mar ao sul do continente (só a balsa de Coral atravessa, depois do Jonas)
+  { id: 'mar_jandaias', mundo: 'alvorada', liberaPor: 'coral', rects: [[0, 477, 400, 3]],
+    msg: 'Correnteza forte para o sul: só a balsa de Cidade Coral atravessa, depois que o Líder Jonas ganhar a insígnia.' },
+  // Jandaias → 5: o Brejo das Lamparinas (Rota 5) e a Vila Lamparina abrem quando o arco das Jandaias termina
+  { id: 'brejo_rota5', mundo: 'alvorada', ate: 'nh.teoDuvida', rects: [[300, 285, 111, 2], [410, 233, 2, 54]],
+    msg: 'Correnteza no Brejo das Lamparinas: "Ninguém atravessa enquanto a Crepúsculo ronda as Jandaias."' },
+  // 5 → 6: saída da Vila Lamparina para a Rota 6 (Ferrovia da Aurora): portão com guarda na borda leste da vila
+  // (linha de árvores ao norte e a leste, em assets/maps/regioes/nucleo.json) e a margem norte do lago inteira
+  { id: 'lamparina_rota6', mundo: 'alvorada', liberaPor: 'lamparina', rects: [[356, 182, 3, 50], [359, 230, 241, 3]],
+    msg: 'Estrada fechada: obras da Aurora na Rota 6. "Só passa quem tiver a insígnia da Dona Zélia."' },
+  // 6 (Aurora) → Forte Rochedo: a Rota 7 desmoronou; o túnel da Mina Aurora reabre depois do nível 4
+  { id: 'rota7_desmoronada', mundo: 'alvorada', ate: 'nh.reviravolta1', rects: [[330, 143, 2, 46]],
+    msg: 'Desmoronamento na Rota 7: "O caminho para o Forte Rochedo reabre quando a Mina Aurora for liberada."' },
+  // 6 → Sertão: a divisa leste do continente (Rota 14) abre depois do Brás
+  { id: 'divisa_sertao', mundo: 'alvorada', liberaPor: 'rochedo', rects: [[597, 150, 4, 330]],
+    msg: 'Posto da divisa da Rota 14: "O Sertão do Levante só recebe quem tem a Insígnia Punho."' },
+  // Sertão → 7: a escalada do Paredão precisa de Escalar e do mapa do Paredão (Museu do Sertão)
+  { id: 'paredao_mapa', mundo: 'alvorada', ate: 'nh.mapaParedao', rects: [[184, 131, 4, 13], [284, 131, 2, 13], [420, 131, 4, 13]],
+    msg: 'O Paredão é alto demais para subir às cegas. Falta o mapa do Paredão, no Museu do Sertão.' },
+  // 7 → Brasas: o mar a sudeste (Rota Marítima 19) abre depois da Graça
+  { id: 'mar_brasas', mundo: 'alvorada', liberaPor: 'escarpa', rects: [[600, 477, 600, 3]],
+    msg: 'Ondas altas no mar das Brasas: "Só depois da Insígnia Rocha."' },
+  // 8 → Relógio: o anel dos menires fica isolado pela Companhia Aurora até a Celeste
+  { id: 'cerco_relogio', mundo: 'alvorada', liberaPor: 'mirante', rects: [[284, 56, 32, 2], [284, 86, 32, 2], [284, 58, 2, 28], [314, 58, 2, 28]],
+    msg: 'Cerco da Companhia Aurora em volta do Relógio de Pedra: "Só com a insígnia da Líder Celeste."' },
 ];
+// Relógio → Geada e Geada → Liga: abrem com as flags de história (relogio_vencido, geada_vencida)
+BARREIRAS.push(
+  { id: 'divisa_geada', mundo: 'alvorada', ate: 'relogio_vencido', rects: [[600, 0, 3, 128], [600, 198, 600, 3]],
+    msg: 'Nevasca na divisa da Cordilheira Geada: "Ninguém atravessa enquanto o Relógio de Pedra estiver aberto."' },
+  { id: 'portao_zenite', mundo: 'alvorada', ate: 'geada_vencida', rects: [[282, 11, 49, 2]],
+    msg: 'Portão da Cidadela do Zênite: "A Liga recebe quem atravessou a Estrada da Vitória, na Cordilheira Geada."' },
+);
 
 // Zonas com flag de término: tempestade (andar e voar) e neblina (andar, nadar e navegar)
 export const TEMPESTADES = [
@@ -36,13 +73,26 @@ export const TEMPESTADES = [
     msg: 'Tempestade no Planalto: nada passa até o vulcão ser contido.' },
 ];
 export const NEVOAS = [
-  { id: 'neblina_mar_do_sul', mundo: 'alvorada', ate: 'liga_campeao', rects: [[400, 480, 200, 120], [400, 700, 400, 100]],
+  { id: 'neblina_mar_do_sul', mundo: 'alvorada', ate: 'liga_campeao', rects: [[400, 480, 200, 120], [400, 700, 400, 100], [400, 477, 400, 3], [400, 480, 3, 480], [797, 480, 3, 480]],
     msg: 'Neblina densa no mar: a navegação só volta depois da Liga.' },
 ];
 
 // Zonas onde a montaria Voar não pousa enquanto a etapa anterior não estiver feita (o voo passa por cima de cercas e
 // guardas; sem isso, depois da 7ª insígnia daria para pular a ordem pousando do outro lado). Mesmo formato das zonas.
-export const ZONAS_SEM_POUSO = [];
+export const ZONAS_SEM_POUSO = [
+  { id: 'pouso_relogio', mundo: 'alvorada', liberaPor: 'mirante', zona: [[284, 56, 32, 32]] },
+  { id: 'pouso_geada', mundo: 'alvorada', ate: 'relogio_vencido', zona: [[600, 0, 600, 200]] },
+  { id: 'pouso_liga', mundo: 'alvorada', ate: 'geada_vencida', zona: [[282, 0, 49, 11]] },
+  { id: 'pouso_austral', mundo: 'alvorada', ate: 'liga_campeao', zona: [[400, 480, 400, 480]] },
+];
+// a montaria Voar não pousa aqui agora? (devolve a zona, ou null)
+export function semPouso(tx, ty, mundo, f) {
+  for (const z of ZONAS_SEM_POUSO) {
+    if (z.mundo !== mundo || !ativa(z, f)) continue;
+    for (const [x, y, w, h] of z.zona) if (tx >= x && ty >= y && tx < x + w && ty < y + h) return z;
+  }
+  return null;
+}
 
 // flag do save por caminho com pontos ('nh.mapaParedao' lê f.nh.mapaParedao; 'brasas_resolvido' lê f.brasas_resolvido)
 export const lerFlag = (f, k) => String(k).split('.').reduce((o, p) => (o == null ? undefined : o[p]), f);

@@ -49,9 +49,10 @@ ok(recusaLider({ badges: [] }, 'leader_tome') === null, 'leader_tome: o primeiro
 }
 // as batalhas dos líderes existem nos roteiros (senão a regra não tem onde pegar)
 {
-  const cenas = ['cap02', 'cap03', 'cap04', 'cap05', 'cap07', 'cap08', 'cap09'].map((c) => readFileSync(join(RAIZ, 'src/story/script', c + '.js'), 'utf8')).join('\n');
+  // a história ligada é a nova (src/story/jornada); a revanche do píer (leader_marina_pier) era do cap03 e saiu
+  const cenas = ['02-sussurro', '03-espelho', '04-coral', '06-lamparina', '07-aurora', '09-escarpa', '11-mirante'].map((c) => readFileSync(join(RAIZ, 'src/story/jornada', c + '.js'), 'utf8')).join('\n');
   for (const id of Object.keys(GINASIO_DA_BATALHA)) {
-    if (id === 'leader_tome') continue; // Tomé luta em src/story/chapter1.js
+    if (id === 'leader_tome' || id === 'leader_marina_pier') continue; // Tomé luta em src/story/chapter1.js
     ok(cenas.includes(`id: '${id}'`), `${id}: não aparece em nenhum roteiro (cap02..cap09)`);
   }
 }
@@ -87,7 +88,7 @@ ok(recusaLider({ badges: [] }, 'leader_tome') === null, 'leader_tome: o primeiro
   const teste = { ...TEMPESTADES[0], rects: [[10, 10, 5, 5]] };
   ok(emTempestade(12, 12, 'alvorada', {}) === null || TEMPESTADES[0].rects.length === 0, 'tempestade sem retângulo não deve barrar');
   ok(teste.rects.some(([x, y, w, h]) => 12 >= x && 12 < x + w && 12 >= y && 12 < y + h), 'retângulo de teste da tempestade');
-  ok(barreiraEm(94, 297, 'alvorada', {}, 1) !== null, 'aviso: encostar na guarda da Rota 2 deveria avisar');
+  ok(barreiraEm(94, 277, 'alvorada', {}, 1) !== null, 'aviso: encostar na guarda da Rota 2 deveria avisar');
 }
 
 // 3. montarias ----------------------------------------------------------------------------------------
@@ -110,6 +111,7 @@ ok(insigniaFaltando('mergulhar', { badges: ate(7) }) === 'mirante', 'mergulhar: 
   const passos = [];
   for (let k = 0; k <= 8; k++) {
     const f = { badges: ate(k) };
+    if (k >= 4) f.nh = { teoDuvida: true, mapaParedao: true };
     if (k === 8) { passos.push(proximoPasso(f)); f.brasas_resolvido = true; passos.push(proximoPasso(f)); f.relogio_vencido = true; passos.push(proximoPasso(f)); f.geada_vencida = true; passos.push(proximoPasso(f)); f.liga_campeao = true; passos.push(proximoPasso(f)); }
     else passos.push(proximoPasso(f));
   }
@@ -118,11 +120,15 @@ ok(insigniaFaltando('mergulhar', { badges: ate(7) }) === 'mirante', 'mergulhar: 
   for (const p of passos.filter(Boolean)) ok(typeof p.texto === 'string' && p.texto.length > 20 && typeof p.title === 'string', `passo sem texto/título: ${JSON.stringify(p).slice(0, 80)}`);
   // cada ginásio: cidade, rota e líder no texto
   for (const o of ORDEM) {
-    const p = proximoPasso({ badges: ate(o.n - 1), brasas_resolvido: true });
+    const p = proximoPasso({ badges: ate(o.n - 1), brasas_resolvido: true, nh: { teoDuvida: true, mapaParedao: true } }); // arcos de região já feitos
     ok(p.key === o.badge && p.texto.includes(o.cidade) && p.texto.includes(o.rota.split(',')[0]) && p.texto.includes(o.lider), `passo do ${o.lider}: falta cidade/rota/líder: ${p.texto}`);
   }
   // Brasas vem antes do Mirante (o último ginásio)
   ok(proximoPasso({ badges: ate(7) }).key === 'brasas', 'depois de Graça o próximo passo é Brasas');
+  ok(proximoPasso({ badges: ate(4) }).key === 'jandaias', 'depois de Jonas o próximo passo são as Ilhas Jandaias');
+  ok(proximoPasso({ badges: ate(4), nh: { teoDuvida: true } }).key === 'lamparina', 'depois das Jandaias, a Zélia');
+  ok(proximoPasso({ badges: ate(6) }).key === 'sertao', 'depois de Brás o próximo passo é o Sertão');
+  ok(proximoPasso({ badges: ate(6), nh: { mapaParedao: true } }).key === 'escarpa', 'com o mapa do Paredão, a Graça');
   for (const p of POS_GINASIOS) ok(typeof p.texto === 'string' && p.texto.length > 20, `texto da etapa ${p.id}`);
 }
 
@@ -144,7 +150,7 @@ ok(insigniaFaltando('mergulhar', { badges: ate(7) }) === 'mirante', 'mergulhar: 
   ok(emOrdem({ id: 'sussurro', ginasio: 'sussurro' }, f) === true, 'jornada da Lia começa (é o próximo)');
   void g;
   // migração de save já migrado: não mexe de novo
-  const f2 = { ordemV: 1, jornadasV: 1, balls: true, badges: ['campina'] };
+  const f2 = { ordemV: 1, jornadasV: 1, jornadaNovaV: 1, balls: true, badges: ['campina'] };
   ok(migrarSave(f2) === false, 'save já migrado não deve mudar');
 }
 
