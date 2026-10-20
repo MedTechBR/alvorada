@@ -5,7 +5,9 @@
 //   --grade=x,y,w,h   desenha em ASCII o que está andável no mapa vivo (. andável, # sólido)
 //   --js='expressão'   avalia uma expressão no jogo (window.game em G) e imprime o resultado (sonda)
 //   --grade=x,y,w,h --tipos   mesma grade, mas com a letra do tipo de bloco (ver TIPOS_ABREV; o que não estiver nela sai ?)
-// Meta do projeto: cada arena com pelo menos 18×12 blocos andáveis (planejadas: retângulo nominal).
+// Meta do projeto (outubro de 2026, estádios): cada luta de líder, Elite, Campeã, Véspera e Necrozma com um retângulo de
+// pelo menos 40×28 blocos e 40×28 = 1120 blocos andáveis no mapa vivo. Antes, a conferência estática dos estádios e das
+// peças (tools/teste-3d/estadios-pecas.mjs: nenhuma peça em cima de obstáculo).
 import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -13,7 +15,7 @@ import { launch, open, until, sleep } from './chrome.mjs';
 
 const RAIZ = fileURLToPath(new URL('../../', import.meta.url));
 const PORTA = +(process.env.PORTA ?? 8756), CDP = +(process.env.CDP ?? 9481);
-const META_W = 18, META_H = 12;
+import { conferir, META_W, META_H } from './estadios-pecas.mjs';
 const JSON_OUT = process.argv.includes('--json');
 const TIPOS = process.argv.includes('--tipos'); // grade com a letra do tipo de bloco (ver TIPOS_ABREV)
 const TIPOS_ABREV = { 0: '.', 1: ',', 2: '"', 3: '=', 4: '~', 5: ':', 6: '*', 7: 'W', 8: '#', 9: '_', 10: '^', 11: 'B', 12: 'P', 13: 'f', 14: 'w', 15: 'F', 16: 'c', 17: 'd', 18: 't', 19: 'm', 20: 'b', 21: 'k', 22: 'r', 23: 'O', 24: 'g', 25: 'L', 26: 'M', 27: 'V', 28: 'y', 29: 'x', 30: 's', 31: 'D' };
@@ -21,16 +23,12 @@ const JS = process.argv.find((a) => a.startsWith('--js='))?.slice(5) ?? null; //
 const GRADE = process.argv.find((a) => a.startsWith('--grade='))?.split('=')[1]?.split(',').map(Number) ?? null;
 
 // id do líder (chave em src/data/arenas.js) → rótulo
-const LIDERES = ['leader_tome', 'leader_lia', 'leader_marina', 'leader_marina_pier', 'leader_jonas', 'leader_zelia', 'leader_bras', 'leader_graca', 'leader_celeste'];
+const LIDERES = ['leader_tome', 'leader_lia', 'leader_marina', 'leader_marina_pier', 'leader_jonas', 'leader_zelia', 'leader_bras', 'leader_graca', 'leader_celeste',
+  'c12_vespera', 'c12_necrozma', 'elite_aurelio', 'elite_clarice', 'elite_brasa', 'elite_ibere', 'campea_dalva'];
 
-// tamanho da sala lido do mapa salvo (rows): largura × altura do interior, em blocos
-function salaTamanho(id) {
-  if (!id) return null;
-  const mapa = JSON.parse(readFileSync(RAIZ + 'assets/maps/alvorada.json', 'utf8'));
-  const r = mapa.interiors.find((q) => q.id === id);
-  if (!r) return { erro: 'sala não existe em alvorada.json' };
-  return { w: Math.max(...r.rows.map((x) => x.length)), h: r.rows.length, x: r.x, y: r.y };
-}
+// conferência estática primeiro (sem navegador)
+const estatica = conferir();
+for (const l of estatica) if (l.erros.length) console.log('ESTÁDIO', l.id, l.erros.join(' | '));
 
 const servidor = spawn('python3', [RAIZ + 'tools/serve.py', String(PORTA)], { cwd: RAIZ, stdio: 'ignore', detached: true });
 let b = null;
@@ -39,6 +37,7 @@ try {
   b = await launch(CDP);
   const p = await open(b, `http://127.0.0.1:${PORTA}/?teste&nosw`, 'auditoria');
   await until(() => p.ev('!!window.game?.map && window.game.ui?.state === "play" && !!window.game.player'), 60000, 300);
+  await sleep(1500); // o mundo termina de montar (regiões em fatias)
   const medidas = await p.ev(`(async () => {
     const G = window.game, { ARENAS } = await import('/src/data/arenas.js');
     const ids = ${JSON.stringify(LIDERES)};
@@ -53,7 +52,7 @@ try {
         const tx = ox + ax + dx, ty = oy + ay + dy;
         if (!G.map.solidAt(tx * 16 + 8, ty * 16 + 8)) andaveis++;
       }
-      out[id] = { nome: cfg.nome, sala: cfg.sala ?? null, planejada: !!cfg.planejada, area: [aw, ah], andaveis, total: aw * ah,
+      out[id] = { nome: cfg.nome, sala: cfg.sala ?? null, salaTam: sala ? sala.w + 'x' + sala.h : '-', estadio: !!sala?.estadio, planejada: !!cfg.planejada, area: [aw, ah], andaveis, total: aw * ah,
         fases: cfg.fases.length, pecas: cfg.pecas.map((q) => q.tipo) };
     }
     return out;
@@ -73,18 +72,20 @@ try {
   for (const id of LIDERES) {
     const m = medidas[id];
     if (!m || m.erro) { linhas.push({ id, erro: m?.erro ?? 'sem medida' }); continue; }
-    const sala = salaTamanho(m.sala);
-    const ok = m.planejada ? 'nominal' : m.andaveis >= META_W * META_H ? 'OK' : 'pequena';
-    linhas.push({ id, nome: m.nome, sala: m.sala, salaTam: sala ? `${sala.w}x${sala.h}` : '-', area: `${m.area[0]}x${m.area[1]}`,
+    const ok = m.area[0] >= META_W && m.area[1] >= META_H && m.andaveis >= META_W * META_H ? 'OK' : 'pequena';
+    linhas.push({ id, nome: m.nome, sala: m.sala, salaTam: m.salaTam, area: `${m.area[0]}x${m.area[1]}`,
       andaveis: m.andaveis, total: m.total, planejada: m.planejada, meta: ok, fases: m.fases, pecas: m.pecas.join(',') });
   }
-  console.log(`Arena (meta ${META_W}x${META_H} = ${META_W * META_H} blocos andáveis)`);
+  console.log(`Arena (meta ${META_W}x${META_H}: retângulo e ${META_W * META_H} blocos andáveis)`);
   console.log('id'.padEnd(20), 'nome'.padEnd(24), 'sala'.padEnd(16), 'sala tam'.padEnd(10), 'area'.padEnd(8), 'andáveis'.padEnd(10), 'meta'.padEnd(9), 'planej.', 'fases');
   for (const l of linhas) {
     if (l.erro) { console.log(l.id.padEnd(20), 'ERRO', l.erro); continue; }
     console.log(l.id.padEnd(20), String(l.nome).padEnd(24), String(l.sala ?? 'campo').padEnd(16), String(l.salaTam).padEnd(10), l.area.padEnd(8),
       `${l.andaveis}/${l.total}`.padEnd(10), l.meta.padEnd(9), String(l.planejada).padEnd(7), l.fases);
   }
+  const ruins = linhas.filter((l) => l.erro || l.meta !== 'OK').length + estatica.filter((l) => l.erros.length).length;
+  console.log(ruins ? `PROBLEMAS: ${ruins}` : `OK: ${linhas.length} lutas, todas com ${META_W}x${META_H} ou mais (estádios e peças conferidos)`);
+  process.exitCode = ruins ? 1 : 0;
   if (JSON_OUT) console.log(JSON.stringify(linhas, null, 1));
   const erros = p.logs.filter((s) => /EXC|Error|error/.test(s) && !/favicon|ERR_|net::/.test(s));
   if (erros.length) console.log('ERROS DO CONSOLE:', erros.slice(0, 6));

@@ -78,6 +78,11 @@ async function caso(b, nome, rodada) {
       if (A0?.contem && !A0.done) for (const [n, e] of quem(A0)) if (e !== G.player && !C.vistos.has(e)) { C.vistos.add(e); C.nascidos++; if (fora(A0, e)) { C.nascFora++; if (C.exemplos.length < 8) C.exemplos.push({ nasceu: n, x: Math.round(e.x), y: Math.round(e.y), R: [A0.R.x0, A0.R.y0, A0.R.x1, A0.R.y1], t: +A0.t.toFixed(1) }); } }
       fr0(dt); tk.deltaMS = dt * 1000; for (const f of [...extra]) f(tk);
       const A = G.arenaGinasio;
+      if (A?.contem && !A.done && A.fase >= 0 && C.quadros % 30 === 0 && G.v3d?.view) { // setas: quem está fora da tela tem seta na borda
+        const fora = A.b.active.filter((e) => e.alive && !e.dead).filter((e) => { const s = G.v3d.paraTela(e.x, e.y, 10); return s.x < 18 || s.x > innerWidth - 18 || s.y < 18 || s.y > innerHeight - 18; }).length;
+        const setas = [...(document.querySelector('.arena-setas')?.children ?? [])].filter((d) => d.style.display !== 'none').length;
+        C.amostras = (C.amostras ?? 0) + 1; if (fora) { C.foraTela = (C.foraTela ?? 0) + 1; if (setas >= fora) C.comSeta = (C.comSeta ?? 0) + 1; }
+      }
       if (A?.contem && !A.done && A.fase >= 0) { C.quadros++; for (const [n, e] of quem(A)) if (fora(A, e)) { C.violacoes++; if (C.exemplos.length < 8) C.exemplos.push({ quem: n, x: Math.round(e.x), y: Math.round(e.y), R: [A.R.x0, A.R.y0, A.R.x1, A.R.y1], t: +A.t.toFixed(1) }); } }
     };
     motor(true);
@@ -92,6 +97,9 @@ async function caso(b, nome, rodada) {
       const G = window.game, { CENAS } = await import('/src/story/jornada/index.js'), { montarEquipe, nomeBatalha } = await import('/src/story/especies.js');
       const cena = CENAS.find((c) => c.depois?.batalha?.id === '${C.batalha}'); if (!cena) return 'sem batalha ${C.batalha}';
       const bt = cena.depois.batalha, team = montarEquipe(bt.equipe, G.flags.rivalStarter ?? 7);
+      // a sua equipe fica uns níveis acima do ás da luta (a equipe do caso diz só as espécies)
+      const { Mon } = await import('/src/data/mon.js'), nv = Math.max(...bt.equipe.map((q) => q[1])) + 3;
+      G.party = G.party.map((m, i) => new Mon(m.dex, nv - (i ? 1 : 0))); G.leadIdx = 0; G.hudLead(); G.hudMoves();
       const def = { id: bt.id, name: nomeBatalha(bt.nome, bt.equipe), money: 0, team: bt.equipe, double: !!bt.double, dynamax: !!bt.dynamax };
       const R = G.story.roteiro; let npc = R.atores.get(bt.id); if (!npc?.visible) npc = null;
       const sala = ${JSON.stringify(C.sala ?? null)}, r = sala && G.map.interiors.find((q) => q.id === sala), L = ${JSON.stringify(C.lider ?? null)};
@@ -147,7 +155,7 @@ async function caso(b, nome, rodada) {
   await until(() => p.ev('!!window.__arenaUltima'), 10000, 500);
   await sleep(2500); // volta do estádio (escurece e volta ao ginásio)
   const r = await p.ev(`(() => { const s = window.__arenaUltima, G = window.game, C = window.__cont, n0 = window.__npc0, n = window.__npc; return s && { ...s, porPerigo: s.porPerigo, minAviso: s.minAviso === Infinity ? null : +s.minAviso.toFixed(2), bot: window.bot.stats, perf: { logicaMs: +(window.__perf.ms / window.__perf.n).toFixed(2), logicaMax: +window.__perf.max.toFixed(1) }, equipeViva: G.party.filter((m) => !m.fainted).length,
-    cont: { quadros: C.quadros, violacoes: C.violacoes, nascidos: C.nascidos, nascidosFora: C.nascFora, exemplos: C.exemplos, trocas: C.trocas },
+    cont: { amostras: C.amostras ?? 0, foraTela: C.foraTela ?? 0, comSeta: C.comSeta ?? 0, quadros: C.quadros, violacoes: C.violacoes, nascidos: C.nascidos, nascidosFora: C.nascFora, exemplos: C.exemplos, trocas: C.trocas },
     eventos: window.__ev, voltou: { sala: G.map.interiorAt(G.player.x, G.player.y)?.id ?? null, x: G.player.x, y: G.player.y, lider: n0 && n ? Math.hypot(n.x - n0.x, n.y - n0.y) < 2 : null, limite: !!G.map.limite } }; })()`);
   await sleep(500);
   const erros = p.logs.filter((s) => /EXC|Error|error|falhou|não montou|desconhecida/.test(s) && !/favicon|ERR_|net::/.test(s));
@@ -171,6 +179,7 @@ try {
     console.log(`   perigos que acertaram: seu lado ${r.acertos?.ally}, líder ${r.acertos?.foe} · por perigo ${JSON.stringify(r.porPerigo)}`);
     console.log(`   avisos ${r.avisos} · menor aviso antes de acertar ${r.minAviso}s · golpes sem aviso ${r.semAviso}`);
     console.log(`   CONTENÇÃO: violações ${c.violacoes} em ${c.quadros} quadros · Pokémon que entraram ${c.nascidos} (fora: ${c.nascidosFora}) · contidos na borda ${r.contidos ?? 0} · muros ${r.noMuro} · fora (motor) ${r.foraArea}`);
+    console.log(`   tela: Pokémon do líder fora da tela em ${c.foraTela} de ${c.amostras} amostras, com seta na borda em ${c.comSeta}`);
     if (c.exemplos?.length) console.log('   exemplos:', JSON.stringify(c.exemplos));
     if (c.trocas?.length) console.log('   trocas forçadas:', JSON.stringify(c.trocas));
     console.log(`   robô: ${JSON.stringify(r.bot)} · lógica ${JSON.stringify(r.perf)}`);
