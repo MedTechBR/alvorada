@@ -175,6 +175,16 @@ export default {
       depois: { batalha: { id: 'g6_tiao', nome: 'Faixa-preta Tião', dinheiro: 1450, equipe: [[532, 30, ['lowKick', 'rockThrow', 'focusEnergy']], [739, 31, ['powerUpPunch', 'bubbleBeam', 'payback']]] } },
     },
     {
+      id: 'roda_portoes',
+      local: 'roda_capoeira',
+      gatilho: { tipo: 'flag', alvo: 'trainers.g6_tiao', requer: ['trainers.g6_dandara'] },
+      falas: [
+        ['narrador', 'Os dois portões de ferro da roda rangem e sobem. Atrás deles, o berimbau para por um instante, e recomeça mais forte.'],
+        ['bras', 'Abriu! Agora é comigo, camará.'],
+      ],
+      depois: { flags: { portoesRoda: true }, objetivo: 'Desafie o Líder Brás na roda' },
+    },
+    {
       id: 'bras_desafio',
       local: 'roda_capoeira',
       gatilho: { tipo: 'falar', alvo: 'bras', requer: ['portoesRoda', 'trainers.g6_dandara', 'trainers.g6_tiao'], semFlag: ['badges.rochedo'] },

@@ -213,6 +213,11 @@ export const ARENAS = {
   },
 };
 
+// Ginásios já construídos (regiões novas): a arena vai para a sala do ginásio, com a área dentro da parede (1,1 a 18x12)
+ARENAS.leader_bras = arenaEm('leader_bras', { sala: 'roda_capoeira', area: [1, 1, 18, 12], posicoes: { jogador: [10, 12.4], lider: [10, 2.5] } });
+ARENAS.leader_graca = arenaEm('leader_graca', { sala: 'mina_velha', area: [1, 1, 18, 12], posicoes: { jogador: [10, 12.4], lider: [10, 2.5] } });
+ARENAS.leader_celeste = arenaEm('leader_celeste', { sala: 'torre_vento', area: [1, 1, 18, 12], posicoes: { jogador: [10, 12.4], lider: [10, 2.5] } });
+
 // atalho para os testes e para quem constrói as regiões: a mesma arena noutro lugar do mapa
 export function arenaEm(id, { sala = null, area, posicoes } = {}) {
   const a = ARENAS[id]; if (!a) return null;

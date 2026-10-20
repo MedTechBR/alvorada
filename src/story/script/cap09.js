@@ -206,6 +206,16 @@ export default {
       depois: { batalha: { id: 'g8_iris', nome: 'Piloto Íris', dinheiro: 1850, equipe: [[17, 39, ['wingAttack', 'twister', 'quickAttack']], [164, 40, ['airSlash', 'hypnosis', 'extrasensory']]] } },
     },
     {
+      id: 'torre_catavento',
+      local: 'torre_vento',
+      gatilho: { tipo: 'flag', alvo: 'trainers.g8_iris', requer: ['trainers.g8_gael'] },
+      falas: [
+        ['narrador', 'Os cata-ventos da torre param um a um. O vento que sobrava desce pelo tubo central e some.'],
+        ['celeste', 'Você chegou ao topo com o vento a favor. Agora a Torre é sua conversa.'],
+      ],
+      depois: { flags: { cataVentos: true }, objetivo: 'Desafie a Líder Celeste no topo da Torre do Vento' },
+    },
+    {
       id: 'celeste_desafio',
       local: 'torre_vento',
       gatilho: { tipo: 'falar', alvo: 'celeste', requer: ['cataVentos', 'trainers.g8_gael', 'trainers.g8_iris'], semFlag: ['badges.mirante'] },
