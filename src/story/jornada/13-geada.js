@@ -1,7 +1,7 @@
 // Segmento 13 · Cordilheira Geada (arco de região: Estrada da Vitória, sem ginásio). Ordem: docs/jornada-classica.md,
-// seção 2, linha 13. Rota 12 → Rota 15 (lago congelado) → Vila Geada (o professor liga do observatório) → Rota 16 →
-// Caverna de Gelo (3 andares) → Cume do Vento Branco → RIVAL 5: o Téo, no Cume (ele também vai para a Liga, e explica
-// o porquê: quer ver o pai sair da Aurora e quer uma luta de verdade antes da Elite).
+// seção 2, linha 13. Rota 12 → Rota 15 (lago congelado) → Vila Geada (o professor voltou ao observatório) → Rota 16 →
+// Caverna de Gelo (3 andares) → Cume do Vento Branco → RIVAL 5: o Téo, no Cume. Ele mudou de lado na mina e quer uma
+// luta de verdade antes da Elite, para saber se aguenta ficar do lado certo.
 // Libera o caminho para a Liga do Zênite. Sem reviravolta nesta cordilheira: a história fica no Relógio e na Liga.
 // Níveis: Téo (rival 5) 52, com a equipe de rival de estágio 4.
 import { LOOKS } from '../elenco.js';
@@ -17,10 +17,10 @@ export default {
       local: 'geada_entrada_oeste',
       gatilho: { tipo: 'entrar', alvo: 'geada_entrada_oeste', requer: ['nh.seloFechado'], semFlag: ['nh.chegouGeada'] },
       falas: [
-        ['narrador', 'A Cordilheira Geada começa numa estrada de terra batida, com a neve já acumulada nas margens. Ao longe, os picos brancos parecem recortados no céu.'],
-        ['narrador', 'Esta é a Estrada da Vitória. Quem quer chegar à Liga do Zênite precisa atravessar a cordilheira inteira, com frio, vento e uma vila escondida no alto.'],
-        ['jogador', 'Depois do Relógio, o caminho para a Liga é este. Não há outro jeito de chegar lá sem passar pelo gelo.'],
-        ['narrador', 'Um vento seco desce do alto da cordilheira e enche a estrada de neve fina, que brilha como açúcar.'],
+        ['narrador', 'A Cordilheira Geada começa numa estrada de terra batida, com neve nas margens. Ao longe, os picos brancos recortam o céu.'],
+        ['narrador', 'Esta é a Estrada da Vitória, o último caminho até a Liga do Zênite. Ela atravessa frio, vento e uma vila escondida no alto.'],
+        ['jogador', 'Não existe outro caminho para a Liga. Então é melhor eu subir logo.'],
+        ['narrador', 'Um vento seco desce do alto e enche a estrada de neve fina, que brilha como açúcar.'],
       ],
       depois: {
         flags: { 'nh.chegouGeada': true },
@@ -33,10 +33,10 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'vila_geada', requer: ['nh.chegouGeada'], semFlag: ['nh.vilaGeada'] },
       falas: [
         ['narrador', 'Vila Geada: casas de madeira com telhado de neve, um observatório com cúpula de vidro e uma estalagem onde o fogo nunca apaga.'],
-        ['prof', 'Ravi, está me ouvindo? Eu estou no observatório da vila. Um rapaz da estalagem me emprestou o telefone.'],
-        ['prof', 'Vá com cuidado na Caverna de Gelo. Dizem que o eco do gelo repete as vozes de quem passou por lá, e ninguém volta sem ouvir a própria voz de volta.'],
-        ['prof', 'E o Téo subiu para o Cume ontem. Ele disse que quer enfrentar você lá em cima, antes da Liga. Não deixe ele te achar despreparado.'],
-        ['jogador', 'O professor no observatório. Eu não imaginava que ele fosse tão animado lá em cima.'],
+        ['prof', 'Ravi! Depois do Relógio eu não podia ficar parado. A aurora daqui é a melhor medição que eu tenho.'],
+        ['prof', 'Cuidado na Caverna de Gelo. Dizem que o eco repete a voz de quem passa por lá, e às vezes não dá para saber quem responde.'],
+        ['prof', 'E o Téo subiu para o Cume ontem. Ele quer enfrentar você lá em cima, antes da Liga. Não deixe ele te achar despreparado.'],
+        ['jogador', 'O senhor não parece cansado depois de tudo. Fico feliz de ver.'],
       ],
       depois: {
         flags: { 'nh.vilaGeada': true },
@@ -51,10 +51,10 @@ export default {
       local: 'caverna_gelo_1',
       gatilho: { tipo: 'entrar', alvo: 'caverna_gelo_1', requer: ['nh.vilaGeada'], semFlag: ['nh.cavernaGelo'] },
       falas: [
-        ['narrador', 'A Caverna de Gelo tem três andares, cada um mais frio que o anterior. As paredes são de gelo azul, e dentro dele dá para ver bolhas de ar presas, como lembranças.'],
-        ['narrador', 'No primeiro andar, o seu próprio eco volta mais grave do que você falou. Parece que alguém está respondendo no fundo, com a sua voz.'],
-        ['jogador', 'Eu vou subir. Não tenho medo de eco.'],
-        ['narrador', 'No terceiro andar, uma luz fraca aparece ao fundo: a saída para o Cume do Vento Branco. Alguém está parado ali, de costas, esperando.'],
+        ['narrador', 'A Caverna de Gelo tem três andares, cada um mais frio que o anterior. As paredes são de gelo azul, com bolhas de ar presas nele.'],
+        ['narrador', 'No primeiro andar, sua voz volta mais grave do que você falou. Parece que alguém responde do fundo, usando a sua voz.'],
+        ['jogador', 'Eco não me assusta. Eu vou subir.'],
+        ['narrador', 'No terceiro andar, uma luz fraca aparece ao fundo. Na saída para o Cume, alguém está parado de costas, esperando.'],
       ],
       depois: {
         flags: { 'nh.cavernaGelo': true },
@@ -68,11 +68,11 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'cume_vento_branco', requer: ['nh.cavernaGelo'], semFlag: ['nh.rival5'] },
       falas: [
         ['teo', 'Você demorou. Eu fiquei esperando aqui desde ontem, olhando o vento e pensando se você ia mesmo subir.'],
-        ['jogador', 'Eu subi. E o seu pai? Eu o vi no Relógio, Téo. Ele está bem.'],
-        ['teo', 'Eu sei. Eu não estou aqui por causa dele. Ou melhor, estou, mas não do jeito que você pensa.'],
-        ['teo', 'Eu quero entrar na Liga e ver se a Aurora ainda tem poder sobre quem trabalha lá embaixo. Se tiver, eu quero ser o primeiro a dizer isso para a Elite.'],
-        ['jogador', 'Então vamos lutar, e você fala depois que ganhar.'],
-        ['teo', 'Se eu ganhar, eu falo. Se você ganhar, eu falo também. Mas eu vou falar, Ravi.'],
+        ['jogador', 'Eu subi. E o seu pai? Eu o vi no Relógio, Téo. Ele está bem, e está livre.'],
+        ['teo', 'Eu sei. Eu não estou aqui por ele. Ou melhor, estou, mas não do jeito que você pensa.'],
+        ['teo', 'Eu mudei de lado na mina, e ainda não sei se sou forte o bastante para ficar do lado certo. Quero uma luta de verdade antes da Elite.'],
+        ['jogador', 'Então vamos lutar. Você fala depois, se quiser.'],
+        ['teo', 'Se eu ganhar, eu falo. Se perder, falo do mesmo jeito. Mas eu vou falar, Ravi.'],
       ],
       depois: {
         batalha: {
@@ -95,16 +95,16 @@ export default {
       local: 'cume_vento_branco',
       gatilho: { tipo: 'vencer', alvo: 'nh_rival5' },
       falas: [
-        ['teo', 'Tá. Você ganhou. Eu não estou com raiva. Eu estou com frio, e isso é pior.'],
-        ['teo', 'Então escuta. Meu pai vai sair da mina e voltar para casa, e eu vou com ele, se ele quiser. A Aurora não vai mais dar as ordens lá embaixo.'],
-        ['teo', 'Quando você chegar à Liga, a Elite vai te pedir o seu nome. Diga o nome do Téo. Eu estou lá antes de você, no Portão da Liga.'],
-        ['jogador', 'Eu digo, Téo. Até lá.'],
-        ['narrador', 'O Téo estende a mão sem muita cerimônia. A luta não resolve tudo, mas ajuda a chegar mais perto.'],
-        ['jogador', 'Eu aperto, Téo. Até a Liga.'],
+        ['teo', 'Tá, você ganhou. Eu não estou com raiva. Estou com frio, e isso é pior.'],
+        ['teo', 'Meu pai já saiu da mina, e eu vou com ele para casa. Nenhuma companhia manda mais em nós dois.'],
+        ['teo', 'Quando a Elite perguntar quem te trouxe até aqui, diga o meu nome. Eu estou no Portão da Liga, esperando você.'],
+        ['jogador', 'Eu digo, Téo. Pode deixar.'],
+        ['narrador', 'O Téo estende a mão sem muita cerimônia. A luta não resolveu tudo, mas aproximou os dois.'],
+        ['jogador', 'Até a Liga, Téo.'],
       ],
       depois: {
         flags: { 'nh.teoFinalPronto': true, geada_vencida: true },
-        objetivo: { texto: 'Volte ao Planalto e suba o Caminho do Zênite (Rota 12), ao norte do Relógio de Pedra, até a Liga', alvo: 'zenite_entrada' },
+        objetivo: { texto: 'Desça ao Planalto e suba o Caminho do Zênite, na Rota 12, até a Liga do Zênite', alvo: 'zenite_entrada' },
       },
       atores: [
         { id: 'teo_cume', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'ninho_cume', longe: 3 },
