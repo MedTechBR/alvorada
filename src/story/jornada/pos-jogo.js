@@ -1,6 +1,6 @@
 // Pós-jogo (docs/jornada-classica.md, seção 2, linha PJ). Depois do epílogo: a neblina do Mar do Sul começa a se mexer.
 // Mar do Sul (Templo das Marés, Farol Morto) e Terras do Ocaso (Vila Fim-do-Mundo). Revanches e lendários
-// (Solgaleo, Lunala) ficam para a próxima etapa; aqui estão só a abertura e a passagem para cada lugar.
+// (Solgaleo, Lunala) são cenas do Relógio e do santuário sem nome; os lendários em si vêm de src/data/lendarios.js.
 // Níveis: a definir na etapa de conteúdo do pós-jogo.
 export default {
   id: 'nova_pj',
@@ -50,6 +50,33 @@ export default {
       depois: {
         flags: { 'nh.pjOcaso': true },
         ambiente: true,
+      },
+    },
+    {
+      id: 'pj_relogio',
+      local: 'relogio_pedra',
+      gatilho: { tipo: 'entrar', alvo: 'relogio_pedra', requer: ['trainers.c12_solano'], semFlag: ['nh.pjRelogio'] },
+      falas: [
+        ['narrador', 'Depois da queda do Necrozma, o topo do Relógio ainda amanhece dourado. Um clarão desce da luz do sol e pousa sobre as pedras.'],
+        ['pokedex', 'Registro: Pokémon de sol, origem desconhecida. Ele não está preso. Ele escolheu ficar.'],
+        ['jogador', 'Solgaleo. Ele estava na armadura do Necrozma, e agora está livre. Preciso falar com ele.'],
+      ],
+      depois: {
+        flags: { 'nh.pjRelogio': true },
+        objetivo: { texto: 'O Solgaleo está no topo do Relógio. Ele pode ser capturado. Depois, siga a luz do amanhecer até o santuário sem nome', alvo: 'relogio_pedra' },
+      },
+    },
+    {
+      id: 'pj_lunala',
+      local: 'santuario_crepusculo',
+      gatilho: { tipo: 'entrar', alvo: 'santuario_crepusculo', requer: ['nh.pjRelogio'], semFlag: ['nh.pjLunala'] },
+      falas: [
+        ['narrador', 'O santuário sem nome é o lado escuro do que você viu no Relógio. Uma luz prateada sobe do chão, e junto com ela vem um canto baixo.'],
+        ['jogador', 'Lunala. Ela guardava a noite enquanto o Solgaleo guardava o dia. Se o Relógio foi aberto, ela também deve ter sido presa.'],
+      ],
+      depois: {
+        flags: { 'nh.pjLunala': true },
+        objetivo: { texto: 'Lunala está no santuário sem nome. Ela pode ser capturada: o dia e a noite estão de novo em equilíbrio', alvo: 'santuario_crepusculo' },
       },
     },
   ],

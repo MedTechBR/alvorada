@@ -59,7 +59,7 @@ const EVO_ALTERNATIVAS = [
   [356, { to: 477, level: 37, hold: 'reaperCloth' }],                             // Dusclops: segurando Tecido Ceifador
   [366, { to: 367, level: 25, hold: 'deepSeaTooth' }],                            // Clamperl: segurando Dente do Mar Profundo
   [366, { to: 368, level: 25, hold: 'deepSeaScale' }],                            // Clamperl: segurando Escama do Mar Profundo
-  [525, { to: 526, level: 40, place: ['fenda_prismatica', 'fenda_prismatica_3'] }], // Boldore: na fenda de cristal
+  [525, { to: 526, level: 40, place: ['fenda_prismatica'] }], // Boldore: na fenda de cristal
   [533, { to: 534, level: 25, hold: 'ironBall' }],                                // Gurdurr: segurando Bola de Ferro (peso)
   [588, { to: 589, level: 30, partySpecies: 616 }],                               // Karrablast: com um Shelmet na equipe
   [616, { to: 617, level: 30, partySpecies: 588 }],                               // Shelmet: com um Karrablast na equipe

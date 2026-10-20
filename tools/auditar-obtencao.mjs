@@ -25,6 +25,34 @@ const I = await import('../src/data/items.js');
 const ESP = await import('./mundo/especiais.mjs');
 const { SPECIES } = S;
 const { ITEMS } = I;
+// ids de lugar que as regras de evolução usam (place): têm de existir como área ou sala nos mapas
+const IDS_MAPA = new Set();
+{
+  const pastaMapas = path.join(RAIZ, 'assets/maps');
+  const varre = (dir) => { for (const f of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, f.name);
+    if (f.isDirectory()) varre(p);
+    else if (f.name.endsWith('.json')) { try { const d = JSON.parse(fs.readFileSync(p, 'utf8')); for (const k of ['areas', 'interiors']) for (const a of d[k] ?? []) if (a?.id) IDS_MAPA.add(a.id); } catch { /* ignora */ } }
+  } };
+  varre(pastaMapas);
+}
+const LUGARES_USADOS = new Set();
+for (const s of Object.values(SPECIES)) for (const v of [s, ...Object.values(s.forms)]) for (const r of v.evo ?? []) for (const l of r.place ?? []) LUGARES_USADOS.add(l);
+// salas que a história e as obtenções precisam: Laboratório de Fósseis (Cidade Buriti) e a Creche da Vó Iara
+const SALAS_OBRIGATORIAS = ['lab_fosseis', 'creche_iara'];
+// lendários fixos (src/data/lendarios.js): o lugar tem de existir no mapa, e o id da espécie tem de existir
+const { LENDARIOS } = await import('../src/data/lendarios.js');
+// fontes de OBTENCAO com lugar que não existe no mapa (ex.: 'cratera_tempo_2'): a espécie conta como obtível,
+// mas o lugar ainda precisa ser construído. Só aviso: o relatório lista quantas.
+const ONDE_SEM_MAPA = [];
+for (const [chave, lista] of Object.entries(ESP.OBTENCAO)) for (const o of lista) {
+  const id = String(o.onde ?? '').split(/[ (]/)[0];
+  if (id && !id.startsWith('(') && !IDS_MAPA.has(id) && !['laboratorio', 'clube'].includes(id)) ONDE_SEM_MAPA.push(`${chave}:${id}`);
+}
+const LEND_COM_LUGAR = LENDARIOS.filter((l) => l.lugar);
+const LEND_SEM_MAPA = LEND_COM_LUGAR.filter((l) => !IDS_MAPA.has(l.lugar)).map((l) => `${l.id}@${l.lugar}`);
+const LEND_SEM_ESPECIE = LENDARIOS.filter((l) => !SPECIES[l.dex]).map((l) => l.id);
+const LUGARES_SEM_MAPA = [...LUGARES_USADOS, ...SALAS_OBRIGATORIAS, ...LEND_SEM_MAPA.map((x) => x.split('@')[1])].filter((l) => !IDS_MAPA.has(l));
 
 const TOTAL = 1025;
 const CATEGORIAS = {
@@ -176,7 +204,9 @@ linhas.push('', `## Babies\n\n- Babies na lista nacional: ${BEBES.length}; na Cr
 linhas.push('## Trocas (evoluções que pedem troca)', '', 'Online, a troca continua valendo. Offline, cada uma tem o jeito abaixo.', '', '| Origem | Evolui para | Troca (original) | Como sem troca |', '|---|---|---|---|');
 for (const l of linhasTroca) linhas.push(`| ${l.nome} (#${l.de}) | ${l.nomePara} (#${l.para}) | ${l.troca} | ${l.alternativa} |`);
 linhas.push('', `Trocas sem alternativa: **${semAlternativa.length}**`, '');
-linhas.push('## Espécies inativas', '');
+linhas.push('## Lendários fixos (src/data/lendarios.js)', '', '| Espécie | Nível | Lugar | Etapa |', '|---|---:|---|---|');
+for (const l of LENDARIOS) linhas.push(`| ${l.nome} (#${l.dex}) | ${l.nivel} | ${l.lugar ?? 'sem lugar ainda'} | ${l.etapa} |`);
+linhas.push('', '## Espécies inativas', '');
 linhas.push(inativos.length ? inativos.map((d) => `- #${d} ${nomeDe(d)}`).join('\n') : 'Nenhuma.', '');
 linhas.push(`## Formas\n\nFormas cadastradas (regionais, de gênero, alternativas, mega, Gigantamax): ${formasTotal}. A auditoria conta a espécie; cada forma regional tem a sua fonte em tools/mundo/especiais.mjs (OBTENCAO) ou nas tabelas de área.`, '');
 
@@ -189,4 +219,9 @@ console.log(`Trocas: ${linhasTroca.length} regras de troca; sem alternativa: ${s
 console.log(`Babies fora da Creche: ${bebesFora.length}`);
 if (inativos.length) console.log('Inativas:', inativos.map((d) => `${d} ${nomeDe(d)}`).join(', '));
 if (!SO_CONTAR) console.log(`Gravado: ${path.relative(RAIZ, destino)}`);
-process.exitCode = inativos.length || semAlternativa.length ? 1 : 0;
+if (LEND_SEM_ESPECIE.length) console.log(`ERRO: lendários com espécie inexistente: ${LEND_SEM_ESPECIE.join(', ')}`);
+console.log(`Lendários: ${LENDARIOS.length} cadastrados, ${LEND_COM_LUGAR.length} com lugar, ${LENDARIOS.length - LEND_COM_LUGAR.length} sem lugar ainda`);
+if (LUGARES_SEM_MAPA.length) console.log(`ERRO: lugares das regras de evolução que não existem nos mapas: ${LUGARES_SEM_MAPA.join(', ')}`);
+console.log(`Fontes de OBTENCAO em lugares que ainda não existem no mapa: ${ONDE_SEM_MAPA.length} (ex.: ${[...new Set(ONDE_SEM_MAPA)].slice(0,8).join(', ')})`);
+console.log(`Lugares das regras de evolução: ${LUGARES_USADOS.size} ids, ${LUGARES_SEM_MAPA.length} sem mapa`);
+process.exitCode = inativos.length || semAlternativa.length || LUGARES_SEM_MAPA.length || LEND_SEM_ESPECIE.length ? 1 : 0;

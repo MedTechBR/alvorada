@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { Lendarios } from './world/lendarios.js';
 import { Input, IS_TOUCH } from './engine/input.js';
 import { Fx } from './engine/fx.js';
 import { makeTiles, T, TILE } from './world/tiles.js';
@@ -62,6 +63,7 @@ class Game {
     this.ents = new PIXI.Container(); this.ents.sortableChildren = true;
     this.world.addChild(this.ents);
     this.combat = new Combat(this);
+    this.lend = new Lendarios(this); // lendários fixos (src/data/lendarios.js)
     this.world.addChild(this.combat.layer, this.fx.layer);
     this.app.stage.addChild(this.world);
     this.#buildObjects();
@@ -315,6 +317,7 @@ class Game {
     e.dead = true; e.play('Hurt');
     this.fx.burst(e.x, e.y - 8, 0xffffff, 1.2);
     if (e.side === 'wild') {
+      if (e.lendario) this.lend?.concluir(e.lendario, 'derrotado');
       const lead = this.lead;
       if (lead?.alive && (by === lead || by?.side === 'ally')) {
         lead.mon.gainEvs(e.mon.sp.evs); lead.mon.addFriendship(1);
@@ -472,6 +475,7 @@ class Game {
         if (w.isAlpha) { m.stats = null; m.calc(); m.hp = Math.min(m.hp, m.stats.hp); } // o alfa capturado volta aos status normais da espécie
         if (bi?.onCatch === 'heal') m.heal();
         if (bi?.onCatch === 'friend') m.friendship = Math.max(m.friendship, 150);
+        if (w.lendario) this.lend?.concluir(w.lendario, 'capturado');
         const novo = dexMark(this, m.dex, 2);
         this.missoes?.evento('captura', { mon: m, ent: w });
         this.fx.number(b.s.x, b.s.y - 18, 'Capturado!', 0xffe27a, true, 'banner');
@@ -770,6 +774,7 @@ class Game {
       for (const w of this.wilds) if (w.alive && !w.saindo && Math.hypot(w.x - p.x, w.y - p.y) < 26 * T) { w.saindo = true; w.dead = true; w.vx = w.vy = 0; }
     }
     for (const w of [...this.wilds]) if (w.saindo && w.alpha <= 0.02) this.removeEntity(w);
+    this.lend?.update();
     if (!lutaTreinador && this.spawnT <= 0 && !this.spawnPend && this.wilds.filter((w) => w.alive).length < WILD_MAX) { this.spawnT = 4 + Math.random() * 3; this.spawnPend = true; this.spawnWild().catch(() => {}).finally(() => { this.spawnPend = false; }); }
     for (const w of this.wilds) {
       if (!w.alive || w.busy) { w.vx = w.vy = 0; continue; }

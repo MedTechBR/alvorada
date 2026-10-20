@@ -23,7 +23,7 @@ const aviso = (m) => avisos.push(m);
 
 // ---------------------------------------------------------------- lugares do mapa (spots, áreas, salas)
 // Lê os arquivos de mapa. Um nome vale se for ponto nomeado, área, sala (e seus dentro_/porta_) ou ponto de sala.
-const arquivosMapa = ['assets/maps/alvorada.json',
+const arquivosMapa = ['assets/maps/alvorada.json', 'assets/maps/esboco.json', // esboco: incluído por alvorada.json ("include")
   ...readdirSync(join(raiz, 'assets/maps/regioes')).filter((f) => f.endsWith('.json')).map((f) => 'assets/maps/regioes/' + f),
   'assets/maps/ocaso/leste.json', 'assets/maps/ocaso/oeste.json'];
 const lugares = new Set();
