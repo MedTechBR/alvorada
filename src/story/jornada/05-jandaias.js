@@ -19,7 +19,7 @@ export default {
       falas: [
         ['narrador', 'Vila Jandaia: casas de palha sobre estacas, pontes de cipó e um templo de raízes que cresce por cima da pedra.'],
         ['narrador', 'A Monja Aruã, do templo, disse ao rádio que as raízes estão secando e que a seiva está escurecendo.'],
-        ['jogador', 'Raízes secando por causa de quê? Será a mesma luz que a Lia viu no bosque?'],
+        ['jogador', 'Raízes secando, como no bosque da Lia. Será o mesmo problema?'],
         ['narrador', 'Uma criança aponta para o templo, do outro lado da lagoa: "Tem gente de capa roxa lá dentro desde ontem."'],
       ],
       depois: {
@@ -33,11 +33,11 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'templo_raizes_porta', requer: ['nh.chegouJandaia'], semFlag: ['nh.ebanoTemplo'] },
       falas: [
         ['narrador', 'Nas paredes do templo, raízes grossas se abrem como cortinas. No centro, uma raiz de cristal brilha com a mesma luz morna das pedras.'],
-        ['ebano', 'Admin Ébano. Esta raiz de cristal tem a mesma luz do cadeado do Relógio. A Dra. Véspera precisa dela para manter a noite.'],
-        ['aruan', 'Afasta-te da raiz, forasteiro! Ela não é tua, nem dele.'],
-        ['ebano', 'A monja tem razão, mas a monja não entende o que a raiz faz com a selva. Eu entendo. Por isso eu levo.'],
-        ['jogador', 'Você está destruindo o templo para uma luz que não é sua.'],
-        ['ebano', 'Então me impede. Você já atrapalhou a Crepúsculo em três cidades. Não vai ser diferente aqui.'],
+        ['ebano', 'Admin Ébano. Esta raiz de cristal é de luzita, como o cadeado do Relógio. A Dra. Véspera mandou levá-la.'],
+        ['aruan', 'Afastem-se da raiz! Ela sustenta a selva inteira e não é de vocês.'],
+        ['ebano', 'Se a Aurora achar a raiz, ela leva do mesmo jeito. É melhor que fique conosco.'],
+        ['jogador', 'Arrancar a raiz seca a selva. Eu não vou deixar.'],
+        ['ebano', 'Então me impede. Você já atrapalhou a Crepúsculo em quatro cidades. Aqui eu não deixo.'],
       ],
       depois: {
         batalha: {
@@ -56,16 +56,16 @@ export default {
       local: 'templo_raizes_1',
       gatilho: { tipo: 'vencer', alvo: 'c5_ebano' },
       falas: [
-        ['ebano', 'Hm. Então a raiz fica onde está. A Aurora vai querer cobrar por isso, e eu vou esperar a conta.'],
+        ['ebano', 'Hm. A raiz fica, então. Vou avisar a Dra. Véspera.'],
         ['narrador', 'O Ébano recua pelo túnel. Atrás da raiz, uma fresta mostra um cabo de metal com etiqueta dourada: "Companhia Aurora. Luzita, linha 2."'],
-        ['aruan', 'Está vendo? A luz de vocês atravessa a terra da minha selva. Desde que o cabo chegou, as raízes secam por baixo.'],
-        ['jogador', 'Então a Aurora passou um cabo debaixo do templo. E a Crepúsculo tenta levar o que a Aurora deixou.'],
-        ['aruan', 'Os dois querem a mesma coisa: a luz que não é deles. A raiz fica aqui, na terra da selva. Enquanto estiver no lugar, a selva resiste ao cabo.'],
-        ['aruan', 'Não tente arrancá-la. Quem tira a raiz, tira a selva inteira junto. Cuide do cabo, se puder, mas deixe a raiz em paz.'],
+        ['aruan', 'Veja: um cabo da Aurora passa por baixo do templo. Desde que ele chegou, as raízes secam.'],
+        ['jogador', 'Então o cabo da Aurora seca a selva. E a Crepúsculo quis levar a raiz.'],
+        ['aruan', 'Os dois querem a luz da raiz. Mas enquanto ela estiver aqui, a selva resiste ao cabo.'],
+        ['aruan', 'Nunca arranque a raiz: a selva morre junto. Se puder, denuncie o cabo da Aurora.'],
       ],
       depois: {
         flags: { 'nh.cabosAurora': true },
-        objetivo: { texto: 'Atravesse a Selva Grande em direção ao leste, onde o Téo está esperando', alvo: 'selva_grande' },
+        objetivo: { texto: 'Atravesse a Selva Grande, a leste, para voltar à balsa', alvo: 'selva_grande' },
       },
       atores: [
         { id: 'aruan_templo', quem: 'aruan', nome: 'Monja Aruã', look: LOOKS.benta, spot: 'templo_raizes_porta', permanente: true },
@@ -77,11 +77,11 @@ export default {
       local: 'selva_grande',
       gatilho: { tipo: 'entrar', alvo: 'selva_grande', requer: ['nh.cabosAurora'], semFlag: ['nh.rival3'] },
       falas: [
-        ['teo', 'Você de novo! Achei que o templo ia te engolir. Pelo jeito, a selva não te quis.'],
+        ['teo', 'Você de novo! Eu ia mesmo te procurar.'],
         ['jogador', 'Téo, a Aurora passou um cabo por dentro do templo, e a Crepúsculo tentou levar a raiz. Você sabia disso?'],
-        ['teo', 'Eu sei que meu pai trabalha na Mina Aurora. A Aurora é a única empresa que paga bem aqui em Alvorada.'],
+        ['teo', 'Não sabia. Mas meu pai trabalha na Mina Aurora, e a empresa paga bem em Alvorada.'],
         ['teo', 'Se a Crepúsculo quer acabar com a luz da Aurora, ela quer acabar com o emprego do meu pai. Eu não vou deixar.'],
-        ['jogador', 'Então vamos lutar. Mas depois você vai ouvir o que eu vi no templo.'],
+        ['jogador', 'Então vamos ver quem está certo. Depois você me escuta.'],
       ],
       depois: {
         batalha: {
@@ -100,15 +100,15 @@ export default {
       gatilho: { tipo: 'vencer', alvo: 'nh_rival3' },
       falas: [
         ['teo', 'Tá bom, você ganhou. Mas eu não estou convencido. Meu pai nunca mentiu para mim.'],
-        ['jogador', 'Eu não disse que ele mentiu. Eu disse que a Aurora passou um cabo pelo templo, e a selva está secando por causa disso.'],
-        ['teo', 'Então me dá uma prova. Se for mentira, eu vou ser o primeiro a te enfrentar de novo.'],
-        ['jogador', 'Achei uma garrafa no manguezal, perto do porto. Dentro, um bilhete do Heitor: "Estamos no nível 4. A luz daqui não é limpa".', { requer: ['nh.bilheteHeitor'] }],
-        ['teo', 'Essa letra torta é do meu pai, de quem escreve no escuro. Mas nível quatro? Ele nunca me contou nada disso. Eu preciso pensar.', { requer: ['nh.bilheteHeitor'] }],
+        ['jogador', 'Eu não disse que ele mentiu. Disse que o cabo da Aurora está secando a selva.'],
+        ['teo', 'Então me dê uma prova. Sem prova, eu não acredito.'],
+        ['jogador', 'Achei uma garrafa no manguezal, perto do porto. Dentro, um bilhete do Heitor: "Estamos presos no nível 4 da mina".', { requer: ['nh.bilheteHeitor'] }],
+        ['teo', 'Essa letra torta é do meu pai! Mas preso no nível quatro? Ele nunca me contou isso. Preciso pensar.', { requer: ['nh.bilheteHeitor'] }],
         ['teo', 'Sem prova, eu continuo do lado da Aurora. Mas vou ficar de olho em você.', { semFlag: ['nh.bilheteHeitor'] }],
       ],
       depois: {
         flags: { 'nh.teoDuvida': true },
-        objetivo: { texto: 'Volte à Cidade Coral pela balsa e siga pela Rota 5 até a Vila Lamparina, a oeste', alvo: 'vila_lamparina' },
+        objetivo: { texto: 'Volte à Cidade Coral pela balsa e siga pela Rota 5 até a Vila Lamparina, onde fica a próxima líder, Zélia', alvo: 'vila_lamparina' },
       },
       atores: [
         { id: 'teo_selva', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'ninho_acampamento_selva', longe: 3 },
