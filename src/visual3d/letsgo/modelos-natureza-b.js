@@ -71,7 +71,6 @@ const lavaRock = (m, c) => {
   pedra({ w, h, d, pal: ['#3a2c30', '#6a5658'] })(m, c);
   const el = [0, h * 0.42, cz, w * 0.5, h * 0.62, d * 0.55];
   rachadura(m, el, [[-9, 3.2], [-4, 4.4], [-1, 7.6], [4, 9.4], [8.4, 6]], 0.75, '#ff8a2a');
-  rachadura(m, el, [[2, 2.4], [2.6, 5.4]], 0.6, '#ffc050');
   m.bola(5, h * 0.9, cz - 0.5, 2.2, 0.6, 1.8, '#ffb040', { d: 0, brilho: -1, ao: false });
   return { y: h, x0: -w * 0.3, x1: w * 0.2, z0: cz - d * 0.3, z1: cz + d * 0.3 };
 };
