@@ -22,6 +22,7 @@ export function mesclarVestir(F, V) {
 // usado só no visual 2D (uma textura parecida que já existe). solidCells: [] = dá para passar por cima (concha, fenda).
 const K = (tex, fw, fh, extra = {}) => ({ tex, fw, fh, oy: 1, vestir: true, ...extra });
 export const VESTIR_KINDS = {
+  moita: K('bush', 1, 1), moitaNeve: K('bush', 1, 1), pedrinha: K('smallrock', 1, 1), pedrinhaVerm: K('smallrock', 1, 1), pedrinhaBasalto: K('smallrock', 1, 1),
   escarpa: K('grayrock', 3, 2), escarpaNeve: K('grayrock', 3, 2), escarpaVerm: K('rock2', 3, 2), escarpaBasalto: K('obsidianRock', 3, 2),
   monteNeve: K('rock2', 2, 1), pedraGelo: K('grayrock', 2, 1), galhoNevado: K('snowPine', 2, 1),
   pinheiroAlto: K('pine', 2, 1), pinheiroNevado: K('snowPine', 2, 1),

@@ -89,7 +89,7 @@ for (const o of S.placed) if (o.text && o.y < OH) marca(o.x, o.y + 1, 1); // pla
 const ancReais = new Set(ancs);
 
 // pontos de exploração: um por célula de 34x34 blocos de terra (fora de vila e mar), no bloco andável mais central
-const GRADE = 34;
+const GRADE = 42;
 for (let gy = 0; gy < OH; gy += GRADE) for (let gx = 0; gx < W; gx += GRADE) {
   let melhor = -1, md = 1e9;
   for (let y = gy; y < Math.min(OH, gy + GRADE); y += 2) for (let x = gx; x < Math.min(W, gx + GRADE); x += 2) {
@@ -212,20 +212,20 @@ const dist = (k) => D[k] / 3;
 // raio: meia largura do corredor (blocos); muro: o paredão; fundo: o miolo do paredão; borda: o pé do paredão;
 // solto: o que fica espalhado no corredor; alto: o mato alto; chao: manchas de chão; piso: chão sob a mata; marcos.
 const CFG = {
-  campo: { raio: 5, amp: 1.5, muro: ['tree', 'tree2', 'tree', 'autumn', 'tree2', 'pine'], fundo: ['bigtree', 'tree', 'bigautumn', 'tree2'], borda: ['cone', 'roundbush', 'boulder', 'stump', 'cone'], solto: ['boulder2', 'stump', 'log', 'grayrock'], alto: 'tall', chao: [['grass2', 0.5], ['flowers', 0.12]], piso: 'dark', marcos: ['arvoreGigante', 'santuario', 'ruina', 'arcoPedra', 'menhir'], baga: true, decor: ['mush', 'pebble'] },
-  floresta: { raio: 4, amp: 1.2, muro: ['pine', 'pineT', 'tree', 'pinheiroAlto', 'pine2', 'tree2'], fundo: ['pinheiroAlto', 'bigtree', 'pineT'], borda: ['roundbush', 'stump', 'cone', 'log'], solto: ['log', 'stump', 'cogumelos', 'samambaia', 'samambaia'], alto: 'tall', chao: [['dark', 0.35], ['grass2', 0.3]], piso: 'dark', marcos: ['arvoreGigante', 'santuario', 'cachoeira'], baga: true, decor: ['mush', 'mush2'] },
-  selva: { raio: 4, amp: 1.2, muro: ['arvoreSelva', 'umbu', 'bambu', 'folhaGigante', 'arvoreSelva'], fundo: ['arvoreSelva', 'umbu'], borda: ['folhaGigante', 'samambaia', 'samambaia', 'bambu'], solto: ['samambaia', 'samambaia', 'folhaGigante', 'cogumelos', 'log'], alto: 'tall', chao: [['dark', 0.45], ['mangmud', 0.06]], piso: 'dark', marcos: ['arvoreGigante', 'cachoeira', 'mural'], baga: true, decor: ['mush2'] },
-  neve: { raio: 5, amp: 1.6, muro: ['snowPine', 'pinheiroNevado', 'snowPineBig', 'snowPine'], fundo: ['snowPineBig', 'pinheiroNevado'], borda: ['monteNeve', 'pedraGelo', 'monteNeve', 'galhoNevado'], solto: ['monteNeve', 'pedraGelo', 'monteNeve', 'galhoNevado', 'stalagmiteIce'], alto: 'tallsnow', chao: [['deepsnow', 0.22]], piso: null, marcos: ['lagoGelo', 'arcoPedra', 'pedraGeloAnel', 'snowman'], baga: false, decor: [] },
-  gelo: { raio: 6, amp: 1.5, muro: ['escarpaNeve', 'stalagmiteIce'], fundo: ['escarpaNeve'], borda: ['pedraGelo', 'stalagmiteIce', 'crystal'], solto: ['pedraGelo', 'stalagmiteIce'], alto: null, chao: [], piso: null, marcos: ['crystal'], baga: false, decor: [] },
-  deserto: { raio: 7, amp: 2.5, muro: ['duna', 'duna', 'mesa', 'pilarRocha'], fundo: ['duna', 'mesa'], borda: ['cactus', 'cactoBarril', 'arbustoSeco', 'pilarRocha', 'boulder'], solto: ['cactus', 'cactoBarril', 'arbustoSeco', 'ossada', 'skull', 'mandacaru'], alto: null, chao: [['cracked', 0.06]], piso: null, marcos: ['oasis', 'mesaGrupo', 'ossada', 'brokenColumn'], baga: false, decor: ['pebble'] },
-  canion: { raio: 5, amp: 1.5, muro: ['escarpaVerm', 'pilarRocha', 'escarpaVerm', 'mesa'], fundo: ['escarpaVerm', 'mesa'], borda: ['pilarRocha', 'arbustoSeco', 'cactus', 'boulder'], solto: ['arbustoSeco', 'cactoBarril', 'skull', 'boulder2'], alto: 'talldry', chao: [], piso: null, marcos: ['arcoPedra', 'mesaGrupo', 'ossada'], baga: false, decor: ['pebble'] },
-  sertao: { raio: 5, amp: 1.5, muro: ['mandacaru', 'juazeiro', 'xiquexique', 'cactus', 'arbustoSeco', 'umbu'], fundo: ['juazeiro', 'umbu', 'mandacaru'], borda: ['xiquexique', 'arbustoSeco', 'cactoBarril', 'boulder', 'cactus'], solto: ['arbustoSeco', 'cactoBarril', 'skull', 'boulder2', 'xiquexique'], alto: 'talldry', chao: [['cracked', 0.1]], piso: null, marcos: ['mesaGrupo', 'santuario', 'umbu'], baga: false, decor: ['pebble'] },
-  vulcao: { raio: 5, amp: 1.5, muro: ['escarpaBasalto', 'basaltoColunas', 'pinaculo', 'arvoreCinza', 'escarpaBasalto'], fundo: ['escarpaBasalto', 'basaltoColunas'], borda: ['basaltoColunas', 'lavaRock', 'arvoreCinza', 'fumarola', 'pinaculo'], solto: ['lavaRock', 'arvoreCinza', 'fumarola', 'fendaLava', 'pinaculo'], alto: null, chao: [['ash', 0.3], ['obsidian', 0.05]], piso: null, marcos: ['lagoLava', 'pinaculoGrupo', 'termas'], baga: false, decor: [] },
-  termal: { raio: 5, amp: 1.5, muro: ['escarpa', 'basaltoColunas', 'pinaculo'], fundo: ['escarpa'], borda: ['fumarola', 'boulder', 'basaltoColunas'], solto: ['fumarola', 'boulder2', 'lavaRock'], alto: null, chao: [['ash', 0.2]], piso: null, marcos: ['termas'], baga: false, decor: [] },
-  praia: { raio: 99, amp: 0, muro: [], fundo: [], borda: [], solto: ['palmeira', 'coqueiro', 'pedraMar', 'concha', 'concha', 'driftwood', 'palmSmall', 'concha'], alto: null, chao: [], piso: null, marcos: ['pocaMare', 'barco', 'palmeiral', 'jangada'], baga: false, decor: ['pebble'] },
-  mangue: { raio: 4, amp: 1.2, muro: ['mangue', 'mangue', 'palmeira', 'taboa'], fundo: ['mangue'], borda: ['taboa', 'taboa', 'driftwood', 'log'], solto: ['taboa', 'driftwood', 'stump', 'vitoriaRegia'], alto: 'reed', chao: [], piso: null, marcos: ['mangue', 'santuario'], baga: false, decor: ['mush'] },
-  margem: { raio: 5, amp: 1.5, muro: ['tree2', 'tree', 'oran', 'pecha', 'tree2'], fundo: ['bigtree', 'tree2'], borda: ['taboa', 'roundbush', 'cone', 'boulder'], solto: ['taboa', 'log', 'stump', 'boulder2'], alto: 'tall', chao: [['grass2', 0.4], ['flowers', 0.08]], piso: 'dark', marcos: ['santuario', 'arvoreGigante'], baga: true, decor: ['mush', 'pebble'] },
-  planalto: { raio: 8, amp: 2.5, muro: ['escarpa', 'escarpa', 'pinheiroAlto', 'arvoreVento', 'boulder'], fundo: ['escarpa', 'pinheiroAlto'], borda: ['boulder', 'grayrock', 'arvoreVento', 'boulder2', 'menhir'], solto: ['boulder', 'grayrock', 'arvoreVento', 'boulder2'], alto: 'tall', chao: [['grass2', 0.4], ['flowers', 0.05]], piso: null, marcos: ['arcoPedra', 'menhirAnel', 'arvoreVento', 'ruina'], baga: false, decor: ['pebble'] },
+  campo: { um: ['moita', 'moita', 'pedrinha'], raio: 5, amp: 1.5, muro: ['tree', 'tree2', 'tree', 'autumn', 'tree2', 'pine'], fundo: ['bigtree', 'tree', 'bigautumn', 'tree2'], borda: ['cone', 'roundbush', 'boulder', 'stump', 'cone'], solto: ['boulder2', 'stump', 'log', 'grayrock'], alto: 'tall', chao: [['grass2', 0.5], ['flowers', 0.12]], piso: 'dark', marcos: ['arvoreGigante', 'santuario', 'ruina', 'arcoPedra', 'menhir'], baga: true, decor: ['mush', 'pebble'] },
+  floresta: { um: ['moita', 'moita', 'samambaia'], raio: 4, amp: 1.2, muro: ['pine', 'pineT', 'tree', 'pinheiroAlto', 'pine2', 'tree2'], fundo: ['pinheiroAlto', 'bigtree', 'pineT'], borda: ['roundbush', 'stump', 'cone', 'log'], solto: ['log', 'stump', 'cogumelos', 'samambaia', 'samambaia'], alto: 'tall', chao: [['dark', 0.35], ['grass2', 0.3]], piso: 'dark', marcos: ['arvoreGigante', 'santuario', 'cachoeira'], baga: true, decor: ['mush', 'mush2'] },
+  selva: { um: ['moita', 'samambaia'], raio: 4, amp: 1.2, muro: ['arvoreSelva', 'umbu', 'bambu', 'folhaGigante', 'arvoreSelva'], fundo: ['arvoreSelva', 'umbu'], borda: ['folhaGigante', 'samambaia', 'samambaia', 'bambu'], solto: ['samambaia', 'samambaia', 'folhaGigante', 'cogumelos', 'log'], alto: 'tall', chao: [['dark', 0.45], ['mangmud', 0.06]], piso: 'dark', marcos: ['arvoreGigante', 'cachoeira', 'mural'], baga: true, decor: ['mush2'] },
+  neve: { um: ['moitaNeve', 'moitaNeve', 'stalagmiteIce'], raio: 5, amp: 1.6, muro: ['snowPine', 'pinheiroNevado', 'snowPineBig', 'snowPine'], fundo: ['snowPineBig', 'pinheiroNevado'], borda: ['monteNeve', 'pedraGelo', 'monteNeve', 'galhoNevado'], solto: ['monteNeve', 'pedraGelo', 'monteNeve', 'galhoNevado', 'stalagmiteIce'], alto: 'tallsnow', chao: [['deepsnow', 0.22]], piso: null, marcos: ['lagoGelo', 'arcoPedra', 'pedraGeloAnel', 'snowman'], baga: false, decor: [] },
+  gelo: { um: ['stalagmiteIce', 'pedrinha'], raio: 6, amp: 1.5, muro: ['escarpaNeve', 'stalagmiteIce'], fundo: ['escarpaNeve'], borda: ['pedraGelo', 'stalagmiteIce', 'crystal'], solto: ['pedraGelo', 'stalagmiteIce'], alto: null, chao: [], piso: null, marcos: ['crystal'], baga: false, decor: [] },
+  deserto: { um: ['cactoBarril', 'arbustoSeco'], raio: 7, amp: 2.5, muro: ['duna', 'duna', 'duna', 'mesa'], fundo: ['duna', 'duna', 'mesa'], borda: ['cactus', 'cactoBarril', 'arbustoSeco', 'duna', 'boulder'], solto: ['cactus', 'cactoBarril', 'arbustoSeco', 'ossada', 'skull', 'mandacaru', 'pilarRocha'], alto: null, chao: [['cracked', 0.05]], piso: null, marcos: ['oasis', 'mesaGrupo', 'ossada', 'brokenColumn'], baga: false, decor: ['pebble'] },
+  canion: { um: ['pedrinhaVerm', 'pilarRocha'], raio: 5, amp: 1.5, muro: ['escarpaVerm', 'pilarRocha', 'escarpaVerm', 'mesa'], fundo: ['escarpaVerm', 'mesa'], borda: ['pilarRocha', 'arbustoSeco', 'cactus', 'boulder'], solto: ['arbustoSeco', 'cactoBarril', 'skull', 'boulder2'], alto: 'talldry', chao: [], piso: null, marcos: ['arcoPedra', 'mesaGrupo', 'ossada'], baga: false, decor: ['pebble'] },
+  sertao: { um: ['arbustoSeco', 'cactus', 'cactoBarril'], raio: 5, amp: 1.5, muro: ['mandacaru', 'juazeiro', 'xiquexique', 'cactus', 'arbustoSeco', 'umbu'], fundo: ['juazeiro', 'umbu', 'mandacaru'], borda: ['xiquexique', 'arbustoSeco', 'cactoBarril', 'boulder', 'cactus'], solto: ['arbustoSeco', 'cactoBarril', 'skull', 'boulder2', 'xiquexique'], alto: 'talldry', chao: [['cracked', 0.1]], piso: null, marcos: ['mesaGrupo', 'santuario', 'umbu'], baga: false, decor: ['pebble'] },
+  vulcao: { um: ['pedrinhaBasalto', 'pinaculo'], raio: 5, amp: 1.5, muro: ['escarpaBasalto', 'basaltoColunas', 'pinaculo', 'arvoreCinza', 'escarpaBasalto'], fundo: ['escarpaBasalto', 'basaltoColunas'], borda: ['basaltoColunas', 'lavaRock', 'arvoreCinza', 'fumarola', 'pinaculo'], solto: ['lavaRock', 'arvoreCinza', 'fumarola', 'fendaLava', 'pinaculo'], alto: null, chao: [['ash', 0.3], ['obsidian', 0.05]], piso: null, marcos: ['lagoLava', 'pinaculoGrupo', 'termas'], baga: false, decor: [] },
+  termal: { um: ['pedrinhaBasalto', 'fumarola'], raio: 5, amp: 1.5, muro: ['escarpa', 'basaltoColunas', 'pinaculo'], fundo: ['escarpa'], borda: ['fumarola', 'boulder', 'basaltoColunas'], solto: ['fumarola', 'boulder2', 'lavaRock'], alto: null, chao: [['ash', 0.2]], piso: null, marcos: ['termas'], baga: false, decor: [] },
+  praia: { um: ['palmSmall', 'pedrinha'], raio: 8, amp: 2.5, muro: ['palmeira', 'coqueiro', 'pedraMar', 'palmeira', 'palmSmall'], fundo: ['coqueiro', 'palmeira', 'pedraMar'], borda: ['pedraMar', 'driftwood', 'palmSmall', 'concha'], solto: ['concha', 'concha', 'pedraMar', 'driftwood', 'palmSmall', 'concha', 'pocaMare'], alto: null, chao: [], piso: null, marcos: ['pocaMare', 'barco', 'palmeiral', 'jangada', 'guardaSol'], baga: false, decor: ['pebble'] },
+  mangue: { um: ['taboa', 'moita'], raio: 4, amp: 1.2, muro: ['mangue', 'mangue', 'palmeira', 'taboa'], fundo: ['mangue'], borda: ['taboa', 'taboa', 'driftwood', 'log'], solto: ['taboa', 'driftwood', 'stump', 'vitoriaRegia'], alto: 'reed', chao: [], piso: null, marcos: ['mangue', 'santuario'], baga: false, decor: ['mush'] },
+  margem: { um: ['moita', 'taboa'], raio: 5, amp: 1.5, muro: ['tree2', 'tree', 'oran', 'pecha', 'tree2'], fundo: ['bigtree', 'tree2'], borda: ['taboa', 'roundbush', 'cone', 'boulder'], solto: ['taboa', 'log', 'stump', 'boulder2'], alto: 'tall', chao: [['grass2', 0.4], ['flowers', 0.08]], piso: 'dark', marcos: ['santuario', 'arvoreGigante'], baga: true, decor: ['mush', 'pebble'] },
+  planalto: { um: ['pedrinha', 'moita'], raio: 8, amp: 2.5, muro: ['escarpa', 'escarpa', 'pinheiroAlto', 'arvoreVento', 'boulder'], fundo: ['escarpa', 'pinheiroAlto'], borda: ['boulder', 'grayrock', 'arvoreVento', 'boulder2', 'menhir'], solto: ['boulder', 'grayrock', 'arvoreVento', 'boulder2'], alto: 'tall', chao: [['grass2', 0.4], ['flowers', 0.05]], piso: null, marcos: ['arcoPedra', 'menhirAnel', 'arvoreVento', 'ruina'], baga: false, decor: ['pebble'] },
 };
 const ALTO_BASE = { tall: [TILE.GRASS, TILE.GRASS2, TILE.DARK], tallsnow: [TILE.SNOWFIELD, TILE.DEEPSNOW], talldry: [TILE.CAATINGA, TILE.CRACKED, TILE.REDROCK, TILE.GRASS], reed: [TILE.MANGMUD] };
 const ITENS = ['potion', 'pokeball', 'oranBerry', 'superPotion', 'greatBall', 'repel', 'antidote', 'escapeRope'];
@@ -240,7 +240,8 @@ function gerarRegiao(reg) {
   const out = { objects: [], decor: [], items: [], tiles: new Map() };
   const setT = (k, nome) => { const v = TILE[nome.toUpperCase()]; if (v === undefined) throw new Error('bloco ' + nome); t[k] = v; out.tiles.set(k, nome); };
   for (const [k, nome] of pintado) { const x = k % W, y = (k - x) / W; if (dentro(x, y)) setT(k, nome); }
-  const livre = (k) => !blk[k] && LAND.has(t[k]) && !P[k] && !rsv[k] && !ehTrilha(k) && bio[k] !== BI.vila && bio[k] !== BI.mar;
+  let naVila = false; // ligado só enquanto as cidades são vestidas
+  const livre = (k) => !blk[k] && LAND.has(t[k]) && !P[k] && !rsv[k] && !ehTrilha(k) && (naVila || bio[k] !== BI.vila) && bio[k] !== BI.mar;
   const pe = (kind, x, y, extra) => {
     const K = KINDS[kind]; if (!K) { console.warn('vestir: tipo desconhecido', kind); return false; }
     const cells = [];
@@ -248,7 +249,7 @@ function gerarRegiao(reg) {
       const X = x + i, Y = y + j, k = X + Y * W;
       if (!dentro(X, Y)) return false;
       const solido = !K.solidCells || K.solidCells.some(([a, b]) => a === i && b === j);
-      if (solido ? !livre(k) : (blk[k] || !LAND.has(t[k]) || ehTrilha(k) || bio[k] === BI.vila)) return false;
+      if (solido ? !livre(k) : (blk[k] || !LAND.has(t[k]) || ehTrilha(k) || (!naVila && bio[k] === BI.vila))) return false;
       cells.push(k);
     }
     for (const k of cells) blk[k] = 1;
@@ -266,16 +267,17 @@ function gerarRegiao(reg) {
     const c = cfgDe(k); if (!c || !c.muro.length) continue;
     const prof = dist(k) - raio(x, y, c); if (prof <= 0) continue;
     if (c.piso && prof > 0.5) setT(k, c.piso);
-    // miolo (longe da trilha, quase nunca visto de perto): mais ralo; o chão escurece (mata fechada)
-    if (prof > 7 && hash(x, y, seed + 40) < 0.3) continue;
+    // vulcão: rios de lava serpenteando por dentro do paredão (acendem à noite)
+    if (bio[k] === BI.vulcao && prof > 1.5 && Math.abs(fbm(x * 0.05, y * 0.05, seed + 44) - 0.5) < 0.035) { setT(k, 'lava'); blk[k] = 1; continue; }
+    // miolo (longe da trilha, só aparece na beira da tela ou voando): em grade mais aberta, para poupar memória e
+    // triângulos; a frente do paredão (até 5 blocos) é fechada, então não dá para entrar nele
+    if (prof > 5 && (y & 1)) continue;
+    if (prof > 8 && ((x % 3) || hash(x, y, seed + 40) < 0.35)) continue;
     let lista = prof < 1.4 ? c.borda : prof > 4 ? c.fundo : c.muro;
     if (!lista.length) lista = c.muro;
     const kind = esc(lista, x, y, 41 + (y & 1)), K = KINDS[kind];
     if ((K?.fw ?? 1) >= 2 && ((x + y) & 1) && livre(k + 1)) continue; // a próxima casa começa a peça
-    if (!pe(kind, x, y)) {
-      const um = [...c.borda, ...c.muro, ...c.solto].filter((q) => KINDS[q]?.fw === 1 && !KINDS[q]?.solidCells);
-      if (um.length) pe(esc(um, x, y, 43), x, y);
-    }
+    if (!pe(kind, x, y) && prof < 4 && c.um) pe(esc(c.um, x, y, 43), x, y);
   }
 
   // ----- b. corredor: mato alto em blocos, borda, solto, manchas de chão, decoração
@@ -382,7 +384,9 @@ function gerarRegiao(reg) {
   }
 
   // ----- f. cidades
-  vestirCidades(reg, { t, blk, dentro, pe, setT, livre: (k) => !blk[k] && LAND.has(t[k]) && !P[k] && !rsv[k] && !ehTrilha(k), seed, out });
+  naVila = true;
+  vestirCidades(reg, { t, blk, dentro, pe, setT, livre, seed, out });
+  naVila = false;
 
   const tilesOut = {};
   for (const [k, nome] of out.tiles) (tilesOut[nome] ??= []).push(k % W, Math.floor(k / W));
@@ -400,8 +404,9 @@ function vestirCidades(reg, { t, blk, dentro, pe, setT, livre, seed, out }) {
     const X0 = Math.max(ax, rx), Y0 = Math.max(ay, ry), X1 = Math.min(ax + aw, rx + rw, W), Y1 = Math.min(ay + ah, ry + rh, OH);
     // tema pelo entorno: chão predominante e presença de cais
     let neve = 0, areia = 0, cinza = 0, seco = 0, cais = 0;
-    for (let y = Math.max(0, Y0 - 6); y < Math.min(OH, Y1 + 6); y++) for (let x = Math.max(0, X0 - 6); x < Math.min(W, X1 + 6); x++) { const q = T[x + y * W]; if (q === TILE.SNOWFIELD || q === TILE.SNOW || q === TILE.TALLSNOW) neve++; else if (q === TILE.SAND || q === TILE.WETSAND) areia++; else if (q === TILE.BASALT || q === TILE.ASH || q === TILE.HOTSPRING) cinza++; else if (q === TILE.CAATINGA || q === TILE.DUNE || q === TILE.CRACKED) seco++; else if (q === TILE.DOCK) cais++; }
-    const tema = cinza > 40 ? 'termas' : neve > 60 ? 'neve' : cais > 4 || areia > 150 ? 'porto' : seco > 80 ? 'sertao' : 'campo';
+    let verde = 0;
+    for (let y = Y0; y < Y1; y++) for (let x = X0; x < X1; x++) { const q = T[x + y * W]; if (VERDE.has(q)) verde++; if (q === TILE.SNOWFIELD || q === TILE.SNOW || q === TILE.TALLSNOW) neve++; else if (q === TILE.SAND || q === TILE.WETSAND) areia++; else if (q === TILE.BASALT || q === TILE.ASH || q === TILE.HOTSPRING) cinza++; else if (q === TILE.CAATINGA || q === TILE.DUNE || q === TILE.CRACKED) seco++; else if (q === TILE.DOCK) cais++; }
+    const tema = cinza > 40 ? 'termas' : neve > verde && neve > 40 ? 'neve' : cais > 4 || areia > verde ? 'porto' : seco > verde ? 'sertao' : 'campo';
     const pePraca = (kind, x, y) => {
       const K = KINDS[kind]; for (let j = 0; j < K.fh; j++) for (let i = 0; i < K.fw; i++) { const k = x + i + (y + j) * W; if (!dentro(x + i, y + j) || blk[k] || P[k] || rsv[k] || t[k] !== TILE.PLAZA) return false; }
       for (let j = 0; j < K.fh; j++) for (let i = 0; i < K.fw; i++) blk[x + i + (y + j) * W] = 1;
@@ -436,14 +441,26 @@ function vestirCidades(reg, { t, blk, dentro, pe, setT, livre, seed, out }) {
         for (const y of cel) pe(tema === 'sertao' ? 'cercaVara' : 'fenceV', x, y);
       }
     }
-    // a cidade toda: postes ao longo das trilhas, canteiros de flor e o enfeite do tema
+    // a cidade toda: postes espaçados ao longo das trilhas, anel de flores em volta da praça, barracas de feira,
+    // faixa de flores na beira da cidade e o enfeite do tema
+    const postes = [], perto = (L, x, y, d) => L.some(([a, b]) => Math.abs(a - x) + Math.abs(b - y) < d);
+    const viz4 = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    let barracas = 0;
     for (let y = Y0; y < Y1; y++) for (let x = X0; x < X1; x++) {
       const k = x + y * W; if (!livre(k)) continue;
-      const juntoTrilha = [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([i, j]) => TRILHA.has(t[k + i + j * W]));
-      if (juntoTrilha && hash(x, y, seed + 210) < 0.05) { pe(tema === 'neve' ? 'lanternaPedra' : 'lamp', x, y); continue; }
-      if (tema !== 'neve' && tema !== 'termas' && VERDE.has(t[k]) && fbm(x * 0.3, y * 0.3, seed + 211) > 0.7) setT(k, 'flowers');
-      if (hash(x, y, seed + 212) < 0.012) {
-        const enfeite = { campo: ['flowerpot', 'haybale', 'horta', 'mailbox', 'canteiro'], porto: ['caixotes', 'barrel', 'redePesca', 'crate', 'guardaSol'], neve: ['monteNeve', 'snowman', 'lanternaPedra', 'monteNeve'], termas: ['fumarola', 'barrel', 'lanternaPedra', 'boulder'], sertao: ['cactoBarril', 'xiquexique', 'pot', 'barrel'] }[tema];
+      const juntoTrilha = viz4.some(([i, j]) => TRILHA.has(t[k + i + j * W]));
+      const juntoPraca = [-1, 0, 1].some((j) => [-1, 0, 1].some((i) => t[k + i + j * W] === TILE.PLAZA));
+      if (juntoTrilha && !perto(postes, x, y, 7) && hash(x, y, seed + 210) < 0.5) { if (pe(tema === 'neve' ? 'lanternaPedra' : tema === 'termas' ? 'lampiao' : 'lamp', x, y)) { postes.push([x, y]); continue; } }
+      if (juntoPraca && barracas < 2 && praca.length > 30 && tema !== 'neve' && hash(x, y, seed + 214) < 0.15 && pe('barraca', x, y)) { barracas++; continue; }
+      if (juntoPraca && tema !== 'neve' && tema !== 'termas') { if (hash(x, y, seed + 215) < 0.35 && pe('canteiro', x, y)) continue; if (VERDE.has(t[k])) { setT(k, 'flowers'); continue; } }
+      if (juntoPraca && (tema === 'neve' || tema === 'termas') && hash(x, y, seed + 217) < 0.25 && pe(tema === 'neve' ? 'monteNeve' : 'boulder', x, y)) continue;
+      // árvore de sombra no gramado (longe das trilhas e das portas)
+      if (!juntoTrilha && !juntoPraca && hash(x, y, seed + 218) < 0.012) { const arv = { campo: 'tree2', porto: 'palmeira', neve: 'snowPine', termas: 'arvoreCinza', sertao: 'juazeiro' }[tema]; let ok = true; for (let j = -1; j <= 2 && ok; j++) for (let i = -1; i <= 3; i++) { const q = k + i + j * W; if (TRILHA.has(t[q]) || rsv[q]) { ok = false; break; } } if (ok && pe(arv, x, y)) continue; }
+      const beira = x - ax < 2 || ax + aw - 1 - x < 2 || y - ay < 2 || ay + ah - 1 - y < 2;
+      if (beira && VERDE.has(t[k]) && tema !== 'neve' && fbm(x * 0.35, y * 0.35, seed + 216) > 0.42) { setT(k, 'flowers'); continue; }
+      if (tema !== 'neve' && tema !== 'termas' && VERDE.has(t[k]) && fbm(x * 0.3, y * 0.3, seed + 211) > 0.72) setT(k, 'flowers');
+      if (hash(x, y, seed + 212) < 0.016) {
+        const enfeite = { campo: ['flowerpot', 'haybale', 'horta', 'mailbox', 'canteiro', 'moita'], porto: ['caixotes', 'barrel', 'redePesca', 'crate', 'guardaSol'], neve: ['monteNeve', 'snowman', 'monteNeve', 'moitaNeve', 'pedraGelo'], termas: ['fumarola', 'barrel', 'lanternaPedra', 'boulder'], sertao: ['cactoBarril', 'xiquexique', 'pot', 'barrel'] }[tema];
         pe(enfeite[Math.floor(hash(x, y, seed + 213) * enfeite.length)], x, y);
       }
     }

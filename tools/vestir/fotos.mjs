@@ -20,6 +20,9 @@ try {
     const [x, y, h] = pos.split(',').map(Number);
     await P.ev(`(() => { const g = game; g.player.x = ${x} * 16 + 8; g.player.y = ${y} * 16 + 8; g.cam.x = g.player.x; g.cam.y = g.player.y; const hh = ${isNaN(h) ? 11 : h}; g.mundo?.setHour?.(hh); if (g.mundo && 'clock' in g.mundo) g.mundo.clock = hh; return 1; })()`);
     await sleep(+(process.env.WAIT ?? 3500));
+    // fala aberta (entrada de área, por exemplo): avança até fechar
+    for (let i = 0; i < 10; i++) { const ab = await P.ev('!!game.ui.dialog?.open'); if (!ab) break; await P.ev(`dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter' })), 1`); await sleep(250); }
+    await sleep(400);
     const shot = await P.raw('Page.captureScreenshot', { format: 'jpeg', quality: 85 });
     const f = new URL(`${pref}-${nome}.jpg`, out); writeFileSync(f, Buffer.from(shot.result.data, 'base64'));
     console.log('ok', f.pathname);

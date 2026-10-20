@@ -15,15 +15,16 @@ const r2 = (m, a, b) => a + m.r() * (b - a);
 // ---------- rochas em camadas (estratos): o bloco que forma paredões, mesas e pináculos
 // pal: [base escura, faixa, faixa clara, topo]; andares de blocos que encolhem, com faixas alternadas
 function estratos(m, { w, d, h, cz, pal, n = 4, encolhe = 0.1, topo, neve = false, desv = 3 }) {
+  // andares em prisma de 7 lados achatado (rocha sem cara de caixote), cada um com uma faixa mais escura na base
   let y = 0, ww = w, dd = d, x = 0;
   for (let i = 0; i < n; i++) {
-    const hh = (h / n) * r2(m, 0.8, 1.2), cr = pal[i % 3], dx = (m.r() - 0.5) * desv;
-    m.bloco(x + dx, y, cz, ww, hh, dd, cr, { var: 0.08, cores: { topo: i === n - 1 ? (topo ?? pal[3]) : tom(cr, 1.12) } });
-    // lascas na face da frente (a rocha não fica lisa)
-    if (ww > 10) m.bloco(x + dx + (m.r() - 0.5) * ww * 0.5, y + hh * 0.2, cz + dd / 2 + 0.6, ww * r2(m, 0.15, 0.3), hh * 0.55, 1.4, tom(cr, 0.82), { ao: false });
+    const hh = (h / n) * r2(m, 0.8, 1.2), cr = pal[i % 3], dx = (m.r() - 0.5) * desv, fase = m.r() * 6.28, ult = i === n - 1;
+    const r0 = ww / 2 / 0.92, enc = 1 - encolhe * 0.5;
+    m.cil(x + dx, y, cz, r0, r0 * enc, hh, 7, cr, { achata: dd / ww, fase, var: 0.08, topo: ult ? (topo ?? pal[3]) : tom(cr, 1.12) });
+    m.cil(x + dx, y, cz, r0 * 1.02, r0 * 1.0, Math.min(2, hh * 0.25), 7, tom(cr, 0.72), { achata: dd / ww, fase, tampa: false, ao: false });
     y += hh; x += dx * 0.5; ww *= 1 - encolhe * r2(m, 0.6, 1.4); dd *= 1 - encolhe * 0.7;
   }
-  if (neve) { m.bloco(x, y, cz, ww * 1.06, 3, dd * 1.06, NEVE, { ao: false }); m.bloco(x - ww * 0.2, y + 3, cz + 1, ww * 0.5, 2, dd * 0.6, '#ffffff', { ao: false }); }
+  if (neve) { m.cil(x, y, cz, ww / 2, ww / 2.3, 3, 7, NEVE, { achata: dd / ww, ao: false }); m.bloco(x - ww * 0.15, y + 3, cz, ww * 0.4, 1.6, dd * 0.4, '#ffffff', { ao: false }); }
   return y;
 }
 
@@ -77,7 +78,7 @@ const PAL_VERM = ['#a8583a', '#c8784a', '#e09a62', '#d8a070'];
 const PAL_OCRE = ['#b07a4a', '#d09a5e', '#e8bc7e', '#e0c08a'];
 const mesa = (m, c) => {
   const pal = c.v % 2 ? PAL_OCRE : PAL_VERM, w = 44 + c.v * 2;
-  const y = estratos(m, { w, d: 28, h: 50 + c.v * 6, cz: -16, pal, n: 5, encolhe: 0.06, desv: 2 });
+  const y = estratos(m, { w, d: 30, h: 40 + c.v * 6, cz: -16, pal, n: 4, encolhe: 0.05, desv: 2 });
   m.bloco(-8, y, -16, 7, 4, 6, '#7a8a4a', { ao: false }); m.bloco(9, y, -18, 5, 3, 5, '#6a7a3e', { ao: false });
   // talude de pedras no pé
   for (const [x, z, s] of [[-20, -2, 8], [-12, 0, 5], [16, -1, 7], [22, -4, 5]]) m.bloco(x, 0, z, s, s * 0.6, s * 0.8, pal[0], { var: 0.12 });
@@ -86,7 +87,7 @@ const mesa = (m, c) => {
 const pilarRocha = (m, c) => {
   const pal = c.v % 2 ? PAL_OCRE : PAL_VERM;
   const y = estratos(m, { w: 14, d: 12, h: 38 + c.v * 8, cz: -8, pal, n: 5, encolhe: 0.04, desv: 2.5 });
-  m.bloco(0, y, -8, 15, 3, 13, pal[2], { ao: false });
+  m.cil(0, y, -8, 8, 7, 3, 7, pal[2], { achata: 0.85, ao: false });
   m.bloco(-7, 0, -3, 6, 4, 5, pal[0]); m.bloco(6, 0, -4, 5, 3, 4, pal[1]);
   return topoDe(y + 3, 6);
 };
@@ -347,7 +348,22 @@ const caixotes = (m, c) => {
   return topoDe(21, 12);
 };
 
+// peças de 1 bloco que fecham as sobras do paredão (não quebram com Corte, ao contrário do "bush")
+const moita = (pal, neve) => (m, c) => {
+  m.bloco(0, 0, -8, 14, 8, 11, pal[0], { var: 0.1, cores: { topo: pal[1] } });
+  m.bloco(-2 + c.v, 7, -8.5, 10, 5, 8, pal[1], { var: 0.1, cores: { topo: neve ? NEVE : pal[2] } });
+  m.bloco(3, 3, -3.6, 6, 5, 2, pal[1], { ao: false });
+  if (neve) m.bloco(-1, 12, -8.5, 7, 2, 5, '#ffffff', { ao: false });
+  return topoDe(neve ? 14 : 12, 6);
+};
+const pedrinha = (pal) => pedra({ w: 14, h: 10, d: 11, pal });
+
 export const VESTIR = {
+  moita: { f: moita(['#2a7a34', '#3e9a46', '#6ac05a']), var: 3 },
+  moitaNeve: { f: moita(['#2a5a3e', '#3a6e4a', '#ffffff'], true), var: 3 },
+  pedrinha: { f: pedrinha(['#746e7e', '#9393a3', '#bcafc0']), var: 3 },
+  pedrinhaVerm: { f: pedrinha(PAL_VERM), var: 3 },
+  pedrinhaBasalto: { f: pedrinha(PAL_BAS), var: 3 },
   escarpa: { f: escarpa(['#6e6a64', '#8a857c', '#a29c90', '#6a8a4a'], { mato: '#5a8a3e' }), var: 3 },
   escarpaNeve: { f: escarpa(['#5e646e', '#7a808a', '#959ba4', NEVE], { neve: true, topo: NEVE }), var: 3 },
   escarpaVerm: { f: escarpa(PAL_VERM, { h: 50 }), var: 3 },

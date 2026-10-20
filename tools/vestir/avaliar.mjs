@@ -8,6 +8,7 @@ try {
   await P.raw('Emulation.setDeviceMetricsOverride', { width: 844, height: 390, deviceScaleFactor: 1, mobile: true });
   await until(() => P.ev('!!(window.game && game.ui && game.ui.state === "play")'), 90000, 300);
   await sleep(3000);
+  if (process.env.GC) { await sleep(4000); await P.raw('HeapProfiler.collectGarbage'); }
   console.log(JSON.stringify(await P.ev(`(async () => { ${expr} })()`)));
   const errs = P.logs.filter((l) => /EXC|rror/.test(l)); if (errs.length) console.log('console:', errs.slice(0, 10).join('\n'));
 } finally { b.kill(); }

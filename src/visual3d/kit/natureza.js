@@ -289,7 +289,13 @@ export const NATUREZA = {
   rock: { f: pedra({ w: 14, h: 10, d: 10, pal: ['#8e8e9c', '#b0b0bf', '#d4d4e0'] }), var: 3 },
   pedregulho: { f: pedra({ w: 28, h: 18, d: 14, pal: ['#5a5660', '#6a6670', '#8a8690'] }), var: 2 },
   strengthRock: { f: pedra({ w: 15, h: 16, d: 13, pal: ['#6a6676', '#8e8a98', '#aeaab8'] }) },
-  obsidianRock: { f: pedra({ w: 18, h: 16, d: 12, pal: ['#1a1624', '#2a2238', '#3a2e56'], brilho: (m, cz) => m.bloco(-2, 12, cz + 4, 1.5, 3, 1, '#c8b0ff', { brilho: -0.8 }) }) },
+  obsidianRock: { f: (m, c) => { // lascas de obsidiana: pontas de vidro preto com reflexo roxo (não um cubo)
+    const lasca = (x, z, h, r, a, cr) => m.com({ x, z, ry: a }, () => { m.cil(0, 0, 0, r, r * 0.55, h * 0.7, 5, cr, { tampa: false, var: 0.05 }); m.cone(0, h * 0.7, 0, r * 0.55, h * 0.3, 5, '#4a3a6a'); });
+    m.bloco(0, 0, -8, 15, 3, 11, '#2a2430');
+    lasca(-2, -9, 17 + c.v * 2, 4.2, 0.2, '#1e1828'); lasca(4, -7, 11, 3.2, 1.1, '#2a2238'); lasca(-6, -5, 8, 2.6, 2.0, '#241e30');
+    m.bloco(-3, 9, -5.4, 1.2, 6, 0.5, '#b8a0ff', { brilho: -0.6, ao: false });
+    return topoDe(18, 4);
+  }, var: 2 },
   lavaRock: { f: pedra({ w: 24, h: 15, d: 13, pal: ['#2a2224', '#3a2e30', '#544446'], brilho: (m, cz) => { m.bloco(-3, 2, cz + 6.6, 12, 1.4, 0.4, '#ff8a2a', { brilho: -1, ao: false }); m.bloco(2, 2, cz + 6.6, 1.4, 7, 0.4, '#ff8a2a', { brilho: -1, ao: false }); m.bloco(5, 8.6, cz + 2, 1.4, 0.4, 6, '#ffd060', { brilho: -1, ao: false }); } }), var: 2 },
   stalagmite: { f: ponta(['#8a7868', '#b09c88', '#5e4e44']) },
   stalagmiteIce: { f: ponta(['#8ac4e8', '#d8f2ff', '#5a96c8']) },
