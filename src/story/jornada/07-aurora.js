@@ -19,11 +19,11 @@ export default {
       local: 'cidade_aurora',
       gatilho: { tipo: 'entrar', alvo: 'cidade_aurora', requer: ['badges.lamparina'], semFlag: ['nh.chegouAurora'] },
       falas: [
-        ['narrador', 'Cidade Aurora: torres de cristal, outdoors com a palavra "limpa" em letras douradas e um silêncio que pesa.'],
+        ['narrador', 'Cidade Aurora: torres de cristal e outdoors com a palavra "limpa" em letras douradas.'],
         ['narrador', 'O sol mal aparece entre os prédios. Todo mundo aqui tem uma lanterna de luzita no bolso, acesa de dia.'],
         ['pipa', 'Você chegou! Eu sou a Pipa, do Jornal Farol. Preciso de alguém que não seja da empresa para uma matéria sobre a Torre.'],
-        ['pipa', 'Vamos lá. O gerente Lúcio faz visitas guiadas. Ele adora mostrar as tubulações, mas nunca fala de onde vem a luz.'],
-        ['jogador', 'Uma repórter e uma visita guiada. Vou prestar atenção no que eles não mostram.'],
+        ['pipa', 'O gerente Lúcio faz visitas guiadas na Torre. Ele mostra as tubulações, mas nunca diz de onde vem a luz.'],
+        ['jogador', 'Uma repórter e uma visita guiada. Vou reparar no que ele não mostra.'],
       ],
       depois: {
         flags: { 'nh.chegouAurora': true },
@@ -38,10 +38,10 @@ export default {
       local: 'torre_aurora',
       gatilho: { tipo: 'entrar', alvo: 'torre_aurora', requer: ['nh.chegouAurora'], semFlag: ['nh.visitaTorre'] },
       falas: [
-        ['lucio', 'Bem-vindos à Torre Aurora! Aqui, cada lâmpada de Alvorada começa a sua vida. A luz limpa sai daqui, e não do céu.'],
+        ['lucio', 'Bem-vindos à Torre Aurora! Aqui nasce a luz que acende as lâmpadas de Alvorada. É luz limpa, que não depende do céu.'],
         ['lucio', 'O cristal vem da nossa mina, nível quatro. Ele não queima, não fumaça, não depende do sol. A luzita é a energia do futuro.'],
         ['pipa', 'E de onde vem o cristal, exatamente? O que a Aurora tira de baixo da terra?'],
-        ['lucio', 'Da pedra, senhorita. Da pedra e da paciência. O sol atrasa, e nós apenas acendemos a luz que ele deixou para trás.'],
+        ['lucio', 'Isso é segredo da empresa, senhorita. O que importa é que o sol atrasa e nós mantemos a cidade acesa.'],
         ['narrador', 'Quando o Lúcio fala do sol, uma parte das luzes da torre pisca. Ninguém parece notar, exceto você.'],
         ['lucio', 'Agora, se me dão licença, o elevador de serviço é só para a equipe. Os visitantes ficam aqui.'],
       ],
@@ -61,7 +61,7 @@ export default {
       falas: [
         ['lucio', 'Área restrita! Ninguém desce ao nível quatro sem autorização. O protocolo, o protocolo!'],
         ['jogador', 'Você não quer que ninguém veja o que tem lá embaixo. Por quê?'],
-        ['lucio', 'Eu ouvi o protocolo. Se quer descer, vai ter que passar pelos meus Pokémon. Eles são muito bem treinados.'],
+        ['lucio', 'É segredo da empresa. Se quer descer, vai ter que passar pelos meus Pokémon.'],
       ],
       depois: {
         batalha: {
@@ -86,8 +86,8 @@ export default {
       falas: [
         ['narrador', 'A sirene começa a tocar lá embaixo, e o chão da torre vibra. Um homem de capacete grita pelo rádio que o nível três desabou.'],
         ['teo', 'Meu pai está lá embaixo! Ele trabalha no nível quatro! Eu vou descer agora, com ou sem você!'],
-        ['jogador', 'Eu vou com você, Téo. Mas por que a sirene só tocou agora, se o desabamento foi antes?'],
-        ['teo', 'Não interessa agora. Vamos!'],
+        ['jogador', 'Eu vou com você, Téo. Vamos tirar o seu pai de lá.'],
+        ['teo', 'Obrigado. Rápido!'],
       ],
       depois: {
         flags: { 'nh.sirene': true, 'nh.teoJunto': true },
@@ -124,14 +124,14 @@ export default {
         ['narrador', 'No nível quatro, o desabamento prendeu três mineiros e uma mulher de casaco longo, encostada numa viga, com um Absol aos pés.'],
         ['heitor', 'Téo! Eles disseram que o resgate só chegaria depois da cota do dia. Ainda bem que você veio.'],
         ['teo', 'Pai? Você está ferido? O que a Aurora fez com vocês?'],
-        ['vespera', 'Pergunte à sua empresa, menino. Ela tem um medidor bem aqui, pregado na parede, para ver quanta luz sai de cada tonelada de cristal.'],
-        ['narrador', 'Na parede, uma placa marca a produção da semana. Ao lado, um mostrador registra a hora do nascer do sol. A cada tonelada, o ponteiro anda mais.'],
+        ['vespera', 'Pergunte à sua empresa, Téo. Tem um medidor aqui na parede que mostra quanta luz sai de cada tonelada de cristal.'],
+        ['narrador', 'Na parede, uma placa marca a produção da semana. Ao lado, um mostrador mostra a hora do nascer do sol, que atrasa a cada tonelada extraída.'],
         ['jogador', 'O sol nasce mais tarde por causa do que a Aurora tira daqui?'],
-        ['vespera', 'A luzita é a raiz do cadeado do Relógio. Cada tonelada tirada daqui solta mais um pouco do cadeado, e o sol demora mais para vencer a noite.'],
-        ['vespera', 'Eu roubava as pedras dos ginásios para tirá-las das mãos da Aurora. Se quer saber quem descobriu essa luz, pergunte ao seu professor.'],
-        ['teo', 'Eu defendi essa empresa desde o começo, e ela pagava o salário do meu pai. Agora deixa ele preso aqui embaixo, com uma sirene atrasada.'],
+        ['vespera', 'A luzita é a peça que mantém o Relógio de Pedra fechado. Quanto mais a Aurora tira, mais o Relógio perde força e mais tarde o sol nasce.'],
+        ['vespera', 'Eu roubava as pedras dos ginásios para a Aurora não pegá-las. E quem descobriu a luzita foi o seu professor. Procure as cartas dele no Forte Rochedo.'],
+        ['teo', 'Eu defendi a Aurora desde o começo. E ela deixou meu pai preso aqui embaixo, sem nem tocar a sirene a tempo.'],
         ['heitor', 'Eles mandaram a gente cavar mais rápido, Téo. Depois que o nível três desabou, o supervisor disse que a cota não podia parar.'],
-        ['teo', 'Então eu não sou mais da Aurora. Vou ficar do lado de quem está tirando vocês daqui.'],
+        ['teo', 'Chega. Eu não defendo mais a Aurora. Vou ajudar quem está tirando vocês daqui.'],
       ],
       depois: {
         flags: { 'nh.reviravolta1': true, 'nh.teoLadoCerto': true },
@@ -152,7 +152,7 @@ export default {
         ['narrador', 'Na saída da mina, um homem de terno branco espera de braços cruzados, com um sorriso de quem já sabia o que ia acontecer.'],
         ['solano', 'Téo, seu pai já está subindo com a equipe de resgate. Agora volte para a superfície e esqueça essa conversa.'],
         ['teo', 'Eu não vou esquecer nada, Senhor Solano. Eu vi o medidor. O sol nasce mais tarde por causa da Aurora.'],
-        ['solano', 'O sol nasce quando a luz permite, meu jovem. E a luz agora é nossa. Quem não entender isso vai aprender com o tempo.'],
+        ['solano', 'A luz agora é da Aurora, meu jovem. Quem se meter no nosso caminho vai se arrepender.'],
         ['narrador', 'O Solano dá as costas e sai pela porta da torre. A Pipa, do lado de fora, já está com a câmera apontada para o elevador.'],
       ],
       depois: {
@@ -192,7 +192,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.arquivo': true },
-        objetivo: { texto: 'Descubra o que o Prof. Jatobá sabe sobre estas cartas. Ele está no laboratório de Vila Alvorada', alvo: 'lab' },
+        objetivo: { texto: 'Atenda o telefone antigo do arquivo: o Prof. Jatobá quer falar com você', alvo: 'lab' },
       },
       atores: [
         { id: 'r7_jairo', quem: 'treinador', nome: 'Lutador Jairo', look: LOOKS.cacador, spot: 'r7_jairo', visao: 6, apos: ['Eu treino socando pedra. As pedras estão ganhando, mas eu não desisto!'] },
@@ -208,9 +208,9 @@ export default {
       reviravolta: 2,
       falas: [
         ['prof', '{jogador}? Eu estava esperando você ler as cartas. Eu deveria ter contado antes. Eu queria proteger você.'],
-        ['prof', 'Há dezesseis anos, eu e a Véspera descobrimos a luzita no Planalto. Levei a amostra ao Augusto Solano, que disse querer estudá-la. Ele comprou.'],
+        ['prof', 'Há dezesseis anos, eu e a Véspera descobrimos a luzita no Planalto. Levei uma amostra ao Augusto Solano, que disse querer estudá-la. Ele a comprou.'],
         ['jogador', 'Então o senhor ajudou a criar a Aurora.'],
-        ['prof', 'Ajudei. A primeira extração, a Noite Longa de Lamparina, saiu da minha amostra. Eu não sabia que o cristal era a raiz do cadeado.'],
+        ['prof', 'Ajudei. A primeira extração, a Noite Longa de Lamparina, saiu da minha amostra. Eu não sabia que o cristal mantinha o Relógio fechado.'],
         ['prof', 'Depois que eu soube, já era tarde. A Véspera rompeu com a Aurora e passou a tirar as pedras das mãos deles. Eu fiquei calado.'],
         ['jogador', 'Professor, eu não vou fingir que isso não aconteceu. Mas agora eu preciso de você para chegar até o Relógio.'],
       ],
@@ -240,8 +240,8 @@ export default {
       falas: [
         ['bras', 'Ê, camará! Passou pelos dois portões da roda! O berimbau gostou de você.'],
         ['bras', 'Agora a luta é a sério. Quem passa por mim está pronto para o Sertão e para o Paredão.'],
-        ['jogador', 'Eu passei pelos seus dois portões. Agora quero o último degrau.'],
-        ['bras', 'Então vem, camará. Mas devolve o berimbau depois, que ele é emprestado do Mestre.'],
+        ['jogador', 'Passei pelos seus dois faixas-pretas. Agora quero a insígnia!'],
+        ['bras', 'Então vem, camará! Vamos ver quem ginga melhor.'],
       ],
       depois: {
         batalha: {
@@ -264,14 +264,14 @@ export default {
       local: 'ninho_forte_rochedo',
       gatilho: { tipo: 'vencer', alvo: 'leader_bras' },
       falas: [
-        ['bras', 'Olha só, o berimbau ficou calado de tanto respeito. A Insígnia Punho é sua. Ela deixa você escalar paredões fora da batalha.'],
+        ['bras', 'Olha só, que luta! A Insígnia Punho é sua. Com ela, seu Pokémon pode escalar paredões.'],
         ['narrador', '{jogador} recebeu a Insígnia Punho!'],
-        ['bras', 'Eu não entendo do sol nem da Aurora. Mas você, o Téo e o Prof. Jatobá estão no meio de uma coisa grande demais para um forte.'],
-        ['bras', 'Vá ao Sertão do Levante, pela Vila Mandacaru. Lá você acha o mapa do Paredão, e depois a Graça espera você em Escarpa.'],
+        ['bras', 'Eu não entendo do sol nem da Aurora. Mas esse problema é grande, então não se arrisque à toa.'],
+        ['bras', 'Para ir a Escarpa, você precisa do mapa do Paredão. Ele está na Vila Mandacaru, no Sertão do Levante. A Graça, a próxima líder, espera em Escarpa.'],
       ],
       depois: {
         insignia: 'rochedo', montaria: 'sneasler',
-        objetivo: { texto: 'Siga pela Rota 14 até a Vila Mandacaru, no Sertão do Levante', alvo: 'ninho_vila_mandacaru' },
+        objetivo: { texto: 'Siga pela Rota 14 até a Vila Mandacaru, no Sertão do Levante, para pegar o mapa do Paredão', alvo: 'ninho_vila_mandacaru' },
       },
       atores: [
         { id: 'bras_roda', quem: 'bras', nome: 'Líder Brás', look: LOOKS.tecnico, spot: 'ninho_forte_rochedo', permanente: true },
@@ -282,8 +282,8 @@ export default {
       gatilho: { tipo: 'flag', alvo: 'badges.rochedo', semFlag: ['nh.boletim.6'] },
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e cinquenta e um minutos. A Companhia Aurora nega qualquer relação com o atraso.'],
-        ['mae', '{jogador}, seis e cinquenta e um. A Aurora nega? Filho, quem nega assim é porque tem alguma coisa a esconder.'],
-        ['jogador', 'Já descobri uma parte, mãe. A Aurora mede cada tonelada que tira da mina, e o sol espera por isso.'],
+        ['mae', '{jogador}, seis e cinquenta e um. A Aurora nega? Quem nega tanto deve ter algo a esconder.'],
+        ['jogador', 'Eu sei por quê, Mãe. Quanto mais luzita a Aurora tira da mina, mais tarde o sol nasce.'],
       ],
       depois: { flags: { 'nh.boletim.6': true, 'nh.sol': '6h51' }, ambiente: true },
     },
