@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import '../src/world/moveis.js'; // pegadas dos móveis dos interiores (counterJoy 8x2 etc.) no catálogo
 import '../src/story/cenario.js'; // registra os prédios e objetos dos capítulos 4 a 6 no catálogo
 import { kit } from '../src/visual3d/kit/index.js';
 import { NATUREZA } from '../src/visual3d/kit/natureza.js';
@@ -65,7 +66,11 @@ for (const [cat, kind] of lista) {
 }
 const tGeracao = performance.now() - t0;
 const tm = performance.now();
-const geo = kit.mesclar(itens.map((it) => ({ geometry: it.md.geometry, x: it.x, y: 0, z: it.z })));
+// ?rep=N: repete cada modelo N vezes lado a lado em x (peças de 1 bloco que devem emendar: cercas, grades...); só desenha, sem rótulo
+const REP = Math.max(1, Math.min(4, +(Q.get('rep') ?? 1)));
+const extras = [];
+if (REP > 1) for (const it of itens) for (let k = 1; k < REP; k++) extras.push({ geometry: it.md.geometry, x: it.x + 16 * k, y: 0, z: it.z });
+const geo = kit.mesclar([...itens.map((it) => ({ geometry: it.md.geometry, x: it.x, y: 0, z: it.z })), ...extras]);
 const tMescla = performance.now() - tm;
 const malha = new THREE.Mesh(geo, kit.material());
 cena.add(malha);
