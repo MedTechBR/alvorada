@@ -30,7 +30,9 @@ export const RETANGULOS_OBJ = [
 ];
 const MARGEM_LUZ = 24; // blocos: a luz e o pós misturam os dois estilos nessa faixa fora da zona
 
-const dentro = (x, y) => RETANGULOS.some(([rx, ry, w, h]) => x >= rx && y >= ry && x < rx + w && y < ry + h);
+// O mundo todo (Alvorada, Ocaso e demais mundos): o piloto dos RETANGULOS acima ficou de referência, mas a zona agora é tudo.
+export const MUNDO_TODO = true;
+const dentro = (x, y) => MUNDO_TODO || RETANGULOS.some(([rx, ry, w, h]) => x >= rx && y >= ry && x < rx + w && y < ry + h);
 
 export class ZonaLetsGo {
   // modo: 'zona' (padrão), 'letsgo' (tudo no estilo novo, para testar) ou 'voxel' (nada)
@@ -74,7 +76,7 @@ export class ZonaLetsGo {
     return k * k * (3 - 2 * k);
   }
   // só no mapa principal (Alvorada); outros mundos (Ocaso, demos) ficam no estilo de sempre
-  #mundo() { return !this.map.id || this.map.id === 'alvorada'; }
+  #mundo() { return MUNDO_TODO || !this.map.id || this.map.id === 'alvorada'; }
   #salas() {
     const m = this.map; this.versao = m.tiles?.length + (m.interiors?.length ?? 0);
     const S = this.salas = new Set(), ints = m.interiors ?? [];
