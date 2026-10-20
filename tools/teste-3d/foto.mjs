@@ -5,14 +5,16 @@
 import { launch, open, sleep, until } from './chrome.mjs';
 import { writeFileSync, mkdirSync } from 'node:fs';
 const [qs = '', nome = 'foto', ...pts] = process.argv.slice(2);
-const W = +(process.env.W ?? 1280), H = +(process.env.H ?? 720);
+const W = +(process.env.W ?? 1280), H = +(process.env.H ?? 720), CEL = process.env.CEL === '1'; // CEL=1: celular (toque, tela 2x, câmera do celular)
 const out = new URL('../shots/', import.meta.url); mkdirSync(out, { recursive: true });
 const b = await launch(9500 + Math.floor(Math.random() * 300));
 try {
   const P = await open(b, `http://127.0.0.1:${process.env.PORT ?? 8750}/index.html?teste=1&${qs}`, 'p');
-  await P.raw('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: false });
+  await P.raw('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: CEL ? 2 : 1, mobile: CEL });
+  if (CEL) { await P.raw('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 }); await P.raw('Emulation.setEmitTouchEventsForMouse', { enabled: true, configuration: 'mobile' }); await P.raw('Page.reload', { ignoreCache: false }); await sleep(1500); }
   await until(() => P.ev('!!(window.game && game.ui && game.ui.state === "play")'), 60000, 300);
   await sleep(2500);
+  if (process.env.PRE) await P.ev(process.env.PRE); // antes de posicionar (flags, insígnias)
   let i = 0;
   for (const s of pts.length ? pts : ['']) {
     if (s) {

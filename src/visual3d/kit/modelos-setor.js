@@ -36,6 +36,12 @@ export class ModelosKit {
       itens.push({ geometry: md.geometry, x: o.x, y: this.#h(o.x, o.y, K.fh), z: o.y });
       if (o.sprite) donos.push(o.sprite);
     }
+    // barreiras da progressão ativas (src/world/barreiras.js): cerca, obra, entulho, boias... entram na malha do setor;
+    // quando a barreira cai, o setor é refeito sem elas
+    for (const p of this.v.g.barreiras?.propsDoSetor?.(s.sx, s.sy) ?? []) {
+      const md = kit.modelo(p.kind, p); if (!md) continue;
+      itens.push({ geometry: md.geometry, x: p.x, y: this.#h(p.x, p.y, 1), z: p.y });
+    }
     s.kitObjs = L.objetosDoSetor(s.sx, s.sy).length;
     if (itens.length) { s.kitMalha = new THREE.Mesh(kit.mesclar(itens), this.mat); s.kitMalha.matrixAutoUpdate = false; s.grupo.add(s.kitMalha); }
     s.kitMoveis = moveis.map((o) => { const m = new THREE.Mesh(kit.modelo(o.kind, o).geometry, this.mat); m.o = o; m.chave = kit.chave(o.kind, o); s.grupo.add(m); if (o.sprite) donos.push(o.sprite); return m; });

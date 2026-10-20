@@ -7,6 +7,7 @@ import { INTERIOR, paredeInterior } from './interior.js';
 import { GLB_TIPOS, glbPronto } from './glb.js';
 import { MOVEIS, MODOS_KIT, pcCentro } from './moveis.js';
 import { VESTIR } from './vestir.js';
+import { BARREIRAS3D } from './barreiras.js';
 
 // Kit de modelos 3D low-poly (HD-2D) gerados por código. Interface em docs/visual-3d-kit.md.
 //
@@ -22,7 +23,7 @@ import { VESTIR } from './vestir.js';
 // A geometria devolvida é COMPARTILHADA (cache): não altere nem descarte; para posicionar, use kit.mesclar.
 // Origem = ponto do pé do objeto (o.x, chão, o.y); pegada de x = -fw*8..fw*8 e z = -fh*16..0, igual ao 2D.
 
-const TIPOS = { ...NATUREZA, ...OBJETOS, ...PREDIOS, ...INTERIOR, ...VESTIR, ...MOVEIS };
+const TIPOS = { ...NATUREZA, ...OBJETOS, ...PREDIOS, ...INTERIOR, ...VESTIR, ...MOVEIS, ...BARREIRAS3D };
 // o PC do Centro Pokémon é um terminal (o.estilo = 'centro'); nas casas, o computador de mesa
 TIPOS.gondola3 = MOVEIS.gondola; TIPOS.estanteLarga = MOVEIS.estanteAlta;
 // estantes e sofá antigos com o desenho novo (mesma pegada)

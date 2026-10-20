@@ -13,6 +13,7 @@ import { curvaY } from './curva.js';
 import { CameraDinamica } from './camera.js';
 import { Tocas3D } from './tocas3d.js';
 import { HudBatalha } from '../ui/hud-batalha.js';
+import { ZonasClima } from './zonas-clima.js';
 
 // Visual 3D (HD-2D, estilo HeartGold/SoulSilver). Só desenha: a lógica do jogo é a mesma do 2D.
 // Liga-se ao jogo com ?visual=3d (main.js). Desenho completo em docs/visual-3d.md.
@@ -54,6 +55,7 @@ export class Visual3D {
     }
     this.ceu = new Ceu(this);
     this.setores = new Setores(this);
+    this.zonas = new ZonasClima(this); // tempestade e neblina das zonas fechadas (barreiras-dados.js)
     this.espelho = new Espelho(this);
     this.sobre = new Sobreposicao(this);
     this.tocas = new Tocas3D(this);
@@ -160,7 +162,7 @@ export class Visual3D {
     this.perto = { x0: Math.max(v.x0, a.x - hw), x1: Math.min(v.x1, a.x + hw), y0: Math.max(v.y0, a.z - hh * 1.4), y1: Math.min(v.y1, a.z + hh) };
     this.L.cull(this.perto);
   }
-  #novoMundo() { this.versao = this.L.versao; this.relevo.limpar(); this.setores.limpar(); }
+  #novoMundo() { this.versao = this.L.versao; this.relevo.limpar(); this.setores.limpar(); this.zonas?.limpar(); }
 
   paraTela(x, y, h = 0) {
     const v = this.tmpV ??= new THREE.Vector3();
@@ -203,7 +205,7 @@ export class Visual3D {
     const marca = (k) => { const t = now(); T[k] += t - t0; t0 = t; };
     try {
       this.ceu.update(dt); this.#luzUpdate(dt); marca('ceu');
-      this.setores.update(dt); marca('setores');
+      this.setores.update(dt); this.zonas.update(dt); marca('setores');
       this.espelho.update(dt); this.tocas.update(dt); this.hudBatalha.update(dt); marca('espelho');
       this.pos.render(this.scene, this.camera); marca('cena');
     } catch (e) { this.#erro(e); }
