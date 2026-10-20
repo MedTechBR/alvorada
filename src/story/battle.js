@@ -34,13 +34,16 @@ export class TrainerBattle {
   }
 
   // Ponto onde o Pokémon cai: entre o treinador e o jogador (lado a lado, se forem dois)
+  // Na arena de ginásio (estádio), o Pokémon cai sempre DENTRO da arena, perto do líder e a caminho do jogador (antes,
+  // longe do jogador e sem conferir a borda); o do jogador é contido em main.js (#sendOut).
   #spot(k) {
-    const n = this.npc, p = this.g.player;
+    const n = this.npc, p = this.g.player, A = this.arena;
     const dx = p.x - n.x, dy = p.y - n.y, d = Math.hypot(dx, dy) || 1;
-    const ux = dx / d, uy = dy / d, along = Math.min(d * 0.45, 46);
+    const ux = dx / d, uy = dy / d, along = A?.contem ? Math.min(d * 0.3, 8 * 16) : Math.min(d * 0.45, 46);
     const side = this.max > 1 ? (k % 2 ? 1 : -1) * 16 : 0;
     let x = n.x + ux * along - uy * side, y = n.y + uy * along + ux * side;
     if (this.g.map.solidAt(x, y)) { x = n.x + ux * 20; y = n.y + uy * 20; }
+    if (A?.contem) return A.pontoSeguro(x, y, 16);
     return { x, y };
   }
 
@@ -50,7 +53,7 @@ export class TrainerBattle {
     if (ultimo && this.arena && !this.opts.semBola) delay += this.arena.antesDoAs(); // cena do ás antes do arremesso
     const g = this.g, mon = this.team[this.next++], k = this.next;
     this.pending++;
-    if (this.opts.semBola) { g.later(delay, () => this.#appear(mon, { x: this.npc.x, y: this.npc.y }, ultimo)); return true; }
+    if (this.opts.semBola) { g.later(delay, () => this.#appear(mon, this.arena?.contem ? this.arena.pontoSeguro(this.npc.x, this.npc.y + 24, 16) : { x: this.npc.x, y: this.npc.y }, ultimo)); return true; }
     const to = this.#spot(k);
     g.later(delay, () => {
       if (this.done) { this.pending--; return; }
@@ -73,6 +76,7 @@ export class TrainerBattle {
 
   async #appear(mon, at, ultimo = false) {
     const g = this.g;
+    if (this.arena?.contem) at = this.arena.pontoSeguro(at.x, at.y, 16); // a bola caiu, mas quem nasce fica na arena
     const e = new PokeEntity(g, mon, 'foe', at.x, at.y);
     await e.ready;
     this.pending--;
@@ -106,14 +110,15 @@ export class TrainerBattle {
     }
     this.arena?.update(dt);
     // fugiu para longe: o treinador recolhe os Pokémon e volta ao posto
-    if (!this.opts.noFlee && Math.hypot(g.player.x - this.npc.x, g.player.y - this.npc.y) > 26 * 16) { g.toast(`Você fugiu da batalha com ${this.def.name}.`); this.finish('flee'); }
+    // (no estádio ninguém foge: a arena é fechada e o líder fica do outro lado, a mais de 26 blocos às vezes)
+    if (!this.opts.noFlee && !this.arena?.contem && !this.arena?.estadio && Math.hypot(g.player.x - this.npc.x, g.player.y - this.npc.y) > 26 * 16) { g.toast(`Você fugiu da batalha com ${this.def.name}.`); this.finish('flee'); }
   }
 
   // Câmera da luta (main.js): no meio entre quem você controla e o Pokémon do treinador mais perto, para os dois
   // ficarem na tela (antes seguia só o seu e o do treinador ficava cortado em cima). Longe demais: segue o seu.
   focoCamera(x, y) {
     if (this.done) return null;
-    let f = null, bd = 13 * 16;
+    let f = null, bd = this.arena?.contem ? 60 * 16 : 13 * 16; // no estádio: sempre entre você e o Pokémon do líder mais perto
     for (const e of this.active) { if (!e.alive || e.dead) continue; const d = Math.hypot(e.x - x, e.y - y); if (d < bd) { bd = d; f = e; } }
     return f ? { x: (x + f.x) / 2, y: (y + f.y) / 2 - 4 } : null;
   }

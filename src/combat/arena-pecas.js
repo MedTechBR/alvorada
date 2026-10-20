@@ -935,8 +935,14 @@ class Poltergeist extends Peca {
   iniciar() { this.tm = per(this.A, this.def.primeiro ?? this.def.periodo ?? [4, 6]); this.voos = []; this.lado = 0; }
   lancar(alvo) {
     const A = this.A, R = A.R, d = this.def;
-    const lados = [[R.x0 + 6, rnd(R.y0 + 10, R.y1 - 10)], [R.x1 - 6, rnd(R.y0 + 10, R.y1 - 10)], [rnd(R.x0 + 10, R.x1 - 10), R.y0 + 6]];
-    const [ox, oy] = lados.reduce((b, l) => (Math.hypot(l[0] - alvo.x, l[1] - alvo.y) > Math.hypot(b[0] - alvo.x, b[1] - alvo.y) ? l : b));
+    // o objeto sai de um canto do salão a uns 11 a 14 blocos do alvo (no estádio a parede fica longe demais: o voo
+    // acabava antes de chegar)
+    let ox = 0, oy = 0, bd = -1;
+    for (let i = 0; i < 6; i++) {
+      const a = rnd(0, TAU), r = rnd(170, 220), x = Math.max(R.x0 + 6, Math.min(R.x1 - 6, alvo.x + Math.cos(a) * r)), y = Math.max(R.y0 + 6, Math.min(R.y1 - 6, alvo.y + Math.sin(a) * r));
+      const d = Math.hypot(x - alvo.x, y - alvo.y); if (d > bd && d < 260) { bd = d; ox = x; oy = y; }
+    }
+    if (bd < 0) { ox = R.x0 + 6; oy = alvo.y; }
     const dx = alvo.x - ox, dy = alvo.y - oy, l = Math.hypot(dx, dy) || 1, L = Math.min(l + 60, 320);
     const v = { x: ox, y: oy, ux: dx / l, uy: dy / l, L, obj: pick(d.objetos ?? ['quadro', 'cadeira', 'vaso', 'livro']), st: 'sobe', p: 0, ang: 0 };
     v.av = A.avisar({ forma: 'linha', ax: ox, ay: oy, bx: ox + v.ux * L, by: oy + v.uy * L, w: 16, t: d.aviso ?? 1.1, cor: 0xb07aff, fonte: this, chao: false, depois: () => { v.st = 'voa'; this.g.audio?.sfx?.('whoosh'); } });

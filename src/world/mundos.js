@@ -2,6 +2,7 @@ import { KINDS } from './objects.js';
 import { gerarInteriores } from './interiores.js';
 import { mesclarVestir } from './vestir.js';
 import { vestirSalas } from './receitas.js';
+import { salasEstadios } from './estadios.js';
 
 // Mundos (continentes) e a montagem dos dados de um mapa a partir dos arquivos de assets/maps/.
 //
@@ -110,6 +111,8 @@ async function montar(id) {
     }
   }
   for (const a of R.avisos) console.warn('mapa:', a);
+  // estádios das lutas de líder (src/world/estadios.js): salas grandes, fora dos arquivos de mapa, abaixo das outras
+  if (id === 'alvorada') for (const s of salasEstadios()) salas.push({ ...s, parte: 0, ...tamanho(s) });
 
   // ---- interiores gerados para prédios sem "to" (src/world/interiores.js) e alocação das salas sem posição ----
   const parteDe = (x, y) => { for (let i = R.partes.length - 1; i >= 0; i--) if (dentro(R.partes[i].rect, x, y)) return i; return 0; };

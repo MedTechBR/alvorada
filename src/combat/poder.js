@@ -265,7 +265,7 @@ export class Poder {
     // câmera: afasta enquanto o seu Pokémon está em Dynamax (ou no reide) e um pouco na arena de ginásio (as duas
     // equipes cabem numa tela de celular deitado)
     const A = g.arenaGinasio, emGinasio = !!A && !A.done;
-    const want = (g.lead && this.dmax.has(g.lead)) || g.tocas?.reide ? 0.62 : emGinasio ? 0.8 : 1;
+    const want = (g.lead && this.dmax.has(g.lead)) || g.tocas?.reide ? 0.62 : emGinasio ? (A.contem ? this.#kEstadio(A) : 0.8) : 1;
     g.camK = (g.camK ?? 1) + (want - (g.camK ?? 1)) * Math.min(1, dt * 2.2);
     if (Math.abs(g.camK - want) < 0.005) g.camK = want;
     // animações
@@ -274,6 +274,15 @@ export class Poder {
     this.#timer();
   }
 
+  // estádio de líder (src/world/estadios.js): afasta conforme a distância entre o seu Pokémon e o do líder, para os dois
+  // caberem na tela (no 2D; o 3D enquadra pela câmera dele, src/visual3d/camera.js); quem não cabe ganha seta na borda
+  #kEstadio(A) {
+    const g = this.g, L = g.lead?.alive ? g.lead : g.player, f = A.rival;
+    if (!f) return 0.75;
+    const z = Math.max(1, g.zoom || 3), w = innerWidth / z, h = innerHeight / z;
+    const k = Math.min(w / (Math.abs(f.x - L.x) + 120), h / (Math.abs(f.y - L.y) + 90));
+    return Math.max(0.5, Math.min(0.85, k));
+  }
   // ---------- luta ----------
   #tipoLuta() {
     const g = this.g;

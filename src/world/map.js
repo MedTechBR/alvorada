@@ -276,14 +276,24 @@ export class GameMap {
   // para o outro lado). resolver = colisão própria (voando, mergulhado, anfíbio: src/combat/altitude.js).
   andar(p, dx, dy, r, swim = false, resolver = null) {
     const n = Math.min(16, Math.max(1, Math.ceil(Math.hypot(dx, dy) / Math.max(2, r * 0.75))));
-    for (let i = 0; i < n; i++) { p.x += dx / n; p.y += dy / n; if (resolver) resolver(); else this.resolve(p, r, swim); }
+    const L = this.limite?.quem(p) ? this.limite : null;
+    for (let i = 0; i < n; i++) { p.x += dx / n; p.y += dy / n; if (resolver) resolver(); else this.resolve(p, r, swim); if (L) this.#noLimite(p, r, L); }
   }
+  // Limite da luta (arena de ginásio, src/combat/arena-ginasio.js): enquanto ela vale, o retângulo da arena é parede
+  // invisível para quem luta e para o treinador (ninguém sai andando, voando, empurrado ou na investida).
+  // map.limite = { x0, y0, x1, y1 (px), quem(e) }
+  #noLimite(p, r, L) {
+    const m = Math.min(r, 8) + 1;
+    if (p.x < L.x0 + m) { p.x = L.x0 + m; if (p.kx < 0) p.kx = 0; if (p.vx < 0) p.vx = 0; } else if (p.x > L.x1 - m) { p.x = L.x1 - m; if (p.kx > 0) p.kx = 0; if (p.vx > 0) p.vx = 0; }
+    if (p.y < L.y0 + m) { p.y = L.y0 + m; if (p.ky < 0) p.ky = 0; if (p.vy < 0) p.vy = 0; } else if (p.y > L.y1 - m) { p.y = L.y1 - m; if (p.ky > 0) p.ky = 0; if (p.vy > 0) p.vy = 0; }
+  }
+  dentroDoLimite(px, py, m = 0) { const L = this.limite; return !L || (px >= L.x0 + m && px <= L.x1 - m && py >= L.y0 + m && py <= L.y1 - m); }
   // Último ponto livre no segmento de (x0, y0) a (x1, y1), de 4 em 4 px: teleporte, cavar e sair do buraco não
   // passam para o outro lado de uma parede. solido(x, y) em pixels.
   ateLivre(x0, y0, x1, y1, solido = (x, y) => this.solidAt(x, y)) {
     const n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 4));
     let lx = x0, ly = y0;
-    for (let i = 1; i <= n; i++) { const x = x0 + (x1 - x0) * i / n, y = y0 + (y1 - y0) * i / n; if (solido(x, y)) break; lx = x; ly = y; }
+    for (let i = 1; i <= n; i++) { const x = x0 + (x1 - x0) * i / n, y = y0 + (y1 - y0) * i / n; if (solido(x, y) || !this.dentroDoLimite(x, y, 6)) break; lx = x; ly = y; } // arena de ginásio: ninguém se teleporta nem cava para fora
     return { x: lx, y: ly };
   }
   // Dá para ver de um ponto ao outro? (parede, penhasco e vazio tapam; objeto, água e portão de raio não)

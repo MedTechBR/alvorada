@@ -282,6 +282,8 @@ export class Story {
     const r = await b.start().finally(() => { this.battle = null; this.busy = true; });
     // perdeu e desmaiou: quem leva é o desmaio (Centro Pokémon); nos outros casos, todos voltam para onde estavam
     if (volta && (r !== 'lose' || opts.noBlackout)) await volta();
+    // estádio do líder (src/world/estadios.js): todos voltam ao ginásio; se o jogador desmaiou, só o líder volta
+    if (b.arena?.volta) await b.arena.voltar({ soLider: r === 'lose' && !opts.noBlackout });
     if (r === 'win') this.g.missoes?.evento('vitoria', { id: def.id });
     return r;
   }
