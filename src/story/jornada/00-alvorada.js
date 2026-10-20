@@ -16,11 +16,11 @@ export default {
       id: 'j00_boletim_manha',
       gatilho: { tipo: 'flag', alvo: 'balls', semFlag: ['nh.sol'] },
       falas: [
-        ['mae', 'Ravi! Liga o rádio, o boletim do sol está no ar. Você precisa ouvir isso antes de sair.'],
+        ['mae', 'Ravi! Liga o rádio, o boletim do sol já está no ar. Ouve isso, é importante.'],
         ['radio', 'Bom dia, Vila Alvorada. Hoje o sol nasceu às seis horas e cinco minutos. Três minutos mais tarde do que ontem.'],
         ['mae', 'Isso já é o quinto dia seguido. O Seu Zé diz que os relógios dele estão certos. Então quem está atrasado é o sol.'],
-        ['jogador', 'Ouvi os vizinhos falando da Equipe Crepúsculo. Dizem que eles roubam as pedras dos ginásios.'],
-        ['mae', 'Então vai com cuidado. E volta para o almoço, que eu não quero você comendo lanche de estrada.'],
+        ['jogador', 'Ouvi os vizinhos falando de uma tal Equipe Crepúsculo. Dizem que andam de capa roxa pela região.'],
+        ['mae', 'Quem anda de capa roxa só traz encrenca. Vai com cuidado e volta para o almoço!'],
       ],
       depois: {
         flags: { 'nh.sol': '6h05' },
@@ -32,11 +32,11 @@ export default {
       local: 'laboratorio',
       gatilho: { tipo: 'entrar', alvo: 'laboratorio', requer: ['balls'], semFlag: ['nh.explicouRelogio'] },
       falas: [
-        ['prof', 'Chegou na hora! Esse sol atrasado está me dando dor de cabeça. Meus instrumentos mostram o mesmo problema que o rádio mostra.'],
-        ['prof', 'No alto do Planalto dos Ventos existe um Relógio de Pedra. Dizem as lendas que ele prende o Necrozma, um Pokémon que come luz.'],
+        ['prof', 'Bom ver você com seu Pokémon. Este sol atrasado me dá dor de cabeça: meus aparelhos marcam o mesmo atraso do rádio.'],
+        ['prof', 'No alto do Planalto dos Ventos existe um Relógio de Pedra. A lenda diz que ele prende o Necrozma, um Pokémon que se alimenta de luz.'],
         ['prof', 'As oito Pedras do Alvorecer são as chaves desse relógio. Cada ginásio da região guarda uma há séculos.'],
-        ['jogador', 'E a Equipe Crepúsculo quer juntar as pedras?'],
-        ['prof', 'É o que parece. Por isso você precisa das insígnias: cada líder que vencer também vai te pedir ajuda para proteger a pedra da cidade.'],
+        ['jogador', 'E a Equipe Crepúsculo quer juntar as pedras para quê?'],
+        ['prof', 'Ainda não sei. Mas cada líder que você vencer vai pedir sua ajuda para proteger a pedra da cidade dele.'],
       ],
       depois: {
         flags: { 'nh.explicouRelogio': true },
@@ -49,8 +49,8 @@ export default {
       gatilho: { tipo: 'pisar', alvo: 'saida_vila_oeste', requer: ['balls'], semFlag: ['nh.explicouRelogio'] },
       falas: [
         ['narrador', 'A Rota 1 começa logo depois da última casa. Dá para ver a Cidade Campina lá no fundo, no meio dos campos.'],
-        ['narrador', 'Antes de sair, o Prof. Jatobá gritou da janela: "Passa no laboratório antes! Você ainda não sabe o que é o Relógio!"'],
-        ['jogador', 'Então é melhor ir logo. Mas antes eu quero entender o que o professor quer dizer.'],
+        ['narrador', 'Atrás de você, o Prof. Jatobá grita da porta do laboratório: "Espera! Você precisa saber o que é o Relógio antes de sair!"'],
+        ['jogador', 'Ele parece preocupado de verdade. Acho melhor voltar e ouvir o que ele tem a dizer.'],
         ['narrador', 'Você olha para o céu. O sol ainda está baixo e pálido, como se tivesse esquecido de subir.'],
       ],
       depois: {
