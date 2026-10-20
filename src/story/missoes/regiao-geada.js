@@ -1,10 +1,9 @@
 // Missões e NPCs vivos da Cordilheira Geada (Vila Geada, Lago Congelado, Rotas 15 e 16, Geleira do Uivo, Caverna de Gelo
 // Cristalino, Cume do Vento Branco e Fiorde do Levante). Formato: docs/missoes.md.
 // Os moradores estão em assets/maps/regioes/geada.json ("people", também dentro das salas).
-// Os treinadores das rotas são missões de uma etapa só (batalha na conversa): TREINADORES, mais abaixo, gera todas.
+// Os treinadores das rotas lutam na conversa (NPCS[id].treinador, gerados de TREINADORES, mais abaixo). Só duas missões soltas ficam.
 
 export const ITENS = {
-  vara_de_gelo: { name: 'Vara de Gelo', color: '#8ad8f0', desc: 'Vara curta de pesca que fura o gelo sozinha, presente do Seu Olavo. Com ela se pesca através do gelo do lago.' },
   fossil_vela: { name: 'Fóssil Vela', color: '#a8c8d8', desc: 'Fóssil de uma vela de gelo, achado na Caverna de Gelo Cristalino. Dizem que é de um Amaura.' },
   lasca_prisma_gelo: { name: 'Lasca de Prisma Azul', color: '#6ae0ff', desc: 'Uma lasca de prisma que respira uma luz azul fria. A Dona Pedrina, de Cidade Escarpa, sabe lapidar.' },
   leitura_boreal: { name: 'Caderno de Leituras', color: '#9ad8f0', desc: 'O caderno da Dra. Hanna, com as leituras de luz dos picos. Anote uma por pico, de noite.' },
@@ -15,112 +14,41 @@ export const ITENS = {
 // ----------------------------------------------------------------------------------------------------------------------
 export const MISSOES = [
   {
-    id: 'sq_pesca_gelo', titulo: 'Pesca no buraco', regiao: 'Vila Geada', de: 'olavo',
-    resumo: 'O Seu Olavo quer ver três peixes do gelo: um Seel, um Barboach e um Relicanth. Em troca, dá a vara que pesca através do gelo.',
-    oferta: [
-      'Moço, você tem cara de quem pesca. Eu sou o Olavo, pescador de gelo.',
-      'Quero ver com meus olhos um Seel, um Barboach e um Relicanth. Os dois primeiros vivem no Lago Congelado, nas frestas.',
-      'O Relicanth é raro: vive no fundo do mar, bem longe. Se me mostrar os três, a vara de gelo é sua. Topa?',
-    ],
-    aceita: ['Boa! Os buracos de pesca do lago dão para o fundo. Fique de olho nas frestas escuras.'],
-    lembrete: ['Um Seel, um Barboach e um Relicanth. Mostre cada um e a vara é sua!'],
-    etapas: [
-      { tipo: 'mostrar', npc: 'olavo', especie: 86, texto: 'Mostre um Seel ao Seu Olavo', falta: ['Ainda não tem um Seel? Eles gostam das frestas do lago.'], falas: ['Olha só o {pokemon}! Focinho de quem sabe nadar embaixo do gelo.'] },
-      { tipo: 'mostrar', npc: 'olavo', especie: 339, texto: 'Mostre um Barboach ao Seu Olavo', falta: ['O Barboach é o bigodudo do lodo. Busque nas frestas do lago.'], falas: ['Um {pokemon}! Esse bigode sente o gelo rachando antes de mim.'] },
-      { tipo: 'mostrar', npc: 'olavo', especie: 369, texto: 'Mostre um Relicanth ao Seu Olavo', falta: ['O Relicanth mora no fundo do mar, onde ninguém vai. Vale a viagem!'], falas: ['Um {pokemon}! Eu achei que nunca veria um desses vivo.', 'Prometeu, cumpriu: a vara é sua.'] },
-    ],
-    recompensa: { itens: [['vara_de_gelo', 1], ['neverMeltIce', 1]] },
-  },
-  {
     id: 'sq_avalanche', titulo: 'Alpinistas perdidos', regiao: 'Vila Geada', de: 'estalajadeira',
     resumo: 'Três alpinistas do mural da estalagem ficaram presos na Geleira do Uivo depois de uma avalanche. Ache os três e avise a Dona Inês.',
     oferta: [
       'Você viu o mural? Bruno, Clara e Josué subiram a Geleira e não desceram. A avalanche foi há dois dias.',
-      'Os guardas não conseguem subir com a neve nova. Se você escala, talvez ache os três. Aceita?',
+      'Os guardas não conseguem subir com a neve nova. Se você escala, talvez ache os três. Eu rezo toda vez que um nome entra naquele mural.',
     ],
     aceita: ['Que Deus guie seus passos! Procure acampamentos e fumaça, o gelo esconde tudo o mais.'],
     lembrete: ['Bruno, Clara e Josué. Ache os três na Geleira do Uivo, e depois me avise.'],
     etapas: [
-      { tipo: 'falar', npc: 'alp_bruno', texto: 'Ache o Bruno Tavares, na Geleira do Uivo', falas: ['Você veio da vila? Que alívio! A perna está torcida, mas eu aguento. Veja se acha a Clara e o Josué.'] },
-      { tipo: 'falar', npc: 'alp_clara', texto: 'Ache a Clara Meirelles, a leste da geleira', falas: ['Bruno está vivo? Graças a Deus! Eu desci errado e fiquei sem trilha. Pode avisar que estou bem.'] },
+      { tipo: 'falar', npc: 'alp_bruno', texto: 'Ache o Bruno Tavares, na Geleira do Uivo', falas: ['Você veio da vila? Que alívio! A perna está torcida, mas eu aguento. Veja se acha a Clara e o Josué. Ela é a mais teimosa de nós.'] },
+      { tipo: 'falar', npc: 'alp_clara', texto: 'Ache a Clara Meirelles, a leste da geleira', falas: ['Bruno está vivo? Graças a Deus! Eu desci errado e fiquei sem trilha. Eu briguei com ele por causa da rota, e agora a rota era dele. Pode avisar que estou bem.'] },
       { tipo: 'falar', npc: 'alp_josue', texto: 'Ache o Josué, no sul da geleira', falas: ['Eu só queria ver o gelo azul. Obrigado! Já estou descendo pelo Desfiladeiro, com o Snorunt.'] },
-      { tipo: 'falar', npc: 'estalajadeira', texto: 'Conte à Dona Inês que os três estão vivos', falas: ['Os três vivos! Vou riscar os nomes do mural agora mesmo.', 'Tome. Não é pagamento: é gratidão de uma estalajadeira.'] },
+      { tipo: 'falar', npc: 'estalajadeira', texto: 'Conte à Dona Inês que os três estão vivos', falas: ['Os três vivos! Vou riscar os nomes do mural agora mesmo.', 'Só que tem um nome ali no cantinho que eu nunca risquei: Jacinto. Meu marido. Subiu em outro inverno e a Geleira não devolveu.', 'Tome. Não é pagamento: é a gratidão de uma estalajadeira. A neve já levou gente demais.'] },
     ],
     recompensa: { itens: [['iceStone', 1], ['maxRevive', 3]] },
   },
   {
     id: 'sq_aurora_boreal', titulo: 'A luz que dança', regiao: 'Vila Geada', de: 'hanna',
     requer: { insignias: 2 },
-    resumo: 'A Dra. Hanna quer leituras de luz em três picos (Cume do Vento Branco, Pico Geada e Geleira do Uivo), numa noite de aurora. As leituras mostram o Coração respirando.',
+    resumo: 'A Dra. Hanna estuda há onze anos uma aurora que pulsa como um pulmão. Ela quer leituras de luz em três pontos altos, numa noite de aurora.',
     oferta: [
       'Sou a Hanna. Estudo as auroras há onze anos e algo muda: a luz sobe e desce a cada três minutos, como um pulmão.',
-      'Preciso de leituras em três pontos altos, de noite, quando a aurora dança: o Cume do Vento Branco, o Pico Geada e a Geleira do Uivo.',
-      'Leva este caderno e anota o que o céu mostrar. Aceita?',
+      'Preciso de leituras em três pontos altos, de noite, quando a aurora dança: a Geleira do Uivo, o Cume do Vento Branco e o Passo do Uivo.',
+      'Leva este caderno e anota o que o céu mostrar. Se os três baterem no mesmo compasso, eu descubro o que está respirando.',
     ],
     aceita: ['Ótimo! Só de noite, hein: de dia a luz do sol apaga tudo. Use os pontos altos da trilha.'],
-    lembrete: ['Três picos, de noite: o Cume, o Pico Geada e a Geleira. O caderno anota sozinho se você chegar perto.'],
+    lembrete: ['Três pontos, de noite: a Geleira, o Cume e o Passo do Uivo. O caderno anota sozinho se você chegar perto.'],
     itensIniciais: [['leitura_boreal', 1]],
     etapas: [
       { tipo: 'chegar', x: 1060, y: 100, r: 8, se: { hora: 'noite' }, texto: 'De noite, faça a leitura na Geleira do Uivo', falas: ['O caderno estala. No céu, a aurora acende em ondas e a luz parece respirar sob a geleira.'] },
       { tipo: 'chegar', x: 1090, y: 8, r: 6, se: { hora: 'noite' }, texto: 'De noite, faça a leitura no Cume do Vento Branco', falas: ['No alto, o céu está tão perto que dá para tocar. A aurora pulsa em verde, e a neve responde.'] },
-      { tipo: 'chegar', x: 42, y: 12, r: 8, se: { hora: 'noite' }, texto: 'De noite, faça a leitura no Pico Geada', falas: ['O Pico Geada também pulsa, no mesmo ritmo. Os três picos respiram juntos.'] },
-      { tipo: 'falar', npc: 'hanna', texto: 'Leve o caderno à Dra. Hanna', falas: ['Os três no mesmo compasso! Então não é coincidência: o Coração respira por baixo de toda a Geleira.', 'Isto é para você. Uma pedra do alvorecer e uma lasca de gelo que aprendeu a refletir luz.'] },
+      { tipo: 'chegar', x: 680, y: 20, r: 10, se: { hora: 'noite' }, texto: 'De noite, faça a leitura no Passo do Uivo (Rota 15)', falas: ['O Passo do Uivo também pulsa, no mesmo ritmo. Os três pontos respiram juntos.'] },
+      { tipo: 'falar', npc: 'hanna', texto: 'Leve o caderno à Dra. Hanna', falas: ['Os três no mesmo compasso! Então não é coincidência: o Coração respira por baixo de toda a Geleira.', 'Onze anos achando que era o céu. Era o chão! Isto é para você: uma pedra do alvorecer e uma lasca de gelo que aprendeu a refletir luz.'] },
     ],
     recompensa: { itens: [['dawnStone', 1], ['glalitite', 1]], flags: { hannaCoracao: true } },
-  },
-  {
-    id: 'sq_vento_branco', titulo: 'A ave de cristal', regiao: 'Cume do Vento Branco', de: 'alpinista_veterano',
-    requer: { insignias: 6, missoes: ['sq_aurora_boreal'] },
-    resumo: 'No topo do Cume do Vento Branco, onde a neve engole a perna, mora uma ave que congela o vento. O Teodoro quer que alguém a veja.',
-    oferta: [
-      'Eu subi o Cume há quarenta anos e vi uma ave de cristal pousada num altar de gelo.',
-      'O vento virou gelo quando ela bateu as asas. Nunca mais subi. Mas você, com essa pedra do alvorecer no bolso, talvez devesse.',
-      'Suba até o altar, no topo. Quer tentar?',
-    ],
-    aceita: ['Leve um Pokémon que saiba andar na neve funda. E agasalho. E coragem.'],
-    lembrete: ['O altar de gelo fica no alto do Cume. Cuidado com o vento.'],
-    etapas: [
-      { tipo: 'chegar', lugar: 'cume_articuno', r: 12, texto: 'Suba o Cume do Vento Branco', falas: ['A neve vai até os joelhos. No fim do rastro, um altar de gelo e um frio que não é do clima.'] },
-      { tipo: 'vencer', texto: 'Enfrente a ave de cristal',
-        alfa: { dex: 144, nivel: 70, x: 1090, y: 5, golpes: ['blizzard', 'iceBeam', 'airSlash', 'icyWind'], aviso: 'O vento muda de lado. Uma ave de cristal pousa no altar!' } },
-      { tipo: 'falar', npc: 'alpinista_veterano', texto: 'Conte ao Teodoro o que viu', falas: ['Você viu! Eu jurava que tinha sonhado. Obrigado por me devolver o céu.'] },
-    ],
-    recompensa: { itens: [['rareCandy', 3], ['maxRevive', 2]] },
-  },
-  {
-    id: 'sq_zero_absoluto', titulo: 'O zero absoluto', regiao: 'Caverna de Gelo Cristalino', de: 'hanna',
-    requer: { insignias: 7, missoes: ['sq_aurora_boreal'] },
-    resumo: 'Atrás de uma parede de gelo grosso, no Coração Azul, existe uma câmara onde nada se move. A Dra. Hanna quer saber o que a mantém fria.',
-    oferta: [
-      'A luz que respira vem de um lugar frio demais para ser natural: atrás de uma parede de gelo grosso, no fundo da caverna.',
-      'Os três braseiros do salão azul abrem o altar, mas a câmara só se abre com golpes de peso: Lutador, Pedra, Terra ou Aço.',
-      'Vá até a Câmara do Zero Absoluto e veja o que dorme lá. Cuidado: a ave é fria demais.',
-    ],
-    aceita: ['Quebre as três camadas de gelo do salão azul. A câmara é depois.'],
-    lembrete: ['A câmara fica atrás de três camadas de gelo grosso, no leste do salão azul.'],
-    etapas: [
-      { tipo: 'chegar', sala: 'camara_zero', x: 12, y: 8, r: 5, texto: 'Entre na Câmara do Zero Absoluto', falas: ['O ar é um espelho. Não há vento, não há som. O frio vem de uma única criatura enorme, dormindo de pé.'] },
-      { tipo: 'vencer', texto: 'Enfrente o dragão do gelo',
-        alfa: { dex: 646, nivel: 70, sala: 'camara_zero', x: 12, y: 4, golpes: ['glaciate', 'dragonPulse', 'iceBeam', 'earthquake'], aviso: 'O ar congela. Kyurem desperta!' } },
-      { tipo: 'falar', npc: 'hanna', texto: 'Conte à Dra. Hanna o que viu', falas: ['Um dragão feito de frio absoluto, escondido atrás de gelo. Então era isso que mantinha a luz comprimida.', 'Obrigada. Vou anotar com o seu nome.'] },
-    ],
-    recompensa: { itens: [['rareCandy', 3], ['maxElixir', 3]] },
-  },
-  {
-    id: 'sq_banquisa', titulo: 'O Cloyster do fiorde', regiao: 'Fiorde do Levante', de: 'aldo',
-    resumo: 'O Aldo jura que o avô viu um Cloyster do tamanho de uma casa. Ele quer ver qualquer Cloyster do fiorde.',
-    requer: { insignias: 4 },
-    oferta: [
-      'Dizem que no fiorde vive um Cloyster do tamanho de uma casa. Meu avô jurava.',
-      'Nunca vi nenhum. Mas se você capturar um Cloyster do fiorde e me mostrar, eu aposento a minha vara de tanta alegria.',
-    ],
-    aceita: ['Boa sorte! Eles aparecem quando a maré dá sossego.'],
-    lembrete: ['Um Cloyster, só um, capturado no fiorde.'],
-    etapas: [
-      { tipo: 'capturar', especie: 91, lugar: 'fiorde_levante', texto: 'Capture um Cloyster no Fiorde do Levante' },
-      { tipo: 'mostrar', npc: 'aldo', especie: 91, texto: 'Mostre o Cloyster ao Aldo', falta: ['Quero ver o bichinho!'], falas: ['Um {pokemon} de verdade! Meu avô tinha razão (menos no tamanho).', 'Pegue. Tirei esta pérola do fundo em 1998.'] },
-    ],
-    recompensa: { itens: [['bigPearl', 2]] },
   },
 ];
 
@@ -204,26 +132,19 @@ const TREINADORES = [
     [[478, 59, ['iceBeam', 'shadowBall', 'hex']], [866, 59, ['iceBeam', 'psychic', 'knockOff']], [471, 60, ['iceBeam', 'shadowBall', 'quickAttack']], [365, 58, ['iceBeam', 'surf', 'bodySlam']]]],
 ];
 
-for (const [id, nome, regiao, oferta, vitoria, derrota, equipe] of TREINADORES) {
+// Cada treinador de rota luta uma vez ao conversar (NPCS[id].treinador, src/story/missoes/npcs.js): não é missão e não entra no diário.
+const TREINADORES_NPC = {};
+for (const [id, nome, , oferta, vitoria, derrota, equipe] of TREINADORES) {
   const media = equipe.reduce((s, e) => s + e[1], 0) / equipe.length;
   const dinheiro = Math.round((media * equipe.length * 14) / 10) * 10;
-  MISSOES.push({
-    id: 'tr_' + id, titulo: nome, regiao, de: id,
-    resumo: `${nome} desafia quem passa por ${regiao}.`,
-    oferta: [oferta], aceita: ['Vamos!'], recusa: ['Quando quiser.'],
-    etapas: [
-      { tipo: 'vencer', npc: id, agora: true, perguntar: false, texto: `Vença ${nome}`,
-        batalha: { id, nome, dinheiro: 0, equipe },
-        falas: ['Vamos ver o que você sabe!'], vitoria: [vitoria], derrota: [derrota] },
-    ],
-    recompensa: { dinheiro },
-  });
+  TREINADORES_NPC[id] = { treinador: { batalha: { id, nome, equipe }, falas: [oferta], vitoria: [vitoria], derrota: [derrota], depois: [vitoria], dinheiro } };
 }
 
 // ----------------------------------------------------------------------------------------------------------------------
 // NPCs vivos
 // ----------------------------------------------------------------------------------------------------------------------
 export const NPCS = {
+  ...TREINADORES_NPC,
   dona_branca: {
     diario: { itens: [['iceHeal', 1], ['superPotion', 1]], falas: ['Seu sorvete do dia! De Vanillite, gelado, sem corante, sem pena.', 'Coma e se cuide: ele tira o gelo do corpo.'], depois: ['Hoje o sorvete já foi. Volte amanhã, e traga fome!'] },
     falas: [
@@ -292,11 +213,6 @@ export const NPCS = {
   aldo: {
     falas: [
       { se: { hora: 'noite' }, linhas: ['De noite o fiorde canta. É o vento passando pelo gelo marinho. Dá um calafrio gostoso.'] },
-    ],
-  },
-  olavo: {
-    falas: [
-      { se: { missoes: ['sq_pesca_gelo'] }, linhas: ['A vara de gelo é sua! Pesque nos buracos do lago e me conte o que vier.'] },
     ],
   },
 };
