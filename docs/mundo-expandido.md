@@ -298,13 +298,13 @@ ordem vale; a escada só diz o que é mais fácil e o que é mais difícil.
 | # | Ginásio | Líder | Tipo | Custo | Acesso | Equipe do líder | Ás |
 |---:|---|---|---|---:|---|---|---:|
 | 1 | Cidade Coral | Jonas | Elétrico | 90 | a pé | 7–11 | 11 |
-| 2 | Porto Espelho | Marina | Água | 161 | a pé | 11–15 | 15 |
+| 2 | Porto Espelho | Marina | Água | 164 | a pé | 11–15 | 15 |
 | 3 | Cidade Campina | Tomé | Normal | 172 | a pé | 12–16 | 16 |
 | 4 | Vila Lamparina | Dona Zélia | Fantasma | 227 | nadar | 16–20 | 20 |
 | 5 | Vila Sussurro | Lia | Inseto | 246 | a pé | 17–21 | 21 |
 | 6 | Forte Rochedo | Brás | Lutador | 320 | a pé | 21–25 | 25 |
-| 7 | Mirante dos Ventos | Celeste | Voador | 841 | correr + nadar + escalar | 37–41 | 41 |
-| 8 | Cidade Escarpa | Graça | Pedra | 925 | correr + nadar + escalar | 39–43 | 43 |
+| 7 | Mirante dos Ventos | Celeste | Voador | 738 | nadar | 34–38 | 38 |
+| 8 | Cidade Escarpa | Graça | Pedra | 1059 | nadar | 42–46 | 46 |
 | — | Liga Alvorada (8 insígnias) | Elite | — | — | todas | 55–61 | Campeã 66 |
 <!-- /gerado:ginasios -->
 
@@ -364,29 +364,29 @@ Ordenada do lugar mais fácil para o mais difícil.
 | Mina Aurora — Nível 3 | Núcleo de Alvorada | caverna | 704 | nadar | 32–36 | 39 |
 | Praia do Cipó | Arquipélago das Jandaias | praia | 735 | nadar | 32–36 | 39 |
 | Ilha do Farol Morto | Mar do Sul e Ilhas Austrais | praia | 741 | nadar | 33–37 | 40 |
+| Rota 15, Passo do Uivo | Cordilheira Geada | planalto | 742 | nadar | 33–37 | 40 |
 | Paredão | Núcleo de Alvorada | planalto | 754 | correr + nadar + escalar | 33–37 | 40 |
-| Rota 9, Estepe dos Ventos | Núcleo de Alvorada | planalto | 777 | correr + nadar + escalar | 33–37 | 40 |
 | Mina Aurora — Nível 4 | Núcleo de Alvorada | cristal | 784 | nadar | 34–38 | 41 |
-| Rota 11, Escadaria dos Vigias | Núcleo de Alvorada | ruina | 801 | correr + nadar + escalar | 34–38 | 41 |
+| Lago Congelado | Cordilheira Geada | gelo | 821 | nadar | 35–39 | 42 |
 | Selva Grande | Arquipélago das Jandaias | selva | 825 | nadar + escalar | 35–39 | 42 |
 | Ilhas Austrais | Mar do Sul e Ilhas Austrais | neve | 827 | nadar | 35–39 | 42 |
-| Planalto dos Ventos | Núcleo de Alvorada | planalto | 845 | correr + nadar + escalar | 35–39 | 42 |
-| Rota 8, Escalada do Paredão | Núcleo de Alvorada | planalto | 876 | correr + nadar + escalar | 36–40 | 43 |
 | Ilha do Basalto | Arquipélago das Brasas | praia | 880 | nadar | 36–40 | 43 |
 | Rota 20, Caatinga do Lajedo | Sertão do Levante | sertao | 881 | nadar | 36–40 | 43 |
 | Templo das Marés — Nave Alta | Mar do Sul e Ilhas Austrais | ruina | 881 | nadar | 36–40 | 43 |
+| Rota 9, Estepe dos Ventos | Núcleo de Alvorada | planalto | 897 | nadar | 36–40 | 43 |
 | Praia do Levante | Sertão do Levante | praia | 903 | nadar | 37–41 | 44 |
 | Cânion do Rio Seco | Sertão do Levante | canion | 906 | nadar + escalar | 37–41 | 44 |
 | Cachoeira do Véu Verde | Arquipélago das Jandaias | margem | 907 | nadar + escalar, escondido | 37–41 | 44 |
+| Rota 11, Escadaria dos Vigias | Núcleo de Alvorada | ruina | 933 | nadar | 37–41 | 44 |
+| Planalto dos Ventos | Núcleo de Alvorada | planalto | 945 | nadar | 38–42 | 45 |
 | Rota Marítima 19 | Arquipélago das Brasas | mar | 957 | nadar | 38–42 | 45 |
-| Rota 15, Passo do Uivo | Cordilheira Geada | planalto | 966 | correr + nadar + escalar | 38–42 | 45 |
 | Caverna do Iceberg — Túnel Azul | Mar do Sul e Ilhas Austrais | gelo | 967 | nadar | 38–42 | 45 |
+| Rota 8, Escalada do Paredão | Núcleo de Alvorada | planalto | 1011 | nadar | 39–43 | 46 |
 | Mina Abandonada (Nível 5) | Núcleo de Alvorada | caverna | 1014 | nadar, escondido | 39–43 | 46 |
 | Dunas Douradas | Sertão do Levante | deserto | 1014 | nadar + correr | 39–43 | 46 |
 | Recife Grande — Fundo (mergulho) | Mar do Sul e Ilhas Austrais | recife | 1021 | nadar + mergulhar | 39–43 | 46 |
-| Lago Congelado | Cordilheira Geada | gelo | 1045 | correr + nadar + escalar | 40–44 | 47 |
+| Rota 16, Campos Nevados | Cordilheira Geada | neve | 1022 | nadar | 39–43 | 46 |
 | Caverna do Iceberg — Salão Polar | Mar do Sul e Ilhas Austrais | gelo | 1047 | nadar | 40–44 | 47 |
-| Ruínas dos Vigias | Núcleo de Alvorada | ruina | 1054 | correr + nadar + escalar, escondido | 40–44 | 47 |
 | Campos de Cinza | Arquipélago das Brasas | vulcao | 1064 | nadar | 40–44 | 47 |
 | Fundo do Cânion | Sertão do Levante | canion | 1074 | nadar + escalar, escondido | 40–44 | 47 |
 | Fontes Termais do Vapor | Arquipélago das Brasas | termal | 1080 | nadar | 41–45 | 48 |
@@ -397,37 +397,37 @@ Ordenada do lugar mais fácil para o mais difícil.
 | Mar do Levante | Sertão do Levante | mar | 1172 | nadar | 42–46 | 49 |
 | Ilha Miragem | Arquipélago das Jandaias | praia | 1177 | nadar + voar, escondido | 43–47 | 50 |
 | Ruínas de Pedra Pintada — Pátio das Pinturas | Sertão do Levante | ruina | 1184 | nadar + correr | 43–47 | 50 |
+| Ruínas dos Vigias | Núcleo de Alvorada | ruina | 1188 | nadar, escondido | 43–47 | 50 |
 | Mar das Brasas | Arquipélago das Brasas | mar | 1199 | nadar | 43–47 | 50 |
 | Templo das Raízes — Galerias Inundadas | Arquipélago das Jandaias | selva | 1245 | nadar + escalar | 44–48 | 51 |
-| Rota 16, Campos Nevados | Cordilheira Geada | neve | 1246 | correr + nadar + escalar | 44–48 | 51 |
 | Templo das Marés — Nave Afundada | Mar do Sul e Ilhas Austrais | recife | 1261 | nadar + mergulhar | 44–48 | 51 |
 | Ruínas de Pedra Pintada — Galeria da Areia | Sertão do Levante | ruina | 1264 | nadar + correr | 44–48 | 51 |
 | Chapada Vermelha | Sertão do Levante | canion | 1286 | nadar + escalar | 45–49 | 52 |
-| Rota 12, Caminho do Zênite | Núcleo de Alvorada | pico | 1300 | correr + nadar + escalar | 45–49 | 52 |
 | Templo das Raízes — Câmara da Semente | Arquipélago das Jandaias | ruina | 1325 | nadar + escalar | 45–49 | 52 |
+| Ruínas dos Vigias — Sala dos Murais | Núcleo de Alvorada | ruina | 1328 | nadar | 45–49 | 52 |
 | Templo das Marés — Altar da Maré | Mar do Sul e Ilhas Austrais | recife | 1341 | nadar + mergulhar | 46–50 | 53 |
 | Ruínas de Pedra Pintada — Câmara do Sol | Sertão do Levante | ruina | 1344 | nadar + correr | 46–50 | 53 |
+| Fiorde do Levante | Cordilheira Geada | mar | 1355 | nadar | 46–50 | 53 |
 | Vulcão Tição | Arquipélago das Brasas | vulcao | 1379 | nadar + escalar | 46–50 | 53 |
-| Ruínas dos Vigias — Sala dos Murais | Núcleo de Alvorada | ruina | 1424 | correr + nadar + escalar | 47–51 | 54 |
-| Geleira do Uivo | Cordilheira Geada | neve | 1442 | correr + nadar + escalar | 47–51 | 54 |
+| Geleira do Uivo | Cordilheira Geada | neve | 1418 | nadar + escalar | 47–51 | 54 |
+| Rota 12, Caminho do Zênite | Núcleo de Alvorada | pico | 1431 | nadar | 47–51 | 54 |
 | Fossa Abissal | Mar do Sul e Ilhas Austrais | abismo | 1448 | nadar + mergulhar, escondido | 48–52 | 55 |
-| Pico Geada | Núcleo de Alvorada | neve | 1473 | correr + nadar + escalar + neve, escondido | 48–52 | 55 |
-| Fiorde do Levante | Cordilheira Geada | mar | 1579 | correr + nadar + escalar | 50–54 | 57 |
-| Fenda Prismática | Núcleo de Alvorada | cristal | 1653 | correr + nadar + escalar, escondido | 51–55 | 58 |
-| Caminho do Zênite — Caverna | Núcleo de Alvorada | caverna | 1670 | correr + nadar + escalar | 51–55 | 58 |
+| Caminho do Zênite — Caverna | Núcleo de Alvorada | caverna | 1571 | nadar | 50–54 | 57 |
+| Pico Geada | Núcleo de Alvorada | neve | 1607 | nadar + neve, escondido | 50–54 | 57 |
 | Templo da Chama — Portal de Basalto | Arquipélago das Brasas | vulcao | 1719 | nadar + escalar | 52–56 | 59 |
+| Caverna de Gelo Cristalino — Saguão | Cordilheira Geada | gelo | 1758 | nadar + escalar | 53–57 | 60 |
+| Fenda Prismática | Núcleo de Alvorada | cristal | 1783 | nadar, escondido | 53–57 | 60 |
 | Templo da Chama — Rio de Lava | Arquipélago das Brasas | vulcao | 1799 | nadar + escalar | 54–58 | 61 |
 | Ilhota Fumegante | Arquipélago das Brasas | termal | 1805 | nadar + voar, escondido | 54–58 | 61 |
-| Caverna de Gelo Cristalino — Saguão | Cordilheira Geada | gelo | 1812 | correr + nadar + escalar | 54–58 | 61 |
+| Cume do Vento Branco | Cordilheira Geada | pico | 1808 | nadar + escalar + neve, escondido | 54–58 | 61 |
 | Cratera do Tição | Arquipélago das Brasas | vulcao | 1825 | nadar + escalar + voar, escondido | 54–58 | 61 |
-| Cume do Vento Branco | Cordilheira Geada | pico | 1832 | correr + nadar + escalar + neve, escondido | 54–58 | 61 |
+| Caverna de Gelo Cristalino — Rio Congelado | Cordilheira Geada | gelo | 1838 | nadar + escalar | 54–58 | 61 |
 | Templo da Chama — Forja Antiga | Arquipélago das Brasas | vulcao | 1879 | nadar + escalar | 55–59 | 62 |
-| Caverna de Gelo Cristalino — Rio Congelado | Cordilheira Geada | gelo | 1892 | correr + nadar + escalar | 55–59 | 62 |
-| Caverna de Gelo Cristalino — Coração Azul | Cordilheira Geada | gelo | 1972 | correr + nadar + escalar | 56–60 | 63 |
+| Caverna de Gelo Cristalino — Coração Azul | Cordilheira Geada | gelo | 1918 | nadar + escalar | 55–59 | 62 |
 | Pampa das Coxilhas | Ocaso Leste: Pampa e Pantanal | pampa | 1997 | a pé | 57–61 | 64 |
 | Restinga do Poente | Ocaso Leste: Pampa e Pantanal | praia | 2044 | a pé | 58–62 | 65 |
+| Fenda Prismática — Salão dos Espelhos | Núcleo de Alvorada | cristal | 2083 | nadar | 58–62 | 65 |
 | Pantanal do Poente | Ocaso Leste: Pampa e Pantanal | brejo | 2181 | nadar | 60–64 | 67 |
-| Fenda Prismática — Salão dos Espelhos | Núcleo de Alvorada | cristal | 2183 | correr + nadar + escalar | 60–64 | 67 |
 | Cataratas do Trovão | Ocaso Leste: Pampa e Pantanal | margem | 2246 | nadar | 61–65 | 68 |
 | Delta das Garças Rubras | Ocaso Leste: Pampa e Pantanal | mangue | 2256 | nadar | 61–65 | 68 |
 | Mata das Araucárias | Ocaso Leste: Pampa e Pantanal | floresta | 2258 | a pé | 61–65 | 68 |
@@ -457,21 +457,7 @@ ficam longe do modelo (diferença maior que 4 níveis). `src/data/habitats.js` j
 mapa e os níveis novos; falta o agente do mapa trocar os níveis (ou o motor passar a ler `habitats.js`, seção 14).
 
 <!-- gerado:rebalancear -->
-| Área do mapa | Hoje (mapa) | Modelo |
-|---|---|---|
-| rota2 | 10–13 | 15–19 |
-| rota3 | 15–20 | 5–9 |
-| manguezal | 19–23 | 6–10 |
-| praia_oeste | 22–25 | 5–9 |
-| rota7 | 34–38 | 20–24 |
-| mina_aurora | 31–34 | 22–26 |
-| rota4 | 22–26 | 14–18 |
-| restinga | 23–27 | 9–13 |
-| praia_corais | 24–28 | 11–15 |
-| rota5 | 27–32 | 13–17 |
-| cemiterio_velas | 27–30 | 15–19 |
-| rota6 | 31–35 | 19–23 |
-| toca_absol | 14–16 | 19–23 |
+Nenhuma.
 <!-- /gerado:rebalancear -->
 
 ---
@@ -1055,7 +1041,7 @@ Região: Núcleo de Alvorada. Entrada: Pé do Paredão, nos fundos de Cidade Aur
 #### Ruínas dos Vigias
 Região: Núcleo de Alvorada. Entrada: Planalto dos Ventos (216, 36). Acesso: Escalar (o Paredão); Lente Prisma para as inscrições. Estado: pendente no núcleo.
 
-- **Colunata** (selvagens 40–44): oito colunas com sombras; ao meio-dia as sombras apontam para a escada
+- **Colunata** (selvagens 43–47): oito colunas com sombras; ao meio-dia as sombras apontam para a escada
 
   ```
   #.#.#.#.#
@@ -1063,7 +1049,7 @@ Região: Núcleo de Alvorada. Entrada: Planalto dos Ventos (216, 36). Acesso: Es
   #.#.^.#.#
   ....S....
   ```
-- **Sala dos Murais** (selvagens 47–51): portas que abrem quando os Unown certos são mostrados ao mural
+- **Sala dos Murais** (selvagens 45–49): portas que abrem quando os Unown certos são mostrados ao mural
 
   ```
   ##########
@@ -1080,7 +1066,7 @@ Região: Núcleo de Alvorada. Entrada: Planalto dos Ventos (216, 36). Acesso: Es
 #### Caverna de Gelo Cristalino
 Região: Cordilheira Geada. Entrada: Geleira do Uivo (1000, 60). Acesso: Escalar (paredes de gelo da geleira).
 
-- **Saguão** (selvagens 54–58): gelo escorregadio: o jogador desliza até bater; as pedras servem de parada
+- **Saguão** (selvagens 53–57): gelo escorregadio: o jogador desliza até bater; as pedras servem de parada
 
   ```
   ###########
@@ -1089,7 +1075,7 @@ Região: Cordilheira Geada. Entrada: Geleira do Uivo (1000, 60). Acesso: Escalar
   #.iiiii#iS#
   ###########
   ```
-- **Rio Congelado** (selvagens 55–59): empurrar blocos de gelo no rio para fazer paradas; rachaduras x quebram depois de pisadas duas vezes e derrubam para o andar de baixo
+- **Rio Congelado** (selvagens 54–58): empurrar blocos de gelo no rio para fazer paradas; rachaduras x quebram depois de pisadas duas vezes e derrubam para o andar de baixo
 
   ```
   ############
@@ -1098,7 +1084,7 @@ Região: Cordilheira Geada. Entrada: Geleira do Uivo (1000, 60). Acesso: Escalar
   #..^..iix.S#
   ############
   ```
-- **Coração Azul** (selvagens 56–60): espelhos de gelo refletem a luz da Vela Eterna para derreter a parede do altar
+- **Coração Azul** (selvagens 55–59): espelhos de gelo refletem a luz da Vela Eterna para derreter a parede do altar
 
   ```
   ##########
@@ -1110,7 +1096,7 @@ Região: Cordilheira Geada. Entrada: Geleira do Uivo (1000, 60). Acesso: Escalar
 
 **Chefe ou alfa:** Alfa Avalugg (#713) no Rio Congelado; Glalie Alfa (#362) no Coração Azul. Atrás de uma parede de gelo grosso, a Câmara do Zero Absoluto guarda Kyurem (#646).
 **Tesouros:** Lasca de prisma (Pulseira Mega), Fóssil Vela (Amaura), Pedra de Gelo, Glalita, Abomasnita, Froslassita, MT Nevasca.
-
+**Só aqui:** Mamoswine (#473).
 
 #### Ruínas de Pedra Pintada
 Região: Sertão do Levante. Entrada: Dunas Douradas (960, 350). Acesso: Correr (areia fofa até a entrada).
@@ -1144,7 +1130,7 @@ Região: Sertão do Levante. Entrada: Dunas Douradas (960, 350). Acesso: Correr 
 
 **Chefe ou alfa:** Alfa Krookodile (#553) na Galeria; Regirock (#377) na Câmara do Sol depois da inscrição dos Vigias.
 **Tesouros:** Fóssil Garra (Anorith), Fóssil Âmbar (Aerodactyl), Pedra do Sol, Aerodactylita, Tyranitarita, MT Tempestade de Areia.
-**Só aqui:** Runerigus (#867), Yamask (yamask-galar), Zweilous (#634).
+**Só aqui:** Runerigus (#867), Yamask (yamask-galar).
 
 #### Templo das Raízes
 Região: Arquipélago das Jandaias. Entrada: Selva Grande (120, 760). Acesso: Escalar (paredões de cipó).
@@ -1289,7 +1275,7 @@ Região: Núcleo de Alvorada. Entrada: redemoinho no Lago Espelho (489, 273). Ac
 #### Fenda Prismática
 Região: Núcleo de Alvorada. Entrada: sob o Relógio de Pedra. Acesso: a trama principal abre a fenda (8 insígnias e o Relógio).
 
-- **Boca do Prisma** (selvagens 51–55): prismas dividem a luz em cores; cada cor abre uma porta da mesma cor
+- **Boca do Prisma** (selvagens 53–57): prismas dividem a luz em cores; cada cor abre uma porta da mesma cor
 
   ```
   #########
@@ -1297,7 +1283,7 @@ Região: Núcleo de Alvorada. Entrada: sob o Relógio de Pedra. Acesso: a trama 
   #.*^*..S#
   #########
   ```
-- **Salão dos Espelhos** (selvagens 60–64): chão de espelho: o jogador só vê o caminho refletido no teto; Fendas Ultra se abrem aqui à noite
+- **Salão dos Espelhos** (selvagens 58–62): chão de espelho: o jogador só vê o caminho refletido no teto; Fendas Ultra se abrem aqui à noite
 
   ```
   ###########
@@ -1313,7 +1299,7 @@ Região: Núcleo de Alvorada. Entrada: sob o Relógio de Pedra. Acesso: a trama 
 #### Caminho do Zênite
 Região: Núcleo de Alvorada. Entrada: Rota 12. Acesso: todas as montarias; a Liga pede 8 insígnias. Estado: pendente no núcleo.
 
-- **Estrada da Vitória** (selvagens 51–55): um obstáculo de cada montaria em sequência: lama, rio, paredão, abismo (voar) e redemoinho
+- **Estrada da Vitória** (selvagens 50–54): um obstáculo de cada montaria em sequência: lama, rio, paredão, abismo (voar) e redemoinho
 
 **Chefe ou alfa:** Garchomp Alfa (#445).
 **Tesouros:** Garchompita, Doce Raro x3.
@@ -1680,7 +1666,7 @@ Bracelete Dynamax: Laboratório do Prof. Jatobá (Vila Alvorada), a Bia monta co
 ### Números (gerado)
 
 <!-- gerado:contagem -->
-- Espécies na lista nacional: **1025**; selvagens em pelo menos uma área: **637**; exclusivas de uma área só: **342**; obtidas de outro jeito (evolução, presente, troca, fóssil, ovo, lendário, evento): **388**; sem lugar: **0**.
+- Espécies na lista nacional: **1025**; selvagens em pelo menos uma área: **642**; exclusivas de uma área só: **348**; obtidas de outro jeito (evolução, presente, troca, fóssil, ovo, lendário, evento): **383**; sem lugar: **0**.
 - Formas regionais: **58** (sem lugar: 0); Mega: **97** pedras; Gigantamax: **34** formas em **26** tocas.
 - Áreas com selvagens: **126**; distâncias do núcleo: medidas no mapa atual.
 <!-- /gerado:contagem -->
@@ -1704,9 +1690,9 @@ Bracelete Dynamax: Laboratório do Prof. Jatobá (Vila Alvorada), a Bia monta co
 ### Exclusivas por região (gerado)
 
 <!-- gerado:exclusivas -->
-- **Núcleo de Alvorada** (182): Caterpie (#10), Butterfree (#12), Beedrill (#15), Pidgeotto (#17), Rattata (#19), Fearow (#22), Pikachu (#25), Nidoran♀ (#29), Nidoran♂ (#32), Jigglypuff (#39), Oddish (#43), Meowth (#52), Mankey (#56), Growlithe (#58), Abra (#63), Bellsprout (#69), Ponyta (#77), Magnemite (#81), Magneton (#82), Grimer (#88), Drowzee (#96), Voltorb (#100), Electrode (#101), Lickitung (#108), Koffing (#109), Kangaskhan (#115), Horsea (#116), Starmie (#121), Electabuzz (#125), Pinsir (#127), Eevee (#133), Snorlax (#143), Chikorita (#152), Bayleef (#153), Ledian (#166), Ariados (#168), Flaaffy (#180), Azumarill (#184), Hoppip (#187), Girafarig (#203), Pineco (#204), Dunsparce (#206), Snubbull (#209), Heracross (#214), Ursaring (#217), Poochyena (#261), Mightyena (#262), Wurmple (#265), Silcoon (#266), Beautifly (#267), Cascoon (#268), Dustox (#269), Taillow (#276), Ralts (#280), Breloom (#286), Slakoth (#287), Vigoroth (#288), Whismur (#293), Loudred (#294), Makuhita (#296), Skitty (#300), Mawile (#303), Meditite (#307), Electrike (#309), Manectric (#310), Plusle (#311), Minun (#312), Volbeat (#313), Illumise (#314), Gulpin (#316), Spoink (#325), Grumpig (#326), Spinda (#327), Castform (#351), Shuppet (#353), Chimecho (#358), Absol (#359), Turtwig (#387), Grotle (#388), Staravia (#397), Bidoof (#399), Kricketot (#401), Kricketune (#402), Luxio (#404), Budew (#406), Wormadam (#413), Mothim (#414), Pachirisu (#417), Floatzel (#419), Cherubi (#420), Drifloon (#425), Buneary (#427), Glameow (#431), Stunky (#434), Spiritomb (#442), Lucario (#448), Lillipup (#506), Liepard (#510), Munna (#517), Pidove (#519), Blitzle (#522), Excadrill (#530), Audino (#531), Timburr (#532), Throh (#538), Sawk (#539), Swadloon (#541), Venipede (#543), Petilil (#548), Scraggy (#559), Trubbish (#568), Garbodor (#569), Zoroark (#571), Minccino (#572), Emolga (#587), Amoonguss (#591), Joltik (#595), Ferroseed (#597), Klink (#599), Klang (#600), Tynamo (#602), Litwick (#607), Stunfisk (#618), Mienfoo (#619), Chespin (#650), Froakie (#656), Bunnelby (#659), Pancham (#674), Furfrou (#676), Espurr (#677), Honedge (#679), Doublade (#680), Aegislash (#681), Inkay (#686), Skrelp (#690), Helioptile (#694), Dedenne (#702), Klefki (#707), Rowlet (#722), Dartrix (#723), Mudsdale (#750), Shiinotic (#756), Stufful (#759), Comfey (#764), Togedemaru (#777), Mimikyu (#778), Dhelmise (#781), Rookidee (#821), Blipbug (#824), Dottler (#825), Nickit (#827), Thievul (#828), Gossifleur (#829), Yamper (#835), Boltund (#836), Carkol (#838), Applin (#840), Cramorant (#845), Clobbopus (#852), Sinistea (#854), Impidimp (#859), Falinks (#870), Stonjourner (#874), Morpeko (#877), Cufant (#878), Copperajah (#879), Lechonk (#915), Tarountula (#917), Spidops (#918), Nymble (#919), Pawmi (#921), Pawmo (#922), Tandemaus (#924), Fidough (#926), Tadbulb (#938), Wattrel (#940), Shroodle (#944), Greavard (#971), Gimmighoul (#999), Poltchageist (#1012), Zigzagoon (zigzagoon-galar), Linoone (linoone-galar).
-- **Cordilheira Geada** (8): Cloyster (#91), Drampa (#780), Sobble (#816), Drizzile (#817), Mr. Rime (#866), Vulpix (vulpix-alola), Ninetales (ninetales-alola), Mr. Mime (mr-mime-galar).
-- **Sertão do Levante** (55): Ekans (#23), Arbok (#24), Kingler (#99), Cyndaquil (#155), Quilava (#156), Totodile (#158), Croconaw (#159), Phanpy (#231), Donphan (#232), Cacturne (#332), Zangoose (#335), Seviper (#336), Bagon (#371), Shelgon (#372), Chimchar (#390), Monferno (#391), Drapion (#452), Oshawott (#501), Dewott (#502), Pansage (#511), Simisage (#512), Pansear (#513), Panpour (#515), Simipour (#516), Darumaka (#554), Maractus (#556), Gothita (#574), Gothorita (#575), Gothitelle (#576), Solosis (#577), Duosion (#578), Reuniclus (#579), Karrablast (#588), Shelmet (#616), Zweilous (#634), Fennekin (#653), Braixen (#654), Litleo (#667), Drednaw (#834), Runerigus (#867), Duraludon (#884), Maschiff (#942), Mabosstiff (#943), Bramblin (#946), Klawf (#950), Capsakid (#951), Rellor (#953), Rabsca (#954), Tinkatink (#957), Tinkatuff (#958), Tinkaton (#959), Bombirdier (#962), Varoom (#965), Archaludon (#1018), Yamask (yamask-galar).
+- **Núcleo de Alvorada** (188): Caterpie (#10), Butterfree (#12), Beedrill (#15), Pidgeotto (#17), Rattata (#19), Fearow (#22), Pikachu (#25), Nidoran♀ (#29), Nidoran♂ (#32), Jigglypuff (#39), Oddish (#43), Meowth (#52), Mankey (#56), Growlithe (#58), Arcanine (#59), Abra (#63), Bellsprout (#69), Ponyta (#77), Rapidash (#78), Magnemite (#81), Magneton (#82), Grimer (#88), Drowzee (#96), Voltorb (#100), Electrode (#101), Lickitung (#108), Koffing (#109), Kangaskhan (#115), Horsea (#116), Starmie (#121), Electabuzz (#125), Pinsir (#127), Eevee (#133), Snorlax (#143), Chikorita (#152), Bayleef (#153), Ledian (#166), Ariados (#168), Flaaffy (#180), Azumarill (#184), Hoppip (#187), Girafarig (#203), Pineco (#204), Dunsparce (#206), Snubbull (#209), Heracross (#214), Ursaring (#217), Poochyena (#261), Mightyena (#262), Wurmple (#265), Silcoon (#266), Beautifly (#267), Cascoon (#268), Dustox (#269), Taillow (#276), Ralts (#280), Breloom (#286), Slakoth (#287), Vigoroth (#288), Whismur (#293), Loudred (#294), Makuhita (#296), Skitty (#300), Mawile (#303), Meditite (#307), Electrike (#309), Manectric (#310), Plusle (#311), Minun (#312), Volbeat (#313), Illumise (#314), Gulpin (#316), Spoink (#325), Grumpig (#326), Spinda (#327), Castform (#351), Shuppet (#353), Chimecho (#358), Absol (#359), Turtwig (#387), Grotle (#388), Staravia (#397), Bidoof (#399), Kricketot (#401), Kricketune (#402), Luxio (#404), Budew (#406), Wormadam (#413), Mothim (#414), Pachirisu (#417), Floatzel (#419), Cherubi (#420), Drifloon (#425), Buneary (#427), Glameow (#431), Stunky (#434), Spiritomb (#442), Lucario (#448), Lillipup (#506), Liepard (#510), Munna (#517), Pidove (#519), Blitzle (#522), Swoobat (#528), Excadrill (#530), Audino (#531), Timburr (#532), Throh (#538), Sawk (#539), Swadloon (#541), Venipede (#543), Petilil (#548), Scraggy (#559), Trubbish (#568), Garbodor (#569), Zoroark (#571), Minccino (#572), Emolga (#587), Amoonguss (#591), Joltik (#595), Ferroseed (#597), Klink (#599), Klang (#600), Tynamo (#602), Litwick (#607), Stunfisk (#618), Mienfoo (#619), Chespin (#650), Froakie (#656), Bunnelby (#659), Pancham (#674), Furfrou (#676), Espurr (#677), Honedge (#679), Doublade (#680), Aegislash (#681), Inkay (#686), Skrelp (#690), Helioptile (#694), Dedenne (#702), Klefki (#707), Rowlet (#722), Dartrix (#723), Mudsdale (#750), Shiinotic (#756), Stufful (#759), Comfey (#764), Togedemaru (#777), Mimikyu (#778), Dhelmise (#781), Rookidee (#821), Corviknight (#823), Blipbug (#824), Dottler (#825), Nickit (#827), Thievul (#828), Gossifleur (#829), Yamper (#835), Boltund (#836), Carkol (#838), Applin (#840), Cramorant (#845), Clobbopus (#852), Sinistea (#854), Impidimp (#859), Falinks (#870), Frosmoth (#873), Stonjourner (#874), Morpeko (#877), Cufant (#878), Copperajah (#879), Lechonk (#915), Tarountula (#917), Spidops (#918), Nymble (#919), Pawmi (#921), Pawmo (#922), Tandemaus (#924), Fidough (#926), Tadbulb (#938), Wattrel (#940), Shroodle (#944), Greavard (#971), Farigiraf (#981), Gimmighoul (#999), Poltchageist (#1012), Zigzagoon (zigzagoon-galar), Linoone (linoone-galar).
+- **Cordilheira Geada** (9): Cloyster (#91), Mamoswine (#473), Drampa (#780), Sobble (#816), Drizzile (#817), Mr. Rime (#866), Vulpix (vulpix-alola), Ninetales (ninetales-alola), Mr. Mime (mr-mime-galar).
+- **Sertão do Levante** (54): Ekans (#23), Arbok (#24), Kingler (#99), Cyndaquil (#155), Quilava (#156), Totodile (#158), Croconaw (#159), Phanpy (#231), Donphan (#232), Cacturne (#332), Zangoose (#335), Seviper (#336), Bagon (#371), Shelgon (#372), Chimchar (#390), Monferno (#391), Drapion (#452), Oshawott (#501), Dewott (#502), Pansage (#511), Simisage (#512), Pansear (#513), Panpour (#515), Simipour (#516), Darumaka (#554), Maractus (#556), Gothita (#574), Gothorita (#575), Gothitelle (#576), Solosis (#577), Duosion (#578), Reuniclus (#579), Karrablast (#588), Shelmet (#616), Fennekin (#653), Braixen (#654), Litleo (#667), Drednaw (#834), Runerigus (#867), Duraludon (#884), Maschiff (#942), Mabosstiff (#943), Bramblin (#946), Klawf (#950), Capsakid (#951), Rellor (#953), Rabsca (#954), Tinkatink (#957), Tinkatuff (#958), Tinkaton (#959), Bombirdier (#962), Varoom (#965), Archaludon (#1018), Yamask (yamask-galar).
 - **Arquipélago das Jandaias** (32): Chansey (#113), Tangela (#114), Dratini (#147), Dragonair (#148), Yanma (#193), Treecko (#252), Grovyle (#253), Kecleon (#352), Chatot (#441), Snivy (#495), Servine (#496), Popplio (#728), Brionne (#729), Trumbeak (#732), Toucannon (#733), Gumshoos (#735), Grubbin (#736), Charjabug (#737), Ribombee (#743), Lurantis (#754), Oranguru (#765), Passimian (#766), Komala (#775), Grookey (#810), Thwackey (#811), Grimer (grimer-alola), Geodude (geodude-alola), Graveler (graveler-alola), Rattata (rattata-alola), Raticate (raticate-alola), Meowth (meowth-alola), Persian (persian-alola).
 - **Mar do Sul e Ilhas Austrais** (7): Piplup (#393), Prinplup (#394), Cursola (#864), Pincurchin (#871), Drakloak (#886), Veluza (#976), Tatsugiri (#978).
 - **Arquipélago das Brasas** (10): Slowbro (#80), Crustle (#558), Litten (#725), Torracat (#726), Sizzlipede (#850), Centiskorch (#851), Fuecoco (#909), Crocalor (#910), Slowpoke (slowpoke-galar), Slowbro (slowbro-galar).
