@@ -129,7 +129,7 @@ let nAlvosHist = 0, lia = null;
     nAlvosHist++;
     ok(!!r.dispara, `história [${r.seg}] ${r.origem}: "${r.texto}" → ${r.alvo} ${r.pos ? `(${r.pos.x},${r.pos.y})` : '(desconhecido)'} não fica perto de nada que dispare a próxima cena (${r.prox.join(', ')})`);
     if (/Leve o que viu da gruta/.test(r.texto ?? '')) lia = r;
-    if (!r.pos || r.origem.startsWith('passo ')) continue; // o alvo do passo seguinte já é conferido acima, com as flags dele
+    if (!r.pos || r.origem.startsWith('passo ') || r.origem.endsWith('(fim do trecho)')) continue; // o alvo do passo seguinte já é conferido acima, com as flags dele
     const i = PASSOS.findIndex((P) => P.segs.includes(r.seg)), P = PASSOS[Math.max(0, i)], f = flagsDe(P);
     const de = alvoDe(proximoPasso(f)?.alvo ?? 'inicio') ?? { x: A.spots.inicio[0], y: A.spots.inicio[1] }; // parte do lugar do passo
     const g = guiar(grafo(f, P.caps), { x: r.pos.x, y: r.pos.y, area: r.pos.area }, de.x, de.y);
