@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { TILE } from '../world/tiles.js';
 import { desenharEnfeite, TAM_ENFEITE } from './salas-arte.js';
+import { aberturasDaFrente, tapetesDeSaida } from '../world/saidas.js';
 
 // Paredes, pisos, cartazes e tapetes das salas (casa de boneca): a parede do fundo e as laterais ficam em pé, altas,
 // com papel de parede, meia-parede, faixa e rodapé; a da frente fica baixinha para a câmera ver dentro. O vazio entre
@@ -123,6 +124,7 @@ export function paredesDasSalas(v, sx, sy) {
     B = bucket(estiloDe(r) === 'lab' ? 'wall_lab' : 'wallpaper_cream');
     const topo = C('#3a3430');
     const h = R.em(r.x * 16 + r.w * 8, r.y * 16 + r.h * 8);
+    const abertas = aberturasDaFrente(r);
     // parede de fundo: para cada coluna, o primeiro piso de cima para baixo
     const fundo = (x) => { for (let y = r.y; y < r.y + r.h; y++) if (piso(x, y)) return y; return null; };
     const baixo = (x) => { for (let y = r.y + r.h - 1; y >= r.y; y--) if (piso(x, y)) return y; return null; };
@@ -138,8 +140,14 @@ export function paredesDasSalas(v, sx, sy) {
       caixa(X0, h + fy0, Z, X1, h + fy1, Z + 0.9, FA);
       caixa(X0, h + ALTA - 4, Z, X1, h + ALTA - 2, Z + 1.2, FA.map((q) => q * 0.9)); // moldura de cima (sanca)
       caixa(X0, h, Z, X1, h + 5, Z + 1.3, RO);
-      // frente baixinha
-      const yb = baixo(x); if (yb != null) caixa(X0, h, (yb + 1) * 16, X1, h + BAIXA, (yb + 1) * 16 + ESP, P.map((q) => q * 0.85), topo);
+      // frente baixinha; na coluna de uma porta de saída (src/world/saidas.js) fica a abertura, com batentes e a luz de fora
+      const yb = baixo(x); if (yb == null) continue;
+      const Zf = (yb + 1) * 16;
+      if (!abertas.has(x - r.x)) { caixa(X0, h, Zf, X1, h + BAIXA, Zf + ESP, P.map((q) => q * 0.85), topo); continue; }
+      quad([X0, h + 0.7, Zf + ESP + 6], [X1, h + 0.7, Zf + ESP + 6], [X1, h + 0.7, Zf], [X0, h + 0.7, Zf], [1.25, 1.18, 0.95]); // soleira clara: a luz de fora entrando
+      const bat = C('#6a4a32');
+      if (!abertas.has(x - r.x - 1)) caixa(X0 - 1.5, h, Zf - 1, X0 + 1.5, h + 16, Zf + ESP, bat, bat.map((q) => q * 0.7));
+      if (!abertas.has(x - r.x + 1)) caixa(X1 - 1.5, h, Zf - 1, X1 + 1.5, h + 16, Zf + ESP, bat, bat.map((q) => q * 0.7));
     }
     // laterais: para cada linha, o primeiro piso da esquerda e o último da direita
     for (let y = r.y; y < r.y + r.h; y++) {
@@ -237,8 +245,9 @@ export function enfeitesDasSalas(v, sx, sy) {
         else quad([x, y0, cz - meia], [x, y0, cz + meia], [x, y1, cz + meia], [x, y1, cz - meia], e.tipo, [-1, 0, 0]);
       }
     }
-    for (const t of r.tapetes ?? []) {
-      const x0 = (r.x + t.x) * 16 + 1, x1 = (r.x + t.x + t.w) * 16 - 1, z0 = (r.y + t.y) * 16 + 1, z1 = (r.y + t.y + t.h) * 16 - 1, y = h + 0.95;
+    // tapetes da receita e, por cima, o tapete de saída em cada porta (exatamente no bloco da passagem)
+    for (const t of [...(r.tapetes ?? []), ...tapetesDeSaida(r)]) {
+      const x0 = (r.x + t.x) * 16 + 1, x1 = (r.x + t.x + t.w) * 16 - 1, z0 = (r.y + t.y) * 16 + 1, z1 = (r.y + t.y + t.h) * 16 - (t.frente ? 0 : 1), y = h + (t.saida ? 1.05 : 0.95);
       quad([x0, y, z1], [x1, y, z1], [x1, y, z0], [x0, y, z0], t.estilo, [0, 1, 0]);
     }
   }

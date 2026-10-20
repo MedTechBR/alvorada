@@ -5,6 +5,9 @@ import { TYPE_PT, TYPE_COLOR } from '../data/types.js';
 import { IS_TOUCH } from '../engine/input.js';
 import { portraitURL } from './portrait.js';
 import { Toque, ICONES } from './toque.js';
+import { Guia } from '../world/guia.js';
+import { TILE, SOLID, MOUNT_PASS } from '../world/tiles.js';
+import { KINDS } from '../world/objects.js';
 
 // HUD leve: o DOM é montado uma vez e só recebe escrita quando um valor muda,
 // no máximo 10 vezes por segundo. Marcador de objetivo, balão de interação e "!" ficam no PixiJS
@@ -61,15 +64,25 @@ export class Hud {
   // ---------- desenhos no PixiJS (sem DOM) ----------
   #pixi() {
     const g = this.g;
-    // marcador do objetivo: fica na tela (não no mundo), preso à borda quando o alvo está longe
+    // Guia do objetivo (src/world/guia.js): caminho de verdade até o alvo. Dois desenhos, na tela:
+    //   - o losango em cima do alvo, quando ele está perto e à vista (sem porta no meio);
+    //   - senão, a seta em volta do jogador apontando para o próximo trecho do caminho (não em linha reta), com a
+    //     distância andando. A direção na tela vem de projetar dois pontos PERTO do jogador (nunca atrás da câmera).
+    this.guia = g.guia = new Guia(g, { TILE, SOLID, MOUNT_PASS, KINDS });
     this.marker = new PIXI.Container(); this.marker.visible = false;
     const gem = new PIXI.Graphics();
     gem.poly([0, -10, 8, 0, 0, 10, -8, 0]).fill(0xf2b705).stroke({ width: 2.5, color: 0xffffff });
     this.gem = gem;
-    this.arrow = new PIXI.Graphics(); this.arrow.poly([-7, -16, 7, -16, 0, -27]).fill(0xf2b705).stroke({ width: 2, color: 0xffffff }); this.arrow.visible = false;
-    this.dist = new PIXI.Text({ text: '', style: { fontFamily: 'Avenir Next, Nunito, ui-rounded, system-ui, sans-serif', fontWeight: '900', fontSize: 12, fill: '#ffffff', stroke: { color: '#1b2a1e', width: 3 } } });
+    const estilo = { fontFamily: 'Avenir Next, Nunito, ui-rounded, system-ui, sans-serif', fontWeight: '900', fontSize: 12, fill: '#ffffff', stroke: { color: '#1b2a1e', width: 3 } };
+    this.dist = new PIXI.Text({ text: '', style: estilo });
     this.dist.anchor.set(0.5, 0); this.dist.y = 12;
-    this.marker.addChild(this.arrow, gem, this.dist);
+    this.marker.addChild(gem, this.dist);
+    this.seta = new PIXI.Container(); this.seta.visible = false;
+    this.setaG = new PIXI.Graphics();
+    this.setaG.poly([0, -15, 12, 3, 4, 0, 4, 9, -4, 9, -4, 0, -12, 3]).fill(0xf2b705).stroke({ width: 2.5, color: 0xffffff, join: 'round' });
+    this.setaG.scale.set(1.2);
+    this.setaTx = new PIXI.Text({ text: '', style: estilo }); this.setaTx.anchor.set(0.5);
+    this.seta.addChild(this.setaG, this.setaTx);
     // balão "E · Falar" sobre quem dá para interagir (no mundo)
     this.bubble = new PIXI.Container(); this.bubble.visible = false; this.bubble.zIndex = 1e9;
     this.bubbleBg = new PIXI.Graphics();
@@ -77,7 +90,7 @@ export class Hud {
     this.bubbleTx.anchor.set(0.5); this.bubbleTx.scale.set(0.25); this.bubbleTx.y = -1;
     this.bubble.addChild(this.bubbleBg, this.bubbleTx);
     this.layer = new PIXI.Container();
-    this.layer.addChild(this.marker);
+    this.layer.addChild(this.marker, this.seta);
     g.app.stage.addChild(this.layer);
     g.world.addChild(this.bubble);
     // desenha depois do laço do jogo (a câmera já andou neste quadro)
@@ -99,46 +112,60 @@ export class Hud {
     b.visible = true;
   }
 
-  // As salas ficam numa faixa longe do mapa de fora: sem isto, o marcador de dentro de uma casa apontava (e dizia
-  // "649 m") para o objetivo lá fora. De dentro, mira a porta de saída; de fora, mira a porta da sala do objetivo.
-  #alvoNaTela(t) {
-    const m = this.g.map, p = this.g.player, T = 16;
-    const de = m.interiorAt?.(p.x, p.y), em = m.interiorAt?.(t.x, t.y);
-    if (de === em) return t;
-    const dentro = (r, x, y) => x >= r.x && y >= r.y && x < r.x + r.w && y < r.y + r.h;
-    const quais = (m.warps ?? []).filter((w) => w.to && !w.trap && (de ? dentro(de, w.x, w.y) && !dentro(de, w.to.x, w.to.y) : em && !dentro(em, w.x, w.y) && dentro(em, w.to.x, w.to.y)));
-    if (!quais.length) return de ? { x: p.x, y: p.y } : t; // sem porta conhecida: sem marcador
-    let best = quais[0], bd = 1e12;
-    for (const w of quais) { const d = Math.hypot(w.x * T + 8 - p.x, w.y * T + 8 - p.y); if (d < bd) { bd = d; best = w; } }
-    return { x: best.x * T + 8, y: best.y * T + 8 };
-  }
-
   frame() {
     const g = this.g;
     if (this.bubble.visible && this.promptTarget) {
       const t = this.promptTarget;
       this.bubble.x = Math.round(t.x); this.bubble.y = Math.round(t.y - (t.h ?? 30) + Math.sin(g.time * 5) * 1.2);
     }
-    const o = this.obj, m = this.marker;
-    const show = o?.target && this.ui.state === 'play' && !this.ui.blocking && !this.ui.story?.busy;
-    if (!show) { m.visible = false; return; }
-    const p = g.player, tg = this.#alvoNaTela(o.target), d = Math.hypot(tg.x - p.x, tg.y - p.y);
-    if (d < 40) { m.visible = false; return; }
-    const z = g.world.scale.x, W = innerWidth, H = innerHeight;
-    const tp = g.worldToScreen ? g.worldToScreen(tg.x, tg.y, 26) : { x: g.world.x + tg.x * z, y: g.world.y + (tg.y - 26) * z };
-    let x = tp.x, y = tp.y;
-    const padL = 34, padR = 34, padT = IS_TOUCH ? 90 : 120, padB = IS_TOUCH ? 140 : 90;
-    let edge = false, ang = 0;
-    if (x < padL || x > W - padR || y < padT || y > H - padB) {
-      const cx = W / 2, cy = H / 2, dx = x - cx, dy = y - cy;
-      const k = Math.min((dx > 0 ? W - padR - cx : cx - padL) / Math.max(1e-3, Math.abs(dx)), (dy > 0 ? H - padB - cy : cy - padT) / Math.max(1e-3, Math.abs(dy)));
-      x = cx + dx * k; y = cy + dy * k; edge = true; ang = Math.atan2(dx, -dy);
+    const dt = Math.min(0.1, (g.app.ticker.deltaMS ?? 16) / 1000);
+    const o = this.obj, m = this.marker, S = this.seta;
+    const tg = o?.target && Number.isFinite(o.target.x) ? o.target : null;
+    let info = null;
+    try { info = this.guia.update(dt, tg); } catch (e) { if (!this.guiaErro) { this.guiaErro = true; console.warn('guia', e); } }
+    this.#aviso(info?.pronto && !info.ok && !info.enigma ? info.motivo : null);
+    const show = tg && this.ui.state === 'play' && !this.ui.blocking && !this.ui.story?.busy;
+    if (!show) { m.visible = S.visible = false; return; }
+    const p = g.player, W = innerWidth, H = innerHeight;
+    const tela = (x, y, h = 0) => (g.worldToScreen ? g.worldToScreen(x, y, h) : { x: g.world.x + x * g.world.scale.x, y: g.world.y + (y - h) * g.world.scale.x });
+    // para onde: o próximo trecho do caminho; voando (ou sem caminho a pé, com Voar), em linha reta
+    const voando = g.mount?.flying || (info?.pronto && !info.ok && !info.enigma && g.mount?.has?.('voar'));
+    let alvo = null, dist = null, perto = false;
+    if (voando || info?.enigma) { alvo = voando ? tg : info.reta; dist = Math.round(Math.hypot(alvo.x - p.x, alvo.y - p.y) / 16); perto = dist < 2; } // sala de quebra-cabeça: reto até a escada
+    else if (info?.ok) { alvo = info.wp; dist = info.dist; perto = info.dist < 2; }
+    else if (!info?.pronto && performance.now() - this.guia.inicio > 1500) { alvo = tg; } // busca demorando: reta, sem distância
+    if (!alvo || perto) { m.visible = S.visible = false; return; }
+    const txt = dist == null ? '' : `${dist} m`;
+    // alvo perto e à vista (mesmo lugar, sem porta no meio): o losango em cima dele
+    if (!voando && info?.ok && !info.saida && info.dist <= 18) {
+      const q = tela(info.fim?.x ?? tg.x, info.fim?.y ?? tg.y, 26); // numa área: o ponto andável onde o caminho termina
+      if (q.x > 30 && q.x < W - 30 && q.y > 40 && q.y < H - 40) {
+        S.visible = false; m.visible = true;
+        m.x = Math.round(q.x); m.y = Math.round(q.y + Math.sin(g.time * 4) * 3);
+        if (this.dist.text !== txt) this.dist.text = txt;
+        return;
+      }
     }
-    m.visible = true;
-    m.x = Math.round(x); m.y = Math.round(y + (edge ? 0 : Math.sin(g.time * 4) * 3));
-    this.arrow.visible = edge; this.arrow.rotation = ang;
-    const meters = `${Math.round(d / 16)} m`;
-    if (this.dist.text !== meters) this.dist.text = meters;
+    // a seta em volta do jogador
+    m.visible = false;
+    const dx = alvo.x - p.x, dy = alvo.y - p.y, d = Math.hypot(dx, dy);
+    if (d < 1) { S.visible = false; return; }
+    const a = tela(p.x, p.y, 0), b = tela(p.x + dx / d * 24, p.y + dy / d * 24, 0);
+    const ang = Math.atan2(b.x - a.x, -(b.y - a.y));
+    const sx = Math.sin(ang), sy = -Math.cos(ang), R = 58 + Math.sin(g.time * 5) * 3;
+    const cx = a.x, cy = a.y - 18;
+    S.visible = true;
+    this.setaG.x = Math.round(cx + sx * R); this.setaG.y = Math.round(cy + sy * R); this.setaG.rotation = ang;
+    if (this.setaTx.text !== txt) this.setaTx.text = txt;
+    this.setaTx.visible = !!txt;
+    this.setaTx.x = Math.round(Math.max(24, Math.min(W - 24, cx + sx * (R + 34)))); this.setaTx.y = Math.round(Math.max(12, Math.min(H - 12, cy + sy * (R + 26))));
+  }
+  // painel do objetivo: sem caminho com as montarias de agora, diz o que falta (em vez de apontar para a parede)
+  #aviso(t) {
+    if ((t ?? null) === (this.avisoTxt ?? null)) return;
+    this.avisoTxt = t ?? null;
+    const sub = this.objEl.querySelector('.os'), base = this.obj?.sub ?? '';
+    sub.textContent = t ? (base ? `${base} · ${t}` : t) : base; sub.hidden = !sub.textContent;
   }
 
   // ---------- painéis DOM ----------
@@ -270,7 +297,7 @@ export class Hud {
     if (!o) { el.hidden = true; return; }
     el.querySelector('.ok').textContent = o.label ?? (o.title ? `Objetivo · ${o.title}` : 'Objetivo'); // label: missão acompanhada
     el.querySelector('.ot').textContent = o.text;
-    const sub = el.querySelector('.os'); sub.textContent = o.sub ?? ''; sub.hidden = !o.sub;
+    const sub = el.querySelector('.os'); sub.textContent = o.sub ?? ''; sub.hidden = !o.sub; this.avisoTxt = null;
     el.hidden = false;
     if (changed) {
       el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');

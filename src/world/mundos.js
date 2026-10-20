@@ -2,6 +2,7 @@ import { KINDS } from './objects.js';
 import { gerarInteriores } from './interiores.js';
 import { mesclarVestir } from './vestir.js';
 import { vestirSalas } from './receitas.js';
+import { marcarSaidas } from './saidas.js';
 import { salasEstadios } from './estadios.js';
 
 // Mundos (continentes) e a montagem dos dados de um mapa a partir dos arquivos de assets/maps/.
@@ -130,6 +131,7 @@ async function montar(id) {
   // passagens: [x, y] absoluto, ["sala", x, y] relativo à sala, "ponto" (nome em spots)
   R.warps = R.warps.map((w) => (w.mundo ? w : { ...w, to: Array.isArray(w.to) && typeof w.to[0] === 'string' ? alvoRel(w.to, null, porId) : w.to }));
   R.interiors = salas;
+  marcarSaidas(R); // r.saidas: portas de saída de cada sala (tapete, abertura na frente e guia no mesmo bloco)
   return R;
 }
 function alvoRel(to, sala, porId) {

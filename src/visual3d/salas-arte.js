@@ -7,6 +7,7 @@ export const TAM_ENFEITE = {
   cartazBola: [132, 120], cartazCentro: [132, 120], relogio: [96, 84], calendario: [96, 72], diploma: [114, 72],
   quadroPaisagem: [114, 78], quadroFlor: [114, 78], quadroMar: [114, 78], quadroMontanha: [114, 78], quadroPokemon: [114, 78],
   capacho: [192, 64], capachoAzul: [192, 64], capachoCasa: [192, 64], passadeira: [128, 256],
+  saida: [96, 96], saidaAzul: [96, 96], saidaCasa: [96, 96], saidaPedra: [96, 96], // tapete de saída: um bloco, com a seta para fora
   tapeteVermelho: [192, 144], tapeteAzul: [192, 128], tapeteVerde: [192, 128], xadrezCozinha: [256, 192],
 };
 const FONTE = (px, peso = 900) => `${peso} ${px}px "Avenir Next", Nunito, ui-rounded, "Segoe UI", system-ui, sans-serif`;
@@ -42,6 +43,13 @@ function tapete(c, w, h, fundo, borda, enfeite) {
   c.strokeStyle = enfeite; c.lineWidth = 4; c.setLineDash([10, 8]); c.strokeRect(16, 16, w - 32, h - 32); c.setLineDash([]);
   // franjas nas pontas
   for (let x = 6; x < w - 4; x += 8) { ret(c, x, 0, 3, 4, '#f4ead4'); ret(c, x, h - 4, 3, 4, '#f4ead4'); }
+}
+// tapete de saída (um bloco): borda, miolo e uma seta apontando para fora (para baixo, para a porta)
+function saida(c, w, h, fundo, borda, seta) {
+  arred(c, 0, 0, w, h, 12, borda);
+  arred(c, 7, 7, w - 14, h - 14, 8, fundo);
+  c.fillStyle = seta; c.beginPath();
+  c.moveTo(w * 0.28, h * 0.36); c.lineTo(w * 0.5, h * 0.6); c.lineTo(w * 0.72, h * 0.36); c.lineTo(w * 0.72, h * 0.5); c.lineTo(w * 0.5, h * 0.74); c.lineTo(w * 0.28, h * 0.5); c.closePath(); c.fill();
 }
 function paisagem(c, x, y, w, h, tipo) {
   const g = c.createLinearGradient(0, y, 0, y + h);
@@ -191,6 +199,10 @@ export function desenharEnfeite(c, tipo, w, h, depois) {
     case 'capacho': { tapete(c, w, h, '#d8343c', '#a8202a', '#f2c94c'); break; }
     case 'capachoAzul': { tapete(c, w, h, '#3a6ad8', '#1e4aa0', '#ffffff'); break; }
     case 'capachoCasa': { tapete(c, w, h, '#a8744a', '#6b4428', '#e8c890'); break; }
+    case 'saida': saida(c, w, h, '#d8343c', '#a8202a', '#ffffff'); break;
+    case 'saidaAzul': saida(c, w, h, '#3a6ad8', '#1e4aa0', '#ffffff'); break;
+    case 'saidaCasa': saida(c, w, h, '#b8804e', '#6b4428', '#fff4dc'); break;
+    case 'saidaPedra': saida(c, w, h, '#8a7a62', '#4a3e30', '#ffe8a8'); break;
     case 'passadeira': {
       ret(c, 0, 0, w, h, '#c83040'); ret(c, 10, 0, w - 20, h, '#e04454');
       ret(c, 16, 0, 5, h, '#f2c94c'); ret(c, w - 21, 0, 5, h, '#f2c94c');

@@ -19,7 +19,7 @@ export const MISSOES = [
     aceita: ['Isso! A Lagoa Dourada fica no norte da Rota 1, no meio dos campos. De manhã, hein! De tarde todo sol é mentiroso.'],
     lembrete: ['A Lagoa Dourada, de manhã! Se o sol estiver baixo demais, eu estou certo.'],
     etapas: [
-      { tipo: 'chegar', lugar: 'lagoa_dourada', r: 6, se: { hora: 'manha' }, texto: 'Vá à Lagoa Dourada de manhã (antes do meio-dia) e olhe o sol',
+      { tipo: 'chegar', lugar: 'lagoa_dourada', r: 6, texto: 'Vá à Lagoa Dourada e olhe onde o sol está',
         falas: ['O sol se espelha na lagoa. Está mais baixo do que devia para esta hora, como se tivesse dormido demais.', 'Você olha o relógio. Está certo. É o céu que está atrasado.'] },
       { tipo: 'falar', npc: 'seu_ze', texto: 'Conte ao Seu Zé o que viu na lagoa',
         falas: ['E então? Baixo? Mais baixo do que devia?', 'Eu sabia! Não são os meus relógios. É o sol que está atrasado… e cada dia um pouquinho mais.', 'Trinta anos de ofício, e a primeira vez que o relógio acerta é a hora que o mundo erra. Tome. Este é o relógio de bolso do meu pai. Ele atrasa um pouquinho todo dia, e agora eu sei que ele está certo.'] },

@@ -91,6 +91,8 @@ export class Missoes {
   ativas() { return this.lista.filter((m) => this.ativa(m.id)); }
   concluidas() { return this.lista.filter((m) => this.feita(m.id) && !this.ativa(m.id)); }
   acompanhada() { const id = this.s.acomp; if (id && this.ativa(id)) return this.porId.get(id); return this.ativas()[0] ?? null; }
+  // a missão que o jogador escolheu acompanhar no diário (só ela aparece no painel, no minimapa e no mapa)
+  rastreada() { const id = this.s.acomp; return this.s.hud === 'missao' && id && this.ativa(id) ? this.porId.get(id) : null; }
   // o painel de objetivo mostra a história (jornada) ou a missão escolhida no diário
   acompanhar(id) { this.s.acomp = id; this.s.hud = id ? 'missao' : 'historia'; this.g.story?.refreshObjective(); }
 
@@ -361,7 +363,7 @@ export class Missoes {
     if (m.conclusao) await this.say(n, m.conclusao);
     const r = vezes > 1 && m.recompensaRepetida ? m.recompensaRepetida : m.recompensa;
     if (r && !m.historia) await this.dar(r, n);
-    if (s.acomp === m.id) s.acomp = this.ativas()[0]?.id ?? null;
+    if (s.acomp === m.id) { s.acomp = null; s.hud = 'historia'; } // acabou: o painel volta para a história
     g.story?.refreshObjective();
     g.ui?.save?.('missão');
     // cadeia: a próxima, se for da mesma pessoa, já é oferecida
@@ -451,6 +453,8 @@ export class Missoes {
     if (id) {
       const sala = m.interiors.find((r) => r.id === id);
       if (sala) { const s = m.spots?.['dentro_' + id] ?? { x: (sala.x + (sala.w ?? 10) / 2) * T, y: (sala.y + (sala.h ?? 8) / 2) * T }; return { ...s, map: id, sala: id }; }
+      // etapa de cena da história ("flag"): a cena dispara no PONTO com esse nome, não em qualquer lugar da área
+      if (e.tipo === 'flag' && m.spots?.[id]) { const s = m.spots[id]; return { x: s.x, y: s.y, r: s.r ?? 3 * T, map: s.map ?? this.#mapaDe(s.x, s.y) }; }
       const ar = m.areas.filter((a) => a.id === id);
       if (ar.length) return this.#centro(ar[0]);
       const s = m.spots?.[id];
@@ -481,6 +485,7 @@ export class Missoes {
       if (n) return { x: n.x, y: n.y, h: n.h ?? 30, map: n.def?.room ?? this.#mapaDe(n.x, n.y) };
       return e.lugar || e.x != null ? this.ponto(e) : null;
     }
+    if (e.tipo === 'flag' && e.npc) { const n = this.npc(e.npc); if (n) return { x: n.x, y: n.y, h: n.h ?? 30, map: n.def?.room ?? this.#mapaDe(n.x, n.y) }; }
     if (e.tipo === 'vencer' && e.treinador) { const n = this.npc(e.treinador); return n ? { x: n.x, y: n.y, h: n.h, map: this.#mapaDe(n.x, n.y) } : null; }
     if (e.tipo === 'vencer' && e.alfa) { const ent = this.mundo.alfaDe(m.id); if (ent?.alive) return { x: ent.x, y: ent.y, map: this.#mapaDe(ent.x, ent.y) }; return this.ponto(e.alfa); }
     if (e.tipo === 'achar') { const pt = this.mundo.proximoAchado(m, e); if (pt) return pt; }
@@ -496,8 +501,8 @@ export class Missoes {
   }
   // marcadores do minimapa e do mapa da região: { x, y, acomp } (região: no mapa de fora, na porta do prédio)
   marcadores({ regiao = false } = {}) {
-    const out = [], ac = this.acompanhada();
-    for (const m of this.ativas()) {
+    const out = [], ac = this.rastreada();
+    for (const m of ac ? [ac] : []) {
       let t = regiao ? this.alvoBruto(m) : this.alvo(m);
       if (!t) continue;
       if (regiao && t.map && t.map !== 'mundo') t = this.g.map.spots?.['porta_' + t.map];
@@ -506,15 +511,14 @@ export class Missoes {
     return out;
   }
 
-  // objetivo do HUD: a missão acompanhada aparece quando a história não tem objetivo próprio
+  // objetivo do HUD: a missão acompanhada (escolhida no diário) no lugar da história
   objetivo(o) {
-    const vazio = !o || o.id === 'roteiro';
-    if (!vazio && this.s.hud !== 'missao') return o;
-    const m = this.acompanhada(); if (!m) return o;
+    // a história manda sempre; a missão só aparece quando o jogador escolhe acompanhá-la no diário
+    const m = this.rastreada(); if (!m) return o;
     const e = this.etapa(m), a = this.s.ativas[m.id];
     const n = e?.n ?? (e?.tipo === 'achar' ? this.mundo.total(e) : 1);
     const sub = n > 1 ? `${e.rotulo ?? 'Progresso'}: ${Math.min(a.c, n)}/${n}` : m.regiao ?? undefined;
-    return { id: `missao:${m.id}:${a.e}`, label: `Missão · ${m.titulo}`, title: m.titulo, text: e?.texto ?? m.resumo ?? m.titulo, sub, target: this.alvo(m, e) };
+    return { id: `missao:${m.id}:${a.e}`, label: `Missão · ${m.titulo}`, title: m.titulo, text: e?.texto ?? m.resumo ?? m.titulo, sub, target: this.alvoBruto(m, e) }; // o alvo de verdade: o guia (src/world/guia.js) acha as portas
   }
   // texto das etapas para o diário: [{ texto, feita, atual, prog }]
   passos(m) {

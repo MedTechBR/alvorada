@@ -19,7 +19,9 @@ export function avisoMissao(ui, tipo, titulo) {
     const host = document.getElementById('ui'); if (!host) { res(); return; }
     const el = document.createElement('div');
     el.className = 'mq-aviso'; el.style.setProperty('--mc', cor);
-    el.innerHTML = `<small>${esc(rot)}</small><b>${esc(titulo)}</b>`;
+    // a missão não toma o painel sozinha (a história manda): o aviso diz onde escolher acompanhar
+    const dica = tipo === 'aceita' || tipo === 'nova' ? '<i style="display:block;font-style:normal;font-size:11px;font-weight:700;opacity:.85;margin-top:2px">Para seguir no painel: Menu › Missões</i>' : '';
+    el.innerHTML = `<small>${esc(rot)}</small><b>${esc(titulo)}</b>${dica}`;
     host.appendChild(el);
     setTimeout(() => { el.remove(); res(); }, 2700);
   }));

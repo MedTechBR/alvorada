@@ -15,7 +15,8 @@ import { LOJAS } from './lojas.js';
 // Na sala ficam também, só para o visual 3D (src/visual3d/salas.js):
 //   r.estilo   'centro' | 'loja' | 'casa' | 'lab'   (papel de parede, faixa, piso)
 //   r.enfeites [{ tipo, x, larg, y0, alt, parede }]  cartazes, quadros, relógio, janelas (sem colisão)
-//   r.tapetes  [{ x, y, w, h, estilo }]               tapetes e capachos no piso
+//   r.tapetes  [{ x, y, w, h, estilo }]               tapetes no piso (o de saída, em cima de cada porta, é de
+//                                                     src/world/saidas.js: r.saidas)
 // "receita": false na sala desliga tudo isso (sala à mão fica como está).
 
 // móveis que a receita pode tirar (o resto do que está na sala fica)
@@ -200,9 +201,8 @@ function centro(M, P, R) {
   else M.por('sofaCentro', [[sx === x0 ? x0 : x1 - 1, y1 - 1], [sx === x0 ? x0 + 1 : x1 - 2, y1 - 1]]);
   for (const c of [[x0, y1], [x1, y1], [sx, y0 + 3], [tvX + (ladoTV === 'dir' ? 1 : 0), y1 - 1]]) M.por('plantaGrande', [c]);
   void pcAqui;
-  // piso: passadeira vermelha da porta ao balcão e capacho
+  // piso: passadeira vermelha da porta ao balcão (o tapete de saída é o de src/world/saidas.js)
   const [dx, dy] = P.porta;
-  M.tapete(dx - 1, dy, 3, 1, 'capacho');
   M.tapete(dx - 1, cy + 1, 3, Math.max(1, dy - cy - 1), 'passadeira');
   // parede: letreiro do Centro, Poké Bola, cartazes e relógio
   M.enfeite('placaCentro', [jx + 0.5, jx, jx + 1], 4, 14, 42);
@@ -236,7 +236,6 @@ function loja(M, P, R) {
   M.por('expositor', [[x0, y1 - 1], [x0 + 1, y1 - 1], [x0, y1 - 2]], { text: 'OFERTA DA SEMANA: Poké Bolas com desconto. Leve 10 e ganhe uma Premier Ball!' });
   M.por('cestas', [[dx - 1, dy], [dx + 1, dy], [dx - 2, dy]]);
   for (const c of [[fim, y0], [x1, y1], [x0, y1], [x1, y0 + 1]]) M.por('plantaGrande', [c]);
-  M.tapete(dx - 1, dy, 3, 1, 'capachoAzul');
   M.enfeite('placaMercado', [(fim + x1 + 1) / 2, x1 - 2], 4, 12, 52);
   M.enfeite('oferta', [x0 + 1.5, x0 + 2], 2, 14, 48);
   M.enfeite('relogio', [x1 - 0.5, x0 + 3.5], 1, 12, 52);
@@ -326,8 +325,7 @@ function casa(M, P, R, receita) {
   decorarCasa(M, P, R);
 }
 function decorarCasa(M, P, R) {
-  const h = R.h, [dx, dy] = P.porta;
-  if (!P.semPorta) M.tapete(dx - 1, dy, 3, 1, 'capachoCasa');
+  const h = R.h;
   const sofa = M.A.sofaCasaN ?? M.A.mesaCentroCasa ?? M.A.mesaJantar ?? M.A.sofaCasaLadoL;
   if (sofa) { const K = KINDS[sofa.kind]; M.tapete(sofa.x - 1, Math.max(P.y0 + 1, sofa.y - 1), K.fw + 2, K.fh + 1 + (sofa.kind === 'mesaCentroCasa' ? 1 : 0), ['tapeteVermelho', 'tapeteAzul', 'tapeteVerde'][Math.floor(h * 3)]); }
   else M.tapete(Math.floor((P.x0 + P.x1) / 2) - 1, P.y0 + 2, 3, 2, 'tapeteVermelho');
@@ -353,8 +351,6 @@ function jogador(M, P, R) {
   if (mesa) { M.por('cadeiraL', [[mesa.x - 1, mesa.y]]); M.por('cadeiraR', [[mesa.x + 2, mesa.y]]); M.por('cadeira', [[mesa.x, mesa.y - 1]]); }
   for (const c of [[x0, y1], [x1, y1], [x1 - 1, y0], [x0, y1 - 1]]) M.por('plantaGrande', [c]);
   for (const o of R.sobras()) M.por(o.kind, [[o.x, o.y]], { text: o.text });
-  const [dx, dy] = P.porta;
-  M.tapete(dx - 1, dy, 3, 1, 'capachoCasa');
   if (M.objs.find((o) => o.kind === 'sofaCasaN')) { const s = M.objs.find((o) => o.kind === 'sofaCasaN'); M.tapete(s.x - 1, s.y - 1, 4, 3, 'tapeteVermelho'); }
   M.tapete(x0, y0 + 1, 4, 3, 'xadrezCozinha');
   M.enfeite('armarioCozinha', [x0 + 1.5, x0 + 2], 2.6, 14, 50);
@@ -403,8 +399,6 @@ function lab(M, P, R) {
   if (x1 - x0 >= 12) { M.por('mesaPapeis', [[x0 + 3, y1 - 2], [x0 + 3, y1 - 3]], { text: 'Amostras de terra e penas, cada uma com uma etiqueta.' }); M.por('computadorLab', [[x1 - 4, y1 - 2], [x1 - 5, y1 - 2]], { text: 'Uma simulação do nascer do sol, quadro a quadro.' }); }
   for (const c of [[x0, y1], [x1, y1], [x1, y0 + 2]]) M.por('plantaGrande', [c]);
   for (const o of R.sobras()) M.por(o.kind, [[o.x, o.y]], { text: o.text });
-  const [dx, dy] = P.porta;
-  M.tapete(dx - 1, dy, 3, 1, 'capachoAzul');
   M.enfeite('quadroNegro', [x0 + 5, x0 + 4.5, x0 + 9.5, (x0 + x1) / 2 + 2], 2.5, 16, 34);
   M.enfeite('diploma', [x0 + 7, x0 + 6.5], 1.2, 12, 46);
   M.enfeite('mapa', [x1 - 1, x1 - 2], 2, 14, 50);

@@ -690,16 +690,16 @@ export class Roteiro {
   }
   #alvo(nome) {
     if (!nome) return null;
-    const g = this.g, p = g.player, aqui = this.#mapaDe(p.x, p.y);
+    const g = this.g;
     const a = this.atores.get(nome);
     let s = a?.visible ? { x: a.x, y: a.y, h: a.h, map: this.#mapaDe(a.x, a.y) } : null;
     if (!s && g.map.interiors.some((r) => r.id === nome)) s = g.map.spots?.['dentro_' + nome];
     if (!s) s = g.map.spots?.[nome];
-    if (!s) { const ar = g.map.areas.find((x) => x.id === nome); if (ar) s = { x: (ar.rect ? ar.rect[0] + ar.rect[2] / 2 : ar.ellipse[0]) * T, y: (ar.rect ? ar.rect[1] + ar.rect[3] / 2 : ar.ellipse[1]) * T, map: 'mundo' }; }
+    if (!s) { const ar = g.map.areas.find((x) => x.id === nome); if (ar) s = { x: (ar.rect ? ar.rect[0] + ar.rect[2] / 2 : ar.ellipse[0]) * T, y: (ar.rect ? ar.rect[1] + ar.rect[3] / 2 : ar.ellipse[1]) * T, map: 'mundo', area: ar }; } // área: o guia mira o chão andável dela
     if (!s) return null;
-    if (s.map === aqui) return s;
-    if (aqui === 'mundo' && s.map !== 'mundo') return g.map.spots?.['porta_' + s.map] ?? null;
-    return g.map.spots?.['dentro_' + aqui] ?? null; // dentro de outro prédio: primeiro a saída
+    // o alvo de verdade, mesmo dentro de outro prédio: o guia (src/world/guia.js) acha o caminho pelas portas
+    // (de dentro de uma casa, primeiro a saída; de fora, a porta do prédio do alvo)
+    return s;
   }
 
   // ---------------- o Absol (Sina) ----------------
