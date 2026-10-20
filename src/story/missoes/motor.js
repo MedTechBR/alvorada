@@ -432,7 +432,7 @@ export class Missoes {
       const a = this.s.ativas[m.id];
       if (!a || m.etapas[a.e] !== e) return;
       delete a.pendente;
-      if (e.falas) await this.say(e.quem ? this.npc(e.quem) ?? { name: this.nomeNpc(e.quem) } : null, e.falas);
+      if (e.falas) await this.narrar(e.quem ? this.npc(e.quem) ?? { name: this.nomeNpc(e.quem) } : null, e.falas);
       await this.avancar(m);
     });
   }
@@ -538,7 +538,22 @@ export class Missoes {
   // ---------------- laço (chamado pelo story.update) ----------------
   livre() {
     const g = this.g, ui = g.ui;
-    return ui?.state === 'play' && !ui.blocking && !g.story?.busy && !g.story?.battle && !g.mundo?.warping;
+    return ui?.state === 'play' && !ui.blocking && !g.story?.busy && !g.story?.battle && !g.mundo?.warping && !this.emCombate();
+  }
+  // luta acontecendo perto (selvagem brigando com você, Pokémon de treinador): conversa de missão espera acabar
+  emCombate() {
+    const g = this.g, f = g.lead?.alive ? g.lead : g.player; if (!f) return false;
+    return (g.entities ?? []).some((e) => e.mon && e.alive && !e.dead && e.side !== 'ally' && (e.side === 'foe' || e.ai?.state === 'aggro') && Math.hypot(e.x - f.x, e.y - f.y) < 15 * T);
+  }
+  // narração de etapa cumprida (sem ninguém falando): com o Pokémon em campo (luta, ação) vira aviso pequeno, não a
+  // caixa de diálogo grande que cobria o campo (pedido do dono: "Você juntou fios de seda…" no meio da batalha)
+  async narrar(n, falas) {
+    const g = this.g;
+    if (!n && g.mode === 'pokemon' && g.toast) {
+      for (const x of lista(falas)) g.toast(this.texto(Array.isArray(x) ? x[1] : x));
+      return 0;
+    }
+    return this.say(n, falas);
   }
   // um erro nas missões nunca pode parar o laço do jogo: avisa uma vez no console e segue
   update(dt) {

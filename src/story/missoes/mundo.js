@@ -118,7 +118,7 @@ export class MundoMissoes {
       const tot = this.total(e);
       if (a && a.c < tot) g.toast(`${s.m.titulo}: ${a.c}/${tot}`);
       g.story?.refreshObjective();
-      if (a && a.c >= tot && !a.pendente) { a.pendente = true; M.fila.push(async () => { delete a.pendente; if (e.falas) await M.say(null, e.falas); await M.avancar(s.m); }); }
+      if (a && a.c >= tot && !a.pendente) { a.pendente = true; M.fila.push(async () => { delete a.pendente; if (e.falas) await M.narrar(null, e.falas); await M.avancar(s.m); }); }
       break;
     }
   }

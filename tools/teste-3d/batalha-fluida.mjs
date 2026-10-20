@@ -47,7 +47,7 @@ const SELVAGEM = () => `(async () => {
   for (let k = 0; k < 6 && !G.wilds.some((q) => q.alive); k++) await G.spawnWild();
   const w = G.wilds.find((q) => q.alive);
   for (const o of G.wilds) if (o !== w) o.x += 4000;
-  w.x = G.player.x + 80; w.y = G.player.y - 30; w.mon.level = 28; w.mon.calc?.(); w.mon.hp = w.mon.stats.hp;
+  w.x = G.player.x + 80; w.y = G.player.y - 30; w.mon.level = VIT ? 50 : 28; w.mon.calc?.(); w.mon.hp = w.mon.stats.hp;
   w.ai.state = 'aggro'; w.aggroTarget = G.player;
   G.throwMon(0, G.player.x + 30, G.player.y - 10); await espera(1500);
   w.aggroTarget = G.lead; w.provoke?.(G.lead);
@@ -122,7 +122,7 @@ try {
     const n = +nq, passo = 1000 / +fq, arqs = [], LENTO = +(process.env.LENTO ?? 0.04);
     await P.ev(`(() => { game.app.ticker.speed = ${LENTO}; window.__tj = 0; game.app.ticker.add((t) => { window.__tj += t.deltaMS; }); return 1; })()`);
     // vitrine: a Mega acontece já gravando; 2,6 s de jogo depois o selvagem fica fraco e desmaia na frente da câmera
-    if (modo === 'vitrine') await P.ev(`(() => { const G = game; G.poder.usar(); G.later(2.6, () => { const w = G.wilds.find((q) => q.alive); if (w) w.mon.hp = Math.max(1, Math.round(w.mon.stats.hp * 0.15)); }); return 1; })()`);
+    if (modo === 'vitrine') await P.ev(`(() => { const G = game; G.poder.usar(); G.later(1.6, () => { if (G.lead) G.lead.critBoost = 99; }); G.later(2.6, () => { const w = G.wilds.find((q) => q.alive); if (w) w.mon.hp = Math.max(1, Math.round(w.mon.stats.hp * 0.15)); }); return 1; })()`);
     const t0 = Date.now();
     for (let i = 0; i < n; i++) {
       await until(() => P.ev(`window.__tj >= ${i * passo}`), 60000, 20);

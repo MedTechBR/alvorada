@@ -381,7 +381,6 @@ export class Combat {
     g.fx.light(mx, my, 0xffffff, 30, 0.15); g.fx.kick(0.22, 0.05); this.sfx('clash');
     if (ratio > 0.72) { // força parecida: os dois travam e disputam no ar
       p.grind = { q, t: 0.32 }; q.grind = { q: p, t: 0.32 };
-      g.fx.number(mx, my - 14, 'CHOQUE!', '#ffffff', true, 'banner');
       return;
     }
     const [win, lose] = a > b ? [p, q] : [q, p];
@@ -398,7 +397,7 @@ export class Combat {
     g.fx.emit(x, y, { tex: 'smoke', n: 8, speed: 60, life: 1, scale: 1, end: 2.4, alpha: 0.5, add: false, color: 0x8a8a8a, drag: 3 });
     g.fx.emit(x, y, { tex: 'spark', color: 0xffffff, n: 30, speed: 220, life: 0.35, stretch: 0.01, drag: 4 });
     g.fx.light(x, y, 0xffffff, 70, 0.3, 1);
-    g.fx.screenFlash(0xffffff, 0.35); g.fx.kick(0.5, 0.12);
+    g.fx.screenFlash(0xffffff, 0.18); g.fx.kick(0.4, 0.06);
     this.sfx('boom'); this.ai.noise(x, y, 180, a.user);
     if (a.user?.side === 'ally' || b.user?.side === 'ally') g.show?.impacto({ a: a.user, b: b.user, x, y: y + 12, h: 12, choque: true, tipo: a.mv?.type });
     this.arena.blast(x, y + 10, 26, a.mv, a.user);
@@ -618,8 +617,7 @@ export class Combat {
     g.fx.emit(x, y, { tex: 'spark', color: 0xffffff, n: 20, speed: 200, life: 0.25, stretch: 0.012, drag: 4 });
     g.fx.emit(x, y, { tex: 'impact', color: 0xffe27a, n: 1, speed: 0, scale: 1.6, end: 2.6, life: 0.14 });
     g.fx.shock(x, y + 8, 0xffffff, 30, 0.3); g.fx.light(x, y, 0xffffff, 40, 0.15);
-    g.fx.kick(0.3, 0.1); this.sfx('clash');
-    g.fx.number(x, y - 16, 'CHOQUE!', '#ffffff', true, 'banner');
+    g.fx.kick(0.3, 0.06); this.sfx('clash');
     if (a.side === 'ally' || b.side === 'ally') g.show?.impacto({ a, b, x, y: (a.y + b.y) / 2, h: 12, choque: true, tipo: null });
     for (const [e, o] of [[a, b], [b, a]]) { const dx = e.x - o.x, dy = e.y - o.y, d = Math.hypot(dx, dy) || 1; e.kx += dx / d * 240; e.ky += dy / d * 240; e.lock = Math.max(e.lock, 0.25); e.play('Hurt'); }
     this.ai.noise(x, y, 120, a);
@@ -876,7 +874,7 @@ export class Combat {
       if (t.pouso && !quiet) g.vivo?.aoAtingir(t, power * knock, eff, crit); // golpe forte derruba quem está no alto
       if (!quiet) {
         t.lock = Math.max(t.lock, 0.12 + 0.1 * power);
-        g.fx.kick(eff > 1 || crit ? 0.34 : 0.12 + 0.05 * power, eff > 1 || crit ? 0.09 : 0.03 + 0.012 * power);
+        g.fx.kick(eff > 1 || crit ? 0.3 : 0.12 + 0.05 * power, Math.min(0.06, eff > 1 || crit ? 0.06 : 0.03 + 0.012 * power)); // pausa no acerto: no máximo 60 ms
         this.sfx(eff > 1 ? 'hit-super' : eff < 1 ? 'hit-weak' : pw >= 70 ? 'hit-heavy' : 'hit', null, 0.03);
       } else if (Math.random() < 0.3) this.sfx('hit-weak', null, 0.08);
       // dano e eficácia: na camada de tela (src/ui/espetaculo.js), número grande com contorno e a cor da eficácia
@@ -904,8 +902,8 @@ export class Combat {
   }
   #faint(t, by, mv) {
     const g = this.g, cy = this.centerY(t);
-    g.fx.kick(0.4, 0.16);
-    g.fx.screenFlash(0xffffff, 0.25);
+    g.fx.kick(0.3, 0.06);
+    g.fx.screenFlash(0xffffff, 0.12);
     g.fx.light(t.x, cy, 0xffffff, 60, 0.35);
     g.fx.shock(t.x, t.y, mv ? typeHex(mv.type) : 0xffffff, 34, 0.5);
     g.fx.emit(t.x, cy, { tex: 'spark', color: 0xffffff, n: 18, speed: 160, life: 0.35, stretch: 0.01 });

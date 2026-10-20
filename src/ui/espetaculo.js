@@ -34,8 +34,8 @@ export class Espetaculo {
     const host = document.getElementById('hud') ?? document.body;
     host.insertBefore(c, host.firstChild);
     this.x = c.getContext('2d');
-    this.textos = []; this.anuncios = { eu: null, ele: null }; this.faixaAt = null; this.imp = null;
-    this.sujo = true; this.ultImpacto = -1e9; this.t = 0;
+    this.textos = []; this.anuncios = { eu: null, ele: null }; this.faixaAt = null;
+    this.sujo = true; this.t = 0;
     this.reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.#tamanho(); addEventListener('resize', () => this.#tamanho());
   }
@@ -64,10 +64,10 @@ export class Espetaculo {
     const h = (t.topH ?? 20) * 0.85 + 6, x = t.x + (Math.random() - 0.5) * 8;
     const cor = eff > 1 ? '#ffc23a' : eff < 1 && eff > 0 ? '#c9ced8' : crit ? '#ff7a4a' : '#ffffff';
     const big = forte || crit || eff > 1;
-    this.#push({ x, y: t.y, h, s: String(dmg), cor, st: 'dmg', big, life: 1.0, k: big ? 1.35 : 1 });
+    this.#push({ x, y: t.y, h, s: String(dmg), cor, st: 'dmg', big, life: 0.9, k: 1 });
     const pal = this.#palavras(eff, crit);
     // as palavras ficam acima do número, em degraus fixos na tela (não encavalam com o número que pula)
-    pal.forEach((p, i) => this.#push({ x: t.x, y: t.y, h, oy: -(big ? 34 : 28) - i * 19, s: p.s, cor: p.cor, st: 'banner', big: true, life: 1.1, k: 0.8 }));
+    pal.forEach((p, i) => this.#push({ x: t.x, y: t.y, h, oy: -(big ? 22 : 19) - i * 13, s: p.s, cor: p.cor, st: 'banner', big: true, life: 0.95, k: 1 }));
   }
   #palavras(eff, crit) {
     const out = [];
@@ -79,7 +79,7 @@ export class Espetaculo {
   }
   #push(o) {
     if (this.textos.length > 28) this.textos.shift();
-    o.t = 0; o.vx = o.st === 'dmg' ? (Math.random() - 0.5) * 60 : 0; o.vy = o.st === 'dmg' ? -95 - (o.big ? 20 : 0) : o.st === 'banner' ? -12 : -34; o.dy = 0; o.dx = 0;
+    o.t = 0; o.vx = o.st === 'dmg' ? (Math.random() - 0.5) * 40 : 0; o.vy = o.st === 'dmg' ? -70 - (o.big ? 10 : 0) : o.st === 'banner' ? -10 : -30; o.dy = 0; o.dx = 0;
     this.textos.push(o);
   }
 
@@ -91,54 +91,25 @@ export class Espetaculo {
 
   // ---------- faixas: "<X> DESMAIOU!", "MEGA <X>!" ----------
   faixa(texto, tipo = 'ko') {
-    this.faixaAt = { s: texto, tipo, t: 0, life: tipo === 'mega' ? 1.4 : 1.3 };
+    this.faixaAt = { s: texto, tipo, t: 0, life: 1.05 };
   }
 
-  // ---------- quadro de impacto ----------
-  // o: { a: atacante, b: alvo (entidades), x, y (ponto do impacto no chão), h, dano, eff, crit, ko, choque, tipo }
-  impacto(o) {
-    const agora = this.t * 1000; // relógio da camada (tempo de quadro de verdade, sem a pausa do menu)
-    if (this.reduz) return false; // (no celular em qualidade baixa também: é um canvas 2D por 0,4 s, custo pequeno)
-    if (!o.ko && agora - this.ultImpacto < 4000) return false;
-    if (o.ko && this.imp && this.imp.t < this.imp.life * 0.5) return false; // um nocaute no meio de outro quadro: fica o que está
-    this.ultImpacto = agora;
-    const p = this.#tela(o.x, o.y, o.h ?? 10);
-    const sil = (e) => (e ? this.#silhueta(e) : null);
-    this.imp = { ...o, t: 0, life: o.ko ? 0.55 : 0.42, sx: clamp(p.x, this.W * 0.2, this.W * 0.8), sy: clamp(p.y, this.H * 0.3, this.H * 0.72),
-      A: sil(o.a), B: sil(o.b), linhas: null, linT: 0, ladoA: o.a && o.b ? Math.sign((o.a.x - o.b.x) || 1) : -1,
-      pal: o.choque ? [] : this.#palavras(o.eff ?? 1, !!o.crit), cor: TYPE_COLOR[o.tipo] ?? '#ffd23f' };
-    const g = this.g; g.fx.hitStop = Math.max(g.fx.hitStop, o.ko ? 0.12 : 0.085);
-    return true;
-  }
-  // silhueta (preta e branca) do quadro atual do sprite da entidade, recortada pela transparência
-  #silhueta(e) {
-    const T = e.body?.texture, src = T?.source?.resource, f = T?.frame;
-    if (!src || !f || !f.width || !f.height) return null;
-    const mk = (cor) => {
-      const c = document.createElement('canvas'); c.width = f.width; c.height = f.height;
-      const x = c.getContext('2d'); x.imageSmoothingEnabled = false;
-      try { x.drawImage(src, f.x, f.y, f.width, f.height, 0, 0, f.width, f.height); } catch { return null; }
-      x.globalCompositeOperation = 'source-in'; x.fillStyle = cor; x.fillRect(0, 0, f.width, f.height);
-      return c;
-    };
-    const ax = e.body.anchor?.x ?? 0.5, ay = e.body.anchor?.y ?? 0.5;
-    return { preta: mk('#111018'), branca: mk('#fbf7ea'), w: f.width, h: f.height, ax, ay, top: (e.set?.top ?? f.height * 0.7) };
-  }
+  // ---------- golpe forte ----------
+  // (O quadro de impacto em tela cheia, estilo mangá, saiu: o dono achou que atrapalhava. Fica só uma pausa curtinha
+  // no acerto, até 60 ms, e o tremor de câmera que o combate já dá.)
+  impacto(o) { const fx = this.g.fx; if (fx) fx.hitStop = Math.max(fx.hitStop, o.ko ? 0.06 : 0.045); return true; }
 
   // ---------- quadro ----------
   update(rdt, dt = rdt) {
     this.t += rdt;
-    const vivo = this.textos.length || this.anuncios.eu || this.anuncios.ele || this.faixaAt || this.imp;
+    const vivo = this.textos.length || this.anuncios.eu || this.anuncios.ele || this.faixaAt;
     if (!vivo) { if (this.sujo) { this.x.setTransform(1, 0, 0, 1, 0, 0); this.x.clearRect(0, 0, this.c.width, this.c.height); this.sujo = false; } return; }
     const x = this.x; this.sujo = true;
     x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, this.c.width, this.c.height);
     x.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     x.lineJoin = 'round'; x.textAlign = 'center'; x.textBaseline = 'middle';
-    // o quadro de impacto cobre a tela: por baixo dele não precisa desenhar textos do mundo
-    const cheio = this.imp && this.imp.t < this.imp.life - 0.1;
-    this.#textos(x, dt, !cheio);
+    this.#textos(x, dt, true);
     for (const lado of ['eu', 'ele']) this.#anuncio(x, lado, rdt);
-    if (this.imp) this.#impacto(x, rdt);
     if (this.faixaAt) this.#faixa(x, rdt);
   }
   #textos(x, dt, desenha) {
@@ -147,14 +118,14 @@ export class Espetaculo {
       const o = L[i]; o.t += dt;
       if (o.t >= o.life) { L.splice(i, 1); continue; }
       o.dx += o.vx * dt; o.dy += o.vy * dt;
-      if (o.st === 'dmg') { o.vy += 420 * dt; if (o.t > 0.38) { o.vy = Math.min(o.vy, 8); o.vx *= 0.88; } }
+      if (o.st === 'dmg') { o.vy += 320 * dt; if (o.t > 0.3) { o.vy = Math.min(o.vy, 6); o.vx *= 0.88; } }
       else o.vy *= 1 - Math.min(1, dt * 3.5);
       if (!desenha) continue;
       const p = this.#tela(o.x, o.y, o.h, o);
-      const pop = o.st === 'dmg' ? 1 + Math.max(0, 0.14 - o.t) / 0.14 * 0.7 : o.st === 'banner' ? 1 + Math.max(0, 0.12 - o.t) / 0.12 * 0.5 : 1;
+      const pop = o.st === 'dmg' ? 1 + Math.max(0, 0.12 - o.t) / 0.12 * 0.35 : o.st === 'banner' ? 1 + Math.max(0, 0.1 - o.t) / 0.1 * 0.25 : 1;
       const a = Math.min(1, (o.life - o.t) / 0.25) * Math.min(1, o.t / 0.04 + 0.3);
       // cada texto é desenhado UMA vez num canvas pequeno (contorno e sombra custam caro no celular) e depois só copiado
-      const im = o.im ??= this.#bitmap(o, (o.st === 'dmg' ? (o.big ? 30 : 22) : o.st === 'banner' ? 19 : 14) * (o.k ?? 1) * E * 1.35);
+      const im = o.im ??= this.#bitmap(o, (o.st === 'dmg' ? (o.big ? 19 : 15) : o.st === 'banner' ? 13 : 12) * (o.k ?? 1) * E * 1.35);
       const k = pop / 1.35, w = im.width / this.dpr * k, h = im.height / this.dpr * k;
       x.globalAlpha = a;
       x.drawImage(im, p.x + o.dx - w / 2, p.y + o.dy + (o.oy ?? 0) * E - h / 2, w, h);
@@ -212,87 +183,23 @@ export class Espetaculo {
     this.hHud = r && r.height ? r.bottom : 10 + (parseFloat(cs.getPropertyValue('--st')) || 0);
     return this.hHud;
   }
+  // faixa compacta: uma pílula escura no meio, logo abaixo da barra do topo (não cobre o campo), ~1 s
   #faixa(x, dt) {
     const o = this.faixaAt; o.t += dt; if (o.t >= o.life) { this.faixaAt = null; return; }
-    const W = this.W, H = this.H, E = this.esc, mega = o.tipo === 'mega';
-    const ent = easeOut(clamp(o.t / 0.16, 0, 1)), sai = clamp((o.life - o.t) / 0.25, 0, 1);
-    const tam = Math.min(W * 0.085, 62 * E * 1.15), cy = H * (mega ? 0.3 : 0.42);
+    const W = this.W, E = this.esc, mega = o.tipo === 'mega';
+    const ent = easeOut(clamp(o.t / 0.12, 0, 1)), sai = clamp((o.life - o.t) / 0.2, 0, 1);
+    const tam = 15 * E, topo = this.#topoHud() + 6 + (1 - ent) * -8;
+    x.font = `italic 900 ${tam.toFixed(1)}px ${FONTE}`;
+    const w = Math.min(W * 0.46, x.measureText(o.s).width + 34 * E), h = tam + 12 * E;
     x.globalAlpha = sai;
-    // faixa escura inclinada atrás das letras
-    x.save(); x.translate(W / 2 + (1 - ent) * -W, cy); x.rotate(-0.06);
-    x.fillStyle = mega ? 'rgba(20,40,90,.55)' : 'rgba(18,14,30,.55)';
-    x.fillRect(-W, -tam * 0.72, W * 2, tam * 1.44);
-    x.fillStyle = mega ? '#7ad8ff' : '#ffd23f'; x.fillRect(-W, -tam * 0.72, W * 2, 3); x.fillRect(-W, tam * 0.72 - 3, W * 2, 3);
-    x.restore();
-    x.save(); x.translate(W / 2 + (1 - ent) * W * 0.6, cy); x.rotate(-0.06); x.transform(1, 0, -0.22, 1, 0, 0);
-    const punch = 1 + Math.max(0, 0.1 - Math.abs(o.t - 0.16)) * 2.5;
-    x.scale(punch, punch);
-    let s = tam; x.font = `italic 900 ${s}px ${FONTE}`;
-    const mw = W * 0.92; const w = x.measureText(o.s).width; if (w > mw) s *= mw / w;
-    this.#letras(x, o.s, 0, 0, s, mega ? '#9fe6ff' : '#ffd23f', 7);
+    x.save(); x.translate(W / 2 - w / 2, topo); x.transform(1, 0, -0.16, 1, 0, 0);
+    x.beginPath(); x.roundRect(0, 0, w, h, h / 2); x.fillStyle = mega ? 'rgba(18,48,96,.92)' : 'rgba(16,14,30,.9)'; x.fill();
+    x.lineWidth = 2; x.strokeStyle = mega ? '#7ad8ff' : '#ffd23f'; x.stroke();
+    x.textAlign = 'center'; x.fillStyle = mega ? '#bff0ff' : '#ffd23f';
+    let s = tam; const mw = w - 20 * E, tw = x.measureText(o.s).width; if (tw > mw) { s *= mw / tw; x.font = `italic 900 ${s.toFixed(1)}px ${FONTE}`; }
+    x.fillText(o.s, w / 2, h / 2 + 0.5);
     x.restore(); x.globalAlpha = 1;
   }
 
-  // quadro de impacto: fundo, linhas de velocidade saindo do ponto, silhuetas grandes, dano e eficácia
-  #impacto(x, dt) {
-    const o = this.imp; o.t += dt;
-    if (o.t >= o.life) { this.imp = null; return; }
-    const W = this.W, H = this.H, k = o.t / o.life;
-    const escuro = o.t < 0.1;                        // primeiro o negativo (fundo preto, linhas brancas), depois o claro
-    const a = clamp((o.life - o.t) / 0.1, 0, 1) * clamp(o.t / 0.025, 0, 1);
-    const fundo = escuro ? '#0d0c14' : '#f6f0df', tinta = escuro ? '#f6f0df' : '#0d0c14';
-    x.globalAlpha = a;
-    // tremor curto no começo
-    const tr = Math.max(0, 0.12 - o.t) * 60, ox = (Math.random() - 0.5) * tr, oy = (Math.random() - 0.5) * tr;
-    x.save(); x.translate(ox, oy);
-    x.fillStyle = fundo; x.fillRect(-20, -20, W + 40, H + 40);
-    // linhas: cunhas finas, refeitas a cada ~33 ms (tremulam como no mangá)
-    if (!o.linhas || (o.linT -= dt) <= 0) {
-      o.linT = 0.033; const n = 64, L = [];
-      for (let i = 0; i < n; i++) { const ang = (i + Math.random() * 0.8) / n * Math.PI * 2; L.push([ang, 0.006 + Math.random() * 0.03, 0.16 + Math.random() * 0.22]); }
-      o.linhas = L;
-    }
-    const R = Math.hypot(W, H), cx = o.sx, cy = o.sy, r0 = Math.min(W, H);
-    x.fillStyle = tinta; x.beginPath();
-    for (const [ang, lw, ri] of o.linhas) {
-      const r1 = r0 * ri * (1.15 - k * 0.3);
-      x.moveTo(cx + Math.cos(ang) * r1, cy + Math.sin(ang) * r1);
-      x.lineTo(cx + Math.cos(ang - lw) * R, cy + Math.sin(ang - lw) * R);
-      x.lineTo(cx + Math.cos(ang + lw) * R, cy + Math.sin(ang + lw) * R);
-      x.closePath();
-    }
-    x.fill();
-    // brilho do tipo no centro
-    const gr = x.createRadialGradient(cx, cy, 0, cx, cy, r0 * 0.22);
-    gr.addColorStop(0, o.cor + 'cc'); gr.addColorStop(1, o.cor + '00');
-    x.fillStyle = gr; x.fillRect(cx - r0 * 0.3, cy - r0 * 0.3, r0 * 0.6, r0 * 0.6);
-    // silhuetas: o alvo grande no ponto do impacto, o atacante do lado de onde veio (meio cortado pela borda)
-    const zoom = 1.12 - easeOut(Math.min(1, o.t / 0.18)) * 0.12;
-    const alto = H * 0.5 * zoom;
-    const desenha = (S, px, py, alt, flip) => {
-      if (!S) return; const img = escuro ? S.branca : S.preta; if (!img) return;
-      const sc = alt / Math.max(8, S.top), w = S.w * sc, h = S.h * sc;
-      x.save(); x.translate(px, py); if (flip) x.scale(-1, 1); x.imageSmoothingEnabled = false;
-      x.drawImage(img, -S.ax * w, -S.ay * h, w, h); x.restore();
-    };
-    const lado = o.ladoA;
-    if (o.A) desenha(o.A, cx + lado * W * 0.3, cy + alto * 0.62, alto * 0.95, false);
-    if (o.B) desenha(o.B, cx - lado * W * 0.04, cy + alto * 0.5, alto, false);
-    x.restore();
-    // dano e eficácia (sem onomatopeias)
-    const E = this.esc;
-    let ty = clamp(cy - alto * 0.55, this.#topoHud() + 70 * E, H * 0.5);
-    if (o.dano) {
-      const s = 58 * E * (1 + Math.max(0, 0.1 - o.t) * 4);
-      x.save(); x.translate(cx - lado * W * 0.08, ty); x.transform(1, 0, -0.2, 1, 0, 0);
-      this.#letras(x, String(o.dano), 0, 0, s, o.ko ? '#ff6a4a' : o.eff > 1 ? '#ffc23a' : '#ffffff', 7);
-      x.restore(); ty -= s * 0.8;
-    }
-    o.pal.forEach((p, i) => {
-      const s = 26 * E;
-      x.save(); x.translate(cx - lado * W * 0.08, ty - i * s * 1.1); x.transform(1, 0, -0.2, 1, 0, 0);
-      this.#letras(x, p.s, 0, 0, s, p.cor, 6); x.restore();
-    });
-    x.globalAlpha = 1;
-  }
+
 }
