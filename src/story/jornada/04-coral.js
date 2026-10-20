@@ -56,7 +56,7 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'farol_coral', requer: ['nh.viuSolano'], semFlag: ['nh.ebanoCoral'] },
       falas: [
         ['iracema', 'Você veio! Olha, o gerador três foi trocado de noite. A peça nova não é do farol. É da Aurora.'],
-        ['narrador', 'No topo do farol, dois recrutas de capa roxa seguram a pedra do farol, uma pedra azul do tamanho de uma noz. Um deles tem a outra mão na alavanca dos geradores.'],
+        ['narrador', 'No topo do farol, dois recrutas de capa roxa seguram a pedra, uma pedra azul do tamanho de uma noz. Um deles mexe na alavanca dos geradores.'],
         ['recruta', 'Tarde demais, velha. A pedra vai para o Relógio. Quando o sol deixar de nascer, você vai entender por quê.'],
         ['ebano', 'Admin Ébano. A Dra. Véspera quer as pedras longe da Aurora. Você não vai entender enquanto não ver o que ela vê.'],
         ['jogador', 'Eu vejo a Aurora trocando geradores em cima de um farol. Esta é a sua explicação?'],
@@ -159,8 +159,8 @@ export default {
       local: 'farol_coral',
       gatilho: { tipo: 'falar', alvo: 'iracema', requer: ['nh.viuSolano'], semFlag: ['nh.sqDiario'] },
       falas: [
-        ['iracema', 'Eu escrevi tudo que aconteceu neste farol, todo dia, desde que me contrataram. Trinta anos de caderno. Ficou lá em cima, no quarto dos geradores.'],
-        ['iracema', 'A Aurora trocou as peças do farol sem avisar ninguém, e agora a luz pisca fora de hora. Se tem prova, está no meu diário. Mas estes joelhos não sobem mais aquela escada.'],
+        ['iracema', 'Eu anoto tudo que acontece neste farol há trinta anos. O caderno ficou lá em cima, no quarto dos geradores.'],
+        ['iracema', 'A Aurora trocou as peças sem avisar. Se tem prova, está no meu diário. Mas estes joelhos não sobem mais a escada.'],
         ['jogador', 'Um diário de farol? Isso pode ser o que a senhora estava escondendo.'],
         ['iracema', 'Eu não escondia. Eu esperava alguém que quisesse ler.'],
       ],
@@ -180,7 +180,7 @@ export default {
         ['narrador', '"Dia 14: o farol gira no horário que a Aurora mandou, não no do sol. Não é o farol que está errado. É o sol que está atrasado."'],
         ['narrador', 'Atrás da caixa, a lâmpada de luzita pisca em código: S-O-C-O-R-R-O. Dentro dela, uma bolinha de plasma com olhos bate no vidro.'],
         ['jogador', 'Então é isso que faz o farol piscar fora de hora. Tem um Rotom preso aí dentro.'],
-        ['narrador', 'Você gira o parafuso da lâmpada. O vidro estala, o Rotom sai faiscando de alívio e se agarra ao seu ombro. Lá embaixo, o mar bate nas pedras, e a luz do topo ainda gira fora de hora.'],
+        ['narrador', 'Você gira o parafuso. O vidro estala, e o Rotom sai faiscando de alívio e se agarra ao seu ombro. Lá em cima, a luz ainda gira fora de hora.'],
       ],
       secundaria: { texto: 'Leve o diário da Iracema de volta a ela, no pé do farol', alvo: 'farol_entrada' },
       depois: { flags: { 'nh.diarioFarol': true }, pokemon: [479, 25], ambiente: true },
@@ -191,7 +191,7 @@ export default {
       gatilho: { tipo: 'falar', alvo: 'iracema', requer: ['nh.diarioFarol'], semFlag: ['nh.sqDiarioFim'] },
       falas: [
         ['iracema', 'Eu sabia. Ele esteve aqui, trocou o meu gerador e assinou a troca no meu próprio caderno, como quem não tem medo de ser lido.'],
-        ['iracema', 'E o Rotom! Ele pedia socorro desde a semana passada, e eu achando que era interferência. Cuide dele: quem fica preso na luz aprende a confiar em quem abre a porta.'],
+        ['iracema', 'E o Rotom! Ele pedia socorro desde a semana passada, e eu achando que era interferência. Cuide dele, por favor.'],
         ['iracema', 'Tome estas poções. São as últimas que eu tenho guardadas. Vai precisar delas no caminho.'],
         ['jogador', 'Eu levo o diário ao Jonas. A cidade precisa saber disso.'],
         ['narrador', 'A Iracema guarda o diário debaixo do braço e olha para o farol com um sorriso pequeno.'],
@@ -202,7 +202,7 @@ export default {
       id: 'j04_boletim4',
       gatilho: { tipo: 'flag', alvo: 'badges.coral', semFlag: ['nh.boletim.4'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e trinta e quatro minutos. O farol de Cidade Coral segue piscando fora de hora, segundo os marinheiros.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e trinta e quatro. O farol de Cidade Coral segue piscando fora de hora.'],
         ['mae', 'Ravi, seis e trinta e quatro. De manhã a casa fica escura por mais tempo. Anda, filho, volta logo.'],
         ['jogador', 'Mãe, não sei quanto tempo essa história ainda dura. Mas prometo voltar para casa quando o sol estiver no lugar.'],
       ],

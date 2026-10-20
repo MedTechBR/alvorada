@@ -57,7 +57,7 @@ export default {
       gatilho: { tipo: 'vencer', alvo: 'c5_ebano' },
       falas: [
         ['ebano', 'Hm. A raiz fica com você, por enquanto. A Aurora vai querer de volta, e a Aurora cobra caro.'],
-        ['narrador', 'O Ébano recua pelo túnel do templo. Atrás da raiz, uma fresta deixa ver um cabo de metal com uma etiqueta dourada: "Companhia Aurora. Luzita, linha 2."'],
+        ['narrador', 'O Ébano recua pelo túnel. Atrás da raiz, uma fresta mostra um cabo de metal com etiqueta dourada: "Companhia Aurora. Luzita, linha 2."'],
         ['aruan', 'Está vendo? A luz de vocês atravessa a terra da minha selva. Desde que o cabo chegou, as raízes secam por baixo.'],
         ['jogador', 'Então a Aurora passou um cabo debaixo do templo. E a Crepúsculo tenta levar o que a Aurora deixou.'],
         ['aruan', 'Os dois querem a mesma coisa: a luz que não é deles. Leve esta raiz para a Lia, em Vila Sussurro. Ela sabe o que fazer com ela.'],

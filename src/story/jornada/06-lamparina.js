@@ -82,7 +82,7 @@ export default {
       local: 'cemiterio_velas',
       gatilho: { tipo: 'entrar', alvo: 'cemiterio_velas', requer: ['nh.casaraoEvento'], semFlag: ['nh.viuVespera6'] },
       falas: [
-        ['narrador', 'O cemitério tem velas acesas em cada túmulo, mesmo sem vento. Ao lado de um laguinho escuro, uma mulher de casaco longo está sentada, com um Absol deitado a seus pés.'],
+        ['narrador', 'Velas acesas em cada túmulo, mesmo sem vento. Ao lado de um laguinho escuro, uma mulher de casaco longo está sentada, com um Absol aos pés.'],
         ['vespera', 'Você aparece onde ninguém chamou. Isso atrapalha quem quer que a noite dure, menino.'],
         ['jogador', 'Você é a Dra. Véspera. O que a Crepúsculo quer de verdade?'],
         ['vespera', 'Quero que a noite fique como está. Toda luz é uma dívida, e quem toma emprestado sem saber quem cobra paga caro.'],
@@ -180,7 +180,7 @@ export default {
       id: 'j06_boletim5',
       gatilho: { tipo: 'flag', alvo: 'badges.lamparina', semFlag: ['nh.boletim.5'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e quarenta e dois minutos. Os moradores de Vila Lamparina dizem que a noite foi a mais longa da região.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e quarenta e dois. Em Vila Lamparina, dizem que foi a noite mais longa da região.'],
         ['mae', 'Ravi, seis e quarenta e dois. Quase quarenta minutos de atraso desde o primeiro boletim. Eu não gosto nada disso, filho.'],
         ['jogador', 'Mãe, a Dona Zélia me deu uma vela para guardar. Ela parece saber mais do que diz.'],
       ],
