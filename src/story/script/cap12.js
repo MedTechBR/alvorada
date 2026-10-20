@@ -38,7 +38,7 @@ export default {
       id: 'veterano1',
       local: 'rota12',
       gatilho: { tipo: 'avistar', alvo: 'r12_sonia' },
-      falas: [['treinador', 'Vinte anos tentando chegar na Liga. Sabe o que eu aprendi? Que a montanha só deixa passar quem já passou por ela uma vez por dentro.']],
+      falas: [['treinador', 'Vinte anos tentando chegar na Liga e eu ainda não passei daqui. Hoje eu mostro que melhorei.']],
       depois: { batalha: { id: 'r12_sonia', nome: 'Veterana Sônia', dinheiro: 4000, equipe: [[448, 53, ['auraSphere', 'flashCannon', 'extremeSpeed']], [445, 54, ['earthquake', 'dragonClaw', 'stoneEdge']]] } },
     },
     {
