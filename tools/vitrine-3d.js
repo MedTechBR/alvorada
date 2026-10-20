@@ -7,6 +7,7 @@ import { PREDIOS } from '../src/visual3d/kit/predios.js';
 import { INTERIOR } from '../src/visual3d/kit/interior.js';
 import { VESTIR } from '../src/visual3d/kit/vestir.js';
 import { KINDS } from '../src/world/objects.js';
+import { modeloLG, temModeloLG, GRUPOS_LG } from '../src/visual3d/letsgo/modelos-todos.js';
 
 // Vitrine do kit de modelos 3D: grade com todos os tipos, câmera do jogo (55°, campo de 30°), dia e noite,
 // contagem de triângulos e tempo de geração por modelo. Só para desenvolvimento.
@@ -30,6 +31,17 @@ const itens = [], t0 = performance.now();
 const LARG = +(Q.get('larg') ?? 60) * 16;
 let x = 0, z = 0, linhaH = 0;
 const lista = [];
+// ?estilo=letsgo: cada tipo com modelo liso aparece em PAR (liso à esquerda, o voxel original à direita); ?grupo=natureza-a|... filtra
+// pelos grupos de src/visual3d/letsgo/modelos-*.js; ?so=novos mostra só os tipos dos grupos (sem os da primeira passada)
+const LG = Q.get('estilo') === 'letsgo', grupo = Q.get('grupo'), soNovos = Q.get('so') === 'novos';
+if (LG) {
+  const dosGrupos = new Set(Object.entries(GRUPOS_LG).filter(([g]) => !grupo || g === grupo).flatMap(([, ks]) => ks));
+  for (const kind of kit.tipos()) {
+    if (!temModeloLG(kind) || (filtro && !kind.toLowerCase().includes(filtro.toLowerCase()))) continue;
+    if ((soNovos || grupo) && !dosGrupos.has(kind)) continue;
+    lista.push(['letsgo', kind]);
+  }
+} else
 for (const [cat, T] of Object.entries(CATS)) {
   if (soCat && cat !== soCat) continue;
   for (const kind of Object.keys(T)) if (!filtro || kind.toLowerCase().includes(filtro.toLowerCase())) lista.push([cat, kind]);
@@ -38,15 +50,17 @@ for (const [cat, T] of Object.entries(CATS)) {
 for (const [cat, kind] of lista) {
   if (!kind) { if (x > 0) { z += linhaH; x = 0; linhaH = 0; } continue; }
   const K = kit.ficha(kind), t1 = performance.now();
-  const md = kit.modelo(kind, { tx: 3, ty: 5 });
+  const md = LG ? modeloLG(kind, { tx: 3, ty: 5 }) : kit.modelo(kind, { tx: 3, ty: 5 });
   const ms = performance.now() - t1;
+  const vox = LG ? kit.modelo(kind, { tx: 3, ty: 5 }) : null;
   const bb = md.geometry.boundingBox;
   const w = Math.max(K.fw * 16, bb.max.x - bb.min.x) + 24;
-  const cw = Math.ceil(w / 16) * 16;
-  const h = Math.max(K.fh * 16, -bb.min.z) + md.altura * 0.75 + 40;
+  const cw = Math.ceil(w / 16) * 16 * (LG ? 2 : 1);
+  const h = Math.max(K.fh * 16, -bb.min.z) + Math.max(md.altura, vox?.altura ?? 0) * 0.75 + 40;
   if (x + cw > LARG && x > 0) { z += linhaH; x = 0; linhaH = 0; }
-  const ox = x + cw / 2, oz = z + Math.ceil(h / 16) * 16;
+  const ox = x + (LG ? cw / 4 : cw / 2), oz = z + Math.ceil(h / 16) * 16;
   itens.push({ kind, cat, md, ms, x: ox, z: oz, K });
+  if (LG) itens.push({ kind: kind + '·voxel', cat, md: vox, ms: 0, x: ox + cw / 2, z: oz, K, vox: true });
   x += cw; linhaH = Math.max(linhaH, Math.ceil(h / 16) * 16);
 }
 const tGeracao = performance.now() - t0;
@@ -75,7 +89,7 @@ pegadas.renderOrder = 5; cena.add(pegadas);
 
 // ---------- rótulos e painel ----------
 const rot = document.getElementById('rotulos');
-const divs = itens.map((it) => { const d = document.createElement('div'); d.className = 'rot' + (it.md.tris > (it.cat === 'predios' ? 600 : 200) ? ' caro' : ''); d.innerHTML = `${it.kind}<br><i>${it.md.tris}▲ ${it.ms.toFixed(2)}ms</i>`; rot.appendChild(d); return d; });
+const divs = itens.map((it) => { const d = document.createElement('div'); d.className = 'rot' + (it.md.tris > (LG ? (it.K.fw * it.K.fh >= 6 ? 1500 : it.md.altura >= 60 ? 600 : 150) : (it.cat === 'predios' ? 600 : 200)) ? ' caro' : ''); d.innerHTML = `${it.kind}<br><i>${it.md.tris}▲ ${it.ms.toFixed(2)}ms</i>`; rot.appendChild(d); return d; });
 if (Q.get('rotulos') === '0') rot.style.display = 'none';
 const totalTris = itens.reduce((s, it) => s + it.md.tris, 0);
 const painel = document.getElementById('painel');

@@ -14,13 +14,13 @@ import { SPR } from '../../world/art.js';
 
 // ---------- primitivas (cacheadas, compartilhadas) ----------
 const PRIM = new Map();
-const prim = (k, f) => { let g = PRIM.get(k); if (!g) { g = f(); PRIM.set(k, g); } return g; };
+export const prim = (k, f) => { let g = PRIM.get(k); if (!g) { g = f(); PRIM.set(k, g); } return g; };
 // esfera de icosaedro com normais suaves (mesmo no detalhe 0)
-const esf = (d) => prim('e' + d, () => { const g = new THREE.IcosahedronGeometry(1, d); const p = g.attributes.position, n = g.attributes.normal; for (let i = 0; i < p.count; i++) { const v = new THREE.Vector3().fromBufferAttribute(p, i).normalize(); n.setXYZ(i, v.x, v.y, v.z); } return g; });
-const cilG = (n, r0, r1, aberto = true) => prim(`c${n}|${r0}|${r1}|${aberto}`, () => { const g = new THREE.CylinderGeometry(r1, r0, 1, n, 1, aberto); g.translate(0, 0.5, 0); return g; });
-const coneG = (n) => prim('k' + n, () => { const g = new THREE.ConeGeometry(1, 1, n, 1, true); g.translate(0, 0.5, 0); return g; });
+export const esf = (d) => prim('e' + d, () => { const g = new THREE.IcosahedronGeometry(1, d); const p = g.attributes.position, n = g.attributes.normal; for (let i = 0; i < p.count; i++) { const v = new THREE.Vector3().fromBufferAttribute(p, i).normalize(); n.setXYZ(i, v.x, v.y, v.z); } return g; });
+export const cilG = (n, r0, r1, aberto = true) => prim(`c${n}|${r0}|${r1}|${aberto}`, () => { const g = new THREE.CylinderGeometry(r1, r0, 1, n, 1, aberto); g.translate(0, 0.5, 0); return g; });
+export const coneG = (n) => prim('k' + n, () => { const g = new THREE.ConeGeometry(1, 1, n, 1, true); g.translate(0, 0.5, 0); return g; });
 // caixa de cantos arredondados (o algoritmo do RoundedBoxGeometry do three, sem depender dos addons)
-function caixaR(w, h, d, r, seg = 1) {
+export function caixaR(w, h, d, r, seg = 1) {
   return prim(`b${w}|${h}|${d}|${r}|${seg}`, () => {
     const s = seg * 2 + 1; r = Math.min(r, w / 2, h / 2, d / 2);
     const g = new THREE.BoxGeometry(1, 1, 1, s, s, s), P = g.attributes.position, N = g.attributes.normal;
@@ -38,9 +38,9 @@ function caixaR(w, h, d, r, seg = 1) {
 // ---------- montador ----------
 const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(), _s = new THREE.Vector3(), _t = new THREE.Vector3(), _nm = new THREE.Matrix3();
 const _a = new THREE.Vector3(), _b = new THREE.Vector3(), _c = new THREE.Vector3(), _n = new THREE.Vector3();
-const ss = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+export const ss = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 
-class MalhaLG {
+export class MalhaLG {
   constructor(seed = 1) { this.p = []; this.n = []; this.c = []; this.b = []; this.i = []; this.r = rng(seed); }
   // geometria do three posta com { x, y, z, sx, sy, sz, rx, ry, rz }; cor: '#hex' | { pe, topo } (degradê pela normal)
   // | função (x, y, z, nx, ny, nz) -> [r, g, b] linear; o = { brilho, var (ruído de cor), ao (escurece perto do chão), todas }
@@ -92,7 +92,7 @@ class MalhaLG {
 }
 
 // ---------- natureza ----------
-const PAL = {
+export const PAL = {
   tree: ['#2c8a3c', '#4cb84a', '#7ad45a', '#b2ec80'],
   tree2: ['#257a46', '#3fa85a', '#68c86e', '#a2e49a'],
   autumn: ['#b0561c', '#e08a2a', '#f4b844', '#ffe08a'],
@@ -104,10 +104,10 @@ const PAL = {
   pine: ['#1d5e34', '#2c7e42', '#48a058', '#7cc87a'],
   pineT: ['#165a40', '#227a52', '#3a9a66', '#76c896'],
 };
-const CASCA = ['#6a4428', '#8a5a36', '#a87448'];
-const topoDe = (y, r, cz = -8) => ({ y, x0: -r, x1: r, z0: cz - r * 0.7, z1: cz + r * 0.7 });
+export const CASCA = ['#6a4428', '#8a5a36', '#a87448'];
+export const topoDe = (y, r, cz = -8) => ({ y, x0: -r, x1: r, z0: cz - r * 0.7, z1: cz + r * 0.7 });
 
-function redonda({ h, R, pal, tr = 3.2, fruta, cs = CASCA }) {
+export function redonda({ h, R, pal, tr = 3.2, fruta, cs = CASCA }) {
   return (m, c) => {
     const cz = -8, cy = h - R * 0.95, lite = c.lite, r = m.r, d = lite ? 0 : 1;
     if (!lite) m.cil(0, 0, cz, tr * 1.25, tr * 0.85, cy - R * 0.2, 7, { pe: cs[0], topo: cs[2] }, { desvio: 0.6 });
@@ -123,7 +123,7 @@ function redonda({ h, R, pal, tr = 3.2, fruta, cs = CASCA }) {
     return topoDe(cy + R * 0.9, R * 0.8);
   };
 }
-function conifera({ h, R, pal, andares = 3, tr = 2.4 }) {
+export function conifera({ h, R, pal, andares = 3, tr = 2.4 }) {
   return (m, c) => {
     const cz = -8, base = h * 0.16, lite = c.lite;
     if (!lite) m.cil(0, 0, cz, tr * 1.2, tr, base + 6, 6, { pe: CASCA[0], topo: CASCA[1] });
@@ -137,7 +137,7 @@ function conifera({ h, R, pal, andares = 3, tr = 2.4 }) {
     return topoDe(base + (andares - 1) * H * 0.72 + H, R * 0.4);
   };
 }
-function arbusto({ w = 16, h = 12, pal = ['#3a9a40', '#5cc04e', '#8ad866'], flores = null, n = 3 }) {
+export function arbusto({ w = 16, h = 12, pal = ['#3a9a40', '#5cc04e', '#8ad866'], flores = null, n = 3 }) {
   return (m, c) => {
     const cz = -8, r = m.r;
     const pos = n === 3 ? [[0, 0.5, 0, 0.62], [0.5, 0.36, 0.12, 0.46], [-0.46, 0.34, 0.16, 0.44]] : Array.from({ length: n }, (_, k) => [(k / (n - 1) - 0.5) * 1.6, 0.4 + (k % 2) * 0.12, (k % 2) * 0.12, 0.42 + (k % 2) * 0.06]);
@@ -146,7 +146,7 @@ function arbusto({ w = 16, h = 12, pal = ['#3a9a40', '#5cc04e', '#8ad866'], flor
     return { y: h * 1.2, x0: -w / 2, x1: w / 2, z0: cz - w * 0.35, z1: cz + w * 0.35 };
   };
 }
-function pedra({ w = 24, h = 15, d = 14, pal = ['#8a8274', '#b8b0a0'] }) {
+export function pedra({ w = 24, h = 15, d = 14, pal = ['#8a8274', '#b8b0a0'] }) {
   return (m, c) => {
     const cz = -8, r = m.r;
     m.bola(0, h * 0.42, cz, w * 0.5, h * 0.62, d * 0.55, { pe: pal[0], topo: pal[1] }, { d: 1, var: 0.06 });
@@ -190,17 +190,17 @@ function placaMadeira(m) {
 }
 
 // ---------- prédios ----------
-const RODAPE = '#c8bca4';
-const TELHADO = { houseA: '#d8463a', houseB: '#e2603a', houseC: '#5aa84a', houseBlue: '#4a8fe0', housePink: '#f07aa8', houseYellow: '#f2b83a', houseStone: '#7a6aa8', houseStone2: '#5a8ab8', houseMiner: '#a86a3a', radioStation: '#e0553e' };
-const portaX = (c) => (c.K.door ?? Math.floor(c.fw / 2)) * 16 + 8 - c.L;
-const clarear = (h, k) => { const c = new THREE.Color(h); c.offsetHSL(0, 0, k); return '#' + c.getHexString(); };
+export const RODAPE = '#c8bca4';
+export const TELHADO = { houseA: '#d8463a', houseB: '#e2603a', houseC: '#5aa84a', houseBlue: '#4a8fe0', housePink: '#f07aa8', houseYellow: '#f2b83a', houseStone: '#7a6aa8', houseStone2: '#5a8ab8', houseMiner: '#a86a3a', radioStation: '#e0553e' };
+export const portaX = (c) => (c.K.door ?? Math.floor(c.fw / 2)) * 16 + 8 - c.L;
+export const clarear = (h, k) => { const c = new THREE.Color(h); c.offsetHSL(0, 0, k); return '#' + c.getHexString(); };
 
-function janelaLG(m, x, y, z, w = 16, h = 14) {
+export function janelaLG(m, x, y, z, w = 16, h = 14) {
   m.caixa(x, y - 2, z + 0.5, w + 4, h + 4, 2, 1.2, '#fff8ea', { seg: 1, ao: false });
   m.caixa(x, y, z + 1.4, w, h, 1, 0.8, '#bfe6ff', { seg: 1, ao: false, brilho: 1 });
   m.caixa(x, y, z + 2.1, 1.4, h, 0.6, 0.3, '#fff8ea', { ao: false }); m.caixa(x, y + h / 2 - 0.7, z + 2.1, w, 1.4, 0.6, 0.3, '#fff8ea', { ao: false });
 }
-function casaLG(m, c) {
+export function casaLG(m, c) {
   const e = c.K.estilo ?? {}, wall = e.wall?.[0] ?? '#f3e6c8', roof = TELHADO[c.kind] ?? e.roof?.[0] ?? '#e0553e';
   const D = c.D, W = e.w ?? c.fw * 16, wl = W / 2 - 8, wh = e.wallH ?? 40, zf = -3, zb = -D + 5, zc = (zf + zb) / 2, dz = zf - zb;
   m.caixa(0, 0, zc, wl * 2 + 4, 6, dz + 4, 2, RODAPE, { seg: 1 });
@@ -230,7 +230,7 @@ function casaLG(m, c) {
   return { y: yc + 3, x0: -rx, x1: rx, z0: zc - 3, z1: zc + 3 };
 }
 const SALAO = { center: { teto: '#e8483a', faixa: '#e8483a' }, mart: { teto: '#3a7ae8', faixa: '#3a7ae8' }, lab: { teto: '#9aa4b4', faixa: '#4ab0a0' } };
-function salaoLG(m, c) {
+export function salaoLG(m, c) {
   const e = c.K.estilo ?? {}, S = SALAO[c.kind] ?? { teto: e.roof?.[0] ?? '#e8483a', faixa: e.band ?? '#e8483a' };
   const W = e.w ?? c.fw * 16, D = c.D, wl = W / 2 - 6, wh = e.wallH ?? 50, zf = -3, zb = -D + 5, zc = (zf + zb) / 2, dz = zf - zb;
   m.caixa(0, 0, zc, wl * 2 + 4, 6, dz + 4, 2, RODAPE, { seg: 1 });
@@ -332,12 +332,19 @@ const TIPOS = {
   } },
 };
 
-function hashVar(o) {
+export function hashVar(o) {
   const x = o?.tx ?? Math.floor((o?.x ?? 0) / 16), y = o?.ty ?? Math.floor((o?.y ?? 0) / 16);
   let h = (x * 374761393 + y * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0);
 }
 const cache = new Map();
-const ARVORE = new Set(['tree', 'tree2', 'autumn', 'bigtree', 'bigautumn', 'pine', 'pine2', 'pineT', 'pinheiroAlto']);
+// Registro dos tipos de outros arquivos (modelos-<grupo>.js; a lista está em modelos-todos.js): cada tipo é
+// { f: (m, c) => topo, var?, estado?: (o) => string, fruta? }, igual à tabela acima. Não sobrescreve um tipo existente.
+export const GRUPOS_LG = {};
+export function registrar(grupo, tipos) {
+  GRUPOS_LG[grupo] = Object.keys(tipos);
+  for (const [k, T] of Object.entries(tipos)) if (!TIPOS[k]) TIPOS[k] = T;
+}
+export const ARVORE = new Set(['tree', 'tree2', 'autumn', 'bigtree', 'bigautumn', 'pine', 'pine2', 'pineT', 'pinheiroAlto']);
 export const temModeloLG = (kind) => !!TIPOS[kind];
 // estado do objeto (fruta colhida, ponta de cerca); lite = árvore do miolo do paredão (o.ss: só a copa aparece)
 export function chaveLG(kind, o = {}) {
