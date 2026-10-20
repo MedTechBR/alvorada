@@ -47,7 +47,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.visitaTorre': true },
-        objetivo: { texto: 'Passe pelo Gerente Lúcio, que bloqueia o elevador de serviço, e desça à Mina Aurora', alvo: 'mina_aurora' },
+        objetivo: { texto: 'Passe pelo Gerente Lúcio, que bloqueia o elevador de serviço, e desça à Mina Aurora', alvo: 'mina_aurora_n1' },
       },
       atores: [
         { id: 'lucio_torre_n', quem: 'lucio', nome: 'Gerente Lúcio', look: LOOKS.lucio, spot: 'dentro_torre_aurora', longe: 3 },
@@ -91,7 +91,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.sirene': true, 'nh.teoJunto': true },
-        objetivo: { texto: 'Desça à Mina Aurora e encontre o Heitor, pai do Téo, no nível quatro', alvo: 'mina_aurora' },
+        objetivo: { texto: 'Desça à Mina Aurora e encontre o Heitor, pai do Téo, no nível quatro', alvo: 'mina_aurora_n1' },
       },
       atores: [
         { id: 'teo_mina7', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'dentro_torre_aurora', segue: true, cena: ['j07_sirene', 'j07_mina_entrada', 'j07_mina_medidor', 'j07_saida_mina'] },
@@ -216,7 +216,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.reviravolta2': true },
-        objetivo: { texto: 'Descoberta: o Prof. Jatobá ajudou a criar a Aurora. Na Roda de Capoeira, vença os faixas-pretas e desafie o Líder Brás', alvo: 'roda_capoeira', treinadores: ['g6_dandara', 'g6_tiao'], rotulo: 'Faixas-pretas' },
+        objetivo: { texto: 'Descoberta: o Prof. Jatobá ajudou a criar a Aurora. Na Roda de Capoeira, vença os faixas-pretas e desafie o Líder Brás', alvo: 'leader_bras', treinadores: ['g6_dandara', 'g6_tiao'], rotulo: 'Faixas-pretas' },
       },
     },
     {
@@ -271,7 +271,7 @@ export default {
       ],
       depois: {
         insignia: 'rochedo', montaria: 'sneasler',
-        objetivo: { texto: 'Siga pela Rota 14 até a Vila Mandacaru, no Sertão do Levante', alvo: 'ninho_cidade_escarpa' },
+        objetivo: { texto: 'Siga pela Rota 14 até a Vila Mandacaru, no Sertão do Levante', alvo: 'ninho_vila_mandacaru' },
       },
       atores: [
         { id: 'bras_roda', quem: 'bras', nome: 'Líder Brás', look: LOOKS.tecnico, spot: 'ninho_forte_rochedo', permanente: true },

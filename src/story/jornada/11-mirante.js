@@ -93,7 +93,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.reviravolta5': true, 'nh.velaSelo': true },
-        objetivo: { texto: 'Descoberta: a Vela Eterna é a oitava chave do Relógio, e estava com você desde Lamparina. Enfrente a Líder Celeste no Mirante e suba ao Relógio antes do Solano', alvo: 'relogio_pedra' },
+        objetivo: { texto: 'Descoberta: a Vela Eterna é a oitava chave do Relógio, e estava com você desde Lamparina. Enfrente a Líder Celeste no Mirante e suba ao Relógio antes do Solano', alvo: 'leader_celeste', treinadores: ['r9_bruno', 'r9_celia', 'g8_gael', 'g8_iris'], rotulo: 'Treinadores' },
       },
     },
     {

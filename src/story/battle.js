@@ -22,6 +22,7 @@ export class TrainerBattle {
     this.max = def.double ? 2 : 1;
     this.promise = new Promise((r) => (this.resolve = r));
     this.arena = arenaPara(this);
+    this.t0 = story.g.time; // começo da luta (a faixa VS da barra só aparece logo no começo)
   }
 
   start() {
@@ -90,7 +91,8 @@ export class TrainerBattle {
     e.lock = 0.6; // um respiro antes de atacar
     this.active.push(e);
     dexMark(g, mon.dex, 1);
-    g.toast(this.opts.semBola ? `${this.def.name} ataca!` : `${this.def.name} enviou ${mon.name}!`);
+    // aviso pequeno no canto (nada de caixa de diálogo nem pausa: a luta segue enquanto o próximo entra)
+    g.toast(this.opts.semBola ? `${this.def.name} ataca!` : `${this.def.name}: Vai, ${mon.name}!`);
     this.arena?.entrou(e, ultimo);
   }
 
@@ -136,9 +138,17 @@ export class TrainerBattle {
     this.active = this.active.filter((x) => x !== e);
     this.fainted = (this.fainted ?? 0) + 1;
     if (this.opts.interromperApos && this.fainted >= this.opts.interromperApos && this.next < this.team.length) { g.later(0.9, () => this.finish('interrompida')); return true; }
-    if (this.next < this.team.length) { g.later(0.9, () => { if (!this.done) { g.toast(`${this.def.name}: Volta! Vai, próximo!`); this.sendNext(); } }); }
+    // troca natural: o raio vermelho recolhe o que desmaiou e o próximo é arremessado logo, sem parar a luta
+    if (this.next < this.team.length) { g.later(0.35, () => this.#recolhe(e)); g.later(0.5, () => { if (!this.done) this.sendNext(); }); }
     else if (!this.active.length && !this.pending) g.later(0.9, () => this.finish('win'));
     return true;
+  }
+
+  // raio vermelho do Pokémon desmaiado até o treinador (só efeito: ninguém para)
+  #recolhe(e) {
+    const g = this.g, n = this.npc; if (!n || this.opts.semBola) return;
+    g.fx.bolt?.(e.x, e.y - 8, n.x, n.y - 12, 0xff3a3a, 0.28, { amp: 0, seg: 2, width: 3 });
+    g.fx.light?.(n.x, n.y - 12, 0xff4a4a, 24, 0.25);
   }
 
   finish(result) {

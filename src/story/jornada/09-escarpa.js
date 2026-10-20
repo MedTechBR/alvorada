@@ -69,7 +69,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.reviravolta4': true },
-        objetivo: { texto: 'Descoberta: juntar as oito pedras ABRE o cadeado, e o Solano quer o Necrozma. Vá à Mina Velha, vença os mineiros e enfrente a Líder Graça', alvo: 'mina_velha', treinadores: ['g7_juvenal', 'g7_rita'], rotulo: 'Mineiros' },
+        objetivo: { texto: 'Descoberta: juntar as oito pedras ABRE o cadeado, e o Solano quer o Necrozma. Vá à Mina Velha, vença os mineiros e enfrente a Líder Graça', alvo: 'leader_graca', treinadores: ['g7_juvenal', 'g7_rita'], rotulo: 'Mineiros' },
       },
       atores: [
         { id: 'vespera_escarpa', quem: 'vespera', nome: 'Dra. Véspera', look: LOOKS.vespera, spot: 'ninho_cidade_escarpa', longe: 3 },
@@ -129,7 +129,7 @@ export default {
       depois: {
         insignia: 'escarpa', montaria: 'corviknight',
         flags: { 'nh.voar': true },
-        objetivo: { texto: 'Vá ao Arquipélago das Brasas, a sudeste: voe com o Corviknight ou pegue o Barco das Brasas no cais de Vila Siri, no Sertão', alvo: 'sertao_cais_siri' },
+        objetivo: { texto: 'Vá ao Arquipélago das Brasas, a sudeste: voe com o Corviknight ou pegue o Barco das Brasas com o Capitão Tonho, no cais de Vila Siri, no Sertão', alvo: 'siri_barqueiro' },
       },
       atores: [
         { id: 'graca_mina', quem: 'graca', nome: 'Líder Graça', look: LOOKS.zelia, spot: 'ninho_cidade_escarpa', permanente: true },

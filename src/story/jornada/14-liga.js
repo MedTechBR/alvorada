@@ -25,7 +25,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.chegouLiga': true },
-        objetivo: { texto: 'Entre no Salão da Liga e enfrente o Aurélio da Madrugada, o primeiro da Elite', alvo: 'ninho_liga_zenite', treinadores: ['elite_aurelio'], rotulo: 'Elite' },
+        objetivo: { texto: 'Entre no Salão da Liga e enfrente a Elite: Aurélio da Madrugada, Clarice da Manhã, Seu Brasa do Meio-dia e Iberê do Entardecer, nessa ordem', alvo: 'ninho_liga_zenite', treinadores: ['elite_aurelio', 'elite_clarice', 'elite_brasa', 'elite_ibere'], rotulo: 'Elite' },
       },
       atores: [
         { id: 'teo_portao', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'ninho_liga_zenite', longe: 3 },

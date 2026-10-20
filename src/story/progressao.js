@@ -31,7 +31,7 @@ export const POS_GINASIOS = [
 // Arcos de região no meio dos ginásios (docs/jornada-classica.md, seção 2): as Ilhas Jandaias vêm entre o 4º e o 5º
 // ginásio e o Sertão do Levante entre o 6º e o 7º. depois: insígnia que abre o arco; flag: o arco terminou.
 export const ARCOS = [
-  { id: 'jandaias', depois: 'coral', antes: 'lamparina', flag: 'nh.teoDuvida', jornada: 'jandaias', alvo: 'cais_coral',
+  { id: 'jandaias', depois: 'coral', antes: 'lamparina', flag: 'nh.teoDuvida', jornada: 'jandaias', alvo: 'barqueira_coral',
     texto: 'Pegue a balsa no cais de Cidade Coral até as Ilhas Jandaias e descubra o que a Crepúsculo quer no Templo das Raízes' },
   { id: 'sertao', depois: 'rochedo', antes: 'escarpa', flag: 'nh.mapaParedao', jornada: 'sertao', alvo: 'ninho_vila_mandacaru',
     texto: 'Siga para o leste, pela Rota 14, até Vila Mandacaru no Sertão do Levante, e procure o mapa do Paredão' },

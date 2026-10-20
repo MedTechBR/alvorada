@@ -84,7 +84,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.sina': true, 'nh.viuSina': true },
-        objetivo: { texto: 'Descoberta: o Absol é a Sina, parceira da Dra. Véspera, presa à luz do Relógio. Enfrente o Téo na praça de Mandacaru e pegue o mapa do Paredão no Museu', alvo: 'ninho_cidade_escarpa' },
+        objetivo: { texto: 'Descoberta: o Absol é a Sina, parceira da Dra. Véspera, presa à luz do Relógio. Enfrente o Téo na praça de Mandacaru e pegue o mapa do Paredão no Museu', alvo: 'sertao_praca_mandacaru' },
       },
       atores: [
         { id: 'sina_ruinas', quem: 'absol', pokemon: 359, nome: 'Sina', spot: 'dentro_ruinas_pintada_2', cena: ['j08_sina_revela'] },
@@ -105,6 +105,7 @@ export default {
           equipe: [[397, 28, ['wingAttack', 'aerialAce', 'quickAttack']], [59, 28, ['flameWheel', 'crunch', 'extremeSpeed']], [197, 29, ['feintAttack', 'confuseRay', 'moonlight']], ['rival:3', 30, []]],
         },
         flags: { 'nh.rival4': true },
+        objetivo: { texto: 'Pegue o mapa do Paredão no Museu do Sertão, em Vila Mandacaru', alvo: 'museu_sertao' },
       },
       atores: [
         { id: 'teo_sertao', quem: 'teo', nome: 'Téo', look: 'rival', spot: 'sertao_praca_mandacaru', longe: 3 },
@@ -122,6 +123,7 @@ export default {
       ],
       depois: {
         flags: { 'nh.mapaParedao': true },
+        objetivo: { texto: 'Com o mapa, escale o Paredão pela Rota 8 até a Cidade Escarpa', alvo: 'ninho_cidade_escarpa' },
         ambiente: true,
       },
     },

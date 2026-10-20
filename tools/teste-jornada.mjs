@@ -32,6 +32,7 @@ for (const arq of arquivosMapa) {
   const M = JSON.parse(readFileSync(join(raiz, arq), 'utf8'));
   for (const k of Object.keys(M.spots ?? {})) { lugares.add(k); SPOTS.add(k); }
   for (const a of M.areas ?? []) lugares.add(a.id);
+  for (const d of M.people ?? []) if (d.id) lugares.add(d.id); // morador do mapa (barqueira, barqueiro): alvo de "fale com"
   // prédios com sala gerada (src/world/interiores.js): o id da sala é o campo "predio"
   for (const o of M.objects ?? []) if (o.predio) { lugares.add(o.predio); lugares.add('dentro_' + o.predio); lugares.add('porta_' + o.predio); SPOTS.add('dentro_' + o.predio); SPOTS.add('porta_' + o.predio); }
   for (const r of M.interiors ?? []) {

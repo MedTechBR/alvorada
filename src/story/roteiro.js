@@ -692,14 +692,31 @@ export class Roteiro {
     if (!nome) return null;
     const g = this.g;
     const a = this.atores.get(nome);
-    let s = a?.visible ? { x: a.x, y: a.y, h: a.h, map: this.#mapaDe(a.x, a.y) } : null;
-    if (!s && g.map.interiors.some((r) => r.id === nome)) s = g.map.spots?.['dentro_' + nome];
+    // "fale com X": a posição ATUAL de X (o ator pelo id, ou o mais perto com esse papel, ou o morador do mapa); o guia
+    // leva até a porta do prédio onde X está e, lá dentro, até X (tools/alvos-passos.mjs confere cada passo)
+    let ator = a?.visible ? a : this.#porPapel(nome);
+    if (!ator) ator = g.mundo?.people?.list?.find((p) => p.def?.id === nome && p.visible !== false) ?? null;
+    let s = ator ? { x: ator.x, y: ator.y, h: ator.h, map: this.#mapaDe(ator.x, ator.y) } : null;
+    const sala = !s && g.map.interiors.find((r) => r.id === nome);
+    if (sala) s = g.map.spots?.['dentro_' + nome] ?? this.#entradaDe(sala); // sala sem porta (andar de mina, caverna): a escada que entra nela
     if (!s) s = g.map.spots?.[nome];
     if (!s) { const ar = g.map.areas.find((x) => x.id === nome); if (ar) s = { x: (ar.rect ? ar.rect[0] + ar.rect[2] / 2 : ar.ellipse[0]) * T, y: (ar.rect ? ar.rect[1] + ar.rect[3] / 2 : ar.ellipse[1]) * T, map: 'mundo', area: ar }; } // área: o guia mira o chão andável dela
     if (!s) return null;
     // o alvo de verdade, mesmo dentro de outro prédio: o guia (src/world/guia.js) acha o caminho pelas portas
     // (de dentro de uma casa, primeiro a saída; de fora, a porta do prédio do alvo)
     return s;
+  }
+  // ator visível com esse papel (quem), o mais perto do jogador em qualquer sala
+  #porPapel(quem) {
+    const p = this.g.player; let best = null, bd = 1e9;
+    for (const n of this.atores.values()) { if (!n.visible || n.e.quem !== quem) continue; const d = Math.hypot(n.x - p.x, n.y - p.y); if (d < bd) { bd = d; best = n; } }
+    return best;
+  }
+  // chegada de uma passagem que entra na sala vindo de fora dela
+  #entradaDe(r) {
+    const na = (x, y) => x >= r.x && y >= r.y && x < r.x + r.w && y < r.y + r.h;
+    const w = (this.g.map.warps ?? []).find((q) => q.to && !q.mundo && !q.trap && na(q.to.x, q.to.y) && !na(q.x, q.y));
+    return w ? { x: w.to.x * T + 8, y: w.to.y * T + 8, map: r.id } : null;
   }
 
   // ---------------- o Absol (Sina) ----------------
