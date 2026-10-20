@@ -28,23 +28,23 @@ export function materialAguaLG(v) {
         float n = texture2D(tRuido, p / 90.0 + vec2(tempo * 0.012, tempo * 0.008)).r;
         float n2 = texture2D(tRuido, p / 37.0 - vec2(tempo * 0.02, -tempo * 0.015)).g;
         float raso = smoothstep(0.0, 0.85, vCosta);
-        vec3 c = mix(${lin('#3a98dc')}, ${lin('#5cc6e6')}, raso);
+        vec3 c = mix(${lin('#2c80cc')}, ${lin('#45aedc')}, raso);
         c = mix(c, ${lin('#2a72c4')}, vFundo * (1.0 - raso) * 0.8);
         // ondinhas largas e suaves que clareiam
         float o = sin(p.x * 0.07 + tempo * 1.1 + n * 4.0) * sin(p.y * 0.09 - tempo * 0.8 + n2 * 3.0);
-        c += smoothstep(0.55, 0.95, o) * 0.07 * vec3(0.8, 0.95, 1.0);
+        c += smoothstep(0.55, 0.95, o) * 0.06 * vec3(0.8, 0.95, 1.0);
         // reflexo do céu (mais de longe, mais de lado)
         vec3 V = normalize(vVista); float fres = pow(1.0 - max(V.y, 0.0), 3.0);
-        c = mix(c, ceu, 0.08 + fres * 0.3);
+        c = mix(c, ceu, 0.04 + fres * 0.22);
         c *= luz;
         // brilhos do sol
         float br = smoothstep(0.82, 0.98, n2 * 0.6 + n * 0.4 + sin(p.x * 0.3 + tempo * 2.0) * 0.08);
-        c += br * 0.35 * luz * vec3(1.0, 0.97, 0.9);
+        c += br * 0.28 * luz * vec3(1.0, 0.97, 0.9);
         // espuma macia na margem, respirando
         float onda = sin(tempo * 1.6 - vCosta * 4.0 + (p.x + p.y) * 0.05) * 0.12;
-        float esp = smoothstep(0.74, 0.97, vCosta + onda + (n2 - 0.5) * 0.25);
+        float esp = smoothstep(0.8, 0.99, vCosta + onda + (n2 - 0.5) * 0.22);
         float fio = smoothstep(0.4, 0.5, vCosta + onda * 1.5) * (1.0 - smoothstep(0.5, 0.6, vCosta + onda * 1.5)) * 0.35;
-        c = mix(c, vec3(0.95, 0.98, 1.0) * max(luz, vec3(0.35)), clamp(esp * 0.85 + fio, 0.0, 1.0));
+        c = mix(c, vec3(0.9, 0.95, 1.0) * max(luz, vec3(0.35)), clamp(esp * 0.75 + fio * 0.7, 0.0, 1.0));
         gl_FragColor = vec4(c, 1.0);
         #include <fog_fragment>
         #include <colorspace_fragment>
