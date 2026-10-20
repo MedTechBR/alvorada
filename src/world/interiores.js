@@ -183,7 +183,15 @@ function moradores(c, salaId, pontos) {
   }
   return out;
 }
-const comNpc = (c, list, pontos) => { for (const d of [c.o.interior?.npc ?? []].flat()) { const p = pontos[list.length % pontos.length] ?? [2, 3]; list.push({ x: p[0], y: p[1], dir: 'down', ...d }); } return list; };
+// Cada pessoa extra ocupa um ponto livre da sala (não o do morador gerado nem o de outra pessoa); sem livre, cai no ciclo.
+const comNpc = (c, list, pontos) => {
+  for (const d of [c.o.interior?.npc ?? []].flat()) {
+    const livres = pontos.filter((q) => !list.some((o) => o.x === q[0] && o.y === q[1]));
+    const p = livres[0] ?? pontos[list.length % pontos.length] ?? [2, 3];
+    list.push({ x: p[0], y: p[1], dir: 'down', ...d });
+  }
+  return list;
+};
 function itemNoChao(c, G, W, H, sempre = false) {
   const I = c.o.interior?.itens;
   const lista = I ? I : (sempre || c.r() < 0.28) ? [[pick(c.r, ITENS.filter((k) => itemInfo(k))), 1]] : [];
@@ -213,7 +221,8 @@ function comum(c, nome, v) {
   else if (v === 'estufa') { for (let i = 0; i < 6; i++) canto('plant'); topo('flowerpot'); topo('flowerpot'); topo('flowerpot'); meio('table'); }
   else if (v === 'escritorio') { topo('pc'); topo('shelf'); topo('radio'); meio('table'); meio('table'); topo('quadro'); canto('plant'); }
   else { topo('quadro'); topo('estante'); topo('quadro'); meio('table'); meio('table'); canto('plant'); canto('plant'); }
-  const pontos = [[porta - 2, 4], [porta + 2, 6], [2, H - 3]].filter(([x, y]) => G.livre(x, y, 1, 1));
+  // pontos da sala para moradores e pessoas extras (os primeiros são os de sempre; os de depois são reserva livre)
+  const pontos = [[porta - 2, 4], [porta + 2, 6], [2, H - 3], [2, 4], [W - 3, 4], [porta - 2, H - 3], [W - 3, H - 3]].filter(([x, y]) => G.livre(x, y, 1, 1));
   for (const [x, y] of pontos) G.marcar(x, y, 1, 1);
   const people = comNpc(c, moradores(c, c.id, pontos), pontos);
   const items = itemNoChao(c, G, W, H);
@@ -228,7 +237,7 @@ function sobrado(c, nome) {
   const objs = [], decor = [{ kind: 'rug', x: porta - 1, y: H - 4 }];
   mobilia(c, G, objs, 'fogao', [[1, 2], [2, 2]]); mobilia(c, G, objs, 'estante', [[4, 2], [5, 2]]); mobilia(c, G, objs, 'tv', [[sx - 3, 2], [sx - 4, 2]]);
   mobilia(c, G, objs, 'table', [[2, 4], [porta - 3, 5]]); mobilia(c, G, objs, 'plant', [[1, H - 3], [W - 2, H - 3]], false);
-  const pontos = [[porta - 2, 4], [porta + 2, 6]].filter(([x, y]) => G.livre(x, y, 1, 1)); for (const [x, y] of pontos) G.marcar(x, y, 1, 1);
+  const pontos = [[porta - 2, 4], [porta + 2, 6], [2, 4], [W - 3, 4], [W - 3, H - 3]].filter(([x, y]) => G.livre(x, y, 1, 1)); for (const [x, y] of pontos) G.marcar(x, y, 1, 1);
   const people = comNpc(c, moradores(c, c.id, pontos), pontos);
   const items = itemNoChao(c, G, W, H);
   // andar de cima
