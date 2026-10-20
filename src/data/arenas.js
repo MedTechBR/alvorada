@@ -18,12 +18,12 @@ export const ARENAS = {
   // ------------------------------------------------------------------ Tomé (Normal): arena no meio do milharal
   leader_tome: {
     id: 'tome', nome: 'Arena do Milharal', tipo: 'normal', cor: '#e8c050',
-    sala: null, area: [123, 374, 12, 11], posicoes: { jogador: [128.5, 383.2], lider: [128.5, 374.6] },
+    sala: null, area: [119, 374, 18, 12], posicoes: { jogador: [128.5, 383.2], lider: [128.5, 374.6] },
     abertura: 'Aqui o milho é cobertura, o fardo é arma e a debulhadora não pede licença!',
     gritos: { faixa: ['Liga a debulhadora!', 'Olha a máquina passando!'], milho: 'Planta de novo!', encolher: 'Colhe tudo!' },
     as: { titulo: 'O ás de Tomé', fala: 'Teddiursa! Mostra a força da roça!', grito: 'Teddiursa!', corFx: 0xc89a5a },
     pecas: [
-      { tipo: 'plateia', lugares: [[123, 372, 6, 2], [129, 372, 6, 2], [118, 376, 3, 8], [136, 376, 3, 8]], frases: ['Vai, Tomé!', 'Olha o milho!', 'Ê, colheita!', 'Uau!', 'Que fardo!'] },
+      { tipo: 'plateia', lugares: [[123, 372, 6, 2], [129, 372, 6, 2], [114, 378, 3, 6], [139, 378, 3, 6]], frases: ['Vai, Tomé!', 'Olha o milho!', 'Ê, colheita!', 'Uau!', 'Que fardo!'] },
       { tipo: 'milho', celulas: [[124, 377, 2, 2], [132, 377, 2, 2], [124, 381, 2, 1], [132, 381, 2, 1], [128, 377, 1, 1]] },
       { tipo: 'cobertura', id: 'fardos', visual: 'fardo', rola: true, hp: 3, dano: 0.08, renasce: 14, pos: [[126, 379], [131, 379], [129, 381]] },
       { tipo: 'faixa', id: 'faixa', orient: 'h', largura: 2, vel: 5.5, periodo: [9, 13], primeiro: 6, aviso: 1.5, dano: 0.09, visual: 'debulhadora', cor: 0xff7a2a, rotulo: 'Debulhadora!' },
@@ -82,7 +82,7 @@ export const ARENAS = {
   // a revanche no píer, depois do assalto (cap03: leader_marina_pier)
   leader_marina_pier: {
     id: 'marina_pier', nome: 'O Píer Comprido', tipo: 'water', cor: '#5ab0ff',
-    sala: null, area: [430, 298, 13, 12], posicoes: { jogador: [435, 308.6], lider: [435, 299.4] },
+    sala: null, area: [430, 298, 18, 12], posicoes: { jogador: [435, 308.6], lider: [435, 299.4] },
     abertura: 'Batalha que começa tem que acabar! Aqui no píer, com o lago inteiro olhando.',
     gritos: { onda: ['Lá vem onda!', 'Segura a onda!'] },
     as: { titulo: 'O ás de Marina', fala: 'Basculin! Morde a maré!', grito: 'Basculin!', corFx: 0x5ab0ff },
@@ -103,7 +103,7 @@ export const ARENAS = {
   // ------------------------------------------------------------------ Jonas (Elétrico): lanterna do farol
   leader_jonas: {
     id: 'jonas', nome: 'Lanterna do Farol', tipo: 'electric', cor: '#ffe23a',
-    sala: 'farol_topo', area: [1, 2, 13, 8], acende: true, posicoes: { jogador: [4, 8.6], lider: [12, 2.6] },
+    sala: 'farol_topo', area: [1, 2, 18, 12], acende: true, posicoes: { jogador: [4, 12.6], lider: [12, 2.6] },
     abertura: 'O chão do farol é todo circuito! Pisa onde eu não piso, viu?',
     gritos: { paineis: ['Liga o painel!', 'Corrente no chão!'], marcas: ['Cai, raio!', 'Olha pro céu!'] },
     as: { titulo: 'O ás de Jonas', fala: 'Lanturn! Acende o mar!', grito: 'Lanturn!', corFx: 0xffe23a },
@@ -126,15 +126,15 @@ export const ARENAS = {
   // ------------------------------------------------------------------ Zélia (Fantasma): salão do luar no Casarão das Velas
   leader_zelia: {
     id: 'zelia', nome: 'Salão do Luar', tipo: 'ghost', cor: '#b07aff',
-    sala: 'casarao_velas', area: [34, 2, 13, 12], posicoes: { jogador: [40, 13], lider: [41, 2.5] },
+    sala: 'casarao_velas', area: [46, 2, 18, 12], posicoes: { jogador: [55, 12.6], lider: [55, 2.6] },
     abertura: 'Vamos subir para o salão do luar, querido. Lá as velas contam histórias… e os móveis também.',
     gritos: { escuro: ['Uuuuu…', 'Apaga, vela!'], poltergeist: ['Voa, cadeira!', 'Esse quadro era da minha avó!'] },
     as: { titulo: 'O ás de Zélia', fala: 'Lampent, mostra o caminho das almas!', grito: 'Lampent!', corFx: 0xb07aff },
     pecas: [
-      { tipo: 'plateia', estilo: 'fantasma', lugares: [[35, 1, 11, 1]], frases: ['Buuu!', 'Uuuu…', 'Hi hi hi!', 'Arrepiou!'] },
-      { tipo: 'escuro', nivel: 0.82, candelabros: [[43, 4], [45, 7], [35, 6]], raio: 3.6, reacende: 1.5 },
+      { tipo: 'plateia', estilo: 'fantasma', lugares: [[47, 1, 11, 1]], frases: ['Buuu!', 'Uuuu…', 'Hi hi hi!', 'Arrepiou!'] },
+      { tipo: 'escuro', nivel: 0.82, candelabros: [[50, 4], [57, 7], [48, 11]], raio: 3.6, reacende: 1.5 },
       { tipo: 'poltergeist', periodo: [5, 7], primeiro: 5, aviso: 1.15, dano: 0.08, vel: 220, objetos: ['quadro', 'cadeira', 'vaso', 'livro'] },
-      { tipo: 'portas', pares: [[[34, 4], [46, 11]], [[34, 12], [46, 3]]], recarga: 1.5 },
+      { tipo: 'portas', pares: [[[46, 4], [63, 11]], [[46, 12], [63, 3]]], recarga: 1.5 },
       { tipo: 'giro', ativo: false, forca: 42, periodo: 10 },
       { tipo: 'sombras', ativo: false, n: 2, dur: 11, periodo: [15, 19] },
     ],
@@ -151,7 +151,7 @@ export const ARENAS = {
   // ------------------------------------------------------------------ Brás (Lutador): a roda de capoeira (Forte Rochedo)
   leader_bras: {
     id: 'bras', planejada: true, nome: 'A Roda', tipo: 'fighting', cor: '#e8803a',
-    sala: null, area: [0, 0, 14, 12], posicoes: { jogador: [7, 11.4], lider: [7, 0.6] },
+    sala: null, area: [0, 0, 18, 12], posicoes: { jogador: [9, 11.4], lider: [9, 0.6] },
     abertura: 'Ê, camará! Na roda, quem dita o golpe é o berimbau. Bate no tempo que vale mais!',
     gritos: { tabuas: 'Olha o chão!' },
     as: { titulo: 'O ás de Brás', fala: 'Hitmontop! Gira, menino!', grito: 'Hitmontop!', corFx: 0xe8803a },
@@ -172,7 +172,7 @@ export const ARENAS = {
   // ------------------------------------------------------------------ Graça (Pedra): a mina velha (Cidade Escarpa)
   leader_graca: {
     id: 'graca', planejada: true, nome: 'A Mina Velha', tipo: 'rock', cor: '#c8a070',
-    sala: null, area: [0, 0, 16, 12], posicoes: { jogador: [8, 11.4], lider: [8, 0.6] },
+    sala: null, area: [0, 0, 18, 12], posicoes: { jogador: [9, 11.4], lider: [9, 0.6] },
     abertura: 'A montanha não tem pressa, mas o teto tem. Onde a poeira cai, a pedra vem atrás.',
     gritos: { marcas: ['Desaba!', 'Olha o teto!'], faixa: 'Solta o vagonete!' },
     as: { titulo: 'O ás de Graça', fala: 'Lycanroc! Uiva pro crepúsculo!', grito: 'Lycanroc!', corFx: 0xe8803a },
@@ -194,7 +194,7 @@ export const ARENAS = {
   // ------------------------------------------------------------------ Celeste (Voador): o alto da Torre do Vento (Mirante)
   leader_celeste: {
     id: 'celeste', planejada: true, nome: 'Topo da Torre do Vento', tipo: 'flying', cor: '#9ad0ff',
-    sala: null, area: [0, 0, 16, 13], posicoes: { jogador: [8, 11.5], lider: [8, 1.5] },
+    sala: null, area: [0, 0, 18, 12], posicoes: { jogador: [9, 11.5], lider: [9, 1.5] },
     abertura: 'Aqui em cima o chão é pouco e o vento é muito. Quem cai, volta… mas volta mais fraco.',
     gritos: { rajada: ['Sopra!', 'Vento de través!'] },
     as: { titulo: 'O ás de Celeste', fala: 'Braviary! O céu é seu!', grito: 'Braviary!', corFx: 0x9ad0ff },

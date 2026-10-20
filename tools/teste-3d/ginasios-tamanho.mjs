@@ -2,7 +2,9 @@
 // blocos andáveis ele tem. Blocos andáveis = o que o mapa vivo diz que não é sólido (map.solidAt), lido no Chrome.
 //   node tools/teste-3d/ginasios-tamanho.mjs            (sobe o servidor, roda o Chrome e fecha os dois no fim)
 //   --json   imprime também o resultado em JSON
-//   --grade=x,y,w,h   desenha em ASCII o que está andável no mapa vivo (. andável, # sólido, A = dentro da arena)
+//   --grade=x,y,w,h   desenha em ASCII o que está andável no mapa vivo (. andável, # sólido)
+//   --js='expressão'   avalia uma expressão no jogo (window.game em G) e imprime o resultado (sonda)
+//   --grade=x,y,w,h --tipos   mesma grade, mas com a letra do tipo de bloco (ver TIPOS_ABREV; o que não estiver nela sai ?)
 // Meta do projeto: cada arena com pelo menos 18×12 blocos andáveis (planejadas: retângulo nominal).
 import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
@@ -13,6 +15,9 @@ const RAIZ = fileURLToPath(new URL('../../', import.meta.url));
 const PORTA = +(process.env.PORTA ?? 8756), CDP = +(process.env.CDP ?? 9481);
 const META_W = 18, META_H = 12;
 const JSON_OUT = process.argv.includes('--json');
+const TIPOS = process.argv.includes('--tipos'); // grade com a letra do tipo de bloco (ver TIPOS_ABREV)
+const TIPOS_ABREV = { 0: '.', 1: ',', 2: '"', 3: '=', 4: '~', 5: ':', 6: '*', 7: 'W', 8: '#', 9: '_', 10: '^', 11: 'B', 12: 'P', 13: 'f', 14: 'w', 15: 'F', 16: 'c', 17: 'd', 18: 't', 19: 'm', 20: 'b', 21: 'k', 22: 'r', 23: 'O', 24: 'g', 25: 'L', 26: 'M', 27: 'V', 28: 'y', 29: 'x', 30: 's', 31: 'D' };
+const JS = process.argv.find((a) => a.startsWith('--js='))?.slice(5) ?? null; // expressão avaliada no jogo (sonda)
 const GRADE = process.argv.find((a) => a.startsWith('--grade='))?.split('=')[1]?.split(',').map(Number) ?? null;
 
 // id do líder (chave em src/data/arenas.js) → rótulo
@@ -53,10 +58,13 @@ try {
     }
     return out;
   })()`);
+  if (JS) console.log(JSON.stringify(await p.ev(`(async () => { const G = window.game; return (${JS}); })()`), null, 1));
   if (GRADE) {
     const [gx, gy, gw, gh] = GRADE;
-    const txt = await p.ev(`(() => { const G = window.game; let s = '';
-      for (let y = ${gy}; y < ${gy} + ${gh}; y++) { let l = String(y).padStart(4) + ' '; for (let x = ${gx}; x < ${gx} + ${gw}; x++) l += G.map.solidAt(x * 16 + 8, y * 16 + 8) ? '#' : '.'; s += l + '\\n'; }
+    const txt = await p.ev(`(() => { const G = window.game, { TILE } = { TILE: ${JSON.stringify(TIPOS_ABREV)} }; let s = '';
+      for (let y = ${gy}; y < ${gy} + ${gh}; y++) { let l = String(y).padStart(4) + ' ';
+        for (let x = ${gx}; x < ${gx} + ${gw}; x++) { const t = G.map.at(x, y); l += ${TIPOS ? "(TILE[t] ?? '?')" : "(G.map.solidAt(x * 16 + 8, y * 16 + 8) ? '#' : '.')"}; }
+        s += l + '\\n'; }
       return s; })()`);
     console.log(`grade x ${gx}..${gx + gw - 1}, y ${gy}..${gy + gh - 1} (coluna = x)`);
     console.log(txt);

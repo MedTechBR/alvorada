@@ -22,9 +22,9 @@ const CASOS = {
   zelia: { equipe: [[5, 20], [8, 20], [25, 19]], sala: 'casarao_velas', em: [40, 13], flags: { candelabrosAcesos: true, 'trainers.g5_odete': true, 'trainers.g5_ciro': true }, falar: 'zelia', noite: true },
   lia: { equipe: [[5, 21], [8, 21], [2, 20]], sala: 'estufa_lia', em: [11, 15], flags: { defendeuEstufa: true, 'trainers.g2_nando': true, 'trainers.g2_bel': true }, falar: 'lia' },
   // planejadas: mesma arena num campo aberto (prova de que o motor serve para elas)
-  bras: { equipe: [[17, 25], [5, 24], [8, 24]], planejada: { nome: 'Líder Brás', equipe: [[67, 21], [701, 22], [447, 22], [214, 23], [237, 25]], w: 14, h: 12 } },
-  graca: { equipe: [[9, 43], [3, 42], [6, 42]], planejada: { nome: 'Líder Graça', equipe: [[525, 39], [933, 40], [95, 40], [476, 41], [745, 43]], w: 16, h: 12 } },
-  celeste: { equipe: [[26, 41], [6, 40], [9, 40]], planejada: { nome: 'Líder Celeste', equipe: [[277, 37], [227, 38], [334, 39], [663, 39], [628, 41]], w: 16, h: 13 } },
+  bras: { equipe: [[17, 25], [5, 24], [8, 24]], planejada: { nome: 'Líder Brás', equipe: [[67, 21], [701, 22], [447, 22], [214, 23], [237, 25]], w: 18, h: 12 } },
+  graca: { equipe: [[9, 43], [3, 42], [6, 42]], planejada: { nome: 'Líder Graça', equipe: [[525, 39], [933, 40], [95, 40], [476, 41], [745, 43]], w: 18, h: 12 } },
+  celeste: { equipe: [[26, 41], [6, 40], [9, 40]], planejada: { nome: 'Líder Celeste', equipe: [[277, 37], [227, 38], [334, 39], [663, 39], [628, 41]], w: 18, h: 12 } },
 };
 const ORDEM = ['jonas', 'marina', 'marina_pier', 'tome', 'zelia', 'lia', 'bras', 'graca', 'celeste'];
 const lista = quem === 'todos' ? ORDEM : quem === 'existentes' ? ORDEM.slice(0, 6) : quem.split(',');
