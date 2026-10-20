@@ -17,6 +17,7 @@ const GERAIS_FRLG = ['frlg_oldman', 'frlg_woman', 'frlg_girl', 'frlg_lass', 'frl
 const PAPEL_FRLG = [
   [/(^|_)joy(\d|_|$)|enfermeira|nurse/i, 'frlg_nurse'],
   [/vendedor|vendedora|balconista|lojista|clerk/i, 'frlg_clerk'],
+  [/atendente_clube/i, 'frlg_woman'],
   [/(^|_)(mae|mom)(_|\d|$)/i, 'frlg_mom'],
   [/(^|_)(prof|jatoba|oak)(_|\d|$)/i, 'frlg_oak'],
   [/(^|_)teo(_|\d|$)/i, 'frlg_rival'],

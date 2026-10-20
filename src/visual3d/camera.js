@@ -64,13 +64,19 @@ export class CameraDinamica {
       else if (m.under) { dist *= 0.86; incl += 4; }
       else if (this.cinema && corre > 90) { dist *= 1.07; incl -= 3; }
     }
-    // interior: mais alto, preso ao cômodo
+    // interior: mais alto, preso ao cômodo. Sala que cabe na tela: enquadrada inteira, do topo da parede do fundo
+    // (com os cartazes) até a parede baixa da frente, como nos jogos originais; sala grande: segue o jogador.
     if (room) {
-      incl = 56; dist *= 0.74;
-      const rx0 = room.x * 16, rx1 = (room.x + room.w) * 16, rz0 = room.y * 16, rz1 = (room.y + room.h) * 16;
-      const meiaW = (innerWidth / Math.max(1, g.zoom)) * 0.42, meiaH = (innerHeight / Math.max(1, g.zoom)) * 0.36;
-      alvoX = rx1 - rx0 < meiaW * 2 ? (rx0 + rx1) / 2 : Math.min(rx1 - meiaW, Math.max(rx0 + meiaW, alvoX));
-      alvoZ = rz1 - rz0 < meiaH * 2 ? (rz0 + rz1) / 2 + 8 : Math.min(rz1 - meiaH, Math.max(rz0 + meiaH, alvoZ));
+      incl = 56;
+      const q = this.#enquadrar(room, incl);
+      if (q.k <= 1.3) { dist *= Math.max(0.45, q.k); alvoX = q.x; alvoZ = q.z; }
+      else {
+        dist *= 0.74;
+        const rx0 = room.x * 16, rx1 = (room.x + room.w) * 16, rz0 = q.zCima, rz1 = q.zFrente;
+        const meiaW = (innerWidth / Math.max(1, g.zoom)) * 0.42, meiaH = (innerHeight / Math.max(1, g.zoom)) * 0.36;
+        alvoX = rx1 - rx0 < meiaW * 2 ? (rx0 + rx1) / 2 : Math.min(rx1 - meiaW, Math.max(rx0 + meiaW, alvoX));
+        alvoZ = rz1 - rz0 < meiaH * 2 ? (rz0 + rz1) / 2 : Math.min(rz1 - meiaH, Math.max(rz0 + meiaH, alvoZ));
+      }
     }
     // giro de leve para dar vida (±3°), só explorando
     if (this.cinema && !room && !lutadores) giro = Math.sin(this.v.t * 0.07) * 2.5;
@@ -97,6 +103,29 @@ export class CameraDinamica {
     this.incl = pula ? incl : amortece(this.incl, incl, 3, dt);
     this.giro = amortece(this.giro, giro, 1.5, dt);
     return { x: this.x, z: this.z, dist: this.dist, incl: this.incl * RAD, giro: this.giro * RAD, rolo: this.rolo * RAD };
+  }
+  // Enquadramento da sala inteira (perspectiva de verdade): do topo da parede do fundo (72) à parede baixa da frente,
+  // de lado a lado, centrado na tela, com folga para o HUD. Devolve o foco no chão e k = distância / distância padrão.
+  #enquadrar(room, incl) {
+    const asp = innerWidth / Math.max(1, innerHeight), chave = incl + '|' + asp.toFixed(3) + '|' + this.v.distancia.toFixed(1);
+    if (room.__enq?.chave === chave) return room.__enq;
+    const topo = Math.max(0, (room.rows ?? []).findIndex((l) => /[^w ]/.test(l)));
+    const zFundo = (room.y + topo) * 16, zFrente = (room.y + room.h - 1) * 16 + 8, x0 = room.x * 16 + 4, x1 = (room.x + room.w) * 16 - 4;
+    const s = Math.sin(incl * RAD), c = Math.cos(incl * RAD), tf = Math.tan(17 * RAD) * 0.9; // FOV 34°, 10% de folga
+    // tela (em tangentes) de um ponto relativo ao foco, câmera a D: up = (0, c, -s), frente = (0, -s, -c)
+    const tela = (dy, dz, D) => (dy * c - dz * s) / (D + (-dy * s - dz * c));
+    const lado = (dx, dy, dz, D) => Math.abs(dx) / (D + (-dy * s - dz * c));
+    let best = null;
+    for (let D = 120; D < 4000; D *= 1.03) {
+      // foco em z que centra o topo do fundo e o pé da frente na tela
+      let a = zFundo - 200, b = zFrente;
+      for (let i = 0; i < 30; i++) { const m = (a + b) / 2, t1 = tela(72, zFundo - 7 - m, D), t2 = tela(0, zFrente - m, D); if (t1 + t2 > 0) b = m; else a = m; }
+      const z = (a + b) / 2, alto = tela(72, zFundo - 7 - z, D), w = Math.max(lado(x1 - x0, 0, zFrente - z, D), lado(x1 - x0, 72, zFundo - z, D)) / 2;
+      if (alto <= tf * 0.94 && w <= tf * asp * 0.96) { best = { z, D }; break; }
+    }
+    best ??= { z: (zFundo + zFrente) / 2, D: 4000 };
+    room.__enq = { chave, x: (x0 + x1) / 2, z: best.z + 6, k: best.D / Math.max(1, this.v.distancia), zCima: zFundo - 48, zFrente };
+    return room.__enq;
   }
   // 0..1: quanto o objeto mais alto ao sul do foco esconde quem a câmera segue (pelo topo do modelo 3D)
   #tapa(g, f, incl) {

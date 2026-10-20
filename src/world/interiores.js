@@ -126,7 +126,7 @@ function grade(W, H, porta) {
     marcar(x, y, fw, fh) { for (let j = -0; j < fh; j++) for (let i = 0; i < fw; i++) occ.add(x + i + ',' + (y + j)); },
   };
 }
-const PEGADA = { table: [2, 1], fogao: [2, 1], machine: [2, 1], counter: [4, 1], balltable: [3, 1], bed: [1, 2], cavalete: [2, 1], maquete: [3, 1], painel: [3, 1] };
+const PEGADA = { table: [2, 1], fogao: [2, 1], machine: [2, 1], counter: [4, 1], balltable: [3, 1], bed: [1, 2], cavalete: [2, 1], maquete: [3, 1], painel: [3, 1], sofa: [2, 1] };
 function mobilia(c, G, objs, kind, cand, txt = true) {
   const [fw, fh] = PEGADA[kind] ?? [1, 1];
   for (const [x, y] of cand) {
@@ -212,8 +212,8 @@ function comum(c, nome, v) {
   const topo = (k) => mobilia(c, G, objs, k, [...Array(W - 2).keys()].map((i) => [1 + ((i * 5 + Math.floor(r() * 3)) % (W - 2)), 2]));
   const meio = (k) => mobilia(c, G, objs, k, [[porta - 3, 4], [porta + 2, 4], [2, 5], [W - 4, 5], [porta - 3, 5], [porta + 1, 5]]);
   const canto = (k) => mobilia(c, G, objs, k, [[1, 2], [W - 2, 2], [1, H - 3], [W - 2, H - 3], [1, 4], [W - 2, 4]], false);
-  if (v === 'sala') { topo('tv'); topo('shelf'); topo('radio'); meio('table'); topo('quadro'); canto('plant'); canto('plant'); decor.push({ kind: 'rug', x: porta - 1, y: H - 4 }); }
-  else if (v === 'cozinha') { topo('fogao'); topo('estante'); topo('shelf'); meio('table'); canto('flowerpot'); canto('crate'); }
+  if (v === 'sala') { topo('tv'); topo('shelf'); topo('radio'); meio('table'); topo('quadro'); canto('plant'); canto('plant'); mobilia(c, G, objs, 'sofa', [[2, H - 4], [W - 4, H - 4], [2, 4]]); decor.push({ kind: 'rug', x: porta - 1, y: H - 4 }); }
+  else if (v === 'cozinha') { topo('fogao'); topo('geladeira'); topo('estante'); topo('shelf'); meio('table'); canto('flowerpot'); canto('crate'); }
   else if (v === 'quarto') { mobilia(c, G, objs, 'bed', [[1, 2], [W - 2, 2]]); if (r() < 0.6) mobilia(c, G, objs, 'bed', [[W - 2, 2], [3, 2]]); topo('shelf'); topo('tv'); topo('pc'); canto('plant'); meio('table'); }
   else if (v === 'oficina') { topo('machine'); topo('gerador'); topo('estante'); mobilia(c, G, objs, 'cavalete', [[2, 5], [W - 4, 5]]); canto('crate'); canto('crate'); canto('crate'); }
   else if (v === 'lab') { topo('machine'); topo('pc'); topo('shelf'); topo('shelf'); mobilia(c, G, objs, 'balltable', [[2, 5], [W - 5, 5]]); meio('table'); canto('plant'); canto('plant'); }
@@ -258,7 +258,7 @@ function centro(c, nome) {
   const W = 15, H = 10, porta = 7, G = grade(W, H, porta), objs = [];
   const fixo = (o) => { const [fw, fh] = PEGADA[o.kind] ?? [1, 1]; G.marcar(o.x, o.y, fw, fh); objs.push(o); };
   fixo({ kind: 'counter', x: 5, y: 3 }); fixo({ kind: 'pc', x: 10, y: 2 }); fixo({ kind: 'machine', x: 2, y: 2, text: 'A máquina de cura. Ela toca uma musiquinha que você conhece de cor.' });
-  fixo({ kind: 'plant', x: 1, y: 7 }); fixo({ kind: 'plant', x: 13, y: 7 }); fixo({ kind: 'table', x: 11, y: 5 }); fixo({ kind: 'shelf', x: 13, y: 2, text: `Revistas e um mapa de ${c.cidade}.` });
+  fixo({ kind: 'plant', x: 1, y: 7 }); fixo({ kind: 'plant', x: 13, y: 7 }); fixo({ kind: 'sofa', x: 2, y: 5 }); fixo({ kind: 'tv', x: 13, y: 4 }); fixo({ kind: 'table', x: 4, y: 6, text: 'Duas revistas de treinador e um folheto da liga.' }); fixo({ kind: 'table', x: 11, y: 5 }); fixo({ kind: 'shelf', x: 13, y: 2, text: `Revistas e um mapa de ${c.cidade}.` });
   G.marcar(7, 2, 1, 1);
   const enf = { id: `${c.id}_enfermeira`, name: 'Enfermeira', look: 'enfermeira', x: 7, y: 2, dir: 'down', heal: true, gerado: true,
     lines: ['Bem-vindo ao Centro Pokémon! Vou cuidar dos seus Pokémon.', 'Prontinho! Seus Pokémon estão cheios de energia. Volte sempre!'], all: true };
@@ -273,6 +273,7 @@ function loja(c, nome) {
   fixo({ kind: 'counter', x: 1, y: 4 }); G.marcar(2, 3, 1, 1);
   for (const x of [6, 7, 8, 9]) fixo({ kind: 'estante', x, y: 2, text: pick(c.r, ['Prateleiras de Poções, bem arrumadinhas.', 'Poké Bolas de todos os tipos.', 'Repelentes e remédios para o caminho.']) });
   fixo({ kind: 'plant', x: 9, y: 6 });
+  fixo({ kind: 'geladeira', x: 8, y: 4 }); fixo({ kind: 'geladeira', x: 9, y: 4 }); // vitrine de bebidas no fundo
   const vid = `${c.id}_vendedor`;
   if (!LOJAS[vid]) LOJAS[vid] = { nome: `${nome}`, extra: [] };
   const vend = { id: vid, name: 'Vendedor', look: 'lojista', x: 2, y: 3, dir: 'down', gerado: true, lines: ['Bem-vindo!'] };
