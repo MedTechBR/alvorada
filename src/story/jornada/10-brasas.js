@@ -59,7 +59,7 @@ export default {
       falas: [
         ['vulcanologa', 'A tempestade sobre o Planalto vem do Relógio de Pedra, que puxa o ar para cima. Ela não é culpa do vulcão.'],
         ['vulcanologa', 'O calor do Tição empurra esse ar de volta. Quando o vulcão esfria, a tempestade fica parada em cima do Planalto.'],
-        ['vulcanologa', 'O Templo da Chama fica onde o calor do vulcão chega mais perto da superfície. Se acenderem a pira lá, a tempestade se desfaz.'],
+        ['vulcanologa', 'O Templo da Chama fica onde o calor do vulcão chega mais perto. Acenda a pira lá e a tempestade se desfaz.'],
         ['jogador', 'Então o Ébano quer o Planalto fechado, e a tempestade ajuda ele.'],
         ['vulcanologa', 'Não importa o motivo dele. Vá ao Templo da Chama e acenda a pira para desfazer a tempestade.'],
       ],
