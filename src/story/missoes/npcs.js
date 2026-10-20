@@ -2,10 +2,15 @@ import { MOVES } from '../../data/moves.js';
 import { SPECIES } from '../../data/species.js';
 import { itemName } from '../../data/items.js';
 import { dexMark } from '../../ui/menu.js';
+import { montarEquipe } from '../especies.js';
 
 // NPCs vivos: o que cada pessoa faz além das missões. Dados em NPCS (regiao-*.js), por id do NPC:
 //   presente  { itens, dinheiro, pokemon, falas, depois, requer }   dá uma vez só e lembra disso
-//   diario    { itens | sorteio, falas, jaDeu, requer }            presente de todo dia (frutas)
+//   diario    { itens | sorteio | recompensa, falas, jaDeu, requer }   presente de todo dia (frutas; `recompensa` pode ser
+//                                                              uma função que devolve { pokemon, itens... }, como o ovo da Creche)
+//   treinador { batalha: { id, nome, equipe, dupla }, falas, vitoria, derrota, depois, dinheiro }   treinador de rota: luta
+//                                                              uma vez ao conversar (não é missão: não entra no diário)
+//   reviver   { fosseis: [{ item, dex, nivel, apelido }], falas }   devolve a vida a fósseis que o jogador carrega (serviço)
 //   troca     { quer, da, falas: { pede, aceita, recusa, falta, depois }, repetivel }   troca de jogo
 //   tutor     { golpes: [{ golpe, dinheiro } | { golpe, item: [id, n] }], falas: { ola, tchau, naoPode, semPagar } }
 //   reage     { especie: { dex: falas }, tipo: { tipo: falas }, qualquer: falas }   Pokémon que está fora da bola
@@ -21,6 +26,7 @@ export function novidadeNpc(M, id, def) {
   if (def.presente && !s.p && M.cond(def.presente.requer)) return true;
   if (def.diario && s.d !== M.hoje() && M.cond(def.diario.requer)) return true;
   if (def.troca && (!s.t || def.troca.repetivel) && M.cond(def.troca.requer) && !s.tv) return true;
+  if (def.reviver && def.reviver.fosseis.some((x) => (M.g.bag[x.item] ?? 0) > 0)) return true;
   const f = falaAtual(M, def);
   return !!(f && f.se && !s.o?.[f.k]);
 }
@@ -34,6 +40,7 @@ function falaAtual(M, def) {
 // devolve a função da conversa, ou null se esta pessoa não tem nada especial agora
 export function servicos(M, n, id, def) {
   const s = mem(M, id), g = M.g;
+  if (def.treinador && !s.w && M.cond(def.treinador.requer)) return () => treinador(M, n, id, def.treinador);
   if (def.presente && !s.p && M.cond(def.presente.requer)) return async () => {
     const p = def.presente;
     await M.say(n, p.falas ?? ['Tome, é para você!']);
@@ -45,11 +52,15 @@ export function servicos(M, n, id, def) {
     const d = def.diario;
     await M.say(n, d.falas ?? ['Colhi agora de manhã. Leve!']);
     s.d = M.hoje();
-    let itens = d.itens;
-    if (d.sorteio) { const k = d.sorteio[Math.floor(Math.random() * d.sorteio.length)]; itens = [k]; }
-    await M.dar({ itens }, n);
+    if (d.recompensa) await M.dar(typeof d.recompensa === 'function' ? d.recompensa() : d.recompensa, n);
+    else {
+      let itens = d.itens;
+      if (d.sorteio) { const k = d.sorteio[Math.floor(Math.random() * d.sorteio.length)]; itens = [k]; }
+      await M.dar({ itens }, n);
+    }
     if (d.depois) await M.say(n, d.depois);
   };
+  if (def.reviver && def.reviver.fosseis.some((x) => (g.bag[x.item] ?? 0) > 0)) return () => reviver(M, n, def.reviver);
   if (def.troca && (!s.t || def.troca.repetivel) && M.cond(def.troca.requer)) return () => troca(M, n, id, def.troca);
   if (def.tutor && M.cond(def.tutor.requer)) return () => tutor(M, n, def.tutor);
   if (def.reage && g.lead?.alive) {
@@ -57,6 +68,7 @@ export function servicos(M, n, id, def) {
     const falas = r.especie?.[mon.dex] ?? mon.types.map((t) => r.tipo?.[t]).find(Boolean) ?? r.qualquer;
     if (falas) return () => M.say(n, falas, { portrait: mon.dex, vars: M.vars({ pokemon: mon.name }) });
   }
+  if (def.treinador && s.w) return () => M.say(n, def.treinador.depois ?? def.treinador.vitoria ?? ['Boa luta! Volte quando quiser.']);
   if (def.troca && s.t && def.troca.falas?.depois) {
     // já trocou: fala do Pokémon que foi com você (se não houver outra fala nova)
     const f = falaAtual(M, def);
@@ -66,6 +78,44 @@ export function servicos(M, n, id, def) {
   if (f) return async () => { (s.o ??= {})[f.k] = 1; await M.say(n, f.linhas); };
   if (def.troca && s.t) return () => M.say(n, def.troca.falas?.depois ?? ['Como vai o Pokémon que trocamos?']);
   return null;
+}
+
+// ---------------- treinador de rota (luta uma vez; vencido, só conversa) ----------------
+async function treinador(M, n, id, t) {
+  const g = M.g, s = mem(M, id), b = t.batalha;
+  if (!g.party.some((x) => !x.fainted)) { await M.say(n, ['Seus Pokémon estão cansados. Cure a equipe e volte para a batalha!']); return; }
+  await M.say(n, t.falas ?? ['Vamos ver o que você sabe!']);
+  const def = { id: b.id ?? `${id}_batalha`, name: b.nome ?? n?.name ?? 'Treinador', money: 0, team: b.equipe, double: !!b.dupla };
+  const res = await g.story.fight(n, def, { team: montarEquipe(b.equipe, M.f.rivalStarter) });
+  if (res === 'win') {
+    s.w = M.hoje();
+    (g.flags.trainers ??= {})[def.id] = true;
+    await M.say(n, t.vitoria ?? ['Você venceu! Que batalha!']);
+    if (t.dinheiro) await M.dar({ dinheiro: t.dinheiro }, n);
+    g.ui?.save?.('vitória');
+    return;
+  }
+  n?.goHome?.();
+  await M.say(n, t.derrota ?? ['Ha! Treine mais e volte para a revanche.']);
+}
+
+// ---------------- fósseis (Laboratório do Dr. Ícaro) ----------------
+async function reviver(M, n, r) {
+  const g = M.g, F = r.falas ?? {};
+  const tem = r.fosseis.filter((x) => (g.bag[x.item] ?? 0) > 0);
+  let x = tem[0];
+  if (tem.length > 1) {
+    const c = await M.say(n, F.qual ?? ['Quantos fósseis! Qual deles a máquina vai acordar primeiro?'], { choices: [...tem.map((f) => itemName(f.item)), 'Agora não'] });
+    if (c == null || c < 0 || c >= tem.length) { await M.say(n, F.depois ?? ['Sem pressa. Fóssil não azeda.']); return; }
+    x = tem[c];
+  } else {
+    const c = await M.say(n, (F.um ?? ['Isso é um {fossil}? Deixe comigo. Ponho a máquina para rodar?']).map((l) => l.replace('{fossil}', itemName(x.item))), { choices: ['Pode rodar', 'Agora não'] });
+    if (c !== 0) { await M.say(n, F.depois ?? ['Sem pressa. Fóssil não azeda.']); return; }
+  }
+  g.bag[x.item] -= 1; if (g.bag[x.item] <= 0) delete g.bag[x.item];
+  g.audio?.sfx?.('pickup'); g.hudMoves?.();
+  await M.say(n, F.pronto ?? ['A máquina zumbe, esquenta, apita… e pronto. Olha ele aí, de olho aberto!']);
+  await M.dar({ pokemon: { dex: x.dex, nivel: x.nivel ?? 25, apelido: x.apelido } }, n);
 }
 
 // ---------------- troca de jogo (Pokémon com apelido e de outro treinador original) ----------------

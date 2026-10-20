@@ -62,6 +62,15 @@ export function validar() {
     for (const x of d.tutor?.golpes ?? []) if (!MOVES[x.golpe]) out.push(`NPC ${id}: tutor com golpe desconhecido "${x.golpe}"`);
     if (d.troca && !SPECIES[d.troca.da?.dex]) out.push(`NPC ${id}: troca sem Pokémon válido`);
     for (const [k] of [...(d.presente?.itens ?? []), ...(d.diario?.itens ?? []), ...(d.diario?.sorteio ?? [])]) item(k, `NPC ${id}`);
+    if (d.treinador) {
+      const b = d.treinador.batalha;
+      if (!b?.id || !Array.isArray(b.equipe) || !b.equipe.length) out.push(`NPC ${id}: treinador sem batalha (id e equipe)`);
+      for (const [dex, , gs] of b?.equipe ?? []) {
+        if (!SPECIES[dex]) out.push(`NPC ${id}: treinador com espécie desconhecida ${dex}`);
+        for (const x of gs ?? []) if (!MOVES[x]) out.push(`NPC ${id}: treinador com golpe desconhecido "${x}"`);
+      }
+    }
+    for (const f of d.reviver?.fosseis ?? []) { item(f.item, `NPC ${id}`); if (!SPECIES[f.dex]) out.push(`NPC ${id}: reviver com espécie desconhecida ${f.dex}`); }
   }
   return out;
 }
