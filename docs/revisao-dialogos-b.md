@@ -41,7 +41,7 @@ batalhas, posições nem em alvos (`alvo`, `spot`). O `{jogador}` e o "Ravi" da 
 24. `j05_templo_ebano` · Ébano: "A Dra. Véspera precisa dela para fechar a noite." → "para manter a noite". Por quê: "fechar a noite" não tinha sentido.
 25. `j05_templo_ebano` · Ébano: "Você é bom em impedir coisas, pelo que o Téo conta." → "Você já atrapalhou a Crepúsculo em três cidades." Por quê: o Téo não conta nada ao Ébano; as três cidades (Campina, Porto Espelho, Coral) são fatos do jogo.
 26. `j05_templo_fim` · Ébano: "A Dra. Véspera disse que a Aurora vai cobrar..." → "A Aurora vai querer de volta, e a Aurora cobra caro." Por quê: o trecho repetia a Véspera sem que ela estivesse na cena.
-27. `j05_templo_fim` · Aruã: "leve esta raiz de volta para a Lia, no bosque" → "Leve esta raiz para a Lia, em Vila Sussurro. Ela sabe o que fazer com ela." Por quê: a Lia está em Vila Sussurro (cena 02), não "no bosque" da região do templo.
+27. `j05_templo_fim` · Aruã: "leve esta raiz de volta para a Lia, no bosque" → a raiz fica no templo ("Enquanto estiver no lugar, a selva resiste ao cabo"). Por quê: o pedido para a Lia não tinha retorno em cena nenhuma. Ver item D, resolvido na revisão de 20/10.
 28. `j05_rival3` · jogador: "a Crepúsculo estava roubando a raiz da Aurora" → "a Aurora passou um cabo por dentro do templo, e a Crepúsculo tentou levar a raiz". Por quê: a frase anterior citava a Crepúsculo como se a Aurora fosse a dona da raiz, e o cabo é a prova do templo.
 29. `j05_rival3` · Téo: "ele manda dinheiro todo mês" → "meu pai trabalha na Mina Aurora". Por quê: detalhe que a cena não precisa e que cria uma dúvida nova.
 30. `j05_rival3_fim` · "O Seu Nestor, do porto, achou uma garrafa no manguezal." → "Achei uma garrafa no manguezal, perto do porto." Por quê: quem achou a garrafa foi o jogador (cena `j03_sq_garrafa_achada`).
@@ -117,12 +117,12 @@ C. **Nome do jogador.** A Mãe, o Prof. Jatobá e outros personagens chamam o jo
    segmentos. Só o `{jogador}` nas narrações e no "recebeu a insígnia" acompanha o nome escolhido. Se o nome for trocado,
    as falas com "Ravi" continuam com "Ravi". Corrigir exige trocar essas falas por `{jogador}` em todo o projeto.
 
-D. **Raiz de cristal sem retorno.** A Monja Aruã pede que o jogador leve a raiz para a Lia (`j05_templo_fim`). Nenhuma cena
-   posterior (cenas 06 a 14) pergunta pela raiz. A ponta fica solta. Pode-se incluir um retorno na Lia ou apagar o pedido.
+D. **Raiz de cristal (resolvido).** A Monja Aruã não pede mais que a raiz vá para a Lia. A raiz fica no templo, e a cena
+   `j05_templo_fim` diz por quê (ela segura a selva contra o cabo).
 
-E. **Pedra da Lamparina.** Pelo código, a pedra da lanterna do Casarão fica com a Zélia (`j06_casarao_fim`), e nenhuma
-   cena faz a Zélia entregá-la ou explica a pedra depois. Não é contradição, mas é um fio que não fecha. A reviravolta 4
-   ("Véspera tem sete pedras", cena 09) pressupõe que essa pedra não está com a Véspera.
+E. **Pedra da Lamparina (resolvido).** Em `j11_vela_revelada` a Zélia diz que a pedra da lanterna é a de Lamparina, que o
+   Ébano tentou levar e que ficou com ela. A fala sobre as pedras de Solano foi ajustada para "as pedras dos outros
+   ginásios". Ainda vale conferir a conta das pedras: 7 pedras + Vela Eterna contra as 8 chaves do doc.
 
 F. **Tamanho das falas.** Ainda há cerca de 45 textos de mais de 120 caracteres nos quatro arquivos, porque algumas cenas
    precisam de dois fatos numa mesma fala. O teste aceita até 260. A maior ficou em 144 caracteres.

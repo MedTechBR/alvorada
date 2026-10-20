@@ -559,10 +559,10 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 ### `j04_chegada`
 *Gatilho:* entrar `cidade_coral` (exige nh.nadar, sem nh.chegouCoral)
 - *Cidade Coral: um farol enorme na ponta do morro, feira de conchas e um calçadão cheio de turistas.*
-- *O Líder Jonas cuida do farol e da insígnia Faísca. Mas as luzes do farol estão apagadas há dois dias, e ninguém sabe dizer por quê.*
+- *Você desce do barco no cais e sente o vento salgado no rosto. O Líder Jonas cuida do farol e da insígnia Faísca.*
+- *Mas as luzes do farol piscam fora de hora há dois dias, e ninguém na cidade quer falar sobre isso.*
 - **Ravi:** Antes de falar com o Jonas, preciso ver o que está acontecendo no farol.
-- **Ravi:** Um farol apagado e um líder que não quer falar. Isso não cheira bem.
-- *Você desce do barco no cais e sente o vento salgado no rosto. A cidade inteira parece estar esperando alguma coisa.*
+- **Ravi:** Um farol que pisca sozinho e uma cidade que faz silêncio. Isso não cheira bem.
 - *Depois:* flags `nh.chegouCoral=true`
 - *Objetivo no painel:* Suba ao Farol Coral, na ponta do morro, e veja o que aconteceu com as luzes → `farol_entrada`
 
@@ -580,42 +580,42 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 ### `j04_farol_entrada`
 *Gatilho:* entrar `farol_coral` (exige nh.viuSolano, sem nh.ebanoCoral)
 - **Iracema:** Você veio! Olha, o gerador três foi trocado de noite. A peça nova não é do farol. É da Aurora.
-- *No topo do farol, dois recrutas de capa roxa seguram a pedra do farol, uma pedra azul do tamanho de uma noz. Um deles tem a outra mão na alavanca dos geradores.*
-- **Recruta Crepúsculo:** Tarde demais, velha. A pedra vai pro Relógio. Quando o sol parar de nascer, todo mundo vai entender por quê.
-- **Admin Ébano:** Admin Ébano. Se você está aqui, então ouviu o rádio. A Dra. Véspera quer as pedras longe da Aurora. Você não vai entender enquanto não ver o que ela vê.
+- *No topo do farol, dois recrutas de capa roxa seguram a pedra, uma pedra azul do tamanho de uma noz. Um deles mexe na alavanca dos geradores.*
+- **Recruta Crepúsculo:** Tarde demais, velha. A pedra vai para o Relógio. Quando o sol deixar de nascer, você vai entender por quê.
+- **Admin Ébano:** Admin Ébano. A Dra. Véspera quer as pedras longe da Aurora. Você não vai entender enquanto não ver o que ela vê.
 - **Ravi:** Eu vejo a Aurora trocando geradores em cima de um farol. Esta é a sua explicação?
-- **Admin Ébano:** Então vem pegar a pedra!
+- **Admin Ébano:** Então vem tirar a pedra de mim!
 - *Batalha* `c4_ebano`: Admin Ébano, prêmio ₽1300. Se perder, volta a esta cena.
   - Equipe: Murkrow Nv 13 (Bicada, Assustar, Perseguição); Zubat Nv 14 (Sanguessuga, Supersônico, Assustar)
 - *Depois:* flags `nh.ebanoCoral=true`
 
 ### `j04_pedra_recuperada`
 *Gatilho:* vencer `c4_ebano`
-- *O Ébano recua. Ao cair, a pedra do farol rola pela escada, e a Iracema a segura com as duas mãos antes que ela caia no mar.*
+- *O Ébano recua. A pedra escapa da mão do recruta, rola pela escada, e a Iracema a segura com as duas mãos antes que caia no mar.*
 - **Iracema:** Pronto. Está comigo de novo. O gerador, porém, continua girando sozinho. Quem mexeu nele foi a Aurora, não a Crepúsculo.
-- **Ravi:** Então a Crepúsculo e a Aurora estão do mesmo lado?
+- **Ravi:** Então a Crepúsculo e a Aurora estão trabalhando juntas aqui?
 - **Iracema:** Não sei. Eu só sei que quem troca peça de farol à noite não é amigo de ninguém. Leve a pedra ao Jonas. Ele precisa saber.
 - *Depois:* flags `nh.pedraCoral=true`
 - *Objetivo no painel:* Leve a pedra do farol ao Líder Jonas, no ginásio da cidade → `jonas`
 
 ### `j04_saulo`
 *Gatilho:* avistar `g4_saulo`
-- **Aprendiz:** O Jonas usa um Lanturn no final. Ele nada e dá choque ao mesmo tempo. Golpe de Terra resolve, se você tiver.
+- **Aprendiz:** O Jonas fecha com um Ampharos, puro choque. Golpe de Terra resolve, se você tiver um.
 - *Batalha* `g4_saulo`: Técnico Saulo, prêmio ₽900.
   - Equipe: Electabuzz Nv 22 (Choque do Trovão, Ataque Rápido, Olhar Malicioso); Magnemite Nv 23 (Choque do Trovão, Supersônico, Investida)
 
 ### `j04_duda`
 *Gatilho:* avistar `g4_duda`
-- **Aprendiz:** Lá em cima, os três geradores. A ordem? A Iracema sabe. Ela sabe tudo deste farol.
+- **Aprendiz:** Os três geradores precisam girar na mesma ordem. Só a Iracema sabe qual é, e ela não conta para ninguém.
 - *Batalha* `g4_duda`: Técnica Duda, prêmio ₽950.
   - Equipe: Electrike Nv 23 (Choque do Trovão, Mordida, Ataque Rápido); Ampharos Nv 24 (Raio Confuso, Relâmpago, Descarga)
 
 ### `j04_jonas_ginasio`
 *Gatilho:* falar `jonas` (exige nh.pedraCoral, exige trainers.g4_saulo, exige trainers.g4_duda, sem badges.coral)
 - **Líder Jonas:** Você trouxe a pedra de volta, e ainda passou pelos meus aprendizes. Ninguém faz isso sem levar um choque.
-- **Líder Jonas:** Eu já ia pedir ajuda. Mas vamos batalhar primeiro. Eu sou eletricidade, e eletricidade não espera ninguém terminar de falar.
-- **Ravi:** Eu trouxe a pedra. E trouxe também os recados da Iracema e do Solano.
-- **Líder Jonas:** Então é melhor a gente batalhar primeiro. Não quero conversa sem eletricidade.
+- **Líder Jonas:** Eu ia pedir ajuda, mas antes vamos batalhar. Eletricidade não espera ninguém terminar de falar.
+- **Ravi:** Eu trouxe a pedra. E a Iracema mandou dizer que a Aurora trocou o gerador três.
+- **Líder Jonas:** Então me mostra o que você aprendeu. Depois a gente conversa.
 - *Batalha* `leader_jonas`: Líder Jonas, prêmio ₽2800.
   - Equipe: Electrike Nv 26 (Choque do Trovão, Mordida, Ataque Rápido); Electabuzz Nv 26 (Choque do Trovão, Ataque Rápido, Olhar Malicioso); Magnemite Nv 27 (Choque do Trovão, Supersônico, Investida); Ampharos Nv 28 (Relâmpago, Descarga, Raio Confuso)
 
@@ -630,8 +630,8 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 
 ### `j04_sq_diario_inicio`
 *Gatilho:* falar `iracema` (exige nh.viuSolano, sem nh.sqDiario)
-- **Iracema:** Eu escrevi tudo que aconteceu neste farol, todo dia, desde que me contrataram. Quarenta anos de caderno. Ficou lá em cima, no quarto dos geradores.
-- **Iracema:** A Aurora trocou as peças do farol sem avisar ninguém, e agora a luz pisca fora de hora. Se tem prova, está no meu diário. Mas estes joelhos não sobem mais aquela escada.
+- **Iracema:** Eu anoto tudo que acontece neste farol há trinta anos. O caderno ficou lá em cima, no quarto dos geradores.
+- **Iracema:** A Aurora trocou as peças sem avisar. Se tem prova, está no meu diário. Mas estes joelhos não sobem mais a escada.
 - **Ravi:** Um diário de farol? Isso pode ser o que a senhora estava escondendo.
 - **Iracema:** Eu não escondia. Eu esperava alguém que quisesse ler.
 - *Depois:* flags `nh.sqDiario=true` · só conta a história
@@ -641,27 +641,27 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* entrar `farol_topo` (exige nh.sqDiario, sem nh.diarioFarol)
 - *No quarto dos geradores, um caderno de capa verde está preso debaixo de uma caixa de ferramentas. As últimas páginas são de outra letra.*
 - *"Dia 3: o gerador três foi trocado por ordem da Companhia Aurora. Peça nova, sem número de série. Assinado: A. Solano."*
-- *"Dia 14: a luz gira sozinha. Acende mais cedo lá embaixo e mais tarde aqui em cima. Não é o farol que está errado. É o sol."*
+- *"Dia 14: o farol gira no horário que a Aurora mandou, não no do sol. Não é o farol que está errado. É o sol que está atrasado."*
 - *Atrás da caixa, a lâmpada de luzita pisca em código: S-O-C-O-R-R-O. Dentro dela, uma bolinha de plasma com olhos bate no vidro.*
-- **Ravi:** Então era isso que a Iracema ouvia pelo rádio. Tem um Rotom preso aí dentro.
-- *Você gira o parafuso da lâmpada. O vidro estala, o Rotom sai faiscando de alívio e se agarra ao seu ombro. Lá embaixo, o mar bate nas pedras, e a luz do topo ainda gira fora de hora.*
+- **Ravi:** Então é isso que faz o farol piscar fora de hora. Tem um Rotom preso aí dentro.
+- *Você gira o parafuso. O vidro estala, e o Rotom sai faiscando de alívio e se agarra ao seu ombro. Lá em cima, a luz ainda gira fora de hora.*
 - *Depois:* Pokémon #479 Nv 25 · flags `nh.diarioFarol=true` · só conta a história
 - *Missão secundária (diário):* Leve o diário da Iracema de volta a ela, no pé do farol → `farol_entrada`
 
 ### `j04_sq_diario_fim`
 *Gatilho:* falar `iracema` (exige nh.diarioFarol, sem nh.sqDiarioFim)
-- **Iracema:** Eu sabia. Ele esteve aqui, trocou o meu gerador e deixou o nome no meu diário, como quem não tem medo de ser lido.
-- **Iracema:** E o Rotom! Ele pedia socorro desde a semana passada, e eu pensando que era o rádio. Cuide dele: gente presa na luz aprende a gostar de quem abre a porta.
+- **Iracema:** Eu sabia. Ele esteve aqui, trocou o meu gerador e assinou a troca no meu próprio caderno, como quem não tem medo de ser lido.
+- **Iracema:** E o Rotom! Ele pedia socorro desde a semana passada, e eu achando que era interferência. Cuide dele, por favor.
 - **Iracema:** Tome estas poções. São as últimas que eu tenho guardadas. Vai precisar delas no caminho.
-- **Ravi:** Eu conto ao Jonas. Ele disse que quer ajudar, mesmo que não queira admitir.
+- **Ravi:** Eu levo o diário ao Jonas. A cidade precisa saber disso.
 - *A Iracema guarda o diário debaixo do braço e olha para o farol com um sorriso pequeno.*
 - *Depois:* flags `nh.sqDiarioFim=true` · só conta a história
 
 ### `j04_boletim4`
 *Gatilho:* a flag `badges.coral` virar verdadeira (sem nh.boletim.4)
-- **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e trinta e quatro minutos. O farol de Cidade Coral voltou a piscar, mas com atraso, segundo os marinheiros.
+- **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu às seis e trinta e quatro. O farol de Cidade Coral segue piscando fora de hora.
 - **Mãe:** Ravi, seis e trinta e quatro. De manhã a casa fica escura por mais tempo. Anda, filho, volta logo.
-- **Ravi:** Mãe, não sei quanto tempo mais essa história dura. Mas estou voltando para casa.
+- **Ravi:** Mãe, não sei quanto tempo essa história ainda dura. Mas prometo voltar para casa quando o sol estiver no lugar.
 - *Depois:* flags `nh.boletim.4=true`, `nh.sol=6h34` · só conta a história
 
 ## 05 · As raízes das Jandaias
@@ -670,7 +670,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 ### `j05_chegada`
 *Gatilho:* entrar `vila_jandaia` (exige nh.pedraCoral2, sem nh.chegouJandaia)
 - *Vila Jandaia: casas de palha sobre estacas, pontes de cipó e um templo de raízes que cresce por cima da pedra.*
-- *Ninguém aqui tem insígnia para mostrar. Mas a Monja Aruã do templo disse ao rádio que as raízes estão secando, e que a seiva está escurecendo.*
+- *A Monja Aruã, do templo, disse ao rádio que as raízes estão secando e que a seiva está escurecendo.*
 - **Ravi:** Raízes secando por causa de quê? Será a mesma luz que a Lia viu no bosque?
 - *Uma criança aponta para o templo, do outro lado da lagoa: "Tem gente de capa roxa lá dentro desde ontem."*
 - *Depois:* flags `nh.chegouJandaia=true`
@@ -679,30 +679,31 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 ### `j05_templo_ebano`
 *Gatilho:* entrar `templo_raizes_porta` (exige nh.chegouJandaia, sem nh.ebanoTemplo)
 - *Nas paredes do templo, raízes grossas se abrem como cortinas. No centro, uma raiz de cristal brilha com a mesma luz morna das pedras.*
-- **Admin Ébano:** Admin Ébano. Esta raiz de cristal é a mesma luz do cadeado do Relógio. A Dra. Véspera precisa dela para fechar a noite.
+- **Admin Ébano:** Admin Ébano. Esta raiz de cristal tem a mesma luz do cadeado do Relógio. A Dra. Véspera precisa dela para manter a noite.
 - **Monja Aruã:** Afasta-te da raiz, forasteiro! Ela não é tua, nem dele.
 - **Admin Ébano:** A monja tem razão, mas a monja não entende o que a raiz faz com a selva. Eu entendo. Por isso eu levo.
 - **Ravi:** Você está destruindo o templo para uma luz que não é sua.
-- **Admin Ébano:** Então me impede. Você é bom em impedir coisas, pelo que o Téo conta.
+- **Admin Ébano:** Então me impede. Você já atrapalhou a Crepúsculo em três cidades. Não vai ser diferente aqui.
 - *Batalha* `c5_ebano`: Admin Ébano, prêmio ₽2000. Se perder, volta a esta cena.
   - Equipe: Murkrow Nv 22 (Bicada, Assustar, Perseguição); Honchkrow Nv 23 (Talho Noturno, Pássaro Bravo, Golpe Baixo); Sableye Nv 23 (Garra Sombria, Jogo Sujo, Fogo-Fátuo)
 - *Depois:* flags `nh.ebanoTemplo=true`
 
 ### `j05_templo_fim`
 *Gatilho:* vencer `c5_ebano`
-- **Admin Ébano:** Hm. A raiz fica com você, por enquanto. A Dra. Véspera disse que a Aurora vai cobrar, e a Aurora cobra caro.
-- *O Ébano recua pelo túnel do templo. Atrás da raiz, uma fresta deixa ver um cabo de metal com uma etiqueta dourada: "Companhia Aurora. Luzita, linha 2."*
+- **Admin Ébano:** Hm. Então a raiz fica onde está. A Aurora vai querer cobrar por isso, e eu vou esperar a conta.
+- *O Ébano recua pelo túnel. Atrás da raiz, uma fresta mostra um cabo de metal com etiqueta dourada: "Companhia Aurora. Luzita, linha 2."*
 - **Monja Aruã:** Está vendo? A luz de vocês atravessa a terra da minha selva. Desde que o cabo chegou, as raízes secam por baixo.
 - **Ravi:** Então a Aurora passou um cabo debaixo do templo. E a Crepúsculo tenta levar o que a Aurora deixou.
-- **Monja Aruã:** Os dois querem a mesma coisa: a luz que não é deles. Vá embora daqui, e leve esta raiz de volta para a Lia, no bosque.
+- **Monja Aruã:** Os dois querem a mesma coisa: a luz que não é deles. A raiz fica aqui, na terra da selva. Enquanto estiver no lugar, a selva resiste ao cabo.
+- **Monja Aruã:** Não tente arrancá-la. Quem tira a raiz, tira a selva inteira junto. Cuide do cabo, se puder, mas deixe a raiz em paz.
 - *Depois:* flags `nh.cabosAurora=true`
 - *Objetivo no painel:* Atravesse a Selva Grande em direção ao leste, onde o Téo está esperando → `selva_grande`
 
 ### `j05_rival3`
 *Gatilho:* entrar `selva_grande` (exige nh.cabosAurora, sem nh.rival3)
-- **Téo:** Você de novo! Achei que o templo ia te engolir. Pelo jeito a selva é que se cansou de você.
-- **Ravi:** Téo, a Crepúsculo estava roubando a raiz da Aurora. Você sabe o que é isso?
-- **Téo:** Eu sei que meu pai trabalha na Mina Aurora e que ele manda dinheiro todo mês. A Aurora é a única empresa que paga bem aqui em Alvorada.
+- **Téo:** Você de novo! Achei que o templo ia te engolir. Pelo jeito, a selva não te quis.
+- **Ravi:** Téo, a Aurora passou um cabo por dentro do templo, e a Crepúsculo tentou levar a raiz. Você sabia disso?
+- **Téo:** Eu sei que meu pai trabalha na Mina Aurora. A Aurora é a única empresa que paga bem aqui em Alvorada.
 - **Téo:** Se a Crepúsculo quer acabar com a luz da Aurora, ela quer acabar com o emprego do meu pai. Eu não vou deixar.
 - **Ravi:** Então vamos lutar. Mas depois você vai ouvir o que eu vi no templo.
 - *Batalha* `nh_rival3`: Rival Téo, prêmio ₽2600. Se perder, a história segue.
@@ -712,10 +713,11 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 ### `j05_rival3_fim`
 *Gatilho:* vencer `nh_rival3`
 - **Téo:** Tá bom, você ganhou. Mas eu não estou convencido. Meu pai nunca mentiu para mim.
-- **Ravi:** Eu não disse que ele mentiu. Eu disse que a Aurora cortou a selva para passar um cabo.
-- **Téo:** Então me mostra a prova. Mas se eu ver que é mentira, eu vou ser o primeiro a te enfrentar de novo.
-- **Ravi:** O Seu Nestor, do porto, achou uma garrafa no manguezal. Tinha um bilhete: "Estamos no nível 4. A luz daqui não é limpa". Assinado Heitor. *(só se nh.bilheteHeitor)*
-- **Téo:** Essa letra torta é do meu pai. Ele escreve assim no escuro, desde que eu era pequeno… Ele nunca me contou nada de nível quatro. Eu preciso pensar. *(só se nh.bilheteHeitor)*
+- **Ravi:** Eu não disse que ele mentiu. Eu disse que a Aurora passou um cabo pelo templo, e a selva está secando por causa disso.
+- **Téo:** Então me dá uma prova. Se for mentira, eu vou ser o primeiro a te enfrentar de novo.
+- **Ravi:** Achei uma garrafa no manguezal, perto do porto. Dentro, um bilhete do Heitor: "Estamos no nível 4. A luz daqui não é limpa".
+- **Téo:** Essa letra torta é do meu pai, de quem escreve no escuro. Mas nível quatro? Ele nunca me contou nada disso. Eu preciso pensar.
+- **Téo:** Sem prova, eu continuo do lado da Aurora. Mas vou ficar de olho em você.
 - *Depois:* flags `nh.teoDuvida=true`
 - *Objetivo no painel:* Volte à Cidade Coral pela balsa e siga pela Rota 5 até a Vila Lamparina, a oeste → `vila_lamparina`
 
@@ -737,9 +739,9 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *Dentro do casarão, a Dona Zélia segura um candelabro. Dois recrutas tentam arrancar do teto a pedra que fica presa na lanterna do salão.*
 - **Dona Zélia:** Saiam da minha casa! Essa pedra acende as velas da cidade há mais tempo do que vocês têm de vida.
 - **Recruta Crepúsculo:** Não é pedra de vela, velha. É chave. E a chave vai para quem faz a noite durar.
-- **Recruta Crepúsculo:** Pode trazer o treinador, Admin Ébano. Ele quer ver a cara dele.
+- **Recruta Crepúsculo:** Avisa o Admin Ébano. Ele disse que o garoto ia aparecer por aqui.
 - **Admin Ébano:** Admin Ébano. Vim buscar a pedra, Dona Zélia. E o garoto que sempre aparece no caminho.
-- **Ravi:** Você está fazendo isso no escuro, Ébano. Pelo menos tenha coragem de dizer para quem.
+- **Ravi:** Você rouba pedras no escuro, Ébano. Pelo menos tenha coragem de dizer para quem.
 - *Batalha* `c6_recruta`: Recruta Crepúsculo, prêmio ₽1100. Se perder, volta a esta cena.
   - Equipe: Murkrow Nv 24 (Bicada, Assustar, Perseguição); Zubat Nv 24 (Sanguessuga, Supersônico, Assustar)
 - *Depois:* flags `nh.ebanoLamparina=true`
@@ -748,49 +750,49 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* vencer `c6_recruta`
 - **Admin Ébano:** Você derrubou meus recrutas. Não me faça perder tempo com o resto. A Dra. Véspera vai te encontrar no cemitério.
 - *O Ébano recua pela porta dos fundos. A pedra da lanterna continua no lugar, meio solta.*
-- **Dona Zélia:** Você fica com a pedra, querido. Se eles voltarem, eu não tenho mais força para segurar a porta.
+- **Dona Zélia:** Deixe a pedra onde está, querido. Eu não tenho mais força para segurar a porta se eles voltarem.
 - *Depois:* flags `nh.casaraoEvento=true`
 - *Objetivo no painel:* Siga para o Cemitério das Velas, a noroeste, e veja quem a Dra. Véspera está esperando → `cemiterio_velas`
 
 ### `j06_cemiterio_vespera`
 *Gatilho:* entrar `cemiterio_velas` (exige nh.casaraoEvento, sem nh.viuVespera6)
-- *O cemitério tem velas acesas em cada túmulo, mesmo sem vento. Ao lado de um laguinho escuro, uma mulher de casaco longo está sentada, com um Absol deitado a seus pés.*
-- **Dra. Véspera:** Você tem o hábito de aparecer onde não é chamado. Isso é ótimo para quem quer roubar pedras. Péssimo para quem quer dormir.
+- *Velas acesas em cada túmulo, mesmo sem vento. Ao lado de um laguinho escuro, uma mulher de casaco longo está sentada, com um Absol aos pés.*
+- **Dra. Véspera:** Você aparece onde ninguém chamou. Isso atrapalha quem quer que a noite dure, menino.
 - **Ravi:** Você é a Dra. Véspera. O que a Crepúsculo quer de verdade?
-- **Dra. Véspera:** Quero que a noite fique do jeito que é, menino. A luz é uma dívida, e a dívida sempre cobra quem não sabe quem empresta.
-- **Dra. Véspera:** Pergunte à Dona Zélia pela vela que ela guarda desde o ano passado. E pergunte a si mesmo por que o sol atrasa só para quem tem pressa.
+- **Dra. Véspera:** Quero que a noite fique como está. Toda luz é uma dívida, e quem toma emprestado sem saber quem cobra paga caro.
+- **Dra. Véspera:** Pergunte à Dona Zélia pela vela que a família dela guarda. E depois pergunte quem mais anda atrás dela.
 - *O Absol levanta a cabeça, olha para você por um instante e volta a dormir. A Dra. Véspera se levanta e some entre as lápides.*
 - *Depois:* flags `nh.viuVespera6=true`
 - *Objetivo no painel:* Volte ao Casarão das Velas e pergunte à Dona Zélia sobre a vela que ela guarda → `casarao_velas`
 
 ### `j06_zelia_vela`
 *Gatilho:* falar `zelia` (exige nh.viuVespera6, sem nh.velaEterna)
-- **Dona Zélia:** Você perguntou pela vela, querido. Ela é a Vela Eterna. Ficou acesa na minha família desde antes da estrada de ferro.
+- **Dona Zélia:** Pela vela, então. Ela é a Vela Eterna, querido. Ficou acesa na minha família desde antes da estrada de ferro.
 - **Dona Zélia:** Um homem de terno branco veio aqui ontem, perguntou dela e foi embora sorrindo. Eu não gostei do sorriso dele.
-- **Dona Zélia:** Você tem cara de quem sabe guardar uma coisa. Leve a vela e não deixe ninguém acender ela antes de eu mandar.
-- *A Dona Zélia coloca uma vela de cera escura nas suas mãos. A chama é pequena, azulada, e não tremeu nem com o vento da porta.*
-- **Ravi:** Uma vela que não treme com o vento. Isso não é cera comum.
+- **Dona Zélia:** Você tem cara de quem sabe guardar uma coisa. Leve a vela e não a acenda até eu mandar.
+- *A Dona Zélia coloca uma vela de cera escura nas suas mãos. O pavio está apagado, mas a cera ainda está morna.*
+- **Ravi:** Uma vela que parece estar esperando alguma coisa. Isso não é cera comum.
 - *Depois:* flags `nh.velaEterna=true`
 - *Objetivo no painel:* Vença os médiuns Odete e Ciro e desafie a Dona Zélia no Casarão das Velas → `zelia` (treinadores: g5_odete, g5_ciro)
 
 ### `j06_odete`
 *Gatilho:* avistar `g5_odete`
-- **Aprendiz:** A Zélia usa Lampent no fim. Fogo e fantasma. Água e Sombrio são seus amigos.
+- **Aprendiz:** A Zélia começa com um Lampent e termina com um Chandelure. Os dois são Fogo e Fantasma: Água e Sombrio resolvem.
 - *Batalha* `g5_odete`: Médium Odete, prêmio ₽1100.
   - Equipe: Gastly Nv 27 (Lambida, Hipnose, Sombra Noturna); Haunter Nv 28 (Lambida, Hipnose, Maldição)
 
 ### `j06_ciro`
 *Gatilho:* avistar `g5_ciro`
-- **Aprendiz:** Gire os espelhos: a luz da lua acende as velas. A Dona Zélia adora uma charada.
+- **Aprendiz:** A Dona Zélia tem um Dusknoir que segura a porta. Golpe Sombrio atravessa a defesa dele.
 - *Batalha* `g5_ciro`: Médium Ciro, prêmio ₽1150.
   - Equipe: Duskull Nv 27 (Sombra Furtiva, Fogo-Fátuo, Ataque Dissimulado); Chandelure Nv 28 (Lança-Chamas, Bola Sombria, Fogo-Fátuo)
 
 ### `j06_zelia_ginasio`
 *Gatilho:* falar `zelia` (exige nh.velaEterna, exige trainers.g5_odete, exige trainers.g5_ciro, sem badges.lamparina)
 - **Dona Zélia:** Você passou pelos meus médiuns. Eles são teimosos, como a vela, e como eu. Agora é a minha vez.
-- **Dona Zélia:** Não vou perguntar se você está pronto. Eu já vi a sua cara de noite, e ela é de quem vai vencer.
+- **Dona Zélia:** Não vou perguntar se você está pronto. Pelo seu jeito, acho que está. Vamos ver se está mesmo.
 - **Ravi:** Dona Zélia, antes de começar: a vela ainda está na minha mochila. Ela precisa ficar apagada?
-- **Dona Zélia:** Está, querido. E não é hora de acender. Você vai precisar dela quando a noite for mais escura.
+- **Dona Zélia:** Precisa, querido. Não é hora de acender. Você vai precisar dela quando a noite for mais escura.
 - *Batalha* `leader_zelia`: Dona Zélia, prêmio ₽3200.
   - Equipe: Lampent Nv 30 (Lança-Chamas, Bola Sombria, Fogo-Fátuo); Gengar Nv 31 (Bola Sombria, Hipnose, Maldição); Dusknoir Nv 32 (Soco Sombrio, Hipnose, Golpe Baixo); Chandelure Nv 32 (Lança-Chamas, Bola Sombria, Fogo-Fátuo)
 
@@ -798,16 +800,16 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* vencer `leader_zelia`
 - **Dona Zélia:** A Insígnia Vela é sua. Ela diz que a luz não precisa ser grande para ser teimosa. Só precisa ficar acesa.
 - *{jogador} recebeu a Insígnia Vela!*
-- **Dona Zélia:** Escuta com atenção: quem perguntou pela vela não foi a Crepúsculo. Foi um homem de branco, e ele já sabe onde ela está guardada.
-- **Dona Zélia:** Guarde a vela e não a acenda. A Rota 6 segue pela ferrovia, a leste. Mas olhe para os trilhos antes de pisar: a Aurora colocou carrinhos novos neles.
+- **Dona Zélia:** A Véspera mandou você perguntar pela vela, mas quem já perguntou foi um homem de branco. Ele sabe onde ela está guardada.
+- **Dona Zélia:** Guarde a vela, querido. A Rota 6 segue pela ferrovia, a leste, e a Aurora pôs carrinhos novos nos trilhos. Olhe antes de pisar.
 - *Depois:* insígnia **Insígnia Vela** · flags `nh.velaGuardada=true`
 - *Objetivo no painel:* Siga pela Rota 6 (ferrovia) até a Cidade Aurora, a leste → `cidade_aurora`
 
 ### `j06_boletim5`
 *Gatilho:* a flag `badges.lamparina` virar verdadeira (sem nh.boletim.5)
-- **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e quarenta e dois minutos. Os moradores de Vila Lamparina dizem que a noite foi a mais longa da região.
-- **Mãe:** Ravi, seis e quarenta e dois. Isso já é quase meia hora de atraso em cinco dias. Eu não gosto nada disso, filho.
-- **Ravi:** Dona Zélia disse que a noite foi a mais longa da região. Eu acredito nela.
+- **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu às seis e quarenta e dois. Em Vila Lamparina, dizem que foi a noite mais longa da região.
+- **Mãe:** Ravi, seis e quarenta e dois. Quase quarenta minutos de atraso desde o primeiro boletim. Eu não gosto nada disso, filho.
+- **Ravi:** Mãe, a Dona Zélia me deu uma vela para guardar. Ela parece saber mais do que diz.
 - *Depois:* flags `nh.boletim.5=true`, `nh.sol=6h42` · só conta a história
 
 ## 07 · O preço da luz
@@ -815,11 +817,11 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 
 ### `j07_chegada`
 *Gatilho:* entrar `cidade_aurora` (exige badges.lamparina, sem nh.chegouAurora)
-- *Cidade Aurora: torres de cristal, outdoors com a palavra "limpa" em letras douradas e um silêncio estranho, como se a cidade inteira prendesse a respiração.*
+- *Cidade Aurora: torres de cristal, outdoors com a palavra "limpa" em letras douradas e um silêncio que pesa.*
 - *O sol mal aparece entre os prédios. Todo mundo aqui tem uma lanterna de luzita no bolso, acesa de dia.*
-- **Pipa:** Você chegou! Eu sou a Pipa, repórter do Jornal Farol. Estou fazendo uma matéria sobre a Torre Aurora e preciso de alguém que não seja da empresa.
-- **Pipa:** Vamos lá. O gerente Lúcio vai fazer uma visita guiada. Ele adora mostrar as tubulações, principalmente para quem não pergunta de onde vem a luz.
-- **Ravi:** Uma repórter e um prédio de cristal. Não sei qual dos dois está mais disposto a me enganar.
+- **Pipa:** Você chegou! Eu sou a Pipa, do Jornal Farol. Preciso de alguém que não seja da empresa para uma matéria sobre a Torre.
+- **Pipa:** Vamos lá. O gerente Lúcio faz visitas guiadas. Ele adora mostrar as tubulações, mas nunca fala de onde vem a luz.
+- **Ravi:** Uma repórter e uma visita guiada. Vou prestar atenção no que eles não mostram.
 - *Depois:* flags `nh.chegouAurora=true`
 - *Objetivo no painel:* Vá à Torre Aurora, no centro da cidade, e acompanhe a visita guiada → `torre_aurora`
 
@@ -837,7 +839,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 ### `j07_lucio_bloqueia`
 *Gatilho:* entrar `torre_aurora` (exige nh.visitaTorre, sem nh.lucioVencido)
 - **Gerente Lúcio:** Área restrita! Ninguém desce ao nível quatro sem autorização. O protocolo, o protocolo!
-- **Ravi:** Tem gente presa lá embaixo. Você ouviu a sirene.
+- **Ravi:** Você não quer que ninguém veja o que tem lá embaixo. Por quê?
 - **Gerente Lúcio:** Eu ouvi o protocolo. Se quer descer, vai ter que passar pelos meus Pokémon. Eles são muito bem treinados.
 - *Batalha* `c7_lucio`: Gerente Lúcio, prêmio ₽3400. Se perder, volta a esta cena.
   - Equipe: Magnezone Nv 33 (Canhão de Luz, Relâmpago, Bomba Magnética); Klinklang Nv 34 (Engrenagem Dupla, Relâmpago, Troca de Marcha); Glimmora Nv 34 (Gema de Poder, Bomba de Lodo, Rochas Furtivas)
@@ -847,39 +849,39 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* vencer `c7_lucio`
 - *A sirene começa a tocar lá embaixo, e o chão da torre vibra. Um homem de capacete grita pelo rádio que o nível três desabou.*
 - **Téo:** Meu pai está lá embaixo! Ele trabalha no nível quatro! Eu vou descer agora, com ou sem você!
-- **Ravi:** Eu vou com você, Téo. Mas a Aurora não ia deixar ninguém descer sem autorização. Por que a sirene soou tão tarde?
-- **Téo:** Não interessa. Vamos!
+- **Ravi:** Eu vou com você, Téo. Mas por que a sirene só tocou agora, se o desabamento foi antes?
+- **Téo:** Não interessa agora. Vamos!
 - *Depois:* flags `nh.sirene=true`, `nh.teoJunto=true`
 - *Objetivo no painel:* Desça à Mina Aurora e encontre o Heitor, pai do Téo, no nível quatro → `mina_aurora`
 
 ### `j07_mina_entrada`
 *Gatilho:* entrar `mina_aurora_n1` (exige nh.sirene, sem nh.minaEntrada)
 - *O nível um da mina é quente e cheira a ferro. Trilhos de carrinho correm por toda parte, e as lâmpadas de luzita tremem nas paredes.*
-- **Téo:** Por aqui! O elevador do nível três é o único caminho. Se ele estiver quebrado, vamos pela escada.
+- **Téo:** Por aqui! O elevador do nível três caiu com o desabamento. A escada do fundo é o único caminho.
 - *Um mineiro sai de um corredor lateral, sujo de pó, com a lanterna apagada. Ele aponta para baixo sem dizer nada.*
 - *Depois:* flags `nh.minaEntrada=true`
 - *Objetivo no painel:* Desça pelas escadas até o nível quatro, onde está o Heitor → `mina_aurora_n4`
 
 ### `j07_mina_medidor` · **REVIRAVOLTA 1**
 *Gatilho:* entrar `mina_aurora_n4` (exige nh.minaEntrada, sem nh.reviravolta1)
-- *No nível quatro, o desabamento prendeu três mineiros e uma mulher de casaco longo. Ela está encostada numa viga, com um Absol deitado a seus pés.*
-- **Heitor:** Téo! Você veio! Eu disse que eles não iam tirar a gente daqui antes da cota do dia.
+- *No nível quatro, o desabamento prendeu três mineiros e uma mulher de casaco longo, encostada numa viga, com um Absol aos pés.*
+- **Heitor:** Téo! Eles disseram que o resgate só chegaria depois da cota do dia. Ainda bem que você veio.
 - **Téo:** Pai? Você está ferido? O que a Aurora fez com vocês?
 - **Dra. Véspera:** Pergunte à sua empresa, menino. Ela tem um medidor bem aqui, pregado na parede, para ver quanta luz sai de cada tonelada de cristal.
-- *Na parede do fundo, uma placa de metal dourada marca a produção da semana. Ao lado, um mostrador de ponteiros registra o horário em que o sol nasceu em Alvorada. A cada tonelada extraída, o ponteiro anda um pouco mais.*
-- **Ravi:** O sol nasce mais tarde por causa do que vocês tiram daqui?
-- **Dra. Véspera:** A luzita é a raiz do cadeado do Relógio. Cada tonelada tirada da mina solta um pouco mais do cadeado, e o sol demora mais para vencer a noite.
-- **Dra. Véspera:** Eu roubava as pedras dos ginásios para tirá-las do alcance da Aurora. Não para deixar a noite durar. Para impedir que a Aurora chegasse até elas.
-- **Téo:** Eu defendi essa empresa desde o começo. Ela pagou o salário do meu pai. Agora ela o deixa preso aqui em baixo, com uma sirene que demorou para tocar.
+- *Na parede, uma placa marca a produção da semana. Ao lado, um mostrador registra a hora do nascer do sol. A cada tonelada, o ponteiro anda mais.*
+- **Ravi:** O sol nasce mais tarde por causa do que a Aurora tira daqui?
+- **Dra. Véspera:** A luzita é a raiz do cadeado do Relógio. Cada tonelada tirada daqui solta mais um pouco do cadeado, e o sol demora mais para vencer a noite.
+- **Dra. Véspera:** Eu roubava as pedras dos ginásios para tirá-las das mãos da Aurora. Se quer saber quem descobriu essa luz, pergunte ao seu professor.
+- **Téo:** Eu defendi essa empresa desde o começo, e ela pagava o salário do meu pai. Agora deixa ele preso aqui embaixo, com uma sirene atrasada.
 - **Heitor:** Eles mandaram a gente cavar mais rápido, Téo. Depois que o nível três desabou, o supervisor disse que a cota não podia parar.
-- **Téo:** Então eu não sou mais da Aurora. A partir de agora, eu estou do lado de quem está tirando vocês daqui.
+- **Téo:** Então eu não sou mais da Aurora. Vou ficar do lado de quem está tirando vocês daqui.
 - *Depois:* flags `nh.reviravolta1=true`, `nh.teoLadoCerto=true`
-- *Objetivo no painel:* Descoberta: a Companhia Aurora é quem atrasa o sol. Vá ao Forte Rochedo, ao sul da Rota 7, e procure as cartas antigas do Prof. Jatobá → `ninho_forte_rochedo`
+- *Objetivo no painel:* Descoberta: a Companhia Aurora é quem atrasa o sol. Vá ao Forte Rochedo, pela Rota 7, e procure as cartas do Prof. Jatobá no arquivo → `arquivo_forte`
 
 ### `j07_saida_mina`
 *Gatilho:* depois da cena `j07_mina_medidor`
 - *Na saída da mina, um homem de terno branco espera de braços cruzados, com um sorriso de quem já sabia o que ia acontecer.*
-- **Augusto Solano:** Heitor, Téo. Vocês fizeram um bom trabalho em manter a produção. Agora voltem para a superfície e esqueçam essa conversa.
+- **Augusto Solano:** Téo, seu pai já está subindo com a equipe de resgate. Agora volte para a superfície e esqueça essa conversa.
 - **Téo:** Eu não vou esquecer nada, Senhor Solano. Eu vi o medidor. O sol nasce mais tarde por causa da Aurora.
 - **Augusto Solano:** O sol nasce quando a luz permite, meu jovem. E a luz agora é nossa. Quem não entender isso vai aprender com o tempo.
 - *O Solano dá as costas e sai pela porta da torre. A Pipa, do lado de fora, já está com a câmera apontada para o elevador.*
@@ -893,7 +895,7 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 
 ### `j07_rota7_soraia`
 *Gatilho:* avistar `r7_soraia`
-- **Treinador:** A capoeira aqui é de graça, mas a luta é cobrada. Vamos!
+- **Treinador:** Você veio da mina e ainda quer passar pela Rota 7? Ginga antes de lutar. Vamos!
 - *Batalha* `r7_soraia`: Capoeirista Soraia, prêmio ₽1300.
   - Equipe: Timburr Nv 30 (Chute Baixo, Lançamento de Rocha, Fortalecer); Mienfoo Nv 31 (Palma de Força, Golpe Surpresa, Meia-Volta)
 
@@ -903,20 +905,20 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 - *Uma pasta de couro está marcada com "Luzita: estudos, 2010". Dentro, cartas escritas à mão por dois autores: o Prof. Jatobá e a Dra. Véspera.*
 - *As cartas falam de um cristal que vaza luz, e de uma reunião com um homem chamado Augusto Solano, que queria comprar a amostra.*
 - **Ravi:** Essas cartas são de 16 anos atrás. O professor participou disso desde o começo?
-- *O cheiro de papel velho e de cera vem das prateleiras. Um rádio antigo está ligado num canto, sem som.*
+- *O cheiro de papel velho vem das prateleiras. Um telefone antigo começa a tocar num canto da sala.*
 - *Depois:* flags `nh.arquivo=true`
-- *Objetivo no painel:* Espere o Prof. Jatobá ligar, ou procure-o no laboratório de Vila Alvorada → `lab`
+- *Objetivo no painel:* Descubra o que o Prof. Jatobá sabe sobre estas cartas. Ele está no laboratório de Vila Alvorada → `lab`
 
 ### `j07_prof_telefone` · **REVIRAVOLTA 2**
 *Gatilho:* depois da cena `j07_arquivo`
 - **Prof. Jatobá:** Ravi? Eu estava esperando você ler as cartas. Eu deveria ter contado antes. Eu queria proteger você.
-- **Prof. Jatobá:** Há dezesseis anos, eu e a Véspera descobrimos a luzita no Planalto. Eu levei a amostra para o Augusto Solano, achando que ele iria estudá-la. Ele comprou.
+- **Prof. Jatobá:** Há dezesseis anos, eu e a Véspera descobrimos a luzita no Planalto. Levei a amostra ao Augusto Solano, que disse querer estudá-la. Ele comprou.
 - **Ravi:** Então o senhor ajudou a criar a Aurora.
 - **Prof. Jatobá:** Ajudei. A primeira extração, a Noite Longa de Lamparina, saiu da minha amostra. Eu não sabia que o cristal era a raiz do cadeado.
-- **Prof. Jatobá:** Depois que eu soube, já era tarde. A Véspera saiu da empresa e passou a tirar as pedras das mãos da Aurora. Eu fiquei calado.
+- **Prof. Jatobá:** Depois que eu soube, já era tarde. A Véspera rompeu com a Aurora e passou a tirar as pedras das mãos deles. Eu fiquei calado.
 - **Ravi:** Professor, eu não vou fingir que isso não aconteceu. Mas agora eu preciso de você para chegar até o Relógio.
 - *Depois:* flags `nh.reviravolta2=true`
-- *Objetivo no painel:* Descoberta: o Prof. Jatobá ajudou a criar a Aurora. Vá à Roda de Capoeira, no Forte Rochedo, e desafie o Líder Brás → `ninho_forte_rochedo`
+- *Objetivo no painel:* Descoberta: o Prof. Jatobá ajudou a criar a Aurora. Na Roda de Capoeira, vença os faixas-pretas e desafie o Líder Brás → `roda_capoeira`
 
 ### `j07_dandara`
 *Gatilho:* avistar `g6_dandara`
@@ -932,10 +934,10 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 
 ### `j07_bras_ginasio`
 *Gatilho:* falar `bras` (exige nh.reviravolta2, exige trainers.g6_dandara, exige trainers.g6_tiao, sem badges.rochedo)
-- **Líder Brás:** Ê, camará! Abriu os três portões! O berimbau gostou de você.
-- **Líder Brás:** Agora a luta é a sério. Eu sou o último degrau antes da escalada. Quem passa daqui sobe o Paredão sem medo.
-- **Ravi:** Eu passei pelos seus três portões. Agora quero o último degrau.
-- **Líder Brás:** Então sobe, camará. Mas traz o berimbau de volta, que ele é emprestado do Mestre.
+- **Líder Brás:** Ê, camará! Passou pelos dois portões da roda! O berimbau gostou de você.
+- **Líder Brás:** Agora a luta é a sério. Quem passa por mim está pronto para o Sertão e para o Paredão.
+- **Ravi:** Eu passei pelos seus dois portões. Agora quero o último degrau.
+- **Líder Brás:** Então vem, camará. Mas devolve o berimbau depois, que ele é emprestado do Mestre.
 - *Batalha* `leader_bras`: Líder Brás, prêmio ₽3400.
   - Equipe: Machoke Nv 33 (Golpe de Caratê, Chute Baixo, Energia Focada); Hawlucha Nv 34 (Ataque de Asa, Golpe de Caratê, Pouso); Riolu Nv 35 (Palma de Força, Ataque Rápido, Contra-Ataque); Heracross Nv 36 (Quebra-Tijolo, Ataque de Chifre, Projétil de Sementes); Hitmontop Nv 37 (Giro Rápido, Chute Triplo, Ataque Rápido, Detectar)
 
@@ -943,16 +945,16 @@ Ordem do jogo. Cada segmento abre com a cena da cidade (ou do marco) e segue at�
 *Gatilho:* vencer `leader_bras`
 - **Líder Brás:** Olha só, o berimbau ficou calado de tanto respeito. A Insígnia Punho é sua. Ela deixa você escalar paredões fora da batalha.
 - *{jogador} recebeu a Insígnia Punho!*
-- **Líder Brás:** Eu não sei do sol nem da Aurora. Eu sei da luta. Mas o Prof. Jatobá, o Téo e você, vocês estão no meio de uma coisa grande demais para um forte.
-- **Líder Brás:** O Paredão está lá atrás da Rota 8, e a Graça espera você na Cidade Escarpa. Sobe com cuidado, que a pedra lá em cima é traiçoeira.
+- **Líder Brás:** Eu não entendo do sol nem da Aurora. Mas você, o Téo e o Prof. Jatobá estão no meio de uma coisa grande demais para um forte.
+- **Líder Brás:** Vá ao Sertão do Levante, pela Vila Mandacaru. Lá você acha o mapa do Paredão, e depois a Graça espera você em Escarpa.
 - *Depois:* insígnia **Insígnia Punho** · montaria `sneasler`
-- *Objetivo no painel:* Siga pela Rota 8 (escalada do Paredão) até a Cidade Escarpa → `ninho_cidade_escarpa`
+- *Objetivo no painel:* Siga pela Rota 14 até a Vila Mandacaru, no Sertão do Levante → `ninho_cidade_escarpa`
 
 ### `j07_boletim6`
 *Gatilho:* a flag `badges.rochedo` virar verdadeira (sem nh.boletim.6)
 - **Rádio Alvorada:** Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e cinquenta e um minutos. A Companhia Aurora nega qualquer relação com o atraso.
-- **Mãe:** Ravi, seis e cinquenta e um. A Aurora nega? Filho, isso quer dizer que alguém está fazendo alguma coisa. Cuidado com o que você ouve.
-- **Ravi:** Se a Aurora nega, é porque tem alguma coisa para negar. Eu vou descobrir o que é.
+- **Mãe:** Ravi, seis e cinquenta e um. A Aurora nega? Filho, quem nega assim é porque tem alguma coisa a esconder.
+- **Ravi:** Já descobri uma parte, mãe. A Aurora mede cada tonelada que tira da mina, e o sol espera por isso.
 - *Depois:* flags `nh.boletim.6=true`, `nh.sol=6h51` · só conta a história
 
 ## 08 · Pedra pintada
