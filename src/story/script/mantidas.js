@@ -111,6 +111,15 @@ const cenaNova = (t) => ({
 
 // portões dos ginásios (abrem quando os dois aprendizes caem; o líder espera atrás deles)
 const PORTOES = [antiga('cap07', 'roda_portoes', 0), antiga('cap08', 'mina_paredes', 0), antiga('cap09', 'torre_catavento', 0)];
+// falas dos portões de Cidade Escarpa (mina_paredes) e do Mirante (torre_catavento), no tom da história nova
+PORTOES[1].falas = [
+  ['narrador', 'Os mineiros afastam a última parede de escombros com picaretas. O barulho ecoa pelo túnel inteiro.'],
+  ['graca', 'Pronto, a montanha abriu caminho. Agora a conversa é lá dentro, e ela não vai ser fácil.'],
+];
+PORTOES[2].falas = [
+  ['narrador', 'Os cata-ventos da torre param um a um. O vento que sobrava desce pelo tubo central e some.'],
+  ['celeste', 'Você passou pelos meus pilotos e chegou ao topo. Agora o vento decide só metade da luta. A outra metade é sua.'],
+];
 
 // Mina Aurora, nível 2: os Alfa de cristal (lute ao lado do Téo). Sem ela a rampa para o nível 3 não abre (minaN2).
 const MINA = [

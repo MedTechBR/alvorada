@@ -17,10 +17,10 @@ export default {
       local: 'ilha_basalto',
       gatilho: { tipo: 'entrar', alvo: ['ilha_basalto', 'vila_termas'], requer: ['badges.escarpa'], semFlag: ['nh.chegouBrasas'] },
       falas: [
-        ['narrador', 'Ilha do Basalto: rochas negras, fontes de água quente saindo do chão e um cheiro forte de enxofre que chega até o barco.'],
-        ['narrador', 'Lá em cima, o vulcão Tição solta uma fumaça fina. Os moradores dizem que, desde a semana passada, o ronco do vulcão não para mais.'],
-        ['jogador', 'Se o Ébano está aqui, deve ser para o vulcão. A Graça disse que ele quer acordá-lo.'],
-        ['jogador', 'Se o vulcão está acordando, a Graça não exagerava quando falou do vento.'],
+        ['narrador', 'Ilha do Basalto: rochas negras, fontes de água quente e um cheiro forte de enxofre que chega até o barco.'],
+        ['narrador', 'Lá em cima, o vulcão Tição solta uma fumaça fina. Os moradores dizem que o ronco não para desde a semana passada.'],
+        ['jogador', 'Se o Ébano está aqui, deve ser por causa do vulcão. A Graça disse que ele quer acordá-lo.'],
+        ['jogador', 'Se o vulcão está acordando, a Graça não exagerava quando falou da cinza.'],
         ['narrador', 'Uma nuvem de vapor sobe das fontes quentes e se espalha pelas rochas, molhando as suas botas.'],
       ],
       depois: {
@@ -33,11 +33,11 @@ export default {
       local: 'vulcao_ticao',
       gatilho: { tipo: 'entrar', alvo: 'vulcao_ticao', requer: ['nh.chegouBrasas'], semFlag: ['nh.ebanoBrasas'] },
       falas: [
-        ['narrador', 'Na borda da cratera, um trator de perfuração treme sobre o chão quente. Dois recrutas empurram um tubo de metal para dentro da rocha.'],
-        ['recruta', 'Mais uma camada e o vulcão acorda. Aí a nuvem vai para o alto e o vento do planalto muda de direção.'],
-        ['ebano', 'Admin Ébano. Você é insistente. Se o vulcão acordar, o ar quente sobe e a tempestade do Planalto cai sobre o Relógio. Não há mais nada para segurar a noite.'],
-        ['jogador', 'A tempestade é a sua obra? Por que vocês querem o ar do Relógio em movimento?'],
-        ['ebano', 'Porque a Véspera precisa da tempestade parada para o Relógio ficar fechado. Ou abri-lo sem ninguém vendo. Agora, saia do caminho.'],
+        ['narrador', 'Na borda da cratera, um trator de perfuração treme sobre o chão quente. Dois recrutas empurram um tubo para dentro da rocha.'],
+        ['recruta', 'Mais uma camada e o vulcão acorda. Aí a cinza sobe para o céu e o Planalto some no escuro.'],
+        ['ebano', 'Admin Ébano. Você é insistente. Quando o Tição acordar, a cinza cobre o Planalto e ninguém sobe ao Relógio.'],
+        ['jogador', 'A cinza é obra sua? Por que a Crepúsculo quer o Planalto no escuro?'],
+        ['ebano', 'Porque a Véspera quer o Relógio longe de quem vai abri-lo. Agora, saia do caminho.'],
       ],
       depois: {
         batalha: {
@@ -57,11 +57,11 @@ export default {
       local: 'casa_vulcanologa',
       gatilho: { tipo: 'vencer', alvo: 'c10_ebano' },
       falas: [
-        ['vulcanologa', 'Eu registro o vulcão há vinte anos. Essa tempestade sobre o Planalto nunca foi do vulcão, e é isso que me preocupa.'],
-        ['vulcanologa', 'O Relógio puxa o ar frio de cima para dentro dele, todas as noites. O calor do Tição é o contrapeso que empurra o ar de volta. Sem ele, o vento para e a tempestade fica parada.'],
-        ['vulcanologa', 'O Templo da Chama é o lugar onde o calor do vulcão chega mais perto da superfície. Se alguém acender a chama lá em cima, o contrapeso volta e a tempestade se desfaz.'],
-        ['jogador', 'Então o Ébano queria acordar o vulcão para manter a tempestade no lugar.'],
-        ['vulcanologa', 'Ou para fazer tudo cair de uma vez. Não sei qual dos dois é pior. Vá ao Templo, leve a chama e não deixe ninguém apagar.'],
+        ['vulcanologa', 'Eu registro o vulcão há vinte anos. A tempestade sobre o Planalto nunca veio do Tição, e isso me preocupa.'],
+        ['vulcanologa', 'O Relógio puxa o ar de cima para dentro dele, toda noite. O calor do Tição empurra esse ar de volta. Sem calor, a tempestade fica parada.'],
+        ['vulcanologa', 'O Templo da Chama fica onde o calor do vulcão chega mais perto da superfície. Se alguém acender a pira, o ar volta a girar.'],
+        ['jogador', 'Então o Ébano quer o Planalto no escuro, e a tempestade é a cortina dele.'],
+        ['vulcanologa', 'Ou quer que ninguém chegue ao Relógio antes dele. Não sei qual dos dois é pior. Vá ao Templo e acenda a pira.'],
       ],
       depois: {
         flags: { 'nh.explicouTempestade': true },
@@ -76,14 +76,14 @@ export default {
       local: 'templo_chama_1',
       gatilho: { tipo: 'entrar', alvo: 'templo_chama_1', requer: ['nh.explicouTempestade'], semFlag: ['nh.temploChama'] },
       falas: [
-        ['narrador', 'O Templo da Chama é uma escada de pedra negra que sobe pelo lado de dentro do vulcão. Em cada andar, uma fresta mostra o brilho laranja da lava lá embaixo.'],
-        ['narrador', 'No topo, uma pira de pedra está apagada há séculos. Ao lado dela, um Pokémon de fogo, pequeno e com a respiração ofegante, espera por alguém que acenda a chama.'],
+        ['narrador', 'O Templo da Chama é uma escada de pedra negra por dentro do vulcão. Em cada andar, uma fresta mostra a lava lá embaixo.'],
+        ['narrador', 'No topo, uma pira está apagada há séculos. Um Pokémon de fogo, pequeno e ofegante, espera por alguém que a acenda.'],
         ['jogador', 'Vou acender a chama. Vamos juntos.'],
-        ['narrador', 'A pira se acende de uma vez, com um estalo grave. O calor sobe pelas paredes, e a tempestade lá em cima, no Planalto, começa a girar ao contrário.'],
+        ['narrador', 'A pira se acende de uma vez, com um estalo grave. O calor sobe pelas paredes, e a tempestade lá em cima começa a girar ao contrário.'],
       ],
       depois: {
         flags: { 'nh.temploChama': true, 'nh.tempestadeFim': true, brasas_resolvido: true },
-        objetivo: { texto: 'Voe com o Corviknight até o Mirante dos Ventos, no alto do Planalto: a tempestade acabou', alvo: 'ninho_mirante_ventos' },
+        objetivo: { texto: 'Suba ao Planalto dos Ventos pela Rota 9 e chegue ao Mirante dos Ventos: a tempestade acabou', alvo: 'ninho_mirante_ventos' },
       },
     },
     {
@@ -92,8 +92,8 @@ export default {
       gatilho: { tipo: 'apos', cena: 'j10_templo_chama' },
       falas: [
         ['vulcanologa', 'Olha lá em cima! O céu do Planalto abriu. Pela primeira vez em duas semanas dá para ver o topo do Relógio.'],
-        ['jogador', 'E o Relógio, ainda está fechado?'],
-        ['vulcanologa', 'Está. Mas agora dá para ver que o cadeado está girando. Não tem mais o vento para segurar.'],
+        ['jogador', 'E o Relógio? Ainda está fechado?'],
+        ['vulcanologa', 'Está fechado, mas o cadeado está girando sozinho. Quem estiver lá em cima vai sentir isso.'],
       ],
       depois: { ambiente: true },
     },
