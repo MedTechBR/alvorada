@@ -250,6 +250,16 @@ export const ELENCO = [
     apos: ['A Companhia mandou a gente vigiar o cristal. Só que o cristal vigia a gente de volta.'] },
   { id: 'c11_vigilante2', quem: 'treinador', nome: 'Vigilante Aurora', look: LOOKS.aurora, spot: 'vig2', visao: 5,
     apos: ['Não me pergunte o que é o cristal. Eu só recebo o salário.'] },
+  // ---------------- Liga do Zênite (cap12): Elite e Campeã; Rota 12 ----------------
+  { id: 'elite_aurelio', quem: 'aurelio', nome: 'Aurélio da Madrugada', look: LOOKS.ebano, spot: 'elite_aurelio', visao: 4 },
+  { id: 'elite_clarice', quem: 'clarice', nome: 'Clarice da Manhã', look: LOOKS.lia, spot: 'elite_clarice', visao: 4 },
+  { id: 'elite_brasa', quem: 'brasa', nome: 'Seu Brasa do Meio-dia', look: LOOKS.operario, spot: 'elite_brasa', visao: 4 },
+  { id: 'elite_ibere', quem: 'ibere', nome: 'Iberê do Entardecer', look: LOOKS.observador, spot: 'elite_ibere', visao: 4 },
+  { id: 'campea_dalva', quem: 'dalva', nome: 'Campeã Dalva', look: { preset: 'treinadora', hairStyle: 'long', hair: '#e8e4dc', skin: '#f6c9a2', outfit: 'coat', top: '#3a6ad8', trim: '#f4f4f0', legs: 'skirt', pants: '#2a3a5a', shoes: '#1a1a22', bagStyle: null }, spot: 'campea_dalva', visao: 4 },
+  { id: 'r12_sonia', quem: 'treinador', nome: 'Veterana Sônia', look: LOOKS.campista, spot: 'r12_sonia', visao: 6,
+    apos: ['A Liga só recebe quem sobe pelo Caminho do Zênite. Você subiu.'] },
+  { id: 'r12_osvaldo', quem: 'treinador', nome: 'Veterano Osvaldo', look: LOOKS.operario, spot: 'r12_osvaldo', visao: 6,
+    apos: ['Quarenta anos de neve e vento. Ainda perco pro gelo.'] },
 ];
 
 // Treinadores das regiões novas do mundo grande (cada região traz o seu arquivo; veja docs/construir-regiao.md)

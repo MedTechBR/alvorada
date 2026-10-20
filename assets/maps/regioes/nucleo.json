@@ -358,6 +358,21 @@
    306,
    78,
    "left"
+  ],
+  "zenite_entrada": [
+   300,
+   15,
+   "up"
+  ],
+  "r12_sonia": [
+   292,
+   34,
+   "right"
+  ],
+  "r12_osvaldo": [
+   306,
+   26,
+   "left"
   ]
  },
  "ninhos": [
@@ -613,6 +628,12 @@
    "x": 293,
    "y": 83,
    "text": "RELÓGIO DE PEDRA\nOito menires, uma chave para cada ginásio."
+  },
+  {
+   "kind": "estacao",
+   "x": 296,
+   "y": 1,
+   "to": "portao_liga"
   }
  ],
  "people": [
@@ -1224,6 +1245,344 @@
      "left"
     ]
    }
+  },
+  {
+   "id": "portao_liga",
+   "name": "Portão da Liga — Cidadela do Zênite",
+   "rows": [
+    "wwwwwwwwwwwwwwwwwwww",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wffffffffffffffffffw",
+    "wwwwwwwwwmmwwwwwwwww"
+   ],
+   "objects": [
+    {
+     "kind": "lamp",
+     "x": 2,
+     "y": 2
+    },
+    {
+     "kind": "lamp",
+     "x": 17,
+     "y": 2
+    },
+    {
+     "kind": "sign",
+     "x": 9,
+     "y": 1,
+     "text": "LIGA ALVORADA\nCidadela do Zênite. Oito insígnias para entrar. Quatro Elite e uma Campeã."
+    }
+   ],
+   "decor": [],
+   "people": [],
+   "spots": {
+    "portao_entrada": [
+     9,
+     11,
+     "up"
+    ]
+   },
+   "warps": [
+    {
+     "x": 9,
+     "y": 2,
+     "dir": "up",
+     "to": "sala_madrugada_entrada"
+    }
+   ]
+  },
+  {
+   "id": "sala_madrugada",
+   "name": "Liga — Sala da Madrugada — Aurélio",
+   "rows": [
+    "wwwwwwwwwwwwwwww",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wwwwwwwmmwwwwwww"
+   ],
+   "objects": [
+    {
+     "kind": "lamp",
+     "x": 2,
+     "y": 2
+    },
+    {
+     "kind": "lamp",
+     "x": 13,
+     "y": 2
+    },
+    {
+     "kind": "sign",
+     "x": 5,
+     "y": 1,
+     "text": "Sala da Madrugada — Aurélio"
+    }
+   ],
+   "decor": [],
+   "people": [],
+   "spots": {
+    "sala_madrugada_entrada": [
+     7,
+     9,
+     "up"
+    ],
+    "elite_aurelio": [
+     7,
+     4,
+     "down"
+    ]
+   },
+   "warps": [
+    {
+     "x": 7,
+     "y": 1,
+     "dir": "up",
+     "to": "sala_manha_entrada"
+    }
+   ]
+  },
+  {
+   "id": "sala_manha",
+   "name": "Liga — Sala da Manhã — Clarice",
+   "rows": [
+    "wwwwwwwwwwwwwwww",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wwwwwwwmmwwwwwww"
+   ],
+   "objects": [
+    {
+     "kind": "lamp",
+     "x": 2,
+     "y": 2
+    },
+    {
+     "kind": "lamp",
+     "x": 13,
+     "y": 2
+    },
+    {
+     "kind": "sign",
+     "x": 5,
+     "y": 1,
+     "text": "Sala da Manhã — Clarice"
+    }
+   ],
+   "decor": [],
+   "people": [],
+   "spots": {
+    "sala_manha_entrada": [
+     7,
+     9,
+     "up"
+    ],
+    "elite_clarice": [
+     7,
+     4,
+     "down"
+    ]
+   },
+   "warps": [
+    {
+     "x": 7,
+     "y": 1,
+     "dir": "up",
+     "to": "sala_meio_dia_entrada"
+    }
+   ]
+  },
+  {
+   "id": "sala_meio_dia",
+   "name": "Liga — Sala do Meio-dia — Seu Brasa",
+   "rows": [
+    "wwwwwwwwwwwwwwww",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wwwwwwwmmwwwwwww"
+   ],
+   "objects": [
+    {
+     "kind": "lamp",
+     "x": 2,
+     "y": 2
+    },
+    {
+     "kind": "lamp",
+     "x": 13,
+     "y": 2
+    },
+    {
+     "kind": "sign",
+     "x": 5,
+     "y": 1,
+     "text": "Sala do Meio-dia — Seu Brasa"
+    }
+   ],
+   "decor": [],
+   "people": [],
+   "spots": {
+    "sala_meio_dia_entrada": [
+     7,
+     9,
+     "up"
+    ],
+    "elite_brasa": [
+     7,
+     4,
+     "down"
+    ]
+   },
+   "warps": [
+    {
+     "x": 7,
+     "y": 1,
+     "dir": "up",
+     "to": "sala_entardecer_entrada"
+    }
+   ]
+  },
+  {
+   "id": "sala_entardecer",
+   "name": "Liga — Sala do Entardecer — Iberê",
+   "rows": [
+    "wwwwwwwwwwwwwwww",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wwwwwwwmmwwwwwww"
+   ],
+   "objects": [
+    {
+     "kind": "lamp",
+     "x": 2,
+     "y": 2
+    },
+    {
+     "kind": "lamp",
+     "x": 13,
+     "y": 2
+    },
+    {
+     "kind": "sign",
+     "x": 5,
+     "y": 1,
+     "text": "Sala do Entardecer — Iberê"
+    }
+   ],
+   "decor": [],
+   "people": [],
+   "spots": {
+    "sala_entardecer_entrada": [
+     7,
+     9,
+     "up"
+    ],
+    "elite_ibere": [
+     7,
+     4,
+     "down"
+    ]
+   },
+   "warps": [
+    {
+     "x": 7,
+     "y": 1,
+     "dir": "up",
+     "to": "salao_campea_entrada"
+    }
+   ]
+  },
+  {
+   "id": "salao_campea",
+   "name": "Liga — Salão da Campeã — Dalva",
+   "rows": [
+    "wwwwwwwwwwwwwwww",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wffffffffffffffw",
+    "wwwwwwwmmwwwwwww"
+   ],
+   "objects": [
+    {
+     "kind": "lamp",
+     "x": 2,
+     "y": 2
+    },
+    {
+     "kind": "lamp",
+     "x": 13,
+     "y": 2
+    },
+    {
+     "kind": "sign",
+     "x": 5,
+     "y": 1,
+     "text": "Salão da Campeã — Dalva"
+    }
+   ],
+   "decor": [],
+   "people": [],
+   "spots": {
+    "salao_campea_entrada": [
+     7,
+     9,
+     "up"
+    ],
+    "campea_dalva": [
+     7,
+     4,
+     "down"
+    ]
+   },
+   "warps": []
   }
  ],
  "warps": [
