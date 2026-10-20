@@ -68,7 +68,7 @@ const PARS = /* glsl */`
     // pedra clara da praça, com juntas apagadas
     vec2 f = abs(fract(p / 16.0 + 0.5) - 0.5);
     float junta = 1.0 - smoothstep(0.0, 0.035, min(f.x, f.y));
-    vec3 pd = mix(${lin('#bdb39e')}, ${lin('#d6cdb8')}, smoothstep(0.45, 0.9, A0.g)) * (0.95 + 0.08 * n2.r);
+    vec3 pd = mix(${lin('#b3a993')}, ${lin('#cbc2ad')}, smoothstep(0.45, 0.9, A0.g)) * (0.95 + 0.08 * n2.r);
     pd *= 1.0 - junta * 0.1;
     vec3 ar = ${lin('#ecd9a4')} * (0.94 + 0.1 * n2.r);
     vec2 fm = fract(p / vec2(16.0, 4.0));
