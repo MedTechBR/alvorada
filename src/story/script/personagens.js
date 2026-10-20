@@ -63,6 +63,7 @@ export const PERSONAGENS = {
   cobra: { nome: 'Mestre Cobra', papel: 'morador' },
   pedrina: { nome: 'Dona Pedrina', papel: 'morador' },
   nina: { nome: 'Nina', papel: 'morador' },
+  aruan: { nome: 'Monja Aruã', papel: 'morador' }, // Templo das Raízes (Jandaias, capítulo da história nova)
   vigia: { nome: 'O Último Vigia', papel: 'morador' },
 
   // Antagonistas
