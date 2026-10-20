@@ -244,7 +244,7 @@ export class Viagem {
       if (!vis[n.id]) { vis[n.id] = true; g.toast?.(`Ninho de pouso: ${n.nome}. Dá para voltar voando.`); }
     }
   }
-  podeVoar() { const g = this.g; return !!(g.mount?.has?.('voar') || g.flags?.mounts?.voar || new URLSearchParams(location.search).has('teste')); }
+  podeVoar() { const g = this.g; return !!(g.mount?.has?.('voar') || new URLSearchParams(location.search).has('teste')); } // voar: a insígnia da Rocha (escarpa) já foi conferida em mounts.has
 
   // Tela clássica "Voar para…": abas por continente, lista dos ninhos visitados e o mapa com o ponto escolhido
   async abrirVoo() {
