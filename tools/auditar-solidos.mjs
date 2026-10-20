@@ -99,7 +99,9 @@ function auditar(R, mundo) {
   // ilhado: do bloco do personagem não dá para chegar a pelo menos 40 blocos livres (porta conta como passagem; balcão e mesa não tapam)
   // balcão, mesa e máquina são de interação: o jogador fala por cima deles, então o alcance passa por eles
   const BALCAO = /counter|table|machine|desk|balcao/i;
-  const livre = (tx, ty) => { const q = pos(tx, ty); if (q < 0 || SOLID.has(S.tiles[q])) return false; if (!objDe.has(q) && S.block[q] !== 1) return true; return !!objDe.has(q) && BALCAO.test(objDe.get(q).kind); };
+  // portão que a história abre (stoneDoor com "flag": as grades da Roda de Capoeira e da Mina) também é passagem
+  const PORTAO = (o) => !!o && (o.flag != null || o.aberto === false) && /door|gate|portao/i.test(o.kind);
+  const livre = (tx, ty) => { const q = pos(tx, ty); if (q < 0 || SOLID.has(S.tiles[q])) return false; if (!objDe.has(q) && S.block[q] !== 1) return true; return !!objDe.has(q) && (BALCAO.test(objDe.get(q).kind) || PORTAO(objDe.get(q))); };
   // alcança a porta da sala (ou 40 blocos livres, se estiver ao ar livre)?
   const alcanca = (tx, ty) => {
     const vistos = new Set([`${tx},${ty}`]), fila = [[tx, ty]];
