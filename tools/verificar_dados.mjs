@@ -187,8 +187,14 @@ caso('Pedra do Trovão em Pikachu', useItem(pika, 'thunderStone').events[0]?.to,
 const eevee = new Mon(133, 20, { friendship: 200 });
 caso('Eevee com amizade, de dia → Espeon; de noite → Umbreon',
   [evolutionFor(eevee, 'level', { time: 'day' })?.to, evolutionFor(eevee, 'level', { time: 'night' })?.to], [196, 197]);
-const onix = new Mon(95, 20);
-caso('Onix + Revestimento Metálico (troca adaptada) → Steelix', useItem(onix, 'metalCoat').events[0]?.to, 208);
+const onix = new Mon(95, 30);
+onix.item = 'metalCoat';
+caso('Onix segurando Revestimento Metálico, nível 30 → Steelix (o item não é gasto)', evolutionFor(onix, 'level', {})?.to, 208);
+caso('Onix sem o item não evolui por nível', evolutionFor(new Mon(95, 30), 'level', {}), null);
+caso('Onix: usar o Revestimento Metálico não evolui mais (troca substituída)', useItem(new Mon(95, 30), 'metalCoat').events[0]?.to, undefined);
+const kad = new Mon(64, 20); kad.moves = ['confusion', 'psybeam', 'psychic', 'calmMind'];
+caso('Kadabra com 4 golpes Psíquicos → Alakazam (sem troca)', evolutionFor(kad, 'level', {})?.to, 65);
+caso('Haunter de noite no Cemitério das Velas → Gengar', evolutionFor(new Mon(93, 30), 'level', { time: 'night', lugar: 'cemiterio_velas' })?.to, 94);
 const leg = Mon.from({ dex: 4, level: 8, ivs: [1, 2, 3, 4, 5, 6], nick: null, xp: 300, moves: ['scratch', 'golpeQueNaoExiste'], status: null, hp: 10, uid: 'abc' });
 caso('Save antigo migra (IVs, golpes válidos, EVs zerados, não shiny)', [leg.ivs, leg.moves, leg.evs, leg.shiny, leg.hp, leg.uid], [[1, 2, 3, 4, 5, 6], ['scratch'], [0, 0, 0, 0, 0, 0], false, 10, 'abc']);
 const back = Mon.from(JSON.parse(JSON.stringify(m)));

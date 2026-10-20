@@ -160,6 +160,7 @@ export const ITEMS = {
   powerAnklet: I('Tornozeleira do Poder', 'Power Anklet', 'held', 3000, { hold: true, evBonus: [0, 0, 0, 0, 0, 8], speedMult: 0.5, desc: '+8 EVs de Velocidade por vitória; Velocidade pela metade.' }),
   metronome: I('Metrônomo', 'Metronome', 'held', 4000, { hold: true, metronome: true, desc: 'Usar o mesmo golpe em sequência aumenta o dano (até ×2).' }),
   heavyDutyBoots: I('Botas Resistentes', 'Heavy-Duty Boots', 'held', 4000, { hold: true, ignoreHazards: true, desc: 'Ignora armadilhas espalhadas no chão.' }),
+  ironBall: I('Bola de Ferro', 'Iron Ball', 'held', 4000, { hold: true, desc: 'Muito pesada. Gurdurr evolui ao subir de nível segurando-a.' }),
   safetyGoggles: I('Óculos de Proteção', 'Safety Goggles', 'held', 4000, { hold: true, powderImmune: true, weatherImmune: true, desc: 'Imune a pós e ao dano do clima.' }),
   protectivePads: I('Almofadas Protetoras', 'Protective Pads', 'held', 4000, { hold: true, noContactEffects: true, desc: 'Protege dos efeitos de contato.' }),
   // +20% no golpe do tipo
@@ -236,6 +237,10 @@ export const ITEMS = {
 // (crowned), itens que mudam a forma ao serem usados (formChange: { dex, forms }) e os itens de evolução que faltavam.
 // O que já está escrito à mão acima vale mais (nome, preço e descrição).
 for (const [id, it] of Object.entries(ITENS)) if (!ITEMS[id]) ITEMS[id] = it;
+// Itens de evolução que nos jogos são SEGURADOS (Protetor, Escama de Dragão...): dá para segurar e evoluir por nível
+// (src/mechanics/evolve.js, regra `hold`). Continuam sendo itens de evolução para o que mais já os usava.
+for (const k of ['prismScale', 'dragonScale', 'reaperCloth', 'protector', 'electirizer', 'magmarizer', 'dubiousDisc', 'upGrade', 'deepSeaTooth', 'deepSeaScale'])
+  if (ITEMS[k]) ITEMS[k] = { ...ITEMS[k], hold: true };
 export const MEGA_STONES = Object.keys(ITEMS).filter((k) => ITEMS[k].megaStone);
 
 // ---------------- MTs: uma por golpe, reutilizáveis (como em Scarlet/Violet). Id: tm001…tm229.

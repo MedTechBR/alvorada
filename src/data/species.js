@@ -36,9 +36,50 @@ for (const [k, raw] of Object.entries(ESPECIES)) {
     s.forms[fid] = o;
   }
 }
+// Evoluções que nos jogos dependem de troca (ou de item que se troca) ganham um jeito de subir de nível que combina com
+// a espécie. A regra original de troca continua, para a troca online (src/net/trade.js). Tabela completa, com o motivo,
+// em docs/obtencao.md. Chaves: dex de origem → regra { to, level, hold?, place?, time?, friendship?, movesOfType?, partySpecies? }.
+const EVO_ALTERNATIVAS = [
+  [64, { to: 65, level: 16, movesOfType: { type: 'psychic', n: 4 } }],          // Kadabra: 4 golpes Psíquicos sabidos
+  [64, { to: 65, time: 'night', friendship: 160 }],                              // Kadabra: de noite com amizade alta
+  [61, { to: 186, level: 25, hold: 'kingsRock' }],                                // Poliwhirl: segurando Rocha do Rei
+  [67, { to: 68, level: 28, place: ['forte_rochedo'] }],                          // Machoke: subindo de nível no Forte Rochedo (ginásio de luta)
+  [75, { to: 76, level: 25, place: ['vulcao_ticao', 'mina_aurora_n1', 'mina_aurora_n2', 'mina_aurora_n3', 'mina_aurora_n4'] }], // Graveler: no vulcão ou na mina
+  [79, { to: 199, level: 37, hold: 'kingsRock' }],                                // Slowpoke: segurando Rocha do Rei
+  [93, { to: 94, level: 25, time: 'night', place: ['cemiterio_velas'] }],        // Haunter: de noite no Cemitério das Velas
+  [95, { to: 208, level: 30, hold: 'metalCoat' }],                                // Onix: segurando Revestimento Metálico
+  [112, { to: 464, level: 42, hold: 'protector' }],                               // Rhydon: segurando Protetor
+  [117, { to: 230, level: 40, hold: 'dragonScale' }],                             // Seadra: segurando Escama de Dragão
+  [123, { to: 212, level: 30, hold: 'metalCoat' }],                               // Scyther: segurando Revestimento Metálico
+  [125, { to: 466, level: 30, hold: 'electirizer' }],                             // Electabuzz: segurando Eletrizador
+  [126, { to: 467, level: 30, hold: 'magmarizer' }],                              // Magmar: segurando Magmatizador
+  [137, { to: 233, level: 20, hold: 'upGrade' }],                                 // Porygon: segurando Melhoria
+  [233, { to: 474, level: 40, hold: 'dubiousDisc' }],                             // Porygon2: segurando Disco Duvidoso
+  [349, { to: 350, level: 30, hold: 'prismScale' }],                              // Feebas: segurando Escama Prisma
+  [356, { to: 477, level: 37, hold: 'reaperCloth' }],                             // Dusclops: segurando Tecido Ceifador
+  [366, { to: 367, level: 25, hold: 'deepSeaTooth' }],                            // Clamperl: segurando Dente do Mar Profundo
+  [366, { to: 368, level: 25, hold: 'deepSeaScale' }],                            // Clamperl: segurando Escama do Mar Profundo
+  [525, { to: 526, level: 40, place: ['fenda_prismatica', 'fenda_prismatica_3'] }], // Boldore: na fenda de cristal
+  [533, { to: 534, level: 25, hold: 'ironBall' }],                                // Gurdurr: segurando Bola de Ferro (peso)
+  [588, { to: 589, level: 30, partySpecies: 616 }],                               // Karrablast: com um Shelmet na equipe
+  [616, { to: 617, level: 30, partySpecies: 588 }],                               // Shelmet: com um Karrablast na equipe
+  [682, { to: 683, level: 30, friendship: 160 }],                                 // Spritzee: amizade alta
+  [684, { to: 685, level: 30, friendship: 160 }],                                 // Swirlix: amizade alta
+  [708, { to: 709, level: 30, time: 'night', place: ['bosque_sussurrante', 'mata_jequitibas'] }], // Phantump: de noite na floresta
+  [710, { to: 711, level: 35, time: 'night', place: ['bosque_sussurrante', 'mata_jequitibas'] }], // Pumpkaboo: de noite na floresta
+];
+for (const [de, regra] of EVO_ALTERNATIVAS) {
+  const pai = SPECIES[de];
+  if (!pai) continue;
+  const velho = pai.evo;
+  pai.evo = [...velho, regra];
+  pai.evolve = byLevel(pai.evo);
+  for (const f of Object.values(pai.forms)) if (f.evo === velho) { f.evo = pai.evo; f.evolve = byLevel(f.evo); }
+}
+
 // Compatibilidade: `evolve` = primeira evolução por nível ({ level, to }), como no formato antigo.
 function byLevel(evo) {
-  const e = evo.find((e) => e.level && !e.item && !e.friendship && !e.move && !e.moveType && !e.time && !e.gender && !e.rain && !e.partyType && !e.region && !e.partySpecies && !e.natures && e.atkDef == null && e.split == null);
+  const e = evo.find((e) => e.level && !e.item && !e.friendship && !e.move && !e.moveType && !e.time && !e.gender && !e.rain && !e.partyType && !e.region && !e.partySpecies && !e.natures && e.atkDef == null && e.split == null && !e.hold && !e.place && !e.movesOfType && !e.trade);
   return e ? { level: e.level, to: e.to, form: e.form ?? null } : undefined;
 }
 

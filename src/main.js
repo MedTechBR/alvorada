@@ -358,7 +358,12 @@ class Game {
     }
     this.hudLead(); this.hudMoves();
   }
-  #evoCtx() { return { partyTypes: this.party.flatMap((m) => m.types), partySpecies: this.party.map((m) => m.dex) }; }
+  // lugar: id da sala ou da área onde o jogador está (evoluções que pedem um lugar, como Machoke no Forte Rochedo)
+  #evoCtx() {
+    const { x, y } = this.player;
+    const lugar = (this.map.interiorAt(x, y) ?? this.map.areaAt(x, y))?.id ?? null;
+    return { partyTypes: this.party.flatMap((m) => m.types), partySpecies: this.party.map((m) => m.dex), lugar };
+  }
   #xpEvents(mon, ev, main) {
     for (const v of ev) {
       if (v.type === 'level') {
