@@ -1,5 +1,5 @@
-// Barreiras da progressão no mundo (dados em barreiras-dados.js): grava os blocos sólidos no mapa, desenha uma faixa
-// listrada em cada uma e avisa quando o jogador encosta. Chamado pelo roteiro a cada 0,5 s e ao trocar de mapa.
+// Barreiras da progressão no mundo (dados em barreiras-dados.js): grava os blocos sólidos no mapa, desenha uma cerca
+// de obra em cada bloqueio (véu suave na tempestade e na neblina) e avisa quando o jogador encosta. Chamado pelo roteiro a cada 0,5 s e ao trocar de mapa.
 import * as PIXI from 'pixi.js';
 import { BARREIRAS, TEMPESTADES, NEVOAS, aplicar, barreiraEm, ativa, assinatura } from './barreiras-dados.js';
 
@@ -27,11 +27,22 @@ export class Barreiras {
     for (const d of [...BARREIRAS, ...TEMPESTADES, ...NEVOAS]) {
       if (d.mundo !== m.id) continue;
       if (!d.rects || !ativa(d, f)) continue;
-      const cor = d.liberaPor ? 0xf2c03a : d.ate && TEMPESTADES.includes(d) ? 0x6b5a8a : 0xbfd8e8;
+      const zona = TEMPESTADES.includes(d) || NEVOAS.includes(d);
       for (const [x, y, w, h] of d.rects) {
         const gfx = new PIXI.Graphics();
-        gfx.rect(x * T, y * T, w * T, h * T).fill({ color: cor, alpha: d.liberaPor ? 0.55 : 0.4 });
-        for (let k = -h * T; k < w * T; k += 8) gfx.moveTo(x * T + k, y * T).lineTo(x * T + k + h * T, y * T + h * T).stroke({ width: 3, color: 0x2a1a10, alpha: 0.5 });
+        if (zona) {
+          // tempestade e neblina: só um véu suave, sem desenho que vaze do retângulo
+          gfx.rect(x * T, y * T, w * T, h * T).fill({ color: TEMPESTADES.includes(d) ? 0x5a4a7a : 0xdfeaf2, alpha: 0.28 });
+        } else {
+          // bloqueio de cidade: cerca de obra (corrimão e estacas) dentro do retângulo
+          const hor = w >= h, n = hor ? w : h;
+          for (let i = 0; i < n; i++) {
+            const cx = (x + (hor ? i : w / 2)) * T + (hor ? T / 2 : 0), cy = (y + (hor ? h / 2 : i)) * T + (hor ? 0 : T / 2);
+            gfx.rect(cx - 2, cy - 5, 4, 10).fill({ color: 0x6a4424 });
+          }
+          if (hor) gfx.rect(x * T, (y + h / 2) * T - 2, w * T, 4).fill({ color: 0xe8a43a });
+          else gfx.rect((x + w / 2) * T - 2, y * T, 4, h * T).fill({ color: 0xe8a43a });
+        }
         gfx.zIndex = -1;
         g.world.addChildAt(gfx, 1);
         this.gfx.push(gfx);
