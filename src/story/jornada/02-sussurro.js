@@ -250,7 +250,7 @@ export default {
       falas: [
         ['lia', 'Chegou ao centro da teia! Pouca gente chega sem ser puxada de volta pelo Spinarak. Ele está meio decepcionado.'],
         ['lia', 'Inseto é pequeno, é quieto, é fácil de ignorar. E é por isso que ganha. Vamos lá!'],
-        ['jogador', 'Eu estou pronto, Lia. Mas antes me diz: a sua estufa sempre foi assim, tão escura?'],
+        ['jogador', 'Estou pronto, Lia. Mas antes: por que a estufa está tão escura hoje?'],
         ['lia', 'Não. Antes a estufa pegava sol logo cedo. Agora o sol nasce tarde e as plantas sofrem.'],
       ],
       depois: {
