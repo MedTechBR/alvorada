@@ -7,7 +7,7 @@ export const ROUTE_TRAINERS = [
   {
     id: 'r1_caio', look: 'youngster', name: 'Jovem Caio', spot: 'r1_caio', sight: 5,
     team: [[659, 3], [396, 4]], money: 140,
-    intro: ['Ei, você aí! Treinador novo na trilha? Então vamos batalhar!'],
+    intro: ['Ei, você aí! Está começando a jornada agora? Então vamos batalhar!'],
     win: ['Puxa! Meu Bunnelby cavou, cavou… e não adiantou nada.'],
     after: ['Os Campos de Lúmen são cheios de Pokémon no mato alto. Chegar devagar ajuda a pegar um distraído!'],
   },
@@ -50,9 +50,9 @@ export const LEADER1 = {
   team: [[659, 11], [915, 12], [216, 14]], money: 1200,
   needs: ['g1_icaro', 'g1_rui'],
   prize: { potion: 3, pokeball: 5, oran: 2 },
-  locked: ['Opa, calma lá! Antes de falar comigo, vença os meus dois aprendizes.', 'Quem pula etapa colhe o trigo verde.'],
+  locked: ['Opa, calma lá! Antes de falar comigo, vença os meus dois aprendizes.', 'Quem pula etapa não está pronto.'],
   intro: [
-    'Então você é o treinador que enfrentou a Crepúsculo no meu celeiro! Eu sou Tomé, líder do Ginásio de Campina.',
+    'Então foi você que enfrentou a Crepúsculo no meu celeiro! Eu sou Tomé, líder do Ginásio de Campina.',
     'Aqui a gente planta, colhe e batalha com Pokémon do tipo Normal. Simples, mas firme como raiz de ipê.',
     'Mostre o que você tem! Valendo a Insígnia Espiga!',
   ],
@@ -60,7 +60,7 @@ export const LEADER1 = {
     'Ha! Que colheita! Você venceu de forma justa.',
     'Leve a Insígnia Espiga. Ela foi lapidada de uma lasca da Pedra do Alvorecer, e a pedra inteira continua comigo.',
   ],
-  lose: ['Ainda não está maduro, mas a semente é boa. Descanse e volte quando quiser.'],
+  lose: ['Ainda não foi desta vez, mas você tem talento. Descanse e volte quando quiser.'],
   after: [
     'Cada ginásio de Alvorada guarda uma Pedra do Alvorecer. Nenhuma delas deve sair do seu lugar sem um bom motivo.',
     'Ultimamente o sol nasce tarde, e a Crepúsculo rondou a minha fazenda. Se perguntarem da pedra, não diga onde ela está.',
