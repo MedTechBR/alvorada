@@ -78,29 +78,29 @@ Trocas sem alternativa: **0**
 | Tapu Bulu (#787) | 58 | templo_raizes_3 | jornada |
 | Solgaleo (#791) | 60 | relogio_pedra | pos-jogo |
 | Lunala (#792) | 60 | santuario_crepusculo | pos-jogo |
-| Ho-Oh (#250) | 75 | ilha_farol_morto | pos-jogo |
-| Kyogre (#382) | 70 | sem lugar ainda | pos-jogo |
-| Groudon (#383) | 70 | sem lugar ainda | pos-jogo |
-| Rayquaza (#384) | 75 | sem lugar ainda | pos-jogo |
-| Lugia (#249) | 75 | sem lugar ainda | pos-jogo |
-| Kyurem (#646) | 72 | sem lugar ainda | pos-jogo |
-| Regice (#378) | 62 | sem lugar ainda | pos-jogo |
-| Manaphy (#490) | 60 | sem lugar ainda | pos-jogo |
-| Dialga (#483) | 75 | sem lugar ainda | pos-jogo |
-| Palkia (#484) | 75 | sem lugar ainda | pos-jogo |
-| Giratina (#487) | 78 | sem lugar ainda | pos-jogo |
-| Mewtwo (#150) | 80 | sem lugar ainda | pos-jogo |
-| Mew (#151) | 50 | sem lugar ainda | pos-jogo |
-| Celebi (#251) | 50 | sem lugar ainda | pos-jogo |
-| Jirachi (#385) | 50 | sem lugar ainda | pos-jogo |
-| Deoxys (#386) | 60 | sem lugar ainda | pos-jogo |
-| Arceus (#493) | 80 | sem lugar ainda | pos-jogo |
-| Zacian (#888) | 70 | sem lugar ainda | pos-jogo |
-| Zamazenta (#889) | 70 | sem lugar ainda | pos-jogo |
-| Calyrex (#898) | 72 | sem lugar ainda | pos-jogo |
-| Koraidon (#1007) | 75 | sem lugar ainda | pos-jogo |
-| Miraidon (#1008) | 75 | sem lugar ainda | pos-jogo |
-| Terapagos (#1024) | 80 | sem lugar ainda | pos-jogo |
+| Ho-Oh (#250) | 75 | farol_morto_torre | pos-jogo |
+| Kyogre (#382) | 70 | templo_mares_3 | pos-jogo |
+| Groudon (#383) | 70 | altiplano_fenda_1 | pos-jogo |
+| Rayquaza (#384) | 75 | altiplano_fenda_2 | pos-jogo |
+| Lugia (#249) | 75 | fossa_abissal | pos-jogo |
+| Kyurem (#646) | 72 | caverna_iceberg_2 | pos-jogo |
+| Regice (#378) | 62 | caverna_iceberg_2 | pos-jogo |
+| Manaphy (#490) | 60 | recife_grande_fundo | pos-jogo |
+| Dialga (#483) | 75 | cratera_tempo_2 | pos-jogo |
+| Palkia (#484) | 75 | cratera_tempo_3 | pos-jogo |
+| Giratina (#487) | 78 | cratera_tempo_3 | pos-jogo |
+| Mewtwo (#150) | 80 | gruta_cataratas_2 | pos-jogo |
+| Mew (#151) | 50 | gruta_cataratas_2 | pos-jogo |
+| Celebi (#251) | 50 | mata_araucarias | pos-jogo |
+| Jirachi (#385) | 50 | santuario_crepusculo | pos-jogo |
+| Deoxys (#386) | 60 | bosque_sussurrante | pos-jogo |
+| Arceus (#493) | 80 | santuario_arceus | pos-jogo |
+| Zacian (#888) | 70 | campos_gelo_sul | pos-jogo |
+| Zamazenta (#889) | 70 | campos_gelo_sul | pos-jogo |
+| Calyrex (#898) | 72 | deserto_silencio | pos-jogo |
+| Koraidon (#1007) | 75 | cidadela_poente | pos-jogo |
+| Miraidon (#1008) | 75 | cidadela_poente | pos-jogo |
+| Terapagos (#1024) | 80 | pantanal | pos-jogo |
 
 ## Espécies inativas
 
