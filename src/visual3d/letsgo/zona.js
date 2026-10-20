@@ -49,13 +49,13 @@ export class ZonaLetsGo {
     return this.#mundo() && dentro(tx, ty);
   }
   // o objeto com pé no bloco (tx, ty) usa o modelo liso?
-  objeto(tx, ty) { return this.emBloco(tx, ty) || (this.modo === 'zona' && this.#mundo() && RETANGULOS_OBJ.some(([rx, ry, w, h]) => tx >= rx && ty >= ry && tx < rx + w && ty < ry + h)); }
+  objeto(tx, ty) { return this.emBloco(tx, ty) || (MUNDO_TODO && this.modo !== 'voxel') || (this.modo === 'zona' && this.#mundo() && RETANGULOS_OBJ.some(([rx, ry, w, h]) => tx >= rx && ty >= ry && tx < rx + w && ty < ry + h)); }
   // o setor (16x16) inteiro é desenhado no estilo novo?
-  setor(sx, sy) { return this.emBloco(sx * 16 + 8, sy * 16 + 8); }
+  setor(sx, sy) { return this.emBloco(sx * 16 + 8, sy * 16 + 8) || (MUNDO_TODO && this.modo !== 'voxel' && sy * 16 >= (this.map.outdoorH ?? this.map.h)); } // as salas (interiores, estádios) também
   // interior (sala do mapa) da zona: a porta dele fica na zona, ou ele é alcançado de outro interior da zona
   emSala(r) {
     if (!r || this.modo === 'voxel') return false;
-    if (this.modo === 'letsgo') return true;
+    if (this.modo === 'letsgo' || MUNDO_TODO) return true;
     if (!this.#mundo()) return false;
     if (this.versao !== this.map.tiles?.length + (this.map.interiors?.length ?? 0)) this.#salas();
     return this.salas.has(r.id);
