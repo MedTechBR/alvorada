@@ -20,15 +20,15 @@ export function aplicarLuzLG(v, w, room, nt = 0) {
     ceu.sol.color.lerp(ALVO.sol, 0.5 * k);
     ceu.sol.intensity = lerp(ceu.sol.intensity, ceu.sol.intensity * 1.04, k);
     const fog = v.scene.fog;
-    if (fog) { fog.color.lerp(ALVO.nevoa, 0.5 * k); fog.near = lerp(fog.near, fog.near * 0.85, k); }
+    if (fog) { fog.color.lerp(ALVO.nevoa, 0.25 * k); }
   }
   // pós: cores limpas, bloom macio, tilt-shift e vinheta (dentro de casa também, mais fraco no tilt)
-  if (P.sat) P.sat.value = lerp(P.sat.value, 1.0, w);
-  if (P.oliva) P.oliva.value = lerp(P.oliva.value, 0, w);
-  if (P.contraste) P.contraste.value = lerp(P.contraste.value, 1.05, w);
-  if (P.quente) P.quente.value = lerp(P.quente.value, 0.32, w);
+  if (P.sat) P.sat.value = lerp(P.sat.value, 0.98, w);
+  if (P.oliva) P.oliva.value = lerp(P.oliva.value, 0.1, w);
+  if (P.contraste) P.contraste.value = lerp(P.contraste.value, 1.12, w);
+  if (P.quente) P.quente.value = lerp(P.quente.value, 0.18, w);
   if (P.frio) P.frio.value = lerp(P.frio.value, 0.28, w);
-  if (P.bloomK) P.bloomK.value = lerp(P.bloomK.value, P.bloomK.value * 1.7, w);
+  if (P.bloomK) P.bloomK.value = lerp(P.bloomK.value, P.bloomK.value * 1.1, w);
   if (P.limiar) P.limiar.value = lerp(P.limiar.value, P.limiar.value - 0.06, w);
   if (P.raios) { P.raios.value *= 1 - 0.55 * w; P.raiosR.value *= 1 - 0.4 * w; }
   const bat = v.dinamica?.batalhaK ?? 0;

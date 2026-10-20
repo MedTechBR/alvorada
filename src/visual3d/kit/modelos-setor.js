@@ -25,20 +25,22 @@ export class ModelosKit {
   #movel(o) { return MOVEL(this.v.L.catalogo(o.kind)) || kit.dinamico(o.kind); }
   #h(x, y, fh) { return this.v.altura(x, y - fh * 8); }
   // setor no estilo Let's Go (s.lg): modelo liso quando o tipo tem um (src/visual3d/letsgo/modelos.js), senão o do kit
-  modeloDe(o, s) { return (s?.lg && modeloLG(o.kind, o)) || kit.modelo(o.kind, o); }
-  chaveDe(o, s) { return (s?.lg && chaveLG(o.kind, o)) || kit.chave(o.kind, o); }
-  matDe(s) { return s?.lg && this.matLG ? this.matLG : this.mat; }
+  // (a beira da zona pode ter objetos lisos num setor voxel: as árvores da mata mudam de estilo junto, não no meio dela)
+  lgDe(o, s) { return !!(s?.lg || (this.matLG && this.v.lg?.zona.objeto(o.tx, o.ty))); }
+  modeloDe(o, s) { return (this.lgDe(o, s) && modeloLG(o.kind, o)) || kit.modelo(o.kind, o); }
+  chaveDe(o, s) { return (this.lgDe(o, s) && chaveLG(o.kind, o)) || kit.chave(o.kind, o); }
+  matDe(s, o) { return (o ? this.lgDe(o, s) : s?.lg) && this.matLG ? this.matLG : this.mat; }
 
   setor(s) {
     this.liberar(s);
-    const L = this.v.L, itens = [], moveis = [], donos = [];
+    const L = this.v.L, itens = [], itensLG = [], moveis = [], donos = [];
     for (const o of L.objetosDoSetor(s.sx, s.sy)) if (GLB_TIPOS[o.kind] && !glbPronto(o.kind)) pedirGLB(o.kind, kit.ficha(o.kind));
     for (const o of L.objetosDoSetor(s.sx, s.sy)) {
       // cenário vivo: caído, toco, broto ou quebrado usa o sprite 2D (que gira, troca para o toco, cresce)
       if (o.dead || !kit.temModelo(o.kind) || this.v.g.vivo?.mexido?.(o)) continue;
       if (this.#movel(o)) { moveis.push(o); continue; }
       const md = this.modeloDe(o, s), K = kit.ficha(o.kind);
-      itens.push({ geometry: md.geometry, x: o.x, y: this.#h(o.x, o.y, K.fh), z: o.y });
+      (!s.lg && this.lgDe(o, s) && md.chave === chaveLG(o.kind, o) ? itensLG : itens).push({ geometry: md.geometry, x: o.x, y: this.#h(o.x, o.y, K.fh), z: o.y });
       if (o.sprite) donos.push(o.sprite);
     }
     // barreiras da progressão ativas (src/world/barreiras.js): cerca, obra, entulho, boias... entram na malha do setor;
@@ -49,12 +51,14 @@ export class ModelosKit {
     }
     s.kitObjs = L.objetosDoSetor(s.sx, s.sy).length;
     if (itens.length) { s.kitMalha = new THREE.Mesh(kit.mesclar(itens), this.matDe(s)); s.kitMalha.matrixAutoUpdate = false; s.grupo.add(s.kitMalha); }
-    s.kitMoveis = moveis.map((o) => { const m = new THREE.Mesh(this.modeloDe(o, s).geometry, this.matDe(s)); m.o = o; m.chave = this.chaveDe(o, s); s.grupo.add(m); if (o.sprite) donos.push(o.sprite); return m; });
+    if (itensLG.length) { s.kitMalhaLG = new THREE.Mesh(kit.mesclar(itensLG), this.matLG); s.kitMalhaLG.matrixAutoUpdate = false; s.grupo.add(s.kitMalhaLG); }
+    s.kitMoveis = moveis.map((o) => { const m = new THREE.Mesh(this.modeloDe(o, s).geometry, this.matDe(s, o)); m.o = o; m.chave = this.chaveDe(o, s); s.grupo.add(m); if (o.sprite) donos.push(o.sprite); return m; });
     s.kitDonos = donos; for (const sp of donos) this.donos.add(sp);
     this.setores.add(s);
   }
   liberar(s) {
     if (s.kitMalha) { s.grupo.remove(s.kitMalha); s.kitMalha.geometry.dispose(); s.kitMalha = null; }
+    if (s.kitMalhaLG) { s.grupo.remove(s.kitMalhaLG); s.kitMalhaLG.geometry.dispose(); s.kitMalhaLG = null; }
     for (const m of s.kitMoveis ?? []) s.grupo.remove(m); // geometria é do cache do kit: não descartar
     s.kitMoveis = null;
     for (const sp of s.kitDonos ?? []) this.donos.delete(sp);

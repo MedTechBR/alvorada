@@ -9,14 +9,24 @@
 // setores do 3D (16 blocos), para a troca de estilo cair entre setores inteiros:
 //   norte  y = 144: o paredão/ferrovia que fecha o mapa acima do Bosque;
 //   oeste  x = 0:   a borda do mapa (a mata segue até lá, então ela entra inteira);
-//   leste  x = 384 ao sul do lago (antes do Rio Lúmen, onde a Rota 3 cruza a ponte) e x = 320 ao lado do Lago
+//   leste  x = 384 ao sul do lago (antes do Rio Lúmen, onde a Rota 3 cruza a ponte) e x = 304 ao lado do Lago
 //          Espelho (a beira da mata);
 //   sul    y = 368 a leste de x = 240 (a falésia da Praia Oeste) e y = 416 a oeste (o mar ao sul de Campina).
 // Interiores (casas, Centro, Mercado, laboratório, a Toca) entram se a porta deles estiver na zona.
+// Fica de fora (recortes): o Forte Rochedo murado no alto do Bosque (x 263..307, y 153..182, 7º ginásio) e a beira de
+// Vila Lamparina / Cemitério das Velas a leste da mata (x >= 304 acima de y = 288).
 export const RETANGULOS = [
-  [0, 144, 320, 144],   // Bosque Sussurrante, Vila Sussurro, Rota 2, Toca do Absol (a mata inteira)
+  [0, 144, 256, 48],    // Bosque Sussurrante, metade norte (até o muro do Forte Rochedo)
+  [0, 192, 304, 96],    // Bosque Sussurrante, Vila Sussurro, Rota 2, Toca do Absol
   [0, 288, 384, 80],    // campos ao norte, Rota 1, Lagoa Dourada, Fazenda, Vila Alvorada e o começo da Rota 3
   [0, 368, 240, 48],    // Cidade Campina e o Ginásio, até o mar
+];
+// Só para os objetos (árvores, pedras): a mata que encosta na zona troca de estilo inteira, até a beira dela, mesmo
+// quando o chão dali continua voxel (debaixo da copa quase não se vê o chão)
+export const RETANGULOS_OBJ = [
+  [304, 192, 8, 96],    // a beira leste da mata do Bosque (até o Lago Espelho)
+  [256, 144, 7, 48],    // a mata a oeste do muro do Forte Rochedo
+  [256, 183, 56, 9],    // a mata ao sul do muro do Forte Rochedo
 ];
 const MARGEM_LUZ = 24; // blocos: a luz e o pós misturam os dois estilos nessa faixa fora da zona
 
@@ -36,6 +46,8 @@ export class ZonaLetsGo {
     if (this.modo === 'letsgo') return true;
     return this.#mundo() && dentro(tx, ty);
   }
+  // o objeto com pé no bloco (tx, ty) usa o modelo liso?
+  objeto(tx, ty) { return this.emBloco(tx, ty) || (this.modo === 'zona' && this.#mundo() && RETANGULOS_OBJ.some(([rx, ry, w, h]) => tx >= rx && ty >= ry && tx < rx + w && ty < ry + h)); }
   // o setor (16x16) inteiro é desenhado no estilo novo?
   setor(sx, sy) { return this.emBloco(sx * 16 + 8, sy * 16 + 8); }
   // interior (sala do mapa) da zona: a porta dele fica na zona, ou ele é alcançado de outro interior da zona

@@ -130,7 +130,7 @@ function conifera({ h, R, pal, andares = 3, tr = 2.4 }) {
     const H = (h - base) / (andares * 0.78 + 0.25);
     for (let i = 0; i < andares; i++) {
       const k = i / andares, w = R * (1.12 - k * 0.42), y0 = base + i * H * 0.72;
-      m.cone(0, y0, cz, w, H * 1.05, lite ? 7 : 10, { pe: pal[0], topo: pal[2 + (i % 2)] }, { var: 0.06, ao: false });
+      m.cone(0, y0, cz, w, H * 1.05, lite ? 8 : 14, { pe: pal[0], topo: pal[2 + (i % 2)] }, { var: 0.06, ao: false });
       // barriga arredondada embaixo de cada andar
       if (!lite) m.bola(0, y0 + 1, cz, w * 0.98, 3.2, w * 0.98, pal[1], { d: 1, ao: false });
     }
@@ -191,7 +191,7 @@ function placaMadeira(m) {
 
 // ---------- prédios ----------
 const RODAPE = '#c8bca4';
-const TELHADO = { houseA: '#e0553e', houseB: '#e8673a', houseC: '#5aa84a', houseBlue: '#4a8fe0', housePink: '#f07aa8', houseYellow: '#f2b83a', houseStone: '#7a6aa8', houseStone2: '#5a8ab8', houseMiner: '#a86a3a', radioStation: '#e0553e' };
+const TELHADO = { houseA: '#d8463a', houseB: '#e2603a', houseC: '#5aa84a', houseBlue: '#4a8fe0', housePink: '#f07aa8', houseYellow: '#f2b83a', houseStone: '#7a6aa8', houseStone2: '#5a8ab8', houseMiner: '#a86a3a', radioStation: '#e0553e' };
 const portaX = (c) => (c.K.door ?? Math.floor(c.fw / 2)) * 16 + 8 - c.L;
 const clarear = (h, k) => { const c = new THREE.Color(h); c.offsetHSL(0, 0, k); return '#' + c.getHexString(); };
 
@@ -295,6 +295,41 @@ const TIPOS = {
   houseA: { f: casaLG, var: 3 }, houseB: { f: casaLG, var: 3 }, houseC: { f: casaLG, var: 3 }, houseBlue: { f: casaLG, var: 3 },
   housePink: { f: casaLG, var: 3 }, houseYellow: { f: casaLG, var: 3 }, houseStone: { f: casaLG, var: 3 }, houseStone2: { f: casaLG, var: 3 },
   center: { f: salaoLG }, mart: { f: salaoLG }, lab: { f: salaoLG },
+  // jardim e praça
+  horta: { f: (m, c) => {
+    m.caixa(0, 0, -8, 15, 3, 12, 1.5, { pe: '#6a4428', topo: '#8a5e3a' }, { seg: 1 });
+    const [f, g] = [['#4aa040', '#8ad06a'], ['#3e9a3a', '#ff9a3a'], ['#3e8a3a', '#f2b048']][c.v % 3];
+    for (const x of [-4.5, 0, 4.5]) for (const z of [-11, -5]) m.bola(x, 4.3, z, 2.3, 1.9, 2.3, { pe: f, topo: g }, { d: 1, ao: false });
+    return topoDe(6, 7);
+  }, var: 3 },
+  canteiro: { f: (m, c) => {
+    const fl = [['#ff6b9a', '#ffd84a', '#ffffff'], ['#b36bff', '#ff8a3c', '#ffe08a'], ['#ff5a5a', '#ffffff', '#ffb0d0']][c.v % 3];
+    m.caixa(0, 0, -8, 30, 4, 12, 1.8, { pe: '#7a4a2a', topo: '#a8703e' }, { seg: 1 });
+    m.caixa(0, 3.2, -8, 27, 1.2, 9.5, 0.5, '#5a3e26', { ao: false });
+    for (let i = 0; i < 7; i++) for (let j = 0; j < 2; j++) m.bola(-12 + i * 4 + (j % 2) * 2, 6 + ((i + j) % 2) * 0.8, -11 + j * 5, 2.1, 1.6, 2.1, fl[(i + j * 2) % 3], { d: 0, ao: false });
+    return topoDe(10, 14);
+  }, var: 3 },
+  flowerpot: { f: (m) => { m.cil(0, 0, -8, 4.2, 5.4, 6.5, 12, { pe: '#a8502e', topo: '#e08a52' }, { aberto: false }); for (const [x, z, cr] of [[-2.2, -8, '#ff6a8a'], [2.2, -9, '#ffd84a'], [0, -6, '#ff9ad0'], [0.5, -10, '#ffffff']]) m.bola(x, 8.5, z, 2.2, 1.8, 2.2, cr, { d: 0, ao: false }); return topoDe(11, 4); } },
+  bench: { f: (m) => {
+    for (const x of [-11, 11]) m.caixa(x, 0, -7, 2.4, 7, 6, 0.8, '#4a4f5a', { seg: 1 });
+    m.caixa(0, 6, -6.5, 30, 2.4, 8, 1.1, { pe: '#a8744a', topo: '#d09a64' }, { seg: 1 });
+    m.caixa(0, 9, -10.4, 30, 5, 2, 1, { pe: '#946640', topo: '#c48e5a' }, { seg: 1 });
+    return { y: 8.5, x0: -14, x1: 14, z0: -10, z1: -3 };
+  } },
+  degrau: { f: (m, c) => {
+    m.caixa(0, 0, -9, 16.6, 9, 12.5, 3, { pe: '#8a7058', topo: '#a88a6a' }, { seg: 1 });
+    m.caixa(0, 8, -9.2, 16.8, 3, 13.4, 1.4, { pe: '#4c9a3a', topo: '#76c252' }, { seg: 1, ao: false });
+    if (c.v === 1) m.bola(-4, 2, -2.6, 2.4, 1.8, 1.2, '#9a9284', { d: 0, ao: false });
+    return { y: 11, x0: -8, x1: 8, z0: -15, z1: -3 };
+  }, var: 3 },
+  stands: { f: (m) => {
+    for (let r = 0; r < 3; r++) {
+      const z1 = -2 - r * 10, y = 4 + r * 6;
+      m.caixa(0, 0, z1 - 5, 96, y, 10, 2, { pe: '#8a94a8', topo: '#c8d0dc' }, { seg: 1 });
+      for (let i = 0; i < 12; i++) m.caixa(-44 + i * 8, y - 0.5, z1 - 4, 6, 3, 4.5, 1.4, ['#e8584a', '#f2c94c', '#4c9ae8'][(i + r) % 3], { seg: 1, ao: false });
+    }
+    return { y: 16, x0: -48, x1: 48, z0: -32, z1: -2 };
+  } },
 };
 
 function hashVar(o) {

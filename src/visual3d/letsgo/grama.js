@@ -10,13 +10,13 @@ import { hash } from '../ambiente/ruido.js';
 const lin = (h) => { const c = new THREE.Color(h); return [c.r, c.g, c.b]; };
 const MATO = {
   [TILE.TALL]: { n: 15, h: [12, 18], w: 3.6, pe: lin('#2c7428'), ponta: lin('#7cc84c') },
-  [TILE.CORN]: { n: 9, h: [22, 30], w: 4.2, pe: lin('#5a8a2a'), ponta: lin('#d8d070'), espiga: lin('#f0c848') },
+  [TILE.CORN]: { n: 7, h: [22, 30], w: 6, pe: lin('#5a9a32'), ponta: lin('#c8dc78'), espiga: lin('#f2c848') },
   [TILE.REED]: { n: 10, h: [16, 24], w: 2.6, pe: lin('#4a7a3a'), ponta: lin('#b8c87a') },
   [TILE.TALLSNOW]: { n: 13, h: [11, 16], w: 3.4, pe: lin('#3a6a4a'), ponta: lin('#e8f2f4') },
   [TILE.TALLDRY]: { n: 12, h: [11, 16], w: 3.4, pe: lin('#8a7a3a'), ponta: lin('#e0c878') },
 };
 const GRAMA = new Uint8Array(256); for (const t of [TILE.GRASS, TILE.GRASS2, TILE.DARK, TILE.GOLD]) GRAMA[t] = 1;
-const FLORES = ['#ff6b9a', '#ffd84a', '#ffffff', '#b36bff', '#6bb8ff', '#ff8a3c'].map(lin);
+const FLORES = ['#ff4f8a', '#ffd23a', '#fff4f0', '#a456ff', '#4fa4ff', '#ff7a2a'].map(lin);
 const MIOLO = lin('#ffe27a');
 
 export function materialGramaLG(v) {
@@ -65,10 +65,10 @@ export function geometriaGramaLG(v, s) {
     }
     if (t === TILE.FLOWERS && !L.ocupado(x, y)) {
       // buquês: florzinhas fofas (octaedro achatado) em hastes curtas
-      const n = 4 + Math.floor(H(5) * 3);
+      const n = 6 + Math.floor(H(5) * 3);
       for (let q = 0; q < n; q++) {
-        const fx = x * 16 + 2 + H(q * 7 + 11) * 12, fz = y * 16 + 2 + H(q * 7 + 12) * 12, fh = 4 + H(q * 7 + 13) * 3.5, cor = FLORES[Math.floor(H(q * 7 + 14) * FLORES.length)];
-        const r = 1.9 + H(q * 7 + 15) * 0.9, base = alt(fx, fz) - 0.3, cy = base + fh;
+        const fx = x * 16 + 1 + H(q * 7 + 11) * 14, fz = y * 16 + 1 + H(q * 7 + 12) * 14, fh = 3.5 + H(q * 7 + 13) * 4, cor = FLORES[Math.floor(H(q * 7 + 14) * FLORES.length)];
+        const r = 2.4 + H(q * 7 + 15) * 1.1, base = alt(fx, fz) - 0.3, cy = base + fh;
         lamina(fx, fz, fh, 1.4, H(q) * 6.28, 0.5, lin('#3a8a36'), lin('#4fa83c'), fase);
         const pts = [[fx + r, cy, fz], [fx, cy, fz + r], [fx - r, cy, fz], [fx, cy, fz - r]], top = [fx, cy + r * 0.55, fz], bot = [fx, cy - r * 0.5, fz];
         for (let e = 0; e < 4; e++) {
@@ -77,6 +77,18 @@ export function geometriaGramaLG(v, s) {
           const ia = vert(...a, na, cor, 0.5, fase), ib = vert(...b, nb, cor, 0.5, fase), it = vert(...top, UP, MIOLO, 0.55, fase), id = vert(...bot, [0, -1, 0], cor.map((c) => c * 0.6), 0.45, fase);
           I.push(ia, it, ib, ia, ib, id);
         }
+      }
+      continue;
+    }
+    if (t === TILE.WATER && H(77) < 0.06 && L.bioma(x * 16, y * 16) !== 'praia') {
+      // vitória-régia: disco achatado com um corte, às vezes com flor
+      let terra = false; for (let b = -1; b <= 1; b++) for (let a = -1; a <= 1; a++) if (L.blocoCru(x + a, y + b) !== TILE.WATER && L.blocoCru(x + a, y + b) !== TILE.DEEP) terra = true;
+      if (terra) {
+        const cx = x * 16 + 5 + H(78) * 6, cz = y * 16 + 5 + H(79) * 6, hy = Math.min(v.relevo.n(x, y), v.relevo.s(x, y)) - 1.5, r = 4 + H(80) * 2, a0 = H(81) * 6.28;
+        const c0 = vert(cx, hy, cz, UP, lin('#5cb44e'), 0, 0);
+        const borda = []; for (let k = 0; k <= 8; k++) { const a = a0 + 0.5 + (k / 8) * (Math.PI * 2 - 0.6); borda.push(vert(cx + Math.cos(a) * r, hy, cz + Math.sin(a) * r * 0.9, UP, lin('#3a8a3e'), 0, 0)); }
+        for (let k = 0; k < 8; k++) I.push(c0, borda[k + 1], borda[k]);
+        if (H(82) < 0.35) { const fy = hy + 1.5, p0 = vert(cx - 1.6, fy, cz, UP, lin('#ff9ac4'), 0, 0), p1 = vert(cx + 1.6, fy, cz, UP, lin('#ff9ac4'), 0, 0), p2 = vert(cx, fy, cz - 1.6, UP, lin('#ffd0e4'), 0, 0), p3 = vert(cx, fy, cz + 1.6, UP, lin('#ff9ac4'), 0, 0), p4 = vert(cx, fy + 1.4, cz, UP, lin('#ffe27a'), 0, 0); I.push(p0, p3, p4, p3, p1, p4, p1, p2, p4, p2, p0, p4); }
       }
       continue;
     }

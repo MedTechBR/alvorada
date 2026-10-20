@@ -53,10 +53,10 @@ const PARS = /* glsl */`
     float flor = B.b;
     // grama: manchas grandes claras e escuras, listras de corte, pontinhos
     float m = n1.r * 0.65 + n2.b * 0.35;
-    vec3 g = mix(${lin('#4c9a38')}, ${lin('#76c04c')}, smoothstep(0.28, 0.78, m));
-    g = mix(g, ${lin('#98cc58')}, smoothstep(0.62, 0.85, n1.g) * 0.3);
+    vec3 g = mix(${lin('#427c28')}, ${lin('#7aa840')}, smoothstep(0.28, 0.78, m));
+    g = mix(g, ${lin('#a8c858')}, smoothstep(0.62, 0.85, n1.g) * 0.3);
     float fx = sin(p.y * 0.1309 + (n2.a - 0.5) * 1.2);
-    g *= 1.0 + 0.055 * smoothstep(-0.25, 0.25, fx) - 0.025;
+    g *= 1.0 + 0.09 * smoothstep(-0.25, 0.25, fx) - 0.04;
     g *= 0.93 + 0.14 * n3.b;
     g = mix(g, g * ${lin('#c8dc78')} * 1.6, flor * 0.35);
     g = mix(g, ${lin('#3f8a36')} * (0.85 + 0.3 * n2.g), escura * 0.85);
