@@ -17,7 +17,7 @@ const DELAY_SLOW = 300, DELAY_DUEL_SLOW = 200, EXTRAP_SLOW = 320; // mundo Fireb
 export const EMOTES = { heart: '♥', excl: '!', ask: '?', note: '♪', dots: '…', gg: 'GG', zz: 'zZ', smile: ':)', wave: 'Oi!' }; // wave = Acenar
 
 function label(text, color = '#ffffff', size = 6) {
-  const t = new PIXI.Text({ text, style: { fontFamily: 'Avenir Next, Nunito, system-ui', fontWeight: '900', fontSize: size, fill: color, stroke: { color: '#14201a', width: 2.2 }, align: 'center' } });
+  const t = new PIXI.Text({ text, style: { fontFamily: 'Avenir Next, Nunito, ui-rounded, system-ui, sans-serif', fontWeight: '900', fontSize: size, fill: color, stroke: { color: '#14201a', width: 2.2 }, align: 'center' } });
   t.resolution = 4; t.anchor.set(0.5, 1); return t;
 }
 
@@ -25,7 +25,7 @@ function label(text, color = '#ffffff', size = 6) {
 export function bubble(parent, text, { big = false, life = 5 } = {}) {
   parent.bubble?.destroy({ children: true });
   const c = new PIXI.Container();
-  const t = new PIXI.Text({ text, style: { fontFamily: 'Avenir Next, Nunito, system-ui', fontWeight: '800', fontSize: big ? 10 : 5.5, fill: '#1c2a20', wordWrap: true, wordWrapWidth: 92, breakWords: true, align: 'center' } });
+  const t = new PIXI.Text({ text, style: { fontFamily: 'Avenir Next, Nunito, ui-rounded, system-ui, sans-serif', fontWeight: '800', fontSize: big ? 10 : 5.5, fill: '#1c2a20', wordWrap: true, wordWrapWidth: 92, breakWords: true, align: 'center' } });
   t.resolution = 5; t.anchor.set(0.5, 1);
   const w = Math.max(big ? 14 : 16, t.width + 7), h = t.height + 4;
   const g = new PIXI.Graphics();

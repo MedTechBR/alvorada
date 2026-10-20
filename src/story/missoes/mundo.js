@@ -48,7 +48,7 @@ export class MundoMissoes {
       const b = new PIXI.Graphics().roundRect(-5.5, -7, 11, 12, 4).fill(bg).stroke({ width: 1, color: 0x1d2340 });
       b.poly([-2, 5, 2, 5, 0, 8]).fill(bg).stroke({ width: 1, color: 0x1d2340 });
       b.rect(-1.6, 4.2, 3.2, 1.4).fill(bg);
-      const tx = new PIXI.Text({ text: k, style: { fontFamily: 'Nunito, system-ui, sans-serif', fontWeight: '900', fontSize: 40, fill: fg } });
+      const tx = new PIXI.Text({ text: k, style: { fontFamily: 'Avenir Next, Nunito, ui-rounded, system-ui, sans-serif', fontWeight: '900', fontSize: 40, fill: fg } });
       tx.anchor.set(0.5); tx.scale.set(0.25); tx.y = k === '…' ? -2.5 : -1;
       c.addChild(b, tx);
       c.y = -(n.h ?? 30) - 6;

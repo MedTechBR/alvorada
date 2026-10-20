@@ -51,7 +51,7 @@ export class Npc {
     const c = new PIXI.Container();
     const bg = new PIXI.Graphics().roundRect(-5, -7, 10, 12, 3).fill(0xffffff).stroke({ width: 1, color: 0x1d2340 });
     bg.poly([-2, 5, 2, 5, 0, 8]).fill(0xffffff);
-    const tx = new PIXI.Text({ text, style: { fontFamily: 'Nunito, system-ui, sans-serif', fontWeight: '900', fontSize: 40, fill: color } });
+    const tx = new PIXI.Text({ text, style: { fontFamily: 'Avenir Next, Nunito, ui-rounded, system-ui, sans-serif', fontWeight: '900', fontSize: 40, fill: color } });
     tx.anchor.set(0.5); tx.scale.set(0.25); tx.y = -1;
     c.addChild(bg, tx); c.y = -this.h - 4;
     this.view.addChild(c);

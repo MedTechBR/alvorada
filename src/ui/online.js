@@ -10,7 +10,7 @@ import { MAX_PLAYERS } from '../net/room.js';
 // (não mexe no style.css da interface).
 
 const CSS = `
-#net { position: fixed; inset: 0; pointer-events: none; z-index: 30; font: 700 14px/1.3 "Nunito", "Avenir Next", system-ui, sans-serif; color: #1d2340; }
+#net { position: fixed; inset: 0; pointer-events: none; z-index: 30; font: 700 14px/1.3 var(--font); color: #1d2340; }
 #net button { font: inherit; font-weight: 800; cursor: pointer; border-radius: 999px; border: 3px solid #36426b; background: #fff; color: #1d2340; min-height: 44px; padding: 6px 14px; }
 #net button:active { transform: translateY(1px); }
 #net button.pri { background: #e8584a; color: #fff; border-color: #8e2a22; }
@@ -95,7 +95,7 @@ const CSS = `
 @keyframes ms { 0%, 80% { opacity: 0; } 100% { opacity: 1; } }
 #net-anim .got { position: absolute; left: 50%; top: 30px; transform: translateX(-50%); color: #fff; text-align: center; font-weight: 900; opacity: 0; animation: ms 2.6s forwards; }
 #net-anim .got canvas { width: 140px; height: 140px; image-rendering: pixelated; display: block; margin: 0 auto; }
-#net-count { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; font: 900 96px "Avenir Next", system-ui; color: #fff; text-shadow: 0 5px 0 rgba(0,0,0,.4); }
+#net-count { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; font: 900 96px var(--font); color: #fff; text-shadow: 0 5px 0 rgba(0,0,0,.4); }
 #net-count[hidden] { display: none; }
 #net-count span { animation: cp .9s ease-out; }
 @keyframes cp { from { transform: scale(1.8); opacity: 0; } 30% { opacity: 1; } }

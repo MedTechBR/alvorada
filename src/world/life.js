@@ -297,7 +297,7 @@ export class WorldLife {
   #makeSignBox() {
     const el = document.createElement('div');
     el.id = 'placa';
-    el.style.cssText = 'position:fixed;left:50%;bottom:96px;transform:translateX(-50%);max-width:min(560px,92vw);background:#fbf6e8;border:3px solid #4a3a2a;border-radius:10px;padding:10px 14px;font:700 15px/1.35 "Avenir Next",Nunito,system-ui,sans-serif;color:#2a2018;white-space:pre-line;box-shadow:0 4px 0 rgba(0,0,0,.25);z-index:30;display:none;pointer-events:none';
+    el.style.cssText = 'position:fixed;left:50%;bottom:96px;transform:translateX(-50%);max-width:min(560px,92vw);background:#fbf6e8;border:3px solid #4a3a2a;border-radius:10px;padding:10px 14px;font:700 15px/1.35 var(--font);color:#2a2018;white-space:pre-line;box-shadow:0 4px 0 rgba(0,0,0,.25);z-index:30;display:none;pointer-events:none';
     document.body.appendChild(el);
     return { el, open: false, x: 0, y: 0 };
   }

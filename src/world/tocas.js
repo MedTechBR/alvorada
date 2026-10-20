@@ -29,7 +29,7 @@ const COR = 0xff3a5a, COR2 = 0xff9ab0;
 const CSS = `
 #reide { position: absolute; left: 50%; top: calc(var(--g, 12px) + var(--st, 0px) + 4px); transform: translateX(-50%) scale(var(--hud-k, 1)); transform-origin: top center;
   width: min(420px, 52vw); background: rgba(34,6,16,.88); border: 3px solid #ff5a74; border-radius: 12px; padding: 6px 10px 7px; color: #fff; pointer-events: none; z-index: 6;
-  font: 800 13px Nunito, system-ui, sans-serif; box-shadow: 0 4px 0 rgba(0,0,0,.3), 0 0 18px rgba(255,58,90,.35); }
+  font: 800 13px Avenir Next, Nunito, ui-rounded, system-ui, sans-serif; box-shadow: 0 4px 0 rgba(0,0,0,.3), 0 0 18px rgba(255,58,90,.35); }
 #reide[hidden] { display: none; }
 #reide .rd-top { display: flex; gap: 8px; align-items: baseline; white-space: nowrap; }
 #reide .rd-top b { flex: 1; overflow: hidden; text-overflow: ellipsis; font-size: 14px; }

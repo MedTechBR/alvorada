@@ -67,13 +67,13 @@ export class Hud {
     gem.poly([0, -10, 8, 0, 0, 10, -8, 0]).fill(0xf2b705).stroke({ width: 2.5, color: 0xffffff });
     this.gem = gem;
     this.arrow = new PIXI.Graphics(); this.arrow.poly([-7, -16, 7, -16, 0, -27]).fill(0xf2b705).stroke({ width: 2, color: 0xffffff }); this.arrow.visible = false;
-    this.dist = new PIXI.Text({ text: '', style: { fontFamily: 'Nunito, system-ui, sans-serif', fontWeight: '900', fontSize: 12, fill: '#ffffff', stroke: { color: '#1b2a1e', width: 3 } } });
+    this.dist = new PIXI.Text({ text: '', style: { fontFamily: 'Avenir Next, Nunito, ui-rounded, system-ui, sans-serif', fontWeight: '900', fontSize: 12, fill: '#ffffff', stroke: { color: '#1b2a1e', width: 3 } } });
     this.dist.anchor.set(0.5, 0); this.dist.y = 12;
     this.marker.addChild(this.arrow, gem, this.dist);
     // balão "E · Falar" sobre quem dá para interagir (no mundo)
     this.bubble = new PIXI.Container(); this.bubble.visible = false; this.bubble.zIndex = 1e9;
     this.bubbleBg = new PIXI.Graphics();
-    this.bubbleTx = new PIXI.Text({ text: '', style: { fontFamily: 'Nunito, system-ui, sans-serif', fontWeight: '900', fontSize: 30, fill: '#1d2340' } });
+    this.bubbleTx = new PIXI.Text({ text: '', style: { fontFamily: 'Avenir Next, Nunito, ui-rounded, system-ui, sans-serif', fontWeight: '900', fontSize: 30, fill: '#1d2340' } });
     this.bubbleTx.anchor.set(0.5); this.bubbleTx.scale.set(0.25); this.bubbleTx.y = -1;
     this.bubble.addChild(this.bubbleBg, this.bubbleTx);
     this.layer = new PIXI.Container();

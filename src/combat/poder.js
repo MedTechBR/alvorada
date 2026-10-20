@@ -50,7 +50,7 @@ const CSS = `
 #t-power.dmax { background: radial-gradient(circle at 50% 35%, #ff5a6a, #a0101e 75%) !important; }
 #t-power.on { animation: pwrpulse 1.1s ease-in-out infinite; }
 #poder-timer { position: absolute; left: 50%; top: calc(var(--g, 12px) + var(--st, 0px) + 6px); transform: translateX(-50%); pointer-events: none; z-index: 5;
-  background: rgba(40,6,14,.82); color: #fff; border: 2px solid #ff5a6a; border-radius: 12px; padding: 3px 12px 5px; font: 900 13px Nunito, system-ui, sans-serif; text-align: center; min-width: 120px; }
+  background: rgba(40,6,14,.82); color: #fff; border: 2px solid #ff5a6a; border-radius: 12px; padding: 3px 12px 5px; font: 900 13px Avenir Next, Nunito, ui-rounded, system-ui, sans-serif; text-align: center; min-width: 120px; }
 #poder-timer[hidden] { display: none; }
 body:has(#net-duel:not([hidden])) #poder-timer { top: calc(var(--g, 12px) + var(--st, 0px) + 74px); }
 body:has(#reide:not([hidden])) #poder-timer { top: calc(var(--g, 12px) + var(--st, 0px) + 66px); }

@@ -134,7 +134,7 @@ export class Minimap {
       if (dd > lim) { if (!q.acomp) continue; qx = R + dx / dd * lim; qy = R + dy / dd * lim; }
       const u = this.dpr, r = (q.acomp ? 4.6 : 3.6) * u; ctx.fillStyle = '#4aa3ff'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.3 * u;
       ctx.beginPath(); ctx.arc(qx, qy, r, 0, 7); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = '#fff'; ctx.font = `900 ${Math.round(r * 1.6)}px system-ui`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('!', qx, qy + 0.3 * u);
+      ctx.fillStyle = '#fff'; ctx.font = `900 ${Math.round(r * 1.6)}px Avenir Next, ui-rounded, system-ui, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('!', qx, qy + 0.3 * u);
     }
     // objetivo da história: losango (preso na borda quando está longe)
     const tg = g.ui?.hud?.obj?.target;
@@ -154,7 +154,7 @@ export class Minimap {
     if (!room) {
       const na = -a, nx = R + Math.sin(na) * (R - 9 * this.dpr), ny = R - Math.cos(na) * (R - 9 * this.dpr);
       ctx.fillStyle = '#e8584a'; ctx.beginPath(); ctx.arc(nx, ny, 6 * this.dpr, 0, 7); ctx.fill();
-      ctx.fillStyle = '#fff'; ctx.font = `800 ${8 * this.dpr}px system-ui`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('N', nx, ny + 0.5);
+      ctx.fillStyle = '#fff'; ctx.font = `800 ${8 * this.dpr}px Avenir Next, ui-rounded, system-ui, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('N', nx, ny + 0.5);
     }
     const h = Math.floor(this.life.hour), mi = Math.floor((this.life.hour % 1) * 60 / 10) * 10;
     const lt = `${String(h).padStart(2, '0')}:${String(mi).padStart(2, '0')}${this.rotate ? ' · gira' : ''}`;
@@ -180,7 +180,7 @@ export class Minimap {
       for (let cy = 0; cy < Math.ceil(H / 16); cy++) for (let cx = 0; cx < CW; cx++) if (!vis.has(cx + cy * CW)) ctx.fillRect(ox + cx * 16 * s - 0.5, oy + cy * 16 * s - 0.5, 16 * s + 1, 16 * s + 1);
     }
     if (labels) {
-      ctx.font = `800 ${Math.max(9, 5 * s)}px system-ui`; ctx.textAlign = 'center'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.fillStyle = '#2a2018';
+      ctx.font = `800 ${Math.max(9, 5 * s)}px Avenir Next, ui-rounded, system-ui, sans-serif`; ctx.textAlign = 'center'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.fillStyle = '#2a2018';
       const seen = new Set();
       for (const a of [...(m.areas ?? [])].reverse()) {
         if (a.name === 'Alvorada' || seen.has(a.name)) continue; seen.add(a.name);

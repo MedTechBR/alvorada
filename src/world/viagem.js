@@ -27,7 +27,7 @@ export class Viagem {
 
   constructor(g) {
     this.g = g; this.ocupada = false; this.ninhoT = 0;
-    this.aviso = $el('div', 'position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;z-index:60;pointer-events:none;color:#fff;font:800 20px/1.3 Nunito,"Avenir Next",system-ui,sans-serif;text-shadow:0 2px 0 #000;text-align:center;padding:16px');
+    this.aviso = $el('div', 'position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;z-index:60;pointer-events:none;color:#fff;font:800 20px/1.3 var(--font);text-shadow:0 2px 0 #000;text-align:center;padding:16px');
     document.body.appendChild(this.aviso);
     addEventListener('keydown', (e) => { if (e.code === 'KeyV' && !e.repeat && this.g.ui?.state === 'play' && !this.g.ui.blocking && !this.voo) this.abrirVoo(); });
   }
@@ -262,7 +262,7 @@ export class Viagem {
       listas[w.id] = R ? this.ninhos(R, w.id === g.map.id ? g.map : null).filter((n) => vis[n.id]) : [];
     }
     let aba = Math.max(0, abas.findIndex((w) => w.id === g.map.id)), sel = 0;
-    const box = $el('div', 'position:fixed;inset:0;z-index:55;display:flex;align-items:center;justify-content:center;background:rgba(10,14,30,.55);font:700 15px/1.3 Nunito,"Avenir Next",system-ui,sans-serif;color:#1d2340');
+    const box = $el('div', 'position:fixed;inset:0;z-index:55;display:flex;align-items:center;justify-content:center;background:rgba(10,14,30,.55);font:700 15px/1.3 var(--font);color:#1d2340');
     const card = $el('div', 'background:#fbf6e8;border:3px solid #1d2340;border-radius:14px;box-shadow:0 6px 0 rgba(0,0,0,.3);width:min(760px,94vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden');
     box.appendChild(card); document.body.appendChild(box);
     this.voo = box; g.ui.sceneOn = true;
@@ -270,7 +270,7 @@ export class Viagem {
     let done; const fim = new Promise((r) => { done = r; });
     const draw = () => {
       const w = abas[aba], L = listas[w.id], n = L[sel];
-      card.innerHTML = `<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:#1d2340;color:#fff"><b style="font-size:18px;flex:1">Voar para…</b>${abas.map((a, i) => `<button data-aba="${i}" style="font:800 13px Nunito,system-ui;border:0;border-radius:999px;padding:5px 12px;cursor:pointer;background:${i === aba ? '#ffd23f' : '#3a4270'};color:${i === aba ? '#1d2340' : '#fff'}">${esc(a.curto ?? a.nome)}</button>`).join('')}</div>
+      card.innerHTML = `<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:#1d2340;color:#fff"><b style="font-size:18px;flex:1">Voar para…</b>${abas.map((a, i) => `<button data-aba="${i}" style="font:800 13px var(--font);border:0;border-radius:999px;padding:5px 12px;cursor:pointer;background:${i === aba ? '#ffd23f' : '#3a4270'};color:${i === aba ? '#1d2340' : '#fff'}">${esc(a.curto ?? a.nome)}</button>`).join('')}</div>
         <div style="display:flex;gap:10px;padding:10px;min-height:0;flex:1;flex-wrap:wrap">
           <canvas class="voo-cv" width="360" height="288" style="flex:1 1 260px;max-width:100%;border-radius:10px;background:#e9dfc4;image-rendering:pixelated;${w.id === g.map.id ? '' : 'display:none'}"></canvas>
           <div style="flex:1 1 200px;overflow:auto;max-height:60vh">${L.length ? L.map((q, i) => `<div data-i="${i}" style="padding:8px 10px;border-radius:8px;cursor:pointer;${i === sel ? 'background:#ffd23f' : ''}">${i === sel ? '▶ ' : ''}${esc(q.nome)}</div>`).join('') : `<div style="padding:10px;opacity:.7">${w.id === g.map.id ? 'Nenhum Ninho de pouso visitado ainda. Cada cidade e vila tem um: passe perto para registrar.' : 'Nenhum Ninho visitado neste continente.'}</div>`}</div>

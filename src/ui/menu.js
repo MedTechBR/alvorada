@@ -1136,7 +1136,7 @@ export class GameMenu {
     if (cv.width !== Math.round(cw * dpr) || cv.height !== Math.round(ch * dpr)) {
       cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr); cv.style.width = cw + 'px'; cv.style.height = ch + 'px';
     }
-    if (F.carregando) { const c = cv.getContext('2d'); c.fillStyle = '#e9dfc4'; c.fillRect(0, 0, cv.width, cv.height); c.fillStyle = '#1d2340'; c.font = `900 ${14 * dpr}px Nunito, system-ui`; c.textAlign = 'center'; c.fillText('Abrindo o mapa…', cv.width / 2, cv.height / 2); return; }
+    if (F.carregando) { const c = cv.getContext('2d'); c.fillStyle = '#e9dfc4'; c.fillRect(0, 0, cv.width, cv.height); c.fillStyle = '#1d2340'; c.font = `900 ${14 * dpr}px Nunito, Avenir Next, ui-rounded, system-ui, sans-serif`; c.textAlign = 'center'; c.fillText('Abrindo o mapa…', cv.width / 2, cv.height / 2); return; }
     // recorte: o que já foi visitado (mais o jogador e a área escolhida), com folga, na proporção da caixa
     const room = aqui ? m.interiorAt?.(g.player.x, g.player.y) : null;
     const ptx = aqui ? (room?.door ? room.door.x : g.player.x / 16) : null, pty = aqui ? (room?.door ? room.door.y : g.player.y / 16) : null;
@@ -1166,7 +1166,7 @@ export class GameMenu {
     const list = (F.areas ?? []).filter((a) => a.name === L.focus || this.#visited(a.x, a.y, F)).sort((a, b) => (b.name === L.focus) - (a.name === L.focus) || big(b) - big(a));
     for (const a of list) {
       const on = a.name === L.focus, size = on ? fs * 1.15 : big(a) ? fs : fs * 0.86;
-      c.font = `900 ${Math.round(size)}px Nunito, system-ui, sans-serif`;
+      c.font = `900 ${Math.round(size)}px Avenir Next, Nunito, ui-rounded, system-ui, sans-serif`;
       const [x, y] = S(a.x, a.y), w = c.measureText(a.name).width + 8 * dpr, h = size + 6 * dpr;
       const r = [x - w / 2, y - h / 2, x + w / 2, y + h / 2];
       if (!on && placed.some((q) => r[0] < q[2] && r[2] > q[0] && r[1] < q[3] && r[3] > q[1])) continue;
@@ -1179,7 +1179,7 @@ export class GameMenu {
     for (const q of g.missoes?.marcadores?.({ regiao: true }) ?? []) {
       const [qx, qy] = S(q.x / 16, q.y / 16), r = (q.acomp ? 8 : 6) * dpr;
       c.beginPath(); c.arc(qx, qy, r, 0, Math.PI * 2); c.fillStyle = '#4aa3ff'; c.fill(); c.lineWidth = 2 * dpr; c.strokeStyle = '#fff'; c.stroke();
-      c.fillStyle = '#fff'; c.font = `900 ${Math.round(r * 1.5)}px Nunito, system-ui, sans-serif`; c.fillText('!', qx, qy + 0.5 * dpr);
+      c.fillStyle = '#fff'; c.font = `900 ${Math.round(r * 1.5)}px Avenir Next, Nunito, ui-rounded, system-ui, sans-serif`; c.fillText('!', qx, qy + 0.5 * dpr);
     }
     const obj = this.ui.hud.obj?.target;
     if (obj && Number.isFinite(obj.x)) { const [ox, oy] = S(obj.x / 16, obj.y / 16), r = 7 * dpr; c.beginPath(); c.moveTo(ox, oy - r); c.lineTo(ox + r, oy); c.lineTo(ox, oy + r); c.lineTo(ox - r, oy); c.closePath(); c.fillStyle = '#f2b705'; c.fill(); c.lineWidth = 2 * dpr; c.strokeStyle = '#fff'; c.stroke(); }
@@ -1187,7 +1187,7 @@ export class GameMenu {
     const pulse = 0.5 + 0.5 * Math.sin((L.t ?? 0) * 6);
     c.beginPath(); c.arc(x, y, (8 + pulse * 6) * dpr, 0, Math.PI * 2); c.fillStyle = `rgba(255,71,87,${0.3 - pulse * 0.18})`; c.fill();
     c.beginPath(); c.arc(x, y, 5 * dpr, 0, Math.PI * 2); c.fillStyle = '#ff4757'; c.fill(); c.lineWidth = 2 * dpr; c.strokeStyle = '#fff'; c.stroke();
-    c.font = `900 ${13 * dpr}px Nunito, system-ui, sans-serif`;
+    c.font = `900 ${13 * dpr}px Avenir Next, Nunito, ui-rounded, system-ui, sans-serif`;
     c.beginPath(); c.arc(cv.width - 22 * dpr, 22 * dpr, 13 * dpr, 0, Math.PI * 2); c.fillStyle = '#e5383b'; c.fill(); c.lineWidth = 2 * dpr; c.strokeStyle = '#fff'; c.stroke();
     c.fillStyle = '#fff'; c.fillText('N', cv.width - 22 * dpr, 22.5 * dpr);
   }

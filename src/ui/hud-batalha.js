@@ -13,7 +13,7 @@ const STATUS = { par: ['PAR', '#c9a400'], slp: ['DOR', '#7d7d9c'], psn: ['ENV', 
 const ESTAG = { atk: 'ATQ', def: 'DEF', spa: 'AES', spd: 'DES', spe: 'VEL' };
 
 const CSS = `
-#hb { position: absolute; inset: 0; pointer-events: none; font-family: 'Nunito', system-ui, sans-serif; z-index: 3; }
+#hb { position: absolute; inset: 0; pointer-events: none; font-family: var(--font); z-index: 3; }
 #hb[hidden] { display: none; }
 #hb .pn { position: absolute; top: calc(10px + var(--st, 0px)); width: min(40vw, 500px); display: flex; gap: 12px; align-items: center; padding: 8px 14px; color: #f4f1ea;
   background: linear-gradient(180deg, rgba(34,36,46,.92), rgba(24,26,34,.9)); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,.35); }
@@ -32,7 +32,7 @@ const CSS = `
 #hb .bar i.mid { background: linear-gradient(180deg, #f6d65a, #e0a82a); } #hb .bar i.low { background: linear-gradient(180deg, #ff7a6a, #e04a3a); }
 #hb .bar.xp { height: 4px; margin-top: 3px; } #hb .bar.xp i { background: #5aa8f0; }
 #hb .ps { font-size: 12px; font-weight: 800; opacity: .85; text-align: right; margin-top: 2px; } #hb .ele .ps { text-align: left; }
-#hb .vs { position: absolute; top: calc(22px + var(--st, 0px)); left: 50%; transform: translateX(-50%); font: 900 30px 'Nunito', system-ui; color: #f4f1ea; text-shadow: 0 3px 0 rgba(0,0,0,.45), 0 0 18px rgba(255,200,120,.35); letter-spacing: 2px; }
+#hb .vs { position: absolute; top: calc(22px + var(--st, 0px)); left: 50%; transform: translateX(-50%); font: 900 30px var(--font); color: #f4f1ea; text-shadow: 0 3px 0 rgba(0,0,0,.45), 0 0 18px rgba(255,200,120,.35); letter-spacing: 2px; }
 #hb .losango { position: absolute; right: 26px; bottom: 26px; width: 250px; height: 250px; }
 #hb .gp { position: absolute; width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center; text-align: center; color: #fff;
   background: radial-gradient(circle at 50% 40%, #3a3f52, #1c1e28); border: 4px solid rgba(255,255,255,.75); box-shadow: 0 4px 12px rgba(0,0,0,.4), inset 0 0 0 2px var(--c); }
@@ -40,10 +40,10 @@ const CSS = `
 #hb .gp b { display: block; font-size: 10px; font-weight: 800; opacity: .8; max-width: 76px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #hb .gp em { display: block; font-style: normal; font-size: 26px; font-weight: 900; line-height: 1; }
 #hb .gp small { display: block; font-size: 10px; font-weight: 800; color: var(--c); filter: brightness(1.4); }
-#hb .gp kbd { position: absolute; top: -6px; left: -6px; background: #f4f1ea; color: #1c1e28; border-radius: 6px; font: 900 12px 'Nunito', system-ui; padding: 1px 6px; }
+#hb .gp kbd { position: absolute; top: -6px; left: -6px; background: #f4f1ea; color: #1c1e28; border-radius: 6px; font: 900 12px var(--font); padding: 1px 6px; }
 #hb .g0 { left: 79px; top: 0; } #hb .g1 { left: 0; top: 79px; } #hb .g2 { right: 0; top: 79px; } #hb .g3 { left: 79px; bottom: 0; }
-#hb .bt { position: absolute; display: grid; place-items: center; color: #f4f1ea; font: 900 14px 'Nunito', system-ui; background: rgba(28,30,40,.88); border: 2px solid rgba(255,255,255,.5); box-shadow: 0 3px 8px rgba(0,0,0,.35); }
-#hb .bt kbd { position: absolute; top: -10px; left: -6px; background: #f4f1ea; color: #1c1e28; border-radius: 6px; font: 900 11px 'Nunito', system-ui; padding: 1px 5px; }
+#hb .bt { position: absolute; display: grid; place-items: center; color: #f4f1ea; font: 900 14px var(--font); background: rgba(28,30,40,.88); border: 2px solid rgba(255,255,255,.5); box-shadow: 0 3px 8px rgba(0,0,0,.35); }
+#hb .bt kbd { position: absolute; top: -10px; left: -6px; background: #f4f1ea; color: #1c1e28; border-radius: 6px; font: 900 11px var(--font); padding: 1px 5px; }
 #hb .bt.itens { right: 290px; bottom: 150px; padding: 7px 16px; border-radius: 10px; }
 #hb .bt.pular { right: 296px; bottom: 60px; width: 62px; height: 62px; border-radius: 50%; }
 #hb .bt.trocar { right: 290px; bottom: 214px; padding: 6px 14px; border-radius: 10px; }

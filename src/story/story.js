@@ -72,7 +72,7 @@ export class Story {
     gfx.circle(c.x, c.y, 18).stroke({ width: 2, color: 0xffffff, alpha: 0.9 });
     gfx.rect(x0 + c.w - 2, c.y - 34, 4, 22).fill(0x7a4a2a); gfx.rect(x0 + c.w - 2, c.y + 12, 4, 22).fill(0x7a4a2a);
     gfx.rect(x0 + c.w - 6, c.y - 38, 12, 6).fill(0xc8452f);
-    const flag = new PIXI.Text({ text: 'GINÁSIO DE CAMPINA', style: { fontFamily: 'Nunito, system-ui, sans-serif', fontWeight: '900', fontSize: 28, fill: '#fff8e0', stroke: { color: '#5a3a1a', width: 6 } } });
+    const flag = new PIXI.Text({ text: 'GINÁSIO DE CAMPINA', style: { fontFamily: 'Avenir Next, Nunito, ui-rounded, system-ui, sans-serif', fontWeight: '900', fontSize: 28, fill: '#fff8e0', stroke: { color: '#5a3a1a', width: 6 } } });
     flag.anchor.set(0.5); flag.scale.set(0.25); flag.x = c.x; flag.y = y0 - 17;
     // Centro Pokémon (tenda provisória)
     const n = this.spots.get('nurse');
@@ -83,7 +83,7 @@ export class Story {
     gfx.circle(n.x, n.y - 36, 4).fill(0xffffff);
     const pc = this.spots.get('nurse');
     gfx.rect(pc.x + 18, pc.y - 18, 9, 11).fill(0x5a6a8a); gfx.rect(pc.x + 19, pc.y - 17, 7, 6).fill(0x9adcff);
-    const sign = new PIXI.Text({ text: 'CENTRO POKÉMON', style: { fontFamily: 'Nunito, system-ui, sans-serif', fontWeight: '900', fontSize: 24, fill: '#ffffff', stroke: { color: '#8a1a1a', width: 5 } } });
+    const sign = new PIXI.Text({ text: 'CENTRO POKÉMON', style: { fontFamily: 'Avenir Next, Nunito, ui-rounded, system-ui, sans-serif', fontWeight: '900', fontSize: 24, fill: '#ffffff', stroke: { color: '#8a1a1a', width: 5 } } });
     sign.anchor.set(0.5); sign.scale.set(0.25); sign.x = n.x; sign.y = n.y - 19;
     const box = new PIXI.Container(); box.addChild(gfx, flag, sign);
     g.world.addChildAt(box, 1);
