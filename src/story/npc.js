@@ -9,6 +9,8 @@ const LOOK = {
   leader: { preset: 'montanhista', hat: 'cap', cap: '#e8c860', capLogo: '#b8902a', top: '#c8452f', trim: '#3a5a9a', pants: '#3a5a9a', bagStyle: null },
   nurse: { preset: 'treinadora', hair: '#f08ab0', hairStyle: 'long', top: '#ffffff', trim: '#f08ab0', pants: '#f4c0d0', shoes: '#f08ab0', bagStyle: null },
   hiker: 'montanhista',
+  // look de dados (3D e 2D): a enfermeira e o balconista usam as mesmas roupas dos LOOK acima
+  enfermeira: { preset: 'treinadora', hair: '#f08ab0', hairStyle: 'long', top: '#ffffff', trim: '#f08ab0', pants: '#f4c0d0', shoes: '#f08ab0', bagStyle: null }, lojista: { preset: 'treinador', top: '#3a7ae8', pants: '#2a3a5a' }, guia: 'treinador',
 };
 function framesFor(look) {
   try { const f = makeCharacterFrames(LOOK[look] ?? look); if (f?.down) return f; } catch { /* desenho provisório */ }
@@ -76,6 +78,7 @@ export class Npc {
         const ox = this.x, oy = this.y;
         this.x += dx / d * st; this.y += dy / d * st;
         g.map.resolve(this, this.r);
+        g.grade?.separaGente(this, this.r, this);
         const moved = Math.hypot(this.x - ox, this.y - oy);
         if (moved < st * 0.3) w.stuck += dt; else w.stuck = 0;
         this.dir = dir4(dx, dy); this.speed = w.speed;
