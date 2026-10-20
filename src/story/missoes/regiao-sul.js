@@ -1,64 +1,41 @@
-// Missões e NPCs vivos de Cidade Coral, Vila Lamparina e Cidade Aurora (cidades novas do mundo aberto). Formato: docs/missoes.md.
-// "O farol pisca errado" e "A casa dos Solano" são tocadas pelo roteiro (cap04.js e cap06.js): aqui elas só aparecem
-// no diário, acompanhando as flags da história (campo `historia`). A recompensa é dada pela cena do roteiro.
+// Missões e NPCs vivos de Cidade Coral, Vila Lamparina e Cidade Aurora. Formato: docs/missoes.md.
+// Coral: o diário do farol é cena da história (jornada/04-coral.js); "O farol pisca errado" saiu (era a mesma ideia, ligada às
+// cenas do roteiro antigo). Lamparina: a casa dos Solano é a única missão solta, agora tocada pelo motor de missões.
 
 export const ITENS = {};
 
 export const MISSOES = [
   {
-    id: 'sq_farol', titulo: 'O farol pisca errado', regiao: 'Cidade Coral', de: 'iracema',
-    historia: { ativa: 'sq_farol', feita: 'sq_farol_completa' },
-    resumo: 'Iracema, a faroleira aposentada, garante que o farol novo pisca uma mensagem em código Morse.',
-    etapas: [
-      { tipo: 'flag', flag: 'sq_farol=ativa', lugar: 'casa_iracema', texto: 'De noite, visite a Iracema e conte as piscadas do farol com ela' },
-      { tipo: 'flag', flag: 'sq_farol_completa', lugar: 'farol_topo', texto: 'Suba ao topo do Farol Coral e escute a máquina de luzita' },
-    ],
-    recompensa: { texto: 'Um Pokémon que estava preso na luz' },
-  },
-  {
     id: 'sq_solano', titulo: 'A casa dos Solano', regiao: 'Vila Lamparina', de: 'benta',
-    historia: { ativa: { visitou: 'vila_lamparina' }, feita: 'sq_solano_completa' },
-    resumo: 'Em Vila Lamparina, todos evitam a casa abandonada da família Solano. Dizem que um Pokémon fantasma guarda alguma coisa lá dentro.',
+    requer: { flags: ['nh.chegouLamparina'] },
+    resumo: 'Todos evitam a casa abandonada dos Solano. A Vó Benta cuidou dos dois meninos que moravam lá e quer saber o que o Duskull da casa guarda.',
+    oferta: [
+      'Está vendo a casa torta, de janela quebrada? Era dos Solano. Dois meninos moravam ali: o Augusto, grande, e o Tiago, pequeno, que tinha medo do escuro.',
+      'Eu cuidava dos dois quando a mãe descia para a mina. Num inverno o Tiago adoeceu, e a casa nunca mais acendeu a luz. O Augusto foi embora e nunca voltou.',
+      'Dizem que um Duskull mora lá dentro e não deixa ninguém passar. Eu acho que ele está guardando alguma coisa do menino. Vai ver, por mim?',
+    ],
+    aceita: ['A casa não tranca. É só empurrar a porta. E acende a lanterna, que lá é escuro de verdade.'],
+    lembrete: ['A casa dos Solano, no canto da vila. Se o Duskull não fugir, ele mostra o caminho.'],
     etapas: [
       { tipo: 'chegar', lugar: 'casa_solano', texto: 'Entre na casa abandonada dos Solano, em Vila Lamparina' },
-      { tipo: 'flag', flag: 'sq_solano_completa', texto: 'Descubra o que o Pokémon fantasma está guardando' },
+      { tipo: 'chegar', lugar: 'diario_solano', r: 2, texto: 'Siga o Duskull até o quarto dos fundos',
+        falas: [
+          'No canto do quarto empoeirado, um Duskull flutua quietinho. Ele segura uma máscara de papel de menino, pintada com um sol.',
+          'Quando você chega perto, ele não foge. Aponta com a máscara para uma tábua solta do chão.',
+          'Debaixo da tábua, um caderno. Na capa: "Diário do Tiago. Proibido ler. Só o Augusto pode."',
+          'A última página tem um desenho: um menino grande segurando um sol na mão, e um menino pequeno ao lado. Embaixo, com letra torta: "meu irmão vai acender o mundo".',
+          'O Duskull solta a máscara no chão e flutua até o seu ombro. Parece que ele cansou de esperar sozinho.',
+        ],
+        recompensa: { itens: [['diario_tiago', 1]], pokemon: { dex: 355, nivel: 30, apelido: 'Máscara' } } },
+      { tipo: 'falar', npc: 'benta', texto: 'Leve o diário do Tiago à Vó Benta',
+        falas: [
+          'O Augusto, que desenho é esse? Esse menino grande com o sol na mão…',
+          'O Tiago tinha medo do escuro, e o irmão prometeu acender o mundo inteiro para ele nunca mais ficar no escuro. Prometeu de verdade, aos dez anos de idade.',
+          'Hoje o Augusto tem luz demais e nenhuma pessoa dentro dela. O diário é seu, filho. Se um dia você encontrar esse homem, lembre que um dia ele foi o menino do desenho.',
+        ] },
     ],
-    recompensa: { texto: 'O Diário de Tiago e um amigo inesperado' },
-  },
-  {
-    id: 'sq_acaraje', titulo: 'Acarajé ardido', regiao: 'Cidade Coral', de: 'coral_neide',
-    resumo: 'Dona Neide quer um acarajé especial para a festa, apimentado com Fruta Cheri.',
-    oferta: ['Acarajé de festa tem que arder, meu filho! E pimenta boa, aqui, é Fruta Cheri.', 'Me arruma três? Faço um especial para você.'],
-    lembrete: ['Três Frutas Cheri! Aquelas vermelhinhas, ardidas.'],
-    etapas: [
-      { tipo: 'entregar', npc: 'coral_neide', item: 'cheri', n: 3, texto: 'Leve 3 Frutas Cheri à Dona Neide, no calçadão de Coral',
-        falas: ['Isso! Agora sim o acarajé fala. Ai, ai! Prove com cuidado.', 'Tome umas bebidas para apagar o fogo.'] },
-    ],
-    recompensa: { itens: [['sodaPop', 3]], dinheiro: 300 },
-  },
-  {
-    id: 'sq_lampioes', titulo: 'Os lampiões de Lamparina', regiao: 'Vila Lamparina', de: 'lamp_acendedor',
-    resumo: 'O Acendedor de Lampiões está com a perna machucada. Alguém precisa conferir os lampiões da vila depois que escurece.',
-    oferta: ['Torci o pé no brejo. E os lampiões não se conferem sozinhos.', 'Depois que escurecer, passa nos três cantos da vila e vê se estão acesos?'],
-    lembrete: ['Depois que escurecer: os três cantos da vila.'],
-    etapas: [
-      { tipo: 'chegar', x: 318, y: 214, r: 3, se: { hora: 'noite' }, texto: 'De noite, confira o lampião do canto oeste', falas: ['O lampião do oeste está aceso. Um Litwick cochila em cima dele.'] },
-      { tipo: 'chegar', x: 350, y: 212, r: 3, se: { hora: 'noite' }, texto: 'De noite, confira o lampião do canto norte', falas: ['O lampião do norte pisca, mas segura a chama.'] },
-      { tipo: 'chegar', x: 333, y: 228, r: 3, se: { hora: 'noite' }, texto: 'De noite, confira o lampião perto do brejo', falas: ['Perto do brejo, a chama é azulada. Melhor não perguntar.'] },
-      { tipo: 'falar', npc: 'lamp_acendedor', texto: 'Volte ao Acendedor de Lampiões', falas: ['Todos acesos? Até o do brejo? Então a vila dorme tranquila. Tome, você mereceu.'] },
-    ],
-    recompensa: { itens: [['spellTag', 1], ['duskBall', 2]] },
-  },
-  {
-    id: 'sq_torres', titulo: 'Zumbido nas torres', regiao: 'Rota 6', de: 'aurora_menino',
-    resumo: 'Em Cidade Aurora, um menino não consegue dormir com o zumbido dos Pokémon elétricos que rondam as torres da ferrovia.',
-    oferta: ['Na minha casa a luz nunca apaga. E de noite os Pokémon elétricos zumbem nas torres. ZZZZ.', 'Espanta uns quatro para mim? Aí eu durmo.'],
-    lembrete: ['Quatro Pokémon elétricos, lá nas torres da Rota 6.'],
-    etapas: [
-      { tipo: 'derrotar', tipoPokemon: 'electric', n: 4, lugar: 'torres_transmissao', texto: 'Vença 4 Pokémon selvagens do tipo Elétrico na Rota 6', rotulo: 'Espantados' },
-      { tipo: 'falar', npc: 'aurora_menino', texto: 'Conte para o menino de Cidade Aurora', falas: ['Silêncio! Só a luz que não apaga… mas isso eu resolvo com o travesseiro. Toma, é pedra do meu avô.'] },
-    ],
-    recompensa: { itens: [['thunderStone', 1]] },
+    conclusao: ['Agora come mais um pedaço. Chorar de barriga vazia é pior.'],
+    recompensa: { itens: [['spellTag', 1], ['duskBall', 3]] },
   },
 ];
 
