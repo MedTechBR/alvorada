@@ -219,7 +219,7 @@ export default {
       local: 'camara_coracao',
       gatilho: { tipo: 'apos', cena: 'j12_selo_insignias' },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e quatro minutos. A Companhia Aurora anunciou o fim da extração no Planalto.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e quatro. A Companhia Aurora anunciou o fim da extração no Planalto.'],
         ['mae', 'Ravi! Seis e quatro! O sol voltou no horário. Você está aí em cima, não está? Volta logo para casa.'],
         ['jogador', 'Eu chego amanhã cedo, mãe. Antes, preciso atravessar a Cordilheira Geada. A Liga não espera.'],
       ],
