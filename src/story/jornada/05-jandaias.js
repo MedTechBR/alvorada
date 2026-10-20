@@ -101,6 +101,8 @@ export default {
         ['teo', 'Tá bom, você ganhou. Mas eu não estou convencido. Meu pai nunca mentiu para mim.'],
         ['jogador', 'Eu não disse que ele mentiu. Eu disse que a Aurora cortou a selva para passar um cabo.'],
         ['teo', 'Então me mostra a prova. Mas se eu ver que é mentira, eu vou ser o primeiro a te enfrentar de novo.'],
+        ['jogador', 'O Seu Nestor, do porto, achou uma garrafa no manguezal. Tinha um bilhete: "Estamos no nível 4. A luz daqui não é limpa". Assinado Heitor.', { requer: ['nh.bilheteHeitor'] }],
+        ['teo', 'Essa letra torta é do meu pai. Ele escreve assim no escuro, desde que eu era pequeno… Ele nunca me contou nada de nível quatro. Eu preciso pensar.', { requer: ['nh.bilheteHeitor'] }],
       ],
       depois: {
         flags: { 'nh.teoDuvida': true },

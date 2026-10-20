@@ -135,17 +135,17 @@ export default {
       ],
     },
     {
-      // missão secundária: a garrafa do Seu Nestor. Começo: ele pede. Meio: a garrafa no manguezal. Fim: o nome do Heitor.
+      // missão secundária: a garrafa do Seu Nestor. Começo: ele pede. Meio: a garrafa no manguezal. Fim: a letra do Heitor.
       id: 'j03_sq_garrafa_inicio',
       local: 'porto_espelho',
       gatilho: { tipo: 'falar', alvo: 'nestor', semFlag: ['nh.sqGarrafa'] },
       falas: [
-        ['nestor', 'Cada garrafa tem uma história. Essa aqui só tem areia. Mas é uma areia muito bonita.'],
-        ['nestor', 'Eu jogo uma garrafa no mar desde o ano em que a Aurora chegou. Uma delas voltou com um bilhete de um mineiro. Você pode achar a outra no manguezal?'],
-        ['jogador', 'Uma garrafa no manguezal? Isso parece coisa de pescador com saudade.'],
-        ['nestor', 'É saudade, sim, e também de quem não sabe quem chega do mar. Vai lá, filho.'],
+        ['nestor', 'Cada garrafa tem uma história. Eu jogo uma no mar todo ano desde que a Aurora chegou, com um bilhete dentro, para quem achar.'],
+        ['nestor', 'Quase nunca volta nenhuma. Mas esta semana a maré trouxe uma de volta, presa nas raízes do manguezal, a oeste do porto. Eu não consigo andar na lama com estas costas.'],
+        ['jogador', 'Uma das suas garrafas voltando… Isso parece coisa de pescador com saudade.'],
+        ['nestor', 'É saudade, sim. E é curiosidade também: eu quero saber quem leu o meu bilhete e respondeu. Vai lá, filho.'],
       ],
-      secundaria: { texto: 'Ache a garrafa do Seu Nestor no manguezal, a oeste do porto', alvo: 'manguezal' },
+      secundaria: { texto: 'Ache a garrafa que voltou, presa nas raízes do manguezal, a oeste do porto', alvo: 'manguezal' },
       depois: { flags: { 'nh.sqGarrafa': true }, ambiente: true },
       atores: [
         { id: 'nestor_porto', quem: 'nestor', nome: 'Seu Nestor', look: LOOKS.nestor, spot: 'nestor', permanente: true },
@@ -156,12 +156,12 @@ export default {
       local: 'manguezal',
       gatilho: { tipo: 'pisar', alvo: 'manguezal', requer: ['nh.sqGarrafa'], semFlag: ['nh.achouGarrafa'] },
       falas: [
-        ['narrador', 'Entre as raízes dos mangues, uma garrafa verde está presa numa rede de pesca. Dentro, um papel enrolado, molhado e pálido.'],
-        ['narrador', 'A letra é torta, de quem escreve no escuro: "Estamos no nível 4. A luz daqui não é limpa, é a mesma que sai dos nossos cabos. Heitor."'],
+        ['narrador', 'Entre as raízes dos mangues, uma garrafa verde está presa numa rede de pesca. Dentro, o bilhete do Nestor e, enrolado junto, um segundo papel, molhado e pálido.'],
+        ['narrador', 'A letra é torta, de quem escreve no escuro: "Recebi o seu bilhete, mas não posso responder à vista. Estamos no nível 4. A luz daqui não é limpa, é a mesma que sai dos nossos cabos. Heitor."'],
         ['jogador', 'Heitor. Esse é o nome do pai do Téo. O Téo disse que ele trabalha na Mina Aurora.'],
-        ['narrador', 'O papel está úmido, e a tinta escorre nas bordas. Você guarda o bilhete no bolso com cuidado.'],
+        ['narrador', 'O papel está úmido, e a tinta escorre nas bordas. Você guarda os dois bilhetes no bolso com cuidado.'],
       ],
-      secundaria: { texto: 'Leve o bilhete ao Seu Nestor, no porto de Porto Espelho', alvo: 'nestor' },
+      secundaria: { texto: 'Leve a garrafa de volta ao Seu Nestor, no porto de Porto Espelho', alvo: 'nestor' },
       depois: { flags: { 'nh.achouGarrafa': true }, ambiente: true },
     },
     {
@@ -169,10 +169,11 @@ export default {
       local: 'porto_espelho',
       gatilho: { tipo: 'falar', alvo: 'nestor', requer: ['nh.achouGarrafa'], semFlag: ['nh.sqGarrafaFim'] },
       falas: [
-        ['nestor', 'Heitor! Esse nome eu conheço. O menino da Aurora que cantava no barco quando era pequeno. Ele é pai do Téo, não é?'],
-        ['nestor', 'Se ele escreveu isso, não é coisa de quem está doente. É coisa de quem está preso lá embaixo. Leve o papel ao Téo, antes que a Aurora o encontre.'],
+        ['nestor', 'Heitor! Esse nome eu conheço. O menino da Aurora que cantava no barco quando era pequeno. É o pai do Téo, não é?'],
+        ['nestor', 'Se ele escreveu isso, não é coisa de quem está doente. É coisa de quem está preso lá embaixo e achou um jeito de pedir ajuda. Respondeu a minha garrafa, filho. A minha!'],
+        ['nestor', 'Leve o bilhete com você, para o Téo. Eu copio a letra para a minha caixa. Garrafa que responde merece um lugar de honra.'],
         ['jogador', 'Eu levo. E eu vou descer até lá.'],
-        ['narrador', 'O Seu Nestor guarda o bilhete numa caixa de madeira, junto com as outras garrafas. Parece um pequeno museu do mar.'],
+        ['narrador', 'O Seu Nestor copia o bilhete num papel limpo e guarda a cópia numa caixa de madeira, junto com as outras garrafas. Parece um pequeno museu do mar.'],
       ],
       depois: { itens: [['ultraBall', 3]], flags: { 'nh.sqGarrafaFim': true, 'nh.bilheteHeitor': true }, ambiente: true },
     },

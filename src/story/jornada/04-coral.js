@@ -153,15 +153,16 @@ export default {
       ],
     },
     {
-      // missão secundária: o diário do farol. Começo: a Iracema pede. Meio: achar o diário no topo. Fim: o diário.
+      // missão secundária: o diário do farol. Começo: a Iracema pede. Meio: achar o diário no topo (e soltar o Rotom preso na
+      // lâmpada). Fim: o diário mostra que a Aurora trocou o gerador e que o Solano assinou a troca.
       id: 'j04_sq_diario_inicio',
       local: 'farol_coral',
       gatilho: { tipo: 'falar', alvo: 'iracema', requer: ['nh.viuSolano'], semFlag: ['nh.sqDiario'] },
       falas: [
-        ['iracema', 'Eu escrevia tudo que acontecia no farol. Todo dia, desde que me contrataram. O diário está lá no quarto do topo, onde ficam os geradores.'],
-        ['iracema', 'Se a Aurora mexeu nas peças, o registro está lá. Eu não consigo subir mais aquela escada com estes joelhos.'],
-        ['jogador', 'Um diário de farol? Isso pode ser o que a Iracema estava escondendo.'],
-        ['iracema', 'Pode ser. Eu escrevi tudo por medo de esquecer. Agora é hora de lembrar.'],
+        ['iracema', 'Eu escrevi tudo que aconteceu neste farol, todo dia, desde que me contrataram. Quarenta anos de caderno. Ficou lá em cima, no quarto dos geradores.'],
+        ['iracema', 'A Aurora trocou as peças do farol sem avisar ninguém, e agora a luz pisca fora de hora. Se tem prova, está no meu diário. Mas estes joelhos não sobem mais aquela escada.'],
+        ['jogador', 'Um diário de farol? Isso pode ser o que a senhora estava escondendo.'],
+        ['iracema', 'Eu não escondia. Eu esperava alguém que quisesse ler.'],
       ],
       secundaria: { texto: 'Encontre o diário da Iracema no quarto do topo do Farol Coral', alvo: 'farol_topo' },
       depois: { flags: { 'nh.sqDiario': true }, ambiente: true },
@@ -174,22 +175,24 @@ export default {
       local: 'farol_topo',
       gatilho: { tipo: 'entrar', alvo: 'farol_topo', requer: ['nh.sqDiario'], semFlag: ['nh.diarioFarol'] },
       falas: [
-        ['narrador', 'No quarto dos geradores, um caderno de capa verde está preso debaixo de uma caixa de ferramentas. As páginas do fim são de outra letra.'],
+        ['narrador', 'No quarto dos geradores, um caderno de capa verde está preso debaixo de uma caixa de ferramentas. As últimas páginas são de outra letra.'],
         ['narrador', '"Dia 3: o gerador três foi trocado por ordem da Companhia Aurora. Peça nova, sem número de série. Assinado: A. Solano."'],
-        ['narrador', '"Dia 14: a luz gira sozinha. Ela acende mais cedo lá embaixo e mais tarde aqui em cima. Não é o farol que está errado. É o sol."'],
-        ['jogador', 'Então o Solano assinou o diário com as próprias mãos. Ele achou que ninguém leria.'],
-        ['narrador', 'Você fecha o caderno. Lá embaixo, o mar bate nas pedras do farol, e a luz do topo ainda gira fora de hora.'],
+        ['narrador', '"Dia 14: a luz gira sozinha. Acende mais cedo lá embaixo e mais tarde aqui em cima. Não é o farol que está errado. É o sol."'],
+        ['narrador', 'Atrás da caixa, a lâmpada de luzita pisca em código: S-O-C-O-R-R-O. Dentro dela, uma bolinha de plasma com olhos bate no vidro.'],
+        ['jogador', 'Então era isso que a Iracema ouvia pelo rádio. Tem um Rotom preso aí dentro.'],
+        ['narrador', 'Você gira o parafuso da lâmpada. O vidro estala, o Rotom sai faiscando de alívio e se agarra ao seu ombro. Lá embaixo, o mar bate nas pedras, e a luz do topo ainda gira fora de hora.'],
       ],
       secundaria: { texto: 'Leve o diário da Iracema de volta a ela, no pé do farol', alvo: 'farol_entrada' },
-      depois: { flags: { 'nh.diarioFarol': true }, ambiente: true },
+      depois: { flags: { 'nh.diarioFarol': true }, pokemon: [479, 25], ambiente: true },
     },
     {
       id: 'j04_sq_diario_fim',
       local: 'farol_entrada',
       gatilho: { tipo: 'falar', alvo: 'iracema', requer: ['nh.diarioFarol'], semFlag: ['nh.sqDiarioFim'] },
       falas: [
-        ['iracema', 'Eu sabia. O Solano assinou o diário, e ninguém tem direito de assinar no farol da cidade. Agora é só a gente mostrar isso à Cidade Coral.'],
-        ['iracema', 'Tome, leve estas poções. São as últimas que eu tenho guardadas. Vai precisar delas no caminho.'],
+        ['iracema', 'Eu sabia. Ele esteve aqui, trocou o meu gerador e deixou o nome no meu diário, como quem não tem medo de ser lido.'],
+        ['iracema', 'E o Rotom! Ele pedia socorro desde a semana passada, e eu pensando que era o rádio. Cuide dele: gente presa na luz aprende a gostar de quem abre a porta.'],
+        ['iracema', 'Tome estas poções. São as últimas que eu tenho guardadas. Vai precisar delas no caminho.'],
         ['jogador', 'Eu conto ao Jonas. Ele disse que quer ajudar, mesmo que não queira admitir.'],
         ['narrador', 'A Iracema guarda o diário debaixo do braço e olha para o farol com um sorriso pequeno.'],
       ],
