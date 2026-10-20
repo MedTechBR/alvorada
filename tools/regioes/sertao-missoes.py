@@ -55,8 +55,17 @@ NPCS = {
     'mestre_iraci': {'reage': {'tipo': {'water': ['Um Pokémon de Água! Esse nada bem. Dá para correr de canoa com ele.']}}},
 }
 
+# Texto revisado (revisão de diálogos, dialogos-e): missões e NPCs trocados por id a partir de sertao-dialogos.json.
+# Edite os textos lá; o resto (equipes, ids, passos) continua vindo deste arquivo.
+_rev = json.load(open(os.path.join(RAIZ, 'tools/regioes/sertao-dialogos.json'), encoding='utf-8'))
+ITENS.update(_rev['ITENS'])
+for _i, _m in enumerate(M):
+    if _m['id'] in _rev['MISSOES']:
+        M[_i] = _rev['MISSOES'][_m['id']]
+NPCS.update(_rev['NPCS'])
+
 js = '// Missões e NPCs vivos do Sertão do Levante (Vila Mandacaru, Cidade Buriti, Vila Siri, Ruínas de Pedra Pintada e treinadores das rotas).\n'
-js += '// GERADO por tools/regioes/gerar-sertao.py (edite lá). Formato: docs/missoes.md.\n\n'
+js += '// GERADO por tools/regioes/gerar-sertao.py (edite lá; os textos revisados estão em tools/regioes/sertao-dialogos.json). Formato: docs/missoes.md.\n\n'
 js += 'export const ITENS = ' + json.dumps(ITENS, ensure_ascii=False, indent=2) + ';\n\n'
 js += 'export const MISSOES = ' + json.dumps(M, ensure_ascii=False, indent=2) + ';\n\n'
 js += 'export const NPCS = ' + json.dumps(NPCS, ensure_ascii=False, indent=2) + ';\n'

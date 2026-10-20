@@ -1,5 +1,5 @@
 // Missões e NPCs vivos do Sertão do Levante (Vila Mandacaru, Cidade Buriti, Vila Siri, Ruínas de Pedra Pintada e treinadores das rotas).
-// GERADO por tools/regioes/gerar-sertao.py (edite lá). Formato: docs/missoes.md.
+// GERADO por tools/regioes/gerar-sertao.py (edite lá; os textos revisados estão em tools/regioes/sertao-dialogos.json). Formato: docs/missoes.md.
 
 export const ITENS = {
   "fossil_ambar": {

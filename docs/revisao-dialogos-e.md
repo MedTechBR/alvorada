@@ -86,12 +86,21 @@ Dois grupos acrescentaram campos. O Matheus pediu só texto, então o ideal é r
 
 ## O que o texto não resolve (pendências para o Matheus)
 
-1. **Geradores vão desfazer parte do trabalho.**
-   - `src/story/elenco-jandaia.js` é gerado por `tools/regioes/jandaia-treinadores.mjs` ("edite o gerador"). As falas novas
-     estão só no arquivo.
-   - O cabeçalho de `regiao-sertao.js` diz "GERADO por tools/regioes/gerar-sertao.py", mas o roteiro cita
-     `tools/regioes/sertao-missoes.py`. Vale aposentar o gerador ou levar os textos para ele.
-   - As falas de Geada e algumas de Brasas e Jandaias não têm gerador: só existem no JSON.
+1. **Geradores (alinhados na etapa 2 da revisão).**
+   - `src/story/elenco-jandaia.js`: `tools/regioes/jandaia-treinadores.mjs` agora tem as falas revisadas (`apos`) e reproduz
+     o arquivo exatamente (conferido).
+   - `src/story/missoes/regiao-sertao.js`: `tools/regioes/sertao-missoes.py` (chamado por `gerar-sertao.py`) aplica por cima
+     o `tools/regioes/sertao-dialogos.json` (missão do anel, falas de treinadores, Zuleica) e reproduz o arquivo exatamente.
+     Edite os textos nesse JSON.
+   - `tools/brasas/povoado.py`, `tools/regioes/jandaia-vila.mjs`, `sertao-cidades.py`, `sertao-missoes.py`, `sertao-ruinas.py`
+     e `tools/gerar-regioes.mjs` já carregam as falas novas. Os mapas gerados (`jandaia.json`, `sertao.json`) divergiram em
+     estrutura (salas, objetos) por outros trabalhos, então **não regenerar os JSON de mapa sem revisar o diff**.
+   - Textos que só existem no JSON (sem gerador; não regenerar nem sobrescrever):
+     `assets/maps/alvorada.json` (todos os moradores revisados); `assets/maps/regioes/nucleo.json` (placas de Rota 6, Roda
+     de Capoeira, Mina Velha, Torre do Vento e as salas da Elite/Campeã); `assets/maps/regioes/geada.json` (todos os
+     moradores e treinadores, incluindo a Dona Inês e o mural); `assets/maps/regioes/brasas.json` (rumor do Templo da Chama
+     e a cratera do Tição); `assets/maps/regioes/jandaia.json` (rumores do guardião da selva e da gente de preto no Templo
+     das Raízes); `assets/maps/ocaso/leste.json` (1 fala).
 2. **Rumores nunca são ditos.** Em `lendarios.js`, `rumorCidade` está `null` nas 29 entradas reescritas, então nenhum morador
    fala o rumor no jogo. Falta o id da cidade em cada entrada (lógica, não texto).
 3. **22 lendários de pós-jogo continuam sem texto.** Kyogre, Groudon, Rayquaza, Lugia, Mewtwo, Arceus e outros (lista
