@@ -18,17 +18,17 @@ export default {
       local: 'relogio_pedra',
       gatilho: { tipo: 'entrar', alvo: 'relogio_pedra', requer: ['nh.reviravolta5'], semFlag: ['nh.chegouRelogio'] },
       falas: [
-        ['narrador', 'O topo do Planalto: um círculo de pedra com sete pedestais e, no centro, o Relógio de Pedra.'],
+        ['narrador', 'O topo do Planalto: um círculo de pedra com oito pedestais e, no centro, o Relógio de Pedra.'],
         ['narrador', 'Um cadeado de cristal dourado prende a porta de rocha. Sete pedestais já brilham, cada um com a cor de um ginásio.'],
         ['solano', '{jogador}, chegou na hora certa. Eu gosto de gente pontual. Traga a vela, e o professor volta para casa.'],
         ['narrador', 'O professor está numa gaiola de metal, ao lado do Lúcio, com o rosto pálido e os olhos fixos em você.'],
         ['sereno', 'Senhor Solano, as sete pedras já estão nos pedestais. Falta só a chama do oitavo.'],
         ['jogador', 'Não entrego a vela enquanto o professor não sair daí. E não acendo nada antes de entender o Relógio.'],
-        ['solano', 'Quando as oito chaves estiverem acesas, o cadeado se abre. Você não precisa entender. Só precisa me entregar a chama.'],
+        ['solano', 'Quando as oito chaves estiverem no lugar, o cadeado se abre e o Necrozma sai. Eu vou capturá-lo e vender luz sem fim. Entregue a chama.'],
       ],
       depois: {
         flags: { 'nh.chegouRelogio': true },
-        objetivo: { texto: 'Suba a escada do Relógio e enfrente a Dra. Véspera, que quer saber quem você é', alvo: 'relogio_pedra' },
+        objetivo: { texto: 'Enfrente a Dra. Véspera, que quer testar se você consegue proteger a vela', alvo: 'relogio_pedra' },
       },
       atores: [
         { id: 'solano_relogio', quem: 'solano', nome: 'Augusto Solano', look: LOOKS.solano, spot: 'relogio_pedra', longe: 4 },
@@ -44,9 +44,9 @@ export default {
       gatilho: { tipo: 'apos', cena: 'j12_chegada' },
       falas: [
         ['vespera', 'Eu me enganei sobre este Relógio por dezesseis anos. Não vou deixar a Aurora usar o meu erro.'],
-        ['vespera', 'Você viu o cadeado e sabe o que o Solano quer. Antes de tocar na chama, quero ver se você aguenta a pressão.'],
+        ['vespera', 'Antes de você chegar perto da chama, quero ver se consegue protegê-la do Solano.'],
         ['jogador', 'Eu não trouxe a vela para o Solano. Ela está comigo desde Lamparina, e eu vou protegê-la.'],
-        ['vespera', 'Boa resposta. Então prove, porque eu já vi muita gente prometer e deixar a chama apagar.'],
+        ['vespera', 'Boa resposta. Então prove em batalha.'],
       ],
       depois: {
         batalha: {
@@ -70,12 +70,12 @@ export default {
       gatilho: { tipo: 'vencer', alvo: 'c12_vespera' },
       reviravolta: 6,
       falas: [
-        ['vespera', 'Você segurou a chama. Agora escuta, porque eu não vou repetir: o Solano não quer só o cadeado aberto.'],
+        ['vespera', 'Você passou no teste. Escute: o Solano não quer só abrir o cadeado.'],
         ['vespera', 'Ele quer capturar o Necrozma e vender a luz do Planalto. O Sereno trocou as minhas traduções para isso.'],
-        ['vespera', 'Eu estou do seu lado agora. Não é por você. É pela Sina, por mim e pelo sol que eu deixei de ver.'],
+        ['vespera', 'Estou do seu lado agora. Quero salvar a Sina e consertar o meu erro.'],
         ['narrador', 'Lá embaixo, na escada, o Téo chega correndo. Atrás dele vem um homem de capacete sujo de pó, com um lampião na mão.'],
-        ['teo', 'Estamos aqui! Eu e meu pai saímos da mina pelo túnel do nível quatro. Eu não aguentei esperar.'],
-        ['heitor', '{jogador}, obrigado por ter ido atrás do meu filho. Ele não parava de falar de você, e agora eu entendo por quê.'],
+        ['teo', 'Cheguei! Meu pai está bem e quis vir comigo. Eu não aguentei esperar.'],
+        ['heitor', '{jogador}, obrigado por ajudar meu filho e por me tirar da mina.'],
       ],
       depois: {
         flags: { 'nh.chegaramAliados': true, 'nh.veraAliada': true },
@@ -93,9 +93,9 @@ export default {
       local: 'relogio_pedra',
       gatilho: { tipo: 'apos', cena: 'j12_vespera_aliada' },
       falas: [
-        ['solano', 'Acham que uma pedra e um garoto vão deter a Aurora? Eu já tenho contratos com metade do Planalto.'],
-        ['solano', 'Lúcio, Sereno, protejam as pedras. Eu cuido do garoto pessoalmente. A Véspera pode continuar sonhando.'],
-        ['vespera', 'Eu sonhava com uma noite que protegesse as pessoas. Você só quer uma noite que dê lucro, Solano.'],
+        ['solano', 'Acham que vão me deter? A Aurora é maior do que vocês.'],
+        ['solano', 'Lúcio, Sereno, protejam as pedras. Eu cuido de vocês pessoalmente.'],
+        ['vespera', 'Eu errei muito, Solano. Mas você quer lucrar com o poder do Necrozma, e isso eu não deixo.'],
         ['narrador', 'Lúcio e Sereno recuam para as bordas do círculo. O Téo entra ao seu lado, com a Poké Bola já na mão.'],
       ],
       depois: {
@@ -121,7 +121,7 @@ export default {
       local: 'relogio_pedra',
       gatilho: { tipo: 'vencer', alvo: 'c12_solano' },
       falas: [
-        ['solano', 'Não… Eu comprei o amanhecer de cada cidade. Eu não posso perder agora.'],
+        ['solano', 'Não… Eu investi tudo nisso. Eu não posso perder agora.'],
         ['jogador', 'Eu li o diário do Tiago, em Lamparina. A última página tem o desenho de um menino segurando o sol.', { requer: ['sq_solano_completa'] }],
         ['solano', 'Quem deixou você entrar naquela casa? Eu prometi ao Tiago que ninguém mais ficaria no escuro.', { requer: ['sq_solano_completa'] }],
         ['narrador', 'O Solano cai de joelhos. O Sereno, ao lado dele, larga a caixa vazia no chão. Ninguém tenta recuperar nada.'],
@@ -145,11 +145,11 @@ export default {
       local: 'relogio_pedra',
       gatilho: { tipo: 'apos', cena: 'j12_solano_cai' },
       falas: [
-        ['jogador', 'A Dona Zélia me disse para acender a chama só aqui, no Relógio. Chegou a hora.'],
-        ['narrador', 'Pelo rádio, a voz da Dona Zélia chega baixinha, como se ela estivesse ao seu lado.'],
-        ['zelia', 'Pode acender, querido. Essa chama mostra se o Relógio está aberto ou fechado. Mantenha ela acesa só para fechar.'],
+        ['jogador', 'O cadeado já está se soltando. Se eu não acender a vela agora, ele abre sem controle.'],
+        ['narrador', 'Pelo rádio, a voz da Dona Zélia chega baixinha.'],
+        ['zelia', 'Acenda. O Relógio vai abrir, mas depois você o fecha de novo com as suas oito insígnias.'],
         ['narrador', 'Você coloca a Vela Eterna no oitavo pedestal e acende o pavio. A chama se firma, azul, sem tremer e sem aquecer nada.'],
-        ['narrador', 'O cadeado de cristal estala. A porta de rocha se abre, e um rugido sai de dentro, como se o céu estivesse rachando.'],
+        ['narrador', 'O cadeado de cristal estala. A porta de rocha se abre, e um rugido enorme sai de dentro.'],
         ['necrozma', 'KRRRRAAAAAA!'],
       ],
       depois: {
@@ -165,7 +165,7 @@ export default {
       falas: [
         ['narrador', 'O Necrozma sai do Relógio. A juba de cristal está rachada, e o disco de sol no peito pulsa fraco.'],
         ['necrozma', 'Krrr… luz… luz…'],
-        ['narrador', 'A chama azul sobe pelo pedestal e envolve o Necrozma por um instante, como se quisesse convencê-lo a ficar.'],
+        ['narrador', 'A chama azul sobe pelo pedestal e acalma o Necrozma por um instante.'],
         ['jogador', 'Você não quer destruir nada. Você só está com fome, porque ficou preso no escuro tempo demais.'],
       ],
       depois: {
@@ -189,7 +189,7 @@ export default {
         ['narrador', 'A Poké Bola para de tremer. O Necrozma, quieto lá dentro, não come mais luz nenhuma. Agora ele está com você.', { requer: ['lend.necrozma=capturado'] }],
         ['vespera', 'Ele foi para a terra e vai demorar muito para voltar a comer a luz. Se o Relógio ficar fechado, talvez nunca volte.', { semFlag: ['lend.necrozma=capturado'] }],
         ['vespera', 'Você capturou o Necrozma. Cuide bem dele. Ele passou tempo demais preso no escuro para confiar em alguém.', { requer: ['lend.necrozma=capturado'] }],
-        ['narrador', 'A luz que descia pelas raízes de cristal se inverte e volta para o céu, como se o sol pudesse respirar de novo.'],
+        ['narrador', 'A luz que descia pelas raízes de cristal volta para o céu. O sol vai poder nascer na hora outra vez.'],
       ],
       depois: {
         flags: { 'nh.necrozmaVencido': true },
@@ -206,7 +206,7 @@ export default {
         ['narrador', 'Os fios se trançam no cadeado. A porta de rocha range e volta a fechar, com um estalo baixo, como uma tampa que encaixa.'],
         ['vespera', 'Ele fechou. Depois de tudo que a Aurora tirou daqui, o Relógio volta a ficar fechado, do jeito que deveria.'],
         ['teo', 'E o sol? Ele vai nascer na hora de novo?'],
-        ['prof', 'Nasce, Téo. Nasce como sempre nasceu, e ninguém precisa comprar o amanhecer de ninguém.'],
+        ['prof', 'Nasce, Téo. Com o Relógio fechado e a Aurora parada, o sol volta ao horário de sempre.'],
       ],
       depois: {
         flags: { 'nh.seloFechado': true, relogio_vencido: true },
@@ -221,7 +221,7 @@ export default {
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e quatro. A Companhia Aurora anunciou o fim da extração no Planalto.'],
         ['mae', '{jogador}! Seis e quatro! O sol voltou no horário. Você está aí em cima, não está? Volta logo para casa.'],
-        ['jogador', 'Eu chego amanhã cedo, mãe. Antes, preciso atravessar a Cordilheira Geada. A Liga não espera.'],
+        ['jogador', 'Já vou, Mãe. Antes preciso atravessar a Cordilheira Geada para chegar à Liga.'],
       ],
       depois: {
         flags: { 'nh.boletim.final': true, 'nh.sol': '6h04' },
