@@ -232,7 +232,7 @@ export class Espetaculo {
       const bar = document.querySelector('#hb.on:not([hidden]) .topo')?.getBoundingClientRect();
       const st = 10 + (parseFloat(cs.getPropertyValue('--st')) || 0);
       this.hHud = bar?.height ? bar.bottom : st;
-      this.hEu = bar?.height ? bar.bottom : Math.max(st, fundo(['#lead']));
+      this.hEu = bar?.height ? bar.bottom : Math.max(st, fundo(['#lead', '#objective']));
       this.hEle = bar?.height ? bar.bottom : Math.max(st, fundo(['#minimapa', '#menu-btn']));
     }
     return lado === 'eu' ? this.hEu : lado === 'ele' ? this.hEle : this.hHud;
