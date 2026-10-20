@@ -44,7 +44,8 @@
     {"op": "rect", "t": "plaza", "x": 924, "y": 352, "w": 11, "h": 14},
     {"op": "rect", "t": "sand", "x": 935, "y": 350, "w": 2, "h": 18},
     {"op": "comment", "_": "cais porto_rubro_cais"},
-    {"op": "rect", "t": "dock", "x": 935, "y": 358, "w": 12, "h": 2}
+    {"op": "rect", "t": "dock", "x": 935, "y": 358, "w": 12, "h": 2},
+    {"op": "set", "t": "O", "pts": [[860, 40]]}
   ],
   "areas": [
     {"id": "porto_rubro", "name": "Porto Rubro", "biome": "vila", "rect": [860, 330, 70, 60]},
@@ -62,19 +63,25 @@
     "ninho_estancia_ventania": [725, 320, "down"],
     "ninho_cidadela_poente": [790, 500, "down"],
     "porto_rubro_cais": [945, 358, "left"],
-    "chegada": [932, 359, "left"]
-  },
+    "chegada": [932, 359, "left"], "cataratas_entrada": [860, 45, "down"], "santuario_entrada": [775, 490, "down"]},
   "ninhos": [
     {"id": "porto_rubro", "nome": "Porto Rubro", "spot": "ninho_porto_rubro"},
     {"id": "estancia_ventania", "nome": "Estância Ventania", "spot": "ninho_estancia_ventania"},
     {"id": "cidadela_poente", "nome": "Cidadela do Poente", "spot": "ninho_cidadela_poente"}
   ],
   "objects": [],
-  "interiors": [],
+  "interiors": [
+    {"id": "gruta_cataratas_1", "name": "Gruta das Cataratas: Entrada de Água", "rows": ["rrrrrrrrrrrrrrrrrrrr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rrrrrrrrrrmrrrrrrrrr"], "biome": "caverna", "wild": false, "objects": [{"kind": "stalagmite", "x": 4, "y": 8}, {"kind": "stalagmite", "x": 15, "y": 8}, {"kind": "luzita", "x": 10, "y": 3}], "decor": [], "people": [], "items": [{"x": 3, "y": 3, "item": "ultraBall"}], "warps": [{"x": 10, "y": 1, "dir": "up", "to": ["gruta_cataratas_2", 10, 10], "face": "up", "label": "Escada"}, {"x": 10, "y": 11, "dir": "down", "to": "cataratas_entrada", "face": "down", "label": "Saída: Cataratas do Trovão"}]},
+    {"id": "gruta_cataratas_2", "name": "Gruta das Cataratas: Câmara Espelhada", "rows": ["rrrrrrrrrrrrrrrrrrrr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rkkkkkkkkkkkkkkkkkkr", "rrrrrrrrrrmrrrrrrrrr"], "biome": "caverna", "wild": false, "objects": [{"kind": "luzita", "x": 3, "y": 3}, {"kind": "luzita", "x": 16, "y": 3}, {"kind": "mural", "x": 10, "y": 2, "text": "Uma parede de espelho natural. Quem se olha vê, por um instante, outro rosto e outro corpo."}], "decor": [], "people": [], "items": [{"x": 10, "y": 9, "item": "revive"}], "warps": [{"x": 10, "y": 11, "dir": "down", "to": ["gruta_cataratas_1", 10, 2], "face": "down", "label": "Descer"}], "escuro": 0.5},
+    {"id": "santuario_arceus", "name": "Santuário de Arceus", "rows": ["HHHHHHHHHHHHHHHH", "HEEEEEEEEEEEEEEH", "HEEEEEEEEEEEEEEH", "HEEEEEEEEEEEEEEH", "HEEEEYYYYYYEEEEH", "HEEEEYYYYYYEEEEH", "HEEEEYYYYYYEEEEH", "HEEEEYYYYYYEEEEH", "HEEEEEEEEEEEEEEH", "HEEEEEEEEEEEEEEH", "HEEEEEEEEEEEEEEH", "HHHHHHHHmHHHHHHH"], "biome": "templo", "wild": false, "objects": [{"kind": "statue", "x": 3, "y": 2, "text": "Uma figura sem rosto, com um disco em cada mão. Cada disco é uma cor diferente."}, {"kind": "statue", "x": 12, "y": 2, "text": "A mesma figura, de costas. O disco de trás é o de todas as outras."}, {"kind": "altar", "x": 8, "y": 2, "text": "Um altar vazio, com oito cavidades em volta. Cada uma espera uma placa."}, {"kind": "mural", "x": 8, "y": 9, "text": "Antes de tudo havia o Pokémon que criou o mundo. Ele não quis escolher um lado."}], "decor": [], "people": [], "items": [{"x": 3, "y": 9, "item": "ultraBall"}, {"x": 12, "y": 9, "item": "maxRevive"}], "warps": [{"x": 8, "y": 11, "dir": "down", "to": "santuario_entrada", "face": "down", "label": "Saída: Cidadela do Poente"}]}
+  ],
   "people": [
     {"id": "capitao_rubro", "name": "Mestre do Cargueiro", "look": {"preset": "montanhista", "top": "#2a4a7a", "pants": "#3a3a5a", "hair": "#5a3a2a"}, "x": 930, "y": 356, "dir": "down", "viagem": "navio_alvorada", "lines": ["O mar do Poente é manso de manhã."]}
   ],
-  "warps": [],
+  "warps": [
+    {"x": 860, "y": 40, "dir": "down", "to": ["gruta_cataratas_1", 10, 10], "face": "down", "label": "Gruta das Cataratas", "requer": ["liga_campeao"], "msg": "A correnteza da cachoeira bloqueia a entrada. Volte depois da Liga."},
+    {"x": 775, "y": 485, "dir": "down", "to": ["santuario_arceus", 8, 10], "face": "down", "label": "Santuário sem nome", "requer": ["liga_campeao", "lend.mewtwo"], "msg": "Uma luz fecha a porta. Ela só abre para quem já enfrentou o Mewtwo."}
+  ],
   "items": [],
   "viagens": [
     {"id": "navio_alvorada", "nome": "O Cargueiro Estrela-d’Alva", "fala": ["O Estrela-d’Alva volta para Alvorada às 10h e às 22h.", "Embarca?"], "destinos": [{"nome": "Cidade Coral (Alvorada)", "mundo": "alvorada", "destino": "cais_coral", "horarios": [10, 22], "cena": "O cargueiro corta o Mar do Poente rumo ao nascer do sol…"}]}
