@@ -274,6 +274,10 @@ export class Story {
   async #afterTalk(npc) { return this.#talk(npc, npc.def.after ?? npc.def.win); }
 
   async #fight(npc, def, opts = {}) {
+    this.lutando = true;
+    try { return await this.#fight0(npc, def, opts); } finally { this.lutando = false; }
+  }
+  async #fight0(npc, def, opts) {
     const b = new TrainerBattle(this, npc, def, opts);
     const volta = await this.#espacoDaLuta(npc, b);
     this.battle = b;
@@ -282,6 +286,8 @@ export class Story {
     const r = await b.start().finally(() => { this.battle = null; this.busy = true; });
     // perdeu e desmaiou: quem leva é o desmaio (Centro Pokémon); nos outros casos, todos voltam para onde estavam
     if (volta && (r !== 'lose' || opts.noBlackout)) await volta();
+    // estádio do líder (src/world/estadios.js): todos voltam ao ginásio; se o jogador desmaiou, só o líder volta
+    if (b.arena?.volta) await b.arena.voltar({ soLider: r === 'lose' && !opts.noBlackout });
     if (r === 'win') this.g.missoes?.evento('vitoria', { id: def.id });
     return r;
   }
@@ -394,6 +400,16 @@ export class Story {
       if (n.visible && !g.grade?.ativo) { const dx = p.x - n.x, dy = p.y - n.y, d = Math.hypot(dx, dy), m = n.r + (p.r ?? 5); if (d > 0.01 && d < m) { p.x = n.x + dx / d * m; p.y = n.y + dy / d * m; } }
     }
     this.battle?.update(dt);
+    // jogo salvo no meio de uma luta no estádio (menu → Salvar) e carregado depois: o estádio não tem saída, então quem
+    // está nele sem luta volta para o ginásio da luta (src/world/estadios.js: volta)
+    if ((this.estT = (this.estT ?? 0) - dt) <= 0) {
+      this.estT = 1;
+      const r = !this.battle && !this.lutando && !g.arenaGinasio && !g.mundo?.warping ? g.map.interiorAt(p.x, p.y) : null, v = r?.estadio?.volta;
+      if (v) {
+        const sala = typeof v[0] === 'string' ? g.map.interiors.find((q) => q.id === v[0]) : null, [vx, vy] = sala ? [sala.x + v[1], sala.y + v[2]] : v;
+        const q = g.map.livreMaisPerto(vx * T + 8, vy * T + 8); this.#teleport(q.x, q.y, 'down');
+      }
+    }
     const demo = MAP_ID !== 'alvorada'; // mapa de teste (?mapa=demo-biomas): sem cenas do roteiro nem missões
     if (!demo) { this.roteiro.update(dt); g.missoes?.update(dt); }
     else for (const n of [...this.npcs.values(), ...this.roteiro.atores.values(), ...(this.roteiro.atoresPk ?? [])]) if (n.visible) n.visible = false;

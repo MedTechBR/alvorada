@@ -85,6 +85,7 @@ export class Grade {
     const m = this.g.map;
     if (tx < 0 || ty < 0 || tx >= m.w || ty >= m.h) return false;
     if (m.solidAt(tx * T + 8, ty * T + 8, swim)) return false;
+    if (m.limite && !m.dentroDoLimite(tx * T + 8, ty * T + 8, 4)) return false; // arena de ginásio: o treinador não sai da luta
     return !this.ocupado(tx, ty, ignora);
   }
   // O jogador (ou o passo dele) está em cima deste bloco?

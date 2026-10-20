@@ -66,7 +66,13 @@ export class CameraDinamica {
     }
     // interior: mais alto, preso ao cômodo. Sala que cabe na tela: enquadrada inteira, do topo da parede do fundo
     // (com os cartazes) até a parede baixa da frente, como nos jogos originais; sala grande: segue o jogador.
-    if (room) {
+    const AG = g.arenaGinasio;
+    if (room && AG?.contem && AG.room === room) {
+      // estádio de líder (src/world/estadios.js): a arena é grande demais para caber inteira; a câmera enquadra o seu
+      // Pokémon e os do líder (afasta até ~2,2x) e quem ainda fica fora ganha seta na borda (arena-ginasio.js)
+      const q = this.#estadio(g, AG, pk ?? p);
+      incl = q.incl; dist = q.dist; alvoX = q.x; alvoZ = q.z;
+    } else if (room) {
       incl = 56;
       const q = this.#enquadrar(room, incl);
       if (q.k <= 1.3) { dist *= Math.max(0.45, q.k); alvoX = q.x; alvoZ = q.z; }
@@ -126,6 +132,23 @@ export class CameraDinamica {
     best ??= { z: (zFundo + zFrente) / 2, D: 4000 };
     room.__enq = { chave, x: (x0 + x1) / 2, z: best.z + 6, k: best.D / Math.max(1, this.v.distancia), zCima: zFundo - 48, zFrente };
     return room.__enq;
+  }
+  #estadio(g, A, foco) {
+    let x0 = foco.x, x1 = foco.x, y0 = foco.y - 24, y1 = foco.y;
+    for (const e of [...(A.b.active ?? []), ...(A.ajudantes ?? [])]) {
+      if (!e.alive || e.dead) continue;
+      x0 = Math.min(x0, e.x); x1 = Math.max(x1, e.x); y0 = Math.min(y0, e.y - 24); y1 = Math.max(y1, e.y);
+    }
+    const cena = g.camFocus;
+    let cx = cena ? cena.x : (x0 + x1) / 2, cz = cena ? cena.y : (y0 + y1) / 2 + 6;
+    const asp = innerWidth / Math.max(1, innerHeight), z = Math.max(1, g.zoom || 3);
+    const ext = Math.max((x1 - x0 + 120) / asp, (y1 - y0 + 90) * 1.15);
+    const dist = Math.max(1.05, Math.min(2.2, ext / (innerHeight / z)));
+    // o foco não passa da arena (sem mostrar o vazio de fora quando dá)
+    const R = A.R, mw = (innerWidth / z) * dist * 0.4, mh = (innerHeight / z) * dist * 0.4;
+    cx = R.x1 - R.x0 > mw * 2 ? Math.min(R.x1 - mw, Math.max(R.x0 + mw, cx)) : R.cx;
+    cz = R.y1 - R.y0 > mh * 2 ? Math.min(R.y1 - mh * 0.7, Math.max(R.y0 + mh * 0.9, cz)) : R.cy;
+    return { x: cx, z: cz, dist, incl: 54 };
   }
   // 0..1: quanto o objeto mais alto ao sul do foco esconde quem a câmera segue (pelo topo do modelo 3D)
   #tapa(g, f, incl) {

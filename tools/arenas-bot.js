@@ -39,7 +39,15 @@ bot.passo = () => {
     const melee = mvs.some((m) => ['melee', 'multi', 'dash'].includes(m.kind)) && !mvs.some((m) => m.cat !== 'status' && ['proj', 'beam', 'cone', 'line', 'bolt'].includes(m.kind));
     const quer = melee ? L.r + alvo.r + 10 : 64;
     if ((s.ladoT -= dt) <= 0) { s.ladoT = 1.2 + Math.random() * 1.5; s.lado = Math.random() < 0.5 ? 1 : -1; }
-    if (d > quer + 12) { mx = dx / d; my = dy / d; } else if (d < quer - 14) { mx = -dx / d * 0.7; my = -dy / d * 0.7; }
+    if (d > quer + 12) {
+      mx = dx / d; my = dy / d;
+      // água, lava ou parede no caminho (estádios grandes): segue a rota da grade em volta, como uma pessoa faria
+      let livre = true; for (let k = 8; k < Math.min(d, 160); k += 8) if (g.map.solidAt(L.x + mx * k, L.y + my * k, L.swim)) { livre = false; break; }
+      if (!livre) {
+        if ((s.rotaT = (s.rotaT ?? 0) - dt) <= 0 || !s.rota) { s.rotaT = 0.3; const r = g.grade?.rota?.(L, alvo.x, alvo.y, !!L.swim); s.rota = r ? { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[r] : null; }
+        if (s.rota) { mx = s.rota[0]; my = s.rota[1]; }
+      }
+    } else if (d < quer - 14) { mx = -dx / d * 0.7; my = -dy / d * 0.7; }
     mx += -dy / d * 0.5 * s.lado; my += dx / d * 0.5 * s.lado;
     // não entra andando num aviso
     if (A && A.perigo(L.x + mx * 22, L.y + my * 22, L) >= 0.45) { const t = mx; mx = -my; my = t; if (A.perigo(L.x + mx * 22, L.y + my * 22, L) >= 0.45) { mx = -mx; my = -my; } }

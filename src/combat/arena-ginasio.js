@@ -49,6 +49,8 @@ export class ArenaGinasio {
     const room = cfg.sala ? g.map.interiors.find((r) => r.id === cfg.sala) : null;
     if (cfg.sala && !room) throw new Error('sala ' + cfg.sala + ' não existe');
     this.room = room; this.o = room ? { x: room.x, y: room.y } : { x: 0, y: 0 };
+    this.estadio = room?.estadio ?? null; // estádio próprio (src/world/estadios.js): a luta vai para lá e volta no fim
+    this.contem = false; // enquanto vale, ninguém sai do retângulo da arena (conterTodos, map.limite)
     const [ax, ay, aw, ah] = cfg.area;
     this.R = { x0: (this.o.x + ax) * T, y0: (this.o.y + ay) * T, x1: (this.o.x + ax + aw) * T, y1: (this.o.y + ay + ah) * T };
     this.R.cx = (this.R.x0 + this.R.x1) / 2; this.R.cy = (this.R.y0 + this.R.y1) / 2;
@@ -178,17 +180,24 @@ export class ArenaGinasio {
     g.arenaGinasio = this;
     this.antes = { escuro: this.room?.escuro, dark: this.room?.dark, musica: g.audio?.track };
     if (cfg.acende && this.room) this.room.dark = false; // a sala do líder acende para a luta (o farol com os geradores ligados)
-    for (const p of this.pecas) p.iniciar?.();
     const pos = cfg.posicoes;
     if (pos) {
+      // estádio: o líder leva o jogador para a sala da luta (onde estavam fica guardado para a volta, em voltar())
+      if (this.estadio) g.toast(`${this.b.def?.name ?? 'O líder'}: Vem comigo, a luta é no estádio!`);
       await g.ui.fade(() => {
+        if (this.estadio) this.#guardarVolta();
         const pj = this.P(...pos.jogador), pl = this.P(...pos.lider);
-        const p = g.player; p.x = pj.x; p.y = pj.y; p.vx = p.vy = p.kx = p.ky = 0; p.dir = 'up';
-        if (g.lead) { g.lead.x = p.x; g.lead.y = p.y - 16; }
+        const p = g.player; p.x = pj.x; p.y = pj.y; p.vx = p.vy = p.kx = p.ky = 0; p.dir = 'up'; p.seguro = null; p.pouso = null; g.grade?.soltar?.(p);
+        if (g.lead) { g.lead.x = p.x; g.lead.y = p.y - 16; g.lead.kx = g.lead.ky = g.lead.vx = g.lead.vy = 0; g.lead.seguro = null; }
+        for (const e of g.entities) if (e.side === 'aliado' && e.alive) { e.x = p.x + 18; e.y = p.y - 6; e.seguro = null; }
         if (npc?.place) npc.place(pl.x, pl.y, 'down'); else if (npc) { npc.x = pl.x; npc.y = pl.y; }
         g.cam.x = this.R.cx; g.cam.y = this.R.cy;
-      }, 260);
+        this.#ligarContencao(); // já no escuro: do primeiro quadro no estádio em diante ninguém sai da arena
+      }, this.estadio ? 420 : 260);
     }
+    for (const p of this.pecas) p.iniciar?.();
+    this.pronta = true; // as peças montam depois da ida ao estádio (até lá, update não mexe nelas)
+    if (!this.contem) this.#ligarContencao();
     g.audio?.music?.(cfg.musica?.luta ?? 'gym');
     this.#entrarFase(0, true);
     await this.#vs();
@@ -217,6 +226,77 @@ export class ArenaGinasio {
     return new Promise((r) => g.later(dur, () => { if (g.camFocus === foco) g.camFocus = null; r(); }));
   }
 
+  // ---------------------------------------------------------------- estádio: ida e volta
+  #guardarVolta() {
+    const g = this.g, p = g.player, n = this.b.npc;
+    this.volta = { j: { x: p.x, y: p.y, dir: p.dir }, n: n ? { x: n.x, y: n.y, dir: n.dir ?? 'down' } : null };
+  }
+  // Traz todo mundo de volta ao ginásio (story.js chama depois da luta). soLider: o jogador desmaiou e já foi levado
+  // ao Centro Pokémon; só o líder volta ao lugar dele.
+  async voltar({ soLider = false } = {}) {
+    const v = this.volta; if (!v) return;
+    this.volta = null;
+    const g = this.g, npc = this.b.npc;
+    const leva = () => {
+      if (npc && v.n) { if (npc.place) npc.place(v.n.x, v.n.y, v.n.dir); else { npc.x = v.n.x; npc.y = v.n.y; } }
+      if (soLider) return;
+      const p = g.player, m = g.map;
+      p.x = v.j.x; p.y = v.j.y; p.dir = v.j.dir; p.vx = p.vy = p.kx = p.ky = 0; p.seguro = null; p.pouso = null; g.grade?.soltar?.(p);
+      if (g.lead) { g.lead.x = p.x + 14; g.lead.y = p.y + 6; g.lead.kx = g.lead.ky = g.lead.vx = g.lead.vy = 0; g.lead.seguro = null; m.resolve(g.lead, g.lead.r); }
+      for (const e of g.entities) if (e.side === 'aliado' && e.alive) { e.x = p.x - 14; e.y = p.y + 6; e.seguro = null; m.resolve(e, e.r); }
+      g.cam.x = p.x; g.cam.y = p.y;
+    };
+    if (soLider) leva(); else await g.ui.fade(leva, 360);
+  }
+
+  // ---------------------------------------------------------------- contenção (ninguém sai da arena durante a luta)
+  // Vale para o treinador e para todo Pokémon da luta (os dois lados, os ajudantes e o do Téo): o retângulo da arena
+  // vira parede invisível no movimento (map.limite, a cada passo curto de colisão) e, no fim de cada quadro,
+  // conterTodos() devolve para dentro quem saiu por outro caminho (teleporte, porta da arena, plataforma, cena).
+  #ligarContencao() {
+    const g = this.g, R = this.R;
+    this.contem = true;
+    g.map.limite = { x0: R.x0, y0: R.y0, x1: R.x1, y1: R.y1, quem: (e) => this.contido(e) };
+  }
+  contido(e) { return !!e && (e === this.g.player || (!!e.mon && SIDES.has(e.side) && !e.dead)); }
+  // ponto livre dentro da arena, perto de (x, y): onde nasce o Pokémon que entra (bola, troca, desmaio) e para onde o
+  // treinador anda. folga: distância mínima da borda (px).
+  pontoSeguro(x, y, folga = T) {
+    const R = this.R, m = this.g.map;
+    const cx = clamp(x, R.x0 + folga, R.x1 - folga), cy = clamp(y, R.y0 + folga, R.y1 - folga);
+    if (!m.solidAt(cx, cy) && !m.solidAt(cx, cy + 4)) return { x: cx, y: cy };
+    const tx = Math.floor(cx / T), ty = Math.floor(cy / T);
+    for (let k = 1; k <= 10; k++) {
+      let best = null, bd = 1e9;
+      for (let j = -k; j <= k; j++) for (let i = -k; i <= k; i++) {
+        if (Math.max(Math.abs(i), Math.abs(j)) !== k) continue;
+        const px = (tx + i) * T + 8, py = (ty + j) * T + 9;
+        if (!this.dentro(px, py, -folga) || m.solidAt(px, py)) continue;
+        const d = Math.hypot(px - cx, py - cy); if (d < bd) { bd = d; best = { x: px, y: py }; }
+      }
+      if (best) return best;
+    }
+    return { x: R.cx, y: R.cy };
+  }
+  conter(e) {
+    const R = this.R, r = Math.min(e.r ?? 6, 8) + 1;
+    let x = e.x, y = e.y, saiu = false;
+    if (x < R.x0 + r) { x = R.x0 + r; saiu = true; if (e.kx < 0) e.kx = 0; if (e.vx < 0) e.vx = 0; } else if (x > R.x1 - r) { x = R.x1 - r; saiu = true; if (e.kx > 0) e.kx = 0; if (e.vx > 0) e.vx = 0; }
+    if (y < R.y0 + r) { y = R.y0 + r; saiu = true; if (e.ky < 0) e.ky = 0; if (e.vy < 0) e.vy = 0; } else if (y > R.y1 - r) { y = R.y1 - r; saiu = true; if (e.ky > 0) e.ky = 0; if (e.vy > 0) e.vy = 0; }
+    if (!saiu) return false;
+    e.x = x; e.y = y;
+    if (this.g.map.solidAt(x, y) && !this.voando(e) && !this.nadador(e)) { const q = this.pontoSeguro(x, y, r); e.x = q.x; e.y = q.y; }
+    this.stats.contidos = (this.stats.contidos ?? 0) + 1;
+    return true;
+  }
+  conterTodos() {
+    if (!this.contem || this.done) return;
+    const g = this.g;
+    if (g.player) this.conter(g.player);
+    for (const e of g.entities) if (e.alive && this.contido(e)) this.conter(e);
+  }
+  #desligarContencao() { this.contem = false; if (this.g.map.limite?.quem && this.g.map.limite.x0 === this.R.x0) this.g.map.limite = null; }
+
   #entrarFase(i, silencioso = false) {
     const f = this.cfg.fases?.[i]; if (!f) return;
     this.fase = i;
@@ -243,7 +323,7 @@ export class ArenaGinasio {
   }
 
   update(dt) {
-    if (this.done) return;
+    if (this.done || !this.pronta) return;
     const g = this.g;
     this.t += dt;
     const parado = this.cenaT > 0;
@@ -337,7 +417,7 @@ export class ArenaGinasio {
   // lugar seguro mais perto (anéis de amostras em volta)
   seguro(e, longe = null) {
     let best = null, bs = 1e9;
-    for (const R of [22, 38, 56, 76]) {
+    for (const R of [22, 38, 56, 76, 100, 130]) { // anéis de fora: no estádio o lugar seguro pode estar a 8 blocos
       for (let i = 0; i < 12; i++) {
         const a = i / 12 * TAU + R, x = e.x + Math.cos(a) * R, y = e.y + Math.sin(a) * R;
         if (!this.livre(x, y, e.r * 0.6)) continue;
@@ -426,6 +506,8 @@ export class ArenaGinasio {
   fim(resultado) {
     if (this.done) return;
     this.done = true;
+    this.#desligarContencao();
+    this.#setas(null);
     const g = this.g, m = g.map;
     for (const p of this.pecas) { try { p.fim?.(); } catch (err) { console.warn(err); } }
     for (const [k, t] of this.tiles) { const x = k % m.w, y = Math.floor(k / m.w); if (m.at(x, y) !== t) m.setTile(x, y, t); }
@@ -477,8 +559,65 @@ export class ArenaGinasio {
     G0.clear(); G1.clear(); GA.clear();
     this.topo.position.copyFrom(W.position); this.topo.scale.copyFrom(W.scale);
     if (this.topo.parent && this.topo.parent.children[this.topo.parent.children.length - 1] !== this.topo) this.topo.parent.addChild(this.topo);
+    if (this.contem) this.#borda(G0, G1, t);
     for (const p of this.pecas) if (p.ativo || p.sempreDesenha) p.desenhar?.(G0, G1);
     for (const av of this.avisos) this.#desenharAviso(GA, G1, av, t);
+    if (this.contem) this.#setas(this.#foraDaTela());
+  }
+  // borda da arena, sempre à vista durante a luta: faixa no chão na cor do ginásio e postes com corda (o limite que
+  // ninguém passa). A corda do Brás (peça "corda") já faz esse papel no ringue dele.
+  #borda(G0, G1, t) {
+    const R = this.R, cor = parseInt(String(this.cfg.cor ?? '#ffe27a').replace('#', ''), 16) || 0xffe27a, k = 0.55 + 0.15 * Math.sin(t * 2.2);
+    G0.rect(R.x0 + 1, R.y0 + 1, R.x1 - R.x0 - 2, R.y1 - R.y0 - 2).stroke({ width: 3, color: cor, alpha: k });
+    G0.rect(R.x0 + 5, R.y0 + 5, R.x1 - R.x0 - 10, R.y1 - R.y0 - 10).stroke({ width: 1, color: 0xffffff, alpha: 0.35 });
+    if (this.pecas.some((p) => p.def.tipo === 'corda')) return;
+    const passo = 4 * T;
+    for (let x = R.x0; x <= R.x1 + 1; x += passo) for (const y of [R.y0 + 2, R.y1 - 2]) G1.rect(x - 1.5, y - 10, 3, 10).fill({ color: 0x5a4a3a, alpha: 0.9 });
+    for (let y = R.y0 + passo; y < R.y1; y += passo) for (const x of [R.x0 + 2, R.x1 - 2]) G1.rect(x - 1.5, y - 10, 3, 10).fill({ color: 0x5a4a3a, alpha: 0.9 });
+    G1.moveTo(R.x0, R.y1 - 9).lineTo(R.x1, R.y1 - 9).moveTo(R.x0 + 2, R.y0 - 8).lineTo(R.x0 + 2, R.y1 - 9).moveTo(R.x1 - 2, R.y0 - 8).lineTo(R.x1 - 2, R.y1 - 9).moveTo(R.x0, R.y0 - 7).lineTo(R.x1, R.y0 - 7)
+      .stroke({ width: 1, color: cor, alpha: 0.85 });
+  }
+  // Setas na borda da tela para quem está fora dela (no celular deitado a arena inteira não cabe): os Pokémon do
+  // líder (e os ajudantes) e o líder; o seu Pokémon é quem a câmera segue.
+  #foraDaTela() {
+    const g = this.g, W = innerWidth, H = innerHeight, M = 18, out = [];
+    const tela = (x, y, h) => (g.v3d?.view ? g.v3d.paraTela(x, y, h) : g.worldToScreen(x, y, h));
+    const quem = [...this.b.active.filter((e) => e.alive && !e.dead), ...this.ajudantes.filter((e) => e.alive)];
+    for (const e of quem) {
+      const s = tela(e.x, e.y, 10); if (!Number.isFinite(s.x)) continue;
+      if (s.x >= M && s.x <= W - M && s.y >= M && s.y <= H - M) continue;
+      out.push({ s, nome: e.mon?.name ?? '?', cor: e.ajudante ? '#e8f080' : '#ff5a4a', ps: e.mon ? Math.max(0, e.mon.hp / e.mon.stats.hp) : 1 });
+    }
+    return out;
+  }
+  #setas(lista) {
+    if (typeof document === 'undefined') return;
+    if (!lista) { this.setasEl?.remove(); this.setasEl = null; return; }
+    if (!this.setasEl) {
+      const el = this.setasEl = document.createElement('div');
+      el.className = 'arena-setas';
+      el.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden';
+      document.body.appendChild(el);
+    }
+    const el = this.setasEl, W = innerWidth, H = innerHeight, cx = W / 2, cy = H / 2, M = 26;
+    while (el.children.length < lista.length) {
+      const d = document.createElement('div');
+      d.style.cssText = 'position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:1px;font:600 10px/1.1 system-ui,sans-serif;color:#fff;text-shadow:0 1px 2px #000';
+      d.innerHTML = '<div class="s" style="width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-bottom:16px solid #ff5a4a;filter:drop-shadow(0 1px 2px #000)"></div><div class="n"></div><div class="b" style="width:30px;height:3px;background:#0008;border-radius:2px"><div style="height:100%;background:#7ad84a;border-radius:2px"></div></div>';
+      el.appendChild(d);
+    }
+    for (let i = 0; i < el.children.length; i++) {
+      const d = el.children[i], q = lista[i];
+      if (!q) { d.style.display = 'none'; continue; }
+      d.style.display = 'flex';
+      // ponto da borda na direção do Pokémon (a partir do meio da tela)
+      const dx = q.s.x - cx, dy = q.s.y - cy, k = Math.min((W / 2 - M) / Math.max(1e-3, Math.abs(dx)), (H / 2 - M) / Math.max(1e-3, Math.abs(dy)));
+      const x = cx + dx * k, y = cy + dy * k, ang = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+      d.style.transform = `translate(${Math.round(x - 18)}px, ${Math.round(y - 14)}px)`;
+      const s = d.firstChild; s.style.transform = `rotate(${ang.toFixed(0)}deg)`; s.style.borderBottomColor = q.cor;
+      d.children[1].textContent = q.nome;
+      d.children[2].firstChild.style.width = Math.round(q.ps * 100) + '%';
+    }
   }
   #desenharAviso(G, G1, av, t) {
     const k = av.t / av.dur, blink = k > 0.72 ? (Math.sin(t * 38) > 0 ? 1 : 0.45) : 1;

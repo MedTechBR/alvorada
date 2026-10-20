@@ -8,8 +8,59 @@ a arena só existe durante a batalha do líder e devolve o mapa como estava no f
 |---|---|
 | `src/combat/arena-ginasio.js` | motor: geometria, avisos, fases, cenas, IA do líder, dificuldade, ganchos, `estado()` |
 | `src/combat/arena-pecas.js` | biblioteca de peças (perigos e peças interativas), uma classe por tipo |
-| `src/data/arenas.js` | as 8 arenas (5 jogáveis + revanche do píer + 3 planejadas) e `arenaEm()` |
+| `src/data/arenas.js` | as 16 arenas (8 líderes, píer, Véspera, Necrozma, Elite e Campeã) e `arenaEm()` |
+| `src/world/estadios.js` | os 16 estádios (salas de 50×36, luta em 48×32) |
 | `tools/arenas-bot.js`, `tools/arenas-teste.mjs` | robô que luta como gente e o teste via Chrome sem interface |
+
+## Estádios (outubro de 2026)
+
+Pedido do dono, jogando no iPhone: "as arenas de ginásio ainda estão muito pequenas, preciso que elas sejam realmente
+enormes" e "o personagem principal deve sempre ficar dentro da área da arena; quando um Pokémon meu morreu, o outro foi
+solto fora da arena". Desde então **toda** luta com arena (8 líderes, revanche do píer, Dra. Véspera, Necrozma como
+chefe, os 4 da Elite e a Campeã) acontece num **estádio próprio** (`src/world/estadios.js`):
+
+- sala de 50×36 blocos, montada pelo código (não está nos JSON de mapa: `src/world/mundos.js` põe as 16 numa fileira
+  da faixa de interiores do núcleo, y 1162, abaixo de todas as outras salas); duas fileiras de arquibancada em cima
+  (objetos `stands`, onde a plateia torce) e a luta em **48×32 blocos** (antes 18×12). Cada estádio tem chão e
+  obstáculos do tema (água, lava, teia, trilhos, pedras e caixotes onde dá para subir, colunas, cristais);
+- a abertura da arena escurece a tela e leva o jogador (e o Pokémon dele, e o do Téo, se houver) e o líder para o
+  estádio; no fim, `story.js` chama `arena.voltar()` e todo mundo volta para onde estava no ginásio (se o jogador
+  desmaiou e foi para o Centro Pokémon, só o líder volta). Quebra-cabeças, portões, treinadores e cenas do ginásio
+  não mudam. Jogo salvo e carregado dentro de um estádio, sem luta: o jogador volta ao ginásio (`estadio.volta`);
+- **contenção**: enquanto a luta vale (`arena.contem`), o retângulo da arena é parede invisível para o treinador e
+  para todo Pokémon da luta (`map.limite`, conferido a cada passo curto de colisão em `map.andar`, no passo de grade do
+  treinador e no teleporte/cavar de `map.ateLivre`) e `conterTodos()`, no fim de cada quadro (main.js), devolve para
+  dentro quem saiu por outro caminho. Quem entra na luta nasce dentro: o Pokémon do líder (`#spot`, `#appear`), o seu
+  (`main.js #sendOut`: bola, troca, o próximo depois do desmaio, a no máximo 3 blocos do treinador) e os ajudantes.
+  O treinador que acompanha o Pokémon (`#seguir`) mira um ponto livre dentro da arena, a 1,5 bloco da borda. A borda
+  aparece durante a luta (faixa na cor do ginásio e postes com corda; no Brás, a corda do ringue). No estádio não há
+  fuga (o líder fica a mais de 26 blocos às vezes);
+- **câmera**: no 3D, `visual3d/camera.js #estadio` enquadra o seu Pokémon e os do líder (afasta até 2,2×, foco preso à
+  arena); no 2D, `camK` segue a distância entre os dois (`poder.js #kEstadio`). Quem não cabe na tela (celular deitado)
+  ganha **seta na borda** com nome e barra de PS (`arena-ginasio.js #setas`).
+
+| Estádio | Chão e terreno | Perigos e peças (o que cresceu) |
+|---|---|---|
+| Tomé (milharal) | grama listrada, 2 açudes, 4 pedras para subir, fardos de feno | 13 moitas de milho, 14 fardos que rolam, debulhadoras simultâneas, trator vertical na colheita, 5 anéis de colheita |
+| Lia (estufa-teia) | teia prateada com passarelas douradas em grade, folhas gigantes e arbustos | 14 plantas carnívoras, 8 casulos (até 4 ajudantes) |
+| Marina (marés) | piscina 24×16 com água funda, ponte no meio, 4 ilhas altas, caixotes | 4 barcos (2 por metade), 4 comportas, inundação com 10 áreas altas, correnteza em giro |
+| Píer | deque cortado por 3 canais de água | 3 barcos, ondas simultâneas, correnteza, ressaca com 6 pontos altos |
+| Jonas (lanterna) | metal, máquinas e caixotes de cobertura, lente no meio | painéis 2×2 em 7 padrões pela arena toda, 8 geradores, 4 para-raios, tempestade |
+| Zélia (luar) | madeira escura, 2 colunatas, estátuas | 8 candelabros, 3 pares de portas, móveis voando de 11–14 blocos, 3 sombras |
+| Brás (roda) | areia com a roda de quadra no meio, barris e troncos | 11 tablados que racham, berimbau, corda do ringue na borda |
+| Graça (mina) | caverna, 3 trilhos, pedras e estalagmites | vagonetes nos 3 trilhos, 14 pilares, desabamentos com entulho |
+| Celeste (céu) | 5 plataformas e 4 pontes no céu | 4 plataformas que andam, rajadas simultâneas, tornado |
+| Véspera (menires) | grama com anel escuro, relógio de sol no meio, menires | 12 menires-cobertura em anel, sombras, vento |
+| Necrozma (coração) | cristal, 14 cristais, obeliscos | raios 2–4 por vez, feixes de luz horizontais e verticais |
+| Aurélio (madrugada) | pedra velha, colunas, estátuas | 8 candelabros, móveis, 3 sombras |
+| Clarice (manhã) | jardim florido, 2 laguinhos, arbustos | 14 plantas, pétalas |
+| Brasa (meio-dia) | basalto com 5 poças de lava | labaredas simultâneas, fagulhas, 10 pilares |
+| Iberê (entardecer) | pedra velha e areia, pedras e colunas quebradas | rajadas verticais e horizontais, tornado, pedras |
+| Dalva (campeã) | mosaico, colunas, estátuas | estrelas cadentes, rajadas, 6 colunas, giro |
+
+Conferências: `node tools/teste-3d/estadios-pecas.mjs` (sem navegador: 40×28 ou mais e nenhuma peça em cima de
+obstáculo) e `node tools/teste-3d/ginasios-tamanho.mjs` (mapa vivo). As descrições de cada arena abaixo são do
+desenho original; os números de peças da tabela acima valem.
 
 ## Como liga
 
@@ -186,6 +237,11 @@ pelo `setTile` normal e são desfeitas no fim.
 
 ## Teste
 
-`python3 tools/serve.py 8752` e `node tools/arenas-teste.mjs todos --fotos` (ou um nome; `--celular` para celular
+Estádios e contenção: `python3 tools/serve.py 8752` e `node tools/arenas-teste-3d.mjs todos` (ou nomes separados por
+vírgula; `--paisagem` celular deitado 844×390, `--fotos` capturas em tools/shots, `--troca` joga o seu Pokémon contra
+a borda e derruba ele duas vezes). A cada quadro confere que o treinador e todo Pokémon da luta estão dentro da arena
+e que cada Pokémon que entra nasce dentro (violações têm de dar 0), se a luta foi ao estádio e voltou, e as setas.
+
+Antigo (2D): `python3 tools/serve.py 8752` e `node tools/arenas-teste.mjs todos --fotos` (ou um nome; `--celular` para celular
 simulado com CPU 4× mais lenta; `--vezes=N`). O robô (tools/arenas-bot.js) entra pelo controle: anda, mira, golpeia em
 rodízio, reage aos avisos depois de 0,3 s e esquiva na hora certa com 85% de acerto. Nada de dano forçado.

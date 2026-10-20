@@ -166,19 +166,30 @@ class Game {
     const mon = this.party[i]; if (!mon) return;
     if (this.lead) { this.fx.burst(this.lead.x, this.lead.y - 8, 0xff5a5a, 0.8); this.ents.removeChild(this.lead.view); this.entities = this.entities.filter((e) => e !== this.lead); this.lead = null; }
     this.leadIdx = i;
-    const x = at?.x ?? this.player.x + 14, y = at?.y ?? this.player.y + 6;
+    let x = at?.x ?? this.player.x + 14, y = at?.y ?? this.player.y + 6;
+    // arena de ginásio: o Pokémon que entra (bola, troca, o próximo depois de um desmaio) nasce DENTRO da arena, perto do
+    // treinador; antes nascia onde a bola caía ou onde o anterior desmaiou, às vezes do lado de fora (pedido do dono)
+    const A = this.arenaGinasio?.contem ? this.arenaGinasio : null;
+    if (A) ({ x, y } = this.#ondeEntra(A, x, y));
     const e = new PokeEntity(this, mon, 'ally', x, y);
     this.sendingOut = (this.sendingOut ?? 0) + 1; // enquanto o sprite carrega, ninguém joga outra bola (evita Pokémon duplicados)
     try { await e.ready; } finally { this.sendingOut--; }
     if (this.lead) { this.ents.removeChild(this.lead.view); this.entities = this.entities.filter((o) => o !== this.lead); this.lead = null; }
     // o treinador passou por uma porta (ou foi levado pela história) enquanto a bola voava: sai do lado dele
     if (Math.hypot(e.x - this.player.x, e.y - this.player.y) > 6 * T) { e.x = this.player.x + 14; e.y = this.player.y + 6; }
+    if (A && !A.done) ({ x: e.x, y: e.y } = this.#ondeEntra(A, e.x, e.y));
     this.map.resolve(e, e.r);
     this.lead = e; this.entities.push(e); this.ents.addChild(e.view);
     this.fx.burst(e.x, e.y - 8, 0xffffff, 1); this.fx.ring(e.x, e.y, 0xffffff, 12, 0.35); e.vz = 90;
     this.mode = 'pokemon';
     this.audio.sfx('pop');
     this.hudLead(); this.hudMoves();
+  }
+  // arena de ginásio: lugar livre dentro dela, a no máximo 3 blocos do treinador (do lado de onde a bola foi)
+  #ondeEntra(A, x, y) {
+    const p = this.player, dx = x - p.x, dy = y - p.y, d = Math.hypot(dx, dy);
+    if (d > 3 * T) { x = p.x + dx / d * 3 * T; y = p.y + dy / d * 3 * T; }
+    return A.pontoSeguro(x, y, T);
   }
   // Joga a Poké Bola do Pokémon escolhido na direção da mira
   throwMon(i, ax, ay) {
@@ -537,6 +548,7 @@ class Game {
     this.#updateThrowMon(dt);
     for (const e of this.entities) { if (e.fadeIn) { e.alpha = Math.min(1, e.alpha + dt * 2); if (e.alpha >= 1) e.fadeIn = false; } if (e.dead) e.alpha = Math.max(0, e.alpha - dt * 2); e.update(dt); e.view.zIndex = e.sortY ?? e.y; }
     this.#crowd();
+    this.arenaGinasio?.conterTodos(); // arena de ginásio: no fim do quadro, ninguém da luta fica fora dela
     this.fx.update(dt);
     this.#camera(rdt);
     this.map.flushDirty();
@@ -674,7 +686,7 @@ class Game {
     const dl = Math.hypot(l.x - p.x, l.y - p.y);
     // longe demais (atravessou algo, ficou muito para trás numa curva): reaparece atrás do Pokémon
     if (dl > 26 * T && !this.mundo?.warping) {
-      const a = l.angle ?? 0, q = this.map.livreMaisPerto(l.x - Math.cos(a) * 4 * T, l.y - Math.sin(a) * 4 * T);
+      const a = l.angle ?? 0, q0 = { x: l.x - Math.cos(a) * 4 * T, y: l.y - Math.sin(a) * 4 * T }, q1 = this.arenaGinasio?.contem ? this.arenaGinasio.pontoSeguro(q0.x, q0.y, 1.5 * T) : q0, q = this.map.livreMaisPerto(q1.x, q1.y);
       if (!this.map.solidAt(q.x, q.y) && this.map.interiorAt(q.x, q.y) === this.map.interiorAt(l.x, l.y)) { p.x = q.x; p.y = q.y; p.vx = p.vy = 0; this.fx.burst(p.x, p.y - 8, 0xffffff, 0.5); S.preso = 0; return null; }
     }
     const inimigos = c.targetsOf(l).filter((e) => !e.isTrainer && Math.hypot(e.x - l.x, e.y - l.y) < 14 * T);
@@ -705,7 +717,9 @@ class Game {
       const frente = rx * ux + ry * uy, lado = rx * uy - ry * ux;
       if (frente > 0 && frente < 110 && Math.abs(lado) < 22) { const s = lado >= 0 ? 1 : -1; ax = p.x + uy * s * 3 * T; ay = p.y - ux * s * 3 * T; perigo = true; }
     }
-    // o destino tem de ser chão do mesmo lugar
+    // o destino tem de ser chão do mesmo lugar (na arena de ginásio, dentro dela, longe da borda)
+    const AG = this.arenaGinasio?.contem ? this.arenaGinasio : null;
+    if (AG) { const qa = AG.pontoSeguro(ax, ay, 1.5 * T); ax = qa.x; ay = qa.y; }
     const q = this.map.livreMaisPerto(ax, ay); ax = q.x; ay = q.y;
     S.ax = ax; S.ay = ay;
     const dx = ax - p.x, dy = ay - p.y, dist = Math.hypot(dx, dy);
