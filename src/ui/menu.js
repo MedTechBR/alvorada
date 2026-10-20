@@ -988,7 +988,8 @@ export class GameMenu {
           <div class="gm-big">${esc(m.name)}</div><div class="gm-soft">Nv. ${m.level} · Nº ${pad3(m.dex)}</div>
           <div class="gm-types">${typePills(m.types)}</div>
           <div class="gm-hp"><span>PS</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div></div>
-          <div class="gm-hpt">${m.hp} / ${m.stats.hp}</div></div>`;
+          <div class="gm-hpt">${m.hp} / ${m.stats.hp}</div>
+          <div class="gm-xp"><span>EXP</span><div class="xpbar"><i style="width:${Math.min(100, Math.max(0, xpF) * 100)}%"></i></div></div></div>`;
         let right;
         if (L.page === 0) {
           const ev = sp.evolve && SPECIES[sp.evolve.to];
@@ -1022,7 +1023,7 @@ export class GameMenu {
             const eff = moveEffect(mv);
             return `<div class="gm-move" style="--c:${TYPE_COLOR[mv.type]}"><div class="gm-mline"><b>${esc(mv.name)}</b>${typePills([mv.type])}<span class="gm-type" style="background:${cc}">${cat}</span><kbd class="gm-key">${IS_TOUCH ? '' : k + 1}</kbd></div>
               <div class="gm-soft">${(() => { const pp = movePP(m, k, mv); return pp ? `PP <b>${pp[0]}/${pp[1]}</b> · ` : 'PP <b>—</b> · '; })()}Poder <b>${mv.power ?? '—'}</b> · Recarga <b>${String(mv.cd ?? 1).replace('.', ',')} s</b> · ${KIND_PT[mv.kind] ?? ''}</div>
-              ${eff ? `<div class="gm-eff">${eff}</div>` : ''}</div>`;
+              ${mv.desc ? `<div class="gm-mdesc">${esc(mv.desc)}</div>` : ''}${eff && !mv.desc ? `<div class="gm-eff">${eff}</div>` : ''}</div>`;
           }).join('')}</div>`;
         }
         body.innerHTML = left + right;

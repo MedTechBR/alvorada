@@ -545,3 +545,8 @@
   .gm-lm-r { padding: 3px 8px 3px 22px; font-size: 13px; } .gm-lm-det { padding: 8px 12px; } .gm-lm-h { font-size: 17px; } .gm-lm-p { margin: 3px 0 6px; } .gm-lm-g { gap: 4px; margin-bottom: 6px; } .gm-lm-g b { font-size: 13px; } .gm-lm-g small { font-size: 8px; } .gm-lm-t { font-size: 13px; line-height: 1.3; }
 }
 @media (max-width: 700px) { .gm-lm-lista { width: auto; max-width: none; max-height: 52%; } }
+
+.gm-mdesc { font-size: 14px; line-height: 1.35; color: var(--ink); margin-top: 3px; }
+.gm-sumleft .gm-xp { width: 100%; margin-top: 4px; } .gm-sumleft .gm-xp span { font-size: 10px; color: #fff; background: #2a6ac8; border-radius: 6px; padding: 0 5px; line-height: 14px; letter-spacing: .5px; }
+.xpbar i { background: linear-gradient(180deg, #a4d4ff, #3b8be8); transition: width .6s; }
+@media (max-height: 520px) { .gm-mdesc { font-size: 12px; line-height: 1.25; } .gm-sumleft .gm-xp { margin-top: 2px; } }
