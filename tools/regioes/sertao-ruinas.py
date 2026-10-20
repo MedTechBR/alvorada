@@ -95,7 +95,7 @@ ob(p3, 'mural', 10, 4, 'INSCRIÇÃO: "Só a luz dos quatro cantos acorda o guard
 p3['items'] += [{'x': 13, 'y': 8, 'item': 'maxRevive', 'hidden': True}, {'x': 5, 'y': 10, 'item': 'stardust', 'n': 2, 'hidden': True}]
 p3['warps'] += [{'x': 13, 'y': 18, 'dir': 'down', 'to': ['ruinas_pintada_2', 32, 4], 'face': 'down', 'label': 'escada para a Galeria da Areia'}]
 p3['spots'] = {'dentro_ruinas_pintada_3': [13, 16, 'up'], 'ruinas_pintada_3_chegada': [13, 16, 'up'], 'regirock_camara': [13, 2, 'down']}
-pp(p3, 'ruinas_nalu', 'Dra. Nalu', {'preset': 'treinadora', 'hairStyle': 'ponytail', 'hair': '#3a2a22', 'skin': '#c98d62', 'hat': 'cap', 'cap': '#e0b030', 'capLogo': '#8a5a2a', 'top': '#4a8a5a', 'legs': 'shorts', 'pants': '#6a4a34', 'shoes': '#4a3428', 'bag': '#8a5a2a'}, 13, 15, ['Passei dez anos atrás desta câmara. A inscrição diz que quatro fogos precisam acender juntos, antes que o primeiro apague.', 'Eu só trouxe um fósforo. Você tem um Pokémon de Fogo?'], 'down', 0)
+pp(p3, 'ruinas_nalu', 'Dra. Nalu', {'preset': 'treinadora', 'hairStyle': 'ponytail', 'hair': '#3a2a22', 'skin': '#c98d62', 'hat': 'cap', 'cap': '#e0b030', 'capLogo': '#8a5a2a', 'top': '#4a8a5a', 'legs': 'shorts', 'pants': '#6a4a34', 'shoes': '#4a3428', 'bag': '#8a5a2a'}, 13, 15, ['Passei dez anos tentando abrir esta câmara. A inscrição diz que quatro fogos precisam acender juntos, antes que o primeiro apague.', 'Eu só trouxe um fósforo. Você tem um Pokémon de Fogo?'], 'down', 0)
 R.interiors.append(p3)
 
 # entrada na fachada (Dunas Douradas: 960,350)

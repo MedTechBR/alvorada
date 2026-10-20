@@ -112,7 +112,7 @@ function viagensDaRegiao(id, out) {
     out.ops.push(rect('plaza', 924, 352, 11, 14), rect('sand', 935, 350, 2, 18));
     cais(out, 'porto_rubro_cais', 935, 358, 12);
     out.spots.chegada = [932, 359, 'left'];
-    capitao('capitao_rubro', 'Mestre do Cargueiro', 'navio_alvorada', 930, 356, 'down', ['O mar do Poente é manso de manhã.']);
+    capitao('capitao_rubro', 'Mestre do Cargueiro', 'navio_alvorada', 930, 356, 'down', ['O Mar do Poente é manso de manhã. Desde o fim da Liga, a neblina não voltou.']);
     out.viagens.push({ id: 'navio_alvorada', nome: 'O Cargueiro Estrela-d’Alva', fala: ['O Estrela-d’Alva volta para Alvorada às 10h e às 22h.', 'Embarca?'],
       destinos: [{ nome: 'Cidade Coral (Alvorada)', mundo: 'alvorada', destino: 'cais_coral', horarios: [10, 22], cena: 'O cargueiro corta o Mar do Poente rumo ao nascer do sol…' }] });
   }
@@ -159,8 +159,8 @@ function nucleo() {
     ninhos,
     objects: [{ kind: 'sign', x: 345, y: 411, text: 'CAIS DE CIDADE CORAL\nCargueiro Estrela-d’Alva: Porto Rubro (Terras do Ocaso), 10h e 22h.\nBalsa: Ilha Jandaia (8h, 13h e 18h) · Navio de Pesquisa: Estação Austral.' }],
     people: [
-      { id: 'mestre_cargueiro', name: 'Mestre do Cargueiro', look: { preset: 'montanhista', top: '#2a4a7a', pants: '#3a3a5a', hair: '#5a3a2a' }, x: 347, y: 423, dir: 'up', viagem: 'navio_ocaso', lines: ['O Estrela-d’Alva cruza o Mar do Poente.'] },
-      { id: 'barqueira_coral', name: 'Barqueira Dalva', look: { preset: 'treinadora', top: '#e8843a', pants: '#2a4a6a', hair: '#3a2a1a' }, x: 349, y: 413, dir: 'down', viagem: 'barcos_coral', lines: ['A balsa e o navio de pesquisa saem daqui.'] },
+      { id: 'mestre_cargueiro', name: 'Mestre do Cargueiro', look: { preset: 'montanhista', top: '#2a4a7a', pants: '#3a3a5a', hair: '#5a3a2a' }, x: 347, y: 423, dir: 'up', viagem: 'navio_ocaso', lines: ['O Estrela-d’Alva cruza o Mar do Poente até as Terras do Ocaso. Embarque quando estiver pronto.'] },
+      { id: 'barqueira_coral', name: 'Barqueira Cora', look: { preset: 'treinadora', top: '#e8843a', pants: '#2a4a6a', hair: '#3a2a1a' }, x: 349, y: 413, dir: 'down', viagem: 'barcos_coral', lines: ['A balsa leva às Ilhas Jandaias e o navio de pesquisa vai à Estação Austral.'] },
     ],
     viagens: [
       { id: 'navio_ocaso', nome: 'O Cargueiro Estrela-d’Alva', fala: ['O Estrela-d’Alva leva carga e gente até Porto Rubro, nas Terras do Ocaso.', 'São ₽2000 a passagem. Embarca?'],

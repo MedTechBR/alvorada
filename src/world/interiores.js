@@ -51,7 +51,7 @@ const BIOMA_FALA = {
   gelo: ['O gelo lá fora escorrega até a gente bater em alguma coisa. Cuidado!'],
   sertao: ['Chuva por aqui é festa. Quando cai, a vila inteira sai para olhar.', 'O mandacaru floresce e todo mundo sabe que vem água.'],
   deserto: ['De dia, o sol racha. De noite, o frio entra pelos ossos.'],
-  praia: ['O mar hoje está manso. Bom dia para pescar.', 'Os Wingull acordam a gente antes do sol.'],
+  praia: ['O mar hoje está manso. Bom dia para pescar.', 'Os Wingull acordam a gente antes do sol, e ele anda demorando.'],
   mar: ['O mar hoje está manso. Bom dia para pescar.'],
   vulcao: ['O chão aqui é morno. Dá para cozinhar ovo na pedra!'],
   termal: ['Já foi às fontes termais? A água cura até o cansaço.'],
@@ -59,19 +59,19 @@ const BIOMA_FALA = {
   pampa: ['O vento do pampa não para. A gente aprende a gostar.'],
   floresta: ['De noite a mata fica cheia de olhinhos brilhando.'],
   campo: ['O capim lá fora esconde mais Pokémon do que parece.'],
-  planalto: ['Aqui em cima o vento empurra até o pensamento.'],
+  planalto: ['Aqui em cima o vento empurra a gente de um lado para o outro.'],
 };
 const TEXTOS = {
-  tv: ['A TV mostra a previsão do tempo para {cidade}.', 'Está passando um desenho de Pokémon. Você assiste um pouquinho.', 'Um programa de culinária: "Bolo de Fruta Oran em cinco passos".'],
-  shelf: ['Livros sobre Pokémon e um álbum de fotos da família.', 'Revistas velhas: "Treinador Moderno", "Pesca & Cia".', 'Um guia de {cidade} todo anotado.'],
+  tv: ['A TV mostra a previsão do tempo para {cidade}.', 'Passa um desenho de Pokémon. Você assiste um pouquinho.', 'O jornal avisa que o sol nasceu mais tarde hoje, de novo.', 'Um programa de culinária: "Bolo de Fruta Oran em cinco passos".'],
+  shelf: ['Livros sobre Pokémon e um álbum de fotos da família.', 'Revistas velhas: "Treinador Moderno" e "Pesca & Cia".', 'Um guia de {cidade} todo anotado.'],
   estante: ['Potes de doce, um rádio antigo e uma Poké Bola de enfeite.', 'Panelas areadas, todas brilhando.'],
-  radio: ['Rádio Alvorada: "…e agora, a previsão das marés."', 'Toca uma moda de viola baixinho.'],
+  radio: ['Rádio Alvorada: "…e agora, a previsão das marés."', 'Rádio Alvorada: "O sol de hoje atrasou outra vez. Fiquem em casa até clarear."', 'Toca uma moda de viola baixinho.'],
   table: ['Uma toalha xadrez e uma cesta de frutas.', 'Um bilhete: "Fui ao mercado. Volto logo."', 'Um tabuleiro de dama no meio do jogo.'],
   fogao: ['Tem uma panela de feijão cozinhando devagar. Que cheiro bom!', 'Um bule de café ainda morno.'],
   bed: ['Uma cama bem arrumada. Dá vontade de deitar.', 'Uma colcha de retalhos feita à mão.'],
-  pc: ['Um computador velho. Ainda funciona!'],
+  pc: ['Um computador velho, mas ainda liga.'],
   quadro: ['Um quadro de {cidade} vista de longe.', 'Uma foto antiga com um Pokémon no colo de alguém.'],
-  crate: ['Caixas de ferramentas e peças soltas.', 'Caixas com o nome da loja de {cidade}.'],
+  crate: ['Caixas de ferramentas e peças soltas.', 'Caixas com o nome de uma loja de {cidade}.'],
   machine: ['A máquina zumbe baixinho.'],
   gerador: ['Um gerador pequeno. Faz um barulhinho de motor.'],
   cavalete: ['Um cavalete com uma pintura pela metade.'],
@@ -155,13 +155,13 @@ function paredes(W, H, piso, porta, extra = {}) {
 function falas(c, papel) {
   const r = c.r, cid = c.cid, L = [];
   if (cid) {
-    L.push(pick(r, [`${cid.nome} é pequena por fora e grande por dentro. Todo mundo se conhece.`, `Morar em ${cid.nome} é bom: a gente tem tudo perto e o céu bem grande.`, `Seja bem-vindo a ${cid.nome}! Fique à vontade.`]));
+    L.push(pick(r, [`${cid.nome} é pequena por fora e grande por dentro. Todo mundo se conhece.`, `Morar em ${cid.nome} é bom: a gente tem tudo perto e o céu bem grande.`, `Seja bem-vindo a ${cid.nome}! Fique à vontade por aqui.`]));
     if (cid.ginasio) L.push(`Já foi ao ginásio? ${cid.ginasio.lider} usa Pokémon do tipo ${TYPE_PT[cid.ginasio.tipo] ?? cid.ginasio.tipo}. Leve quem aguente.`);
     const outros = cid.predios.filter((p) => p.id !== c.id && p.dentro);
     if (outros.length) { const p = pick(r, outros); L.push(`Já entrou em ${p.nome.replace(/ \(.*\)$/, '')}? Dizem que lá dentro tem ${p.dentro.split(/[;,]/)[0].trim()}.`); }
     if (cid.boatos.length) L.push(`Sabe o que ouvi na praça? ${pick(r, cid.boatos)}`);
     if (cid.moradores.length) { const m = pick(r, cid.moradores).replace(/ \(.*\)$/, ''); L.push(`${m} mora aqui perto. Se precisar de alguma coisa, fale com ${/^(Dona|Vó|Tia|Líder|Seu|Dr|Dra|Prof)/.test(m) ? m : 'essa pessoa'}.`); }
-  } else L.push(pick(r, [`Bem-vindo! Aqui em ${c.cidade} a gente recebe todo mundo.`, 'Entra, entra! Não repara a bagunça.']));
+  } else L.push(pick(r, [`Bem-vindo! Aqui em ${c.cidade} a gente recebe todo mundo.`, 'Entre, entre! Não repare a bagunça.']));
   const bf = BIOMA_FALA[c.cid?.bioma === 'vila' ? c.area?.biome : c.cid?.bioma ?? c.area?.biome];
   if (bf) L.push(pick(r, bf));
   if (papel === 'jovem') L.unshift(pick(r, ['Quando eu crescer, vou ser treinador igual a você!', 'Você tem quantas insígnias? Me mostra!', 'Minha mãe não deixa eu ir no mato alto sozinho.']));
@@ -276,7 +276,7 @@ function loja(c, nome) {
   fixo({ kind: 'geladeira', x: 8, y: 4 }); fixo({ kind: 'geladeira', x: 9, y: 4 }); // vitrine de bebidas no fundo
   const vid = `${c.id}_vendedor`;
   if (!LOJAS[vid]) LOJAS[vid] = { nome: `${nome}`, extra: [] };
-  const vend = { id: vid, name: 'Vendedor', look: 'lojista', x: 2, y: 3, dir: 'down', gerado: true, lines: ['Bem-vindo!'] };
+  const vend = { id: vid, name: 'Vendedor', look: 'lojista', x: 2, y: 3, dir: 'down', gerado: true, lines: ['Bem-vindo ao mercado!', 'Posso ajudar em alguma coisa?'] };
   const pontos = [[7, 5]];
   const people = comNpc(c, [vend, ...moradores(c, c.id, pontos).slice(0, c.r() < 0.5 ? 1 : 0)], pontos);
   return { id: c.id, name: nome, rows: paredes(W, H, 't', porta), objects: objs, decor: [], people, items: [] };
