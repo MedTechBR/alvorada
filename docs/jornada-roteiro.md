@@ -83,36 +83,51 @@ As batalhas 2 a 5 usam o estágio do inicial dele (`rival:N`, o mesmo esquema de
 
 ## Missões secundárias
 
-**Lista final (20/10/2026).** O Matheus jogou e disse "ainda há muitas sidequests bestas". Regra (seção 1b do doc da jornada): fica só
-missão com começo, meio e fim ligados a um personagem ou a uma reviravolta, ou que dê algo marcante (Pokémon raro, item, golpe). No
-máximo duas por cidade. Tudo que era entrega, "traga N frutas", "derrote N selvagens", ronda, tarefa repetível ou "Desafio: fulano"
-saiu do jogo (dados, NPCs de entrega, marcadores e entradas do diário). São **14 missões** no total: 11 no diário do motor de missões
-(`src/story/missoes/regiao-*.js`) e 3 como cenas da história (campo `secundaria`, nos arquivos `jornada/02`, `03` e `04`).
+**Lista final (20/10/2026, segunda passada).** O Matheus jogou de novo e disse "continuam existindo sidequests sem sentido", e mostrou
+"Vença 3 Spinarak selvagens" com o marcador dentro da mata. Regra: missão tem começo, meio e fim ligados a um personagem ou a uma
+reviravolta; **nenhuma etapa é tarefa de N** ("vença N", "ache N", "colete N", "três leituras"); no máximo duas por cidade; cada etapa
+diz o lugar no próprio texto e o marcador vai a um ponto andável dele (src/world/guia.js). **A missão não toma o painel sozinha**: o painel,
+o minimapa e o mapa mostram a história; uma missão só aparece neles quando o jogador escolhe "Acompanhar no painel" no diário (Menu ›
+Missões). O aviso "Missão aceita" diz isso. São **14 missões**, todas no diário: 11 do motor de missões e 3 que são cenas da história
+(o diário as acompanha pelas flags das cenas, campo `historia`).
 
-| Missão | Cidade | Gancho | Recompensa | Por que interessa |
+| Missão | Cidade | Etapas (o que aparece no diário) | Recompensa | Por que interessa |
 |---|---|---|---|---|
-| **Os relógios do Seu Zé** (`sq_relogios`) | Vila Alvorada | Os relógios da rádio marcam horas diferentes. De manhã, olhe o sol na Lagoa Dourada. | 5 Bolas Cronômetro, o relógio de bolso do pai do Seu Zé | É a primeira prova de que o sol atrasa, antes do professor explicar. Fecha com o Seu Zé sorrindo por estar certo. |
-| **O Tauros de olhos vermelhos** (`sq_tauros`) | Rota 1 (Campina) | O Tauros manso do Seu Bento virou Alfa. Alguma coisa mexeu com a cabeça dele. | ₽3.000, Leite Moomoo, Reviver, o Caco de Pedra Azul | Mistério: o caco azul e morno é um aviso da luz que enlouquece os bichos (Mina Aurora). |
-| **A viola do Seu Juca** (`sq_viola`) | Vila Sussurro | A viola era da esposa dele. Depois do sol atrasado, as árvores pararam de responder. | Viola do Seu Juca, Pó Prateado | O fim é emocional: o bosque responde de novo, e o Juca fala da Zefa. |
-| **Cadê o Pipoca?** (cenas `j02_sq_pipoca_*`) | Vila Sussurro | O Skwovet do Tito sumiu no bosque. | Ovo da Sorte | O Pipoca não estava perdido: juntava uma noz de cada árvore como presente para o Tito. |
-| **A garrafa do Seu Nestor** (cenas `j03_sq_garrafa_*`) | Porto Espelho | Uma das garrafas que ele joga no mar voltou, presa no manguezal. | 3 Ultra Bolas | A resposta é do Heitor, pai do Téo, preso no nível 4 da Mina. O Téo reage ao bilhete na cena de Jandaias (`j05_rival3_fim`). |
-| **O diário do farol** (cenas `j04_sq_diario_*`) | Cidade Coral | A Iracema esconde 40 anos de diário no quarto do topo do farol. | Rotom (Nv 25), 3 Superpoções | O diário prova que a Aurora trocou o gerador (assinado pelo Solano), e uma lâmpada pede S-O-C-O-R-R-O: tem um Rotom preso. |
-| **A casa dos Solano** (`sq_solano`) | Vila Lamparina | A Vó Benta pede para alguém entrar na casa abandonada dos dois meninos Solano. | Duskull (Nv 30), Diário do Tiago, Etiqueta Enfeitiçada, 3 Bolas do Crepúsculo | Revela quem é o Augusto Solano: o irmão grande que prometeu acender o mundo para o Tiago não ter mais medo do escuro. O Solano responde ao diário na luta do Relógio (`j12_solano_cai`). Antes estava morta (dependia de cenas antigas desligadas). |
-| **O mapa do templo** (`sq_ybi`) | Ilhas Jandaias | A Dra. Ybi: o Templo das Raízes foi construído em volta de uma câmara escondida, e a Companhia quer abri-la. | Pedra da Folha, Fóssil Raiz, Venusaurita, MT Leaf Storm | Passa pelas mesmas salas da cena do Ébano: as tabuletas formam o mapa. |
-| **O guardião das raízes** (`sq_tapu_bulu`) | Ilhas Jandaias | Quatro raízes acordam com golpes de Planta e o guardião desce. Pede seis insígnias (é desafio de volta). | Semente Milagrosa, 2 Doces Raros, o Alfa Tapu Bulu (Nv 60, capturável) | Lendário de verdade, atrás de um enigma de golpes. |
-| **O vulcão acordado** (`sq_sismografo`) | Arquipélago das Brasas | A Vulcanóloga Jaciara quer três sensores no caminho que o jogador já sobe (cratera, Rio de Lava, Forja Antiga). | Rocha Quente, Charizardita Y | Liga com a cena do Ébano (`nh.explicouTempestade`); a terceira leitura mostra algo vivo respirando. |
-| **O coração do vulcão** (`sq_heatran`) | Templo da Chama | Algo grande e pesado respira na câmara do fundo. | 2 Reviver Máximo, ₽5.000, Heatran (Nv 70, capturável) | Fecha a leitura do sismógrafo. Os tremores eram o Heatran respirando. |
-| **O anel da rainha** (`sq_hoopa`) | Cidade Buriti | Seis anéis sumiram da tenda da Zuleica numa noite. O espelho mostra dois olhinhos rindo. | Hoopa (Nv 50) | O ladrão era o Hoopa. Cada anel achado mostra a mão enorme que o levou. |
-| **Alpinistas perdidos** (`sq_avalanche`) | Vila Geada | Três nomes no mural da estalagem ficaram presos na Geleira do Uivo. | Pedra de Gelo, 3 Reviver Máximo | A Dona Inês risca três nomes e deixa um, o do marido (Jacinto), que a Geleira nunca devolveu. |
-| **A luz que dança** (`sq_aurora_boreal`) | Vila Geada | A Dra. Hanna mede a aurora em três pontos altos, de noite. | Pedra da Alvorada, Glalitita | Os três pontos batem no mesmo compasso: o Coração respira debaixo da Geleira. Corrigido: um dos pontos ficava fora do mapa. |
+| **Os relógios do Seu Zé** (`sq_relogios`) | Vila Alvorada | Vá à Lagoa Dourada e olhe onde o sol está → conte ao Seu Zé | 5 Bolas Cronômetro, o relógio de bolso do pai dele | A primeira prova de que o sol atrasa. *Mudou:* sem trava "só de manhã" (quem chegava à tarde não via nada acontecer). |
+| **O Tauros de olhos vermelhos** (`sq_tauros`) | Rota 1 (Campina) | Vença (ou capture) o Tauros Alfa ao norte da Rota 1 → mostre o caco ao Seu Bento | ₽3.000, Leite Moomoo, Reviver | O caco azul e morno é o primeiro aviso da luz da Mina Aurora. |
+| **A viola do Seu Juca** (`sq_viola`, versão 2) | Vila Sussurro | Ache o jequitibá da Zefa, na trilha do bosque, e pegue a corda dela → leve a corda ao Seu Juca | Viola do Seu Juca, Pó Prateado | *Reescrita:* era "vença 3 Spinarak" + "mostre um Combee". Agora a corda da Zefa está enrolada no jequitibá dela, numa teia de Spinarak, e vibra sozinha com o vento; o Juca prende a corda e o bosque responde. |
+| **Cadê o Pipoca?** (`sq_pipoca`, cenas `j02_sq_pipoca_*`) | Vila Sussurro | Procure o Pipoca na Mata dos Jequitibás → leve o Pipoca ao Tito | Ovo da Sorte | *Novo no diário:* antes era só cena, sem entrada no diário nem marcador. |
+| **A garrafa que voltou** (`sq_garrafa`, cenas `j03_sq_garrafa_*`) | Porto Espelho | Ache a garrafa nas raízes do manguezal → leve ao Seu Nestor | 3 Ultra Bolas e o bilhete do Heitor | *Novo no diário* (era só cena). |
+| **O diário do farol** (`sq_diario_farol`, cenas `j04_sq_diario_*`) | Cidade Coral | Suba ao quarto do topo do farol e ache o diário → leve à Iracema | Rotom, 3 Superpoções | *Novo no diário* (era só cena). |
+| **A casa dos Solano** (`sq_solano`) | Vila Lamparina | Entre na casa → siga o Duskull até o quarto dos fundos → leve o diário à Vó Benta | Duskull, Diário do Tiago, Etiqueta Enfeitiçada, 3 Bolas do Crepúsculo | Revela quem é o Augusto Solano; ele responde ao diário no Relógio. |
+| **O mapa do templo** (`sq_ybi`, versão 2) | Ilhas Jandaias | Suba à Câmara da Semente (3º andar do Templo das Raízes) e copie o mapa do altar → leve o decalque à Dra. Ybi | Pedra da Folha, Fóssil Raiz, Venusaurita, MT Leaf Storm | *Reescrita:* eram três tabuletas em três baús (coleta de 3). Os baús agora têm Cogumelo Grande, Água Mística e Doce Raro. |
+| **O guardião das raízes** (`sq_tapu_bulu`) | Ilhas Jandaias | Chegue à Câmara da Semente → enfrente o guardião | Semente Milagrosa, 2 Doces Raros, Tapu Bulu | Lendário de volta, com seis insígnias. |
+| **O vulcão acordado** (`sq_sismografo`, versão 2) | Arquipélago das Brasas | Finque o sensor na Forja Antiga (3º andar do Templo da Chama) → volte à Jaciara | Rocha Quente, Charizardita Y | *Encurtada:* eram três sensores; a Jaciara já mediu a cratera e o rio, falta o fundo, onde algo respira. |
+| **O coração do vulcão** (`sq_heatran`) | Templo da Chama | Entre na câmara do fundo → enfrente o que dorme lá → conte à Jaciara | 2 Reviver Máximo, ₽5.000, Heatran | Fecha a leitura do sismógrafo. |
+| **O anel da rainha** (`sq_hoopa`, versão 2) | Cidade Buriti | Siga o riso até o poço seco das Dunas Douradas → leve os seis anéis à Rainha do Bazar | Hoopa | *Reescrita:* eram seis anéis escondidos (invisíveis) nas dunas, e **dois deles ficavam fora de alcance** naquele ponto do jogo. Agora o riso leva ao poço seco, onde os seis giram em volta de um buraco no ar. |
+| **Alpinistas perdidos** (`sq_avalanche`) | Vila Geada | Ache o Bruno, a Clara e o Josué na Geleira do Uivo → conte à Dona Inês | Pedra de Gelo, 3 Reviver Máximo | Três pessoas com nome e fala, e o nome que a Dona Inês não risca. |
+| **A luz que dança** (`sq_aurora_boreal`, versão 2) | Vila Geada | Leve o caderno da Dra. Hanna ao Cume do Vento Branco → devolva a ela | Pedra da Alvorada, Glalitita | *Encurtada:* eram três leituras, só de noite; a Hanna já tem duas, falta o cume (onde a aurora aparece até de dia). |
 
-**Serviços que continuam, mas não são missão** (não aparecem no diário nem ganham "!"): o **Dr. Ícaro** revive os quatro fósseis
-(Âmbar, Garra, Raiz e Vela) pelo `NPCS.dr_icaro.reviver`; a **Vó Iara** dá um ovo de bebê por dia (Creche, `NPCS.vo_iara.diario`); o
-**Seu Brasa** ensina Onda de Calor e Lança-Chamas por ₽500 a quem tem 2 insígnias; as trocas de Alola (Kiana, Kaleo, Tupã, Tor e Tora); os
-presentes diários de fruta (Dona Flor, Padeiro, Padre Pedro, Gaudêncio). **Treinadores de rota** (Sertão, Geada e as praias de Jandaia) lutam
-uma vez ao conversar (`NPCS[id].treinador`); não há mais "Desafio: fulano" no diário.
+Cidades: Alvorada 1, Campina 1, Sussurro 2, Espelho 1, Coral 1, Lamparina 1, Jandaias 2, Brasas 2, Buriti 1, Geada 2.
 
-### O que saiu do jogo (116 entradas do motor de missões: 127 antes, 11 agora)
+**Tudo o que o jogador vê como tarefa, e de onde vem (auditoria de 20/10/2026):**
+
+| O que aparece | De onde vem | Ficou? |
+|---|---|---|
+| Painel de objetivo ("Objetivo · …") | `src/story/quests.js` (abertura e Campina) e `roteiro.objective` (passo da ordem dos ginásios, `progressao.js`, e a etapa da jornada da cidade) | Fica. É o objetivo principal; a seta e o minimapa seguem ele. |
+| Painel "Missão · …" | missão acompanhada (`missoes/motor.js: objetivo`) | Só quando o jogador acompanha no diário. Antes, qualquer missão ativa tomava o painel quando a história não tinha objetivo, e a primeira ativa era "acompanhada" sem o jogador pedir. |
+| "!" azul no minimapa e no mapa da região | `missoes.marcadores()` | Só a missão acompanhada (antes, todas as ativas). |
+| "!" sobre a cabeça (tem missão), "?" (etapa com essa pessoa) | `motor.icone` | Fica, só para as 11 missões do motor. |
+| "…" sobre a cabeça | `npcs.js: novidadeNpc` (presente, troca, fósseis, fala nova) | Fica, **menos** os presentes diários de fruta e o ovo da Creche (serviço de todo dia não é tarefa). |
+| Avisos "Missão aceita / nova / concluída" | `ui/missoes.js: avisoMissao` | Fica; o de aceita/nova diz "Para seguir no painel: Menu › Missões". |
+| Toast "Missão: <próxima etapa>" | `motor.avancar` | Fica. |
+| Diário (Menu › Missões): Ativas, Concluídas, Jornadas | `ui/missoes.js` | Fica. Cada missão mostra cidade, quem pediu, resumo, etapas e recompensa. A aba Jornadas lista os capítulos da história. |
+| Cartão "Jornada: <nome>" | `jornadas.js` (cena de lugar começa a jornada da cidade) | Fica: é a história. |
+| Treinadores de rota que lutam ao conversar | `NPCS[id].treinador` | Ficam, sem entrada no diário (não são missão). |
+| Presentes diários, trocas, tutor, fósseis do Dr. Ícaro, ovo da Vó Iara | `NPCS[id].diario / troca / tutor / reviver` | Ficam como serviço; sem "!" e sem diário. |
+| Cenas secundárias da história (Pipoca, garrafa, diário do farol) | campo `secundaria` nas jornadas 02, 03 e 04 | Ganharam entrada no diário (`historia`), com marcador quando acompanhadas. |
+
+### O que saiu do jogo na primeira passada (116 entradas do motor de missões: 127 antes, 11 depois)
 
 | Região | Removidas |
 |---|---|
