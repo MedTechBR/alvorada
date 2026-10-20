@@ -15,7 +15,7 @@ import { TrainerBattle } from './battle.js';
 import { temEspaco, acharEspaco, lugares } from '../combat/espaco.js';
 import { makeStarterTable, makeBallTexture } from '../sprites/npc.js';
 import { Roteiro } from './roteiro.js';
-import { GINASIOS } from './jornadas.js';
+import { ORDEM, primeiroFaltando, proximoPasso } from './progressao.js';
 import { Missoes } from './missoes/motor.js';
 
 // Abertura e Cidade Campina (portado do 3D): personagens, escolha do inicial, treinadores que avistam o jogador e
@@ -478,20 +478,19 @@ const PROF_MUNDO = {
     'Ela corre mais que o vento, atravessa lama funda e salta cerca baixa. Com este Apito de Montaria, é só chamar.',
   ],
   livre: () => {
-    const [g1, g2] = [...GINASIOS].sort((a, b) => a.nivel - b.nivel);
+    const p = ORDEM[0];
     return [
-      'Alvorada é sua. Os oito ginásios aceitam desafio em qualquer ordem: quem decide o caminho é você.',
-      `Os perto da vila são mais tranquilos. O mais manso é o de ${g1.cidade}, ${g1.caminho}. Depois vem o de ${g2.cidade}, ${g2.caminho}. Quanto mais longe, mais fortes os líderes.`,
-      'Na entrada de cada ginásio tem uma placa com a força do líder. E a água, os paredões e o céu? Para isso você vai precisar de Pokémon que nadem, escalem ou voem.',
+      `Alvorada é sua, mas a região tem uma ordem. Os ginásios são desafiados um por um, como nos jogos clássicos: o primeiro é o de ${p.cidade}, pela ${p.rota}.`,
+      'Os líderes não lutam com quem não tem a insígnia anterior. Quando você precisar de outro caminho, o painel de objetivo sempre mostra o próximo passo.',
+      'E a água, os paredões e o céu? Para isso você vai precisar de Pokémon que nadem, escalem ou voem, e das insígnias que liberam cada modo.',
     ];
   },
-  // dica do professor depois da primeira conversa: o ginásio mais tranquilo que ainda falta
+  // dica do professor depois da primeira conversa: o próximo passo da ordem
   dica(f) {
-    const falta = GINASIOS.filter((x) => !(f.badges ?? []).includes(x.id)).sort((a, b) => a.nivel - b.nivel);
-    const g = falta[0];
-    return g
-      ? ['Os Pokémon selvagens vivem no mato alto, no bosque e perto da água.', `Se quer uma sugestão: o ginásio de ${g.cidade}, ${g.caminho}. ${g.lider} usa equipes de nível ~${g.nivel}.`, 'Mas a ordem é sua. Qualquer Pokémon seu que nade, escale ou voe também serve de montaria.']
-      : ['Você já venceu todos os ginásios que eu conheço por aqui! Eu tenho orgulho, sabia?'];
+    const p = primeiroFaltando(f), r = proximoPasso(f);
+    return p
+      ? ['Os Pokémon selvagens vivem no mato alto, no bosque e perto da água.', `O próximo ginásio é o de ${p.cidade}, pela ${p.rota}. Lá você desafia o ${p.lider}.`, 'Os líderes só lutam com quem tem a insígnia anterior. Qualquer Pokémon seu que nade, escale ou voe também serve de montaria, quando a insígnia liberar o modo.']
+      : [r ? `Você está na reta final: ${r.texto}` : 'Você venceu a Liga! Eu tenho orgulho, sabia?'];
   },
 };
 const RIVAL_MUNDO = {

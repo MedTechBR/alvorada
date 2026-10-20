@@ -1,8 +1,7 @@
 import { ROUTE_TRAINERS, GYM_TRAINERS, LEADER1 } from './chapter1.js';
 
 // Objetivo do painel. Antes do primeiro Pokémon: a abertura em Vila Alvorada (jornada "O primeiro alvorecer").
-// Depois: a jornada acompanhada (src/story/jornadas.js, via roteiro.objective) ou, sem nenhuma em andamento, o
-// ginásio sugerido. A jornada de Cidade Campina é conduzida aqui (story.js), as outras pelo roteiro.
+// Depois: o próximo passo da ordem dos ginásios (src/story/progressao.js, via roteiro.objective). A jornada de Cidade Campina é conduzida aqui (story.js), as outras pelo roteiro.
 // O objetivo é sempre calculado a partir das flags do save, então um save antigo (ou um teste que pula etapas)
 // cai direto na etapa certa. Cada objetivo: { id, title, text, sub?, target?: { x, y } } (alvo em pixels do mundo)
 

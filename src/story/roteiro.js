@@ -19,6 +19,8 @@ import { Enigmas } from './enigmas.js';
 import { LOJAS, estoque } from '../world/lojas.js';
 import TRAMA from './script/trama.js';
 import { Jornadas, jornadaDoScript, migrarSave, porExtenso } from './jornadas.js';
+import { recusaLider, proximoPasso, LIDER_ID } from './progressao.js';
+import { Barreiras } from '../world/barreiras.js';
 
 // Mercados dos capítulos 4 a 6 no esquema de lojas do jogo (src/world/lojas.js): estoque que cresce com as insígnias
 Object.assign(LOJAS, {
@@ -47,7 +49,7 @@ Object.assign(LOJAS, {
 //   nomeado com raio. Zonas de "pisar": pontos nomeados <alvo> e <alvo>__<qualquer coisa> (vários acessos).
 // Para jogar uma cidade nova: escreva o capNN.js (com `jornada`), ponha o elenco e os pontos no mapa, inclua o id
 // em JOGAVEIS e a jornada em jornadas.js.
-export const JOGAVEIS = ['cap02', 'cap03', 'cap04', 'cap05', 'cap06', 'regiao_jandaia'];
+export const JOGAVEIS = ['cap02', 'cap03', 'cap04', 'cap05', 'cap06', 'cap07', 'cap08', 'cap09', 'cap10', 'cap11', 'cap12', 'regiao_jandaia'];
 
 const T = 16;
 const DIRV = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
@@ -66,6 +68,7 @@ export class Roteiro {
     // a trama vem primeiro na lista: nas buscas (de trás para a frente) as cenas das cidades ganham a vez
     this.caps = [TRAMA, ...CAPITULOS.filter((c) => JOGAVEIS.includes(c.id) || c.regiao)];
     this.jornadas = new Jornadas(this); // também em game.jornadas (diário: lista() e acompanhar(id))
+    this.barreiras = new Barreiras(story.g); // bloqueios da progressão clássica (src/world/barreiras.js)
     this.g.jornadas = this.jornadas;
     this.atores = new Map(); this.ativas = new Set(); this.dentro = new Set();
     this.rodando = null; this.tickT = 0;
@@ -237,7 +240,8 @@ export class Roteiro {
     const g = this.g, p = g.player;
     if (this.migrou !== this.f) { this.migrou = this.f; migrarSave(this.f); } // save do tempo dos capítulos → jornadas
     if (this.ativo && this.montou !== this.f) { this.montou = this.f; this.#aplicarMontarias(); } // também depois de carregar um save
-    if ((this.tickT -= dt) <= 0) { this.tickT = 0.25; this.#refresh(); }
+    if ((this.tickT -= dt) <= 0) { this.tickT = 0.25; this.#refresh(); this.barreiras.sync(); } // barreiras da progressão (src/world/barreiras.js)
+    this.barreiras.aviso(dt);
     for (const n of this.atores.values()) {
       if (!n.visible) continue;
       n.update(dt);
@@ -389,6 +393,9 @@ export class Roteiro {
   // ---------------- cena ----------------
   async tocar(c, s) {
     const g = this.g, pai = this.rodando;
+    // ordem obrigatória dos ginásios (src/story/progressao.js): o líder recusa a luta sem a insígnia anterior
+    const recusa = s.depois?.batalha ? recusaLider(this.f, s.depois.batalha.id) : null;
+    if (recusa) { await g.ui.say([recusa.texto], { name: s.depois.batalha.nome ?? '' }); this.s.refreshObjective?.(); return false; }
     this.rodando = s.id;
     const atorAntes = this.atorCena;
     const gt = s.gatilho ?? {}, bid = s.depois?.batalha?.id;
@@ -616,20 +623,18 @@ export class Roteiro {
   }
 
   // ---------------- objetivo do HUD ----------------
-  // A jornada acompanhada (jornadas.acompanhada) dá o título e o objetivo; sem nenhuma em andamento, o painel
-  // sugere o ginásio mais fraco que falta. proprios: { idDaJornada: () => objetivo } para as jornadas que o story.js
-  // conduz (Cidade Campina).
+  // O painel mostra SEMPRE o próximo passo da ordem dos ginásios (src/story/progressao.js): cidade, rota e líder.
+  // A jornada da cidade desse passo (jornadas.acompanhada) dá as etapas detalhadas; proprios: { idDaJornada: () =>
+  // objetivo } para as jornadas que o story.js conduz (Cidade Campina).
   objective(proprios = {}) {
     if (!this.ativo) return null;
-    const f = this.f, J = this.jornadas, j = J.acompanhada();
-    if (!j) return this.#sugestao();
-    if (proprios[j.id]) { const o = proprios[j.id](); if (o) return { ...o, title: j.nome }; }
+    const f = this.f, J = this.jornadas, j = J.acompanhada(), passo = proximoPasso(f);
+    if (!j || !passo || j.id !== passo.jornada || j.tipo === 'trama') return this.#passo(passo);
+    if (proprios[j.id]) { const o = proprios[j.id](); if (o) return { ...o, title: passo.title }; }
     const e = J.etapaAtual(j);
     let o = J.objetivoDe(j.id) ?? j.padrao ?? (e ? { texto: e.texto, alvo: e.alvo } : null);
-    if (!o) return this.#sugestao();
-    // trama sem destino certo (marcos de insígnias): a seta vai para o ginásio sugerido
-    if (j.tipo === 'trama' && !o.alvo) { const gs = J.sugerido(); if (gs) o = { ...o, alvo: gs.alvo, sub: o.sub ?? `Sugestão: ginásio de ${gs.cidade} (equipes de nível ~${gs.nivel})` }; }
-    let target = this.#alvo(o.alvo), sub = o.sub;
+    if (!o) return this.#passo(passo);
+    let target = this.#alvo(o.alvo), sub = o.sub ?? passo.sub;
     if (o.treinadores) {
       const falta = o.treinadores.filter((t) => !f.trainers?.[t]);
       sub = `${o.rotulo ?? 'Treinadores'}: ${o.treinadores.length - falta.length}/${o.treinadores.length}`;
@@ -638,13 +643,14 @@ export class Roteiro {
     // porSala: { idDaSala: ponto } guia por dentro de prédios de vários andares (farol, mina), onde a saída engana
     const aqui = this.#mapaDe(this.g.player.x, this.g.player.y);
     if (o.porSala?.[aqui]) target = this.#alvo(o.porSala[aqui]) ?? target;
-    return { id: 'roteiro:' + j.id + ':' + (o.texto ?? ''), title: j.nome, text: o.texto, sub, target };
+    return { id: 'roteiro:' + j.id + ':' + (o.texto ?? ''), title: passo.title, text: o.texto, sub, target };
   }
-  // nada em andamento: explorar à vontade, com o ginásio sugerido (o mais fraco que falta) e a força dele
-  #sugestao() {
-    const nB = (this.f.badges ?? []).length, gs = this.jornadas.sugerido();
-    if (!gs) return { id: 'livre', title: 'Alvorada', text: 'Explore a região à vontade', sub: `Insígnias: ${nB}/8`, target: null };
-    return { id: 'livre:' + gs.id, title: 'Mundo livre', text: `Explore à vontade. Sugestão: ginásio de ${gs.cidade}`, sub: `${gs.lider} · equipes de nível ~${gs.nivel} · insígnias ${nB}/8`, target: this.#alvo(gs.alvo) };
+  // próximo passo da ordem: ginásio (cidade, rota e líder) ou a reta final (Brasas, Relógio, Geada, Liga)
+  #passo(p) {
+    const nB = (this.f.badges ?? []).length;
+    if (!p) return { id: 'liga:fim', title: 'Liga do Zênite', text: 'Você venceu a Liga. Os pós-jogos e as revanches estão abertos.', sub: `Insígnias: ${nB}/8`, target: null };
+    const target = this.#alvo(p.alvo) ?? this.#alvo(LIDER_ID[p.key]) ?? null;
+    return { id: 'passo:' + p.key, title: p.title, text: p.texto, sub: p.sub, target };
   }
   #alvo(nome) {
     if (!nome) return null;
