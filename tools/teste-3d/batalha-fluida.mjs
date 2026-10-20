@@ -90,6 +90,20 @@ try {
   await P.ev(PILOTO());
   await sleep(2500);
   const res = { modo, tela: `${W}x${H}` };
+  // FOTO=1: duas fotos fixas no meio da luta: um crítico super efetivo e um nocaute (sem o quadro em tela cheia)
+  if (process.env.FOTO === '1') {
+    const foto = async (n) => { const r = await P.raw('Page.captureScreenshot', { format: 'jpeg', quality: 88 }); const f = `${OUT}/${TAG}-${modo}-${n}.jpg`; writeFileSync(f, Buffer.from(r.result.data, 'base64')); return f; };
+    const golpe = (ko) => P.ev(`(() => { const G = game, L = G.lead, b = G.story?.battle; const vs = (b ? b.active : G.wilds).filter((e) => e.alive && !e.dead);
+      const w = vs[${ko ? 'vs.length - 1' : 0}] ?? vs[0]; if (!L || !w) return 'sem alvo';
+      const mv = { name: 'Golpe', type: 'fighting', power: 90, cat: 'phys' }; G.combat.anunciar(L, { name: 'Golpe Carateca', type: 'fighting' });
+      G.combat.hurt(w, ${ko ? 0 : 23} || w.mon.hp, L, { eff: 2, crit: true, mv, dx: 1, dy: 0 }); return w.mon.name; })()`);
+    res.fotos = []; await until(() => P.ev('!!game.lead?.alive'), 8000, 200);
+    console.log('crítico em', await golpe(false)); await sleep(350); res.fotos.push(await foto('critico'));
+    await sleep(1500);
+    console.log('nocaute em', await golpe(true)); await sleep(400); res.fotos.push(await foto('nocaute'));
+    const errs = P.logs.filter((l) => /EXC|rror/.test(l) && !/favicon|net::/.test(l)); res.erros = [...new Set(errs)].slice(0, 8);
+    console.log(JSON.stringify(res)); b.kill(); process.exit(0);
+  }
   if (process.env.SOFOTO !== '1') {
     // FPS com a CPU mais lenta (celular): quadros do navegador (rAF), mediana e piores intervalos
     await P.raw('Emulation.setCPUThrottlingRate', { rate: +(process.env.LENT ?? 4) });

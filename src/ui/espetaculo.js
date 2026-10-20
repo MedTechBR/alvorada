@@ -231,7 +231,7 @@ export class Espetaculo {
       const fundo = (sel) => { let b = 0; for (const s of sel) { const el = document.querySelector(s); if (!el || el.hidden || el.offsetParent === null && getComputedStyle(el).position !== 'fixed') continue; const r = el.getBoundingClientRect(); if (r.height && getComputedStyle(el).visibility !== 'hidden') b = Math.max(b, r.bottom); } return b; };
       const bar = document.querySelector('#hb.on:not([hidden]) .topo')?.getBoundingClientRect();
       const st = 10 + (parseFloat(cs.getPropertyValue('--st')) || 0);
-      this.hHud = bar?.height ? bar.bottom : st;
+      this.hHud = bar?.height ? bar.bottom : Math.max(st, fundo(['#foe'])); // (o painel do treinador fica no meio, em cima)
       this.hEu = bar?.height ? bar.bottom : Math.max(st, fundo(['#lead', '#objective']));
       this.hEle = bar?.height ? bar.bottom : Math.max(st, fundo(['#minimapa', '#menu-btn']));
     }
