@@ -53,6 +53,21 @@ export default {
       ],
     },
     {
+      // o aviso chega à Lia: o jogador conta o que ouviu e a Lia põe alguém de vigia
+      id: 'j02_avisa_lia',
+      local: 'vila_sussurro',
+      gatilho: { tipo: 'entrar', alvo: 'vila_sussurro', requer: ['nh.ouviuRecrutas'], semFlag: ['nh.avisouLia'] },
+      falas: [
+        ['jogador', 'Lia! Ouvi dois recrutas dizendo que a sua estufa será roubada hoje à noite, quando a vila dormir.'],
+        ['lia', 'Na minha estufa? Obrigada por avisar. Vou pôr alguém de vigia.'],
+        ['lia', 'Fique de olho no fundo da estufa. Se eles querem a pedra, vão tentar quando a vila estiver dormindo.'],
+      ],
+      depois: {
+        flags: { 'nh.avisouLia': true },
+        objetivo: { texto: 'Vá à estufa da Lia e vigie a noite', alvo: 'estufa_lia' },
+      },
+    },
+    {
       // Sina: o Absol branco aparece antes do perigo e guia o jogador até a gruta
       id: 'j02_sina_trilha',
       local: 'bosque_sussurrante',
@@ -243,8 +258,8 @@ export default {
         ['lia', 'Você foi rápido como um Yanma! A Insígnia Casulo é sua. Ela lembra que toda mudança começa quietinha, por dentro.'],
         ['narrador', '{jogador} recebeu a Insígnia Casulo!'],
         ['lia', 'E esta MT: Picada. Pega o Pokémon desprevenido e ainda come a fruta dele. Grosseiro, mas eficiente.'],
-        ['lia', 'Você viu a gruta. Eu já desconfiava que o bosque estava doente perto daqueles veios. As raízes em cima deles estão secando.'],
-        ['lia', 'A Companhia Aurora diz que a luzita é limpa. O bosque discorda, e eu confio mais nele. Siga pela Rota 3 até Porto Espelho.'],
+        ['lia', 'Você viu a gruta. Eu já desconfiava que o bosque estava doente perto daqueles veios. As raízes ali estão secando.'],
+        ['lia', 'A Companhia Aurora diz que a luzita é limpa. Eu confio mais no bosque. Siga pela Rota 3 até Porto Espelho.'],
       ],
       depois: {
         insignia: 'sussurro', mt: 'bugBite',
@@ -260,7 +275,7 @@ export default {
       id: 'j02_bia_luz',
       gatilho: { tipo: 'apos', cena: 'j02_lia_insignia' },
       falas: [
-        ['bia', '{jogador}! É a Bia! Analisei o registro do cristal da gruta. A luz dele não brilha, ela vaza. Como se viesse de outro lugar.'],
+        ['bia', '{jogador}! É a Bia! Analisei o cristal da gruta. Ele não brilha, a luz vaza. Como se viesse de outro lugar.'],
         ['bia', 'Nenhuma pedra que eu conheço faz isso. Quando contei ao Professor, ele ficou branco e disse que devia ser nada.'],
         ['bia', 'Depois saiu sem dizer para onde. Se alguém perguntar da luzita, me avisa.'],
         ['jogador', 'Então ela não é só luz. É algo que vem de fora da terra.'],
@@ -273,7 +288,7 @@ export default {
       gatilho: { tipo: 'flag', alvo: 'badges.sussurro', semFlag: ['nh.boletim.2'] },
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis horas e dezenove minutos. São catorze minutos de atraso desde segunda.'],
-        ['mae', 'Ravi, seis e dezenove. Você está ganhando insígnias, e o sol está ficando mais preguiçoso. Isso não é normal.'],
+        ['mae', '{jogador}, seis e dezenove. Você está ganhando insígnias, e o sol está ficando mais preguiçoso. Isso não é normal.'],
         ['jogador', 'Ele já atrasava antes da minha primeira insígnia, Mãe. Então não é por causa das minhas vitórias.'],
       ],
       depois: { flags: { 'nh.boletim.2': true, 'nh.sol': '6h19' }, ambiente: true },
@@ -301,7 +316,7 @@ export default {
       gatilho: { tipo: 'pisar', alvo: 'mata_jequitibas', requer: ['nh.sqPipoca'], semFlag: ['nh.achouPipoca'] },
       falas: [
         ['narrador', 'Entre as raízes de um jequitibá, um Skwovet roliço guarda um monte de nozes maior que ele. Tem um sininho na coleira.'],
-        ['narrador', 'Ele não está perdido. O monte tem uma noz de cada árvore do bosque, arrumadinha por tamanho, como quem prepara um presente.'],
+        ['narrador', 'Ele não está perdido. O monte tem uma noz de cada árvore do bosque, arrumadinha, como um presente.'],
         ['jogador', 'Era para o Tito, não era? Vem comigo, Pipoca. Ele está preocupado, mas vai gostar.'],
         ['narrador', 'O Skwovet escolhe a maior noz, enfia na bochecha e anda na sua frente, desconfiado, de volta para a vila.'],
       ],
@@ -314,7 +329,7 @@ export default {
       gatilho: { tipo: 'falar', alvo: 'tito', requer: ['nh.achouPipoca'], semFlag: ['nh.sqPipocaFim'] },
       falas: [
         ['tito', 'Pipoca! Seu maluco! Eu não estava bravo. Eu estava só um pouquinho bravo, mas agora passou.'],
-        ['narrador', 'O Pipoca tira a noz da bochecha e põe na mão do Tito. O Tito olha para a noz, olha para o Skwovet e esfrega o nariz na manga.'],
+        ['narrador', 'O Pipoca tira a noz da bochecha e põe na mão do Tito. O Tito esfrega o nariz na manga, emocionado.'],
         ['tito', 'Você passou o dia inteiro atrás dele? Então toma o meu Ovo da Sorte. Guardo desde filhote, e acho que hoje é dia de dar.'],
         ['narrador', 'O Pipoca sobe no ombro do Tito e começa a roer a orelha dele. Os dois estão felizes.'],
       ],

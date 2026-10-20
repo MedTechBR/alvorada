@@ -35,7 +35,7 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'mirante_ventos', requer: ['nh.chegouMirante'], semFlag: ['nh.profSequestrado'] },
       falas: [
         ['narrador', 'O Prof. Jatobá está sentado no muro do mirante, com uma pasta de papel no colo. Quando você se aproxima, um carro branco com faróis dourados para bem atrás dele.'],
-        ['prof', 'Ravi, fuja! Eles não vieram me ajudar, vieram me buscar!'],
+        ['prof', '{jogador}, fuja! Eles não vieram me ajudar, vieram me buscar!'],
         ['lucio', 'Professor, o Senhor Solano pediu que o senhor viesse conosco. Não precisamos fazer barulho.'],
         ['jogador', 'Solte ele, Gerente Lúcio. Ele é o professor da região!'],
         ['lucio', 'Ele é a peça que faltava para a Companhia. E você, garoto, tem o que o Senhor Solano realmente quer. Não tente me impedir.'],
@@ -63,7 +63,7 @@ export default {
       falas: [
         ['narrador', 'O Lúcio recua até o carro. O helicóptero da Aurora já está no ar, e o professor olha para você pela janela, com a pasta apertada contra o peito.'],
         ['narrador', 'Seu celular toca. O número não está salvo, mas você reconhece a voz no primeiro segundo.'],
-        ['solano', 'Ravi, certo? Eu acompanhei você desde a inauguração em Cidade Coral. Você é um rapaz muito eficiente.'],
+        ['solano', '{jogador}, certo? Eu acompanhei você desde a inauguração em Cidade Coral. Você é um rapaz muito eficiente.'],
         ['solano', 'O professor está sob a minha proteção. Ele vai voltar para casa intacto, desde que você me entregue a Vela Eterna da senhora Zélia, que você guarda desde Lamparina.'],
         ['jogador', 'Você sequestrou um professor para pegar uma vela?'],
         ['solano', 'Eu sequestrei o professor porque ele sabia onde a vela estava. Ele me contou tudo, por telefone, há dezesseis anos. Não tenha dúvidas de que ele falou.'],
@@ -175,7 +175,7 @@ export default {
       gatilho: { tipo: 'flag', alvo: 'badges.mirante', semFlag: ['nh.boletim.8'] },
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às sete horas e onze minutos. A tempestade do Planalto acabou ontem à noite, mas o horário continua atrasado.'],
-        ['mae', 'Ravi, sete e onze. Eu não entendo mais nada, filho. O Prof. Jatobá não atende o telefone desde ontem. Por favor, me diga que você vai trazê-lo para casa.'],
+        ['mae', '{jogador}, sete e onze. Eu não entendo mais nada, filho. O Prof. Jatobá não atende o telefone desde ontem. Por favor, me diga que você vai trazê-lo para casa.'],
         ['jogador', 'Mãe, eu vou atrás dele. Ele está no Relógio, e eu prometo que volto com ele.'],
       ],
       depois: { flags: { 'nh.boletim.8': true, 'nh.sol': '7h11' }, ambiente: true },

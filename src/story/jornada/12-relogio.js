@@ -20,7 +20,7 @@ export default {
       falas: [
         ['narrador', 'O topo do Planalto: um círculo de pedra com sete pedestais vazios, e no centro, o Relógio de Pedra. Um cadeado de cristal dourado prende uma porta de rocha, como se fosse uma caixa de relógio gigante.'],
         ['narrador', 'Em cada pedestal, um padrão de luz gira devagar. Sete estão acesos, com a cor de cada ginásio. O oitavo pedestal está apagado, esperando.'],
-        ['solano', 'Ravi, chegou no horário. Eu gosto de gente pontual. A vela, por favor, e o professor volta para casa.'],
+        ['solano', '{jogador}, chegou no horário. Eu gosto de gente pontual. A vela, por favor, e o professor volta para casa.'],
         ['narrador', 'O professor está numa gaiola de metal, ao lado do Lúcio, com o rosto pálido e os olhos fixos em você.'],
         ['sereno', 'Ele trouxe a vela, Senhor Solano? Eu trouxe as sete. Já estão nos pedestais.'],
         ['jogador', 'Não entrego a vela sem ver o professor sair. E não acendo nada antes de saber o que o Relógio faz.'],
@@ -75,7 +75,7 @@ export default {
         ['vespera', 'Eu estou do seu lado agora. Não por você. Por ela, por mim e pelo sol que eu deixei de ver.'],
         ['narrador', 'Lá embaixo, na escada, o Téo chega correndo. Atrás dele, um homem de capacete sujo de pó segura um lampião: é o Heitor, livre da mina.'],
         ['teo', 'Estamos aqui! Eu e o meu pai! A gente saiu da mina pelo túnel do nível quatro e vim direto.'],
-        ['heitor', 'Ravi! Obrigado por ter ido atrás do meu filho. Ele não parava de falar de você, e depois da mina, eu entendi o porquê.'],
+        ['heitor', '{jogador}! Obrigado por ter ido atrás do meu filho. Ele não parava de falar de você, e depois da mina, eu entendi o porquê.'],
       ],
       depois: {
         flags: { 'nh.chegaramAliados': true, 'nh.veraAliada': true },
@@ -125,9 +125,9 @@ export default {
         ['jogador', 'Eu li o diário do Tiago, em Lamparina. O desenho do menino grande com o sol na mão. Ele ainda tem medo do escuro, Solano?', { requer: ['sq_solano_completa'] }],
         ['solano', 'Quem deixou você entrar naquela casa? … Eu só queria que ninguém no mundo ficasse no escuro de novo.', { requer: ['sq_solano_completa'] }],
         ['narrador', 'O Solano cai de joelhos. O Sereno, ao lado dele, deixa cair a caixa com as sete pedras, e elas rolam até os pedestais.'],
-        ['prof', 'Ravi! Me solta, por favor. A chave da gaiola está no bolso do Lúcio, ele não vai reagir.'],
+        ['prof', '{jogador}! Me solta, por favor. A chave da gaiola está no bolso do Lúcio, ele não vai reagir.'],
         ['narrador', 'O Lúcio levanta as mãos, sem olhar para ninguém. A gaiola abre. O professor corre até você e segura seu braço com força.'],
-        ['prof', 'Eu sinto muito, Ravi. Pelo telefone, pelo arquivo, por tudo. Mas agora vamos fechar isso.'],
+        ['prof', 'Eu sinto muito, {jogador}. Pelo telefone, pelo arquivo, por tudo. Mas agora vamos fechar isso.'],
         ['narrador', 'No meio do círculo, as sete pedras começam a brilhar com a cor dos ginásios. O oitavo pedestal ainda espera a vela.'],
       ],
       depois: {
@@ -219,7 +219,7 @@ export default {
       gatilho: { tipo: 'apos', cena: 'j12_selo_insignias' },
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e quatro minutos. O horário voltou ao normal, e a Companhia Aurora anunciou o fim das atividades de extração no Planalto.'],
-        ['mae', 'Ravi! Seis e quatro! O sol voltou. Você está aí em cima, não está? Volta logo para casa, que o bolo está quentinho.'],
+        ['mae', '{jogador}! Seis e quatro! O sol voltou. Você está aí em cima, não está? Volta logo para casa, que o bolo está quentinho.'],
         ['jogador', 'Eu chego amanhã cedo, mãe. Mas antes eu preciso atravessar a Cordilheira Geada. A Liga não vai esperar.'],
       ],
       depois: {

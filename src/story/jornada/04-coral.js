@@ -203,7 +203,7 @@ export default {
       gatilho: { tipo: 'flag', alvo: 'badges.coral', semFlag: ['nh.boletim.4'] },
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e trinta e quatro minutos. O farol de Cidade Coral voltou a piscar, mas com atraso, segundo os marinheiros.'],
-        ['mae', 'Ravi, seis e trinta e quatro. De manhã a casa fica escura por mais tempo. Anda, filho, volta logo.'],
+        ['mae', '{jogador}, seis e trinta e quatro. De manhã a casa fica escura por mais tempo. Anda, filho, volta logo.'],
         ['jogador', 'Mãe, não sei quanto tempo mais essa história dura. Mas estou voltando para casa.'],
       ],
       depois: { flags: { 'nh.boletim.4': true, 'nh.sol': '6h34' }, ambiente: true },

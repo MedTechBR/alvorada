@@ -18,7 +18,7 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'liga_zenite', requer: ['nh.teoFinalPronto'], semFlag: ['nh.chegouLiga'] },
       falas: [
         ['narrador', 'O Caminho do Zênite é uma escada de degraus brancos, com bandeiras de todas as regiões. No topo, o Portão da Liga brilha com a luz do fim da manhã.'],
-        ['teo', 'Ravi! Eu cheguei antes, como prometi. Eu fiquei olhando a Elite de longe, e eles são bem mais assustadores do que pareciam em treino.'],
+        ['teo', '{jogador}! Eu cheguei antes, como prometi. Eu fiquei olhando a Elite de longe, e eles são bem mais assustadores do que pareciam em treino.'],
         ['teo', 'Quando o Aurélio perguntar seu nome, diga. Eu disse o meu e ele fez uma cara engraçada. Acho que ele tinha lido sobre a Aurora nos jornais.'],
         ['jogador', 'Eu digo, Téo. E você fica do meu lado durante as batalhas, pelo menos a da Clarice.'],
       ],
@@ -214,8 +214,8 @@ export default {
         ['vespera', 'O sol nasceu. E eu vou voltar a ver ele com a minha cara de sempre, sem medo de que ele atrase de novo.'],
         ['prof', 'Eu devo desculpas a todos vocês. À Lia, ao Tomé, à Iracema e à Dona Zélia. Eu escondi a luzita por medo, e o medo custou caro.'],
         ['teo', 'Pai, você está bem? A Aurora fechou a mina, e o Senhor Solano foi levado por causa do medidor e do sequestro.'],
-        ['heitor', 'Estou bem, filho. Estou em casa, e a minha garrafa de mensagem chegou ao lugar certo. Obrigado, Ravi.'],
-        ['mae', 'Ravi! Eu vi tudo na televisão. Você ganhou a Liga e o sol nasceu hoje às seis e quatro. Eu fiz bolo, e está quentinho.'],
+        ['heitor', 'Estou bem, filho. Estou em casa, e a minha garrafa de mensagem chegou ao lugar certo. Obrigado, {jogador}.'],
+        ['mae', '{jogador}! Eu vi tudo na televisão. Você ganhou a Liga e o sol nasceu hoje às seis e quatro. Eu fiz bolo, e está quentinho.'],
         ['narrador', 'A Liga do Zênite fica silenciosa por um momento. Lá fora, o sol da manhã bate em cheio no Planalto, e a neblina que cobre o mar ao sul começa a se mexer, como se estivesse esperando você.'],
       ],
       depois: {
