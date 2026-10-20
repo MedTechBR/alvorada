@@ -165,6 +165,8 @@ export class Audio {
     this.rate = VARY.has(name) ? 0.94 + Math.random() * 0.12 : 1;
     switch (name) {
       case 'blip': T(880, t, 0.05, { vol: 0.08, type: 'pulse' }); break;
+      case 'tick': T(1320, t, 0.03, { vol: 0.045, type: 'pulse' }); break; // cursor do menu
+      case 'back': T(660, t, 0.06, { to: 440, vol: 0.07, type: 'pulse' }); break; // voltar no menu
       case 'pop': T(300, t, 0.15, { to: 1200, vol: 0.18 }); N(t, 0.12, { freq: 4000, vol: 0.12 }); break;
       case 'throw': T(400, t, 0.3, { to: 900, vol: 0.1, type: 'triangle' }); N(t, 0.25, { freq: 1500, to: 4000, vol: 0.08 }); break;
       case 'hit': N(t, 0.12, { freq: 1200, vol: 0.35 }); T(160, t, 0.12, { to: 60, vol: 0.3, type: 'triangle' }); break;

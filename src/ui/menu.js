@@ -374,6 +374,7 @@ export class GameMenu {
     const t = this.top;
     let i = t.sel + d;
     if (t.cols > 1) { if (i < 0 || i >= n) i = (i + n * 4) % n; } else i = (i + n) % n;
+    if (i !== t.sel) this.g.audio?.sfx?.('tick');
     this.#focus(i);
   }
   #confirm() {
@@ -388,6 +389,7 @@ export class GameMenu {
   back() {
     const t = this.top;
     if (!t) return;
+    this.g.audio?.sfx?.('back');
     if (t.onBack) { t.onBack(); return; }
     if (this.layers.length <= 1) { this.close(); return; }
     this.#pop();
