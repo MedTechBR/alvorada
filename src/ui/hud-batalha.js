@@ -108,6 +108,27 @@ body.touch #hb .intro { height: 58px; top: 30%; } body.touch #hb .intro strong {
 @media (max-width: 520px) { /* em pé: sem o nome do treinador e com tipos menores */
   body.touch #hb .tr, body.touch #hb .meio .vs { display: none; } body.touch #hb .rt { width: 30px; height: 30px; }
 }
+/* BARRA FINA (pedido do dono, 2026-10-20: "as barras no topo ocupam muito espaço"): uma linha só por lado, com retrato
+   pequeno, nome, nível, barra de PS com o número e as bolas da equipe; sem pílulas de tipo, estágios, tempo nem a linha
+   do nome do treinador. ~44 px no celular deitado. */
+#hb .topo { padding: calc(4px + var(--st, 0px)) calc(12px + var(--sr, 0px)) 4px calc(12px + var(--sl, 0px)); align-items: center; gap: 14px; border-bottom-width: 2px; }
+#hb .meio, #hb .tr, #hb .hpl.xl { display: none; }
+#hb .rt { width: 34px; height: 34px; border-radius: 8px; border-width: 2px; }
+#hb .cx { flex-direction: row; align-items: center; gap: 7px; } #hb .ele .cx { flex-direction: row-reverse; align-items: center; }
+#hb .l1 { flex: none; max-width: 42%; } #hb .nm { font-size: 14px; } #hb .lv { font-size: 10.5px; }
+#hb .tg { flex: none; max-height: 13px; } #hb .tg i { font-size: 8px; line-height: 13px; padding: 0 4px; }
+#hb .hpl { flex: 1; min-width: 40px; width: auto; } #hb .bar { height: 11px; }
+#hb .l3 { flex: none; }
+body.touch #hb .topo { padding: calc(3px + var(--st, 0px)) calc(58px + var(--sr, 0px)) 3px calc(8px + var(--sl, 0px)); gap: 10px; }
+body.touch #hb .rt { width: 30px; height: 30px; border-radius: 7px; } body.touch #hb .cx { gap: 5px; }
+body.touch #hb .nm { font-size: 11.5px; } body.touch #hb .lv { font-size: 9px; } body.touch #hb .l1 { flex-direction: column; align-items: flex-start; gap: 0; } body.touch #hb .ele .l1 { flex-direction: column; align-items: flex-end; }
+body.touch #hb .bar { height: 9px; } body.touch #hb .bolas i { width: 7px; height: 7px; }
+/* VS da entrada: uma faixa fina (~40 px) logo abaixo da barra, menos de 1 s, só no começo da luta de treinador/líder */
+#hb .intro { top: calc(48px + var(--st, 0px)); height: 40px; }
+#hb .intro.go, #hb .intro.go .a, #hb .intro.go .b, #hb .intro.go .v { animation-duration: .95s; }
+#hb .intro small { font-size: 9px; letter-spacing: 1.5px; } #hb .intro strong { font-size: 15px; } #hb .intro .v { font-size: 22px; -webkit-text-stroke-width: 2px; }
+body.touch #hb .intro { top: calc(42px + var(--st, 0px)); height: 34px; } body.touch #hb .intro strong { font-size: 13px; } body.touch #hb .intro .v { font-size: 20px; }
+#hb .flash, #hb .wipe { display: none; }
 @media (prefers-reduced-motion: reduce) { #hb .flash, #hb .wipe { display: none; } #hb .intro.go, #hb .intro.go .a, #hb .intro.go .b, #hb .intro.go .v { animation-duration: 1.2s; animation-timing-function: linear; } #hb .topo, #hb .bar i, #hb .bar .gh { transition: none; } #hb .bar i.low, #hb .pn.hit { animation: none; } }
 `;
 
@@ -149,7 +170,8 @@ export class HudBatalha {
     this.#set(key + 'lv', m.level, (t) => { P.lv.textContent = 'Nv ' + t; });
     // estágios como no vídeo (VEL-1, DEF+2): pílula clara com a cor do sinal
     const est = Object.entries(e.stages ?? {}).filter(([s, v]) => v && ESTAG[s]).map(([s, v]) => [`${ESTAG[s]}${v > 0 ? '+' : ''}${v}`, v > 0]);
-    const tags = [...m.types.map((t) => `<i style="--c:${TYPE_COLOR[t] ?? '#777'}">${esc(TYPE_PT[t] ?? t)}</i>`), ...(m.status && STATUS[m.status] ? [`<i style="--c:${STATUS[m.status][1]}">${STATUS[m.status][0]}</i>`] : []), ...est.map(([s, up]) => `<i class="st" style="--c:${up ? '#2f8a4a' : '#c43a2a'}">${s}</i>`)].join('');
+    void est; // barra fina: só o estado alterado (PAR, ENV...) numa pílula mínima; tipos e estágios saíram
+    const tags = m.status && STATUS[m.status] ? `<i style="--c:${STATUS[m.status][1]}">${STATUS[m.status][0]}</i>` : '';
     this.#set(key + 'tg', tags, (t) => { P.tg.innerHTML = t; });
     this.#set(key + 'hp', Math.round(k * 200), () => {
       const antes = P.k ?? k; P.k = k;
@@ -177,15 +199,20 @@ export class HudBatalha {
     if (!eu) this.#set(key + 'ps', e.isAlpha ? 'ALFA' : e.side === 'foe' ? (this.g.story?.battle?.def?.name ?? '') : 'Selvagem', (t) => { P.ps.textContent = t; });
   }
   // clarão rápido (e cortina nos duelos de treinador) + faixa "VOCÊ VS ELE"; tudo em CSS, sem travar o jogo
+  // Só UMA vez, no começo de uma luta de treinador/líder/Elite (story.battle); nunca numa troca ou no próximo Pokémon,
+  // nem para selvagem, Alfa ou chefe selvagem (pedido do dono: a faixa "TREINADOR VS DESAFIANTE" no meio da luta)
   #intro(l, alvo) {
-    const now = performance.now(); if (now - (this.tIntro ?? -1e9) < 7000) return; this.tIntro = now;
-    const g = this.g, duelo = !!g.story?.battle, def = g.story?.battle?.def;
+    const g = this.g, b = g.story?.battle;
+    if (!b || b.done || b.opts?.semBola || b.opts?.alfa || this.introDe === b) return;
+    this.introDe = b;
+    if ((b.fainted ?? 0) > 0 || g.time - (b.t0 ?? g.time) > 6) return; // já no meio da luta (ex.: barra religou): sem VS
+    const duelo = true, def = b.def;
     const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const set = (sel, a, b) => { const e = this.q(sel); e.querySelector('small').textContent = a; e.querySelector('strong').textContent = b; };
     set('.intro .a', duelo ? 'Treinador' : 'Seu Pokémon', duelo ? (g.flags?.playerName ?? g.player?.name ?? 'Você') : l.mon.name);
     set('.intro .b', duelo ? 'Desafiante' : 'Selvagem', duelo ? (def?.name ?? alvo.mon.name) : alvo.mon.name);
     const go = (sel) => { const e = this.q(sel); e.classList.remove('go'); void e.offsetWidth; e.classList.add('go'); };
-    if (!reduz) { go('.flash'); if (duelo) go('.wipe'); }
+    void reduz;
     go('.intro');
     g.audio?.sfx?.(duelo ? 'exclaim' : 'blip');
   }
@@ -193,7 +220,11 @@ export class HudBatalha {
     this.t -= dt; if (this.t > 0) return; this.t = 0.1;
     const g = this.g, l = g.mode === 'pokemon' && g.lead?.alive ? g.lead : null;
     const alvo = l ? this.#alvo(l) : null;
+    // troca (o seu desmaiou e o próximo vem, ou entre um Pokémon do líder e o próximo): a barra fica, sem sumir e voltar
+    const luta = (g.story?.battle && !g.story.battle.done) || (g.tocas?.reide && !g.tocas.reide.done);
+    if (this.v.on && (!l || !alvo) && g.ui?.state === 'play' && (luta || g.time - (this.ultOn ?? 0) < 1.5)) return;
     const on = !!(l && alvo && g.ui?.state === 'play');
+    if (on) this.ultOn = g.time;
     this.#set('on', on, (v) => {
       document.body.classList.toggle('hb-on', v); const mk = g.ui?.hud?.layer; if (mk) mk.renderable = !v;
       clearTimeout(this.tOff);

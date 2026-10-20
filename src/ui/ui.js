@@ -108,13 +108,14 @@ export class UI {
 
   // ---------- atalhos ----------
   say(lines, opts) { this.g.input?.taps.clear(); return this.dialog.say(lines, opts); }
-  toast(t) { this.hud.toast(t); }
+  toast(t, opts) { this.hud.toast(t, opts); }
   openMenu() { if (this.state !== 'play' || this.menu.isOpen || this.dialog.open) return; this.menu.open(); document.body.classList.add('menu-open'); this.g.audio?.duck?.(0.45); }
   openOnline() { this.menu.close(); const u = this.g.net?.ui; if (u && !u.modalOpen) u.toggleMenu(); }
   openPC() { this.menu.openPC(); document.body.classList.add('menu-open'); this.g.audio?.duck?.(0.45); }
   openShop(stock, opts) { this.g.audio?.duck?.(0.45); return this.menu.openShop(stock, opts); }
   // Fila de avisos que param o jogo (aprender golpe, evolução): um de cada vez, na ordem em que chegaram
-  queue(fn) { const run = async () => { try { while (this.dialog.open || this.state !== 'play') await sleep(120); await fn(); } catch (e) { console.warn('fila da interface', e); } }; this.fila = (this.fila ?? Promise.resolve()).then(run); return this.fila; }
+  // telas de escolha (aprender golpe, evolução) esperam a luta acabar: nunca abrem no meio dela (pedido do dono)
+  queue(fn) { const run = async () => { try { while (this.dialog.open || this.state !== 'play' || this.g.emLuta?.()) await sleep(150); await fn(); } catch (e) { console.warn('fila da interface', e); } }; this.fila = (this.fila ?? Promise.resolve()).then(run); return this.fila; }
   onMenuClosed() { document.body.classList.remove('menu-open'); this.g.audio?.duck?.(1); this.hud.v = {}; this.hud.t = 0; }
   partyChanged() { this.hud.v.party = null; this.hud.t = 0; this.hud.lead(); this.hud.moves(); }
 
