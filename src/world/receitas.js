@@ -42,7 +42,7 @@ export function tipoDaSala(r) {
   if (/^centro_/.test(id) || /^Centro Pokémon/.test(nome)) return 'centro';
   if (/^loja_/.test(id) || /^Mercado/.test(nome)) return 'loja';
   if (id === 'laboratorio' || /^lab_/.test(id) || /^Laborat/.test(nome)) return 'lab';
-  if (/^casa_/.test(id) && /^Casa (d[oae]s? |em )/.test(nome) && !/Banhos/.test(nome)) return /_2$/.test(id) ? 'quarto' : 'casa';
+  if (/^casa_/.test(id) && /^Casa (d[oae]s? |em )/.test(nome) && !/Banhos|abandonad/i.test(nome)) return /_2$/.test(id) ? 'quarto' : 'casa';
   return null;
 }
 

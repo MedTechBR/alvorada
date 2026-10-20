@@ -64,6 +64,12 @@ Todo objeto com porta (`center`, `mart`, casas `house*`, `cabin`, `taipa`, `iglo
   `centro_<x>_<y>`, `loja_<x>_<y>`, `oficina_<x>_<y>`… (o andar de cima do sobrado é `<id>_2`); os moradores são
   `<sala>_m1`, `<sala>_m2`, a enfermeira `<sala>_enfermeira` e o vendedor `<sala>_vendedor`.
 
+**Mobília no estilo dos originais** (`src/world/receitas.js`): toda sala de Centro Pokémon, Mercado, casa (feita à mão ou
+gerada), a casa do jogador e o laboratório recebe na carga a mobília das receitas (balcão curvo da Joy, máquina de cura,
+escada rolante, gôndolas, geladeiras de vitrine, cozinha, sala, quarto...), desviando de pessoas, pontos, passagens e
+itens, com caminho garantido da porta a todos eles. Os textos dos móveis antigos passam para os novos. `"receita": false`
+na sala mantém a mobília feita à mão. `node tools/salas-ascii.mjs <sala>` mostra a planta montada.
+
 No próprio objeto do prédio:
 
 | campo | efeito |
