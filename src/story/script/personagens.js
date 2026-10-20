@@ -64,6 +64,7 @@ export const PERSONAGENS = {
   pedrina: { nome: 'Dona Pedrina', papel: 'morador' },
   nina: { nome: 'Nina', papel: 'morador' },
   aruan: { nome: 'Monja Aruã', papel: 'morador' }, // Templo das Raízes (Jandaias, capítulo da história nova)
+  vulcanologa: { nome: 'Vulcanóloga Jaciara', papel: 'morador' }, // Ilha do Basalto (Brasas, história nova)
   vigia: { nome: 'O Último Vigia', papel: 'morador' },
 
   // Antagonistas

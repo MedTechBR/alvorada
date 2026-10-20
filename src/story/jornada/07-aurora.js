@@ -193,8 +193,8 @@ export default {
         objetivo: { texto: 'Espere o Prof. Jatobá ligar, ou procure-o no laboratório de Vila Alvorada', alvo: 'lab' },
       },
       atores: [
-        { id: 'r7_jairo', quem: 'treinador', nome: 'Lutador Jairo', look: LOOKS.cacador, spot: 'ninho_cidade_escarpa', visao: 6 },
-        { id: 'r7_soraia', quem: 'treinador', nome: 'Capoeirista Soraia', look: LOOKS.cacadora, spot: 'ninho_cidade_escarpa', visao: 6 },
+        { id: 'r7_jairo', quem: 'treinador', nome: 'Lutador Jairo', look: LOOKS.cacador, spot: 'ninho_forte_rochedo', visao: 6 },
+        { id: 'r7_soraia', quem: 'treinador', nome: 'Capoeirista Soraia', look: LOOKS.cacadora, spot: 'ninho_forte_rochedo', visao: 6 },
         { id: 'g6_dandara', quem: 'aprendiz', nome: 'Faixa-preta Dandara', look: LOOKS.cacadora, spot: 'ninho_forte_rochedo', visao: 5 },
         { id: 'g6_tiao', quem: 'aprendiz', nome: 'Faixa-preta Tião', look: LOOKS.cacador, spot: 'ninho_forte_rochedo', visao: 5 },
       ],
