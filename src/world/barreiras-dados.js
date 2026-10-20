@@ -22,7 +22,13 @@ export const BARREIRAS = [
 
 // Zonas com flag de término: tempestade (andar e voar) e neblina (andar, nadar e navegar)
 export const TEMPESTADES = [
-  { id: 'tempestade_planalto', mundo: 'alvorada', ate: 'brasas_resolvido', rects: [],
+  { id: 'tempestade_planalto', mundo: 'alvorada', ate: 'brasas_resolvido', rects: [
+    [176, 48, 340, 48], // Rota 9 (Estepe dos Ventos), a partir da borda leste de Cidade Escarpa
+    [276, 72, 24, 36],  // Rota 11 (Escadaria dos Vigias)
+    [276, 12, 36, 48],  // Rota 12 (Caminho do Zênite), até a Liga
+    [516, 24, 42, 24],  // Mirante dos Ventos
+    [288, 60, 24, 24],  // Relógio de Pedra
+  ],
     msg: 'Tempestade no Planalto: nada passa até o vulcão ser contido.' },
 ];
 export const NEVOAS = [
