@@ -21,7 +21,7 @@ const CLIMAS = {
   selva:   { ceuH: C(0xc6efc4), chaoH: C(0x2c7a40), sol: C(0xf2f2b8), nevoa: C(0xb2dcc4), f: 1.5, hemiI: 1.05, solI: 0.9, nevoaK: 0.7, sat: 1.03, quente: 0.1, frio: 0.32, contraste: 1.1 },
   caverna: { ceuH: C(0x9aa6d8), chaoH: C(0x404a78), sol: C(0xb0bcf0), nevoa: C(0x4a5478), f: 1.6, hemiI: 0.9, solI: 0.62, nevoaK: 0.5, sat: 1.0, quente: 0.05, frio: 0.55, contraste: 1.15 },
   ruina:   { ceuH: C(0xe8e0c0), chaoH: C(0x7a8a5c), sol: C(0xffe8b8), nevoa: C(0xc8d4b8), f: 1.3, hemiI: 1.05, solI: 0.95, nevoaK: 0.75, sat: 0.97, quente: 0.25, frio: 0.3, contraste: 1.12 },
-  ocaso:   { ceuH: C(0xffe3a4), chaoH: C(0xc29c4c), sol: C(0xffc468), nevoa: C(0xf8e0b0), f: 1.4, hemiI: 1.1, solI: 1.06, nevoaK: 0.8, sat: 0.98, quente: 0.42, frio: 0.15, contraste: 1.1 },
+  ocaso:   { ceuH: C(0xffd88c), chaoH: C(0xb98a3a), sol: C(0xffb64c), nevoa: C(0xf6d9a0), f: 1.8, hemiI: 1.02, solI: 1.08, nevoaK: 0.75, sat: 1.0, quente: 0.6, frio: 0.1, contraste: 1.12 },
 };
 const lerp = (a, b, k) => a + (b - a) * k;
 
