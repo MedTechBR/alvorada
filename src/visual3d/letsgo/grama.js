@@ -38,7 +38,7 @@ export function geometriaGramaLG(v, s) {
   const L = v.L, alt = (x, y) => v.altura(x, y), ox = s.sx * 16, oy = s.sy * 16;
   const P = [], N = [], C = [], I = [], TOP = [], FA = [], BA = [], tiles = new Map();
   const vert = (x, y, z, n, c, topo, fase) => { P.push(x, y, z); N.push(...n); C.push(...c); TOP.push(topo); FA.push(fase); BA.push(0); return P.length / 3 - 1; };
-  const UP = [0, 1, 0];
+  const UP = [0, 1, 0], dens = v.lg?.chao?.leve ? 0.6 : 1; // celular: menos lâminas por moita e menos tufinhos
   // lâmina: base larga no chão, ponta inclinada; cores pé -> ponta
   const lamina = (bx, bz, h, w, ang, inc, pe, ponta, fase, k = 1) => {
     const y = alt(bx, bz) - 0.4, ca = Math.cos(ang), sa = Math.sin(ang);
@@ -54,7 +54,8 @@ export function geometriaGramaLG(v, s) {
     const M = MATO[t];
     if (M) {
       const first = P.length / 3;
-      for (let q = 0; q < M.n; q++) {
+      const nq = Math.max(6, Math.round(M.n * dens));
+      for (let q = 0; q < nq; q++) {
         const bx = x * 16 + 1 + H(q * 3 + 1) * 14, bz = y * 16 + 2 + H(q * 3 + 2) * 13, h = M.h[0] + H(q * 3 + 3) * (M.h[1] - M.h[0]);
         const k = 0.82 + H(q + 60) * 0.3;
         lamina(bx, bz, h, M.w * (0.8 + H(q + 40) * 0.5), H(q + 20) * 6.28, (H(q + 30) - 0.5) * 7, M.pe, misturar(M.ponta, M.pe, H(q + 50) * 0.35), fase, k);
@@ -95,7 +96,7 @@ export function geometriaGramaLG(v, s) {
     if (!GRAMA[t] || L.ocupado(x, y)) continue;
     // tufinhos: mais perto das trilhas e das coisas
     let beira = 0; for (let b = -1; b <= 1; b++) for (let a = -1; a <= 1; a++) if (!GRAMA[L.bloco(x + a, y + b)]) beira++;
-    const n = beira ? 1 + Math.floor(H(1) * 2.5) : H(2) < 0.4 ? 1 : 0;
+    const n = beira ? 1 + Math.floor(H(1) * 2.5 * dens) : H(2) < 0.4 * dens ? 1 : 0;
     const escura = t === TILE.GRASS2 || t === TILE.DARK ? 0.75 : 1;
     for (let q = 0; q < n; q++) {
       const bx = x * 16 + 2 + H(30 + q) * 12, bz = y * 16 + 2 + H(40 + q) * 12, tom = (0.85 + H(60 + q) * 0.3) * escura;

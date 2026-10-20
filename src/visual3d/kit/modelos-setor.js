@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { kit } from './index.js';
 import { GLB_TIPOS, glbPronto, pedirGLB, onGLB } from './glb.js';
 import { modeloLG, chaveLG } from '../letsgo/modelos.js';
+import { ARVORES_LG, proxyArvore, LONGE, HISTERESE, LOD_LIGA } from '../letsgo/arvores-lod.js';
 
 // Ponte entre o kit de modelos e os setores do visual 3D (src/visual3d/setores.js).
 // Mesma interface do Modelos provisório: new ModelosKit(v); setor(s); liberar(s); update(); temModelo(kind);
@@ -33,14 +34,16 @@ export class ModelosKit {
 
   setor(s) {
     this.liberar(s);
-    const L = this.v.L, itens = [], itensLG = [], moveis = [], donos = [];
+    const L = this.v.L, itens = [], itensLG = [], arvP = [], arvL = [], moveis = [], donos = [];
     for (const o of L.objetosDoSetor(s.sx, s.sy)) if (GLB_TIPOS[o.kind] && !glbPronto(o.kind)) pedirGLB(o.kind, kit.ficha(o.kind));
     for (const o of L.objetosDoSetor(s.sx, s.sy)) {
       // cenário vivo: caído, toco, broto ou quebrado usa o sprite 2D (que gira, troca para o toco, cresce)
       if (o.dead || !kit.temModelo(o.kind) || this.v.g.vivo?.mexido?.(o)) continue;
       if (this.#movel(o)) { moveis.push(o); continue; }
       const md = this.modeloDe(o, s), K = kit.ficha(o.kind);
-      (!s.lg && this.lgDe(o, s) && md.chave === chaveLG(o.kind, o) ? itensLG : itens).push({ geometry: md.geometry, x: o.x, y: this.#h(o.x, o.y, K.fh), z: o.y });
+      const lisa = this.lgDe(o, s) && this.matLG && md.chave === chaveLG(o.kind, o), it = { geometry: md.geometry, x: o.x, y: this.#h(o.x, o.y, K.fh), z: o.y };
+      if (LOD_LIGA && lisa && ARVORES_LG.has(o.kind)) { arvP.push(it); arvL.push({ ...it, geometry: proxyArvore(o.kind, md) }); } // árvores lisas: modelo inteiro perto, substituto longe
+      else (!s.lg && lisa ? itensLG : itens).push(it);
       if (o.sprite) donos.push(o.sprite);
     }
     // barreiras da progressão ativas (src/world/barreiras.js): cerca, obra, entulho, boias... entram na malha do setor;
@@ -52,6 +55,11 @@ export class ModelosKit {
     s.kitObjs = L.objetosDoSetor(s.sx, s.sy).length;
     if (itens.length) { s.kitMalha = new THREE.Mesh(kit.mesclar(itens), this.matDe(s)); s.kitMalha.matrixAutoUpdate = false; s.grupo.add(s.kitMalha); }
     if (itensLG.length) { s.kitMalhaLG = new THREE.Mesh(kit.mesclar(itensLG), this.matLG); s.kitMalhaLG.matrixAutoUpdate = false; s.grupo.add(s.kitMalhaLG); }
+    if (arvP.length) { // nível de detalhe das árvores (src/visual3d/letsgo/arvores-lod.js): duas malhas, uma visível por vez
+      s.kitArvP = new THREE.Mesh(kit.mesclar(arvP), this.matLG); s.kitArvL = new THREE.Mesh(kit.mesclar(arvL), this.matLG);
+      for (const m of [s.kitArvP, s.kitArvL]) { m.matrixAutoUpdate = false; m.castShadow = m.receiveShadow = true; s.grupo.add(m); }
+      s.arvPerto = null; this.#lod(s, true);
+    }
     s.kitMoveis = moveis.map((o) => { const m = new THREE.Mesh(this.modeloDe(o, s).geometry, this.matDe(s, o)); m.o = o; m.chave = this.chaveDe(o, s); s.grupo.add(m); if (o.sprite) donos.push(o.sprite); return m; });
     s.kitDonos = donos; for (const sp of donos) this.donos.add(sp);
     this.setores.add(s);
@@ -59,11 +67,20 @@ export class ModelosKit {
   liberar(s) {
     if (s.kitMalha) { s.grupo.remove(s.kitMalha); s.kitMalha.geometry.dispose(); s.kitMalha = null; }
     if (s.kitMalhaLG) { s.grupo.remove(s.kitMalhaLG); s.kitMalhaLG.geometry.dispose(); s.kitMalhaLG = null; }
+    for (const k of ['kitArvP', 'kitArvL']) if (s[k]) { s.grupo.remove(s[k]); s[k].geometry.dispose(); s[k] = null; }
     for (const m of s.kitMoveis ?? []) s.grupo.remove(m); // geometria é do cache do kit: não descartar
     s.kitMoveis = null;
     for (const sp of s.kitDonos ?? []) this.donos.delete(sp);
     s.kitDonos = null;
     this.setores.delete(s);
+  }
+  // perto/longe do foco da câmera, com histerese (primeira vez: sem folga)
+  #lod(s, ini) {
+    if (!s.kitArvP) return;
+    const a = this.v.alvo, d = Math.hypot((s.sx + 0.5) * 256 - a.x, (s.sy + 0.5) * 256 - a.z);
+    const perto = ini || s.arvPerto === null ? d < LONGE : s.arvPerto ? d < LONGE + HISTERESE : d < LONGE - HISTERESE;
+    if (perto === s.arvPerto) return;
+    s.arvPerto = perto; s.kitArvP.visible = perto; s.kitArvL.visible = !perto;
   }
   update() {
     const v = this.v;
@@ -73,6 +90,7 @@ export class ModelosKit {
     for (const s of this.setores) for (const o of v.L.objetosDoSetor(s.sx, s.sy)) if (o.sprite && !o.dead && kit.temModelo(o.kind) && !v.g.vivo?.mexido?.(o)) this.donos.add(o.sprite);
     for (const s of this.setores) {
       if (!s.grupo.visible) continue;
+      this.#lod(s);
       // objeto que entrou ou saiu do setor (empurrado de um setor para outro): refaz
       if (v.L.objetosDoSetor(s.sx, s.sy).length !== s.kitObjs) { this.setor(s); continue; }
       for (const m of s.kitMoveis) {
