@@ -38,7 +38,7 @@ export default {
         ['prof', '{jogador}, fuja! Eles não vieram conversar, vieram me buscar!'],
         ['lucio', 'Professor, o Senhor Solano pediu que o senhor nos acompanhe. Não precisamos fazer barulho.'],
         ['jogador', 'Solte o professor, Lúcio!'],
-        ['lucio', 'O professor sabe coisas que o Senhor Solano quer saber. E você carrega algo que ele também quer. Não tente me impedir.'],
+        ['lucio', 'O professor sabe coisas que o Senhor Solano quer saber. E você carrega algo que ele também quer.'],
       ],
       depois: {
         batalha: {
@@ -64,7 +64,7 @@ export default {
         ['narrador', 'O Lúcio recua até o carro. O helicóptero da Aurora já está no ar, e o professor olha para você pela janela, com a pasta no peito.'],
         ['narrador', 'Seu celular toca. O número não está salvo, mas você reconhece a voz no primeiro segundo.'],
         ['solano', '{jogador}, certo? Eu acompanho você desde a inauguração em Cidade Coral. Você é muito eficiente.'],
-        ['solano', 'O professor está sob a minha proteção. Ele volta intacto se você me entregar a Vela Eterna da Dona Zélia, que você guarda desde Lamparina.'],
+        ['solano', 'O professor está sob a minha proteção. Ele volta inteiro se você me entregar a Vela Eterna que guarda.'],
         ['jogador', 'Você sequestrou um professor para pegar uma vela?'],
         ['solano', 'A vela é uma peça que eu preciso. O professor é só o motivo para você trazê-la.'],
         ['solano', 'Estarei no Relógio de Pedra. Venha rápido e traga a vela.'],
@@ -84,7 +84,7 @@ export default {
       reviravolta: 5,
       falas: [
         ['zelia', '{jogador}, o Solano me ligou antes de ligar para você. Preciso contar a verdade sobre a vela.'],
-        ['zelia', 'A Vela Eterna é a oitava chave do Relógio. As outras sete estavam nos ginásios, e a chama ficou com a minha família.'],
+        ['zelia', 'A Vela Eterna é a oitava chave do Relógio. As outras sete estavam nos ginásios.'],
         ['zelia', 'A pedra de Lamparina, a que o Ébano tentou levar, eu escondi dentro da vela. Por isso a vela é a oitava chave.'],
         ['jogador', 'Então eu tenho a oitava chave desde Lamparina. A senhora me deu para guardar.'],
         ['zelia', 'Dei porque você ia guardar melhor do que eu. Ainda bem que não acendeu. Ela só deve ser acesa no Relógio.'],
@@ -175,7 +175,7 @@ export default {
       id: 'j11_boletim8',
       gatilho: { tipo: 'flag', alvo: 'badges.mirante', semFlag: ['nh.boletim.8'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às sete horas e onze minutos. A tempestade do Planalto acabou, mas o horário continua atrasado.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às sete e onze. A tempestade do Planalto acabou, mas o sol segue atrasado.'],
         ['mae', '{jogador}, sete e onze. Eu não entendo mais nada. O Prof. Jatobá não atende o telefone desde ontem.'],
         ['jogador', 'Mãe, eu vou atrás dele. O Solano está no Relógio, e eu prometo que volto com o professor.'],
       ],
