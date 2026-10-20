@@ -18,7 +18,7 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'cidade_escarpa', requer: ['nh.sina', 'nh.mapaParedao'], semFlag: ['nh.chegouEscarpa'] },
       falas: [
         ['narrador', 'Cidade Escarpa: casas penduradas na rocha, escadas esculpidas no paredão e um ateliê de pedra com estátuas pela calçada.'],
-        ['narrador', 'Dá para ver o Planalto dos Ventos lá em cima, com o Relógio de Pedra no topo, pequeno, contra o céu. A tempestade está parada sobre ele.'],
+        ['narrador', 'Do alto da cidade, dá para ver o Relógio de Pedra no topo do Planalto, pequeno contra o céu. A tempestade está parada sobre ele.'],
         ['jogador', 'A Líder Graça guarda a pedra desta cidade. Se a Crepúsculo chegou primeiro, preciso saber disso agora.'],
         ['narrador', 'Na praça, o ateliê de pedra está com a porta aberta. Uma escultora de avental cinza acena para você, sem sorrir.'],
       ],
@@ -33,12 +33,12 @@ export default {
       local: 'ninho_cidade_escarpa',
       gatilho: { tipo: 'entrar', alvo: 'cidade_escarpa', requer: ['nh.chegouEscarpa'], semFlag: ['nh.traicaoSereno'] },
       falas: [
-        ['narrador', 'No meio da praça, a Dra. Véspera segura uma caixa de madeira com sete pedras de cores diferentes. O Admin Sereno está ao lado dela, de capa roxa, sorrindo.'],
+        ['narrador', 'No meio da praça, a Dra. Véspera segura uma caixa com sete pedras. O Admin Sereno está ao lado dela, de capa roxa, sorrindo.'],
         ['vespera', 'Sete, Sereno. Com as oito no Relógio, a Aurora não vai ter mais luz para vender.'],
         ['sereno', 'Claro, Dra. Véspera. Falta só a da Lamparina, e a Dona Zélia nunca quis entregá-la.'],
         ['vespera', 'O que você disse?'],
         ['sereno', 'Disse que foi um prazer trabalhar com você. O Senhor Solano manda lembranças. E diz que a luz agora é dele.'],
-        ['narrador', 'O Sereno puxa a caixa das mãos dela, dá um passo para trás e corre pela escada da escarpa. Atrás dele, dois recrutas abrem caminho com as lanternas apagadas.'],
+        ['narrador', 'O Sereno arranca a caixa das mãos dela e corre pela escada da escarpa. Dois recrutas abrem caminho com as lanternas apagadas.'],
         ['vespera', 'Sereno! Você… você era dele desde o começo?'],
         ['jogador', 'Não era a Crepúsculo que estava mandando. O nome do Solano está em todas as cartas do Forte Rochedo.'],
       ],
@@ -59,13 +59,13 @@ export default {
       gatilho: { tipo: 'apos', cena: 'j09_traicao' },
       reviravolta: 4,
       falas: [
-        ['vespera', 'Eu traduzi as inscrições do Relógio com as minhas próprias mãos, em dezesseis anos de estudo. Eu tinha certeza de que as oito pedras fechariam o cadeado.'],
+        ['vespera', 'Eu traduzi as inscrições do Relógio em dezesseis anos de estudo. Tinha certeza de que as oito pedras fechariam o cadeado.'],
         ['vespera', 'Mas o Sereno copiou as traduções para a equipe e trocou "fechar" por "abrir". Eu não conferi, porque confiava nele.'],
         ['jogador', 'Então juntar as oito no Relógio não fecha nada. Abre o cadeado.'],
-        ['vespera', 'Abre. E o Necrozma, que come a luz, sai pela fenda. O Solano sabe disso. Ele quer capturá-lo e vender luz infinita para todas as cidades.'],
+        ['vespera', 'Abre. E o Necrozma, que come a luz, sai pela fenda. O Solano quer capturá-lo e vender luz infinita para todas as cidades.'],
         ['vespera', 'A Crepúsculo foi só a mão que girou a chave. Quem mandava era a Aurora, desde a primeira amostra.'],
         ['jogador', 'Então a senhora não quer a noite. Quer impedir a Aurora de vender a luz.'],
-        ['vespera', 'Quero impedir que alguém compre o amanhecer. Eu não tenho mais pedras. Só sei o que o Relógio pede. Desconfie de quem sorrir demais lá em cima.'],
+        ['vespera', 'Quero impedir que alguém compre o amanhecer. Não tenho mais pedras. Desconfie de quem sorrir demais lá em cima.'],
       ],
       depois: {
         flags: { 'nh.reviravolta4': true },
@@ -121,10 +121,10 @@ export default {
       local: 'ninho_cidade_escarpa',
       gatilho: { tipo: 'vencer', alvo: 'leader_graca' },
       falas: [
-        ['graca', 'A Insígnia Rocha é sua. Ela deixa voar sobre as cidades que você já visitou, mas só essas. O céu é de quem conhece o chão.'],
+        ['graca', 'A Insígnia Rocha é sua. Ela deixa voar sobre as cidades que você já visitou, e só essas. O céu é de quem conhece o chão.'],
         ['narrador', '{jogador} recebeu a Insígnia Rocha!'],
-        ['graca', 'Eu não sabia que a pedra servia de chave para o Relógio. Se ela aparecer, traga de volta. É da minha cidade, não de nenhum deles.'],
-        ['graca', 'Vá ao Arquipélago das Brasas, no vulcão ao sul. Dizem que o Ébano quer acordá-lo. Se ele acordar, a cinza pode cobrir o Planalto inteiro.'],
+        ['graca', 'A pedra servia de chave para o Relógio. Se ela aparecer, traga de volta. É da minha cidade, não de nenhum deles.'],
+        ['graca', 'Vá ao Arquipélago das Brasas, no vulcão ao sul. Dizem que o Ébano quer acordá-lo. Se ele acordar, a cinza cobre o Planalto.'],
       ],
       depois: {
         insignia: 'escarpa', montaria: 'corviknight',
@@ -139,7 +139,7 @@ export default {
       id: 'j09_boletim7',
       gatilho: { tipo: 'flag', alvo: 'badges.escarpa', semFlag: ['nh.boletim.7'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às sete horas e três minutos. Pela primeira vez, a Companhia Aurora fala no rádio sobre o horário do sol: diz que é uma "variação passageira".'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às sete horas e três minutos. A Companhia Aurora diz, pela primeira vez, que é uma "variação passageira".'],
         ['mae', 'Ravi, sete e três. Passageira? Filho, faz mais de uma semana. Você está conseguindo ver o que está acontecendo lá em cima?'],
         ['jogador', 'A Aurora está mentindo, mãe. Vou ao Relógio ver com os meus próprios olhos o que ela esconde.'],
       ],
