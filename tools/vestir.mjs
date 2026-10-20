@@ -70,6 +70,9 @@ const LAND = new Set([TILE.GRASS, TILE.GRASS2, TILE.TALL, TILE.FLOWERS, TILE.DAR
 const TRILHA = new Set([TILE.PATH, TILE.PLAZA, TILE.BRIDGE, TILE.BRIDGEV, TILE.DOCK, TILE.STAIRS, TILE.COURT, TILE.TILEFLOOR, TILE.OLDSTONE, TILE.TEMPLEFLOOR, TILE.MOSAIC, TILE.SNOW]);
 const walk0 = new Uint8Array(W * H);
 for (let k = 0; k < W * H; k++) walk0[k] = SOLID.has(T[k]) || B[k] ? 0 : 1;
+// porteiras e portões que abrem na história (porteira com "opens" = treinador vencido, portão de pedra com "flag"):
+// contam como passagem, senão o enfeite fecha o caminho para o que fica atrás deles (ex.: a quadra do Tomé)
+for (const o of S.placed) if ((o.opens || o.flag) && o.y < OH) for (const k of o.cells ?? []) walk0[k] = 1;
 
 // ---------- âncoras e reservados (nada sólido a menos de 2 blocos)
 const rsv = new Uint8Array(N), ancs = [];
@@ -547,6 +550,7 @@ function gravar(id, V) {
 async function verificarTudo() {
   const C = await carregarMundo('alvorada', { semVestir: false });
   const walk = new Uint8Array(W * H); for (let k = 0; k < W * H; k++) walk[k] = SOLID.has(C.S.tiles[k]) || C.S.block[k] ? 0 : 1;
+  for (const o of C.S.placed) if ((o.opens || o.flag) && o.y < OH) for (const k of o.cells ?? []) walk[k] = 1; // porteiras e portões da história abrem
   const comp = componentes(walk, W, H).comp, erros = [];
   const porComp = new Map();
   for (const a of ancReais) { const cb = comp0[a]; if (cb < 0) continue; if (!porComp.has(cb)) porComp.set(cb, new Map()); const m = porComp.get(cb); m.set(comp[a], (m.get(comp[a]) ?? 0) + 1); }
