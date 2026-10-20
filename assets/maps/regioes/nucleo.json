@@ -230,8 +230,8 @@
    "right"
   ],
   "r8_d": [
-   208,
-   126,
+   207,
+   125,
    "left"
   ],
   "r8_e": [
@@ -355,8 +355,8 @@
    "right"
   ],
   "vig2": [
-   306,
-   78,
+   305,
+   77,
    "left"
   ],
   "zenite_entrada": [
@@ -710,8 +710,8 @@
    "id": "rumor_coral",
    "name": "Pescador de Coral",
    "look": "montanhista",
-   "x": 350,
-   "y": 428,
+   "x": 346,
+   "y": 424,
    "dir": "left",
    "lines": [
     "Quando a tempestade do Planalto para de repente, o farol treme inteiro, como se algo tivesse passado correndo lá em cima."
