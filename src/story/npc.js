@@ -78,6 +78,7 @@ export class Npc {
         const ox = this.x, oy = this.y;
         this.x += dx / d * st; this.y += dy / d * st;
         g.map.resolve(this, this.r);
+        g.grade?.separaGente(this, this.r, this);
         const moved = Math.hypot(this.x - ox, this.y - oy);
         if (moved < st * 0.3) w.stuck += dt; else w.stuck = 0;
         this.dir = dir4(dx, dy); this.speed = w.speed;

@@ -598,6 +598,7 @@ class Game {
       p.roll -= dt;
       const x0 = p.x, y0 = p.y;
       this.map.andar(p, (p.vx + p.kx) * dt, (p.vy + p.ky) * dt, p.r); // passos curtos: o empurrão de um golpe não atravessa parede
+      this.grade.separaGente(p, p.r, p); // no movimento livre, o treinador não atravessa morador, personagem nem Pokémon
       p.kx *= 1 - Math.min(1, dt * 8); p.ky *= 1 - Math.min(1, dt * 8);
       if (!p.pouso && !p.saltando && this.map.solidAt(p.x, p.y)) { const v = p.seguro && !this.map.solidAt(p.seguro.x, p.seguro.y) ? p.seguro : this.map.blocoLivrePerto(p.x, p.y, (tx, ty) => this.map.solidAt(tx * T + 1, ty * T + 1), 6); if (v) { p.x = v.x; p.y = v.y; p.kx = p.ky = 0; } }
       else if (!p.pouso && !p.saltando) (p.seguro ??= {}).x = p.x, p.seguro.y = p.y;
