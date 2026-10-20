@@ -32,6 +32,7 @@ M('tvConsole', 'tv', 2, 1);
 M('sofaCasa', 'bench', 2, 1);
 M('sofaCasaN', 'bench', 2, 1);
 M('sofaCasaLadoL', 'bench', 1, 2);
+M('sofaCasaLadoR', 'bench', 1, 2);
 M('vaso', 'flowerpot', 1, 1);
 M('poltronaCasa', 'bench', 1, 1);
 M('mesaJantar', 'table', 2, 1);

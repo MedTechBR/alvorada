@@ -57,14 +57,17 @@ function planta(r, R) {
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { if (ch(x, y) === 'm') portas.push([x, y]); if (ch(x, y) === '^') escadas.push([x, y]); }
   // sala retangular (o piso cheio entre x0..x1, y0..y1, tirando a escada encostada): senão a receita não mexe
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (!piso(x, y)) return null;
-  if (!portas.length || x1 - x0 < 6 || y1 - y0 < 3) return null;
-  const P = { W, H, x0, x1, y0, y1, piso, porta: portas[0], portas, escadas };
+  if (x1 - x0 < 6 || y1 - y0 < 3) return null;
+  // andar de cima sem porta: a busca começa no pé da escada
+  const chegada = escadas.length ? (piso(escadas[0][0], escadas[0][1] + 1) && escadas[0][1] + 1 <= y1 ? [escadas[0][0], escadas[0][1] + 1] : [escadas[0][0] - 1, escadas[0][1]]) : null;
+  if (!portas.length && !chegada) return null;
+  const P = { W, H, x0, x1, y0, y1, piso, porta: portas[0] ?? chegada, portas, escadas, semPorta: !portas.length };
   // tudo o que precisa de chão livre
   const res = new Set(), pe = [], atend = [];
   const marca = (x, y) => res.add(x + ',' + y);
   const ponto = (x, y) => { for (const [a, b] of [[Math.floor(x), Math.floor(y)], [Math.floor(x + 0.5), Math.floor(y + 0.5)], [Math.floor(x + 0.5), Math.floor(y + 0.625)]]) { marca(a, b); } };
   for (const [x, y] of portas) { marca(x, y); marca(x, y - 1); pe.push([x, y]); }
-  for (const [x, y] of escadas) { marca(x, y); marca(x, y + 1); marca(x - 1, y); pe.push([x, y + 1 <= y1 ? x : x - 1, y + 1 <= y1 ? y + 1 : y].slice(1)); }
+  for (const [x, y] of escadas) { marca(x, y); marca(x, y + 1); marca(x - 1, y); if (chegada) pe.push(chegada); }
   const pessoas = [...(r.people ?? [])];
   if (r.x != null && r.y != null) for (const d of R.people ?? []) if (d.x != null && d.x >= r.x && d.y >= r.y && d.x < r.x + W && d.y < r.y + H && !d.room) pessoas.push({ ...d, x: d.x - r.x, y: d.y - r.y });
   const pontos = Object.entries(r.spots ?? {}).filter(([, v]) => Array.isArray(v)).map(([k, v]) => ({ k, x: v[0], y: v[1] }));
@@ -75,12 +78,12 @@ function planta(r, R) {
   for (const d of pessoas) {
     if (d.x == null) continue;
     const bx = Math.floor(d.x + 0.5), by = Math.floor(d.y + 0.5);
-    if (d.heal || ehAtendente(d.id, d.name)) { marca(bx, Math.floor(d.y)); atend.push({ x: bx, y: Math.floor(d.y), heal: !!d.heal, loja: !d.heal }); continue; }
+    if (d.heal || ehAtendente(d.id, d.name)) { marca(bx, Math.floor(d.y)); marca(Math.floor(d.x), Math.floor(d.y)); atend.push({ x: bx, y: Math.floor(d.y), heal: !!d.heal, loja: !d.heal }); continue; }
     ponto(d.x, d.y); pe.push([bx, by]);
   }
   for (const p of pontos) {
     const bx = Math.floor(p.x + 0.5), by = Math.floor(p.y + 0.5);
-    if (/nurse|enfermeira|joy/i.test(p.k) || ehAtendente(p.k)) { marca(bx, Math.floor(p.y)); atend.push({ x: bx, y: Math.floor(p.y), heal: /nurse|enfermeira|joy/i.test(p.k), loja: !/nurse|enfermeira|joy/i.test(p.k) }); continue; }
+    if (/nurse|enfermeira|joy/i.test(p.k) || ehAtendente(p.k)) { marca(bx, Math.floor(p.y)); marca(Math.floor(p.x), Math.floor(p.y)); atend.push({ x: bx, y: Math.floor(p.y), heal: /nurse|enfermeira|joy/i.test(p.k), loja: !/nurse|enfermeira|joy/i.test(p.k) }); continue; }
     ponto(p.x, p.y); pe.push([bx, by]);
   }
   for (const it of r.items ?? []) { marca(it.x, it.y); pe.push([it.x, it.y]); }
@@ -119,6 +122,7 @@ class Montagem {
   por(kind, cands, extra = {}, flex = false) {
     const P = this.P;
     cands = [...(cands ?? [])];
+    if (this.espelho) { const fw = KINDS[kind]?.fw ?? 1; cands = cands.map((c) => c && [P.x0 + P.x1 - c[0] - (fw - 1), c[1]]); kind = TROCA_LADO[kind] ?? kind; }
     if (flex && cands[0]) { const [x, y] = cands[0]; for (let d = 1; d <= 3; d++) for (const [a, b] of y <= P.y0 ? [[d, 0], [-d, 0]] : [[d, 0], [-d, 0], [0, 1], [0, -1], [d, 1], [-d, 1], [d, -1], [-d, -1]]) cands.push([x + a, y + b]); }
     for (const c of cands) {
       if (!c) continue; const [x, y] = c;
@@ -145,6 +149,7 @@ class Montagem {
   }
   // cartaz ou quadro na parede do fundo, centrado em x (bloco), largura larg (blocos), entre y0 e y0+alt (px)
   enfeite(tipo, cands, larg, alt, y0min = 22, extra = {}) {
+    if (this.espelho) cands = cands.map((c) => c == null ? c : this.P.x0 + this.P.x1 + 1 - c);
     for (const cx of cands) {
       if (cx == null) continue;
       const a = Math.floor(cx - larg / 2 + 0.01), b = Math.ceil(cx + larg / 2 - 0.01) - 1;
@@ -157,8 +162,8 @@ class Montagem {
     }
     return null;
   }
-  lado(tipo, parede, y, larg = 1, alt = 16, y0 = 26) { this.enfeites.push({ tipo, parede, x: y, larg, y0, alt }); }
-  tapete(x, y, w, h, estilo) { this.tapetes.push({ x, y, w, h, estilo }); }
+  lado(tipo, parede, y, larg = 1, alt = 16, y0 = 26) { if (this.espelho) parede = parede === 'esq' ? 'dir' : 'esq'; this.enfeites.push({ tipo, parede, x: y, larg, y0, alt }); }
+  tapete(x, y, w, h, estilo) { if (this.espelho) x = this.P.x0 + this.P.x1 + 1 - x - w; this.tapetes.push({ x, y, w, h, estilo }); }
 }
 
 // ---------------------------------------------------------------- receitas
@@ -219,7 +224,8 @@ function loja(M, P, R) {
   // gôndolas: longe da linha do balcão (corredor na frente do caixa) e com um corredor depois dele
   const gx = Math.max(fim + 1, x1 - 4);
   for (const y of [y0 + 2, y0 + 4, y0 + 3, y0 + 1].filter((y) => y !== cy && y < y1)) {
-    if (M.objs.filter((o) => /^gondola/.test(o.kind)).length >= 2) break;
+    const gs = M.objs.filter((o) => /^gondola/.test(o.kind)); if (gs.length >= 2) break;
+    if (gs.some((o) => Math.abs(o.y - y) < 2)) continue; // corredor entre as gôndolas
     if (!M.por('gondola', [[gx, y], [gx - 1, y]], { text: txt })) M.por('gondola3', [[gx + 1, y], [gx, y]], { text: txt });
   }
   const [dx, dy] = P.porta;
@@ -265,6 +271,14 @@ const CASAS = {
     ['pc', [[P.x1 - 2, P.y0], [P.x1 - 1, P.y0]], { familia: 'pc' }], ['tv', [[P.x1 - 3, P.y0]], { familia: 'tv' }],
     ['poltronaCasa', [[P.x1, P.y0 + 2]]], ['plantaGrande', [[P.x1, P.y1], [P.x0, P.y1]]], ['mesaCentroCasa', [[P.x0, P.y1 - 1], [P.x0 + 1, P.y1 - 1]], { familia: 'mesa' }],
   ],
+  suite: (P, A) => [
+    ['bed', [[P.x1, P.y0], [P.x1 - 1, P.y0]], { familia: 'cama' }], ['criado', [[P.x1 - 1, P.y0], [P.x1 - 2, P.y0]]],
+    ['tvConsole', [[P.x0 + 2, P.y0], [P.x0 + 3, P.y0]], { familia: 'tv' }], ['estanteAlta', [[P.x0, P.y0]], { familia: 'livros' }], ['plantaGrande', [[P.x0 + 1, P.y0]]],
+    ['sofaCasaN', () => A.tvConsole ? [[A.tvConsole.x, P.y0 + 2], [A.tvConsole.x, P.y0 + 3]] : [], { familia: 'sofa' }],
+    ['pc', [[P.x1 - 3, P.y0], [P.x1 - 4, P.y0]], { familia: 'pc' }], ['relogioPe', [[P.x1 - 4, P.y0], [P.x1 - 5, P.y0]]],
+    ['mesaJantar', [[P.x1 - 2, P.y1 - 1], [P.x1 - 3, P.y1 - 1]], { familia: 'mesa' }], ['cadeira', () => A.mesaJantar ? [[A.mesaJantar.x, A.mesaJantar.y - 1]] : []],
+    ['plant', [[P.x0, P.y1], [P.x1, P.y1]]], ['aquario', [[P.x0, P.y1 - 1], [P.x0, P.y0 + 2]]],
+  ],
   familia: (P, A) => [
     ['geladeira', [[P.x0, P.y0]], { familia: 'geladeira' }], ['fogaoMod', [[P.x0 + 1, P.y0]], { familia: 'cozinha' }], ['pia', [[P.x0 + 2, P.y0]], { familia: 'cozinha' }],
     ['tvRack', [[P.x1 - 1, P.y0], [P.x1 - 2, P.y0]], { familia: 'tv' }],
@@ -292,6 +306,7 @@ const CASAS = {
     ['plantaGrande', [[P.x1, P.y1], [P.x0, P.y1]]], ['tv', [[P.x1 - 2, P.y0]], { familia: 'tv' }],
   ],
 };
+const TROCA_LADO = { cadeiraL: 'cadeiraR', cadeiraR: 'cadeiraL', sofaLadoL: 'sofaLadoR', sofaLadoR: 'sofaLadoL', sofaCasaLadoL: 'sofaCasaLadoR', sofaCasaLadoR: 'sofaCasaLadoL' };
 const QUADROS = ['quadroPaisagem', 'quadroFlor', 'quadroMar', 'quadroMontanha', 'quadroPokemon'];
 const PAPEIS = ['creme', 'verde', 'azul', 'rosa', 'listrado', 'madeira'];
 
@@ -301,13 +316,14 @@ function casa(M, P, R, receita) {
     const { familia, ...ex } = extra;
     const txt = familia ? R.tomar(familia) : null;
     const o = M.por(kind, lista, txt ? { ...ex, text: txt } : ex, true);
-    if (o) M.A[kind] = o; else if (txt) R.devolver(familia, txt);
+    // o que entrou fica anotado na planta sem espelho (os passos seguintes se apoiam nele)
+    if (o) M.A[kind] = M.espelho ? { ...o, x: P.x0 + P.x1 - o.x - ((KINDS[o.kind]?.fw ?? 1) - 1) } : o; else if (txt) R.devolver(familia, txt);
   }
   decorarCasa(M, P, R);
 }
 function decorarCasa(M, P, R) {
   const h = R.h, [dx, dy] = P.porta;
-  M.tapete(dx - 1, dy, 3, 1, 'capachoCasa');
+  if (!P.semPorta) M.tapete(dx - 1, dy, 3, 1, 'capachoCasa');
   const sofa = M.A.sofaCasaN ?? M.A.mesaCentroCasa ?? M.A.mesaJantar ?? M.A.sofaCasaLadoL;
   if (sofa) { const K = KINDS[sofa.kind]; M.tapete(sofa.x - 1, Math.max(P.y0 + 1, sofa.y - 1), K.fw + 2, K.fh + 1 + (sofa.kind === 'mesaCentroCasa' ? 1 : 0), ['tapeteVermelho', 'tapeteAzul', 'tapeteVerde'][Math.floor(h * 3)]); }
   else M.tapete(Math.floor((P.x0 + P.x1) / 2) - 1, P.y0 + 2, 3, 2, 'tapeteVermelho');
@@ -434,8 +450,9 @@ function vestir(r, tipo, Rm) {
   else {
     // a receita segue o que a casa já tinha (cama = quarto; fogão = cozinha; TV/sofá = sala), sorteada pela posição
     const tem = (re) => velhos.some((o) => re.test(o.kind));
-    const opc = tipo === 'quarto' || tem(/^bed$/) ? ['quarto'] : tem(/fogao|geladeira/) ? ['cozinha', 'familia', 'pescador'] : tem(/^(tv|sofa|bench)$/) ? ['sala', 'vovo', 'familia'] : Object.keys(CASAS).filter((k) => k !== 'quarto');
+    const opc = tipo === 'quarto' ? ['quarto', 'suite'] : tem(/^bed$/) ? ['quarto', 'suite', 'suite', 'vovo'] : tem(/fogao|geladeira/) ? ['cozinha', 'familia', 'pescador'] : tem(/^(tv|sofa|bench)$/) ? ['sala', 'vovo', 'familia'] : Object.keys(CASAS).filter((k) => k !== 'quarto');
     const rec = opc[Math.floor(h * opc.length)];
+    M.espelho = hash(r.id + 'e') < 0.5;
     casa(M, P, R, rec);
     for (const o of R.sobras()) M.por(o.kind, [[o.x, o.y], ...[...Array(P.x1 - P.x0 + 1).keys()].map((i) => [P.x0 + i, P.y0])], { text: o.text });
     r.receita = rec;

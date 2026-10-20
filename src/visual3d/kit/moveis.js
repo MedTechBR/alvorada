@@ -300,6 +300,7 @@ export const MOVEIS = {
   } },
   sofaCasa: { var: 3, f: (m, c) => assento(m, 30, ['#4c7ae8', '#5aa05a', '#c8584a'][c.v], -8, { almofada: ['#f2c94c', '#f4f0e6', '#f2c94c'][c.v] }) },
   sofaCasaN: { var: 3, f: (m, c) => { m.com({ z: -8, ry: Math.PI }, () => assento(m, 30, ['#4c7ae8', '#5aa05a', '#c8584a'][c.v], 0, { encosto: 16 })); return t(10.5, -15, 15, -14.5, -1.5); } },
+  sofaCasaLadoR: { var: 3, f: (m, c) => { deLado(m, -1, c.fh, () => assento(m, 30, ['#4c7ae8', '#5aa05a', '#c8584a'][c.v], 0, { almofada: '#f4f0e6' })); return t(10.5, -7, 7, -31, -1); } },
   sofaCasaLadoL: { var: 3, f: (m, c) => { deLado(m, 1, c.fh, () => assento(m, 30, ['#4c7ae8', '#5aa05a', '#c8584a'][c.v], 0, { almofada: '#f4f0e6' })); return t(10.5, -7, 7, -31, -1); } },
   poltronaCasa: { var: 3, f: (m, c) => assento(m, 15, ['#c8584a', '#4c7ae8', '#d8a03a'][c.v], -8, { d: 12 }) },
   mesaJantar: { f: (m) => { // mesa de jantar com toalha xadrez, pratos e fruteira
