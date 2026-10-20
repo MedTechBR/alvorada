@@ -16,6 +16,8 @@ import { MAP_ID, REGION } from '../world/map.js';
 // O estado fica em flags.enigmas (vai junto no save). Coordenadas dos dados: blocos relativos à sala.
 
 const T = 16;
+const PISO_INSIGNIA = { estufa_lia: 'sussurro' }; // sala com piso armadilha → insígnia que a desliga
+const TILE_PISO = new Set(['y']); // o fio dourado do caminho certo também some
 const N = 1, E = 2, S = 4, W = 8;
 const SIDES = [[N, 0, -1], [E, 1, 0], [S, 0, 1], [W, -1, 0]];
 const OPP = { [N]: S, [S]: N, [E]: W, [W]: E };
@@ -128,6 +130,29 @@ export class Enigmas {
     this.#montarAmbiente();
     this.carrinhos = this.map.objects.filter((o) => o.kind === 'carrinho').map((o) => ({ o, tx: o.tx, ty: o.ty }));
     this.aplicar();
+  }
+
+  // ---------------- pisos armadilha (Estufa-Teia da Lia) ----------------
+  // Como nos jogos originais: o piso do ginásio vale até o jogador chegar ao líder (ou ganhar a insígnia). Depois disso
+  // ele se desliga para sempre (flags.pisoOff[sala]): vira piso comum, as armadilhas param de levar de volta à entrada
+  // e a noite da estufa, a luta e as idas e vindas não são mais atrapalhadas.
+  #pisos() {
+    const m = this.map, f = this.g.flags, off = (f.pisoOff ??= {}), p = this.g.player;
+    for (const r of m.interiors) {
+      if (!r.trap) continue;
+      if (!off[r.id]) {
+        const lider = Object.entries(r.spots ?? {}).find(([k]) => k.startsWith('lider_'));
+        const perto = lider && m.interiorAt(p.x, p.y)?.id === r.id && Math.hypot(p.x - (r.x + lider[1][0]) * T, p.y - (r.y + lider[1][1]) * T) < 3.6 * T;
+        const badge = PISO_INSIGNIA[r.id];
+        if (perto || (badge && (f.badges ?? []).includes(badge))) off[r.id] = true;
+      }
+      if (off[r.id] && !r.pisoDesligado) {
+        r.pisoDesligado = true;
+        r.rows.forEach((row, j) => [...row].forEach((ch, i) => { if (ch === r.trap.tile || TILE_PISO.has(ch)) m.setTile(r.x + i, r.y + j, TILE.TILEFLOOR); }));
+        m.warps = m.warps.filter((w) => !(w.trap && w.x >= r.x && w.y >= r.y && w.x < r.x + r.w && w.y < r.y + r.h));
+        m.warpAt = new Map(m.warps.map((w) => [w.x + w.y * m.w, w]));
+      }
+    }
   }
 
   // estado salvo → mundo (também depois de carregar um save)
@@ -579,6 +604,7 @@ export class Enigmas {
     this.t += dt;
     const mundo = this.g.mundo;
     if (mundo?.lights && this.glow.parent !== mundo.lights) mundo.lights.addChild(this.glow);
+    if ((this.piT = (this.piT ?? 0) - dt) <= 0) { this.piT = 0.25; this.#pisos(); }
     this.#raios(dt);
     this.#portais(dt);
     this.#ambiente(dt);

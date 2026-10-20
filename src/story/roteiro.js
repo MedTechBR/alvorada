@@ -155,8 +155,8 @@ export class Roteiro {
     const sala = this.#mapaDe(p.x, p.y), n = novos.length;
     const livreEm = (x, y) => !g.map.solidAt(x, y) && this.#mapaDe(x, y) === sala;
     const caminhoLivre = (x, y) => { for (let k = 1; k <= 4; k++) if (g.map.solidAt(p.x + (x - p.x) * k / 4, p.y + (y - p.y) * k / 4)) return false; return true; };
-    const oposta = { up: 'down', down: 'up', left: 'right', right: 'left' }[p.dir];
-    const ordem = [p.dir, oposta, ...Object.keys(DIRV)].filter((d, i, a) => d && a.indexOf(d) === i);
+    // a caixa de fala cobre o terço de baixo da tela: de preferência em cima ou dos lados (à frente do jogador primeiro), embaixo só se não houver outro lugar
+    const ordem = [p.dir !== 'down' ? p.dir : null, 'up', 'right', 'left', 'down'].filter((d, i, a) => d && a.indexOf(d) === i);
     const longe0 = Math.max(...novos.map((a) => a.e.longe ?? 3));
     const dentro = (d, v) => Math.min(Math.max(v, 2), d === 'up' || d === 'down' ? 3.5 : 5);
     let pos = null;
@@ -168,7 +168,7 @@ export class Roteiro {
     novos.forEach((a, i) => {
       let alvo = pos?.[i];
       const s = a.e.spot && g.map.spots?.[a.e.spot];
-      if (s && this.#mapaDe(s.x, s.y) === sala) { const d = Math.hypot(s.x - p.x, s.y - p.y) / T; if (d >= 2 && d <= 5 && livreEm(s.x, s.y) && caminhoLivre(s.x, s.y)) alvo = { x: s.x, y: s.y }; }
+      if (!alvo && s && this.#mapaDe(s.x, s.y) === sala) { const d = Math.hypot(s.x - p.x, s.y - p.y) / T; const sx = s.x + (i - (n - 1) / 2) * 22; if (d >= 2 && d <= 5 && livreEm(sx, s.y) && caminhoLivre(sx, s.y)) alvo = { x: sx, y: s.y }; }
       alvo ??= { x: p.x + 2 * T * (i % 2 ? 1 : -1), y: p.y + 2 * T };
       const livre = this.#livre(alvo.x, alvo.y); a.place(livre.x, livre.y); a.faceTo(p.x, p.y);
       g.fx?.burst?.(livre.x, livre.y - 10, 0x9a7ac8, 0.5);
