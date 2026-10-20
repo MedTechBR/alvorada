@@ -83,6 +83,53 @@ export class Espetaculo {
     this.textos.push(o);
   }
 
+  // ---------- plaquinha de cada adversário (nome, nível e PS em cima dele) ----------
+  // Todo selvagem que está brigando (ou já levou golpe) e os Pokémon de treinador: assim, numa luta com vários
+  // selvagens, todos aparecem (a barra do topo é só para treinador, ginásio, lendário e reide: hud-batalha.js).
+  #quemPlaca() {
+    const g = this.g, out = (this.placasL ??= []); out.length = 0;
+    if (g.ui?.state !== 'play') return out;
+    const f = g.lead?.alive ? g.lead : g.player; if (!f) return out;
+    for (const e of g.entities ?? []) {
+      if (!e.mon || e.side === 'ally' || e.side === 'peer' || !e.alive || e.dead || e.alt?.mode === 'dig' || e.alt?.mode === 'dive' || !e.set) continue;
+      if (!(e.hpShow > 0 || e.side === 'foe' || e.ai?.state === 'aggro' || e.mon.hp < e.mon.stats.hp)) continue;
+      if (Math.hypot(e.x - f.x, e.y - f.y) > 18 * 16) continue;
+      out.push(e);
+    }
+    return out;
+  }
+  #placa(x, e) {
+    const E = this.esc, pl = (e.__pl ??= {});
+    if (Math.abs((pl.x ?? 1e9) - e.x) > 4 || Math.abs((pl.y ?? 1e9) - e.y) > 4) { pl.alt = undefined; pl.x = e.x; pl.y = e.y; } // altura do chão relida quando o corpo anda
+    const p = this.#tela(e.x, e.y, (e.topH ?? 20) * 0.85 + 7, pl);
+    if (p.x < -60 || p.x > this.W + 60 || p.y < -30 || p.y > this.H + 30) return;
+    const chave = `${e.mon.name}|${e.mon.level}|${e.isAlpha ? 1 : 0}|${E}`;
+    if (e.__plK !== chave) { e.__plK = chave; e.__plIm = this.#bitmapPlaca(e, E); }
+    const im = e.__plIm, w = im.width / this.dpr, h = im.height / this.dpr, x0 = Math.round(p.x - w / 2), y0 = Math.round(p.y - h);
+    const k = Math.max(0, Math.min(1, e.mon.hp / e.mon.stats.hp));
+    x.globalAlpha = Math.min(1, e.alpha ?? 1);
+    x.drawImage(im, x0, y0, w, h);
+    // barra de PS (por cima do bitmap, muda todo quadro)
+    const bx = x0 + 4 * E, by = y0 + h - 6.5 * E, bw = w - 8 * E, bh = 3.5 * E;
+    e.__plK2 = e.__plK2 == null ? k : e.__plK2 + (k - e.__plK2) * 0.12; // a parte clara escoa devagar
+    x.fillStyle = '#0a0e20'; x.fillRect(bx, by, bw, bh);
+    x.fillStyle = '#f4ecd2'; x.fillRect(bx, by, bw * Math.max(k, e.__plK2), bh);
+    x.fillStyle = k > 0.5 ? '#3ccf6e' : k > 0.2 ? '#f2c335' : '#ee4b4b'; x.fillRect(bx, by, bw * k, bh);
+    x.globalAlpha = 1;
+  }
+  #bitmapPlaca(e, E) {
+    const c = document.createElement('canvas'), x = c.getContext('2d'), d = this.dpr;
+    const fn = `900 ${(8.5 * E).toFixed(1)}px ${FONTE}`, fl = `900 ${(7 * E).toFixed(1)}px ${FONTE}`;
+    x.font = fn; const wn = x.measureText(e.mon.name).width; x.font = fl; const lv = `Nv${e.mon.level}`, wl = x.measureText(lv).width;
+    const w = Math.max(46 * E, wn + wl + 14 * E), h = 19 * E;
+    c.width = Math.ceil(w * d); c.height = Math.ceil(h * d); x.setTransform(d, 0, 0, d, 0, 0);
+    x.beginPath(); x.roundRect(0.5, 0.5, w - 1, h - 1, 5 * E); x.fillStyle = e.isAlpha ? 'rgba(70,10,14,.86)' : 'rgba(14,19,40,.82)'; x.fill();
+    x.lineWidth = 1; x.strokeStyle = e.isAlpha ? '#ff6a5a' : 'rgba(244,236,210,.75)'; x.stroke();
+    x.textBaseline = 'alphabetic'; x.font = fn; x.fillStyle = '#ffffff'; x.fillText(e.mon.name, 4 * E, 9.5 * E);
+    x.font = fl; x.fillStyle = '#ffd23f'; x.textAlign = 'right'; x.fillText(lv, w - 4 * E, 9.5 * E);
+    return c;
+  }
+
   // ---------- anúncio do golpe (pílula do lado de quem usou) ----------
   anuncio(lado, nome, tipo) {
     if (!nome) return;
@@ -102,12 +149,14 @@ export class Espetaculo {
   // ---------- quadro ----------
   update(rdt, dt = rdt) {
     this.t += rdt;
-    const vivo = this.textos.length || this.anuncios.eu || this.anuncios.ele || this.faixaAt;
+    const placas = this.#quemPlaca();
+    const vivo = placas.length || this.textos.length || this.anuncios.eu || this.anuncios.ele || this.faixaAt;
     if (!vivo) { if (this.sujo) { this.x.setTransform(1, 0, 0, 1, 0, 0); this.x.clearRect(0, 0, this.c.width, this.c.height); this.sujo = false; } return; }
     const x = this.x; this.sujo = true;
     x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, this.c.width, this.c.height);
     x.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     x.lineJoin = 'round'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    for (const e of placas) this.#placa(x, e);
     this.#textos(x, dt, true);
     for (const lado of ['eu', 'ele']) this.#anuncio(x, lado, rdt);
     if (this.faixaAt) this.#faixa(x, rdt);
@@ -154,7 +203,7 @@ export class Espetaculo {
   #anuncio(x, lado, dt) {
     const o = this.anuncios[lado]; if (!o) return;
     o.t += dt; if (o.t >= o.life) { this.anuncios[lado] = null; return; }
-    const E = this.esc, tam = 15 * E, topo = this.#topoHud() + 6;
+    const E = this.esc, tam = 15 * E, topo = this.#topoHud(lado) + 6;
     x.font = `italic 900 ${tam.toFixed(1)}px ${FONTE}`;
     const w = x.measureText(o.s).width + 30 * E, h = tam + 12 * E;
     const ent = easeOut(clamp(o.t / 0.14, 0, 1)), sai = clamp((o.life - o.t) / 0.2, 0, 1);
@@ -173,15 +222,20 @@ export class Espetaculo {
     x.restore(); x.globalAlpha = 1;
   }
   // altura da barra do topo (HUD de batalha), para os anúncios ficarem logo abaixo
-  #topoHud() {
-    if ((this.tHud = (this.tHud ?? 0) - 1) > 0) return this.hHud;
-    this.tHud = 30;
-    const cs = getComputedStyle(document.documentElement);
-    this.sl = parseFloat(cs.getPropertyValue('--sl')) || 0; this.sr = parseFloat(cs.getPropertyValue('--sr')) || 0;
-    const bar = document.querySelector('#hb:not([hidden]) .topo');
-    const r = bar?.getBoundingClientRect();
-    this.hHud = r && r.height ? r.bottom : 10 + (parseFloat(cs.getPropertyValue('--st')) || 0);
-    return this.hHud;
+  // (sem a barra, luta com selvagens: abaixo do painel do seu Pokémon à esquerda e do minimapa/menu à direita)
+  #topoHud(lado = null) {
+    if ((this.tHud = (this.tHud ?? 0) - 1) <= 0) {
+      this.tHud = 30;
+      const cs = getComputedStyle(document.documentElement);
+      this.sl = parseFloat(cs.getPropertyValue('--sl')) || 0; this.sr = parseFloat(cs.getPropertyValue('--sr')) || 0;
+      const fundo = (sel) => { let b = 0; for (const s of sel) { const el = document.querySelector(s); if (!el || el.hidden || el.offsetParent === null && getComputedStyle(el).position !== 'fixed') continue; const r = el.getBoundingClientRect(); if (r.height && getComputedStyle(el).visibility !== 'hidden') b = Math.max(b, r.bottom); } return b; };
+      const bar = document.querySelector('#hb.on:not([hidden]) .topo')?.getBoundingClientRect();
+      const st = 10 + (parseFloat(cs.getPropertyValue('--st')) || 0);
+      this.hHud = bar?.height ? bar.bottom : st;
+      this.hEu = bar?.height ? bar.bottom : Math.max(st, fundo(['#lead']));
+      this.hEle = bar?.height ? bar.bottom : Math.max(st, fundo(['#minimapa', '#menu-btn']));
+    }
+    return lado === 'eu' ? this.hEu : lado === 'ele' ? this.hEle : this.hHud;
   }
   // faixa compacta: uma pílula escura no meio, logo abaixo da barra do topo (não cobre o campo), ~1 s
   #faixa(x, dt) {

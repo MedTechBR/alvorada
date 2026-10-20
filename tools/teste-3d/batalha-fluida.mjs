@@ -44,13 +44,15 @@ const SELVAGEM = () => `(async () => {
   const VIT = ${modo === 'vitrine'};
   G.party = VIT ? [new Mon(6, 40), new Mon(25, 30)] : [new Mon(25, 30), new Mon(4, 28)]; G.leadIdx = 0; G.hudLead(); G.hudMoves();
   if (VIT) { G.party[0].item = 'charizarditeX'; G.bag.megaBracelet = 1; }
-  for (let k = 0; k < 6 && !G.wilds.some((q) => q.alive); k++) await G.spawnWild();
-  const w = G.wilds.find((q) => q.alive);
-  for (const o of G.wilds) if (o !== w) o.x += 4000;
+  const BANDO = ${modo === 'bando'}; // bando: 3 selvagens brigando ao mesmo tempo (cada um com a sua plaquinha)
+  for (let k = 0; k < 12 && G.wilds.filter((q) => q.alive).length < (BANDO ? 3 : 1); k++) await G.spawnWild();
+  const w = G.wilds.find((q) => q.alive), bando = BANDO ? G.wilds.filter((q) => q.alive && q !== w).slice(0, 2) : [];
+  for (const o of G.wilds) if (o !== w && !bando.includes(o)) o.x += 4000;
+  bando.forEach((o, i) => { o.x = G.player.x + 60 + i * 40; o.y = G.player.y - 70 + i * 50; o.mon.level = 26; o.mon.calc?.(); o.mon.hp = o.mon.stats.hp; o.ai.state = 'aggro'; o.aggroTarget = G.player; });
   w.x = G.player.x + 80; w.y = G.player.y - 30; w.mon.level = VIT ? 50 : 28; w.mon.calc?.(); w.mon.hp = w.mon.stats.hp;
   w.ai.state = 'aggro'; w.aggroTarget = G.player;
   G.throwMon(0, G.player.x + 30, G.player.y - 10); await espera(1500);
-  w.aggroTarget = G.lead; w.provoke?.(G.lead);
+  w.aggroTarget = G.lead; w.provoke?.(G.lead); for (const o of bando) { o.aggroTarget = G.lead; o.provoke?.(G.lead); }
   // vitrine: Mega Evolução logo de cara e o selvagem fraco (desmaia na gravação: quadro de impacto + faixa)
   return w.mon.name;
 })()`;

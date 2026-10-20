@@ -204,7 +204,8 @@ export class PokeEntity {
     else if (this.eyes) this.eyes.visible = false;
     // barra de vida (selvagens atingidos e o seu Pokémon em combate)
     this.bar.clear();
-    if ((this.hpShow > 0 || this.side === 'wild' && this.mon.hp < this.mon.stats.hp) && this.alive && !hide) {
+    // (os adversários ganham a plaquinha com nome, nível e PS na camada de tela: src/ui/espetaculo.js; aqui fica a do seu lado)
+    if ((this.hpShow > 0 || this.side === 'wild' && this.mon.hp < this.mon.stats.hp) && this.alive && !hide && !(this.g.show && this.side !== 'ally')) {
       const w = this.isAlpha ? 26 : 22, k = this.mon.hp / this.mon.stats.hp, y = -(this.set.top ?? 16) - 5 - this.z / sc;
       this.bar.rect(-w / 2 - 1, y - 1, w + 2, 5).fill(this.isAlpha ? 0x5a0a0a : 0x1b1b1b);
       this.bar.rect(-w / 2, y, w * k, 3).fill(k > 0.5 ? 0x4cd06a : k > 0.2 ? 0xf2c94c : 0xef5b4b);

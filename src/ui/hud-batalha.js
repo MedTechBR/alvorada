@@ -130,13 +130,15 @@ export class HudBatalha {
   }
   #painel(sel) { const p = this.q(sel); return { p, rt: p.querySelector('.rt'), nm: p.querySelector('.nm'), lv: p.querySelector('.lv'), tg: p.querySelector('.tg'), hp: p.querySelector('.hp i'), gh: p.querySelector('.hp .gh'), num: p.querySelector('.hp b'), xp: p.querySelector('.xp i'), ps: p.querySelector('.ps'), bolas: p.querySelector('.bolas'), tr: p.querySelector('.tr') }; }
   #set(k, val, f) { if (this.v[k] !== val) { this.v[k] = val; f(val); } }
-  // o adversário: Pokémon do treinador em campo, ou o selvagem que briga mais perto
+  // o adversário da barra do topo: só quando há UM adversário claro com equipe (pedido do dono): Pokémon de treinador,
+  // líder, Elite e Campeã (lado 'foe'), duelo online ('rival'), lendário e chefe de reide. Selvagens comuns (muitas vezes
+  // vários de uma vez) não usam a barra: cada um tem a sua plaquinha de PS em cima (src/ui/espetaculo.js).
+  #chefe(e) { const r = this.g.tocas?.reide; return e.side === 'foe' || e.side === 'rival' || !!e.lendario || (r && !r.done && r.boss === e); }
   #alvo(l) {
     const g = this.g; let best = null, bd = 15 * 16;
     for (const e of g.entities ?? []) {
-      if (!e.alive || e === l || e.side === 'ally') continue;
-      const briga = e.side === 'foe' || e.ai?.state === 'aggro' || e.hpShow > 0; if (!briga) continue;
-      const d = Math.hypot(e.x - l.x, e.y - l.y); if (d < bd) { bd = d; best = e; }
+      if (!e.alive || e === l || e.side === 'ally' || !this.#chefe(e)) continue;
+      const d = Math.hypot(e.x - l.x, e.y - l.y) * (e.side === 'foe' ? 0.5 : 1); if (d < bd) { bd = d; best = e; }
     }
     return best;
   }
