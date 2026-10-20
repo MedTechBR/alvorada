@@ -382,6 +382,40 @@
    "kind": "boulder2",
    "x": 174,
    "y": 121
+  },
+  {
+   "kind": "houseMiner",
+   "x": 143,
+   "y": 86,
+   "to": "mina_velha"
+  },
+  {
+   "kind": "houseYellow",
+   "x": 152,
+   "y": 86,
+   "predio": "atelie_pedrina",
+   "interior": {
+    "npc": {
+     "id": "dona_pedrina",
+     "name": "Dona Pedrina",
+     "look": "mae",
+     "lines": [
+      "Espiga, Casulo, Gota, Faísca, Vela, Punho. Todas minhas."
+     ]
+    }
+   }
+  },
+  {
+   "kind": "housePink",
+   "x": 168,
+   "y": 86,
+   "predio": "pousada_planalto"
+  },
+  {
+   "kind": "capela",
+   "x": 128,
+   "y": 100,
+   "predio": "igreja_pedra"
   }
  ],
  "people": [
@@ -428,6 +462,17 @@
    "dir": "down",
    "lines": [
     "Ê, camará! A roda fica logo ali na capela. Berimbau tá afinado."
+   ]
+  },
+  {
+   "id": "graca_escarpa",
+   "name": "Graça",
+   "look": "montanhista",
+   "x": 153,
+   "y": 109,
+   "dir": "up",
+   "lines": [
+    "Ê! Gosta de pedra? Então vai gostar da minha Mina Velha."
    ]
   }
  ],
@@ -659,6 +704,95 @@
      7,
      6.5,
      "up"
+    ]
+   }
+  },
+  {
+   "id": "mina_velha",
+   "name": "Mina Velha — Ginásio de Cidade Escarpa",
+   "rows": [
+    "rrrrrrrrrrrrrrrrrrrr",
+    "rkkkkkkkkkkkkkkkkkkr",
+    "rkkkkkkkkkkkkkkkkkkr",
+    "rkkkkkkkkkkkkkkkkkkr",
+    "rkkkkkkkkkkkkkkkkkkr",
+    "rkkkkkkkkkkkkkkkkkkr",
+    "rkkkkkkkkkkkkkkkkkkr",
+    "rkkkkkkkkkkkkkkkkkkr",
+    "rkkkkkkkkkkkkkkkkkkr",
+    "rkkkkkkkkkkkkkkkkkkr",
+    "rk++++++++++++++++kr",
+    "rkkkkkkkkkkkkkkkkkkr",
+    "rkkkkkkkkkkkkkkkkkkr",
+    "rrrrrrrrrmmrrrrrrrrr"
+   ],
+   "objects": [
+    {
+     "kind": "lamp",
+     "x": 2,
+     "y": 2
+    },
+    {
+     "kind": "lamp",
+     "x": 17,
+     "y": 2
+    },
+    {
+     "kind": "lamp",
+     "x": 2,
+     "y": 11
+    },
+    {
+     "kind": "lamp",
+     "x": 17,
+     "y": 11
+    },
+    {
+     "kind": "crate",
+     "x": 1,
+     "y": 1
+    },
+    {
+     "kind": "crate",
+     "x": 18,
+     "y": 12
+    },
+    {
+     "kind": "sign",
+     "x": 4,
+     "y": 1,
+     "text": "MINA VELHA — MESTRA GRAÇA\nDesça com cuidado. Quem perde o passo, o teto cai."
+    }
+   ],
+   "decor": [],
+   "people": [
+    {
+     "id": "leader_graca",
+     "name": "Líder Graça",
+     "look": "montanhista",
+     "x": 10,
+     "y": 2,
+     "dir": "down",
+     "lines": [
+      "A montanha não tem pressa, mas o teto tem."
+     ]
+    }
+   ],
+   "spots": {
+    "leader_graca": [
+     10,
+     2.5,
+     "down"
+    ],
+    "mina_juvenal": [
+     4,
+     4,
+     "right"
+    ],
+    "mina_rita": [
+     15,
+     8,
+     "left"
     ]
    }
   }

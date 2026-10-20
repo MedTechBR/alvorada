@@ -111,6 +111,16 @@ export default {
       depois: { batalha: { id: 'g7_rita', nome: 'Alpinista Rita', dinheiro: 1650, equipe: [[932, 34, ['rockThrow', 'saltCure', 'headbutt']], [744, 35, ['rockThrow', 'bite', 'howl']]] } },
     },
     {
+      id: 'mina_paredes',
+      local: 'mina_velha',
+      gatilho: { tipo: 'flag', alvo: 'trainers.g7_rita', requer: ['trainers.g7_juvenal'] },
+      falas: [
+        ['narrador', 'Os mineiros afastam a última parede de escombros com picaretas. O eco ecoa pelo túnel inteiro.'],
+        ['graca', 'Pronto, camará. A montanha abriu caminho. Agora a conversa é lá dentro.'],
+      ],
+      depois: { flags: { paredesQuebradas: true }, objetivo: 'Desafie a Líder Graça na Mina Velha' },
+    },
+    {
       id: 'graca_desafio',
       local: 'mina_velha',
       gatilho: { tipo: 'falar', alvo: 'graca', requer: ['paredesQuebradas', 'trainers.g7_juvenal', 'trainers.g7_rita'], semFlag: ['badges.escarpa'] },

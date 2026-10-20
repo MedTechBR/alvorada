@@ -210,6 +210,14 @@ export const ELENCO = [
     apos: ['Dormi no platô e acordei com o sol atrasado. De novo.'] },
   { id: 'r8_g', quem: 'treinador', nome: 'Montanhista Tomaz', look: LOOKS.operario, spot: 'r8_g', visao: 5,
     apos: ['Quem escala sem corda aprende a respeitar o Paredão.'] },
+  // ---------------- Cidade Escarpa e Mina Velha (ginásio de Graça; cap08) ----------------
+  { id: 'leader_graca', quem: 'graca', nome: 'Líder Graça', substitui: 'leader_graca', look: { preset: 'montanhista', hat: 'cap', cap: '#c8a070', capLogo: '#f2f2f2', hair: '#7a4a2a', skin: '#c98d62', top: '#8a6a4a', trim: '#e8c040', pants: '#3a3a4a', shoes: '#3a2a1a', bagStyle: null } },
+  { id: 'graca_escarpa', quem: 'graca', nome: 'Graça', substitui: 'graca_escarpa', look: { preset: 'montanhista', hat: 'cap', cap: '#c8a070', capLogo: '#f2f2f2', hair: '#7a4a2a', skin: '#c98d62', top: '#8a6a4a', trim: '#e8c040', pants: '#3a3a4a', shoes: '#3a2a1a', bagStyle: null } },
+  { id: 'dona_pedrina', quem: 'pedrina', nome: 'Dona Pedrina', substitui: 'dona_pedrina', look: LOOKS.zelia },
+  { id: 'g7_juvenal', quem: 'aprendiz', nome: 'Mineiro Juvenal', look: LOOKS.mineiro, spot: 'mina_juvenal', visao: 5,
+    apos: ['O teto da mina é de pedra, mas a Graça tem pedra na cabeça.'] },
+  { id: 'g7_rita', quem: 'aprendiz', nome: 'Alpinista Rita', look: LOOKS.campista, spot: 'mina_rita', visao: 5,
+    apos: ['Os Lycanroc uivam na mina quando o sol atrasa.'] },
 ];
 
 // Treinadores das regiões novas do mundo grande (cada região traz o seu arquivo; veja docs/construir-regiao.md)
