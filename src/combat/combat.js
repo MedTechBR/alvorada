@@ -895,7 +895,7 @@ export class Combat {
       if (g.show && by && (ko || !quiet) && (by.side === 'ally' || t.side === 'ally') && (ko || crit || eff > 1 || pesado))
         g.show.impacto({ a: by, b: t, x: t.x, y: t.y, h: t.midH ?? 12, dano: dmg, eff, crit, ko, tipo: mv?.type });
       // chão marcado e poeira do empurrão (vfx.js): o golpe deixa rastro no campo
-      this.vfx.marca?.(mv?.type, t.x, t.y, power * knock, dx, dy);
+      this.vfx.marca?.(mv?.type, t.x, t.y, power * knock * (quiet ? 0.5 : 1), quiet ? 0 : dx, quiet ? 0 : dy);
       if (note && (t.noteT ?? 0) < g.time) { t.noteT = g.time + 1.5; g.fx.number(t.x, ty - 40, { água: 'Força da água!', mato: 'Força do mato!', molhado: 'Molhado: choque forte!', apagou: 'A água apagou o fogo' }[note] ?? note, 0x9ad0ff); }
       this.ai.noise(t.x, t.y, 60 + pw, by);
     } else t.flash = 0.08;

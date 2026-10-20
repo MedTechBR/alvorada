@@ -21,6 +21,10 @@ const COR_EF = { super: '#ffd23f', pouco: '#c9ced8', nada: '#aab0bc', crit: '#ff
 const hex = (c) => (typeof c === 'number' ? '#' + c.toString(16).padStart(6, '0') : c);
 const easeOut = (k) => 1 - (1 - k) * (1 - k);
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+// iPhone com Safari antigo (antes do 16) não tem roundRect: retângulo de cantos arredondados à mão
+if (typeof CanvasRenderingContext2D !== 'undefined' && !CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); this.moveTo(x + r, y); this.arcTo(x + w, y, x + w, y + h, r); this.arcTo(x + w, y + h, x, y + h, r); this.arcTo(x, y + h, x, y, r); this.arcTo(x, y, x + w, y, r); this.closePath(); };
+}
 
 export class Espetaculo {
   constructor(g) {
@@ -94,7 +98,7 @@ export class Espetaculo {
   // o: { a: atacante, b: alvo (entidades), x, y (ponto do impacto no chão), h, dano, eff, crit, ko, choque, tipo }
   impacto(o) {
     const agora = this.t * 1000; // relógio da camada (tempo de quadro de verdade, sem a pausa do menu)
-    if (this.reduz || this.g.quality?.low && !o.ko) return false;
+    if (this.reduz) return false; // (no celular em qualidade baixa também: é um canvas 2D por 0,4 s, custo pequeno)
     if (!o.ko && agora - this.ultImpacto < 4000) return false;
     if (o.ko && this.imp && this.imp.t < this.imp.life * 0.5) return false; // um nocaute no meio de outro quadro: fica o que está
     this.ultImpacto = agora;
