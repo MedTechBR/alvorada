@@ -186,11 +186,11 @@ export default {
         batalha: {
           id: 'leader_bras', nome: 'Líder Brás', dinheiro: 3400,
           equipe: [
-            [67, 31, ['karateChop', 'lowKick', 'focusEnergy']],
-            [701, 32, ['wingAttack', 'karateChop', 'roost']],
-            [447, 32, ['forcePalm', 'quickAttack', 'counter']],
-            [214, 33, ['brickBreak', 'hornAttack', 'bulletSeed']],
-            [237, 34, ['rapidSpin', 'tripleKick', 'quickAttack', 'detect']],
+            [67, 34, ['karateChop', 'lowKick', 'focusEnergy']],
+            [701, 35, ['wingAttack', 'karateChop', 'roost']],
+            [447, 35, ['forcePalm', 'quickAttack', 'counter']],
+            [214, 36, ['brickBreak', 'hornAttack', 'bulletSeed']],
+            [237, 37, ['rapidSpin', 'tripleKick', 'quickAttack', 'detect']],
           ],
         },
       },

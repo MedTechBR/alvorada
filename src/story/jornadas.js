@@ -1,4 +1,6 @@
-// Jornadas: a história em mundo aberto (docs/jornadas.md).
+import { proximoPasso, emOrdem } from './progressao.js';
+
+// Jornadas: a história das cidades (docs/jornada-classica.md; a ordem dos ginásios é de progressao.js).
 // Não há mais capítulos em ordem. Há:
 //   - uma JORNADA DE CIDADE para cada cidade (o arco local e o ginásio), que começa quando o jogador chega lá,
 //     em qualquer ordem;
@@ -10,9 +12,8 @@
 // jornada) e flags.jornadaHud (a jornada que o painel de objetivo acompanha).
 // Interface para o diário (menu Missões, aba Jornadas): game.jornadas.lista() e game.jornadas.acompanhar(id).
 
-// Ginásios e a força de cada um: nível fixo pelo lugar (como em Scarlet/Violet), pela distância REAL no mapa desde a
-// casa do jogador, somando o custo do terreno (docs/mundo-expandido.md, seção 8: Coral 90 blocos, Espelho 161,
-// Campina 172, Lamparina 227 + nadar, Sussurro 246). Perto da vila, mais fraco; longe, mais forte. Qualquer ordem vale.
+// Ginásios e a força de cada um (nome, cidade, líder, nível do ás). A ORDEM OBRIGATÓRIA mora em progressao.js
+// (docs/jornada-classica.md, seção 2); esta lista só dá os dados de cada cidade para o diário e as placas.
 // nivel = nível do Pokémon mais forte do líder (o "ás"); a placa da entrada e o painel mostram "~nivel".
 export const GINASIOS = [
   { id: 'coral', cidade: 'Cidade Coral', lider: 'Líder Jonas', tipo: 'Elétrico', nivel: 11, alvo: 'farol_coral', caminho: 'pela escadaria do Mirante, logo ao sul da vila' },
@@ -141,7 +142,7 @@ export class Jornadas {
   // ---------------- início e fim ----------------
   // começa a jornada (cartão "Jornada: <nome>"); devolve true se começou agora
   async iniciar(id, { cartao = true } = {}) {
-    const j = jornada(id); if (!j || this.iniciada(j)) return false;
+    const j = jornada(id); if (!j || this.iniciada(j) || !emOrdem(j, this.f)) return false;
     this.st[j.id] = { ...(this.st[j.id] ?? {}), inicio: true, t: Date.now() };
     if (j.tipo !== 'trama' || !this.f.jornadaHud) this.f.jornadaHud = j.id;
     if (cartao) await this.g.ui.chapterCard(`Jornada: ${j.nome}`, j.tipo === 'trama' ? 'TRAMA PRINCIPAL' : j.cidade.toUpperCase());
@@ -163,7 +164,7 @@ export class Jornadas {
   // a jornada começa quando o jogador chega a um dos lugares dela (chamado pelo roteiro.tick)
   aChegar(noLugar) {
     for (const j of JORNADAS) {
-      if (!j.lugares || this.iniciada(j)) continue;
+      if (!j.lugares || this.iniciada(j) || !emOrdem(j, this.f)) continue;
       if (j.lugares.some((l) => noLugar(l))) return j.id;
     }
     return null;
@@ -188,11 +189,6 @@ export class Jornadas {
     this.f.jornadaHud = j.id;
     this.r.s.refreshObjective?.();
     return true;
-  }
-  // ginásio sugerido: o mais fraco que falta (a placa da entrada mostra a mesma força)
-  sugerido() {
-    const badges = this.f.badges ?? [];
-    return GINASIOS.filter((x) => !badges.includes(x.id)).sort((a, b) => a.nivel - b.nivel)[0] ?? null;
   }
 
   // ---------------- interface do diário ----------------
@@ -220,9 +216,17 @@ export class Jornadas {
 // o objetivo em andamento vai para essa jornada e os marcos da trama que já passaram ficam marcados como vistos.
 const CAP_JORNADA = { 2: 'sussurro', 3: 'espelho', 4: 'coral', 5: 'lamparina', 6: 'aurora' };
 export function migrarSave(f) {
-  if (!f || f.jornadasV) return false;
+  if (!f) return false;
+  // ordem dos ginásios (src/story/progressao.js): insígnias fora de ordem ficam como estão; o painel passa a apontar
+  // para o primeiro ginásio que falta na ordem
+  let mudou = false;
+  if (!f.ordemV) {
+    f.ordemV = 1; mudou = true;
+    if (f.balls) { const p = proximoPasso(f); if (p?.jornada) f.jornadaHud = p.jornada; }
+  }
+  if (f.jornadasV) return mudou;
   f.jornadasV = 1;
-  if (!f.balls && !f.chapter && !f.ch1Done) return false; // jogo novo ou ainda na escolha do inicial
+  if (!f.balls && !f.chapter && !f.ch1Done) return mudou; // jogo novo ou ainda na escolha do inicial
   const J = (f.jornadas ??= {}), t0 = Date.now() - 100000;
   const marca = (id, feita, k = 0) => { J[id] = { ...(J[id] ?? {}), inicio: true, ...(feita ? { feita: true } : {}), t: t0 + k }; };
   if (f.balls) marca('alvorada', true, 0);

@@ -1,5 +1,6 @@
 // Gera o plano do mundo ampliado e a distribuição das espécies, e confere tudo. Rodar da raiz do repositório:
 //   node tools/gerar-mundo.mjs            gera docs/mundo-expandido.json, src/data/habitats.js e as tabelas do .md
+//                                         (no fim, ajusta espécies e níveis das áreas: tools/ajustar-biomas.mjs)
 //   node tools/gerar-mundo.mjs --conferir só confere e imprime o relatório (não grava nada)
 //
 // Entradas: tools/mundo/*.mjs (plano, cidades, dungeons, lugares, especiais), tools/mundo/especies.json (lista
@@ -9,6 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { ajustarBiomas } from './ajustar-biomas.mjs'; // pós-passo: espécies e níveis das áreas (ver ajustar-biomas.mjs)
 import * as modulo from 'node:module';
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -519,6 +521,9 @@ const trocaBloco = (txt, nome, novo) => { const re = new RegExp(`(<!-- gerado:${
 if (!SO_CONFERIR) {
   fs.writeFileSync(arq('docs/mundo-expandido.json'), JSON.stringify(json, null, 1) + '\n');
   fs.writeFileSync(arq('src/data/habitats.js'), habitats);
+  // pós-passo: mesmo resultado de `node tools/ajustar-biomas.mjs` (troca fora do bioma, cobertura, níveis, ONDE)
+  const ajuste = await ajustarBiomas();
+  console.log(`Ajuste de biomas: ${ajuste.trocas} trocas, ${ajuste.cobertura} espécies de volta à selvagem, sem lugar ${ajuste.semLugar.length}`);
   // versão pequena só com os biomas, que o jogo carrega ao abrir (src/main.js usa nos biomas que species.js não tem)
   fs.writeFileSync(arq('src/data/habitats-biomas.js'), `// GERADO por tools/gerar-mundo.mjs (o mesmo conteúdo de BIOMAS_PADRAO e BIOMAS_NOITE de src/data/habitats.js).
 // Tabela de selvagens de cada bioma novo do mundo ampliado, para áreas sem \`encounters\` próprio. Os cinco biomas de

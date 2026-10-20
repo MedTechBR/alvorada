@@ -47,7 +47,7 @@ export const GYM_TRAINERS = [
 export const LEADER1 = {
   id: 'leader_tome', look: 'leader', name: 'Líder Tomé', spot: 'leader_tome', gym: 'campina', badge: 'campina',
   arena: 'arena', // antes da luta, o jogador vai para o centro da quadra
-  team: [[659, 13], [915, 14], [216, 16]], money: 1200,
+  team: [[659, 11], [915, 12], [216, 14]], money: 1200,
   needs: ['g1_icaro', 'g1_rui'],
   prize: { potion: 3, pokeball: 5, oran: 2 },
   locked: ['Opa, calma lá! Antes de falar comigo, vença os meus dois aprendizes.', 'Quem pula etapa colhe o trigo verde.'],

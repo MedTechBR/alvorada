@@ -112,10 +112,10 @@ export default {
           id: 'leader_marina', nome: 'Líder Marina', dinheiro: 2200, perder: 'centro',
           interrompe: 'assalto', // depois do segundo Pokémon dela, a cena "assalto" interrompe a luta
           equipe: [
-            [54, 12, ['waterGun', 'confusion', 'scratch']],
-            [418, 13, ['aquaJet', 'quickAttack', 'waterGun']],
-            [79, 13, ['waterGun', 'confusion', 'yawn']],
-            [550, 15, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
+            [54, 21, ['waterGun', 'confusion', 'scratch']],
+            [418, 22, ['aquaJet', 'quickAttack', 'waterGun']],
+            [79, 22, ['waterGun', 'confusion', 'yawn']],
+            [550, 24, ['aquaJet', 'bite', 'waterPulse', 'headbutt']],
           ],
         },
       },

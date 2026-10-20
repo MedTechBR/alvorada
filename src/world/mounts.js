@@ -8,6 +8,8 @@ import { IS_TOUCH } from '../engine/input.js';
 import { ICONES } from '../ui/toque.js';
 import { dir4 } from '../sprites/characters.js';
 import { DIRV, ancoraX, ancoraY, blocoX, blocoY } from './grade.js';
+import { insigniaFaltando, msgInsignia } from '../story/progressao.js'; // montaria liberada por insígnia (docs/jornada-classica.md)
+import { emTempestade } from './barreiras-dados.js';
 
 // Montarias do treinador (como em Legends Arceus, na vista de cima).
 // X (botão de toque ao lado do analógico de golpes, botão Select/Back do controle) chama ou dispensa conforme o terreno:
@@ -336,8 +338,13 @@ export class Mounts {
   // ---------- desbloqueio ----------
   has(kind) {
     kind = mountKind(kind); if (!kind) return false;
+    if (this.#semInsignia(kind)) return false; // o modo só vale depois da insígnia que o libera (MONTARIA_INSIGNIA)
     return this.padrao(kind) || this.#capaz().has(kind);
   }
+  // a insígnia que falta para o modo (o pedido de voo/água não funciona fora de batalha antes dela)
+  #semInsignia(kind) { return !this.teste && !!insigniaFaltando(kind, this.g.flags); }
+  // frase quando o modo existe (Pokémon capaz ou montaria da história) mas a insígnia ainda não veio
+  #avisoInsignia(kind) { return this.teste || !this.#semInsignia(kind) || !(this.padrao(kind) || this.#capaz().has(kind)) ? null : msgInsignia(kind, this.g.flags); }
   // o jogador tem a montaria da história deste modo (presente: Mudbray, Lapras, Mantine…)
   padrao(kind) {
     kind = mountKind(kind); if (!kind) return false;
@@ -458,6 +465,8 @@ export class Mounts {
     if (g.map.isIndoor(p.x, p.y)) { g.toast('Aqui dentro não dá para chamar montaria.'); return; }
     const ah = this.#ahead(), k = this.kind;
     if (!k) {
+      const aviso = (ah.water && this.#avisoInsignia('nadar')) || (ah.climb && this.#avisoInsignia('escalar'));
+      if (aviso) { g.toast(aviso); g.audio?.sfx('deny'); return; }
       if (!this.unlocked().length) { g.toast('Você ainda não tem montaria.'); g.audio?.sfx('deny'); return; }
       if (ah.water && this.has('nadar')) return this.call('nadar', ah.water);
       if (ah.water && this.has('mergulhar')) return this.call('mergulhar', ah.water);
@@ -574,7 +583,8 @@ export class Mounts {
   // ---------- voo ----------
   async fly() {
     const g = this.g, p = g.player;
-    if (!this.has('voar')) { g.toast(this.unlocked().length ? 'Ainda não há quem voe com você.' : 'Você ainda não tem montaria.'); g.audio?.sfx('deny'); return false; }
+    if (emTempestade(Math.floor(p.x / T), Math.floor(p.y / T), g.map.id, g.flags)) { g.toast('Tempestade no Planalto: nada voa até o vulcão ser contido.'); g.audio?.sfx('deny'); return false; }
+    if (!this.has('voar')) { const av = this.#avisoInsignia('voar'); if (av) { g.toast(av); g.audio?.sfx('deny'); return false; } g.toast(this.unlocked().length ? 'Ainda não há quem voe com você.' : 'Você ainda não tem montaria.'); g.audio?.sfx('deny'); return false; }
     if (this.busy || this.kind === 'voar' || this.under) return false;
     if (g.map.isIndoor(p.x, p.y)) { g.toast('Aqui dentro não dá para voar.'); return false; }
     if (this.kind) { this.#fadeOut(this.kind, p.x, p.y); this.#setKind(null); this.rig.setKind(null); }
