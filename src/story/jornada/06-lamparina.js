@@ -181,7 +181,7 @@ export default {
       gatilho: { tipo: 'flag', alvo: 'badges.lamparina', semFlag: ['nh.boletim.5'] },
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e quarenta e dois. Em Vila Lamparina, dizem que foi a noite mais longa da região.'],
-        ['mae', 'Ravi, seis e quarenta e dois. Quase quarenta minutos de atraso desde o primeiro boletim. Eu não gosto nada disso, filho.'],
+        ['mae', '{jogador}, seis e quarenta e dois. Quase quarenta minutos de atraso desde o primeiro boletim. Eu não gosto nada disso, filho.'],
         ['jogador', 'Mãe, a Dona Zélia me deu uma vela para guardar. Ela parece saber mais do que diz.'],
       ],
       depois: { flags: { 'nh.boletim.5': true, 'nh.sol': '6h42' }, ambiente: true },

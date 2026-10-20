@@ -33,7 +33,7 @@ export default {
       gatilho: { tipo: 'entrar', alvo: 'vila_geada', requer: ['nh.chegouGeada'], semFlag: ['nh.vilaGeada'] },
       falas: [
         ['narrador', 'Vila Geada: casas de madeira com telhado de neve, um observatório com cúpula de vidro e uma estalagem onde o fogo nunca apaga.'],
-        ['prof', 'Ravi, está me ouvindo? Eu estou no observatório da vila. Um rapaz da estalagem me emprestou o telefone.'],
+        ['prof', '{jogador}, está me ouvindo? Eu estou no observatório da vila. Um rapaz da estalagem me emprestou o telefone.'],
         ['prof', 'Vá com cuidado na Caverna de Gelo. Dizem que o eco do gelo repete as vozes de quem passou por lá, e ninguém volta sem ouvir a própria voz de volta.'],
         ['prof', 'E o Téo subiu para o Cume ontem. Ele disse que quer enfrentar você lá em cima, antes da Liga. Não deixe ele te achar despreparado.'],
         ['jogador', 'O professor no observatório. Eu não imaginava que ele fosse tão animado lá em cima.'],
@@ -72,7 +72,7 @@ export default {
         ['teo', 'Eu sei. Eu não estou aqui por causa dele. Ou melhor, estou, mas não do jeito que você pensa.'],
         ['teo', 'Eu quero entrar na Liga e ver se a Aurora ainda tem poder sobre quem trabalha lá embaixo. Se tiver, eu quero ser o primeiro a dizer isso para a Elite.'],
         ['jogador', 'Então vamos lutar, e você fala depois que ganhar.'],
-        ['teo', 'Se eu ganhar, eu falo. Se você ganhar, eu falo também. Mas eu vou falar, Ravi.'],
+        ['teo', 'Se eu ganhar, eu falo. Se você ganhar, eu falo também. Mas eu vou falar, {jogador}.'],
       ],
       depois: {
         batalha: {

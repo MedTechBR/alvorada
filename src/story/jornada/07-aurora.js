@@ -207,7 +207,7 @@ export default {
       gatilho: { tipo: 'apos', cena: 'j07_arquivo' },
       reviravolta: 2,
       falas: [
-        ['prof', 'Ravi? Eu estava esperando você ler as cartas. Eu deveria ter contado antes. Eu queria proteger você.'],
+        ['prof', '{jogador}? Eu estava esperando você ler as cartas. Eu deveria ter contado antes. Eu queria proteger você.'],
         ['prof', 'Há dezesseis anos, eu e a Véspera descobrimos a luzita no Planalto. Levei a amostra ao Augusto Solano, que disse querer estudá-la. Ele comprou.'],
         ['jogador', 'Então o senhor ajudou a criar a Aurora.'],
         ['prof', 'Ajudei. A primeira extração, a Noite Longa de Lamparina, saiu da minha amostra. Eu não sabia que o cristal era a raiz do cadeado.'],
@@ -282,7 +282,7 @@ export default {
       gatilho: { tipo: 'flag', alvo: 'badges.rochedo', semFlag: ['nh.boletim.6'] },
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e cinquenta e um minutos. A Companhia Aurora nega qualquer relação com o atraso.'],
-        ['mae', 'Ravi, seis e cinquenta e um. A Aurora nega? Filho, quem nega assim é porque tem alguma coisa a esconder.'],
+        ['mae', '{jogador}, seis e cinquenta e um. A Aurora nega? Filho, quem nega assim é porque tem alguma coisa a esconder.'],
         ['jogador', 'Já descobri uma parte, mãe. A Aurora mede cada tonelada que tira da mina, e o sol espera por isso.'],
       ],
       depois: { flags: { 'nh.boletim.6': true, 'nh.sol': '6h51' }, ambiente: true },

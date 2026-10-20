@@ -20,7 +20,7 @@ export const PROF = {
   intro: (p) => [
     `Ah, ${p}! Até que enfim! Bom dia!`,
     'Eu sou Jatobá, o professor desta vila. Estudo os Pokémon da região Alvorada… e o próprio alvorecer.',
-    'Há meses o sol nasce cada dia um pouquinho mais tarde sobre o Planalto dos Ventos. Ninguém sabe explicar.',
+    'Há alguns dias o sol nasce um pouquinho mais tarde sobre o Planalto dos Ventos. Ninguém sabe explicar.',
     'E os Pokémon Alfa, aqueles de olhos vermelhos, nunca apareceram tanto.',
     'Preciso de olhos jovens por toda a região. Por isso, quero que você leve um destes Pokémon.',
     'Na mesa ao meu lado estão Bulbasaur, Charmander e Squirtle. Escolha com o coração!',
@@ -28,18 +28,18 @@ export const PROF = {
   choose: ['Os três Pokémon estão nas Poké Bolas da mesa. Escolha com calma!'],
   gift: (touch) => [
     'Leve também estas Poké Bolas e Poções. Elas vão ajudar na sua jornada.',
-    touch ? 'Quando um Pokémon selvagem estiver fraco, chame o seu Pokémon de volta e toque em Capturar para arremessar uma Poké Bola.' : 'Quando um Pokémon selvagem estiver fraco, aperte B para arremessar uma Poké Bola. O Q envia e chama de volta o seu Pokémon.',
+    touch ? 'Enfraqueça um Pokémon selvagem e toque em Capturar para arremessar uma Poké Bola.' : 'Enfraqueça um Pokémon selvagem e aperte B para arremessar uma Poké Bola. O Q chama o seu Pokémon de volta.',
     'Pegar um Pokémon dormindo, distraído ou com pouco HP é bem mais fácil. Quem segura a bola é você, então fique de olho!',
     touch ? 'E o botão ☰ abre o menu: Pokédex, equipe, mochila e o seu cartão de treinador.' : 'E a tecla M (ou Esc) abre o menu: Pokédex, equipe, mochila e o seu cartão de treinador.',
-    'Cada cidade de Alvorada tem um Ginásio. Os líderes guardam fragmentos de uma pedra antiga: a Pedra do Alvorecer.',
+    'Cada cidade de Alvorada tem um Ginásio. Os líderes guardam pedras antigas: as Pedras do Alvorecer.',
     'O mais perto é o de Cidade Campina. Siga a trilha a oeste, pelos Campos de Lúmen. Boa sorte!',
   ],
   hint: ['Os Pokémon selvagens vivem no mato alto, no bosque e perto da água.', 'Enfraqueça-os em batalha e arremesse uma Poké Bola para capturá-los!', 'Cidade Campina fica a oeste, no fim dos Campos de Lúmen.'],
   afterBadge: (p) => [`${p}! Você conseguiu a Insígnia Espiga! Sabia que podia contar com você.`, 'Os próximos ginásios ficam ao norte, no Bosque Sussurrante, e a leste, no Lago Espelho. Continue explorando!'],
   phone: (p) => [
     `${p}? Aqui é o ${NAMES.prof}! O Tomé me contou da sua vitória. Parabéns!`,
-    'Escute: hoje o sol nasceu onze minutos atrasado. E viram um Absol branco feito neblina na borda do Bosque Sussurrante.',
-    'Absol só aparece antes de alguma coisa ruim… Quando puder, siga para o norte, até a Vila Sussurro. A Líder Lia sabe muito sobre o bosque.',
+    'Escute: hoje o sol nasceu às seis e doze. E viram um Absol branco na borda do Bosque Sussurrante.',
+    'Absol só aparece antes de algo ruim. Siga para o norte, até a Vila Sussurro, e fale com a Líder Lia.',
   ],
   leave: ['Ei! Espere! Não saia da vila sem um Pokémon!', 'O mato alto é cheio de Pokémon selvagens. Venha ao meu laboratório, do outro lado da praça!'],
   heal: ['Que batalha! Deixe-me cuidar do seu Pokémon.'],
@@ -54,9 +54,9 @@ export const RIVAL = {
   leave: ['Vou na frente para a Cidade Campina. A Insígnia Espiga vai ser minha primeiro. Até mais!'],
   idle: ['Hehe, meu Pokémon é o mais forte da vila!'],
   campina: (p) => [
-    `${p}! Chegou tarde: já ganhei a Insígnia Espiga!`,
+    `${p}! Vai encarar o Tomé? Eu ainda não tentei, mas vou ser o primeiro!`,
     'O Tomé usa Pokémon do tipo Normal. Eles batem firme, mas não têm truque. Só precisa aguentar!',
-    'Eu vou seguir para o norte. Ouvi falar de um Pokémon branco rondando o Bosque Sussurrante. Tchau!',
+    'Eu vou seguir para o norte, para a Vila Sussurro. Dizem que um Pokémon branco anda rondando o bosque. Tchau!',
   ],
 };
 

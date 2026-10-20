@@ -18,7 +18,7 @@ export default {
       falas: [
         ['narrador', 'Porto Espelho: um píer comprido, barcos encostados e um lago tão calmo que parece uma lâmina.'],
         ['narrador', 'Para atravessar o lago e chegar ao mar, você precisa da Insígnia Gota. A Líder Marina fica no Galpão de Barcos.'],
-        ['jandira', 'A moqueca hoje está de lamber os dedos. A Marina está no galpão, no fim do píer. Mas ontem apareceram uns barcos sem dono.'],
+        ['jandira', 'A Marina está no galpão, no fim do píer. Mas ontem apareceram uns barcos sem dono. Cuidado!'],
         ['jogador', 'Barcos sem dono? Quem faria isso?'],
         ['jandira', 'Gente de capa roxa, que chega de madrugada e não fala com ninguém. Eles estão rondando o galpão desde cedo.'],
       ],
@@ -38,7 +38,7 @@ export default {
         ['narrador', 'Dentro do galpão, a Marina enfrenta dois recrutas que tentam abrir a caixa onde ela guarda a pedra.'],
         ['marina', 'Ei! Essa caixa é do ginásio, e a pedra também. Saiam daqui!'],
         ['ebano', 'Fique fora disso, Líder. A Dra. Véspera quer a pedra longe de quem a vende.'],
-        ['marina', 'Quem vende são vocês, Ébano. Essas tábuas guardam as cargas do porto: vocês chegam de noite, e no dia seguinte o sol atrasa.'],
+        ['marina', 'Quem vende são vocês, Ébano. Essas tábuas guardam as cargas: vocês chegam de noite, e o sol atrasa no dia seguinte.'],
         ['ebano', 'Chega de conversa. Pokémon, para fora!'],
       ],
       depois: {
@@ -140,7 +140,7 @@ export default {
       local: 'porto_espelho',
       gatilho: { tipo: 'falar', alvo: 'nestor', semFlag: ['nh.sqGarrafa'] },
       falas: [
-        ['nestor', 'Cada garrafa tem uma história. Eu jogo uma no mar todo ano desde que a Aurora chegou, com um bilhete dentro, para quem achar.'],
+        ['nestor', 'Cada garrafa tem uma história. Todo ano eu jogo uma no mar, com um bilhete dentro, para quem achar.'],
         ['nestor', 'Quase nunca volta nenhuma. Mas esta semana uma veio presa nas raízes do manguezal, a oeste. Eu não aguento a lama.'],
         ['jogador', 'Uma das suas garrafas voltando… Isso parece coisa de pescador com saudade.'],
         ['nestor', 'É saudade, sim. E é curiosidade também: eu quero saber quem leu o meu bilhete e respondeu. Vai lá, filho.'],
@@ -156,8 +156,10 @@ export default {
       local: 'manguezal',
       gatilho: { tipo: 'pisar', alvo: 'manguezal', requer: ['nh.sqGarrafa'], semFlag: ['nh.achouGarrafa'] },
       falas: [
-        ['narrador', 'Entre as raízes dos mangues, uma garrafa verde está presa numa rede. Dentro, o bilhete do Nestor e um segundo papel, molhado.'],
-        ['narrador', 'A letra é torta, de quem escreve no escuro: "Recebi o seu bilhete, mas não posso responder à vista. Estamos no nível 4. A luz daqui não é limpa, é a mesma que sai dos nossos cabos. Heitor."'],
+        ['narrador', 'Entre as raízes do mangue, uma garrafa verde está presa numa rede. Dentro, o bilhete do Nestor e outro papel.'],
+        ['narrador', 'A letra é torta, de quem escreve no escuro:'],
+        ['narrador', '"Recebi o seu bilhete, mas não posso responder à vista. Estamos no nível 4."'],
+        ['narrador', '"A luz daqui não é limpa, é a mesma que sai dos nossos cabos. Heitor."'],
         ['jogador', 'Heitor. O bilhete fala de cabos e de nível 4. Isso não parece coisa de pescador, parece coisa de mina.'],
         ['narrador', 'O papel está úmido, e a tinta escorre nas bordas. Você guarda os dois bilhetes no bolso com cuidado.'],
       ],
@@ -181,8 +183,8 @@ export default {
       id: 'j03_boletim3',
       gatilho: { tipo: 'flag', alvo: 'badges.espelho', semFlag: ['nh.boletim.3'] },
       falas: [
-        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis horas e vinte e sete minutos. Os pescadores dizem que o lago está escuro.'],
-        ['mae', 'Ravi, seis e vinte e sete. O Capitão Ivo disse que nunca viu o sol tão preguiçoso. Ele mandou um abraço, aliás.'],
+        ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às seis e vinte e sete. Os pescadores dizem que o lago está escuro.'],
+        ['mae', '{jogador}, seis e vinte e sete. O Capitão Ivo disse que nunca viu o sol tão preguiçoso. Ele mandou um abraço, aliás.'],
         ['jogador', 'Mãe, amanhã cedo eu vou ver o lago. Se o sol atrasar mais, eu te conto.'],
       ],
       depois: { flags: { 'nh.boletim.3': true, 'nh.sol': '6h27' }, ambiente: true },

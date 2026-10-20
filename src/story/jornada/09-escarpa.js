@@ -140,7 +140,7 @@ export default {
       gatilho: { tipo: 'flag', alvo: 'badges.escarpa', semFlag: ['nh.boletim.7'] },
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu às sete horas e três minutos. A Companhia Aurora diz, pela primeira vez, que é uma "variação passageira".'],
-        ['mae', 'Ravi, sete e três. Passageira? Filho, faz mais de uma semana. Você está conseguindo ver o que está acontecendo lá em cima?'],
+        ['mae', '{jogador}, sete e três. Passageira? Filho, faz mais de uma semana. Você está conseguindo ver o que está acontecendo lá em cima?'],
         ['jogador', 'A Aurora está mentindo, mãe. Vou ao Relógio ver com os meus próprios olhos o que ela esconde.'],
       ],
       depois: { flags: { 'nh.boletim.7': true, 'nh.sol': '7h03' }, ambiente: true },

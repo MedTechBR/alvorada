@@ -113,22 +113,18 @@ Algumas caixas de narração passaram de 130 caracteres e foram enxutas para cer
 recrutas na estufa, galpão de barcos, garrafa do Nestor). Nenhum fato da cena foi perdido: os detalhes cortados eram
 descrições repetidas ou mecânicas que o jogo não mostra.
 
-## Pendências que o texto sozinho não resolve
+## Rodada 2 (resolvido)
 
-1. **Ravi fixo nas falas da Mãe** (00, 01, 02 e 03). `Ravi` está escrito direto nas falas de mãe (boletins e boletim
-   da manhã), mas o resto do jogo usa o nome escolhido pelo jogador. Se o jogador escolher outro nome, a Mãe continua
-   chamando de Ravi. Correção de código: trocar por `${nome}` ou pelo placeholder que o motor usa (`this.pname`).
-2. **O aviso à Lia não tem fala de entrega.** `j02_recrutas` manda avisar a Lia, mas a cena de Sina (`j02_sina_trilha`)
-   troca o objetivo para a gruta antes disso, e a Lia não ouve a notícia em nenhuma cena. Para fechar, falta uma fala
-   de Lia no começo de `j02_estufa_noite` ou uma cena nova (mudança de estrutura, fora do escopo).
-3. **Laboratório, inicial e rival 1 estão em `src/story/dialogs.js`**, não em `story.js`. Esse arquivo não estava no
-   escopo deste ramo, então não foi editado. Ele tem as falas de `PROF.intro`, `PROF.gift`, `RIVAL.pick`,
-   `RIVAL.challenge`, `RIVAL.leave`, `RIVAL.campina`, `MOM.*`, `WAKE` e `PROF.leave`. Precisa do mesmo tratamento:
-   por exemplo, `RIVAL.campina` ("Eu vou seguir para o norte... Pokémon branco") e `PROF.phone` ("onze minutos
-   atrasado") conflitam com os boletins da jornada.
-4. **Ordem da cena do laboratório.** `j00_laboratorio` depende da flag `balls`, que o presente do professor define.
-   O texto agora funciona antes ou depois do presente, mas o motor precisa disparar a cena no lugar certo. Isso é
-   gatilho, não texto.
-5. **`docs/jornada-roteiro.md` está defasado** para os segmentos 01 a 03: mostra `j01_tome_ginasio` (que não existe no
-   código) e diz que a Rota 2 sai "para o oeste" (o código diz norte). O código é a fonte da verdade; o roteiro deve
-   ser regenerado depois destas mudanças.
+- **Ravi fixo:** as falas da Mãe e dos personagens nas jornadas 00 a 14 usam `{jogador}`, que o motor troca pelo nome do
+  jogador. `dialogs.js` não tinha "Ravi" literal (usa o parâmetro `p`). Restam "Ravi" em `src/story/script/*.js`,
+  `missoes/` e `ui`, que estão fora deste escopo.
+- **Aviso à Lia:** nova cena `j02_avisa_lia` (em `02-sussurro.js`, depois de `j02_recrutas`). Dispara ao entrar na Vila
+  Sussurro depois de ouvir os recrutas e fecha com a Lia pondo vigia; o objetivo passa a ser vigiar a estufa.
+- **Conflitos em `dialogs.js`:** "há meses" virou "há alguns dias" (a Mãe fala em cinco dias); "fragmentos" virou
+  "pedras antigas" (Tomé guarda a pedra inteira); o boletim de `PROF.phone` foi corrigido para 6h12, e `RIVAL.campina`
+  deixou de dizer que o Téo já ganhou a Espiga (o jogador a ganha em Campina). A direção norte para a Vila Sussurro
+  estava certa e foi mantida.
+- **Caixas longas:** as caixas acima de 120 caracteres foram divididas ou enxutas, incluindo a carta do Heitor (três
+  caixas de narração).
+- **Roteiro:** `docs/jornada-roteiro.md`, seções 00 a 03, regeneradas a partir do código (sem `j01_tome_ginasio`; a
+  Rota 2 sai para o norte).

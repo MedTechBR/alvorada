@@ -63,7 +63,7 @@ export default {
       local: 'fazenda_tome',
       gatilho: { tipo: 'vencer', alvo: 'c1_ebano' },
       falas: [
-        ['ebano', 'Hm. Não esperava tanta resistência. Fique com a pedra por enquanto. A Dra. Véspera só queria ver quem se importa com elas.'],
+        ['ebano', 'Hm, não esperava tanta resistência. Fique com a pedra por enquanto. A Dra. Véspera só queria testar você.'],
         ['narrador', 'O Admin Ébano recolhe o Murkrow derrotado e some atrás do celeiro. A pedra continua no lugar.'],
         ['tome', 'Você segurou eles, garoto! Agora vá ao ginásio e mostre se luta tão bem quanto segura um celeiro.'],
       ],
@@ -96,7 +96,7 @@ export default {
       gatilho: { tipo: 'apos', cena: 'j01_tome_insignia', semFlag: ['nh.boletim.1'] },
       falas: [
         ['radio', 'Boletim da Rádio Alvorada: o sol nasceu hoje às seis horas e doze minutos. Sete minutos mais tarde do que ontem.'],
-        ['mae', 'Ravi, ouviu? Seis e doze. Você já ganhou uma insígnia e o sol atrasou mais um pouco. Coincidência, não acha?'],
+        ['mae', '{jogador}, ouviu? Seis e doze. Você já ganhou uma insígnia e o sol atrasou mais um pouco. Coincidência, não acha?'],
         ['jogador', 'Mãe, eu não acredito em coincidência. Mas ainda não sei o que é.'],
       ],
       depois: {

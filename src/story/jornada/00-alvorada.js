@@ -16,7 +16,7 @@ export default {
       id: 'j00_boletim_manha',
       gatilho: { tipo: 'flag', alvo: 'balls', semFlag: ['nh.sol'] },
       falas: [
-        ['mae', 'Ravi! Liga o rádio, o boletim do sol já está no ar. Ouve isso, é importante.'],
+        ['mae', '{jogador}! Liga o rádio, o boletim do sol já está no ar. Ouve isso, é importante.'],
         ['radio', 'Bom dia, Vila Alvorada. Hoje o sol nasceu às seis horas e cinco minutos. Três minutos mais tarde do que ontem.'],
         ['mae', 'Isso já é o quinto dia seguido. O Seu Zé diz que os relógios dele estão certos. Então quem está atrasado é o sol.'],
         ['jogador', 'Ouvi os vizinhos falando de uma tal Equipe Crepúsculo. Dizem que andam de capa roxa pela região.'],
@@ -49,7 +49,7 @@ export default {
       gatilho: { tipo: 'pisar', alvo: 'saida_vila_oeste', requer: ['balls'], semFlag: ['nh.explicouRelogio'] },
       falas: [
         ['narrador', 'A Rota 1 começa logo depois da última casa. Dá para ver a Cidade Campina lá no fundo, no meio dos campos.'],
-        ['narrador', 'Atrás de você, o Prof. Jatobá grita da porta do laboratório: "Espera! Você precisa saber o que é o Relógio antes de sair!"'],
+        ['narrador', 'Atrás de você, o Prof. Jatobá grita da porta do laboratório: "Espera! Você precisa saber o que é o Relógio!"'],
         ['jogador', 'Ele parece preocupado de verdade. Acho melhor voltar e ouvir o que ele tem a dizer.'],
         ['narrador', 'Você olha para o céu. O sol ainda está baixo e pálido, como se tivesse esquecido de subir.'],
       ],
