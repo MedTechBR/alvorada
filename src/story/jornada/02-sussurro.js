@@ -128,14 +128,30 @@ export default {
       ],
       depois: {
         flags: { 'nh.viuCristal': true },
-        objetivo: { texto: 'Leve o que viu da gruta de volta à Lia, na Vila Sussurro', alvo: 'vila_sussurro' },
+        objetivo: { texto: 'Conte à Lia o que viu na gruta. Ela está na estufa, na Vila Sussurro', alvo: 'estufa_lia' },
+      },
+    },
+    {
+      // depois da gruta: o jogador conta à Lia o que viu; ela pede para ele ficar de vigia, e a noite chega
+      id: 'j02_lia_relato',
+      local: 'estufa_lia',
+      gatilho: { tipo: 'falar', alvo: 'lia', requer: ['nh.viuCristal'], semFlag: ['nh.liaRelato'] },
+      falas: [
+        ['jogador', 'Lia, achei um veio de cristal no fundo da Toca do Absol. A luz dele deixava o Ariados de olhos vermelhos.'],
+        ['lia', 'Cristal que brilha sozinho? Então é isso que anda deixando os Pokémon do bosque nervosos.'],
+        ['lia', 'E os recrutas vêm hoje atrás da pedra. Fique aqui comigo. Quando a vila dormir, a gente pega eles no flagra.'],
+      ],
+      depois: {
+        flags: { 'nh.liaRelato': true },
+        hora: 21,
+        objetivo: { texto: 'Proteja a pedra da estufa da Lia esta noite', alvo: 'estufa_lia' },
       },
     },
     {
       // a noite da estufa: os recrutas tentam roubar a pedra e a Véspera observa de longe
       id: 'j02_estufa_noite',
       local: 'estufa_lia',
-      gatilho: { tipo: 'entrar', alvo: 'estufa_lia', hora: 'noite', requer: ['nh.ouviuRecrutas'], semFlag: ['nh.defendeuEstufa'] },
+      gatilho: { tipo: 'apos', cena: 'j02_lia_relato', semFlag: ['nh.defendeuEstufa'] },
       falas: [
         ['narrador', 'A estufa está escura. Dois vultos de capa roxa abrem a vitrine onde a Lia guarda a pedra.'],
         ['recruta', 'Pronto, peguei. Que pedra mais sem graça, parece pedaço de telha.'],
