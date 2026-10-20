@@ -78,7 +78,7 @@ export default {
         ['narrador', 'Você estende a mão devagar. O Absol encosta a testa na sua palma. Um calor morno sobe pelo braço, e uma voz de mulher aparece dentro da sua cabeça.'],
         ['absol', 'Eu sou a Sina, a Absol da Véspera. Estamos juntas desde antes da Aurora.'],
         ['absol', 'A Véspera tentou fechar o Relógio sozinha, e a luz dele me prendeu. Desde então, eu aviso antes dos desastres.'],
-        ['absol', 'Você me viu no bosque, na gruta, no templo e na mina. Eu guiava você até as pedras ameaçadas.'],
+        ['absol', 'Você me viu no bosque, na gruta, no cemitério e na mina. Eu guiava você até as pedras ameaçadas.'],
         ['jogador', 'Então você é a Sina. A Véspera sabe que você está aqui?'],
         ['absol', 'Sabe. Mas ela só me liberta mexendo no cadeado do Relógio, e ele prende o Necrozma. Ninguém deve soltá-lo.'],
       ],
