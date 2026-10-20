@@ -218,7 +218,7 @@ export default {
         ['vespera', 'O sol nasceu. E agora eu posso olhar para ele sem medo de que ele atrase de novo.'],
         ['prof', 'Devo desculpas à Lia, ao Tomé, à Iracema e à Dona Zélia. Escondi a luzita por medo, e o medo custou caro.'],
         ['teo', 'Pai, você está bem? A Aurora fechou a mina, e o Senhor Solano vai responder pelo medidor e pelo sequestro.'],
-        ['heitor', 'Estou bem, filho, e estou em casa. Obrigado, Ravi, por ter encontrado a verdade antes de todo mundo.'],
+        ['heitor', 'Estou bem, filho, e estou em casa. Obrigado, {jogador}, por ter encontrado a verdade antes de todo mundo.'],
         ['mae', '{jogador}! Eu ouvi tudo no rádio. Você ganhou a Liga, e o sol nasceu hoje às seis e quatro. Eu fiz bolo, e está quentinho.'],
         ['narrador', 'No Planalto, a Sina olha para o sol e, pela primeira vez, não traz aviso nenhum. Ao sul, a neblina começa a se mexer.'],
       ],

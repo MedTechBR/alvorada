@@ -72,7 +72,7 @@ export default {
         ['teo', 'Eu sei. Eu não estou aqui por ele. Ou melhor, estou, mas não do jeito que você pensa.'],
         ['teo', 'Mudei de lado na mina e não sei se aguento ficar do lado certo. Quero uma luta de verdade antes da Elite.'],
         ['jogador', 'Então vamos lutar. Você fala depois, se quiser.'],
-        ['teo', 'Se eu ganhar, eu falo. Se perder, falo do mesmo jeito. Mas eu vou falar, Ravi.'],
+        ['teo', 'Se eu ganhar, eu falo. Se perder, falo do mesmo jeito. Mas eu vou falar, {jogador}.'],
       ],
       depois: {
         batalha: {

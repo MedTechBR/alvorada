@@ -127,7 +127,7 @@ export default {
         ['narrador', 'O Solano cai de joelhos. O Sereno, ao lado dele, larga a caixa vazia no chão. Ninguém tenta recuperar nada.'],
         ['prof', '{jogador}! A chave da gaiola está no bolso do Lúcio. Ele não vai reagir, pode pegar.'],
         ['narrador', 'O Lúcio levanta as mãos sem olhar para ninguém. A gaiola abre, e o professor corre até você e segura seu braço.'],
-        ['prof', 'Eu sinto muito, Ravi. Pelo telefone, pelo arquivo, por tudo. Mas agora vamos fechar isso de uma vez.'],
+        ['prof', 'Eu sinto muito, {jogador}. Pelo telefone, pelo arquivo, por tudo. Mas agora vamos fechar isso de uma vez.'],
         ['narrador', 'As sete pedras brilham com a cor de cada ginásio. O oitavo pedestal ainda espera a chama.'],
       ],
       depois: {
