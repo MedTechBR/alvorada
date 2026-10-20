@@ -4,6 +4,7 @@ import { NATUREZA } from './natureza.js';
 import { OBJETOS } from './objetos.js';
 import { PREDIOS } from './predios.js';
 import { INTERIOR, paredeInterior } from './interior.js';
+import { VESTIR } from './vestir.js';
 
 // Kit de modelos 3D low-poly (HD-2D) gerados por código. Interface em docs/visual-3d-kit.md.
 //
@@ -19,7 +20,7 @@ import { INTERIOR, paredeInterior } from './interior.js';
 // A geometria devolvida é COMPARTILHADA (cache): não altere nem descarte; para posicionar, use kit.mesclar.
 // Origem = ponto do pé do objeto (o.x, chão, o.y); pegada de x = -fw*8..fw*8 e z = -fh*16..0, igual ao 2D.
 
-const TIPOS = { ...NATUREZA, ...OBJETOS, ...PREDIOS, ...INTERIOR };
+const TIPOS = { ...NATUREZA, ...OBJETOS, ...PREDIOS, ...INTERIOR, ...VESTIR };
 const cache = new Map();
 const uNoite = { value: 0 };
 let mat = null;
