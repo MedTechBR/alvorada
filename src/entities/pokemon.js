@@ -137,7 +137,7 @@ export class PokeEntity {
       else {
         const dx = alvo.x - this.x, dy = alvo.y - this.y, d = Math.hypot(dx, dy) || 1;
         const passo = Math.min(300 * dt, Math.max(0, d - this.r - alvo.r - 2));
-        this.g.map.andar(this, dx / d * passo, dy / d * passo, rr, this.swim, () => alt?.resolve(this, rr));
+        this.g.map.andar(this, dx / d * passo, dy / d * passo, rr, this.swim, () => { if (!alt?.resolve(this, rr)) this.g.map.resolve(this, rr, this.swim); });
         this.face(dx, dy);
       }
     }

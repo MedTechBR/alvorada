@@ -87,8 +87,10 @@ export class Grade {
       if (o === e) continue;
       const min = r + (o.r ?? 6), dx = e.x - o.x, dy = e.y - o.y, d = Math.hypot(dx, dy);
       if (d >= min) continue;
-      if (d < 1e-4) { e.x = o.x + min; e.y = o.y; continue; }
-      e.x = o.x + (dx / d) * min; e.y = o.y + (dy / d) * min;
+      const passo = min - d, ux = d < 1e-4 ? 1 : dx / d, uy = d < 1e-4 ? 0 : dy / d;
+      this.g.map.andar(e, ux * passo, uy * passo, r, e.swim, () => {
+        if (!e.mon || !this.g.combat?.alt.resolve(e, r)) this.g.map.resolve(e, r, e.swim);
+      });
     }
   }
   // O bloco aceita alguém? (mapa sólido, objetos, gente em pé nele)

@@ -858,7 +858,13 @@ class Game {
         // na grade, o treinador não sai do bloco: quem esbarra nele é que é empurrado
         const wa = a === this.player && grade ? 0 : 1, wb = b === this.player && grade ? 0 : 1, w = wa + wb || 1;
         const push = (m - d), nx = dx / d, ny = dy / d;
-        a.x -= nx * push * wa / w; a.y -= ny * push * wa / w; b.x += nx * push * wb / w; b.y += ny * push * wb / w;
+        // Separação também é deslocamento: não pode desfazer a colisão já resolvida no update.
+        for (const [e, k] of [[a, -wa / w], [b, wb / w]]) if (k) {
+          this.map.andar(e, nx * push * k, ny * push * k, e.r * 0.8, e.swim, () => {
+            if (!e.mon || !this.combat.alt.resolve(e, e.r * 0.8)) this.map.resolve(e, e.r * 0.8, e.swim);
+          });
+          if (e.mon) this.combat.alt.seguro(e);
+        }
       }
     }
   }

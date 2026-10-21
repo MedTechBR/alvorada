@@ -635,7 +635,7 @@ export class Combat {
         dx = ex / d; dy = ey / d; user.face(dx, dy);
         const passo = Math.min(12, Math.max(0, d - user.r - alvo.r - 2));
         // Percurso varrido pela mesma colisão de empurrões e esquivas; jamais teleporta através da parede.
-        g.map.andar(user, dx * passo, dy * passo, user.r * 0.8, user.swim, () => g.combat.alt.resolve(user, user.r * 0.8));
+        g.map.andar(user, dx * passo, dy * passo, user.r * 0.8, user.swim, () => { if (!g.combat.alt.resolve(user, user.r * 0.8)) g.map.resolve(user, user.r * 0.8, user.swim); });
       }
     }
     // dois golpes corpo a corpo ao mesmo tempo, frente a frente: choque
@@ -1023,7 +1023,10 @@ export class Combat {
         who.contraAte = g.time + 0.65; who.lock = 0;
         for (let i = 0; i < who.cds.length; i++) if (golpeLeve(this.moveAt(who, i).mv)) who.cds[i] = 0;
         this.vfx.resposta(who, 'water');
-      } else g.fx.number(who.x, who.y - 40, 'Esquiva perfeita!', 0x9ad0ff, true, 'banner');
+      } else {
+        g.fx.number(who.x, who.y - 40, 'Esquiva perfeita!', 0x9ad0ff, true, 'banner');
+        g.fx.hitStop = Math.max(g.fx.hitStop, 0.06); g.fx.screenFlash(0x9ad0ff, 0.15);
+      }
       this.sfx('perfect');
     }
   }
