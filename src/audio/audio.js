@@ -1,3 +1,4 @@
+import { PARTITURAS } from './partituras.js';
 // Som 8-bit gerado na hora: efeitos e músicas originais (nenhum arquivo externo).
 
 const NOTE = { C: 0, 'C#': 1, Db: 1, D: 2, 'D#': 3, Eb: 3, E: 4, F: 5, 'F#': 6, Gb: 6, G: 7, 'G#': 8, Ab: 8, A: 9, 'A#': 10, Bb: 10, B: 11 };
@@ -241,8 +242,11 @@ export class Audio {
     if (this.track === name) return;
     this.track = name;
     clearInterval(this.timer);
-    const tr = TRACKS[name];
+    const tr = PARTITURAS[name] ?? TRACKS[name];
     if (!tr || !this.musicOn) return;
+    // Cada troca tem sua própria saída: encerra o tema anterior sem cortar a cauda das notas.
+    if (this.arranjo) { const antigo = this.arranjo; antigo.gain.setTargetAtTime(0.0001, this.ctx.currentTime, 0.15); setTimeout(() => antigo.disconnect(), 1200); }
+    const saida = this.arranjo = this.ctx.createGain(); saida.gain.value = 0.001; saida.connect(this.musicGain); saida.gain.setTargetAtTime(1, this.ctx.currentTime, 0.2);
     const step = 60 / tr.bpm / 2;
     let i = 0, next = this.ctx.currentTime + 0.1;
     const lead = tr.lead, bass = tr.bass, drums = tr.drums;
@@ -250,14 +254,18 @@ export class Audio {
     const tick = () => {
       while (next < this.ctx.currentTime + 0.2) {
         const l = lead[i % lead.length];
-        if (l !== '-' && l !== '.') this.#tone(freq(l), next, step * sustain(lead, i % lead.length) * 0.92, { type: tr.soft ? 'triangle' : 'pulse', vol: tr.soft ? 0.16 : 0.09, dest: this.musicGain, attack: tr.soft ? 0.03 : 0.01 });
+        if (l !== '-' && l !== '.') this.#tone(freq(l), next, step * sustain(lead, i % lead.length) * 0.92, { type: tr.soft ? 'triangle' : 'pulse', vol: tr.soft ? 0.16 : 0.09, dest: saida, attack: tr.soft ? 0.03 : 0.01 });
         const b = bass[i % bass.length];
-        if (b !== '-' && b !== '.') this.#tone(freq(b), next, step * 0.9, { type: 'triangle', vol: 0.22, dest: this.musicGain, attack: 0.005 });
+        if (b !== '-' && b !== '.') this.#tone(freq(b), next, step * 0.9, { type: 'triangle', vol: 0.22, dest: saida, attack: 0.005 });
+        const ar = tr.arp?.[i % tr.arp.length];
+        if (ar && ar !== '.') this.#tone(freq(ar), next, step * 0.72, { type: 'triangle', vol: 0.055, dest: saida, attack: 0.012 });
+        const acorde = tr.pad?.[i % tr.pad.length];
+        if (acorde) for (const n of acorde) this.#tone(freq(n), next, step * 13, { type: 'sine', vol: tr.batalha ? 0.022 : 0.035, dest: saida, attack: 0.14 });
         if (drums) {
           const d = drums[i % drums.length];
-          if (d === 'k') this.#tone(140, next, 0.12, { to: 45, type: 'sine', vol: 0.4, dest: this.musicGain });
-          if (d === 's') this.#noise(next, 0.1, { freq: 1800, vol: 0.18, dest: this.musicGain });
-          if (d === 'h') this.#noise(next, 0.03, { freq: 8000, vol: 0.06, type: 'highpass', dest: this.musicGain });
+          if (d === 'k') this.#tone(140, next, 0.12, { to: 45, type: 'sine', vol: 0.4, dest: saida });
+          if (d === 's') this.#noise(next, 0.1, { freq: 1800, vol: 0.18, dest: saida });
+          if (d === 'h') this.#noise(next, 0.03, { freq: 8000, vol: 0.06, type: 'highpass', dest: saida });
         }
         i++; next += step;
       }

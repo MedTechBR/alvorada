@@ -479,8 +479,12 @@ export class Story {
     const p = g.player, c = this.spots.get('campina'), v = this.spots.get('village');
     const town = (v && Math.hypot(p.x - v.x, p.y - v.y) < v.r + 2 * T) || (c && Math.hypot(p.x - c.x, p.y - c.y) < c.r + 4 * T) || g.map.biome?.(p.x, p.y) === 'vila';
     const bio = g.map.biome?.(p.x, p.y);
-    const want = town ? 'town' : bio === 'floresta' ? 'forest' : BIOME_TRACK[bio] ?? 'route'; // biomas novos: src/world/clima.js
-    if (this.music !== want) { this.music = want; g.audio?.music?.(want); }
+    const briga = g.lead?.alive && g.wilds.some(w => w.alive && !w.dead && w.ai?.state === 'aggro' && Math.hypot(w.x - g.lead.x, w.y - g.lead.y) < 16 * T);
+    if (briga) this.musicaLutaAte = g.time + 2;
+    const costa = /praia|costa|mar|oceano|porto/.test(bio ?? '');
+    const noite = g.mundo?.isNight?.() && (town || !BIOME_TRACK[bio]) && !costa;
+    const want = briga || g.time < (this.musicaLutaAte ?? 0) ? 'battle' : noite ? 'night' : town ? 'town' : costa ? 'coast' : bio === 'floresta' ? 'forest' : BIOME_TRACK[bio] ?? 'route'; // biomas novos: src/world/clima.js
+    if (this.music !== want || g.audio?.track !== want) { this.music = want; g.audio?.music?.(want); }
   }
 
   // na batalha o painel do treinador ocupa o lugar do objetivo
