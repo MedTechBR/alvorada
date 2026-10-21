@@ -303,7 +303,7 @@ export class Roteiro {
   update(dt) {
     const g = this.g, p = g.player;
     if (this.migrou !== this.f) { this.migrou = this.f; migrarSave(this.f); } // save do tempo dos capítulos → jornadas
-    if (this.ativo && this.montou !== this.f) { this.montou = this.f; this.#aplicarMontarias(); } // também depois de carregar um save
+    if (this.ativo && this.montou !== this.f) { this.montou = this.f; this.#aplicarMontarias(); this.#repararObjetivos(); } // também depois de carregar um save
     if ((this.tickT -= dt) <= 0) { this.tickT = 0.25; this.#refresh(); this.barreiras.sync(); } // barreiras da progressão (src/world/barreiras.js)
     this.barreiras.aviso(dt);
     for (const n of this.atores.values()) {
@@ -689,6 +689,25 @@ export class Roteiro {
     (f.mounts ??= {})[cap] = true;
     if (typeof g.unlockMount === 'function') { try { g.unlockMount(kind); return; } catch (e) { console.warn('unlockMount', e); } }
     g.map.setMount?.(cap, true);
+  }
+  // save antigo: o objetivo gravado pode ser de uma cena que já ficou para trás (outra cena da mesma jornada, mais
+  // adiante na ordem, já foi vista). Volta para o objetivo da última cena vista daquela jornada.
+  #repararObjetivos() {
+    const obj = this.f.objetivos; if (!obj) return;
+    const ordem = new Map(); // jornada -> [{ visto, texto, o }] na ordem dos arquivos
+    for (const c of this.caps) for (const s of c.cenas) {
+      const o = s.depois?.objetivo; if (!o) continue;
+      const jid = o.jornada ?? this.jornadaDe(c, s); if (!jid) continue;
+      const oo = typeof o === 'string' ? { texto: o } : o;
+      if (!ordem.has(jid)) ordem.set(jid, []);
+      ordem.get(jid).push({ visto: this.#feita(c, s), o: oo });
+    }
+    for (const [jid, L] of ordem) {
+      const atual = obj[jid]; if (!atual?.texto) continue;
+      const i = L.findIndex((x) => x.o.texto === atual.texto); if (i < 0) continue;
+      let k = -1; for (let n = L.length - 1; n > i; n--) if (L[n].visto) { k = n; break; }
+      if (k > i) { obj[jid] = { ...L[k].o }; this.s?.refreshObjective?.(); }
+    }
   }
   #aplicarMontarias() {
     if (typeof this.g.unlockMount === 'function') return; // o sistema de montarias cuida do save

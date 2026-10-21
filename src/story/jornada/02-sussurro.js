@@ -56,7 +56,7 @@ export default {
       // o aviso chega à Lia: o jogador conta o que ouviu e a Lia põe alguém de vigia
       id: 'j02_avisa_lia',
       local: 'vila_sussurro',
-      gatilho: { tipo: 'entrar', alvo: 'vila_sussurro', requer: ['nh.ouviuRecrutas'], semFlag: ['nh.avisouLia'] },
+      gatilho: { tipo: 'entrar', alvo: 'vila_sussurro', requer: ['nh.ouviuRecrutas'], semFlag: ['nh.avisouLia', 'nh.seguiuAbsol', 'nh.viuCristal', 'nh.contouCristal', 'nh.defendeuEstufa'] },
       falas: [
         ['jogador', 'Lia! Ouvi dois recrutas dizendo que a sua estufa será roubada hoje à noite, quando a vila dormir.'],
         ['lia', 'Na minha estufa? Obrigada por avisar. Vou pôr alguém de vigia.'],
