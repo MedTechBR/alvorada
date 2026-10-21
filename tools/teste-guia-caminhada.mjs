@@ -4,6 +4,8 @@
 //      (os próximos 3 blocos da rota);
 //   2. a distância (caminho restante) nunca aumenta enquanto se anda e cai a cada bloco novo;
 //   3. se o jogador sai do caminho (4+ blocos), o guia já tem o caminho de volta, sem esperar 20 s.
+//   4. o círculo do treinador (5 px) com a colisão do mapa, andando pela seta, chega ao alvo sem ficar parado;
+//   5. nenhum bloco de mata sem árvore (muro invisível) a até 2 blocos da rota.
 // Usa o mesmo campo e o mesmo ponto de passagem do jogo (src/world/guia.js). Rodar da raiz:  node tools/teste-guia-caminhada.mjs
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -57,6 +59,64 @@ for (const alvo of ['bifurcacao', 'trilha_jequitiba', 'bifurcacao__leste']) {
   }
   console.log(`  ${alvo.padEnd(18)} ${rota.length} blocos, ${quadros} quadros, pior desvio da seta ${piorAng.toFixed(0)}°, distância final ${ultDist}`);
   ok(ultDist <= 1, `${alvo}: a caminhada terminou longe do alvo (${ultDist})`);
+}
+// 4. caminhada FÍSICA: um círculo de 5 px (o raio do treinador) com a colisão de verdade do mapa (map.solidAt + map.resolve,
+//    copiadas aqui sobre os mesmos blocos), seguindo a seta quadro a quadro (3 px por quadro, rumo ao ponto da seta). Tem de
+//    chegar ao alvo sem ficar parado: um caminho que existe na grade mas é estreito demais para o corpo, ou um canto, falha aqui.
+const RAIO = 5, VEL = 3;
+const solidoPx = (px, py) => {
+  const x = Math.floor(px / T), y = Math.floor(py / T); if (x < 0 || y < 0 || x >= W || y >= H) return true;
+  const k = x + y * W, t = A.tiles[k];
+  if (t === TILE.TIDE) return B.block[k] === 1;
+  if (B.block[k] === 1) return true;
+  return SOLID.has(t) && !passa.has(t);
+};
+function resolver(p, r) {
+  const x0 = Math.floor((p.x - r) / T), x1 = Math.floor((p.x + r) / T), y0 = Math.floor((p.y - r) / T), y1 = Math.floor((p.y + r) / T);
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+    if (!solidoPx(x * T + 1, y * T + 1)) continue;
+    const nx = Math.max(x * T, Math.min(p.x, x * T + T)), ny = Math.max(y * T, Math.min(p.y, y * T + T));
+    let dx = p.x - nx, dy = p.y - ny; const d = Math.hypot(dx, dy);
+    if (d < r) {
+      if (d < 1e-4) { dx = p.x - (x * T + T / 2); dy = p.y - (y * T + T / 2); const l = Math.hypot(dx, dy) || 1; p.x += (dx / l) * r; p.y += (dy / l) * r; }
+      else { p.x += (dx / d) * (r - d); p.y += (dy / d) * (r - d); }
+    }
+  }
+}
+function andar(p, dx, dy) { // o mesmo fatiamento de map.andar
+  const n = Math.min(16, Math.max(1, Math.ceil(Math.hypot(dx, dy) / Math.max(2, RAIO * 0.75))));
+  for (let i = 0; i < n; i++) { p.x += dx / n; p.y += dy / n; resolver(p, RAIO); }
+}
+for (const alvo of ['bifurcacao', 'trilha_jequitiba', 'bifurcacao__leste']) {
+  const C = campoPara(alvo), k0 = C.achar(de[0], de[1], 2); if (k0 < 0) continue;
+  const p = { x: de[0] * T + 8, y: de[1] * T + 8 }, [fx, fy] = xy(C.caminho(k0, 5000).pts.at(-1));
+  let parado = 0, quadros = 0, chegou = false, ult = [p.x, p.y], perdeu = null;
+  while (quadros++ < 20000) {
+    const s = seta(C, p.x, p.y); if (!s) { perdeu = `sem seta em ${(p.x / T) | 0},${(p.y / T) | 0}`; break; }
+    if (s.dist <= 1 && Math.hypot(fx * T + 8 - p.x, fy * T + 8 - p.y) < 20) { chegou = true; break; }
+    const dx = s.vx, dy = s.vy, d = Math.hypot(dx, dy) || 1;
+    andar(p, dx / d * Math.min(VEL, d), dy / d * Math.min(VEL, d));
+    if (Math.hypot(p.x - ult[0], p.y - ult[1]) < 0.2) { if (++parado > 90) { perdeu = `parado há 90 quadros em ${(p.x / T) | 0},${(p.y / T) | 0} (a seta aponta para ${(p.x + dx) / T | 0},${(p.y + dy) / T | 0})`; break; } } else { parado = 0; ult = [p.x, p.y]; }
+  }
+  ok(chegou, `${alvo}: o círculo do jogador não chegou ao alvo andando pela seta: ${perdeu ?? 'quadros esgotados'}`);
+  console.log(`  caminhada física ${alvo.padEnd(18)} ${chegou ? 'chegou' : 'NÃO chegou'} em ${quadros} quadros`);
+}
+// 5. nada de muro invisível ao lado do caminho: todo bloco de MATA (sólido, mas desenhado como grama no estilo Let's Go) a até
+//    2 blocos da rota tem árvore ou moita em cima (a mesma regra do enchimento de src/world/build.js; a medição pelas malhas
+//    de verdade está em tools/auditar-invisiveis.mjs)
+{
+  const cob = new Set(), ARV = /^(tree|tree2|pine|pine2|pineT|autumn|bigtree|bigautumn)$/;
+  for (const o of [...A.S.placed, ...(A.S.novos ?? [])]) {
+    const fw = o.fw ?? 1, fh = o.fh ?? 1;
+    if (o.forest || (ARV.test(o.kind) && !o.ss)) { for (let j = 0; j <= fh; j++) for (let i = 0; i < fw; i++) cob.add(o.x + i + (o.y + j) * W); } else for (const k of o.cells ?? []) cob.add(k);
+  }
+  let nu = 0;
+  for (const alvo of ['bifurcacao', 'trilha_jequitiba', 'bifurcacao__leste']) {
+    const C = campoPara(alvo), k0 = C.achar(de[0], de[1], 2); if (k0 < 0) continue;
+    const vistos = new Set();
+    for (const q of C.caminho(k0, 5000).pts) { const [x, y] = xy(q); for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) { const k = (x + i) + (y + j) * W; if (!vistos.has(k)) { vistos.add(k); nu++; if (A.tiles[k] === TILE.FOREST) ok(cob.has(k), `${alvo}: bloco de mata sem árvore nem moita em ${x + i},${y + j} (muro invisível a ${Math.max(Math.abs(i), Math.abs(j))} bloco(s) da rota)`); } } }
+  }
+  console.log(`  muro invisível: ${nu} blocos em volta das rotas conferidos`);
 }
 // saiu do caminho: o jogador é posto 4-5 blocos de lado; o campo já dá o caminho de volta (o guia refaz a cada bloco)
 {
