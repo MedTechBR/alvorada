@@ -1,0 +1,24 @@
+Guia do objetivo: 110 alvos da jornada, 524 verificações, 18.4 s
+  campina   de inicio                 alvos  9  caminho médio  187 blocos  reta errada 0
+  sussurro  de gym                    alvos  8  caminho médio  196 blocos  reta errada 2
+  espelho   de estufa_lia             alvos  6  caminho médio  384 blocos  reta errada 0
+  coral     de galpao_barcos          alvos  7  caminho médio  198 blocos  reta errada 0
+  jandaias  de farol_coral            alvos  6  caminho médio  235 blocos  reta errada 0
+  lamparina de barqueira_coral        alvos  7  caminho médio  274 blocos  reta errada 2
+  aurora    de casarao_velas          alvos  6  caminho médio  209 blocos  reta errada 0
+  mina      de aurora_praca           alvos  5  caminho médio   55 blocos  reta errada 4
+  rochedo   de aurora_praca           alvos  8  caminho médio  208 blocos  reta errada 3
+  sertao    de leader_bras            alvos  7  caminho médio  752 blocos  reta errada 0
+  escarpa   de ninho_vila_mandacaru   alvos  7  caminho médio  737 blocos  reta errada 3
+  brasas    de leader_graca           alvos  6  caminho médio 1036 blocos  reta errada 0
+  mirante   de ninho_ilha_basalto     alvos  8  caminho médio 1253 blocos  reta errada 2
+  relogio   de leader_celeste         alvos  5  caminho médio  294 blocos  reta errada 0
+  geada     de relogio_pedra          alvos  6  caminho médio  968 blocos  reta errada 0
+  liga      de geada_entrada_oeste    alvos  9  caminho médio  619 blocos  reta errada 6
+  história  de cena a cena            alvos 99  caminho médio    0 blocos  reta errada 0
+  missões   de inicio                 alvos 13  caminho médio    0 blocos  reta errada 0
+  a linha reta (seta antiga) apontava para o lado oposto ao caminho em 22 de 110 alvos
+
+OK: de cada chegada há caminho até cada alvo, e a seta aponta para o próximo trecho dele.
+(node:53223) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

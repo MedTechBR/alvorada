@@ -77,9 +77,43 @@ Para gerar uma nova referência `antes`, use a revisão anterior ao combate (`10
 
 Logs completos em `tools/resultados/combate/logs/`. O servidor local pode ser aberto em http://127.0.0.1:8700/?teste&nosw.
 
-## Retorno automático e câmera girável
+## Revisão: recarga, dano, cura, som e controles
 
-- `src/main.js`: depois de derrotar um selvagem, aguarda 1,2 s e recolhe o Pokémon se não houver outro vivo a menos de 14 blocos. Adia durante golpes e não interfere em batalhas de treinador/reides. Explorar sem lutar não dispara o retorno. Movimento livre, grade e mira por analógico acompanham o giro da câmera.
-- `src/visual3d/giro.js`: botões ↶ / N / ↷ no topo central, utilizáveis por mouse ou toque, com passos de 90° e restauração da vista inicial.
-- `src/visual3d/camera.js`: giro suave e detecção de obstáculos na direção atual da câmera.
-- `tools/teste-3d/retorno-camera.mjs`: testa espera, adversário restante, vitória, proteção das lutas de treinador, giro, restauração e transformação das direções. Teste de jornada também passou.
+- `src/main.js`, `src/visual3d/camera.js`, `src/ui/style.css`: removidos os botões de giro e a transformação manual das direções. Câmera automática e zoom preservados. `src/visual3d/giro.js` removido.
+- `src/main.js`: retorno automático após a última vitória preservado; passos laterais discretos durante combate quando não há comando direcional.
+- `src/ui/toque.js`, `src/ui/style.css`: golpes em grade 2×2 e utilidades agrupadas. Onze controles visíveis no teste, sem sobreposição nas duas orientações.
+- `src/combat/combat.js`, `src/combat/pilot.js`, `src/ui/hud.js`: recarga compartilhada entre todos os golpes, com indicadores sincronizados; movimento durante ataques; feixes mais destacados. Golpes leves do jogador até 0,8 s e demais ataques até 1,4 s no escopo fluido; avisos e recargas adversárias preservados.
+- `src/combat/combat.js`: Gyarados acertava acima dos alvos pequenos; colisão dos feixes aliados agora usa o chão e o desenho acompanha a altura do alvo.
+- `src/combat/damage.js`: removido bônus oculto de dano dos adversários comuns e divisão duplicada da potência de feixes aliados. Atributos, nível, categoria física/especial e tipos continuam contando.
+- `src/combat/ai.js`: deslocamento lateral durante preparação, sem encurtar aviso.
+- `src/combat/altitude.js`: margem de colisão no teleporte e Cavar para impedir passagem por quinas entre amostras.
+- `src/mechanics/recuperacao.js`, `src/mechanics/damage.js`, `src/mechanics/items.js`, `src/combat/poder.js`: reserva cumulativa de cura dos adversários de 30% dos PS máximos, compartilhada por golpes, absorção, drenagem e itens. A cura aliada foi preservada para não aumentar a dificuldade.
+- `src/audio/partituras.js`, `src/audio/audio.js`, `src/story/story.js`: 14 composições sintetizadas com quatro seções, variação melódica e acompanhamento; temas por cenário e música de batalha também contra selvagens. Roteiro não alterado.
+
+### Equilíbrio desta revisão
+
+Referência real capturada no commit `d0b495bb`, antes destas mudanças de combate. Mesmas 12 lutas, sementes, Pokémon e níveis. Arquivos `revisao-antes.json` e `revisao-depois.json`; referências originais preservadas.
+
+| Luta | PS perdidos/min antes → depois | Duração média (s) | Golpes/min jogador | Golpes/min adversário |
+|---|---:|---:|---:|---:|
+| selvagem | 39,50 → 10,83 | 17,22 → 17,55 | 75,51 → 75,21 | 15,68 → 15,95 |
+| rival | 37,83 → 14,52 | 16,92 → 17,22 | 79,80 → 79,57 | 24,24 → 25,56 |
+
+Nenhum dos 12 pares aumentou a perda por minuto. Frequência observada varia com duração e posicionamento, sem aumento da frequência configurada da IA. Esta amostra usa um golpe por participante; o bloqueio entre golpes diferentes é verificado separadamente em `fluidez-regras.mjs`.
+
+### Verificação da revisão
+
+- Os 12 testes Node e a auditoria de 181 NPCs passaram.
+- Paredes: 24 lutas, 20.160 quadros, nenhuma violação após corrigir a quina do teleporte.
+- Regras: 44 verificações; Gyarados acerta Hidro Bomba em Eevee pequeno (antes, zero dano no caso reproduzido).
+- Testes adicionais: dano controlado, reserva de cura inclusive absorção e itens, validade/variação das 14 partituras, câmera sem controles de giro e retorno automático.
+- Gravação real do áudio no navegador sem erros e sem clipping digital; exemplos em `tools/shots/trilha/`. Não houve avaliação musical por escuta em iPhone.
+- Não houve teste em iPhone físico/Safari nem partida online. A melhoria visual é incremental; não representa equivalência completa com o vídeo de referência.
+
+### Montaria aquática
+
+`src/world/mounts.js`: o modo aquático era ativado antes do carregamento assíncrono do sprite. No quadro seguinte, a verificação de terreno cancelava a montaria porque o treinador ainda estava na margem. O carregamento agora integra o estado ocupado e suspende essa atualização até iniciar o embarque. Insígnias e requisitos de montaria permanecem iguais.
+
+`tools/teste-3d/montaria-agua.mjs` reproduziu a falha com carregamento atrasado: antes, modo voltava a `null` e embarque era cancelado. Depois, verifica o botão contextual na margem, embarque e deslocamento na água.
+
+Capturas finais em 844×390: `tools/shots/revisao-combate/acao-selvagem-00.jpg`, `01.jpg` e `02.jpg`. Áudio: `tools/shots/trilha/battle.mp3` e `forest.mp3`.

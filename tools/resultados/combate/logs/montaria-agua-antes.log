@@ -1,0 +1,19 @@
+{ antes: 'nadar', durante: null, ok: false, salto: false }
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+null !== 'nadar'
+
+    at file:///Users/matheusparente/Documents/Claude/pokemon-2d/tools/teste-3d/montaria-agua.mjs:16:25 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: null,
+  expected: 'nadar',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.5.0

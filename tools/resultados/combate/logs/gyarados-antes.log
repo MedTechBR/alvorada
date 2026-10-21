@@ -1,0 +1,58 @@
+[
+  {
+    "dex": 7,
+    "id": "hydroPump",
+    "dano": 10,
+    "altura": 10,
+    "raio": 8.36,
+    "y": {
+      "origem": 4663.74515901456,
+      "alvo": 4602.852693293484,
+      "fim": 4646.41597200462
+    }
+  },
+  {
+    "dex": 7,
+    "id": "waterfall",
+    "dano": 0,
+    "altura": 10,
+    "raio": 8.36,
+    "y": null
+  },
+  {
+    "dex": 7,
+    "id": "aquaTail",
+    "dano": 0,
+    "altura": 10,
+    "raio": 8.36,
+    "y": null
+  },
+  {
+    "dex": 130,
+    "id": "hydroPump",
+    "dano": 0,
+    "altura": 37.5,
+    "raio": 28,
+    "y": {
+      "origem": 4634.828223315694,
+      "alvo": 4662,
+      "fim": 4623.147408782885
+    }
+  },
+  {
+    "dex": 130,
+    "id": "waterfall",
+    "dano": 32,
+    "altura": 37.5,
+    "raio": 28,
+    "y": null
+  },
+  {
+    "dex": 130,
+    "id": "aquaTail",
+    "dano": 38,
+    "altura": 37.5,
+    "raio": 28,
+    "y": null
+  }
+]

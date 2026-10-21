@@ -43,7 +43,7 @@ const SELVAGEM = () => `(async () => {
   G.player.x = 318 * 16; G.player.y = 292 * 16; G.cam.x = G.player.x; G.cam.y = G.player.y; G.mundo.setHour(11);
   const { Mon } = await import('/src/data/mon.js');
   const VIT = ${modo === 'vitrine'};
-  G.party = VIT ? [new Mon(6, 40), new Mon(25, 30)] : [new Mon(25, 30), new Mon(4, 28)]; G.leadIdx = 0; if (${Number(process.env.DEX) || 0}) G.party[0].moves = ['thunderShock', 'quickAttack', 'ironTail']; G.hudLead(); G.hudMoves();
+  G.party = VIT ? [new Mon(6, 40), new Mon(25, 30)] : [new Mon(${Number(process.env.ALLY) || 25}, 30), new Mon(4, 28)]; G.leadIdx = 0; if (${Number(process.env.DEX) || 0}) G.party[0].moves = ${Number(process.env.ALLY)===130} ? ['hydroPump', 'waterfall', 'aquaTail', 'dragonDance'] : ['thunderShock', 'quickAttack', 'ironTail']; G.hudLead(); G.hudMoves();
   if (VIT) { G.party[0].item = 'charizarditeX'; G.bag.megaBracelet = 1; }
   const BANDO = ${modo === 'bando'}; // bando: 3 selvagens brigando ao mesmo tempo (cada um com a sua plaquinha)
   for (let k = 0; k < 12 && G.wilds.filter((q) => q.alive).length < (BANDO ? 3 : 1); k++) await G.spawnWild();

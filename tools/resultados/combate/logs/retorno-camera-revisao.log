@@ -1,0 +1,8 @@
+OK: câmera automática e retorno após a última vitória {
+  giroAusente: true,
+  explorar: 0,
+  espera: 0,
+  inimigo: 0,
+  venceu: 1,
+  treinador: 1
+}

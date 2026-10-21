@@ -1,0 +1,12 @@
+{"modo":"selvagem","seed":31,"par":[25,133],"nivel":20,"hp":44,"perda":0,"dur":16.466666666666665,"perdaMin":0,"golpesA":22,"golpesB":5,"golpesMinA":80.16194331983806,"golpesMinB":18.21862348178138,"terminou":true}
+{"modo":"selvagem","seed":31,"par":[4,7],"nivel":20,"hp":46,"perda":23,"dur":20.7,"perdaMin":66.66666666666667,"golpesA":27,"golpesB":8,"golpesMinA":78.26086956521739,"golpesMinB":23.18840579710145,"terminou":true}
+{"modo":"selvagem","seed":73,"par":[25,133],"nivel":20,"hp":49,"perda":0,"dur":15.866666666666667,"perdaMin":0,"golpesA":20,"golpesB":3,"golpesMinA":75.63025210084034,"golpesMinB":11.34453781512605,"terminou":true}
+{"modo":"selvagem","seed":73,"par":[4,7],"nivel":20,"hp":51,"perda":27,"dur":19.3,"perdaMin":83.93782383419689,"golpesA":26,"golpesB":8,"golpesMinA":80.82901554404145,"golpesMinB":24.870466321243523,"terminou":true}
+{"modo":"selvagem","seed":137,"par":[25,133],"nivel":20,"hp":48,"perda":0,"dur":15.666666666666666,"perdaMin":0,"golpesA":17,"golpesB":0,"golpesMinA":65.1063829787234,"golpesMinB":0,"terminou":true}
+{"modo":"selvagem","seed":137,"par":[4,7],"nivel":20,"hp":50,"perda":18,"dur":15.3,"perdaMin":70.58823529411764,"golpesA":18,"golpesB":3,"golpesMinA":70.58823529411764,"golpesMinB":11.76470588235294,"terminou":true}
+{"modo":"rival","seed":31,"par":[25,133],"nivel":20,"hp":44,"perda":0,"dur":18.266666666666666,"perdaMin":0,"golpesA":25,"golpesB":9,"golpesMinA":82.11678832116789,"golpesMinB":29.56204379562044,"terminou":true}
+{"modo":"rival","seed":31,"par":[4,7],"nivel":20,"hp":46,"perda":20,"dur":19.9,"perdaMin":60.301507537688444,"golpesA":25,"golpesB":7,"golpesMinA":75.37688442211056,"golpesMinB":21.105527638190956,"terminou":true}
+{"modo":"rival","seed":73,"par":[25,133],"nivel":20,"hp":49,"perda":0,"dur":15.866666666666667,"perdaMin":0,"golpesA":21,"golpesB":6,"golpesMinA":79.41176470588235,"golpesMinB":22.6890756302521,"terminou":true}
+{"modo":"rival","seed":73,"par":[4,7],"nivel":20,"hp":51,"perda":29,"dur":19.1,"perdaMin":91.09947643979056,"golpesA":27,"golpesB":9,"golpesMinA":84.81675392670157,"golpesMinB":28.272251308900522,"terminou":true}
+{"modo":"rival","seed":137,"par":[25,133],"nivel":20,"hp":48,"perda":0,"dur":14.066666666666666,"perdaMin":0,"golpesA":19,"golpesB":5,"golpesMinA":81.04265402843602,"golpesMinB":21.327014218009477,"terminou":true}
+{"modo":"rival","seed":137,"par":[4,7],"nivel":20,"hp":50,"perda":15,"dur":14.3,"perdaMin":62.93706293706293,"golpesA":18,"golpesB":5,"golpesMinA":75.52447552447552,"golpesMinB":20.979020979020977,"terminou":true}

@@ -18,6 +18,7 @@ try {
     g.story.battle={def:{id:'nh_rival2'}};ok(c.fluido(l),'Téo incluído');g.story.battle=null;
     l.pvp=true;ok(!combateFluido(g,l),'PvP preservado');l.pvp=false;
     const usado=c.use(l,0,w.x,w.y);ok(usado&&l.cds[0]===0.8&&c.andando(l),'golpe leve andando e recarga de 0,8 s');
+    ok(l.cds.every(v=>v===0.8)&&!c.use(l,1,w.x,w.y),'recarga global bloqueia outro golpe');
     l.vx=60;const x=l.x;l.update(1/60);ok(l.x>x,'movimento durante o golpe leve');
     g.time+=0.18;ok(c.esquivar(l,0,1)&&l.lock===0&&l.dodgeCd===0.45,'esquiva cancela recuperação');
     ok(l.iframes>=0.32,'invencibilidade da esquiva preservada');
@@ -32,7 +33,7 @@ try {
     const hp=l.mon.hp;ok(c.strike(w,l,forte,'tackle',1,0,{force:true})==='miss'&&l.mon.hp===hp,'queda não aceita combo nem golpe forçado');
     g.time+=0.43;l.update(0.43);ok(l.quedaAte===0&&l.anim==='Hop'&&l.iframes>=0.47,'levanta sozinho com pulinho e proteção');
     l.alt=null;l.lock=0;l.stun=0;c.alt.action(l,w.x,w.y);ok(!l.alt,'botão de altura não cava');
-    l.cds[1]=0;c.use(l,1,w.x,w.y);ok(l.alt?.mode==='dig'&&l.alt?.auto?.id==='dig','golpe Cavar entra no chão');
+    l.cds.fill(0);c.use(l,1,w.x,w.y);ok(l.alt?.mode==='dig'&&l.alt?.auto?.id==='dig','golpe Cavar entra no chão');
     let interacoes=0;const original=c.arena.dig;c.arena.dig=()=>interacoes++;l.alt=null;c.alt.digMove(l,MOVES.dig,'dig',w.x,w.y);c.arena.dig=original;
     ok(interacoes===1,'Cavar usa a interação existente com o terreno');
     l.alt=null;l.stun=0;l.iframes=0;l.quedaAte=0;l.lock=0;l.cds=[0,0,0,0];l.mon.moves=['scratch'];
@@ -44,6 +45,16 @@ try {
     ok(l.choqueAte>g.time && w.choqueAte>g.time,'golpes físicos simultâneos se chocam');
     ok(l.mon.hp===hpL&&w.mon.hp===hpW,'choque físico não deixa o primeiro golpe causar dano');
     ok(l.kx<0&&w.kx>0,'choque empurra os dois para lados opostos');
+    // Jatos do jogador continuam emitindo com deslocamento; o aviso inimigo também tem passo lateral.
+    l.mon.moves=['waterGun'];l.lock=0;l.stun=0;l.charging=null;l.cds=[0];l.quedaAte=0;l.flash=0;g.timers=[];
+    ok(c.use(l,0,w.x,w.y),'inicia jato');g.time+=0.1;
+    for(const tm of g.timers.slice())if(tm.t<=g.time){g.timers.splice(g.timers.indexOf(tm),1);tm.fn();}
+    l.vx=50;l.vy=0;c.update(1/60);ok(l.vx===50&&c.andando(l),'jato não zera movimento do jogador');
+    w.lock=0;w.stun=0;w.flash=0;w.cds=[0];w.charging=null;w.mon.moves=['tackle'];c.windup(w,0,l);
+    const passo=c.ai.think(w,1/60);ok(Math.hypot(passo.vx,passo.vy)>0,'adversário se move durante o aviso');
+    w.charging=null;w.mon.moves=['recover'];w.mon.hp=1;let curou=0;
+    for(let i=0;i<5;i++){w.lock=0;w.stun=0;w.cds=[0];g.timers=[];const antes=w.mon.hp;c.use(w,0,w.x,w.y);g.time+=0.2;for(const tm of g.timers.slice())if(tm.t<=g.time){g.timers.splice(g.timers.indexOf(tm),1);tm.fn();}curou+=w.mon.hp-antes;w.mon.hp=1;}
+    ok(curou<=Math.floor(w.mon.stats.hp*0.3)&&curou>0,'Recuperação não ultrapassa reserva de cura');
     g.ui.hud.toque.update();const botao=document.getElementById('t-alt');
     ok(botao && (botao.hidden || getComputedStyle(botao).display==='none'),'botão de cavar não aparece para Charmander');
     const {ARENAS}=await import('/src/data/arenas.js'),{ArenaGinasio}=await import('/src/combat/arena-ginasio.js');
