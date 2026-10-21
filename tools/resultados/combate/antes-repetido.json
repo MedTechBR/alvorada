@@ -1,0 +1,222 @@
+{
+  "commit": "ac13823d1cdb2bc90b2528be352f0857df8d3a26",
+  "fase": "antes-repetido",
+  "resultados": [
+    {
+      "modo": "selvagem",
+      "seed": 31,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "hp": 44,
+      "perda": 0,
+      "dur": 27.066666666666666,
+      "perdaMin": 0,
+      "golpesA": 19,
+      "golpesB": 10,
+      "golpesMinA": 42.118226600985224,
+      "golpesMinB": 22.167487684729064,
+      "terminou": true
+    },
+    {
+      "modo": "selvagem",
+      "seed": 31,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "hp": 46,
+      "perda": 46,
+      "dur": 13.933333333333334,
+      "perdaMin": 198.08612440191388,
+      "golpesA": 12,
+      "golpesB": 6,
+      "golpesMinA": 51.67464114832536,
+      "golpesMinB": 25.83732057416268,
+      "terminou": true
+    },
+    {
+      "modo": "selvagem",
+      "seed": 73,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "hp": 49,
+      "perda": 13,
+      "dur": 24.666666666666668,
+      "perdaMin": 31.62162162162162,
+      "golpesA": 18,
+      "golpesB": 7,
+      "golpesMinA": 43.78378378378378,
+      "golpesMinB": 17.027027027027025,
+      "terminou": true
+    },
+    {
+      "modo": "selvagem",
+      "seed": 73,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "hp": 51,
+      "perda": 51,
+      "dur": 12.316666666666666,
+      "perdaMin": 248.44384303112315,
+      "golpesA": 11,
+      "golpesB": 5,
+      "golpesMinA": 53.58592692828146,
+      "golpesMinB": 24.35723951285521,
+      "terminou": true
+    },
+    {
+      "modo": "selvagem",
+      "seed": 137,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "hp": 48,
+      "perda": 0,
+      "dur": 24.066666666666666,
+      "perdaMin": 0,
+      "golpesA": 17,
+      "golpesB": 8,
+      "golpesMinA": 42.38227146814405,
+      "golpesMinB": 19.94459833795014,
+      "terminou": true
+    },
+    {
+      "modo": "selvagem",
+      "seed": 137,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "hp": 50,
+      "perda": 50,
+      "dur": 18.4,
+      "perdaMin": 163.0434782608696,
+      "golpesA": 16,
+      "golpesB": 8,
+      "golpesMinA": 52.173913043478265,
+      "golpesMinB": 26.086956521739133,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 31,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "hp": 44,
+      "perda": 0,
+      "dur": 25.866666666666667,
+      "perdaMin": 0,
+      "golpesA": 18,
+      "golpesB": 10,
+      "golpesMinA": 41.75257731958763,
+      "golpesMinB": 23.195876288659793,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 31,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "hp": 46,
+      "perda": 46,
+      "dur": 12.55,
+      "perdaMin": 219.92031872509958,
+      "golpesA": 11,
+      "golpesB": 6,
+      "golpesMinA": 52.589641434262944,
+      "golpesMinB": 28.685258964143426,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 73,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "hp": 49,
+      "perda": 0,
+      "dur": 24.066666666666666,
+      "perdaMin": 0,
+      "golpesA": 17,
+      "golpesB": 8,
+      "golpesMinA": 42.38227146814405,
+      "golpesMinB": 19.94459833795014,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 73,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "hp": 51,
+      "perda": 51,
+      "dur": 14.916666666666666,
+      "perdaMin": 205.13966480446928,
+      "golpesA": 13,
+      "golpesB": 5,
+      "golpesMinA": 52.29050279329609,
+      "golpesMinB": 20.11173184357542,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 137,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "hp": 48,
+      "perda": 0,
+      "dur": 25.666666666666668,
+      "perdaMin": 0,
+      "golpesA": 18,
+      "golpesB": 9,
+      "golpesMinA": 42.077922077922075,
+      "golpesMinB": 21.038961038961038,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 137,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "hp": 50,
+      "perda": 50,
+      "dur": 15.683333333333334,
+      "perdaMin": 191.28586609989372,
+      "golpesA": 14,
+      "golpesB": 7,
+      "golpesMinA": 53.560042507970245,
+      "golpesMinB": 26.780021253985122,
+      "terminou": true
+    }
+  ]
+}
