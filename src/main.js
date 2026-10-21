@@ -33,7 +33,7 @@ import { rollShakes } from './mechanics/capture.js';
 import { setAmbiente, isNight as nightNow } from './mechanics/ambiente.js';
 import { formaRegionalEm } from './data/regioes.js';
 import { OPTIONS } from './ui/options.js';
-const WILD_MAX = 4; // selvagens vivos ao mesmo tempo perto do jogador
+import { SELVAGENS_COMBATE as WILD_MAX, SELVAGENS_TRANQUILOS as WILD_AMBIENTE } from './world/populacao.js';
 
 // Exp. Compartilhado (como nos jogos novos): com ele ligado (padrão, em Opções), toda a equipe ganha a XP inteira
 const ALPHA_DROPS = [['greatBall', 2, 30], ['superPotion', 2, 25], ['stardust', 1, 14], ['pearl', 1, 14], ['bigMushroom', 1, 6], ['rareCandy', 1, 7], ['nugget', 1, 4]];
@@ -277,13 +277,13 @@ class Game {
   }
 
   // ---------- selvagens ----------
-  async spawnWild() {
+  async spawnWild(ambiente = false) {
     const p = this.player;
     for (let tries = 0; tries < 12; tries++) {
-      const sp = this.map.randomSpawn(p.x, p.y); if (!sp) return; // de preferência no mato alto
+      const sp = this.map.randomSpawn(p.x, p.y, ambiente ? 5 : 9, ambiente ? 14 : 20); if (!sp) return; // de preferência no mato alto
       const { x, y } = sp;
       const biome = this.map.biome(x, y); if (biome === 'vila') continue;
-      if (this.wilds.some((w) => w.alive && Math.hypot(w.x - x, w.y - y) < 6 * 16)) continue; // longe dos outros selvagens
+      if (this.wilds.some((w) => w.alive && Math.hypot(w.x - x, w.y - y) < (ambiente ? 3.5 : 6) * 16)) continue; // longe dos outros selvagens
       // tabela da área (assets/maps: "encounters" na área ou no interior) ou a do bioma
       const room = this.map.interiorAt(x, y), zone = room ?? this.map.areaAt(x, y), own = zone?.encounters;
       const table = this.#encounterTable(own, biome, !room && nightNow(), zone, room ? null : x, room ? null : y).filter((e) => this.available.includes(e[0]) && SPECIES[e[0]]);
@@ -296,14 +296,16 @@ class Game {
       const mon = new Mon(dex, lo + Math.floor(Math.random() * (hi - lo + 1)), { form: form ?? null });
       const w = new PokeEntity(this, mon, 'wild', x, y);
       await w.ready;
-      if (this.wilds.filter((o) => o.alive).length >= WILD_MAX + 2) { w.view.destroy({ children: true }); return; } // a área encheu enquanto o sprite baixava
+      if (this.wilds.filter((o) => o.alive).length >= WILD_MAX + WILD_AMBIENTE) { w.view.destroy({ children: true }); return; } // a área encheu enquanto o sprite baixava
       // sem internet: só aparecem espécies cujos sprites já estão guardados (nada de bolinha no lugar do Pokémon)
       if (w.set?.placeholder && !navigator.onLine) { w.view.destroy({ children: true }); continue; }
+      w.ambiente = ambiente;
+      if (ambiente) w.temper = 'neutral'; // observa e passeia; só reage a um ataque direto
       if (Math.random() < 0.15) w.ai.state = 'sleep';
       this.entities.push(w); this.wilds.push(w); this.ents.addChild(w.view);
       w.alpha = 0; w.fadeIn = true;
       if (sp.tall) this.map.rustle(x, y, 0.8);
-      this.combat.ai.onSpawn(w); // bandos com alfa
+      if (!ambiente) this.combat.ai.onSpawn(w); // população tranquila não cria bandos com alfa
       return;
     }
   }
@@ -387,7 +389,7 @@ class Game {
     if (!r) return;
     if (l !== r.lead || !l?.alive || this.story?.battle || this.tocas?.reide || this.net?.battle) { this.retornoAuto = null; return; }
     if (this.time < r.em) return;
-    const perto = this.wilds.some(w => w.alive && !w.dead && Math.hypot(w.x - l.x, w.y - l.y) < 14 * 16);
+    const perto = this.wilds.some(w => w.alive && !w.dead && (!w.ambiente || w.ai?.state === 'aggro') && Math.hypot(w.x - l.x, w.y - l.y) < 14 * 16);
     if (perto || l.charging || l.dash || l.lock > 0) { r.em = this.time + 0.5; return; }
     this.recall();
   }
@@ -844,7 +846,7 @@ class Game {
   #updateWild(dt) {
     this.spawnT -= dt;
     const p = this.player;
-    // poucos selvagens por vez e espaçados: cheio demais ficava impossível de jogar (WILD_MAX vivos, um novo a cada ~5 s)
+    // Quatro encontros normais e até seis habitantes tranquilos, sem reposição no meio da luta.
     // (um por vez: com os sprites demorando a baixar, vários nasciam de uma vez só quando chegavam e passavam de WILD_MAX)
     // batalha com treinador (ou reide): nenhum selvagem nasce, e os que estão por perto vão embora em vez de entrar no meio
     const lutaTreinador = (this.story?.battle && !this.story.battle.done) || (this.tocas?.reide && !this.tocas.reide.done);
@@ -854,7 +856,18 @@ class Game {
     }
     for (const w of [...this.wilds]) if (w.saindo && w.alpha <= 0.02) this.removeEntity(w);
     this.lend?.update();
-    if (!lutaTreinador && this.spawnT <= 0 && !this.spawnPend && this.wilds.filter((w) => w.alive).length < WILD_MAX) { this.spawnT = 4 + Math.random() * 3; this.spawnPend = true; this.spawnWild().catch(() => {}).finally(() => { this.spawnPend = false; }); }
+    const vivos = this.wilds.filter(w => w.alive);
+    const ambiente = vivos.filter(w => w.ambiente).length;
+    this.ambienteT = (this.ambienteT ?? 0) - dt;
+    const emCombate = vivos.some(w => w.ai.state === 'aggro' && w.aggroTarget?.side !== 'wild');
+    if (!lutaTreinador && !this.spawnPend && !emCombate) {
+      const normal = this.spawnT <= 0 && vivos.filter(w => !w.ambiente).length < WILD_MAX;
+      const extra = !this.map.isIndoor(p.x, p.y) && this.ambienteT <= 0 && ambiente < WILD_AMBIENTE;
+      if (normal || extra) {
+        if (normal) this.spawnT = 4 + Math.random() * 3; else this.ambienteT = 0.9;
+        this.spawnPend = true; this.spawnWild(!normal).catch(() => {}).finally(() => { this.spawnPend = false; });
+      }
+    }
     for (const w of this.wilds) {
       if (!w.alive || w.busy) { w.vx = w.vy = 0; continue; }
       if (w.stun > 0 || (w.lock > 0 && !this.combat.andando(w))) { w.vx = w.vy = 0; continue; }

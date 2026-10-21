@@ -1,3 +1,4 @@
+import { SELVAGENS_COMBATE, SELVAGENS_TOTAL } from '../world/populacao.js';
 import { PokeEntity } from '../entities/pokemon.js';
 import { Mon } from '../data/mon.js';
 import { effectiveness } from '../data/types.js';
@@ -25,7 +26,7 @@ export class WildAI {
   // ---------- percepção ----------
   noise(x, y, r, src) {
     for (const w of this.g.wilds ?? []) {
-      if (!w.alive || w === src) continue;
+      if (!w.alive || w === src || w.ambiente) continue;
       const d = Math.hypot(w.x - x, w.y - y);
       if (d > r) continue;
       const ai = w.ai;
@@ -45,6 +46,11 @@ export class WildAI {
 
   provoke(w, by, cornered = false) {
     if (w.side !== 'wild' || !w.alive || !by) return;
+    // A população extra não transforma exploração em combate contra uma multidão.
+    const contraJogador = by === this.g.player || by.side === 'ally';
+    const jaPressiona = w.ai.state === 'aggro' && (w.aggroTarget === this.g.player || w.aggroTarget?.side === 'ally');
+    if (contraJogador && !jaPressiona && (this.g.wilds ?? []).filter(o =>
+      o !== w && o.alive && o.ai.state === 'aggro' && (o.aggroTarget === this.g.player || o.aggroTarget?.side === 'ally')).length >= SELVAGENS_COMBATE) return;
     if (w.ai.state === 'sleep') this.wake(w);
     if (by.isTrainer && this.g.lead?.alive && Math.random() < 0.7) by = this.g.lead;
     // (os tímidos não fogem mais do combate: revidam como os neutros; pedido do dono)
@@ -59,7 +65,7 @@ export class WildAI {
       this.g.fx.shock(a.x, a.y, 0xff3a2a, 40, 0.5);
       this.g.fx.number(a.x, a.y - 44, 'O alfa chamou o bando!', 0xff6a5a, true, 'banner');
       this.c.sfx('howl'); this.g.fx.kick(0.15, 0);
-      for (const m of pk.members) if (m !== w && m.alive) { m.ai.state = 'aggro'; m.ai.t = 12; m.aggroTarget = by; m.ai.react = 0.3 + Math.random() * 0.4; this.#mark(m, '!', 0xff5a4a); }
+      for (const m of pk.members) if (m !== w && m.alive) { this.provoke(m, by); m.ai.react = 0.3 + Math.random() * 0.4; this.#mark(m, '!', 0xff5a4a); }
       this.g.later(6, () => { pk.called = false; });
     }
   }
@@ -72,10 +78,12 @@ export class WildAI {
     w.pack = pack; this.makeAlpha(w);
     const n = 1 + (Math.random() < 0.3 ? 1 : 0); // bando pequeno: alfa + 1 ou 2
     for (let i = 0; i < n; i++) {
+      if (g.wilds.filter(o => o.alive).length >= SELVAGENS_TOTAL) break;
       const a = Math.random() * Math.PI * 2, x = w.x + Math.cos(a) * 22, y = w.y + Math.sin(a) * 18;
       if (g.map.solidAt(x, y)) continue;
       const m = new PokeEntity(g, new Mon(w.mon.dex, Math.max(2, w.mon.level - 4 + Math.floor(Math.random() * 2))), 'wild', x, y);
       await m.ready;
+      if (g.wilds.filter(o => o.alive).length >= SELVAGENS_TOTAL) { m.view.destroy({ children: true }); break; }
       m.pack = pack; pack.members.add(m); m.ai.state = 'follow'; m.temper = w.temper === 'timid' ? 'timid' : 'neutral';
       g.entities.push(m); g.wilds.push(m); g.ents.addChild(m.view); m.alpha = 0; m.fadeIn = true;
     }
@@ -143,7 +151,7 @@ export class WildAI {
     if (sight > 0 && ai.react <= 0) {
       const tgt = lead?.alive && !this.c.alt.hidden(lead) ? lead : pl;
       const d = Math.hypot(tgt.x - e.x, tgt.y - e.y);
-      if (e.temper === 'aggressive' && d < sight) { this.provoke(e, tgt); return Z; }
+      if (!e.ambiente && e.temper === 'aggressive' && d < sight) { this.provoke(e, tgt); return Z; }
     }
     if (ai.state === 'follow') {
       const a = e.pack?.alpha;
@@ -170,6 +178,7 @@ export class WildAI {
       // alvo caiu: procura outro do time do jogador por perto, senão se acalma
       const lead = g.lead;
       tg = lead?.alive && Math.hypot(lead.x - e.x, lead.y - e.y) < 160 ? lead : null;
+      if (tg && (g.wilds ?? []).filter(o => o !== e && o.alive && o.ai.state === 'aggro' && (o.aggroTarget === g.player || o.aggroTarget?.side === 'ally')).length >= SELVAGENS_COMBATE) tg = null;
       if (!tg) { ai.state = 'idle'; ai.t = 2; e.aggroTarget = null; ai.home = { x: e.x, y: e.y }; return Z; }
       e.aggroTarget = tg;
     }
@@ -241,7 +250,7 @@ export class WildAI {
   // ---------- rivais e bandos (varredura lenta) ----------
   update(dt) {
     this.scanT -= dt; if (this.scanT > 0) return; this.scanT = 1.5;
-    const W = (this.g.wilds ?? []).filter((w) => w.alive && (w.ai.state === 'idle' || w.ai.state === 'wander'));
+    const W = (this.g.wilds ?? []).filter((w) => w.alive && !w.ambiente && (w.ai.state === 'idle' || w.ai.state === 'wander'));
     const pl = this.g.player;
     for (const a of W) {
       if (Math.hypot(a.x - pl.x, a.y - pl.y) > 320 || Math.random() > 0.25) continue;
