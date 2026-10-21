@@ -43,13 +43,15 @@ const SELVAGEM = () => `(async () => {
   G.player.x = 318 * 16; G.player.y = 292 * 16; G.cam.x = G.player.x; G.cam.y = G.player.y; G.mundo.setHour(11);
   const { Mon } = await import('/src/data/mon.js');
   const VIT = ${modo === 'vitrine'};
-  G.party = VIT ? [new Mon(6, 40), new Mon(25, 30)] : [new Mon(25, 30), new Mon(4, 28)]; G.leadIdx = 0; G.hudLead(); G.hudMoves();
+  G.party = VIT ? [new Mon(6, 40), new Mon(25, 30)] : [new Mon(25, 30), new Mon(4, 28)]; G.leadIdx = 0; if (${Number(process.env.DEX) || 0}) G.party[0].moves = ['thunderShock', 'quickAttack', 'ironTail']; G.hudLead(); G.hudMoves();
   if (VIT) { G.party[0].item = 'charizarditeX'; G.bag.megaBracelet = 1; }
   const BANDO = ${modo === 'bando'}; // bando: 3 selvagens brigando ao mesmo tempo (cada um com a sua plaquinha)
   for (let k = 0; k < 12 && G.wilds.filter((q) => q.alive).length < (BANDO ? 3 : 1); k++) await G.spawnWild();
   const w = G.wilds.find((q) => q.alive), bando = BANDO ? G.wilds.filter((q) => q.alive && q !== w).slice(0, 2) : [];
   for (const o of G.wilds) if (o !== w && !bando.includes(o)) o.x += 4000;
   bando.forEach((o, i) => { o.x = G.player.x + 60 + i * 40; o.y = G.player.y - 70 + i * 50; o.mon.level = 26; o.mon.calc?.(); o.mon.hp = o.mon.stats.hp; o.ai.state = 'aggro'; o.aggroTarget = G.player; });
+  // DEX fixa a espécie da gravação sem alterar os dados do jogo.
+  if (${Number(process.env.DEX) || 0}) { w.mon = new Mon(${Number(process.env.DEX) || 0}, 28); if (w.mon.dex === 7) w.mon.moves = ['waterGun', 'tackle']; const { loadPokemonSprites } = await import('/src/sprites/pmd.js'); w.setSprites(await loadPokemonSprites(w.mon.spriteKey)); }
   w.x = G.player.x + 80; w.y = G.player.y - 30; w.mon.level = VIT ? 50 : 28; w.mon.calc?.(); w.mon.hp = w.mon.stats.hp;
   w.ai.state = 'aggro'; w.aggroTarget = G.player;
   G.throwMon(0, G.player.x + 30, G.player.y - 10); await espera(1500);
@@ -144,7 +146,7 @@ try {
     for (let i = 0; i < n; i++) {
       await until(() => P.ev(`window.__tj >= ${i * passo}`), 60000, 20);
       await P.ev('game.app.ticker.speed = 0, 1');
-      const s = await P.raw('Page.captureScreenshot', { format: 'jpeg', quality: 80 });
+      const s = await P.raw('Page.captureScreenshot', { format: 'jpeg', quality: 80, clip: { x: 0, y: 0, width: W, height: H, scale: CEL ? 0.5 : 1 } });
       await P.ev(`game.app.ticker.speed = ${LENTO}, 1`);
       const f = `${OUT}/${TAG}-${modo}-${String(i).padStart(2, '0')}.jpg`; writeFileSync(f, Buffer.from(s.result.data, 'base64')); arqs.push(f);
     }

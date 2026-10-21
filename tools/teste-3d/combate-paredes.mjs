@@ -68,7 +68,7 @@ try {
       await g.sendOut(0, { x: p.x + L0.dx * 18, y: p.y + L0.dy * 18 });
       const npc = { x: (L0.x + L0.dx * 4) * T + 8, y: (L0.y + L0.dy * 4) * T + 10, faceTo() {}, throwPose() {}, goHome() {}, h: 20 };
       const fm = new Mon(dB, 30); fm.moves = gB.slice(0, 4);
-      const b = new TrainerBattle(g.story, npc, { id: 'teste_paredes', name: 'Teste', team: [[dB, 30]] }, { team: [fm], semBola: true, noFlee: true, noBlackout: true });
+      const b = new TrainerBattle(g.story, npc, { id: n % 2 ? 'rival2' : 'teste_paredes', name: 'Teste', team: [[dB, 30]] }, { team: [fm], semBola: true, noFlee: true, noBlackout: true });
       g.story.battle = b; g.story.busy = false;
       b.start();
       const prev = new Map();

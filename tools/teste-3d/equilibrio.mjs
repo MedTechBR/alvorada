@@ -49,6 +49,8 @@ try {
   writeFileSync(`${pasta}/${fase}.json`,JSON.stringify(doc,null,2)+'\n');
   if(fase==='depois'){
     const base=JSON.parse(readFileSync(process.argv[3]??`${pasta}/antes.json`)).resultados;
+    if (base.length !== resultados.length) throw Error('Número de lutas diferente da referência');
+    resultados.forEach((r,i)=>{ const a=base[i]; if(r.modo!==a.modo || r.seed!==a.seed || r.hp!==a.hp || JSON.stringify(r.par)!==JSON.stringify(a.par)) throw Error('Cenários diferentes'); if(r.perdaMin>a.perdaMin+1e-8) throw Error('Dificuldade aumentou na luta '+i); });
     // A taxa agregada usa o tempo total de exposição; também exige cada grupo sem aumento.
     for(const modo of ['selvagem','rival']){
       const calc=rs=>{const a=rs.filter(r=>r.modo===modo),t=a.reduce((s,r)=>s+r.dur,0);return {perdaMin:a.reduce((s,r)=>s+r.perda,0)*60/t,dur:t/a.length,golpesMinA:a.reduce((s,r)=>s+r.golpesA,0)*60/t,golpesMinB:a.reduce((s,r)=>s+r.golpesB,0)*60/t};};
