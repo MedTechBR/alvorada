@@ -1,3 +1,4 @@
+import { controlesGiro } from './giro.js';
 // Câmera dinâmica do 3D (estilo HD-2D: Octopath, Triangle Strategy). Só decide ONDE a câmera fica;
 // quem desenha é index.js. O zoom do jogador (+/−, roda, pinça) continua valendo por cima de tudo.
 //   explorar  : baixa e perto; olha um pouco à frente de para onde se anda; parado, aproxima de leve
@@ -13,7 +14,7 @@ const CHAVE = 'alvorada.camera3d';
 
 export class CameraDinamica {
   constructor(v) {
-    this.v = v;
+    this.v = v; this.manual = 0; this.controles = controlesGiro(v);
     this.x = null; this.z = null; this.dist = 1; this.incl = 44; this.giro = 0; this.rolo = 0;
     this.olhar = { x: 0, z: 0 }; this.parado = 0; this.batalhaK = 0;
     this.imp = 0; this.impGiro = 0;
@@ -30,6 +31,7 @@ export class CameraDinamica {
   // devolve { x, z (foco no chão, px de mundo), dist (multiplicador), incl (graus), giro, rolo (graus) }
   update(dt) {
     const g = this.v.g, p = g.player, c = g.cam ?? p;
+    this.controles.style.display = g.ui?.state === 'play' && !g.ui.dialog?.open ? 'flex' : 'none';
     if (!c) return null;
     const pk = g.mode === 'pokemon' && g.lead?.alive ? g.lead : null;
     const foco = pk ?? p;
@@ -108,7 +110,7 @@ export class CameraDinamica {
     this.x = pula ? alvoX : amortece(this.x, alvoX, 9, dt); this.z = pula ? alvoZ : amortece(this.z, alvoZ, 9, dt);
     this.dist = pula ? dist : amortece(this.dist, dist, 3, dt);
     this.incl = pula ? incl : amortece(this.incl, incl, 3, dt);
-    this.giro = amortece(this.giro, giro, 1.5, dt);
+    this.giro = amortece(this.giro, giro + this.manual, 8, dt);
     return { x: this.x, z: this.z, dist: this.dist, incl: this.incl * RAD, giro: this.giro * RAD, rolo: this.rolo * RAD };
   }
   // Enquadramento da sala inteira (perspectiva de verdade): do topo da parede do fundo (72) à parede baixa da frente,
@@ -158,10 +160,11 @@ export class CameraDinamica {
     if (!f) return 0;
     const L = this.v.L, sx = Math.floor(f.x / 256), sy = Math.floor(f.y / 256), t = Math.tan(incl * RAD);
     let pior = 0;
-    for (let j = 0; j <= 2; j++) for (let i = -1; i <= 1; i++) for (const o of L.objetosDoSetor(sx + i, sy + j)) {
+    const a = this.giro * RAD, sn = Math.sin(a), cs = Math.cos(a);
+    for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) for (const o of L.objetosDoSetor(sx + i, sy + j)) {
       const topo = o.__topo3d; if (topo == null || o.dead) continue;
-      const dz = o.y - 4 - f.y; if (dz <= 2 || dz > 300) continue;
-      const meia = (o.fw ?? 1) * 8 + 6; if (Math.abs(o.x - f.x) > meia) continue;
+      const ox = o.x - f.x, oz = o.y - 4 - f.y, dz = ox * sn + oz * cs; if (dz <= 2 || dz > 300) continue;
+      const meia = (o.fw ?? 1) * 8 + 6; if (Math.abs(ox * cs - oz * sn) > meia) continue;
       const linha = (this.v.altura(f.x, f.y) + 6) + dz * t; // altura da linha de visão (cabeça do jogador) naquele ponto
       const sobra = topo - linha; if (sobra > 0) pior = Math.max(pior, Math.min(1, sobra / 30));
     }

@@ -76,3 +76,10 @@ Para gerar uma nova referência `antes`, use a revisão anterior ao combate (`10
 - Capturas reais em `tools/shots/combate-fluido/acao-selvagem-00.jpg`, `01.jpg` e `02.jpg` (844×390); quadra em `quadra-ginasio-00.jpg`. Espécie fixada com `DEX=7` apenas para a gravação.
 
 Logs completos em `tools/resultados/combate/logs/`. O servidor local pode ser aberto em http://127.0.0.1:8700/?teste&nosw.
+
+## Retorno automático e câmera girável
+
+- `src/main.js`: depois de derrotar um selvagem, aguarda 1,2 s e recolhe o Pokémon se não houver outro vivo a menos de 14 blocos. Adia durante golpes e não interfere em batalhas de treinador/reides. Explorar sem lutar não dispara o retorno. Movimento livre, grade e mira por analógico acompanham o giro da câmera.
+- `src/visual3d/giro.js`: botões ↶ / N / ↷ no topo central, utilizáveis por mouse ou toque, com passos de 90° e restauração da vista inicial.
+- `src/visual3d/camera.js`: giro suave e detecção de obstáculos na direção atual da câmera.
+- `tools/teste-3d/retorno-camera.mjs`: testa espera, adversário restante, vitória, proteção das lutas de treinador, giro, restauração e transformação das direções. Teste de jornada também passou.
