@@ -61,7 +61,11 @@ export class Combat {
   }
   move(id) { return MOVES[id]; }
   fluido(e) { return combateFluido(this.g, e); }
-  recarga(e, mv) { return this.fluido(e) && e.side === 'ally' && golpeLeve(mv) ? Math.min(mv.cd, 0.8) : mv.cd; }
+  recarga(e, mv) {
+    if (!this.fluido(e) || e.side !== 'ally') return mv.cd;
+    if (golpeLeve(mv)) return Math.min(mv.cd, 0.8);
+    return mv.cat === 'status' ? mv.cd : Math.min(mv.cd, 1.4);
+  }
   // O bloqueio ainda impede outro ataque; só a recuperação permite continuar andando.
   andando(e) {
     if (!this.fluido(e) || e.quedaAte > this.g.time || e.flash > 0 || e.stun > 0) return false;
@@ -145,8 +149,8 @@ export class Combat {
   // ---------- telegrafia (selvagens avisam antes de atacar) ----------
   windup(user, slot, target) {
     const { id, mv } = this.moveAt(user, slot);
-    if (!mv || user.cds[slot] > 0 || user.lock > 0 || user.stun > 0 || user.charging || !user.alive) return false;
-    user.cds[slot] = mv.cd * 1.2;
+    if (!mv || Math.max(0, ...user.cds) > 0 || user.lock > 0 || user.stun > 0 || user.charging || !user.alive) return false;
+    user.ultimaRecarga = mv.cd * 1.2; user.cds.fill(user.ultimaRecarga);
     const kind = kindOf(id, mv);
     const pw = mv.power ?? 40, melee = kind === 'melee' || kind === 'multi';
     let W = (melee ? 0.36 : 0.5) + pw / 320 + (BEAMS[id] ? 0.25 + (BEAMS[id].charge ?? 0) : 0) + (kind === 'sky' ? 0.2 : 0);
@@ -221,8 +225,8 @@ export class Combat {
     if (myBeam) { myBeam.mash = Math.min(2, myBeam.mash + 0.3); this.g.fx.emit(myBeam.hx, myBeam.hy, { tex: 'spark', color: 0xffffff, n: 4, speed: 60, life: 0.15 }); return true; }
     if (user.alt?.mode === 'dive' || user.alt?.mode === 'dig') { this.alt.emerge(user, ax, ay); return true; }
     if (!opts.forced) {
-      if (user.cds[slot] > 0 || user.lock > 0 || user.stun > 0 || user.charging) return false;
-      user.cds[slot] = this.recarga(user, mv) * (user.side === 'wild' ? 1.2 : 1);
+      if (Math.max(0, ...user.cds) > 0 || user.lock > 0 || user.stun > 0 || user.charging) return false;
+      user.ultimaRecarga = this.recarga(user, mv) * (user.side === 'wild' ? 1.2 : 1); user.cds.fill(user.ultimaRecarga);
     }
     this.g.arenaGinasio?.aoUsar(user, id, mv); // arena de ginásio: golpe no ritmo do berimbau
     if (mv.max) this.onMax?.(user, id, mv, ax, ay); // Max Golpe: recarga única, clima, campo e estágios (src/combat/poder.js)
@@ -254,7 +258,7 @@ export class Combat {
       user.passoGolpe = golpeLeve(mv) ? 1 : 0.65;
       if (user.side === 'ally' && user.contraAte > g.time) {
         // A recompensa é resposta imediata e proteção, sem aumentar o dano dos adversários.
-        user.contraAte = 0; user.cds[slot] = Math.min(user.cds[slot], 0.6);
+        user.contraAte = 0; user.cds.fill(Math.min(user.cds[slot], 0.6));
         user.iframes = Math.max(user.iframes, 0.24);
         this.vfx.resposta(user, mv.type);
       }
@@ -461,7 +465,7 @@ export class Combat {
     // mira acompanha devagar (o jogador pela mira, o selvagem pelo alvo)
     if (!b.struggle) {
       let want = b.ang;
-      if (u.side === 'ally') { const a = this.pilot.aimPoint(u); want = Math.atan2(a.y - u.y, a.x - u.x); }
+      if (u.side === 'ally') { const a = this.pilot.aimPoint(u); want = Math.atan2(a.y - u.y, a.x - u.x); b.alvoVisual = this.#aimTarget(u, a.x, a.y); }
       else if (u.aggroTarget && u.aggroTarget.alive !== false) want = Math.atan2(u.aggroTarget.y - u.y, u.aggroTarget.x - u.x);
       b.ang += clamp(angDiff(want, b.ang), -1.5 * dt, 1.5 * dt);
       b.t += dt;
@@ -478,13 +482,21 @@ export class Combat {
     for (let s = 8; s < L; s += 6) { if (this.arena.solidAt(b.ox + ca * s, b.oy + sa * s + groundOff)) { L = s; b.blocked = true; break; } }
     if (b.struggle) L = Math.hypot(b.struggle.mx - b.ox, b.struggle.my - b.oy);
     b.len = L; b.hx = b.ox + ca * L; b.hy = b.oy + sa * L;
+    // O alcance e a colisão usam o chão. A coluna visual desce da boca até o corpo do alvo:
+    // espécies altas (Gyarados) não atiram acima de Pokémon pequenos.
+    b.gx = b.ox + ca * L; b.gy = u.y + sa * L;
+    if (u.side === 'ally' && b.alvoVisual?.alive && !b.struggle) {
+      const alvo=b.alvoVisual, distancia=Math.max(1,Math.hypot(alvo.x-b.ox,alvo.y-u.y));
+      b.hy=b.oy+(this.centerY(alvo)-b.oy)*L/distancia;
+    }
+    b.visualLen=Math.hypot(b.hx-b.ox,b.hy-b.oy);
     // dano em tiques ao longo do jato
     b.tick -= dt;
     if (b.tick <= 0 && !b.struggle) {
       b.tick = b.cfg.tick;
       for (const t of this.targetsOf(u)) {
         const cy = t.isTrainer ? t.y - 10 : this.centerY(t);
-        if (segDist(t.x, cy, b.ox, b.oy, b.hx, b.hy) < b.cfg.width / 2 + t.r + 2) {
+        if ((u.side === 'ally' ? segDist(t.x, t.y, b.ox, u.y, b.gx, b.gy) : segDist(t.x, cy, b.ox, b.oy, b.hx, b.hy)) < b.cfg.width / 2 + t.r + 2) {
           this.strike(u, t, b.mv, b.id, ca, sa, { src: 'beam', scale: b.cfg.share * b.cfg.tick / b.cfg.dur, knock: 0.35 * (b.cfg.knock ?? 1), quiet: true });
         }
       }
@@ -494,20 +506,20 @@ export class Combat {
       g.fx.shake = Math.max(g.fx.shake, 0.06);
       this.ai.noise(b.hx, b.hy, 80, u);
     }
-    this.#beamFx(b, dt, ca, sa);
+    this.#beamFx(b, dt, (b.hx-b.ox)/Math.max(1,b.visualLen), (b.hy-b.oy)/Math.max(1,b.visualLen));
     if (!b.struggle && b.t >= b.cfg.dur) this.#endBeam(b);
   }
   #beamFx(b, dt, ca, sa) {
     const g = this.g, G = this.gfx, cfg = b.cfg, w = cfg.width * 1.25, now = g.time, st = cfg.style ?? b.mv.type;
     const [outer, mid, core] = cfg.colors ?? [b.color, b.color, 0xffffff];
-    const nx = -sa, ny = ca;
+    const nx = -sa, ny = ca, len = b.visualLen ?? b.len;
     // trilhos: um (normal) ou dois canhões paralelos (Hidro Bomba)
     const rails = cfg.double ? [-cfg.double, cfg.double] : [0];
     const wav = cfg.wavy ?? (st === 'psy' || st === 'aurora' ? 2 : 0);
     const path = (off, phase) => {
-      const n = Math.max(2, Math.ceil(b.len / 6)), pts = [];
+      const n = Math.max(2, Math.ceil(len / 6)), pts = [];
       for (let i = 0; i <= n; i++) {
-        const s0 = b.len * i / n, k = s0 / Math.max(1, b.len);
+        const s0 = len * i / n, k = s0 / Math.max(1, len);
         const o = off + (wav ? Math.sin(s0 * 0.18 - now * 26 + phase) * wav * Math.min(1, k * 3) : 0);
         pts.push(b.ox + ca * s0 + nx * o, b.oy + sa * s0 + ny * o);
       }
@@ -515,7 +527,7 @@ export class Combat {
     };
     // Pulsos viajam pela coluna do golpe: forma e direção legíveis sem aumentar as partículas.
     for (let i = 0; i < 3; i++) {
-      const k = (now * 2.8 + i / 3) % 1, x = b.ox + ca * b.len * k, y = b.oy + sa * b.len * k;
+      const k = (now * 2.8 + i / 3) % 1, x = b.ox + ca * len * k, y = b.oy + sa * len * k;
       G.moveTo(x - nx * w * 0.65, y - ny * w * 0.65).lineTo(x + nx * w * 0.65, y + ny * w * 0.65).stroke({ width: 1.5, color: mid, alpha: 0.65 });
     }
     const pulse = 1 + Math.sin(now * 30) * 0.1;
@@ -532,7 +544,7 @@ export class Combat {
       G.circle(b.ox + nx * off, b.oy + ny * off, w * 0.45 * pulse).fill({ color: core, alpha: 0.7 });
     }
     const R = (rate) => Math.floor(dt * rate * (cfg.thin ? 0.4 : 1) + Math.random());
-    const along = () => Math.random() * b.len;
+    const along = () => Math.random() * len;
     const at = (s0) => [b.ox + ca * s0, b.oy + sa * s0];
     if (st === 'fire') {
       for (let i = R(170); i > 0; i--) { const s0 = along(), [x, y] = at(s0), o = Math.sin(s0 * 0.18 - now * 26) * (wav || 0); g.fx.emit(x + nx * o, y + ny * o, { frames: 'flame', n: 1, speed: 40 + s0 * 0.6, dir: b.ang, spread: 0.5, life: 0.22, scale: 0.7 + s0 / b.maxLen * 0.9, end: 0.4, add: false, jitter: w * 0.4, vz: 20 }); }
@@ -1035,7 +1047,7 @@ export class Combat {
       this.perfectT = g.time + 1;
       if (this.fluido(who) && who.side === 'ally') {
         who.contraAte = g.time + 0.65; who.lock = 0;
-        for (let i = 0; i < who.cds.length; i++) if (golpeLeve(this.moveAt(who, i).mv)) who.cds[i] = 0;
+        who.cds.fill(0); // o contra-ataque libera a recarga compartilhada, não um botão isolado
         this.vfx.resposta(who, 'water');
       } else {
         g.fx.number(who.x, who.y - 40, 'Esquiva perfeita!', 0x9ad0ff, true, 'banner');

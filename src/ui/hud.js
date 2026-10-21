@@ -241,7 +241,7 @@ export class Hud {
     // recarga dos golpes (passos de 5%)
     const l = g.lead;
     if (l?.mon && this.cdEls) {
-      const ks = l.mon.moves.map((id, i) => { const mv = g.combat.moveAt(l, i).mv; return mv ? Math.round(Math.max(0, l.cds[i] / (mv.cd || 1)) * 20) : 0; });
+      const ks = l.mon.moves.map((id, i) => { const mv = g.combat.moveAt(l, i).mv; return mv ? Math.round(Math.max(0, l.cds[i] / (l.ultimaRecarga || mv.cd || 1)) * 20) : 0; });
       const key = ks.join(',');
       if (key !== this.v.cds) {
         this.v.cds = key;

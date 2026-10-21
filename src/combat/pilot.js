@@ -76,7 +76,7 @@ export class Pilot {
     const els = document.querySelectorAll('#moves .mv:not(.power)'), tbs = document.querySelectorAll('.tb.move');
     for (let i = 0; i < 4; i++) {
       const mv = this.c.moveAt(l, i).mv; if (!mv) continue; // em Dynamax, o Max Golpe
-      const cd = Math.max(0, l.cds[i]), k = cd / (this.c.recarga(l, mv) || 1);
+      const cd = Math.max(0, l.cds[i]), k = cd / (l.ultimaRecarga || this.c.recarga(l, mv) || 1);
       const el = els[i];
       if (el) {
         let n = el.querySelector('.cdn'); if (!n) { n = document.createElement('i'); n.className = 'cdn'; el.appendChild(n); }

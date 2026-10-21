@@ -179,7 +179,12 @@ export class Altitude {
     if (v) { e.x = v.x; e.y = v.y; e.kx = e.ky = 0; }
   }
   // de onde está até (x, y) sem atravessar parede
-  ate(e, x, y) { const s = this.solido(e); return this.g.map.ateLivre(e.x, e.y, x, y, (px, py) => s(Math.floor(px / T), Math.floor(py / T))); }
+  ate(e, x, y) {
+    const s = this.solido(e), r = Math.max(4, e.r ?? 6);
+    // A margem cobre também a quina entre duas amostras do percurso.
+    return this.g.map.ateLivre(e.x, e.y, x, y, (px, py) =>
+      [-r, 0, r].some(dx => [-r, 0, r].some(dy => s(Math.floor((px + dx) / T), Math.floor((py + dy) / T)))));
+  }
   #resolveBy(p, r, solid) {
     const x0 = Math.floor((p.x - r) / T), x1 = Math.floor((p.x + r) / T), y0 = Math.floor((p.y - r) / T), y1 = Math.floor((p.y + r) / T);
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
