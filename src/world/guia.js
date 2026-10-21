@@ -77,10 +77,12 @@ export class CampoGuia {
   // bloco visto mais perto de (x, y) (raio até r): o jogador pode estar em cima de algo que não é "nó"
   achar(x, y, r = 2) {
     const { W, H, dist } = this; let best = -1, bd = 1e9;
+    if (x >= 0 && y >= 0 && x < W && y < H && dist[x + y * W]) return x + y * W; // o bloco do jogador, se a busca já passou por ele
+    // senão o bloco visto MAIS PERTO do jogador (nunca trocar proximidade por distância ao alvo: pulava paredes e cercas)
     for (let j = -r; j <= r; j++) for (let i = -r; i <= r; i++) {
       const xx = x + i, yy = y + j; if (xx < 0 || yy < 0 || xx >= W || yy >= H) continue;
       const k = xx + yy * W, dd = dist[k]; if (!dd) continue;
-      const c = dd + (Math.abs(i) + Math.abs(j)) * 2; if (c < bd) { bd = c; best = k; }
+      const c = (Math.abs(i) + Math.abs(j)) * 100000 + dd; if (c < bd) { bd = c; best = k; }
     }
     return best;
   }
@@ -217,6 +219,7 @@ export function saltosDe(D, saltaveis, livre) {
 
 // ------------------------------------------------------------------------------------------------ lado do jogo
 const T = 16;
+const ALCANCE = 10; // blocos à frente, no caminho, para onde a seta aponta (8 a 12)
 const JUMPABLE = new Set(['log', 'stump', 'fence', 'fenceV', 'wfence', 'wfenceV']);
 const MONTARIAS = ['correr', 'nadar', 'escalar'];
 
@@ -271,24 +274,36 @@ export class Guia {
   // alvo: { x, y } em pixels (o alvo de verdade, mesmo dentro de outro prédio). Chamado todo quadro pelo HUD.
   update(dt, alvo) {
     const g = this.g, m = g.map, p = g.player;
-    if (!alvo || !m?.tiles || !p) { this.info = null; this.chave = ''; return null; }
+    if (!alvo || !m?.tiles || !p) { this.info = null; this.cam = null; this.pend = null; this.chave = ''; return null; }
     const caps = this.#caps();
     const ax = Math.floor(alvo.x / T), ay = Math.floor(alvo.y / T);
     const base = `${m.id}|${caps.join(',')}|${this.#sinal()}`;
     const mudouAlvo = !this.ultAlvo || Math.abs(ax - this.ultAlvo[0]) + Math.abs(ay - this.ultAlvo[1]) > 2 || (alvo.area ?? null) !== (this.ultArea ?? null);
     this.tRefaz -= dt;
-    if (mudouAlvo || base !== this.chave || this.tRefaz <= 0) this.#refazer(base, caps, ax, ay, alvo.area);
+    if (mudouAlvo || base !== this.chave) this.#refazer(base, caps, ax, ay, alvo.area);
+    else if (this.tRefaz <= 0) this.#refazer(base, caps, ax, ay, alvo.area, true); // a cada 20 s, sem apagar o campo atual
+    // busca nova de fundo (renovação suave): troca o campo quando ela alcança o jogador, sem a seta piscar
+    if (this.pend) {
+      const q = this.pend, qx = Math.floor(p.x / T), qy = Math.floor(p.y / T);
+      if (!q.terminou && q.achar(qx, qy, 1) < 0) { const t0 = performance.now(); while (!q.terminou && performance.now() - t0 < 1.5) { q.expandir(4000); if (q.achar(qx, qy, 1) >= 0) break; } }
+      if (q.terminou || q.achar(qx, qy, 1) >= 0) { this.pendCampo = this.campo; this.campo = q; this.G = q.G; this.pend = null; this.tInfo = 0; }
+    }
     // expande a busca até achar o jogador (fatias de ~2 ms)
     const c = this.campo, px = Math.floor(p.x / T), py = Math.floor(p.y / T);
     if (!c.terminou && c.achar(px, py, 1) < 0) {
       const t0 = performance.now();
       while (!c.terminou && performance.now() - t0 < 2) { c.expandir(6000); if (c.achar(px, py, 1) >= 0) break; }
     }
+    // o caminho segue o jogador: refeito a cada bloco que ele pisa, ao trocar de sala, ao sair do caminho (mais de
+    // 3 blocos) e a cada 0,2 s. É barato: o campo da busca já tem o "próximo passo" de todo bloco.
     this.tInfo -= dt;
-    if (this.tInfo <= 0 || mudouAlvo) { this.tInfo = 0.2; this.info = this.#info(px, py, alvo); }
+    const kq = px + py * c.W, sala = this.G?.salaDe?.(kq) ?? -1;
+    let longe = false;
+    if (this.cam && this.info?.ok) { let md = 1e9; for (let i = 0; i < Math.min(this.cam.pts.length, 40); i++) { const q = this.cam.pts[i]; md = Math.min(md, Math.abs((q % c.W) - px) + Math.abs(Math.floor(q / c.W) - py)); } longe = md > 3; }
+    if (this.tInfo <= 0 || mudouAlvo || kq !== this.kUlt || sala !== this.salaUlt || longe) { this.tInfo = 0.2; this.kUlt = kq; this.salaUlt = sala; this.info = this.#info(px, py, alvo); }
     return this.info;
   }
-  #refazer(base, caps, ax, ay, area = null) {
+  #refazer(base, caps, ax, ay, area = null, suave = false) {
     const m = this.g.map;
     this.#garantir();
     if (!this.campo || this.campo.W !== m.w || this.campo.H !== m.h) this.campo = new CampoGuia(m.w, m.h);
@@ -299,6 +314,11 @@ export class Guia {
     const G = this.Gc.G; this.comSaltos = false;
     // sementes (sementesDe): numa área, o chão andável dela (mato alto primeiro); num ponto, o bloco livre mais perto
     const T0 = this.TILE, sem = sementesDe({ W: m.w, H: m.h, OH: m.outdoorH ?? m.h, tiles: m.tiles, ALTO: new Set([T0.TALL, T0.TALLSNOW, T0.TALLDRY, T0.REED]) }, G, ax, ay, area);
+    if (suave && this.campo.W === m.w && !this.comSaltos && this.nivel === 0 && this.info?.ok) {
+      const q = this.pendCampo && this.pendCampo.W === m.w ? this.pendCampo : new CampoGuia(m.w, m.h);
+      q.iniciar(G, sem); this.pend = q; this.G0 = this.G; this.tRefaz = 20; this.inicio = performance.now(); this.motivo = undefined; return;
+    }
+    this.pend = null;
     this.campo.iniciar(G, sem);
     this.nivel = 0; this.salasNivel = new Set(sem.map((k) => G.salaDe(k)).filter((r) => r >= 0)); this.fontes = null;
     this.G = G; this.chave = base; this.ultAlvo = [ax, ay]; this.ultArea = area ?? null; this.tRefaz = 20; this.inicio = performance.now();
@@ -335,8 +355,8 @@ export class Guia {
       this.tRefaz = Math.min(this.tRefaz, 3); // sem caminho: tenta de novo logo (um portão de enigma pode ter aberto)
       return { pronto: true, ok: false, alvo, motivo: this.#motivo(px, py) };
     }
-    const cam = c.caminho(k, 600);
-    const wp = pontoDePassagem(cam, 12);
+    const cam = this.cam = c.caminho(k, 600);
+    const wp = pontoDePassagem(cam, ALCANCE);
     const xy = (q) => ({ x: (q % W) * T + 8, y: Math.floor(q / W) * T + 8 });
     const dist = c.dist[k] - 1;
     // trecho no "lugar" do jogador (até a primeira passagem): o pontilhado do minimapa e a porta de saída
