@@ -329,7 +329,7 @@ export class Mounts {
   }
   get active() { return !!this.kind; }
   get flying() { return this.kind === 'voar'; }
-  get busy() { return !!(this.hop || this.flight); }
+  get busy() { return !!(this.carregando || this.hop || this.flight); }
   get camLift() { return this.z * 0.8; } // a câmera acompanha o voo (o sprite sobe, o ponto no chão fica)
   get ghost() { return this.flying || this.under || !!this.hop; } // não esbarra em ninguém
   get rig() { const p = this.g.player; if (!this.#rig && p) this.#rig = new MountRig(this.g, p.view, p.body, p.view.children[0]); return this.#rig; }
@@ -499,7 +499,11 @@ export class Mounts {
     this.#whistle();
     this.#setKind(kind);
     if (kind === 'mergulhar') this.under = false;
-    const rig = this.rig; await rig.setKind(kind, this.cfg?.dex);
+    const rig = this.rig;
+    this.carregando = true;
+    try { await rig.setKind(kind, this.cfg?.dex); }
+    catch (erro) { this.#setKind(null); rig.setKind(null); throw erro; }
+    finally { this.carregando = false; }
     if (this.kind !== kind) return false;
     const tx = at?.x ?? p.x, ty = at?.y ?? p.y;
     rig.angle = FACE_A[p.dir] ?? Math.PI / 2;
@@ -698,6 +702,8 @@ export class Mounts {
   control(dt, pk, mx, my, mag, run) {
     const g = this.g, p = g.player;
     if (!p) return false;
+    // Ainda na margem: não desmonta nem anda até o sprite terminar de carregar.
+    if (this.carregando) { p.vx = p.vy = 0; return true; }
     this.#scan(dt);
     this.#input(dt, pk);
     this.#drawWhirls(dt);
