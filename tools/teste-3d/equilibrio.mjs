@@ -18,6 +18,7 @@ try {
         g.entities=[];g.wilds=[];g.timers=[];g.time=10;g.spawnT=1e9;g.story.battle=null;g.story.busy=false;g.mode='pokemon';
         g.player.x=318*16;g.player.y=292*16;g.player.kx=g.player.ky=0;g.player.seguro=null;g.grade.soltar(g.player);
         g.cam.x=g.player.x;g.cam.y=g.player.y;
+        g.mundo.update=dt=>g.story.battle?.update(dt);g.vivo.update=()=>{};g.vivo.pensar=()=>null;
         const c=g.combat; for(const k of ['projectiles','zones','beams','waves','falls','swings','struggles','surfs','skyMarks']) c[k]=[];
         c.perfectT=0;c.dodgers?.clear();g.fx.hitStop=0;
         const a=new Mon(${par[0]},20),b=new Mon(${par[1]},20);a.moves=['${par[2]}'];b.moves=['${par[3]}'];
@@ -31,6 +32,7 @@ try {
         // Mesmo roteiro de entrada: aproxima/contorna, tenta o golpe a cada 0,2 s, esquiva reativa.
         let quadros=0;const max=60*90;
         try { for(;quadros<max && l.alive && w.alive;quadros++){
+          seed=(${seed} ^ Math.imul(quadros+1,2654435761))>>>0;
           const dx=w.x-l.x,dy=w.y-l.y,d=Math.hypot(dx,dy)||1,rad=d>30?1:d<18?-0.4:0,lat=0.35*Math.sign(Math.sin(quadros/100)||1);
           const vx=dx/d*rad-dy/d*lat,vy=dy/d*rad+dx/d*lat,n=Math.max(1,Math.hypot(vx,vy));g.input.move.x=vx/n;g.input.move.y=vy/n;
           if(quadros%12===0)c.use(l,0,w.x,w.y);
