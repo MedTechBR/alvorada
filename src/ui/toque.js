@@ -7,8 +7,8 @@ import { portraitURL } from './portrait.js';
 // Controles de toque do celular (pedido do dono: "botões feios, texto escapando", "emoji com cara de mal acabado",
 // "outra forma de controlar"). Esquema no estilo Pokémon Unite / Brawl Stars:
 // - analógico flutuante à esquerda (src/engine/input.js); botões à direita, num cacho só;
-// - Pokémon em campo: golpe 1 grande, golpes 2 a 4 num arco em volta (tocar = mira automática, arrastar = mira),
-//   esquiva grande separada do arco, e os pequenos em volta (bola de captura, equipe, voar, pular, Mega);
+// - Pokémon em campo: quatro golpes em duas fileiras (tocar = mira automática, arrastar = mira),
+//   esquiva ao lado e utilidades agrupadas acima (bola de captura, equipe, voar, pular, Mega);
 // - treinador: só o essencial (Enviar, correr, equipe, montaria); A e Capturar aparecem quando há o que fazer;
 // - botão que não faz nada no momento some (não fica cinza ocupando lugar);
 // - "Equipe" abre uma faixa com os retratos (toque troca) e o botão Recolher.
@@ -40,21 +40,13 @@ export const ICONES = {
 };
 const ICONE_CAT = { phys: ICONES.fisico, spec: ICONES.especial, status: ICONES.status };
 
-// Posições (centro do botão, em px a partir do canto inferior direito do cacho) e tamanhos (diâmetro).
-// Deitado: golpe 1 no canto, arco de raio 106 em volta, esquiva à esquerda do arco, pequenos num anel de fora
-// e numa fileira de baixo. Em pé: o mesmo arco, esquiva mais alta e os pequenos em duas fileiras em cima.
-const TAM = { main: 80, arco: 60, esq: 68, peq: 52 };
-let ARCO = [[56, 56], [161.6, 46.8], [131, 131], [46.8, 161.6]]; // golpe 1 (grande) e o arco (−5°, 45°, 95°)
-// Maquete B (só para comparar, ?toque=losango): os 4 golpes iguais em losango, como no demo de fã, esquiva e pequenos ao lado
-const LOSANGO = new URLSearchParams(location.search).get('toque') === 'losango';
-if (LOSANGO) { ARCO = [[122, 178], [188, 112], [56, 112], [122, 46]]; TAM.main = 64; }
-const LAYOUT = LOSANGO ? {
-  deitado: { esq: [262, 46], peq: [[262, 124], [262, 192], [326, 46], [326, 124], [390, 46], [390, 124]] },
-  empe: { esq: [226, 122], peq: [[226, 222], [158, 236], [90, 246], [226, 290], [158, 304], [90, 314]] },
-} : {
-  deitado: { esq: [252, 46], peq: [[215.5, 120.4], [160.7, 190], [324, 38], [290, 106], [382, 38], [350, 106]] },
-  // em pé o cacho fica estreito (até 234 px) para não encostar no analógico da esquerda
-  empe: { esq: [200, 150], peq: [[204, 238], [138, 226], [72, 236], [204, 300], [138, 290], [72, 300]] },
+// Golpes em duas fileiras próximas; esquiva ao lado e utilidades agrupadas acima.
+// Centros medidos a partir do canto inferior direito. Nenhuma ação ocupa o centro da luta.
+const TAM = { main: 68, arco: 64, esq: 60, peq: 48 };
+const ARCO = [[44, 44], [120, 44], [120, 120], [44, 120]];
+const LAYOUT = {
+  deitado: { esq: [196, 44], peq: [[196, 112], [44, 192], [100, 192], [156, 192], [212, 192], [196, 250]] },
+  empe: { esq: [196, 44], peq: [[196, 112], [44, 192], [100, 192], [156, 192], [212, 192], [196, 250]] },
 };
 // lugar fixo de cada botão pequeno (índice em peq); os de contexto (Mega, A no modo Pokémon) ocupam a próxima vaga livre
 const FIXO = { pokemon: { 't-ball': 0, 't-team': 1, 't-jump': 2, 't-alt': 3 }, treinador: { 't-mount': 0 } };
