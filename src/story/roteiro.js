@@ -125,7 +125,7 @@ export class Roteiro {
   #refresh() {
     for (const n of this.atores.values()) {
       const v = this.#visivel(n.e, n);
-      if (v !== n.visible) { n.visible = v; if (!v && n.e.cena) this.g.fx?.burst?.(n.x, n.y - 10, 0x9a7ac8, 0.6); }
+      if (v !== n.visible) n.visible = v; // sem explosão roxa: no 3D virava uma mancha de luz sem explicação no chão
     }
     for (const a of this.atoresPk ?? []) {
       const v = this.#visivel(a.e), s = this.g.map.spots?.[a.e.spot];
@@ -183,7 +183,6 @@ export class Roteiro {
       if (!alvo && s && this.#mapaDe(s.x, s.y) === sala) { const d = Math.hypot(s.x - p.x, s.y - p.y) / T; const sx = s.x + (i - (n - 1) / 2) * 22; if (d >= 2 && d <= 5 && livreEm(sx, s.y) && caminhoLivre(sx, s.y)) alvo = { x: sx, y: s.y }; }
       alvo ??= { x: p.x + 2 * T * (i % 2 ? 1 : -1), y: p.y + 2 * T };
       const livre = this.#livre(alvo.x, alvo.y); a.place(livre.x, livre.y); a.faceTo(p.x, p.y);
-      g.fx?.burst?.(livre.x, livre.y - 10, 0x9a7ac8, 0.5);
     });
   }
   // Garante que quem fala está na tela (regra de todas as cenas): se não há ninguém com esse papel perto do jogador, na
