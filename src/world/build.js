@@ -183,6 +183,25 @@ export function* passosParte(S, P) {
       novos.push({ kind: ks[Math.floor(hash(x, y, 77) * ks.length)], x, y, fw: 2, fh: 1, cells: [], forest: true, parte: P.i });
     }
   }
+  // mata sem árvore: o chão FOREST é sólido, mas no estilo Let's Go ele parece grama (a árvore é que faz o muro). Sobram blocos
+  // sem árvore onde a grade de pares não fecha (borda de trilha, faixa de um bloco, linha ímpar): cada um ganha uma moita
+  // só de enfeite (sem pegada: o bloco já é sólido), para o muro nunca ser invisível. tools/auditar-invisiveis.mjs confere.
+  if (KINDS.moita) {
+    const cob = new Set(), ARV = /^(tree|tree2|pine|pine2|pineT|autumn|bigtree|bigautumn)$/;
+    const cobre = (o) => {
+      const K = KINDS[o.kind] ?? {}, fw = o.fw ?? K.fw ?? 1, fh = o.fh ?? K.fh ?? 1;
+      if (o.forest || (ARV.test(o.kind) && !o.ss)) { for (let j = 0; j <= fh; j++) for (let i = 0; i < fw; i++) cob.add(o.x + i + (o.y + j) * W); } // a copa cobre a pegada e o bloco de baixo (a árvore "ss" do vestir é só o miolo: pegada)
+      else if (o.cells?.length) for (const k of o.cells) cob.add(k);
+    };
+    for (const o of S.placed) cobre(o);
+    for (const o of S.novos) cobre(o);
+    for (const o of novos) cobre(o);
+    const OHs = J.outdoorH ?? H;
+    for (let y = ry; y < Math.min(ry + rh, OHs); y++) for (let x = rx; x < rx + rw; x++) {
+      if (!inb(x, y) || tiles[x + y * W] !== TILE.FOREST || cob.has(x + y * W)) continue;
+      novos.push({ kind: 'moita', x, y, fw: 1, fh: 1, cells: [], forest: true, enchimento: true, parte: P.i });
+    }
+  }
   S.novos.push(...novos);
   P.pronta = true;
 }

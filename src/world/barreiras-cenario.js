@@ -57,7 +57,7 @@ export function guardasAtivos(mundo, f) {
 function peca(tema, cl, linha, k, x, y) {
   const r = sorte(x, y), r2 = sorte(x, y, 7);
   if (cl === 'agua') {
-    if (tema === 'obra') return r < 0.75 ? 'barPonte' : null;                 // a ponte da obra, quebrada
+    if (tema === 'obra') return linha || r < 0.75 ? 'barPonte' : null;        // a ponte da obra, quebrada
     if (tema === 'neve' || tema === 'zenite') return linha ? (k % 4 === 0 ? 'boia' : 'barCorda') : (r < 0.4 ? 'barEspuma' : null);
     if (linha) return k % 40 === 20 ? 'barPlacaBoia' : k % 4 === 0 ? 'boia' : 'barCorda';
     return r < (tema === 'mar' ? 0.8 : 0.55) ? 'barEspuma' : null;
@@ -117,6 +117,8 @@ export function montarCenario(mundo, f, leitor) {
         // paredão: nada pendurado no muro; só a placa no pé, no meio do trecho
         const tx = x + Math.floor(w / 2), ty = y + h - 1;
         por('barPlaca', tx, ty, 'h', d.id, { estilo: 'obra' });
+        // a fileira de cima (o topo do paredão, onde o trecho esbarra de quem vem do platô) também é bloqueada: cavaletes nos blocos de chão
+        for (let i = 0; i < w; i++) if (classe(leitor, x + i, y)) por('barCavalete', x + i, y, 'h', d.id);
         continue;
       }
       const meio = hor ? Math.floor(h / 2) : Math.floor(w / 2);
@@ -124,7 +126,9 @@ export function montarCenario(mundo, f, leitor) {
         let antes = null; // classe do bloco anterior na linha (ponta da cancela)
         for (let i = 0; i < w; i++) {
           const tx = x + i, ty = y + j, cl = classe(leitor, tx, ty);
-          const linha = (hor ? j : i) === meio, k = hor ? i : j;
+          // linha cheia no meio E na primeira e na última fileira do retângulo: o jogador esbarra na fileira de fora e ela
+          // precisa estar desenhada (antes só o meio tinha peças contínuas, e as fileiras de fora ficavam com falhas: muro invisível)
+          const lin = hor ? j : i, ult = (hor ? h : w) - 1, linha = lin === meio || lin === 0 || lin === ult, k = hor ? i : j;
           if (!cl) { antes = null; continue; }
           const kind = peca(tema, cl, linha, k, tx, ty);
           if (kind) por(kind, tx, ty, ori, d.id, kind === 'barCancela' ? { ponta: antes !== 'cam' } : kind === 'barCerca' ? { placa: k % 6 === 3 } : kind === 'barPlacaBoia' ? { estilo: 'tempestade' } : undefined);

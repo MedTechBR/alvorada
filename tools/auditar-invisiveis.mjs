@@ -49,7 +49,7 @@ const NOME_TILE = Object.fromEntries(Object.entries(TILE).map(([k, v]) => [v, k]
 const MARCA_SOZINHO = new Set(['WATER', 'DEEP', 'CUR_E', 'CUR_W', 'CUR_N', 'CUR_S', 'LAVA', 'CLIFF', 'VOID', 'WALL', 'ROCK', 'ICEWALL', 'LAVAWALL', 'CANYON',
   'TEMPLEWALL', 'CRYSTALWALL', 'MUD', 'ROOTS', 'CLIMB', 'CORN'].map((n) => TILE[n]));
 // bem pequeno por natureza: se bloqueia, é bug (o jogador não enxerga o que o trava)
-const MIUDO = /^(pedrinha|seixo|flor|concha|espuma|folha|graveto|samambaia|vitoriaRegia|pocaMare)/i;
+const MIUDO = /^(pedrinha|seixo|flor|concha|espuma|graveto|samambaia|vitoriaRegia|pocaMare|cogumelos)/i;
 
 // ---------- amostras de cada malha (cache por chave do modelo)
 const amostras = new Map();
@@ -122,7 +122,6 @@ async function auditar(id) {
     const larg = a.bb.max.x - a.bb.min.x, prof = a.bb.max.z - a.bb.min.z, alt = a.bb.max.y;
     nomeDoTipo.set(kind, `${larg.toFixed(0)}x${prof.toFixed(0)}x${alt.toFixed(0)}`);
     if (alt < ALTURA_MIN + 1) acha('tipo sólido baixo demais', kind, ex[0], ex[1], `${t.solidos} bloco(s), modelo de ${alt.toFixed(1)} px de altura`);
-    if (MIUDO.test(kind)) acha('bem pequeno que bloqueia', kind, ex[0], ex[1], `${t.solidos} bloco(s) sólido(s) em ${t.n} objeto(s): seixo, flor ou concha não pode travar o jogador`);
     // cobertura da pegada: cada bloco sólido do tipo precisa receber malha dele mesmo
     const fx = (t.ex.x + K.fw / 2) * 16, fz = (t.ex.y + K.fh) * 16, loc = new Map();
     marcarLocal(a, fx, fz, loc);
@@ -140,7 +139,10 @@ async function auditar(id) {
   }
 
   // 2. cobertura do mundo: todo objeto (sólido ou de enfeite, inclusive as árvores da mata densa) e as peças de barreira
-  const todasBarreiras = [...BARREIRAS, ...TEMPESTADES, ...NEVOAS].filter((d) => d.mundo === id && d.rects);
+  // as zonas de CLIMA (tempestade do Planalto, neblina do mar) não têm peça no chão: a parede de nuvem, a chuva e a névoa
+  // (visual3d/zonas-clima.js) é que as mostram; ficam só no total de blocos conferidos
+  const todasBarreiras = BARREIRAS.filter((d) => d.mundo === id && d.rects);
+  const climaBlocos = [...TEMPESTADES, ...NEVOAS].filter((d) => d.mundo === id && ativa(d, {})).reduce((n, d) => n + d.rects.reduce((m, [, , w, h]) => m + w * h, 0), 0);
   const leitor = { tile: (x, y) => (x < 0 || y < 0 || x >= W || y >= H ? -1 : S.tiles[x + y * W]), ocupado: (x, y) => x >= 0 && y >= 0 && x < W && y < H && S.block[x + y * W] === 1 };
   for (const o of placed) {
     const K = KINDS[o.kind]; if (!K) continue;
@@ -160,6 +162,7 @@ async function auditar(id) {
     const k = x + y * W, t = S.tiles[k];
     if (salaDe(x, y)) continue;
     const o = objDe.get(k);
+    if (o && MIUDO.test(o.kind)) { acha('bem pequeno que bloqueia', o.kind, x, y, 'seixo, flor ou concha com pegada sólida: não pode travar o jogador'); continue; }
     if (o) { if (!marcado(k)) acha('objeto sólido sem malha no bloco', o.kind, x, y, 'nenhuma malha (do objeto ou vizinha) cobre o bloco'); continue; }
     if (SOLID.has(t)) {
       const nome = NOME_TILE[t], p = porTile.get(nome) ?? { n: 0, sem: 0 }; p.n++;
@@ -185,7 +188,7 @@ async function auditar(id) {
     // o bloco sem peça só vira achado se a faixa não for uma linha de peças contínua (o jogador vê a linha, não cada bloco)
     for (const [x, y, cl] of ruins) acha('barreira sem peça', d.id, x, y, `bloco de ${cl} dentro do retângulo sem peça nem guarda`);
   }
-  return { id, W, H, OH, achados, tipos, nomeDoTipo, porTile, barreiraN, dono };
+  return { id, W, H, OH, achados, tipos, nomeDoTipo, porTile, barreiraN, climaBlocos, dono };
 }
 
 // ---------- relatório
@@ -203,7 +206,7 @@ for (const m of MUNDOS) {
     const ak = a.area; porArea.set(ak, (porArea.get(ak) ?? 0) + 1);
   }
   console.log('tiles sólidos:', [...r.porTile].map(([n, p]) => `${n} ${p.n}${p.sem ? ` (${p.sem} sem marca)` : ''}`).join(', '));
-  console.log(`blocos de barreira da história conferidos: ${r.barreiraN}`);
+  console.log(`blocos de barreira da história conferidos: ${r.barreiraN} (mais ${r.climaBlocos} de zonas de clima, que o clima mostra)`);
   console.log(`achados: ${r.achados.length}`);
   for (const [k, n] of [...porTipo].sort((a, b) => b[1] - a[1])) console.log(`  por motivo   ${String(n).padStart(6)}  ${k}`);
   for (const [k, n] of [...porKind].sort((a, b) => b[1] - a[1]).slice(0, 40)) console.log(`  por tipo     ${String(n).padStart(6)}  ${k}`);
