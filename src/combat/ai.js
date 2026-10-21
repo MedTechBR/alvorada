@@ -91,7 +91,15 @@ export class WildAI {
   think(e, dt) {
     const g = this.g, ai = e.ai, pl = g.player;
     ai.t -= dt; ai.dodgeCd = (ai.dodgeCd ?? 0) - dt; ai.react = (ai.react ?? 0) - dt;
-    if (e.charging || e.wakeT > 0) { e.wakeT -= dt; return Z; }
+    if (e.charging) {
+      // Deslocamento lateral lento durante o aviso; não encurta o aviso nem aproxima o adversário.
+      if (this.c.andando(e) && e.aggroTarget) {
+        const dx=e.aggroTarget.x-e.x, dy=e.aggroTarget.y-e.y, d=Math.hypot(dx,dy)||1, s=e.speed(0.28)*(ai.side??1);
+        return {vx:-dy/d*s,vy:dx/d*s};
+      }
+      return Z;
+    }
+    if (e.wakeT > 0) { e.wakeT -= dt; return Z; }
     const alto = g.vivo?.pensar(e, dt); if (alto) return alto; // em cima de telhado/copa/rocha: fica, luta de cima ou salta no alvo (src/world/vivo.js)
     const dP = Math.hypot(pl.x - e.x, pl.y - e.y);
     if (ai.state === 'sleep') {

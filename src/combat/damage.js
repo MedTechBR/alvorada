@@ -7,10 +7,8 @@ import { TILE, T } from '../world/tiles.js';
 // ctx: { g, power (substitui mv.power), scale, noCrit, rnd }. Com ctx.g (combate local) também gasta itens e frutas.
 
 export const DMG = 0.34; // ritmo do tempo real: lutas de 8 a 25 s contra selvagens do mesmo nível
-// Selvagens e Pokémon de treinador batem mais forte que o seu: eles telegrafam, recarregam 20% mais devagar e você
-// pode esquivar. Sem esse peso, um jogador descuidado nunca perdia (o selvagem levava 40 a 80 s para vencer).
-// Só no combate local (com ctx.g): o PvP online (calcDamage, árbitro) continua simétrico.
-export const FOE_DMG = 1.5;
+// Mesmos atributos e mesmo golpe usam a mesma escala: o lado inimigo não ganha dano oculto.
+export const FOE_DMG = 1;
 
 export function computeDamage(user, target, mv, ctx = {}) {
   const tm = terrainMod(user, target, mv, ctx.g);

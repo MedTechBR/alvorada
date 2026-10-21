@@ -704,8 +704,14 @@ class Game {
     const l = this.lead;
     if (pk) {
       if ((l.lock <= 0 || this.combat.andando(l)) && !l.dashing && l.stun <= 0) {
-        const sp = l.speed(run ? 1.45 : 1.1) * 1.15;
+        const sp = l.speed(run ? 1.45 : 1.1) * 1.15 * (l.charging ? 0.5 : l.lock > 0 ? l.passoGolpe ?? 1 : 1);
         l.vx = mag > 0.1 ? mx * sp : 0; l.vy = mag > 0.1 ? my * sp : 0;
+        // Sem direção no analógico, mantém passos laterais curtos em torno de quem já está lutando.
+        // Não escolhe uma vítima nova nem dispara golpes sozinho; qualquer comando retoma o controle na hora.
+        if (mag <= 0.1 && !l.charging && this.combat.fluido(l)) {
+          const t = this.combat.targetsOf(l).find(e => !e.isTrainer && (e.side === 'foe' || e.aggroTarget === l) && Math.hypot(e.x-l.x,e.y-l.y)<120);
+          if (t) { const dx=t.x-l.x, dy=t.y-l.y, d=Math.hypot(dx,dy)||1, passo=sp*0.28*Math.sin(this.time*0.9); l.vx=-dy/d*passo;l.vy=dx/d*passo; if(l.lock<=0) l.face(dx,dy); }
+        }
         // não pode ir longe demais do treinador: só vale se ele ficou preso (normalmente ele acompanha, #seguir)
         const tdx = l.x - p.x, tdy = l.y - p.y, td = Math.hypot(tdx, tdy), LEASH = 16 * T;
         if (td > LEASH && (this.segue?.preso ?? 0) > 1 && (l.vx * tdx + l.vy * tdy) > 0) { l.vx *= 0.15; l.vy *= 0.15; if (!this.leashT || this.time > this.leashT) { this.toast('Longe demais do treinador!'); this.leashT = this.time + 3; } }

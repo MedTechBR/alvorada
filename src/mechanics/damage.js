@@ -1,3 +1,4 @@
+import { curar, curaPermitida } from './recuperacao.js';
 // Cálculo de dano completo das gerações 5+ (com os arredondamentos oficiais), adaptado ao tempo real
 // só no fim, pelo multiplicador de ritmo `pace` (o DMG do combate).
 //
@@ -282,7 +283,7 @@ export function resolveHit(atk, def, mv, opts = {}) {
   const am = atk?.mon ?? atk, dm = def?.mon ?? def;
   for (const c of r.consume) { const m = c.who === 'def' ? dm : am; if (m.item === c.item) m.item = null; }
   if (r.absorb) {
-    if (r.absorb.heal) dm.hp = Math.min(dm.stats.hp, dm.hp + Math.floor(dm.stats.hp * r.absorb.heal));
+    if (r.absorb.heal) curar(def?.mon ? def : { mon: dm }, Math.floor(dm.stats.hp * r.absorb.heal));
     if (r.absorb.flashFire && def) def.flashFire = true;
     if (r.absorb.boost && def?.stages) for (const [k, v] of Object.entries(r.absorb.boost)) def.stages[k] = Math.min(6, (def.stages[k] ?? 0) + v);
   }
@@ -293,7 +294,7 @@ export function resolveHit(atk, def, mv, opts = {}) {
     if (after > 0 && after <= dm.stats.hp * lim) {
       let heal = b.heal ?? Math.floor(dm.stats.hp * (b.healFrac ?? 0));
       if (dm.ability === 'cheekPouch') heal += Math.floor(dm.stats.hp / 3);
-      if (heal) dm.hp += heal; // somado antes do dano: o resultado final é o mesmo
+      if (heal) { heal = curaPermitida(def, heal); dm.hp += heal; } // somado antes do dano: o resultado final é o mesmo
       if (b.boost && def?.stages) def.stages[b.boost] = Math.min(6, (def.stages[b.boost] ?? 0) + 1);
       r.notes.push(it.name); r.berryHeal = heal; dm.item = null;
     }

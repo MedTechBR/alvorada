@@ -56,9 +56,11 @@ export class Vfx {
   // Um núcleo claro e uma borda do tipo: destaque local, sem filtro de tela nem chuva de partículas.
   acento(e, tipo, dx, dy) {
     const x = e.x + dx * e.r, y = e.y - (e.midH ?? 12) + dy * e.r, cor = typeHex(tipo);
-    this.fx.ring(x, y, cor, 5, 0.22, { width: 2.5, squash: 0.7 });
+    this.fx.ring(x, y, cor, 8, 0.28, { width: 3, squash: 0.7 });
+    this.fx.ring(x, y, 0xffffff, 4, 0.14, { width: 1.5, squash: 0.7 });
     this.E(x, y, { tex: 'spark', color: cor, n: 5, speed: 65, dir: Math.atan2(dy, dx), spread: 0.6, life: 0.2, size: 3 });
-    this.fx.light(x, y, cor, 22, 0.16);
+    this.fx.light(x, y, cor, 30, 0.22);
+    this.afterimage(e, cor, 0.32, 0.16);
   }
   resposta(e, tipo) {
     this.fx.ring(e.x, e.y, typeHex(tipo), e.r + 4, 0.32, { width: 2, squash: 0.5 });

@@ -1,3 +1,4 @@
+import { curar } from '../mechanics/recuperacao.js';
 import * as PIXI from 'pixi.js';
 import { MOVES } from '../data/moves.js';
 import { itemName } from '../data/items.js';
@@ -380,7 +381,7 @@ export class Poder {
     if (fx.field) { this.campo.dots.push({ foeOf: u, tipo: FIELD_TYPE[fx.field] ?? mv.type, t: fx.dur ?? 12, tick: TURNO_S, col }); g.toast(`${mv.name}: o campo ficou perigoso!`); }
     if (fx.screen) { for (const al of this.#aliados(u)) al.veilT = fx.dur ?? 20; g.toast('Véu de Aurora: menos dano por um tempo.'); }
     if (fx.hazard) { this.campo.hazards.push({ contra: foesSide, by: u, t: fx.dur ?? 25, tipo: fx.hazard === 'steelsurge' ? 'steel' : 'rock', ja: new WeakSet(this.c.targetsOf(u)) }); g.toast(fx.hazard === 'steelsurge' ? 'Espinhos de aço cobrem o campo!' : 'Pedras afiadas cobrem o campo!'); }
-    if (fx.healAllies) for (const al of this.#aliados(u)) { const hp = Math.round(al.mon.stats.hp * fx.healAllies); al.mon.hp = Math.min(al.mon.stats.hp, al.mon.hp + hp); g.fx.number(al.x, al.y - 30, '+' + hp, '#7dff8a'); }
+    if (fx.healAllies) for (const al of this.#aliados(u)) { const hp = curar(al, al.mon.stats.hp * fx.healAllies); g.fx.number(al.x, al.y - 30, '+' + hp, '#7dff8a'); }
     if (fx.cureAllies) for (const al of this.#aliados(u)) al.mon.status = null;
     if (fx.crit && fx.allies) for (const al of this.#aliados(u)) al.critBoost = 20;
     if (fx.defog) { this.campo.hazards = []; for (const t of this.c.targetsOf(u)) t.veilT = 0; }

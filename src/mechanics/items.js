@@ -1,3 +1,4 @@
+import { curaPermitida } from './recuperacao.js';
 // Usar itens e efeitos dos itens equipados no tempo real.
 import { ITEMS, itemId, itemInfo } from '../data/items.js';
 import { useTM } from './learn.js';
@@ -144,7 +145,7 @@ export function heldTick(mon, dt, ctx = {}) {
       if (b.cure && ctx.entity?.confused) ctx.entity.confused = 0;
       let heal = b.heal ?? Math.floor(max * (b.healFrac ?? 0));
       if (heal && mon.ability === 'cheekPouch') heal += Math.floor(max / 3);
-      if (heal) mon.hp = Math.min(max, mon.hp + heal);
+      if (heal) { heal = curaPermitida(ctx.entity, Math.min(max - mon.hp, heal)); mon.hp += heal; }
       if (b.boost && ctx.entity?.stages) ctx.entity.stages[b.boost] = Math.min(6, (ctx.entity.stages[b.boost] ?? 0) + 1);
       if (b.cdReset && ctx.entity?.cds) { const i = ctx.entity.cds.indexOf(Math.max(...ctx.entity.cds)); ctx.entity.cds[i] = 0; }
       out.push({ kind: 'berry', amount: heal, note: it.name });
@@ -165,7 +166,7 @@ export function heldTick(mon, dt, ctx = {}) {
     if (mon.ability === 'rainDish' && weather === 'rain') d += Math.floor(max / 16);
     if (mon.ability === 'iceBody' && weather === 'snow') d += Math.floor(max / 16);
     if (mon.ability === 'poisonHeal' && (mon.status === 'psn' || mon.status === 'tox')) d += Math.floor(max / 8);
-    if (d > 0 && mon.hp < max) { const h = Math.min(max - mon.hp, Math.max(1, d)); mon.hp += h; out.push({ kind: 'heal', amount: h, note: it?.tickHeal ? it.name : '' }); }
+    if (d > 0 && mon.hp < max) { const h = curaPermitida(ctx.entity, Math.min(max - mon.hp, Math.max(1, d))); mon.hp += h; out.push({ kind: 'heal', amount: h, note: it?.tickHeal ? it.name : '' }); }
     else if (d < 0 && mon.ability !== 'magicGuard') { const l = Math.min(mon.hp, -d); mon.hp -= l; out.push({ kind: 'hurt', amount: l, note: it?.name ?? '' }); }
   }
   return out;

@@ -1,3 +1,4 @@
+import { curar, reservaCura } from '../mechanics/recuperacao.js';
 import * as PIXI from 'pixi.js';
 import { combateFluido, golpeLeve } from './fluidez.js';
 import { MOVES } from '../data/moves.js';
@@ -62,7 +63,11 @@ export class Combat {
   fluido(e) { return combateFluido(this.g, e); }
   recarga(e, mv) { return this.fluido(e) && e.side === 'ally' && golpeLeve(mv) ? Math.min(mv.cd, 0.8) : mv.cd; }
   // O bloqueio ainda impede outro ataque; só a recuperação permite continuar andando.
-  andando(e) { return this.fluido(e) && e.andandoAte > this.g.time && !e.charging && !(e.quedaAte > this.g.time) && e.flash <= 0; }
+  andando(e) {
+    if (!this.fluido(e) || e.quedaAte > this.g.time || e.flash > 0 || e.stun > 0) return false;
+    if (e.charging) return e.side === 'ally' || e.charging.kind !== 'self';
+    return e.andandoAte > this.g.time || (e.side === 'ally' && this.beams.some(b => b.user === e && !b.struggle));
+  }
   esquivar(e, dx, dy) {
     if (!e?.alive || (e.dodgeCd ?? 0) > 0) return false;
     const fluido = this.fluido(e);
@@ -83,6 +88,7 @@ export class Combat {
     return { id, mv: MOVES[id] };
   }
   inRange(user, mv, d, id) {
+    if (mv.eff?.heal && (reservaCura(user) <= 0 || user.mon.hp >= user.mon.stats.hp)) return false;
     const k = kindOf(id, mv);
     if (k === 'self' || k === 'shield') return true;
     if (k === 'melee' || k === 'multi') return d < (mv.range ?? 1.8) * M + 10 + user.r;
@@ -209,6 +215,7 @@ export class Combat {
     const at = opts.moveId ? { id: opts.moveId, mv: MOVES[opts.moveId] } : opts.mv ? { id: opts.mv.id, mv: opts.mv } : this.moveAt(user, slot);
     const id = at.id, mv = at.mv;
     if (!mv || !user.alive) return false;
+    if (mv.eff?.heal && (reservaCura(user) <= 0 || user.mon.hp >= user.mon.stats.hp)) return false;
     // disputa de feixes: apertar golpe = empurrar
     const myBeam = this.beams.find((b) => b.user === user && b.struggle);
     if (myBeam) { myBeam.mash = Math.min(2, myBeam.mash + 0.3); this.g.fx.emit(myBeam.hx, myBeam.hy, { tex: 'spark', color: 0xffffff, n: 4, speed: 60, life: 0.15 }); return true; }
@@ -243,7 +250,8 @@ export class Combat {
     user.faceT = 0.5;
     if (this.fluido(user)) {
       user.recuperaEm = g.time + 0.16;
-      user.andandoAte = !BEAMS[id] && (golpeLeve(mv) || user.side !== 'ally') ? g.time + user.lock : 0;
+      user.andandoAte = g.time + Math.max(user.lock, BEAMS[id]?.dur ?? 0);
+      user.passoGolpe = golpeLeve(mv) ? 1 : 0.65;
       if (user.side === 'ally' && user.contraAte > g.time) {
         // A recompensa é resposta imediata e proteção, sem aumentar o dano dos adversários.
         user.contraAte = 0; user.cds[slot] = Math.min(user.cds[slot], 0.6);
@@ -459,7 +467,8 @@ export class Combat {
       b.t += dt;
     }
     const ca = Math.cos(b.ang), sa = Math.sin(b.ang);
-    u.face(ca, sa); u.lock = Math.max(u.lock, 0.08); u.vx = u.vy = 0;
+    u.face(ca, sa); u.lock = Math.max(u.lock, 0.08);
+    if (u.side !== 'ally' || !this.fluido(u) || b.struggle) u.vx = u.vy = 0;
     if (u.anim !== 'Shoot' && u.set?.anims?.Shoot) u.play('Shoot');
     if (u.animT > 0.25) u.animT = 0.18; // segura a pose
     const m = this.mouth(u, ca, sa); b.ox = m.x; b.oy = m.y;
@@ -489,7 +498,7 @@ export class Combat {
     if (!b.struggle && b.t >= b.cfg.dur) this.#endBeam(b);
   }
   #beamFx(b, dt, ca, sa) {
-    const g = this.g, G = this.gfx, cfg = b.cfg, w = cfg.width, now = g.time, st = cfg.style ?? b.mv.type;
+    const g = this.g, G = this.gfx, cfg = b.cfg, w = cfg.width * 1.25, now = g.time, st = cfg.style ?? b.mv.type;
     const [outer, mid, core] = cfg.colors ?? [b.color, b.color, 0xffffff];
     const nx = -sa, ny = ca;
     // trilhos: um (normal) ou dois canhões paralelos (Hidro Bomba)
@@ -504,7 +513,12 @@ export class Combat {
       }
       return pts;
     };
-    const pulse = 1 + Math.sin(now * 50) * 0.08;
+    // Pulsos viajam pela coluna do golpe: forma e direção legíveis sem aumentar as partículas.
+    for (let i = 0; i < 3; i++) {
+      const k = (now * 2.8 + i / 3) % 1, x = b.ox + ca * b.len * k, y = b.oy + sa * b.len * k;
+      G.moveTo(x - nx * w * 0.65, y - ny * w * 0.65).lineTo(x + nx * w * 0.65, y + ny * w * 0.65).stroke({ width: 1.5, color: mid, alpha: 0.65 });
+    }
+    const pulse = 1 + Math.sin(now * 30) * 0.1;
     const body = st === 'psy' || st === 'aurora' || st === 'signal' ? G : this.gfxN;
     for (const off of rails) {
       const pts = path(off, off);
@@ -750,7 +764,7 @@ export class Combat {
   #self(user, mv, id, A = animFor(id)) {
     const g = this.g, e = mv.eff ?? {};
     if (A.self) A.self(this.vfx, user); else this.vfx.aura(user, mv, id, (e.by ?? 1) > 0);
-    if (e.heal) { const hp = Math.round(user.mon.stats.hp * e.heal); user.mon.hp = Math.min(user.mon.stats.hp, user.mon.hp + hp); g.fx.number(user.x, user.y - 30, '+' + hp, '#7dff8a'); if (e.sleep) { user.stun = 2.5; user.sleepFx = 2.5; } }
+    if (e.heal) { const hp = curar(user, user.mon.stats.hp * e.heal); g.fx.number(user.x, user.y - 30, '+' + hp, '#7dff8a'); if (e.sleep) { user.stun = 2.5; user.sleepFx = 2.5; } }
     if (e.stat || e.stats) this.stages(user, e, 1);
     if (e.crit) { user.critBoost = 20; g.fx.number(user.x, user.y - 30, 'Focado!', '#ffb347'); }
     if (e.splash) g.fx.number(user.x, user.y - 30, 'Nada aconteceu...', '#cccccc');
@@ -894,12 +908,12 @@ export class Combat {
     // Margem a favor do jogador: a nova mobilidade nunca justifica aumentar o dano inimigo.
     if (this.fluido(t) && t.side === 'ally' && user.side !== 'ally') scale *= 0.9;
     if (user.quedaT > 0 && (info.src === 'dash' || info.src === 'melee')) { scale *= ALTO_DANO; user.quedaT = 0; g.fx.number(t.x, t.y - (t.topH ?? 20) - 22, 'Ataque do alto!', 0xffe27a, true, 'banner'); }
-    const r = computeDamage(user, t, mv, { g, scale, noCrit: info.src === 'beam' && !info.force });
+    const r = computeDamage(user, t, mv, { g, scale, power: info.src === 'beam' && user.side === 'ally' ? mv.power : undefined, noCrit: info.src === 'beam' && !info.force });
     if (mv.maxFx) this.onMaxHit?.(user, t, mv, r); // efeitos dos Max Golpes e G-Max Golpes no alvo
     this.hurt(t, r.dmg, user, { eff: r.eff, crit: r.crit, mv, dx, dy, knock: info.knock ?? 1, quiet: info.quiet, note: r.note, src: info.src });
     // Orbe da Vida, Pele Áspera, Capacete Rochoso (recuo), Sino Concha (cura), Rocha do Rei (hesitar): src/mechanics
     if (r.r?.recoil) this.hurt(user, r.r.recoil, null, { silent: true });
-    if (r.r?.heal) user.mon.hp = Math.min(user.mon.stats.hp, user.mon.hp + r.r.heal);
+    if (r.r?.heal) curar(user, r.r.heal);
     if (r.r?.flinch) t.stun = Math.max(t.stun, 0.35);
     if (user.side === 'wild' && t.side === 'wild') t.aggroTarget = user; // revida o rival
     const e = r.r?.secondary ?? mv.eff ?? {}; // Força Bruta e Pó Protetor tiram os efeitos extras
@@ -912,7 +926,7 @@ export class Combat {
       if (e.confuse && Math.random() < e.confuse) t.confused = 3;
       if (e.bind) { t.stun = Math.max(t.stun, e.bind * 0.5); g.fx.ring(t.x, t.y - 6, typeHex(mv.type), 5, 0.6, { squash: 0.5, width: 2 }); }
     }
-    if (e.drain) { const hp = Math.max(1, Math.round(r.dmg * e.drain)); user.mon.hp = Math.min(user.mon.stats.hp, user.mon.hp + hp); g.fx.number(user.x, user.y - 28, '+' + hp, '#7dff8a'); g.fx.emit(t.x, this.centerY(t), { tex: 'glow', color: 0x7dff8a, n: 6, size: 3, speed: 60, dir: Math.atan2(user.y - t.y, user.x - t.x), spread: 0.5, life: 0.4, drag: 0 }); }
+    if (e.drain) { const hp = curar(user, Math.max(1, Math.round(Math.min(r.dmg, t.mon.stats.hp) * e.drain))); g.fx.number(user.x, user.y - 28, '+' + hp, '#7dff8a'); g.fx.emit(t.x, this.centerY(t), { tex: 'glow', color: 0x7dff8a, n: 6, size: 3, speed: 60, dir: Math.atan2(user.y - t.y, user.x - t.x), spread: 0.5, life: 0.4, drag: 0 }); }
     if (e.recoil) this.hurt(user, Math.max(1, Math.round(r.dmg * e.recoil)), null, { silent: true });
     return 'hit';
   }
@@ -1061,7 +1075,7 @@ export class Combat {
       if (e.critBoost > 0) e.critBoost -= dt;
       if (e.seeded && e.alive) {
         const s = e.seeded; s.t -= dt; s.tick -= dt;
-        if (s.tick <= 0) { s.tick = 1; const hp = Math.max(1, Math.round(e.mon.stats.hp / 16)); this.hurt(e, hp, null, { silent: true }); if (s.by?.alive) s.by.mon.hp = Math.min(s.by.mon.stats.hp, s.by.mon.hp + hp); g.fx.emit(e.x, this.centerY(e), { tex: 'leaf2', n: 3, speed: 20, life: 0.6, vz: 30, add: false }); }
+        if (s.tick <= 0) { s.tick = 1; const hp = Math.max(1, Math.round(e.mon.stats.hp / 16)); this.hurt(e, hp, null, { silent: true }); if (s.by?.alive) curar(s.by, hp); g.fx.emit(e.x, this.centerY(e), { tex: 'leaf2', n: 3, speed: 20, life: 0.6, vz: 30, add: false }); }
         if (s.t <= 0) e.seeded = null;
       }
     }
