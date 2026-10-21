@@ -108,6 +108,29 @@ export function pontoDePassagem(cam, alcance = 12) {
   return { k: pts[i], i, porta: false };
 }
 
+// Linha reta livre entre dois blocos (amostrando a cada ~1/3 de bloco): dá para andar de um ao outro sem desvio.
+export function linhaLivre(G, a, b) {
+  const W = G.W, ax = a % W, ay = (a - ax) / W, bx = b % W, by = (b - bx) / W;
+  const n = Math.ceil(Math.max(Math.abs(bx - ax), Math.abs(by - ay)) * 3);
+  for (let i = 1; i < n; i++) {
+    const x = Math.floor(ax + (bx - ax) * i / n + 0.5), y = Math.floor(ay + (by - ay) * i / n + 0.5);
+    if (!G.anda(x + y * W)) return false;
+  }
+  return true;
+}
+// Para onde a seta aponta: o ponto mais à frente no caminho (até `alcance` passos, ou a porta) que dá para alcançar
+// em LINHA RETA livre a partir do jogador. O caminho do BFS anda em degraus (reto e depois de lado); apontar para
+// o degrau do meio de uma praça aberta dava uma seta torta, e esta mira o trecho reto de verdade.
+export function pontoDeVista(G, cam, alcance = 12, minimo = 8) {
+  const base = pontoDePassagem(cam, alcance), { pts } = cam;
+  if (base.porta) return base;
+  // se a linha reta livre passa de `alcance`, a seta segue o mesmo trecho reto (até 2x): não vira para o degrau do meio
+  let i = Math.min(alcance * 2, pts.length - 1);
+  const p0 = cam.passagens.find((q) => q > 0); if (p0 != null) i = Math.min(i, p0 - 1);
+  while (i > 1 && !linhaLivre(G, pts[0], pts[i])) i--;
+  return { k: pts[i], i, porta: false };
+}
+
 // flags no formato do save: "insignias>=3", "badges.campina", "trainers.x", "nh.y=valor" (o mesmo de tools/alcance.mjs)
 export function lerFlag(f, expr) {
   const m = /^insignias\s*(>=|<=|==|>|<)\s*(\d+)$/.exec(String(expr));
@@ -219,7 +242,7 @@ export function saltosDe(D, saltaveis, livre) {
 
 // ------------------------------------------------------------------------------------------------ lado do jogo
 const T = 16;
-const ALCANCE = 10; // blocos à frente, no caminho, para onde a seta aponta (8 a 12)
+export const ALCANCE_MAX = 12; // a seta aponta até 12 blocos à frente no caminho (o ponto mais longe em linha reta livre, 8 ou mais quando dá)
 const JUMPABLE = new Set(['log', 'stump', 'fence', 'fenceV', 'wfence', 'wfenceV']);
 const MONTARIAS = ['correr', 'nadar', 'escalar'];
 
@@ -356,7 +379,7 @@ export class Guia {
       return { pronto: true, ok: false, alvo, motivo: this.#motivo(px, py) };
     }
     const cam = this.cam = c.caminho(k, 600);
-    const wp = pontoDePassagem(cam, ALCANCE);
+    const wp = pontoDeVista(this.G, cam, ALCANCE_MAX);
     const xy = (q) => ({ x: (q % W) * T + 8, y: Math.floor(q / W) * T + 8 });
     const dist = c.dist[k] - 1;
     // trecho no "lugar" do jogador (até a primeira passagem): o pontilhado do minimapa e a porta de saída
