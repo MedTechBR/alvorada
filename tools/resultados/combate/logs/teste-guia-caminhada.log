@@ -1,0 +1,9 @@
+  bifurcacao         29 blocos, 112 quadros, pior desvio da seta 0°, distância final 0
+  trilha_jequitiba   42 blocos, 164 quadros, pior desvio da seta 17°, distância final 0
+  bifurcacao__leste  27 blocos, 104 quadros, pior desvio da seta 0°, distância final 0
+  caminhada física bifurcacao         chegou em 110 quadros
+  caminhada física trilha_jequitiba   chegou em 156 quadros
+  caminhada física bifurcacao__leste  chegou em 128 quadros
+  muro invisível: 550 blocos em volta das rotas conferidos
+Caminhada do guia: 442 verificações
+OK
