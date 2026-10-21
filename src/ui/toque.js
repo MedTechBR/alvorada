@@ -183,7 +183,7 @@ export class Toque {
     vis['t-act'] = fala;
     vis['t-team'] = g.party.length > 1 || pk;
     vis['t-ball'] = pk && selv;
-    vis['t-alt'] = pk; vis['t-jump'] = pk;
+    vis['t-alt'] = pk && !!(g.combat.alt.canFly(g.lead) || g.combat.alt.canDive(g.lead) || ['fly', 'dive'].includes(g.lead?.alt?.mode)); vis['t-jump'] = pk;
     vis['t-power'] = pk && !!g.poder?.opcao?.();
     vis['t-mount'] = !pk && !!g.mount?.hint?.();
     vis['t-swap'] = false; // trocar fica na faixa da equipe

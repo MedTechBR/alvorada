@@ -1360,7 +1360,7 @@ export class GameMenu {
             ${row('Capturar', '<kbd>B</kbd> joga uma Poké Bola vazia · <kbd>G</kbd> troca o tipo de bola')}
             ${row('Esquiva', '<kbd>Espaço</kbd>')}${row('Escolher Pokémon', '<kbd>Tab</kbd>')}
             ${row('Montaria', '<kbd>X</kbd> chama ou desce · segure <kbd>X</kbd> para voar')}
-            ${row('Voar, mergulhar, cavar', '<kbd>C</kbd> (controlando o Pokémon) · <kbd>X</kbd> pula')}
+            ${row('Voar ou mergulhar (Cavar: use o golpe)', '<kbd>C</kbd> (controlando o Pokémon) · <kbd>X</kbd> pula')}
             ${row('Falar / interagir', '<kbd>E</kbd> ou <kbd>Enter</kbd>')}${row('Menu', '<kbd>M</kbd> ou <kbd>Esc</kbd>')}
             ${row('Zoom', 'roda do mouse ou <kbd>+</kbd> <kbd>−</kbd>')}
             ${row('Minimapa / objetivo', '<kbd>N</kbd> gira o minimapa · <kbd>J</kbd> recolhe o objetivo')}
@@ -1374,7 +1374,7 @@ export class GameMenu {
             ${row('Andar', 'analógico à esquerda (4 direções; empurre até a borda para correr) ou direcional em cruz (Opções) · segure o botão da esquiva para correr')}
             ${row('Enviar e capturar', 'botão vermelho envia o Pokémon escolhido · azul joga uma Poké Bola vazia')}
             ${row('Golpes', 'toque = mira automática no mais perto · arraste o botão = mira manual')}
-            ${row('Botões menores', 'esquiva, <b>A</b> (falar), sela (montaria) · no modo Pokémon: bola (voltar), trocar, voar/cavar e pular')}
+            ${row('Botões menores', 'esquiva, <b>A</b> (falar), sela (montaria) · no modo Pokémon: bola (voltar), trocar, voar/mergulhar e pular; Cavar é um golpe')}
             ${row('Zoom', 'pinça com dois dedos')}
             ${row('Menu, mapa e objetivo', '<b>☰</b> abre o menu · toque no minimapa para girar · toque no objetivo para abrir ou recolher')}</table>`;
         body.innerHTML = `<div class="gm-box gm-scroll gm-ctlbox">${IS_TOUCH ? touch + kb + pad : kb + pad + touch}</div>`;

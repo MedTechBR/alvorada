@@ -25,7 +25,7 @@ export class Pilot {
         const b = document.createElement('button'); b.className = 'tb small'; b.id = id; b.innerHTML = icone; b.setAttribute('aria-label', aria); box.appendChild(b);
         b.addEventListener('touchstart', (e) => { g.input.taps.add(act); e.preventDefault(); }, { passive: false });
       };
-      mk('t-alt', ICONES.voar, 'alt', 'Voar, mergulhar ou cavar'); mk('t-jump', ICONES.pular, 'jump', 'Pular');
+      mk('t-alt', ICONES.voar, 'alt', 'Voar ou mergulhar'); mk('t-jump', ICONES.pular, 'jump', 'Pular');
     }
   }
   get active() { return this.g.mode === 'pokemon' && !!this.g.lead?.alive; }
@@ -76,7 +76,7 @@ export class Pilot {
     const els = document.querySelectorAll('#moves .mv:not(.power)'), tbs = document.querySelectorAll('.tb.move');
     for (let i = 0; i < 4; i++) {
       const mv = this.c.moveAt(l, i).mv; if (!mv) continue; // em Dynamax, o Max Golpe
-      const cd = Math.max(0, l.cds[i]), k = cd / (mv.cd || 1);
+      const cd = Math.max(0, l.cds[i]), k = cd / (this.c.recarga(l, mv) || 1);
       const el = els[i];
       if (el) {
         let n = el.querySelector('.cdn'); if (!n) { n = document.createElement('i'); n.className = 'cdn'; el.appendChild(n); }

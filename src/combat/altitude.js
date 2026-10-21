@@ -26,7 +26,8 @@ export class Altitude {
     if (m === 'dive' || m === 'dig') return this.emerge(e, ax, ay);
     if (this.canFly(e)) return this.takeoff(e);
     if (this.canDive(e)) return this.dive(e);
-    return this.dig(e);
+    // Entrar na terra pertence ao golpe Cavar, nunca ao botão genérico de altura.
+    return false;
   }
   jump(e) {
     if (!e?.alive || e.z - (e.piso ?? 0) > 2 || e.alt?.mode || e.stun > 0) return;
