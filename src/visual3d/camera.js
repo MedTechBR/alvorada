@@ -1,4 +1,3 @@
-import { controlesGiro } from './giro.js';
 // Câmera dinâmica do 3D (estilo HD-2D: Octopath, Triangle Strategy). Só decide ONDE a câmera fica;
 // quem desenha é index.js. O zoom do jogador (+/−, roda, pinça) continua valendo por cima de tudo.
 //   explorar  : baixa e perto; olha um pouco à frente de para onde se anda; parado, aproxima de leve
@@ -14,7 +13,7 @@ const CHAVE = 'alvorada.camera3d';
 
 export class CameraDinamica {
   constructor(v) {
-    this.v = v; this.manual = 0; this.controles = controlesGiro(v);
+    this.v = v;
     this.x = null; this.z = null; this.dist = 1; this.incl = 44; this.giro = 0; this.rolo = 0;
     this.olhar = { x: 0, z: 0 }; this.parado = 0; this.batalhaK = 0;
     this.imp = 0; this.impGiro = 0;
@@ -31,7 +30,6 @@ export class CameraDinamica {
   // devolve { x, z (foco no chão, px de mundo), dist (multiplicador), incl (graus), giro, rolo (graus) }
   update(dt) {
     const g = this.v.g, p = g.player, c = g.cam ?? p;
-    this.controles.style.display = g.ui?.state === 'play' && !g.ui.dialog?.open ? 'flex' : 'none';
     if (!c) return null;
     const pk = g.mode === 'pokemon' && g.lead?.alive ? g.lead : null;
     const foco = pk ?? p;
@@ -110,7 +108,7 @@ export class CameraDinamica {
     this.x = pula ? alvoX : amortece(this.x, alvoX, 9, dt); this.z = pula ? alvoZ : amortece(this.z, alvoZ, 9, dt);
     this.dist = pula ? dist : amortece(this.dist, dist, 3, dt);
     this.incl = pula ? incl : amortece(this.incl, incl, 3, dt);
-    this.giro = amortece(this.giro, giro + this.manual, 8, dt);
+    this.giro = amortece(this.giro, giro, 1.5, dt);
     return { x: this.x, z: this.z, dist: this.dist, incl: this.incl * RAD, giro: this.giro * RAD, rolo: this.rolo * RAD };
   }
   // Enquadramento da sala inteira (perspectiva de verdade): do topo da parede do fundo (72) à parede baixa da frente,

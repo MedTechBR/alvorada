@@ -1,4 +1,3 @@
-import { vetorCamera } from './visual3d/giro.js';
 import * as PIXI from 'pixi.js';
 import { Lendarios } from './world/lendarios.js';
 import { Input, IS_TOUCH } from './engine/input.js';
@@ -623,8 +622,8 @@ class Game {
 
   #aimPoint() {
     const inp = this.input, lead = this.lead ?? this.player;
-    if (inp.releasedAim?.dir) { const d = vetorCamera(inp.releasedAim.dir.x, inp.releasedAim.dir.y, this.v3d?.dinamica?.giro ?? 0), l = Math.hypot(d.x, d.y) || 1; return { x: lead.x + d.x / l * 140, y: lead.y + d.y / l * 140 }; }
-    if (inp.aimStick) { const d = vetorCamera(inp.aimStick.x, inp.aimStick.y, this.v3d?.dinamica?.giro ?? 0); return { x: lead.x + d.x * 140, y: lead.y + d.y * 140 }; }
+    if (inp.releasedAim?.dir) { const d = inp.releasedAim.dir, l = Math.hypot(d.x, d.y) || 1; return { x: lead.x + d.x / l * 140, y: lead.y + d.y / l * 140 }; }
+    if (inp.aimStick) return { x: lead.x + inp.aimStick.x * 140, y: lead.y + inp.aimStick.y * 140 };
     if (!IS_TOUCH && !inp.usingPad && inp.mouse.inside) return this.screenToWorld(inp.mouse.x, inp.mouse.y);
     // mira automática: selvagem mais próximo à frente (ou o mais próximo)
     const p = this.player; let best = null, bd = 230;
@@ -652,8 +651,7 @@ class Game {
     // o Pokémon controlado (batalha em tempo real), o voo e o telhado seguem livres
     const grade = this.grade.ativo && !pk && !this.mount?.flying && !p.pouso && !p.saltando;
     if (grade) { const v = DIRV[inp.gridDir]; inp.move.x = v ? v[0] : 0; inp.move.y = v ? v[1] : 0; }
-    const orientado = vetorCamera(inp.move.x, inp.move.y, this.v3d?.dinamica?.giro ?? 0);
-    const mx = orientado.x, my = orientado.y, mag = Math.min(1, Math.hypot(mx, my));
+    const mx = inp.move.x, my = inp.move.y, mag = Math.min(1, Math.hypot(mx, my));
     const run = inp.down('run');
 
     // ----- treinador -----
@@ -816,7 +814,6 @@ class Game {
   #andarGrade(dt, run, pk) {
     const inp = this.input, p = this.player, gr = this.grade;
     let dir = pk || p.stun > 0 || this.mundo?.warping ? null : inp.gridDir;
-    if (dir && this.v3d) { const q = vetorCamera(...DIRV[dir], this.v3d.dinamica.giro); dir = Math.abs(q.x) > Math.abs(q.y) ? (q.x > 0 ? 'right' : 'left') : (q.y > 0 ? 'down' : 'up'); }
     const idle = !p.gr?.s;
     // terreno dos biomas (src/world/masmorra.js): decidido parado no centro do bloco; neve funda atrasa, o gelo escorrega bloco a bloco
     if (idle) { const v = dir ? DIRV[dir] : [0, 0]; this.terreno = pk ? null : this.mundo?.masmorra?.player(dt, p, v[0], v[1], dir ? 1 : 0); }

@@ -502,18 +502,6 @@ body.touch:not(.mais-on) #zoom { display: flex; }
 @media (prefers-reduced-motion: reduce) { .tt-stars, .tt-rays, .tt-cloud, .tt-fire i, .tt-logo b::after, .tt-ball, .tt-btn.primary::after, .cc-prev::before { animation: none !important; } .tt-fire i { opacity: .6; } }
 @media (max-height: 480px) { .tt-ball { display: none; } .tt-cloud { display: none; } }
 
-/* Controles compactos: quatro golpes alinhados e câmera junto do zoom. */
+/* Controles compactos: quatro golpes alinhados e ações próximas ao polegar. */
 body.touch .tq-nome { max-width: 74px; font-size: 10px; padding-inline: 4px; }
 body.touch #tbtns { right: calc(10px + var(--nr, 0px)); bottom: calc(10px + var(--sb)); }
-#giro-camera { position: fixed; top: calc(6px + var(--st)); left: 50%; transform: translateX(-50%); display: flex; gap: 0; z-index: 20;
-  border: 2px solid #526273; border-radius: 14px; overflow: hidden; background: #f5fbfff0; box-shadow: 0 2px 5px #0003; }
-#giro-camera button { width: 44px; height: 44px; padding: 0; border: 0; background: transparent; color: #243441; font: bold 20px var(--font); touch-action: manipulation; }
-#giro-camera button + button { border-left: 1px solid #c9d4e0; }
-#giro-camera button:active { background: #dbe9f2; }
-body.at-title #giro-camera, body.menu-open #giro-camera, body.dlg-open #giro-camera, body.equipe-on #giro-camera { visibility: hidden; }
-@media (orientation: landscape) {
-  body.touch #giro-camera { left: auto; right: calc(var(--g) + var(--sr) + 44px * var(--ui-scale) + 172px); transform: none; }
-}
-@media (orientation: portrait) {
-  body.touch #giro-camera { top: calc(var(--st) + 104px); left: calc(8px + var(--sl)); transform: none; }
-}
