@@ -144,7 +144,9 @@ export class CameraDinamica {
     let cx = cena ? cena.x : (x0 + x1) / 2, cz = cena ? cena.y : (y0 + y1) / 2 + 6;
     const asp = innerWidth / Math.max(1, innerHeight), z = Math.max(1, g.zoom || 3);
     const ext = Math.max((x1 - x0 + 120) / asp, (y1 - y0 + 90) * 1.15);
-    const dist = Math.max(1.05, Math.min(2.2, ext / (innerHeight / z)));
+    const dist = A.simples ? Math.max(0.85, Math.min(1.35, ext / (innerHeight / z))) : Math.max(1.05, Math.min(2.2, ext / (innerHeight / z)));
+    // Quadra grande, lutadores legíveis: os adversários distantes continuam indicados pelas setas.
+    if (A.simples && !cena) { cx = foco.x * 0.35 + cx * 0.65; cz = foco.y * 0.35 + cz * 0.65; }
     // o foco não passa da arena (sem mostrar o vazio de fora quando dá)
     const R = A.R, mw = (innerWidth / z) * dist * 0.4, mh = (innerHeight / z) * dist * 0.4;
     cx = R.x1 - R.x0 > mw * 2 ? Math.min(R.x1 - mw, Math.max(R.x0 + mw, cx)) : R.cx;

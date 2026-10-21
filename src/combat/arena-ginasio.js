@@ -49,7 +49,7 @@ export class ArenaGinasio {
     this.simples = b.def?.id?.startsWith('leader_') && cfg.sala?.startsWith('estadio_');
     // Campo esportivo: sem peças escondidas, perigos automáticos ou fases que diminuam a área.
     // A equipe, os avisos dos golpes, a troca contínua e os poderes do líder continuam valendo.
-    if (this.simples) cfg = { ...cfg, pecas: [], fases: [{ id: 'campo', nome: 'Campo de batalha' }], abertura: 'O campo está livre. Vamos batalhar!' };
+    if (this.simples) cfg = { ...cfg, posicoes: { jogador: [20, 20], lider: [29, 17] }, pecas: [], fases: [{ id: 'campo', nome: 'Campo de batalha' }], abertura: 'O campo está livre. Vamos batalhar!' };
     this.cfg = cfg;
     const room = cfg.sala ? g.map.interiors.find((r) => r.id === cfg.sala) : null;
     if (cfg.sala && !room) throw new Error('sala ' + cfg.sala + ' não existe');
@@ -575,7 +575,7 @@ export class ArenaGinasio {
     G0.clear(); G1.clear(); GA.clear();
     this.topo.position.copyFrom(W.position); this.topo.scale.copyFrom(W.scale);
     if (this.topo.parent && this.topo.parent.children[this.topo.parent.children.length - 1] !== this.topo) this.topo.parent.addChild(this.topo);
-    if (this.contem) { if (this.simples) this.#quadra(G0); else this.#borda(G0, G1, t); }
+    if (this.contem) { if (this.simples) { if (!this.g.v3d) this.#quadra(G0); } else this.#borda(G0, G1, t); }
     for (const p of this.pecas) if (p.ativo || p.sempreDesenha) p.desenhar?.(G0, G1);
     for (const av of this.avisos) this.#desenharAviso(GA, G1, av, t);
     if (this.contem) this.#setas(this.#foraDaTela());
