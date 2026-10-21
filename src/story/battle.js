@@ -104,7 +104,7 @@ export class TrainerBattle {
       if (!e.alive || e.busy) { e.vx = e.vy = 0; continue; }
       e.hpShow = Math.max(e.hpShow, 0.3);
       e.aggroTarget = tgt; e.ai.state = 'aggro'; e.ai.t = 10;
-      if (e.stun > 0 || e.lock > 0) { e.vx = e.vy = 0; continue; }
+      if (e.stun > 0 || (e.lock > 0 && !g.combat.andando(e))) { e.vx = e.vy = 0; continue; }
       let v = e.think(dt);
       if (this.arena) v = this.arena.guiar(e, v, dt); // a IA do líder usa a arena (foge dos avisos, peças, fase)
       e.vx = v.vx; e.vy = v.vy;

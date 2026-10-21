@@ -53,6 +53,17 @@ export class Vfx {
     this.ghostPool = []; this.ghostLive = [];
   }
   E(x, y, o) { this.fx.emit(x, y, o); }
+  // Um núcleo claro e uma borda do tipo: destaque local, sem filtro de tela nem chuva de partículas.
+  acento(e, tipo, dx, dy) {
+    const x = e.x + dx * e.r, y = e.y - (e.midH ?? 12) + dy * e.r, cor = typeHex(tipo);
+    this.fx.ring(x, y, cor, 5, 0.22, { width: 2.5, squash: 0.7 });
+    this.E(x, y, { tex: 'spark', color: cor, n: 5, speed: 65, dir: Math.atan2(dy, dx), spread: 0.6, life: 0.2, size: 3 });
+    this.fx.light(x, y, cor, 22, 0.16);
+  }
+  resposta(e, tipo) {
+    this.fx.ring(e.x, e.y, typeHex(tipo), e.r + 4, 0.32, { width: 2, squash: 0.5 });
+    this.afterimage(e, 0x8eeaff, 0.55, 0.2);
+  }
 
   // ---------- imagens residuais (esquiva, investida) ----------
   afterimage(e, tint = 0x9ad0ff, alpha = 0.55, life = 0.25) {

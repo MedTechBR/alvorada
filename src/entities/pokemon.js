@@ -74,12 +74,12 @@ export class PokeEntity {
   wake() { this.g.combat.ai.wake(this); }
 
   // reação ao golpe: clarão branco, animação Hurt, amassa, e gira se estiver no ar ou for arremessado
-  react({ power = 1, eff = 1, crit = false, quiet = false } = {}) {
+  react({ power = 1, eff = 1, crit = false, quiet = false, forte } = {}) {
     this.flashW = quiet ? 0.05 : 0.09; this.flash = quiet ? 0.1 : 0.18;
     if (this.alt?.mode === 'dive' || this.alt?.mode === 'dig') return;
     if (!quiet || this.anim !== 'Hurt') this.play('Hurt');
     this.squash = Math.min(0.35, 0.12 + power * 0.08);
-    const strong = power > 1.35 || eff > 1 || crit, ar = this.z - (this.piso ?? 0) > 6;
+    const strong = forte ?? (power > 1.35 || eff > 1 || crit), ar = this.z - (this.piso ?? 0) > 6;
     if (!quiet && (ar || strong)) {
       this.vz = Math.max(this.vz, strong ? 120 + power * 50 : 60);
       if (ar || power > 1.7) { this.spinT = 0.45 + Math.min(0.3, power * 0.1); this.spinDir = Math.random() < 0.5 ? -1 : 1; }
@@ -89,6 +89,15 @@ export class PokeEntity {
   update(dt) {
     if (!this.set) return;
     this.animT += dt;
+    if (this.quedaAte && this.alive) {
+      if (this.g.time < this.quedaAte) {
+        if (this.g.time > this.quedaAte - 0.28 && this.set.anims.Rotate && this.anim !== 'Rotate') this.play('Rotate');
+      } else {
+        this.quedaAte = 0; this.spinT = 0; this.vz = 70;
+        this.play(this.set.anims.Hop ? 'Hop' : 'Walk');
+        if (this.side === 'ally') this.iframes = Math.max(this.iframes, 0.48);
+      }
+    }
     const cds = this.cds; for (let i = 0; i < cds.length; i++) if (cds[i] > 0) cds[i] = Math.max(0, cds[i] - dt);
     this.lock -= dt; this.iframes -= dt; this.stun -= dt; this.flash -= dt; this.hpShow -= dt; this.flashW -= dt;
     // efeitos de estado contínuos
@@ -121,6 +130,17 @@ export class PokeEntity {
     this.svx = (this.svx ?? this.vx) + (this.vx - (this.svx ?? this.vx)) * ka; this.svy = (this.svy ?? this.vy) + (this.vy - (this.svy ?? this.vy)) * ka;
     if (this.dead) { this.svx = this.vx; this.svy = this.vy; }
     const alt = this.g.combat?.alt, rr = this.r * 0.8;
+    // Passo de contato ao longo da antecipação, usando a colisão normal a cada quadro.
+    if (this.contato) {
+      const { alvo, ate } = this.contato;
+      if (!alvo.alive || this.g.time > ate || this.stun > 0) this.contato = null;
+      else {
+        const dx = alvo.x - this.x, dy = alvo.y - this.y, d = Math.hypot(dx, dy) || 1;
+        const passo = Math.min(300 * dt, Math.max(0, d - this.r - alvo.r - 2));
+        this.g.map.andar(this, dx / d * passo, dy / d * passo, rr, this.swim, () => alt?.resolve(this, rr));
+        this.face(dx, dy);
+      }
+    }
     this.g.map.andar(this, (this.svx + this.kx) * dt, (this.svy + this.ky) * dt, rr, this.swim, () => { if (!alt?.resolve(this, rr)) { this.g.map.resolve(this, rr, this.swim); this.g.grade?.separaGente(this, rr, this); } });
     this.kx *= 1 - Math.min(1, dt * 7); this.ky *= 1 - Math.min(1, dt * 7);
     alt?.seguro(this);

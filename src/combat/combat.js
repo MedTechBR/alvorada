@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { combateFluido, golpeLeve } from './fluidez.js';
 import { MOVES } from '../data/moves.js';
 import { BEAMS } from './specialmoves.js';
 import { computeDamage } from './damage.js';
@@ -58,6 +59,20 @@ export class Combat {
     this.sfxT = {};
   }
   move(id) { return MOVES[id]; }
+  fluido(e) { return combateFluido(this.g, e); }
+  recarga(e, mv) { return this.fluido(e) && e.side === 'ally' && golpeLeve(mv) ? Math.min(mv.cd, 0.8) : mv.cd; }
+  // O bloqueio ainda impede outro ataque; só a recuperação permite continuar andando.
+  andando(e) { return this.fluido(e) && e.andandoAte > this.g.time && !e.charging && !(e.quedaAte > this.g.time) && e.flash <= 0; }
+  esquivar(e, dx, dy) {
+    if (!e?.alive || (e.dodgeCd ?? 0) > 0) return false;
+    const fluido = this.fluido(e);
+    if (fluido && (e.stun > 0 || e.quedaAte > this.g.time || e.charging)) return false;
+    if (fluido && e.recuperaEm <= this.g.time) { e.lock = 0; e.dashing = null; e.contato = null; }
+    e.kx += dx * 320; e.ky += dy * 320;
+    e.iframes = Math.max(e.iframes, 0.32); e.dodgeCd = fluido ? 0.45 : 0.7;
+    e.play('Hop'); e.vz = 80; this.onDodge(e);
+    return true;
+  }
   // quem está no alto (telhado, copa, rocha: src/world/vivo.js) enxerga e alcança mais longe
   range(mv, user = null) { return (mv.range ?? 6) * M * (user?.pouso ? ALTO_ALCANCE : 1); }
   // Golpe do espaço `slot`: o do Pokémon ou, em Dynamax, o Max Golpe no lugar dele (user.maxMoves, src/combat/poder.js)
@@ -200,7 +215,7 @@ export class Combat {
     if (user.alt?.mode === 'dive' || user.alt?.mode === 'dig') { this.alt.emerge(user, ax, ay); return true; }
     if (!opts.forced) {
       if (user.cds[slot] > 0 || user.lock > 0 || user.stun > 0 || user.charging) return false;
-      user.cds[slot] = mv.cd * (user.side === 'wild' ? 1.2 : 1);
+      user.cds[slot] = this.recarga(user, mv) * (user.side === 'wild' ? 1.2 : 1);
     }
     this.g.arenaGinasio?.aoUsar(user, id, mv); // arena de ginásio: golpe no ritmo do berimbau
     if (mv.max) this.onMax?.(user, id, mv, ax, ay); // Max Golpe: recarga única, clima, campo e estágios (src/combat/poder.js)
@@ -226,6 +241,25 @@ export class Combat {
     user.play(this.pickAnim(user, ANIM_PREF[style] ?? ['Attack']));
     user.lock = melee ? 0.3 : 0.2;
     user.faceT = 0.5;
+    if (this.fluido(user)) {
+      user.recuperaEm = g.time + 0.16;
+      user.andandoAte = !BEAMS[id] && (golpeLeve(mv) || user.side !== 'ally') ? g.time + user.lock : 0;
+      if (user.side === 'ally' && user.contraAte > g.time) {
+        // A recompensa é resposta imediata e proteção, sem aumentar o dano dos adversários.
+        user.contraAte = 0; user.cds[slot] = Math.min(user.cds[slot], 0.6);
+        user.iframes = Math.max(user.iframes, 0.24);
+        this.vfx.resposta(user, mv.type);
+      }
+      if (melee) {
+        user.play(this.pickAnim(user, ['Attack', 'Swing']));
+        user.fisico = { ate: g.time + 0.24, dx, dy };
+        if (user.side === 'ally' && (kind === 'melee' || kind === 'multi')) {
+          const alvo = this.targetsOf(user).find(t => !t.isTrainer && Math.hypot(t.x - user.x, t.y - user.y) < this.range(mv, user) + user.r + t.r);
+          if (alvo) user.contato = { alvo, ate: g.time + 0.09 };
+        }
+      }
+      this.vfx.acento(user, mv.type, dx, dy);
+    }
     this.sfx('move-' + kind, mv.type);
     if (this.showNames && !opts.charged) g.fx.number(user.x, user.y - (user.topH ?? 20) - 14, mv.name ?? id, 0xffffff, false, 'banner');
     this.ai.noise(user.x, user.y, 50, user);
@@ -584,6 +618,26 @@ export class Combat {
   // ---------- corpo a corpo ----------
   #arc(user, mv, id, dx, dy, reach, spread, i, A = animFor(id)) {
     const g = this.g, style = A.melee?.style ?? meleeStyle(id);
+    if (user.choqueAte > g.time) return;
+    if (this.fluido(user)) for (const t of this.targetsOf(user)) {
+      const f = t.fisico;
+      if (f?.ate > g.time && Math.hypot(t.x - user.x, t.y - user.y) < user.r + t.r + 18 && dx * f.dx + dy * f.dy < -0.3) {
+        this.#meleeClash(user, t); return;
+      }
+    }
+    if (this.fluido(user) && user.side === 'ally') {
+      const alvo = this.targetsOf(user).filter(t => !t.isTrainer).find(t => {
+        const ex = t.x - user.x, ey = t.y - user.y, d = Math.hypot(ex, ey);
+        return d < reach + t.r && (ex * dx + ey * dy) > d * 0.65;
+      });
+      if (alvo) {
+        const ex = alvo.x - user.x, ey = alvo.y - user.y, d = Math.hypot(ex, ey) || 1;
+        dx = ex / d; dy = ey / d; user.face(dx, dy);
+        const passo = Math.min(12, Math.max(0, d - user.r - alvo.r - 2));
+        // Percurso varrido pela mesma colisão de empurrões e esquivas; jamais teleporta através da parede.
+        g.map.andar(user, dx * passo, dy * passo, user.r * 0.8, user.swim, () => g.combat.alt.resolve(user, user.r * 0.8));
+      }
+    }
     // dois golpes corpo a corpo ao mesmo tempo, frente a frente: choque
     const now = g.time;
     this.swings = this.swings.filter((s) => now - s.t < 0.16);
@@ -614,6 +668,11 @@ export class Combat {
   }
   #meleeClash(a, b) {
     const g = this.g, x = (a.x + b.x) / 2, y = (this.centerY(a) + this.centerY(b)) / 2;
+    if (this.fluido(a) || this.fluido(b)) for (const e of [a, b]) {
+      e.choqueAte = g.time + 0.24; e.fisico = null; e.contato = null; e.dashing = null;
+      e.andandoAte = 0;
+      if (e.side === 'ally') e.iframes = Math.max(e.iframes, 0.3);
+    }
     g.fx.emit(x, y, { tex: 'spark', color: 0xffffff, n: 20, speed: 200, life: 0.25, stretch: 0.012, drag: 4 });
     g.fx.emit(x, y, { tex: 'impact', color: 0xffe27a, n: 1, speed: 0, scale: 1.6, end: 2.6, life: 0.14 });
     g.fx.shock(x, y + 8, 0xffffff, 30, 0.3); g.fx.light(x, y, 0xffffff, 40, 0.15);
@@ -817,6 +876,7 @@ export class Combat {
   strike(user, t, mv, id, dx = 0, dy = 0, info = {}) {
     if (!t || t.alive === false || (t.mon && t.mon.hp <= 0)) return 'miss';
     const g = this.g;
+    if (t.side === 'ally' && t.quedaAte && t.iframes > 0) return 'miss';
     if (!info.force) {
       if (this.alt.dodges(t, mv, info, user)) { this.#missText(t, 'Errou!'); return 'miss'; }
       if (t.shieldT > 0 && !mv.maxFx?.bypassProtect) { this.#missText(t, 'Protegido!'); this.g.fx.emit(t.x, this.centerY(t), { tex: 'spark', color: t.shield.color, n: 8, speed: 90, life: 0.2, stretch: 0.01 }); this.sfx('shield', null, 0.1); return 'miss'; }
@@ -831,6 +891,8 @@ export class Combat {
     if (info.src !== 'beam' && Math.random() > (mv.cat === 'status' ? (mv.acc ?? 1) : 1) * Math.min(1, accM)) { this.#missText(t, 'Errou!'); return 'miss'; }
     if (mv.cat === 'status') { this.#status(user, t, mv); return 'hit'; }
     let scale = info.scale ?? 1;
+    // Margem a favor do jogador: a nova mobilidade nunca justifica aumentar o dano inimigo.
+    if (this.fluido(t) && t.side === 'ally' && user.side !== 'ally') scale *= 0.9;
     if (user.quedaT > 0 && (info.src === 'dash' || info.src === 'melee')) { scale *= ALTO_DANO; user.quedaT = 0; g.fx.number(t.x, t.y - (t.topH ?? 20) - 22, 'Ataque do alto!', 0xffe27a, true, 'banner'); }
     const r = computeDamage(user, t, mv, { g, scale, noCrit: info.src === 'beam' && !info.force });
     if (mv.maxFx) this.onMaxHit?.(user, t, mv, r); // efeitos dos Max Golpes e G-Max Golpes no alvo
@@ -868,13 +930,22 @@ export class Combat {
       const pw = mv?.power ?? 40;
       const power = Math.min(2.4, 0.55 + pw / 70) * (eff > 1 ? 1.3 : 1) * (crit ? 1.25 : 1);
       const mass = clamp(9 / (t.r + 3), 0.55, 1.4);
+      const fluido = this.fluido(t), forte = pw >= 80 || crit;
       const K = 115 * power * mass * knock;
       t.kx += dx * K; t.ky += dy * K;
-      t.react?.({ power: power * knock, eff, crit, quiet, dx, dy });
+      t.react?.({ power: power * knock, eff, crit, quiet, dx, dy, forte: fluido ? forte : undefined });
+      if (fluido) {
+        t.andandoAte = 0; t.contato = null; t.fisico = null;
+        if (t.side === 'ally') t.iframes = Math.max(t.iframes, forte && !quiet ? 0.9 : 0.18);
+        if (forte && !quiet && !t.alt?.mode) {
+          t.quedaAte = g.time + 0.42; t.charging = null; t.dashing = null;
+          t.stun = Math.max(t.stun, 0.42); t.vz = 135;
+        }
+      }
       if (t.pouso && !quiet) g.vivo?.aoAtingir(t, power * knock, eff, crit); // golpe forte derruba quem está no alto
       if (!quiet) {
         t.lock = Math.max(t.lock, 0.12 + 0.1 * power);
-        g.fx.kick(eff > 1 || crit ? 0.3 : 0.12 + 0.05 * power, Math.min(0.06, eff > 1 || crit ? 0.06 : 0.03 + 0.012 * power)); // pausa no acerto: no máximo 60 ms
+        g.fx.kick(fluido ? (forte ? 0.3 : 0.15) : eff > 1 || crit ? 0.3 : 0.12 + 0.05 * power, fluido ? (forte ? 0.06 : 0.018) : Math.min(0.06, eff > 1 || crit ? 0.06 : 0.03 + 0.012 * power)); // pausa no acerto: no máximo 60 ms
         this.sfx(eff > 1 ? 'hit-super' : eff < 1 ? 'hit-weak' : pw >= 70 ? 'hit-heavy' : 'hit', null, 0.03);
       } else if (Math.random() < 0.3) this.sfx('hit-weak', null, 0.08);
       // dano e eficácia: na camada de tela (src/ui/espetaculo.js), número grande com contorno e a cor da eficácia
@@ -890,7 +961,7 @@ export class Combat {
       if (crit) g.fx.screenFlash(0xffffff, 0.15);
       // quadro de impacto (estilo mangá) nos golpes fortes da SUA luta: crítico, super efetivo, golpe que tira muito ou nocaute
       const ko = t.mon.hp <= 0, pesado = dmg >= t.mon.stats.hp * 0.3 || (pw >= 90 && dmg >= t.mon.stats.hp * 0.15);
-      if (g.show && by && (ko || !quiet) && (by.side === 'ally' || t.side === 'ally') && (ko || crit || eff > 1 || pesado))
+      if ((!fluido || forte) && g.show && by && (ko || !quiet) && (by.side === 'ally' || t.side === 'ally') && (ko || crit || eff > 1 || pesado))
         g.show.impacto({ a: by, b: t, x: t.x, y: t.y, h: t.midH ?? 12, dano: dmg, eff, crit, ko, tipo: mv?.type });
       // chão marcado e poeira do empurrão (vfx.js): o golpe deixa rastro no campo
       this.vfx.marca?.(mv?.type, t.x, t.y, power * knock * (quiet ? 0.5 : 1), quiet ? 0 : dx, quiet ? 0 : dy);
@@ -948,8 +1019,11 @@ export class Combat {
     for (const e of g.entities) if (e.charging && this.hostile(e, who) && e.charging.t > e.charging.W - 0.3 && Math.hypot(e.x - who.x, e.y - who.y) < 120) perfect = true;
     if (perfect && (this.perfectT ?? 0) < g.time) {
       this.perfectT = g.time + 1;
-      g.fx.number(who.x, who.y - 40, 'Esquiva perfeita!', 0x9ad0ff, true, 'banner');
-      g.fx.hitStop = Math.max(g.fx.hitStop, 0.06); g.fx.screenFlash(0x9ad0ff, 0.15);
+      if (this.fluido(who) && who.side === 'ally') {
+        who.contraAte = g.time + 0.65; who.lock = 0;
+        for (let i = 0; i < who.cds.length; i++) if (golpeLeve(this.moveAt(who, i).mv)) who.cds[i] = 0;
+        this.vfx.resposta(who, 'water');
+      } else g.fx.number(who.x, who.y - 40, 'Esquiva perfeita!', 0x9ad0ff, true, 'banner');
       this.sfx('perfect');
     }
   }

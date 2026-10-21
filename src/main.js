@@ -688,18 +688,17 @@ class Game {
     // ----- Pokémon em campo: você controla direto -----
     const l = this.lead;
     if (pk) {
-      if (l.lock <= 0 && !l.dashing && l.stun <= 0) {
+      if ((l.lock <= 0 || this.combat.andando(l)) && !l.dashing && l.stun <= 0) {
         const sp = l.speed(run ? 1.45 : 1.1) * 1.15;
         l.vx = mag > 0.1 ? mx * sp : 0; l.vy = mag > 0.1 ? my * sp : 0;
         // não pode ir longe demais do treinador: só vale se ele ficou preso (normalmente ele acompanha, #seguir)
         const tdx = l.x - p.x, tdy = l.y - p.y, td = Math.hypot(tdx, tdy), LEASH = 16 * T;
         if (td > LEASH && (this.segue?.preso ?? 0) > 1 && (l.vx * tdx + l.vy * tdy) > 0) { l.vx *= 0.15; l.vy *= 0.15; if (!this.leashT || this.time > this.leashT) { this.toast('Longe demais do treinador!'); this.leashT = this.time + 3; } }
-        if (mag > 0.1) l.face(mx, my);
+        if (mag > 0.1 && !(this.combat.andando(l) && l.faceT > 0)) l.face(mx, my);
       } else { l.vx = 0; l.vy = 0; }
       if (inp.pressed('dodge') && (l.dodgeCd ?? 0) <= 0) {
         const dx = mag > 0.1 ? mx : Math.cos(l.angle), dy = mag > 0.1 ? my : Math.sin(l.angle);
-        l.kx += dx * 320; l.ky += dy * 320; l.iframes = 0.32; l.dodgeCd = 0.7; l.play('Hop'); l.vz = 80; this.audio.sfx('dodge');
-        this.combat.onDodge(l, true); // rastro e esquiva perfeita
+        this.combat.esquivar(l, dx, dy); // mesma entrada para teclado, controle e toque
         for (let k = 0; k < 5; k++) this.fx.emit(l.x, l.y - 6, { color: 0xffffff, n: 1, speed: 20, size: 4, life: 0.25 });
       }
       l.dodgeCd = (l.dodgeCd ?? 0) - dt;
@@ -839,7 +838,7 @@ class Game {
     if (!lutaTreinador && this.spawnT <= 0 && !this.spawnPend && this.wilds.filter((w) => w.alive).length < WILD_MAX) { this.spawnT = 4 + Math.random() * 3; this.spawnPend = true; this.spawnWild().catch(() => {}).finally(() => { this.spawnPend = false; }); }
     for (const w of this.wilds) {
       if (!w.alive || w.busy) { w.vx = w.vy = 0; continue; }
-      if (w.stun > 0 || w.lock > 0) { w.vx = w.vy = 0; continue; }
+      if (w.stun > 0 || (w.lock > 0 && !this.combat.andando(w))) { w.vx = w.vy = 0; continue; }
       const v = w.think(dt); w.vx = v.vx; w.vy = v.vy;
       if (Math.hypot(v.vx, v.vy) > 1) w.face(v.vx, v.vy);
       if (Math.hypot(w.x - p.x, w.y - p.y) > 44 * T) { w.dead = true; this.removeEntity(w); }
