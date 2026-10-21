@@ -45,7 +45,12 @@ export function arenaPara(b) {
 
 export class ArenaGinasio {
   constructor(b, cfg) {
-    const g = this.g = b.g; this.b = b; this.cfg = cfg;
+    const g = this.g = b.g; this.b = b;
+    this.simples = b.def?.id?.startsWith('leader_') && cfg.sala?.startsWith('estadio_');
+    // Campo esportivo: sem peças escondidas, perigos automáticos ou fases que diminuam a área.
+    // A equipe, os avisos dos golpes, a troca contínua e os poderes do líder continuam valendo.
+    if (this.simples) cfg = { ...cfg, pecas: [], fases: [{ id: 'campo', nome: 'Campo de batalha' }], abertura: 'O campo está livre. Vamos batalhar!' };
+    this.cfg = cfg;
     const room = cfg.sala ? g.map.interiors.find((r) => r.id === cfg.sala) : null;
     if (cfg.sala && !room) throw new Error('sala ' + cfg.sala + ' não existe');
     this.room = room; this.o = room ? { x: room.x, y: room.y } : { x: 0, y: 0 };
@@ -570,10 +575,24 @@ export class ArenaGinasio {
     G0.clear(); G1.clear(); GA.clear();
     this.topo.position.copyFrom(W.position); this.topo.scale.copyFrom(W.scale);
     if (this.topo.parent && this.topo.parent.children[this.topo.parent.children.length - 1] !== this.topo) this.topo.parent.addChild(this.topo);
-    if (this.contem) this.#borda(G0, G1, t);
+    if (this.contem) { if (this.simples) this.#quadra(G0); else this.#borda(G0, G1, t); }
     for (const p of this.pecas) if (p.ativo || p.sempreDesenha) p.desenhar?.(G0, G1);
     for (const av of this.avisos) this.#desenharAviso(GA, G1, av, t);
     if (this.contem) this.#setas(this.#foraDaTela());
+  }
+  // Linhas claras e poucas cores; a cor do ginásio fica apenas na faixa externa.
+  #quadra(G) {
+    const R = this.R, w = R.x1 - R.x0, h = R.y1 - R.y0;
+    const cor = parseInt(this.cfg.cor.replace('#', ''), 16), linha = 0xe4eddb;
+    G.rect(R.x0, R.y0, w, h).fill(0x355b50);
+    for (let i = 0; i < 8; i += 2) G.rect(R.x0, R.y0 + h * i / 8, w, h / 8).fill({ color: 0x527666, alpha: 0.23 });
+    G.rect(R.x0 + 4, R.y0 + 4, w - 8, h - 8).stroke({ color: cor, width: 5, alpha: 0.8 });
+    G.rect(R.x0 + 18, R.y0 + 18, w - 36, h - 36).stroke({ color: linha, width: 2, alpha: 0.7 });
+    G.moveTo(R.cx, R.y0 + 18).lineTo(R.cx, R.cy - 48).moveTo(R.cx, R.cy + 48).lineTo(R.cx, R.y1 - 18).stroke({ color: linha, width: 2, alpha: 0.6 });
+    G.circle(R.cx, R.cy, 48).stroke({ color: linha, width: 2.5, alpha: 0.75 });
+    G.circle(R.cx, R.cy, 12).stroke({ color: linha, width: 2.5, alpha: 0.75 });
+    G.moveTo(R.cx - 48, R.cy).lineTo(R.cx - 12, R.cy).moveTo(R.cx + 12, R.cy).lineTo(R.cx + 48, R.cy).stroke({ color: linha, width: 2.5, alpha: 0.75 });
+    for (const x of [R.x0 + w * 0.22, R.x1 - w * 0.22]) G.circle(x, R.cy, 24).stroke({ color: linha, width: 2, alpha: 0.4 });
   }
   // borda da arena, sempre à vista durante a luta: faixa no chão na cor do ginásio e postes com corda (o limite que
   // ninguém passa). A corda do Brás (peça "corda") já faz esse papel no ringue dele.

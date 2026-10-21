@@ -146,13 +146,15 @@ function dalva(P) { // salão da campeã: mosaico, colunas e as estátuas da est
 // As salas dos estádios, prontas para a lista de interiores do mundo (posição absoluta na faixa do núcleo)
 export function salasEstadios() {
   return ESTADIOS.map((E, i) => {
-    const P = new Planta(E.piso);
+    // Líderes: quadra ampla e desimpedida. Elite e chefes da história mantêm seus cenários.
+    const simples = E.luta.startsWith('leader_');
+    const P = new Planta(simples ? 't' : E.piso);
     arquibancada(P);
-    E.montar(P);
+    if (!simples) E.montar(P);
     return {
       id: salaDoEstadio(E.id), name: E.nome, x: 4 + i * PASSO, y: ESTADIO_Y, rows: P.linhas(), objects: P.objs, decor: P.decor,
-      spots: {}, people: [], receita: false, estilo: E.estilo, ...(E.papel ? { papel: E.papel } : {}), ...(E.dark ? { dark: true } : {}),
-      estadio: { id: E.id, luta: E.luta, volta: E.volta },
+      spots: {}, people: [], receita: false, estilo: E.estilo, ...(E.papel ? { papel: E.papel } : {}), ...(!simples && E.dark ? { dark: true } : {}),
+      estadio: { simples, id: E.id, luta: E.luta, volta: E.volta },
     };
   });
 }
