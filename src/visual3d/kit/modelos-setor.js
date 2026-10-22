@@ -1,3 +1,5 @@
+import { profundidadePintada } from '../letsgo/pintura.js';
+import { noPilotoVisual } from '../../world/piloto-visual.js';
 import * as THREE from 'three';
 import { kit } from './index.js';
 import { GLB_TIPOS, glbPronto, pedirGLB, onGLB } from './glb.js';
@@ -28,8 +30,9 @@ export class ModelosKit {
   // setor no estilo Let's Go (s.lg): modelo liso quando o tipo tem um (src/visual3d/letsgo/modelos.js), senão o do kit
   // (a beira da zona pode ter objetos lisos num setor voxel: as árvores da mata mudam de estilo junto, não no meio dela)
   lgDe(o, s) { return !!(s?.lg || (this.matLG && this.v.lg?.zona.objeto(o.tx, o.ty))); }
-  modeloDe(o, s) { return (this.lgDe(o, s) && modeloLG(o.kind, o)) || kit.modelo(o.kind, o); }
-  chaveDe(o, s) { return (this.lgDe(o, s) && chaveLG(o.kind, o)) || kit.chave(o.kind, o); }
+  perfilDe(o) { return noPilotoVisual(this.v.g.map, o.tx * 16, o.ty * 16) ? 'pintado' : ''; }
+  modeloDe(o, s) { return (this.lgDe(o, s) && modeloLG(o.kind, o, this.perfilDe(o))) || kit.modelo(o.kind, o); }
+  chaveDe(o, s) { return (this.lgDe(o, s) && chaveLG(o.kind, o, this.perfilDe(o))) || kit.chave(o.kind, o); }
   matDe(s, o) { return (o ? this.lgDe(o, s) : s?.lg) && this.matLG ? this.matLG : this.mat; }
 
   setor(s) {
@@ -41,8 +44,8 @@ export class ModelosKit {
       if (o.dead || !kit.temModelo(o.kind) || this.v.g.vivo?.mexido?.(o)) continue;
       if (this.#movel(o)) { moveis.push(o); continue; }
       const md = this.modeloDe(o, s), K = kit.ficha(o.kind);
-      const lisa = this.lgDe(o, s) && this.matLG && md.chave === chaveLG(o.kind, o), it = { geometry: md.geometry, x: o.x, y: this.#h(o.x, o.y, K.fh), z: o.y };
-      if (LOD_LIGA && lisa && ARVORES_LG.has(o.kind)) { arvP.push(it); arvL.push({ ...it, geometry: proxyArvore(o.kind, md) }); } // árvores lisas: modelo inteiro perto, substituto longe
+      const lisa = this.lgDe(o, s) && this.matLG && md.chave === chaveLG(o.kind, o, this.perfilDe(o)), it = { geometry: md.geometry, x: o.x, y: this.#h(o.x, o.y, K.fh), z: o.y };
+      if (LOD_LIGA && lisa && ARVORES_LG.has(o.kind) && !md.geometry.attributes.aPintura) { arvP.push(it); arvL.push({ ...it, geometry: proxyArvore(o.kind, md) }); } // árvores lisas: modelo inteiro perto, substituto longe
       else (!s.lg && lisa ? itensLG : itens).push(it);
       if (o.sprite) donos.push(o.sprite);
     }
@@ -54,8 +57,8 @@ export class ModelosKit {
       (!s.lg && lg ? itensLG : itens).push({ geometry: md.geometry, x: p.x, y: this.#h(p.x, p.y, 1), z: p.y });
     }
     s.kitObjs = L.objetosDoSetor(s.sx, s.sy).length;
-    if (itens.length) { s.kitMalha = new THREE.Mesh(kit.mesclar(itens), this.matDe(s)); s.kitMalha.matrixAutoUpdate = false; s.grupo.add(s.kitMalha); }
-    if (itensLG.length) { s.kitMalhaLG = new THREE.Mesh(kit.mesclar(itensLG), this.matLG); s.kitMalhaLG.matrixAutoUpdate = false; s.grupo.add(s.kitMalhaLG); }
+    if (itens.length) { s.kitMalha = new THREE.Mesh(kit.mesclar(itens), this.matDe(s)); if(s.kitMalha.geometry.attributes.aPintura)s.kitMalha.customDepthMaterial=profundidadePintada(); s.kitMalha.matrixAutoUpdate = false; s.grupo.add(s.kitMalha); }
+    if (itensLG.length) { s.kitMalhaLG = new THREE.Mesh(kit.mesclar(itensLG), this.matLG); if(s.kitMalhaLG.geometry.attributes.aPintura)s.kitMalhaLG.customDepthMaterial=profundidadePintada(); s.kitMalhaLG.matrixAutoUpdate = false; s.grupo.add(s.kitMalhaLG); }
     if (arvP.length) { // nível de detalhe das árvores (src/visual3d/letsgo/arvores-lod.js): duas malhas, uma visível por vez
       s.kitArvP = new THREE.Mesh(kit.mesclar(arvP), this.matLG); s.kitArvL = new THREE.Mesh(kit.mesclar(arvL), this.matLG);
       for (const m of [s.kitArvP, s.kitArvL]) { m.matrixAutoUpdate = false; m.castShadow = m.receiveShadow = true; s.grupo.add(m); }

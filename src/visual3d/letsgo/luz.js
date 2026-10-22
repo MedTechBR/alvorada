@@ -82,6 +82,15 @@ export function aplicarLuzLG(v, w, room, nt = 0, dt = 0.016) {
   if (P.bloomK) P.bloomK.value = lerp(P.bloomK.value, P.bloomK.value * 1.1, w);
   if (P.limiar) P.limiar.value = lerp(P.limiar.value, P.limiar.value - 0.06, w);
   if (P.raios) { P.raios.value *= 1 - 0.55 * w; P.raiosR.value *= 1 - 0.4 * w; }
+  // No piloto pintado, o detalhe já está no material: brilho e dourado não
+  // devem lavar as folhas nem transformar a rua em uma fonte de luz.
+  if (pk > 0.001) {
+    if (P.sat) P.sat.value = lerp(P.sat.value, 0.92, pk);
+    if (P.quente) P.quente.value = lerp(P.quente.value, 0.04, pk);
+    if (P.oliva) P.oliva.value *= 1 - pk;
+    if (P.bloomK) P.bloomK.value *= 1 - pk;
+    if (P.raios) { P.raios.value *= 1 - pk; P.raiosR.value *= 1 - pk; }
+  }
   const bat = v.dinamica?.batalhaK ?? 0;
   if (P.tilt) P.tilt.value = lerp(P.tilt.value, (piloto ? 0 : room ? 0.5 : 1.0) * (A.pos.nivel.dof === false ? 0 : 1) * (1 - 0.75 * bat), w);
   if (P.faixa) P.faixa.value = lerp(0.1, 0.13, w);

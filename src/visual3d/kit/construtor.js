@@ -158,6 +158,7 @@ export function mesclar(itens) {
   let nv = 0, ni = 0;
   for (const it of itens) { nv += it.geometry.attributes.position.count; ni += it.geometry.index.count; }
   const P = new Float32Array(nv * 3), N = new Float32Array(nv * 3), C = new Float32Array(nv * 3), B = new Float32Array(nv), I = nv > 65535 ? new Uint32Array(ni) : new Uint16Array(ni);
+  const pintado = itens.some(it => it.geometry.attributes.aPintura), UV = pintado ? new Float32Array(nv * 3) : null;
   let ov = 0, oi = 0;
   for (const it of itens) {
     const g = it.geometry, p = g.attributes.position.array, n = g.attributes.normal.array, c = g.attributes.color.array, b = g.attributes.aBrilho.array, idx = g.index.array;
@@ -168,6 +169,7 @@ export function mesclar(itens) {
       N[d] = n[s]; N[d + 1] = n[s + 1]; N[d + 2] = n[s + 2];
       C[d] = c[s] * k; C[d + 1] = c[s + 1] * k; C[d + 2] = c[s + 2] * k;
       B[ov + v] = b[v];
+      if (UV && g.attributes.aPintura) { const a = g.attributes.aPintura.array; UV[d] = a[s]; UV[d + 1] = a[s + 1]; UV[d + 2] = a[s + 2]; }
     }
     for (let j = 0; j < idx.length; j++) I[oi + j] = idx[j] + ov;
     ov += cnt; oi += idx.length;
@@ -177,6 +179,7 @@ export function mesclar(itens) {
   g.setAttribute('normal', new THREE.BufferAttribute(N, 3));
   g.setAttribute('color', new THREE.BufferAttribute(C, 3));
   g.setAttribute('aBrilho', new THREE.BufferAttribute(B, 1));
+  if (UV) g.setAttribute('aPintura', new THREE.BufferAttribute(UV, 3));
   g.setIndex(new THREE.BufferAttribute(I, 1));
   g.computeBoundingSphere();
   return g;

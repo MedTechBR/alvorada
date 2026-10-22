@@ -41,15 +41,16 @@ const _a = new THREE.Vector3(), _b = new THREE.Vector3(), _c = new THREE.Vector3
 export const ss = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 
 export class MalhaLG {
-  constructor(seed = 1) { this.p = []; this.n = []; this.c = []; this.b = []; this.i = []; this.r = rng(seed); }
+  constructor(seed = 1) { this.p = []; this.n = []; this.c = []; this.b = []; this.i = []; this.uvP = []; this.pintado = false; this.r = rng(seed); }
   // geometria do three posta com { x, y, z, sx, sy, sz, rx, ry, rz }; cor: '#hex' | { pe, topo } (degradê pela normal)
   // | função (x, y, z, nx, ny, nz) -> [r, g, b] linear; o = { brilho, var (ruído de cor), ao (escurece perto do chão), todas }
   add(geo, T, cr, o = {}) {
     _t.set(T.x ?? 0, T.y ?? 0, T.z ?? 0); _e.set(T.rx ?? 0, T.ry ?? 0, T.rz ?? 0); _q.setFromEuler(_e);
     _s.set(T.sx ?? T.s ?? 1, T.sy ?? T.s ?? 1, T.sz ?? T.s ?? 1); _m.compose(_t, _q, _s); _nm.getNormalMatrix(_m);
-    const P = geo.attributes.position, N = geo.attributes.normal, idx = geo.index, nt = idx ? idx.count / 3 : P.count / 3;
+    const P = geo.attributes.position, N = geo.attributes.normal, UV = geo.attributes.uv, idx = geo.index, nt = idx ? idx.count / 3 : P.count / 3;
     const pe = typeof cr === 'object' && !Array.isArray(cr) && cr.pe ? linear(cr.pe) : null, topo = pe ? linear(cr.topo) : null;
     const base = typeof cr === 'function' || pe ? null : linear(cr);
+    if (o.pintura >= 2 && !geo.boundingBox) geo.computeBoundingBox();
     const v0 = this.p.length / 3, mapa = new Int32Array(P.count).fill(-1);
     const vn = new THREE.Vector3(), vp = new THREE.Vector3();
     const vert = (k) => {
@@ -60,6 +61,18 @@ export class MalhaLG {
       let k2 = 1 + (o.var ? (this.r() - 0.5) * o.var : 0);
       if (o.ao !== false) k2 *= 0.72 + 0.28 * Math.min(1, Math.max(0, vp.y / 8));
       this.p.push(vp.x, vp.y, vp.z); this.n.push(vn.x, vn.y, vn.z); this.c.push(c[0] * k2, c[1] * k2, c[2] * k2); this.b.push(o.brilho ?? 0);
+      let u = UV?.getX(k) ?? 0, v = UV?.getY(k) ?? 0;
+      if (o.pintura >= 2) {
+        // A caixa chanfrada concentra o UV original no miolo de uma face.
+        // A projeção pela posição mantém a escala das telhas e do reboco.
+        const bb = geo.boundingBox, ax = Math.abs(N.getX(k)), ay = Math.abs(N.getY(k)), az = Math.abs(N.getZ(k));
+        const a = ax > ay && ax > az ? 'z' : 'x', b = ay > az && ay > ax ? 'z' : 'y';
+        const valor = e => e === 'x' ? P.getX(k) : e === 'y' ? P.getY(k) : P.getZ(k);
+        u = (valor(a) - bb.min[a]) / Math.max(.001, bb.max[a] - bb.min[a]);
+        v = (valor(b) - bb.min[b]) / Math.max(.001, bb.max[b] - bb.min[b]);
+      }
+      this.uvP.push(u, v, o.pintura == null ? 0 : o.pintura + 1);
+      if (o.pintura != null) this.pintado = true;
       return (mapa[k] = this.p.length / 3 - 1);
     };
     for (let f = 0; f < nt; f++) {
@@ -85,6 +98,7 @@ export class MalhaLG {
     g.setAttribute('normal', new THREE.Float32BufferAttribute(this.n, 3));
     g.setAttribute('color', new THREE.Float32BufferAttribute(this.c, 3));
     g.setAttribute('aBrilho', new THREE.Float32BufferAttribute(this.b, 1));
+    if (this.pintado) g.setAttribute('aPintura', new THREE.Float32BufferAttribute(this.uvP, 3));
     g.setIndex(new THREE.BufferAttribute(nv > 65535 ? new Uint32Array(this.i) : new Uint16Array(this.i), 1));
     g.computeBoundingBox(); g.computeBoundingSphere();
     return g;
@@ -204,13 +218,13 @@ export function casaLG(m, c) {
   const e = c.K.estilo ?? {}, wall = e.wall?.[0] ?? '#f3e6c8', roof = TELHADO[c.kind] ?? e.roof?.[0] ?? '#e0553e';
   const D = c.D, W = e.w ?? c.fw * 16, wl = W / 2 - 8, wh = e.wallH ?? 40, zf = -3, zb = -D + 5, zc = (zf + zb) / 2, dz = zf - zb;
   m.caixa(0, 0, zc, wl * 2 + 4, 6, dz + 4, 2, RODAPE, { seg: 1 });
-  m.caixa(0, 2, zc, wl * 2, wh - 2, dz, 3.5, wall, { seg: 2 });
+  m.caixa(0, 2, zc, wl * 2, wh - 2, dz, 3.5, c.pintado ? '#ffffff' : wall, { seg: 2, pintura: c.pintado ? 4 : undefined });
   // telhado de duas águas: duas lajes chanfradas e a cumeeira redonda
   const rx = W / 2 - 1, yb = wh - 3, yc = wh + dz * 0.55, ze = zf + 6, zn = zb - 6;
   const lado = (z0, y0) => { const L = Math.hypot(zc - z0, yc - y0), a = Math.atan2(yc - y0, Math.abs(zc - z0)), s = Math.sign(z0 - zc);
-    m.add(caixaR(rx * 2, 3.6, L + 3, 1.6, 1), { x: 0, y: (y0 + yc) / 2 + 1, z: (z0 + zc) / 2, rx: s * a }, { pe: clarear(roof, -0.12), topo: roof }, { ao: false, desvio: 0.2 });
+    m.add(caixaR(rx * 2, 3.6, L + 3, 1.6, 1), { x: 0, y: (y0 + yc) / 2 + 1, z: (z0 + zc) / 2, rx: s * a }, c.pintado ? '#ffffff' : { pe: clarear(roof, -0.12), topo: roof }, { ao: false, desvio: 0.2, pintura: c.pintado ? (c.kind === 'houseBlue' ? 3 : 2) : undefined });
     // fiadas de telha: frisos arredondados ao longo do telhado
-    for (const t of [0.22, 0.47, 0.72]) m.cil(-rx + 0.5, y0 + (yc - y0) * t + 2.6, z0 + (zc - z0) * t, 1.1, 1.1, rx * 2 - 1, 6, clarear(roof, -0.07), { rz: -Math.PI / 2, ao: false }); };
+    for (const t of (c.pintado ? [] : [0.22, 0.47, 0.72])) m.cil(-rx + 0.5, y0 + (yc - y0) * t + 2.6, z0 + (zc - z0) * t, 1.1, 1.1, rx * 2 - 1, 6, clarear(roof, -0.07), { rz: -Math.PI / 2, ao: false }); };
   lado(ze, yb); lado(zn, yb);
   m.cil(-rx - 1, yc + 1.2, zc, 2.6, 2.6, rx * 2 + 2, 10, clarear(roof, 0.06), { rz: -Math.PI / 2, ao: false });
   // empenas (triângulo da parede nos lados), em cor de parede
@@ -336,7 +350,8 @@ export function hashVar(o) {
   const x = o?.tx ?? Math.floor((o?.x ?? 0) / 16), y = o?.ty ?? Math.floor((o?.y ?? 0) / 16);
   let h = (x * 374761393 + y * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0);
 }
-const cache = new Map();
+const cache = new Map(), PERFIS = {};
+export function registrarPerfil(nome, tipos) { PERFIS[nome] = tipos; }
 // Registro dos tipos de outros arquivos (modelos-<grupo>.js; a lista está em modelos-todos.js): cada tipo é
 // { f: (m, c) => topo, var?, estado?: (o) => string, fruta? }, igual à tabela acima. Não sobrescreve um tipo existente.
 export const GRUPOS_LG = {};
@@ -347,15 +362,15 @@ export function registrar(grupo, tipos) {
 export const ARVORE = new Set(['tree', 'tree2', 'autumn', 'bigtree', 'bigautumn', 'pine', 'pine2', 'pineT', 'pinheiroAlto']);
 export const temModeloLG = (kind) => !!TIPOS[kind];
 // estado do objeto (fruta colhida, ponta de cerca); lite = árvore do miolo do paredão (o.ss: só a copa aparece)
-export function chaveLG(kind, o = {}) {
-  const T = TIPOS[kind]; if (!T) return null;
+export function chaveLG(kind, o = {}, perfil = '') {
+  const T = PERFIS[perfil]?.[kind] ?? TIPOS[kind]; if (!T) return null;
   const v = T.var ? hashVar(o) % T.var : 0;
   const e = T.estado ? T.estado(o) : T.fruta ? ((o?.semFruta || (o?.sprite && o.sprite.texture === SPR.berryless)) ? 'sem' : '') : '';
-  return `${kind}|${v}|${e}|${o?.ss && ARVORE.has(kind) ? 1 : 0}`;
+  return `${kind}|${v}|${e}|${o?.ss && ARVORE.has(kind) ? 1 : 0}${PERFIS[perfil]?.[kind] ? '|' + perfil : ''}`;
 }
-export function modeloLG(kind, o = {}) {
-  const T = TIPOS[kind]; if (!T) return null;
-  const k = chaveLG(kind, o); let r = cache.get(k); if (r) return r;
+export function modeloLG(kind, o = {}, perfil = '') {
+  const T = PERFIS[perfil]?.[kind] ?? TIPOS[kind]; if (!T) return null;
+  const k = chaveLG(kind, o, perfil); let r = cache.get(k); if (r) return r;
   const [, vs, estado, lite] = k.split('|'), v = +vs, K = KINDS[kind] ?? { fw: 1, fh: 1 };
   let seed = v * 7919 + 13; for (const ch of kind) seed = (seed * 31 + ch.charCodeAt(0)) % 2147483000;
   const m = new MalhaLG(seed);

@@ -1,3 +1,4 @@
+import { pintarMaterial } from './pintura.js';
 import * as THREE from 'three';
 import { ZonaLetsGo } from './zona.js';
 import { RelevoLG } from './relevo.js';
@@ -35,7 +36,7 @@ export class LetsGo {
   geometriaGrama(s) { return geometriaGramaLG(this.v, s); }
   // material dos modelos lisos: o do kit (cor por vértice + janelas que acendem), sem a textura de pixel
   materialModelos(criar) {
-    if (!this._mod) { this._mod = this.v.curvar(criar()); this._mod.shadowSide = THREE.DoubleSide; const k0 = this._mod.customProgramCacheKey?.bind(this._mod); this._mod.customProgramCacheKey = () => (k0 ? k0() : '') + '+lg'; }
+    if (!this._mod) { this._mod = pintarMaterial(this.v.curvar(criar())); this._mod.shadowSide = THREE.DoubleSide; const k0 = this._mod.customProgramCacheKey?.bind(this._mod); this._mod.customProgramCacheKey = () => (k0 ? k0() : '') + '+lg'; }
     return this._mod;
   }
   // peso do estilo para a luz: dentro de casa vale a sala; fora, a distância do foco até a zona
