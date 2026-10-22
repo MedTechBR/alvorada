@@ -38,17 +38,19 @@ export function pintarMaterial(mat) {
     sh.uniforms.tPintura = { value: atlasPintado() };
     sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute vec3 aPintura; varying vec3 vPintura;')
       .replace('#include <begin_vertex>', '#include <begin_vertex>\nvPintura = aPintura;');
-    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vPintura;\n' + GLSL_PINTURA)
-      .replace('#include <map_fragment>', `#include <map_fragment>
-        if (vPintura.z > 0.5 && (vPintura.z < 2.5 || vPintura.z > 10.5) && pintura(vPintura.z - 1.0, vPintura.xy).a < 0.45) discard;`)
-      .replace('#include <color_fragment>', `#include <color_fragment>
-        if (vPintura.z > 0.5) {
-          vec4 tinta = pintura(vPintura.z - 1.0, vPintura.xy);
-          if (tinta.a < 0.45) discard;
-          diffuseColor.rgb *= tinta.rgb * (vPintura.z < 2.5 ? 0.85 : 0.9);
-        }`);
+    const temCor = sh.fragmentShader.includes('#include <color_fragment>');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vPintura;\n' + GLSL_PINTURA);
+    // Uma amostra na passagem de cor; na sombra, apenas o recorte por alfa.
+    if (temCor) sh.fragmentShader = sh.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
+      if (vPintura.z > 0.5) {
+        vec4 tinta = pintura(vPintura.z - 1.0, vPintura.xy);
+        if (tinta.a < 0.45) discard;
+        diffuseColor.rgb *= tinta.rgb * (vPintura.z < 2.5 ? 0.85 : 0.9);
+      }`);
+    else sh.fragmentShader = sh.fragmentShader.replace('#include <map_fragment>', `#include <map_fragment>
+      if (vPintura.z > 0.5 && (vPintura.z < 2.5 || vPintura.z > 10.5) && pintura(vPintura.z - 1.0, vPintura.xy).a < 0.45) discard;`);
   };
-  mat.customProgramCacheKey = () => chave() + '+pintado-1';
+  mat.customProgramCacheKey = () => chave() + '+pintado-2';
   return mat;
 }
 

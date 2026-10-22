@@ -19,7 +19,7 @@ const MOVEL = (K) => !!(K && (K.breakable || K.push || K.strength || K.cart || K
 
 export class ModelosKit {
   constructor(v) {
-    this.v = v; this.mat = kit.material(); this.donos = new Set(); this.setores = new Set();
+    this.v = v; this.mat = kit.material(); this.donos = new WeakSet(); this.setores = new Set();
     // modelo GLB que chegou: refaz os setores montados (troca o bloco pelo móvel real)
     onGLB(() => { for (const s of [...this.setores]) this.setor(s); });
   }
@@ -89,14 +89,19 @@ export class ModelosKit {
   update() {
     const v = this.v;
     kit.noite(v.ceu?.sala ? 0.6 : (v.ceu?.noite ?? 0));
-    // sprites com modelo (o espelho pula): refeito a cada quadro, porque o 2D pode recriar sprites
-    this.donos.clear();
-    for (const s of this.setores) for (const o of v.L.objetosDoSetor(s.sx, s.sy)) if (o.sprite && !o.dead && kit.temModelo(o.kind) && !v.g.vivo?.mexido?.(o)) this.donos.add(o.sprite);
+    // O 2D pode recriar sprites. Atualiza a associação sem limpar e realocar
+    // a tabela inteira a cada quadro; referências antigas não impedem o GC.
     for (const s of this.setores) {
       if (!s.grupo.visible) continue;
+      const objetos = v.L.objetosDoSetor(s.sx, s.sy);
+      for (const o of objetos) {
+        const sp = o.sprite; if (!sp) continue;
+        if (!sp.destroyed && !o.dead && kit.temModelo(o.kind) && !v.g.vivo?.mexido?.(o)) this.donos.add(sp);
+        else this.donos.delete(sp);
+      }
       this.#lod(s);
       // objeto que entrou ou saiu do setor (empurrado de um setor para outro): refaz
-      if (v.L.objetosDoSetor(s.sx, s.sy).length !== s.kitObjs) { this.setor(s); continue; }
+      if (objetos.length !== s.kitObjs) { this.setor(s); continue; }
       for (const m of s.kitMoveis) {
         const o = m.o, sp = o.sprite;
         const vivo = !o.dead && (!sp || (!sp.destroyed && sp.visible));
