@@ -163,12 +163,15 @@ export function mesclar(itens) {
   let ov = 0, oi = 0;
   for (const it of itens) {
     const g = it.geometry, p = g.attributes.position.array, n = g.attributes.normal.array, c = g.attributes.color.array, b = g.attributes.aBrilho.array, idx = g.index.array;
+    const mesmaNormal=!!g.attributes.normal.normalized===pintado;
+    // A maioria das peças já tem o formato de destino: copia sem reconverter cada vértice.
+    if(mesmaNormal)N.set(n,ov*3);
     const escalaN = (g.attributes.normal.normalized ? 1/32767 : 1) * (pintado ? 32767 : 1);
     const x = it.x ?? 0, y = it.y ?? 0, z = it.z ?? 0, k = it.k ?? 1, cnt = p.length / 3;
     for (let v = 0; v < cnt; v++) {
       const s = v * 3, d = (ov + v) * 3;
       P[d] = p[s] + x; P[d + 1] = p[s + 1] + y; P[d + 2] = p[s + 2] + z;
-      N[d] = pintado ? Math.round(n[s]*escalaN) : n[s]; N[d + 1] = pintado ? Math.round(n[s + 1]*escalaN) : n[s + 1]; N[d + 2] = pintado ? Math.round(n[s + 2]*escalaN) : n[s + 2];
+      if(!mesmaNormal){N[d] = Math.round(n[s]*escalaN); N[d + 1] = Math.round(n[s + 1]*escalaN); N[d + 2] = Math.round(n[s + 2]*escalaN);}
       C[d] = c[s] * k; C[d + 1] = c[s + 1] * k; C[d + 2] = c[s + 2] * k;
       B[ov + v] = b[v];
       if (UV && g.attributes.aPintura) { const a = g.attributes.aPintura.array; UV[d] = a[s]; UV[d + 1] = a[s + 1]; UV[d + 2] = a[s + 2]; }
