@@ -131,12 +131,14 @@ function pars(layout, leve) {
     pd *= 1.0 - junta * 0.1;
     // Pintura compartilhada: rua de pedra na vila, trilha terrosa na rota.
     float cidade = uModelo * (1.0 - smoothstep(0.0, 8.0, max(pc.x, pc.y)));
+    if (modelo > 0.001) {
     vec3 lajes = pintura(5.0, fract(p / 64.0)).rgb;
     t = mix(t, lajes, cidade);
     pd = mix(pd, lajes, modelo);
     vec3 gramaP = pintura(6.0, fract(p / 70.0)).rgb;
     gramaP = mix(vec3(dot(gramaP, vec3(0.2126,0.7152,0.0722))), gramaP, 0.72);
     g = mix(g, gramaP * vec3(0.27,0.34,0.34), modelo * 0.95);
+    }
     // areia da praia: dourada clara com ondulações bem leves; a faixa molhada fica mais escura e brilha
     vec3 ar = mix(${lin('#e6c98a')}, ${lin('#f2dfa6')}, smoothstep(0.3, 0.75, n2.r)) * (0.96 + 0.08 * n3.g);
     ar *= 1.0 + 0.035 * sin((p.x * 0.6 + p.y * 0.9) * 0.22 + n2.g * 5.0);

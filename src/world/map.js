@@ -388,8 +388,11 @@ export class GameMap {
       c.floresta=florestaDoSetor(this,c.cx*CH,c.cy*CH);
       c.objs.push(...c.floresta);
     }
-    const cv = document.createElement('canvas'); cv.width = CPX; cv.height = CPX;
-    const ctx = cv.getContext('2d'); c.canvas = cv; c.ctx = ctx; c.img = ctx.createImageData(CPX, CPX); c.row = 0;
+    // No 3D este chão 2D fica transparente: um pixel basta, sem reservar
+    // um ImageData e um canvas de 256² para cada setor invisível.
+    const lado = this.semArte ? 1 : CPX;
+    const cv = document.createElement('canvas'); cv.width = lado; cv.height = lado;
+    const ctx = cv.getContext('2d'); c.canvas = cv; c.ctx = ctx; c.img = ctx.createImageData(lado, lado); c.row = 0;
   }
   #rowsChunk(c, r0, r1) {
     const ox = c.cx * CH, oy = c.cy * CH, th = Math.min(r1, this.h - oy) - r0;
@@ -400,7 +403,7 @@ export class GameMap {
     const ox = c.cx * CH, oy = c.cy * CH, cv = c.canvas, ctx = c.ctx, img = c.img;
     ctx.putImageData(img, 0, 0);
     c.tex = PIXI.Texture.from(cv); c.tex.source.scaleMode = 'nearest';
-    c.sprite = new PIXI.Sprite(c.tex); c.sprite.x = c.x; c.sprite.y = c.y; c.sprite.visible = false;
+    c.sprite = new PIXI.Sprite(c.tex); if (this.semArte) { c.sprite.width = CPX; c.sprite.height = CPX; } c.sprite.x = c.x; c.sprite.y = c.y; c.sprite.visible = false;
     this.groundLayer.addChild(c.sprite);
     // decoração plana: flores animadas, vitórias-régias, seixos, tapetes...
     c.deco = new PIXI.Container(); c.deco.visible = false; c.flowers = []; c.waves = []; c.anims = [];
@@ -473,6 +476,7 @@ export class GameMap {
     c.sprite.destroy(); c.tex.destroy(true); c.deco.destroy({ children: true });
     for (const s of c.tall.values()) s.destroy();
     if(c.floresta){for(const o of c.floresta)o.sprite?.destroy();c.objs=c.objs.filter(o=>!o.porSetor);c.floresta=null;}
+    c.flowers = []; c.waves = []; c.anims = []; // solta também as referências aos sprites destruídos
     c.canvas = c.ctx = c.img = c.tex = c.sprite = c.deco = c.tall = null; c.built = false;
   }
 
@@ -513,7 +517,8 @@ export class GameMap {
     // descarta setores longe (memória de vídeo do celular)
     if (this.frameK % 60 === 0) {
       const built = this.chunks.filter((c) => c.built && !c.shown);
-      if (built.length > 48) built.sort((a, b) => a.seen - b.seen).slice(0, built.length - 48).forEach((c) => this.#freeChunk(c));
+      const limite = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches ? 16 : 48;
+      if (built.length > limite) built.sort((a, b) => a.seen - b.seen).slice(0, built.length - limite).forEach((c) => this.#freeChunk(c));
     }
     // água animada só cobre a tela
     // (presa aos limites da parte externa do mapa: fora dele e nos interiores não há água)
