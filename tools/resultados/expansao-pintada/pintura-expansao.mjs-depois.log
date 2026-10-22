@@ -1,0 +1,9 @@
+locais [{"nome":"campina","x":736.5,"y":1813},{"nome":"praia","x":1800,"y":2250,"rect":[600,2100,2400,300]},{"nome":"neve","x":3160,"y":100,"rect":[3000,0,320,200]},{"nome":"deserto","x":3718,"y":1775,"rect":[3504,1450,428,650]},{"nome":"selva","x":825,"y":3020,"rect":[200,2840,1250,360]},{"nome":"casa","x":10.5,"y":3377.4,"sala":"casa_jogador"},{"nome":"centro","x":221.5,"y":3378,"sala":"centro_campina"},{"nome":"ginasio","x":29,"y":3583.6,"sala":"estadio_tome"}]
+campina {"p95":6.400000000001455,"cpuP95":2.2999999970197678,"picoMB":308.3174638748169,"geometrias":91,"texturas":73,"heapMB":287.3715467453003}
+praia {"p95":6,"cpuP95":1.699999999254942,"picoMB":320.2983102798462,"geometrias":84,"texturas":78,"heapMB":290.6122007369995}
+neve {"p95":6.299999999999272,"cpuP95":1.6000000014901161,"picoMB":322.9350061416626,"geometrias":79,"texturas":80,"heapMB":294.54246044158936}
+deserto {"p95":7.799999999995634,"cpuP95":1.9000000022351742,"picoMB":327.7771921157837,"geometrias":80,"texturas":85,"heapMB":297.7176389694214}
+selva {"p95":6.80000000000291,"cpuP95":1.800000000745058,"picoMB":332.9606924057007,"geometrias":104,"texturas":90,"heapMB":306.68785572052}
+casa {"p95":5.19999999999709,"cpuP95":1.699999999254942,"picoMB":338.0510444641113,"geometrias":98,"texturas":98,"heapMB":309.91942405700684}
+centro {"p95":3.900000000001455,"cpuP95":1.2000000029802322,"picoMB":344.83000087738037,"geometrias":109,"texturas":101,"heapMB":308.1531229019165}
+ginasio {"p95":5.80000000000291,"cpuP95":1.300000000745058,"picoMB":343.0298891067505,"geometrias":97,"texturas":101,"heapMB":311.8794631958008}

@@ -1,0 +1,12 @@
+campina {"mundo":"alvorada","modelos":73,"pintados":73,"compactados":34,"setoresLG":8,"geometrias":90,"texturas":72}
+praia {"mundo":"alvorada","modelos":30,"pintados":30,"compactados":6,"setoresLG":12,"geometrias":83,"texturas":77}
+neve {"mundo":"alvorada","modelos":11,"pintados":11,"compactados":11,"setoresLG":6,"geometrias":78,"texturas":79}
+deserto {"mundo":"alvorada","modelos":3,"pintados":3,"compactados":1,"setoresLG":9,"geometrias":79,"texturas":84}
+selva {"mundo":"alvorada","modelos":66,"pintados":66,"compactados":59,"setoresLG":9,"geometrias":103,"texturas":89}
+casa {"mundo":"alvorada","sala":"casa_jogador","modelos":13,"pintados":13,"compactados":6,"setoresLG":4,"geometrias":97,"texturas":97}
+centro {"mundo":"alvorada","sala":"centro_campina","modelos":23,"pintados":23,"compactados":1,"setoresLG":8,"geometrias":108,"texturas":100}
+ginasio {"mundo":"alvorada","sala":"estadio_tome","modelos":0,"pintados":0,"compactados":0,"setoresLG":6,"geometrias":96,"texturas":100}
+farol {"mundo":"alvorada","sala":"estadio_jonas","modelos":0,"pintados":0,"compactados":0,"setoresLG":6,"geometrias":96,"texturas":104}
+noite {"mundo":"alvorada","modelos":73,"pintados":73,"compactados":34,"setoresLG":8,"geometrias":114,"texturas":101}
+ocaso {"mundo":"ocaso","modelos":0,"pintados":0,"compactados":0,"setoresLG":12,"geometrias":96,"texturas":98}
+ocaso-gruta {"mundo":"ocaso","sala":"gruta_cataratas_1","modelos":4,"pintados":4,"compactados":2,"setoresLG":9,"geometrias":104,"texturas":102}

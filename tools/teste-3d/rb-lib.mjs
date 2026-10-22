@@ -5,6 +5,7 @@ export { sleep, until };
 const out = new URL('../shots/rb/', import.meta.url); mkdirSync(out, { recursive: true });
 export async function sessao({ W = 1280, H = 720, cel = false, qs = '', port = process.env.PORT ?? 8792, cpu = 1 } = {}) {
   const b = await launch();
+  try {
   const P = await open(b, 'about:blank', 'rb');
   await P.raw('Page.enable'); await P.raw('Page.bringToFront'); await P.raw('Emulation.setFocusEmulationEnabled', { enabled: true });
   await P.raw('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: cel ? 2 : 1, mobile: cel });
@@ -18,4 +19,5 @@ export async function sessao({ W = 1280, H = 720, cel = false, qs = '', port = p
   const foto = async (n) => { const s = await P.raw('Page.captureScreenshot', { format: 'jpeg', quality: 80 }); writeFileSync(new URL(n + '.jpg', out), Buffer.from(s.result.data, 'base64')); return n; };
   const erros = () => [...new Set(P.logs.filter((l) => /EXC|rror|arn/.test(l)))];
   return { b, P, foto, erros, kill: () => b.kill() };
+  } catch (e) { b.kill(); throw e; } // falha na abertura também encerra o Chrome desta sessão
 }

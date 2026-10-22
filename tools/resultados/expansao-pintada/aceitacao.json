@@ -1,0 +1,19 @@
+{
+  "base": "77a4f217",
+  "versao": "8a0cd66c",
+  "funcionais_node": "aprovados; node.json e logs",
+  "invisiveis": {
+    "alvorada": 0,
+    "ocaso": 0
+  },
+  "npc_passagens": 179,
+  "desempenho_estrito": false,
+  "pendencia": {
+    "local": "rota",
+    "metrica": "picoMB",
+    "antes": 356.5070562362671,
+    "depois": 356.55431747436523,
+    "diferencaMiB": 0.04726123809814453
+  },
+  "publicado": false
+}

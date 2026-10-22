@@ -232,3 +232,7 @@ Pontos das fotos: cidade `(1523,1750)`, estrada `(1240,1750)`, borda de mata `(1
 Não houve publicação. Não foi alterada a lógica de dano, cooldowns, IA, roteiro, diálogos, dados de Pokémon ou barreiras da progressão. O piloto ainda não equivale integralmente à pintura conceitual: flores menores, arbustos, lavouras, mobiliário e parte das construções conservam modelos anteriores. Água, interiores, ginásios e o restante do continente ficam para outra rodada, depois da avaliação deste modelo. A imagem aprovada não foi usada para alegar desempenho ou fidelidade que só uma captura do motor pode comprovar.
 
 Não foi testado em iPhone físico/Safari. `performance.memory` e contagens do renderer não medem todos os bytes de GPU nem provam que o fechamento por falta de memória foi eliminado. É necessário um teste prolongado no aparelho que apresentava o problema.
+
+### Continuação após a aprovação do piloto
+
+O estilo foi estendido ao restante do jogo em outra rodada. Escopo por arquivo, fotos, medições e limitações estão em [expansao-visual-pintada.md](expansao-visual-pintada.md). A seção anterior permanece como registro do piloto e de seus resultados.

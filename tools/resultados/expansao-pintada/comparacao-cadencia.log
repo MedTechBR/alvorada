@@ -1,0 +1,20 @@
+cidade {"nome":"cidade","antes":{"p95":16.799999999995634,"cpuP95":7.400000002235174,"picoMB":355.5705671310425,"heapMB":343.47228813171387,"geometrias":117,"texturas":91},"depois":{"p95":16.700000000004366,"cpuP95":7,"picoMB":354.10876274108887,"heapMB":342.46857166290283,"geometrias":97,"texturas":75}}
+rota {"nome":"rota","antes":{"p95":16.799999999995634,"cpuP95":7.199999999254942,"picoMB":356.5070562362671,"heapMB":345.61895847320557,"geometrias":117,"texturas":91},"depois":{"p95":16.799999999995634,"cpuP95":6.900000002235174,"picoMB":356.55431747436523,"heapMB":344.6650552749634,"geometrias":98,"texturas":76}}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: rota: picoMB piorou (356.5070562362671 -> 356.55431747436523)
+    at file:///Users/matheusparente/Documents/Claude/pokemon-2d/tools/teste-3d/referencia-comparar.mjs:11:98
+    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)
+    at async node:internal/modules/esm/loader:650:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v26.5.0

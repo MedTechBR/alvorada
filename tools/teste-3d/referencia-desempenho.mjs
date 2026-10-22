@@ -3,7 +3,7 @@ import { sessao, sleep } from './rb-lib.mjs';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 const etapa=process.argv[2]??'antes';
-const s=await sessao({W:844,H:390,cel:true,qs:'nosw',port:8700});
+const s=await sessao({W:844,H:390,cel:true,qs:'nosw',port:+(process.env.PORTA??8700)});
 try {
  await s.P.ev(`(async()=>{for(let i=0;i<60&&(game.story.busy||game.ui.dialog.open);i++){dispatchEvent(new KeyboardEvent('keydown',{code:'Enter',key:'Enter',bubbles:true}));dispatchEvent(new KeyboardEvent('keyup',{code:'Enter',key:'Enter',bubbles:true}));await new Promise(r=>setTimeout(r,100));}game.story.roteiro.update=()=>{};game.spawnT=game.ambienteT=1e9;for(const w of [...game.wilds])game.removeEntity(w);game.mundo.setHour(11);game.quality.level='alta';})()`);
  const pontos=[['cidade',1523,1750],['rota',1240,1750]];
@@ -21,7 +21,7 @@ try {
   await s.P.raw('HeapProfiler.collectGarbage');r.heapMB=await s.P.ev('performance.memory.usedJSHeapSize/1048576');
   resultados.push({nome,volta,...r});console.log(nome,volta,JSON.stringify(r));
  }
- const erros=s.erros();const out={etapa,commit:process.env.REF_COMMIT??execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),viewport:[844,390],dpr:2,cpu:4,resultados,erros};
+ const erros=s.erros();const out={etapa,commit:process.env.REF_COMMIT??execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),viewport:[844,390],dpr:2,cpu:4,cadencia:process.env.FPS_LIVRE==='0'?'tela':'livre',resultados,erros};
  mkdirSync('tools/resultados/referencia',{recursive:true});writeFileSync(`tools/resultados/referencia/${etapa}.json`,JSON.stringify(out,null,2)+'\n');
  if(erros.some(e=>/EXC|Error/.test(e)))throw new Error(erros.join('\n'));
  if(resultados.some(r=>r.distancia<50))throw new Error('Percurso não caminhou o suficiente');
