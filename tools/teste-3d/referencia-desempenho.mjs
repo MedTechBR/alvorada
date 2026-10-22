@@ -21,7 +21,7 @@ try {
   await s.P.raw('HeapProfiler.collectGarbage');r.heapMB=await s.P.ev('performance.memory.usedJSHeapSize/1048576');
   resultados.push({nome,volta,...r});console.log(nome,volta,JSON.stringify(r));
  }
- const erros=s.erros();const out={etapa,commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),viewport:[844,390],dpr:2,cpu:4,resultados,erros};
+ const erros=s.erros();const out={etapa,commit:process.env.REF_COMMIT??execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),viewport:[844,390],dpr:2,cpu:4,resultados,erros};
  mkdirSync('tools/resultados/referencia',{recursive:true});writeFileSync(`tools/resultados/referencia/${etapa}.json`,JSON.stringify(out,null,2)+'\n');
  if(erros.some(e=>/EXC|Error/.test(e)))throw new Error(erros.join('\n'));
  if(resultados.some(r=>r.distancia<50))throw new Error('Percurso não caminhou o suficiente');

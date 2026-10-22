@@ -1,5 +1,7 @@
 # Referência visual — cidade e rota modelo
 
+> A análise e as primeiras medições abaixo são históricas. A implementação baseada na imagem pintada aprovada está na seção final “Revisão pintada aprovada”.
+
 ## Etapa 1 — análise anterior às mudanças do jogo
 
 Data: 22/10/2026. Base publicada: `57e60497`. Trabalho local no branch `visual-referencia`, sem publicar esta etapa.
@@ -154,3 +156,79 @@ Não foi espalhado o novo desenho pelo restante do continente. O modelo melhorou
 Não houve teste em iPhone físico/Safari nem medição dos bytes totais de GPU. A redução observada no Chrome é evidência de melhora, não prova de que o fechamento do aplicativo por memória foi eliminado. Permanece necessário um teste longo no aparelho que apresentava o problema.
 
 A revisão anterior `57e60497` foi publicada e conferida no site antes de começar esta etapa. Os commits de `visual-referencia` permanecem locais, **sem push**.
+
+## Revisão pintada aprovada — 22/10/2026
+
+Após a rejeição da tentativa com formas simplificadas, `266c8829` restaurou o desenho anterior. O usuário aprovou um conceito de vila com materiais pintados, árvores folhosas detalhadas, telhas vermelhas, reboco claro, rua de pedra e jardins junto às fachadas. Esta rodada implementa esse direcionamento na vila inicial e no trecho piloto da Rota 1. Continua local, no branch `visual-referencia`, sem push.
+
+O [conceito aprovado](../tools/shots/referencia/pintado-conceito-aprovado.jpg) é uma imagem gerada. As [fotos antes/depois da cidade](../tools/shots/referencia/pintado-cidade-comparacao.jpg), da [rota](../tools/shots/referencia/pintado-rota-comparacao.jpg) e da [borda de mata](../tools/shots/referencia/pintado-mata-comparacao.jpg) são capturas do jogo. Cada painel mede 844×390; as capturas brutas foram feitas em DPR 2 e reduzidas para apresentação, sem alterar cores. O [painel conceito × jogo](../tools/shots/referencia/pintado-conceito-e-jogo.jpg) distingue explicitamente os dois.
+
+### Resultado e escopo
+
+- Atlas único de 512×512 para folhas, telhas, reboco e pedra. Paredes e telhados continuam sendo volumes 3D, com portas, janelas, floreiras e cantaria; o conceito não virou um fundo estático.
+- Copas recortadas com detalhe pintado, profundidade e sombra respeitando o alfa. Árvores normais, coníferas, grandes, ipês e paineiras reutilizam o atlas; folhas douradas/rosadas preservam sua identidade por transformação de cor. Oran e Pecha conservam frutos e estado de colheita.
+- Rua contínua na quadra inicial, jardins e cercas fora do acesso da porta, árvores em gramado livre para enquadrar a fachada e retirada dos postes redundantes. Ao retirar um poste, sua colisão também é removida, salvo se outro objeto ocupar a célula. As novas árvores/cercas têm pegadas sólidas reais, verificadas pelos testes de navegação.
+- Grama menos fluorescente; sem bloom nem raios sobre o piloto. Pequeno deslocamento do foco para mostrar a fachada e suas copas, mantendo orientação, escala e acompanhamento estáveis. Não houve nova alteração de controle, transições ou combate nesta rodada.
+- Modelos fora do recorte continuam com seu desenho anterior. Arbustos e flores menores ainda reutilizam modelos existentes; não foi prometida equivalência completa ao conceito em todo o catálogo.
+
+### Memória e desempenho
+
+O atlas é compartilhado por materiais e setores; não há uma cópia por objeto. As árvores pintadas dispensam a segunda malha de LOD: seus recortes têm menos triângulos que os modelos anteriores. Sombras também descartam o fundo transparente, evitando retângulos escuros no chão. A passagem de cor amostra o atlas uma vez; a tabela de associação de sprites usa referências fracas e atualiza os setores visíveis, evitando reconstruir um conjunto completo a cada quadro.
+
+No toque, o cache 3D guarda até 20 setores, sem descartar setores necessários à vista. O cache 2D guarda 16 setores não visíveis. Quando o chão 2D está desativado porque o 3D desenha o terreno, seu buffer transparente ocupa um pixel, em vez de 256²; a escala espacial do setor continua a mesma. O teste adicional confirma que o modo 2D continua com setores de 256 px. **A resolução do render 3D não foi reduzida.** Máscaras, geometrias mescladas, imagens de setores e referências a sprites destruídos são liberadas ao sair do cache. O atlas único permanece vivo durante a sessão.
+
+Protocolo: Chrome/Metal, 844×390, DPR solicitado 2, CPU 4×, qualidade alta, mesmo percurso automatizado e três voltas alternando cidade/rota. O DPR interno segue o limite preexistente do jogo no toque (1,5); não é correto descrever esta execução como render interno a DPR 2. A comparação mede mediana do p95 de quadros/CPU, mediana do heap após GC e máximo dos picos de heap/recursos entre as voltas. As medições finais foram feitas com um único Chrome de teste e sem auditorias concorrentes. Um processo órfão da primeira tentativa de conexão foi identificado e encerrado; aquela amostra foi descartada e o antes foi refeito.
+
+| Local | Etapa | Quadro p95 (ms) | CPU p95 (ms) | Heap após GC (MiB) | Pico de heap (MiB) | Geometrias | Texturas |
+|---|---|---:|---:|---:|---:|---:|---:|
+| Cidade | Antes | 12,30 | 6,30 | 363,06 | 396,63 | 144 | 113 |
+| Cidade | Depois | 10,90 | 5,90 | 345,29 | 384,94 | 118 | 92 |
+| Rota | Antes | 8,30 | 3,90 | 363,54 | 395,64 | 144 | 113 |
+| Rota | Depois | 7,40 | 3,40 | 347,43 | 385,17 | 118 | 92 |
+
+Resultado: nenhum dos seis indicadores aumentou. Par final: `266c882` → `e1e5aba3`. Fontes: `tools/resultados/referencia/pintado-par-antes.json`, `pintado-par-depois.json` e `pintado-par-comparacao.json`. O depois foi repetido após a correção da sombra dos objetos dinâmicos. As amostras anteriores permanecem identificadas como intermediárias.
+
+Repetir o depois: `node tools/teste-3d/referencia-desempenho.mjs pintado-par-depois`; comparar: `node tools/teste-3d/referencia-comparar.mjs pintado-par-antes pintado-par-depois pintado-par-comparacao`. Para repetir o antes, usar a revisão `266c882` com o mesmo script de medição, em sequência e sem outro Chrome de teste aberto.
+
+As versões intermediárias em `tools/resultados/pintado/` documentam a descoberta do pico de heap maior e as correções de cache/buffers. Não são o resultado final. O comparador reprova qualquer aumento nos seis indicadores.
+
+### Arquivos desta rodada
+
+| Arquivo | Mudança |
+|---|---|
+| `assets/visual/pintado/vila.png`, `LEIAME.md` | Atlas compartilhado, origem e descrição do recurso |
+| `src/visual3d/letsgo/pintura.js` | Amostragem do atlas, cores de folhagem, descarte de alfa no material e na sombra |
+| `src/visual3d/letsgo/modelos-pintados.js` | Árvores do piloto, frutos colhíveis e fachada com cantaria |
+| `src/visual3d/letsgo/modelos.js` | Perfil separado de modelos, UV por peça e projeção correta nas caixas chanfradas |
+| `src/visual3d/letsgo/modelos-todos.js` | Registro do perfil pintado |
+| `src/visual3d/kit/construtor.js` | Preserva UV ao mesclar, só aloca o atributo onde necessário |
+| `src/visual3d/kit/modelos-setor.js` | Seleciona perfil por localização, usa sombra recortada e evita duplicar LOD das árvores pintadas |
+| `src/visual3d/letsgo/index.js` | Integra o atlas ao material compartilhado |
+| `src/visual3d/letsgo/chao.js` | Pedra e grama pintadas no recorte piloto; evita amostragem adicional fora dele |
+| `src/visual3d/letsgo/luz.js` | Luz e gradação sem lavar detalhes com dourado ou bloom |
+| `src/visual3d/camera.js` | Folga de enquadramento ao norte na exploração do piloto |
+| `src/world/piloto-visual.js` | Rua, jardins, cercas, moldura de árvores e retirada segura dos postes |
+| `src/visual3d/setores.js` | Cache menor no toque, com descarte existente |
+| `src/world/map.js` | Buffers transparentes mínimos no 3D, cache 2D menor no toque e liberação das listas de animação |
+| `tools/auditar-invisiveis.mjs` | Audita o perfil realmente usado; planos com transparência não contam como paredes opacas |
+| `tools/teste-pintura.mjs` | Cache por perfil, UV nas mesclas, economia de triângulos e estado de frutos |
+| `tools/teste-3d/pintura-piloto.mjs` | Atlas real carregado, sombra, descarte de malhas e regressão do modo 2D |
+| `tools/teste-3d/referencia-{desempenho,comparar,exploracao}.mjs` | Rótulos de comparação, identificação da revisão inicial e saída de resultado separada |
+| `tools/shots/referencia/pintado-*`, `tools/resultados/pintado/` | Evidências visuais e registros desta revisão |
+
+### Verificações e limites
+
+As 14 verificações solicitadas em Node passaram, além de `tools/teste-pintura.mjs`; códigos e logs em `tools/resultados/pintado/node.json`. A auditoria de invisíveis foi repetida após os últimos modelos: **0 achados**, nos dois mundos, em `auditar-invisiveis-final.log`.
+
+- Render real: atlas 512×512 carregado e compartilhado, **8 de 8 malhas pintadas** com material de sombra recortada.
+- Descarte do piloto: **6 de 6 geometrias próprias** liberadas; **2 geometrias compartilhadas** preservadas, sem `dispose` indevido. A associação de sprites removidos/recriados também passou.
+- Buffers: visita a região nova com 3D ativo confirmou buffers transparentes de um pixel. Uma segunda sessão, em 2D, confirmou setores de **256×256**, sem erro de console.
+- Exploração: movimento, colisão, câmera estável, porta e shaders passaram. Descarte de **43 de 43 geometrias**, incluindo luz de janela; porta em **0.330 s de jogo / 0.488 s reais** nesta sessão.
+- `PORTA=8700 node tools/auditar-passagens-npc.mjs`: **179 NPCs, nenhuma passagem bloqueada**.
+- Comparador final: **todos os indicadores passaram**, sem tolerância para aumento.
+
+Pontos das fotos: cidade `(1523,1750)`, estrada `(1240,1750)`, borda de mata `(1238,1705)`, sempre às 11h. As capturas usam `foto.mjs`, com `CEL=1 W=844 H=390 PORT=8700`, `nosw&shaders=1`, roteiro suspenso após o diálogo inicial e diálogo fechado para a foto. Chrome sem interface, `--mute-audio`, um por vez. Somente os processos iniciados nesta tarefa foram encerrados.
+
+Não houve publicação. Não foi alterada a lógica de dano, cooldowns, IA, roteiro, diálogos, dados de Pokémon ou barreiras da progressão. O piloto ainda não equivale integralmente à pintura conceitual: flores menores, arbustos, lavouras, mobiliário e parte das construções conservam modelos anteriores. Água, interiores, ginásios e o restante do continente ficam para outra rodada, depois da avaliação deste modelo. A imagem aprovada não foi usada para alegar desempenho ou fidelidade que só uma captura do motor pode comprovar.
+
+Não foi testado em iPhone físico/Safari. `performance.memory` e contagens do renderer não medem todos os bytes de GPU nem provam que o fechamento por falta de memória foi eliminado. É necessário um teste prolongado no aparelho que apresentava o problema.

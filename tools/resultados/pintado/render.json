@@ -1,0 +1,19 @@
+{
+  "atlas": [
+    512,
+    512
+  ],
+  "pintadas": 8,
+  "profundidade": 8,
+  "geometrias": 6,
+  "liberadas": 6,
+  "compartilhadas": 2,
+  "compartilhadasLiberadas": 0,
+  "compartilhado": true,
+  "associacao": {
+    "retirou": true,
+    "recolocou": true
+  },
+  "buffersPequenos": 20,
+  "erros": []
+}

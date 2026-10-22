@@ -1,0 +1,103 @@
+{
+  "etapa": "pintado-par-depois",
+  "commit": "e1e5aba3ff23ddbd5f05da4dfd537049256ddbfb",
+  "viewport": [
+    844,
+    390
+  ],
+  "dpr": 2,
+  "cpu": 4,
+  "resultados": [
+    {
+      "nome": "cidade",
+      "volta": 0,
+      "p50": 4.899999999997817,
+      "p95": 10.699999999998909,
+      "cpuP95": 6.5,
+      "quadros": 1090,
+      "distancia": 299.4147840000005,
+      "picoMB": 313.4182643890381,
+      "geometrias": 103,
+      "texturas": 81,
+      "setores": 14,
+      "qualidade": "alta",
+      "heapMB": 284.05762481689453
+    },
+    {
+      "nome": "rota",
+      "volta": 0,
+      "p50": 3.600000000002183,
+      "p95": 7.700000000000728,
+      "cpuP95": 3.5,
+      "quadros": 1470,
+      "distancia": 389.16479999999865,
+      "picoMB": 378.9877681732178,
+      "geometrias": 111,
+      "texturas": 87,
+      "setores": 16,
+      "qualidade": "alta",
+      "heapMB": 345.4363126754761
+    },
+    {
+      "nome": "cidade",
+      "volta": 1,
+      "p50": 4.400000000001455,
+      "p95": 11.400000000001455,
+      "cpuP95": 5.900000000372529,
+      "quadros": 1157,
+      "distancia": 390.4639999999963,
+      "picoMB": 373.969012260437,
+      "geometrias": 116,
+      "texturas": 91,
+      "setores": 18,
+      "qualidade": "alta",
+      "heapMB": 345.7756156921387
+    },
+    {
+      "nome": "rota",
+      "volta": 1,
+      "p50": 3.5,
+      "p95": 7.400000000001455,
+      "cpuP95": 3.400000000372529,
+      "quadros": 1549,
+      "distancia": 390.297912888891,
+      "picoMB": 385.1703910827637,
+      "geometrias": 116,
+      "texturas": 91,
+      "setores": 18,
+      "qualidade": "alta",
+      "heapMB": 347.4292802810669
+    },
+    {
+      "nome": "cidade",
+      "volta": 2,
+      "p50": 4.19999999999709,
+      "p95": 10.900000000001455,
+      "cpuP95": 4.5,
+      "quadros": 1250,
+      "distancia": 390.22079999999914,
+      "picoMB": 384.94240856170654,
+      "geometrias": 118,
+      "texturas": 92,
+      "setores": 18,
+      "qualidade": "alta",
+      "heapMB": 345.2911148071289
+    },
+    {
+      "nome": "rota",
+      "volta": 2,
+      "p50": 3.5,
+      "p95": 7.100000000005821,
+      "cpuP95": 3.200000001117587,
+      "quadros": 1567,
+      "distancia": 390.0352000000021,
+      "picoMB": 383.2879524230957,
+      "geometrias": 118,
+      "texturas": 92,
+      "setores": 18,
+      "qualidade": "alta",
+      "heapMB": 347.86746978759766
+    }
+  ],
+  "erros": []
+}

@@ -22,5 +22,5 @@ try {
  const recursos=await s.P.ev('({posLeve:v3d.amb.pos.leve,reducoes:v3d.amb.pos.d.length,radial:!!v3d.amb.pos.rR,setoresVazios:game.map.chunks.length-game.map.chunks.filter(Boolean).length})');
  assert(recursos.posLeve);assert.equal(recursos.reducoes,0);assert(!recursos.radial);assert(recursos.setoresVazios>0);
  const erros=s.erros();assert(!erros.some(e=>/EXC|Error|VALIDATE_STATUS|Shader Error/.test(e)),erros.join('\n'));
- const r={movimento,camA,camB,porta,descarte,recursos,erros};writeFileSync('tools/resultados/referencia/exploracao.json',JSON.stringify(r,null,2)+'\n');console.log('OK',JSON.stringify({porta,descarte,recursos}));
+ const r={movimento,camA,camB,porta,descarte,recursos,erros};writeFileSync(process.env.RESULTADO ?? 'tools/resultados/referencia/exploracao.json',JSON.stringify(r,null,2)+'\n');console.log('OK',JSON.stringify({porta,descarte,recursos}));
 }finally{s.kill();}
