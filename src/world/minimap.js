@@ -2,7 +2,7 @@ import { T, TILE } from './tiles.js';
 import { KINDS } from './objects.js';
 import { IS_TOUCH } from '../engine/input.js';
 
-// Minimapa no canto (gira com a direção do jogador ou fica fixo para o norte: clique nele ou tecla N)
+// Minimapa fixo para o norte; tocar ou pressionar Enter abre o mapa detalhado.
 // e o mapa completo da região com as áreas visitadas (renderRegionMap, para o menu).
 
 const COLORS = {
@@ -30,7 +30,7 @@ const DIR_ANGLE = { up: 0, right: Math.PI / 2, down: Math.PI, left: -Math.PI / 2
 export class Minimap {
   constructor(g, life) {
     this.g = g; this.life = life; this.map = g.map;
-    try { this.rotate = localStorage.getItem('alvorada.minimapa.gira') === '1'; } catch { this.rotate = false; }
+    this.rotate = false;
     this.angle = 0; this.t = 0;
     this.base = this.#bake();
     // posição e tamanho no CSS (src/ui/style.css, #minimapa): no celular deitado fica ao lado do botão do menu
@@ -40,8 +40,10 @@ export class Minimap {
     box.append(cv, lab); document.body.appendChild(box);
     this.cv = cv; this.dpr = dpr;
     this.#fit(); addEventListener('resize', () => this.#fit());
-    box.addEventListener('pointerdown', (e) => { e.stopPropagation(); this.toggle(); });
-    addEventListener('keydown', (e) => { if (e.code === 'KeyN') this.toggle(); });
+    box.tabIndex=0;box.setAttribute('role','button');box.setAttribute('aria-label','Abrir mapa da região');
+    const abrir=e=>{e.preventDefault();e.stopPropagation();g.ui.openMap();};
+    box.addEventListener('click',abrir);
+    box.addEventListener('keydown',e=>{if(e.code==='Enter'||e.code==='Space')abrir(e);});
     this.ctx = cv.getContext('2d'); this.label = lab;
   }
   #fit() {
@@ -52,7 +54,7 @@ export class Minimap {
     this.cv.style.width = this.cv.style.height = size + 'px';
     this.t = 0;
   }
-  toggle() { this.rotate = !this.rotate; try { localStorage.setItem('alvorada.minimapa.gira', this.rotate ? '1' : '0'); } catch {} this.g.toast?.(this.rotate ? 'Minimapa: gira com você' : 'Minimapa: norte para cima'); }
+
 
   // imagem base: 1 pixel por bloco, prédios pintados com a cor do telhado. Feita em blocos de 128x128 (só os que
   // aparecem são desenhados; regiões ainda não montadas ficam de fora e entram quando o mapa monta a região).

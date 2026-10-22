@@ -1,3 +1,4 @@
+import { MapaDetalhado, ligarGestosMapa } from './mapa-detalhado.js';
 import { SPECIES, BIOME_ENCOUNTERS, NIGHT_ENCOUNTERS, DEX_ORDER, speciesOfKey } from '../data/species.js';
 import { MOVES } from '../data/moves.js';
 import { TYPE_COLOR, TYPE_PT } from '../data/types.js';
@@ -327,6 +328,7 @@ export class GameMenu {
   #key(e) {
     if (!this.isOpen) return;
     if (performance.now() < (this.deaf ?? 0)) { e.preventDefault(); return; } // a tecla que fechou o diálogo não vale aqui
+    if(this.top?.zoomMapa&&['Equal','Minus','NumpadAdd','NumpadSubtract'].includes(e.code)){e.preventDefault();this.top.zoomMapa(['Equal','NumpadAdd'].includes(e.code)?1.5:1/1.5);return;}
     const map = { ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down', ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right',
       Enter: 'ok', Space: 'ok', KeyE: 'ok', KeyZ: 'ok', Escape: 'back', Backspace: 'back', KeyX: 'back', KeyM: 'close', Tab: 'tab' };
     const a = map[e.code];
@@ -1124,6 +1126,7 @@ export class GameMenu {
   // ---------- Mapa (desenhado dos próprios blocos do mapa) ----------
   // Mapa de um continente por vez: abas com os mundos já visitados (Alvorada, Ocaso…). O do mundo atual vem dos blocos
   // do mapa montado; o de outro mundo é montado à parte (src/world/viagem.js, fonteMapa), só com o que foi visitado.
+  openMap() { this.#map(); }
   #map(mundo = this.g.map.id) {
     const g = this.g;
     const mundos = (g.viagem?.mundosVisitados?.() ?? [{ id: g.map.id, curto: g.map.nome }]);
@@ -1137,18 +1140,24 @@ export class GameMenu {
     const L = this.#screen({
       title: 'Mapa da região', cls: 'gm-mapscr', t: 0, sel: Math.max(0, areas.findIndex((a) => a.name === here)), mundo, F,
       extra: () => (mundos.length > 1 ? mundos.map((w) => `<button class="gm-tab ${w.id === mundo ? 'on' : ''}" data-w="${w.id}">${esc(w.curto ?? w.nome)}</button>`).join('') : '') + `<span class="gm-chip">${esc(here || F.nome || 'Região Alvorada')}</span>`,
-      foot: mundos.length > 1 ? '<b>↑↓</b> ver área · <b>←→</b> continente · <b>Esc</b> voltar' : '<b>↑↓</b> ver área · <b>Esc</b> voltar',
+      foot: 'Arraste para mover · pinça ou +/− para aproximar · <b>Esc</b> voltar',
       draw: (body) => {
         const areas = (F.areas ?? []).filter((a) => a.name === here || seen(a)); // (o mapa de outro mundo chega depois)
-        body.innerHTML = `<div class="gm-box gm-mapbox"><canvas class="gm-mapcv"></canvas></div>
+        body.innerHTML = `<div class="gm-box gm-mapbox"><canvas class="gm-mapcv" aria-label="Mapa da região: arraste e use a pinça para aproximar"></canvas><div class="gm-maptools"><button data-mapa="menos" aria-label="Afastar mapa">−</button><button data-mapa="mais" aria-label="Aproximar mapa">+</button><button data-mapa="voce">Você</button><button data-mapa="regiao">Região</button></div><div class="gm-mapescala"></div></div>
           <div class="gm-box gm-areas"><div class="gm-scroll gm-arealist">${areas.map((a) => `<div class="nav gm-row" data-k="${esc(a.name)}"><span class="gm-cur">▶</span><span>${esc(a.name)}${a.name === here ? ' <span class="gm-tag">Você</span>' : ''}</span></div>`).join('') || `<div class="gm-empty">${F.carregando ? 'Abrindo o mapa…' : 'Explore para descobrir a região.'}</div>`}</div>
           <div class="gm-legend"><span><i class="lg-you"></i>Você</span><span><i class="lg-obj"></i>Objetivo</span><span><i class="lg-quest"></i>Missão</span><span><i class="lg-house"></i>Construções</span></div></div>`;
         body.querySelectorAll('.nav').forEach((n) => { n._act = () => {}; });
         this.q('.gm-extra')?.querySelectorAll('[data-w]').forEach((b) => { b.onclick = (e) => { e.stopPropagation(); this.#trocaMapa(L, b.dataset.w); }; });
         L.focus = areas.find((a) => a.name === here)?.name;
+        const cv=body.querySelector('.gm-mapcv');ligarGestosMapa(cv,L,()=>this.#drawMap(L));
+        body.querySelectorAll('[data-mapa]').forEach(b=>b.onclick=e=>{e.stopPropagation();
+          if(b.dataset.mapa==='mais'||b.dataset.mapa==='menos')L.zoomMapa?.(b.dataset.mapa==='mais'?1.6:1/1.6);
+          else if(b.dataset.mapa==='voce'){L.vista=null;this.#drawMap(L);}
+          else {L.panorama=true;L.vista=null;this.#drawMap(L);L.panorama=false;}
+        });
         requestAnimationFrame(() => this.#drawMap(L));
       },
-      onFocus: (el) => { L.focus = el?.dataset.k; this.#drawMap(L); },
+      onFocus: (el) => { const nome=el?.dataset.k;if(nome&&nome!==L.focus){L.focus=nome;const a=F.areas.find(a=>a.name===nome);if(a)L.vista={x:a.x,y:a.y,w:L.vista?.w??100};}this.#drawMap(L); },
       lr: (d) => { const i = mundos.findIndex((w) => w.id === mundo); if (mundos.length > 1) this.#trocaMapa(L, mundos[(i + d + mundos.length) % mundos.length].id); },
       tab: (d) => L.lr(d),
       tick: (dt) => { L.t += dt; if ((L.blink = (L.blink ?? 0) - dt) <= 0) { L.blink = 0.25; this.#drawMap(L); } },
@@ -1169,7 +1178,7 @@ export class GameMenu {
     if (this.mapImg?.F === F) return this.mapImg.c;
     if (!F.atual) { if (F.img) this.mapImg = { F, c: F.img }; return F.img ?? null; }
     const m = this.g.map, W = m.w, H = m.outdoorH ?? m.h, mm = this.g.mundo?.minimap;
-    const c = document.createElement('canvas'); c.width = W; c.height = H; // 1 pixel por bloco (o desenho amplia sem suavizar)
+    const c = document.createElement('canvas'); c.width = Math.min(W,1536); c.height = Math.round(H*c.width/W); // panorama leve; os detalhes são desenhados só no recorte
     if (mm?.renderRegionMap) { try { mm.renderRegionMap(c, { fog: true, player: false, labels: false }); this.mapImg = { F, c }; return c; } catch { /* sem minimapa */ } }
     const x = c.getContext('2d'); x.fillStyle = '#e9dfc4'; x.fillRect(0, 0, W, H);
     this.mapImg = { F, c };
@@ -1203,11 +1212,23 @@ export class GameMenu {
     vw = Math.min(vw, Math.max(W, H * asp)); vh = vw / asp;
     let vx = (x0 + x1) / 2 - vw / 2, vy = (y0 + y1) / 2 - vh / 2;
     vx = vw >= W ? (W - vw) / 2 : Math.max(0, Math.min(W - vw, vx)); vy = vh >= H ? (H - vh) / 2 : Math.max(0, Math.min(H - vh, vy));
+    if(!L.vista){
+      if(L.panorama||!aqui)L.vista={x:vx+vw/2,y:vy+vh/2,w:vw};
+      else L.vista={x:ptx,y:pty,w:Math.max(48,cw/7)};
+    }
+    vw=L.vista.w;vh=vw/asp;
+    L.vista.x=Math.max(0,Math.min(W,L.vista.x));L.vista.y=Math.max(0,Math.min(H,L.vista.y));
+    vx=L.vista.x-vw/2;vy=L.vista.y-vh/2;
+    L.recorte={x:vx,y:vy,w:vw,h:vh};
     const c = cv.getContext('2d'), k = cv.width / vw;
     const S = (tx, ty) => [(tx - vx) * k, (ty - vy) * k];
     c.imageSmoothingEnabled = false;
     c.fillStyle = '#e9dfc4'; c.fillRect(0, 0, cv.width, cv.height);
-    const img = this.#regionImage(F); if (img) c.drawImage(img, 0, 0, img.width, img.height, -vx * k, -vy * k, W * k, H * k);
+    if((aqui||F.desenho)&&cw/vw>=3){
+      const fonte=aqui?m:F.desenho;if(!L.detalhe||L.detalhe.m!==fonte)L.detalhe=new MapaDetalhado(fonte,aqui?g.mundo:{visited:F.vis});
+      c.save();c.scale(k,k);c.translate(-vx,-vy);L.objetosDesenhados=L.detalhe.desenhar(c,L.recorte);c.restore();
+    }else{const img = this.#regionImage(F);if(img)c.drawImage(img,0,0,img.width,img.height,-vx*k,-vy*k,W*k,H*k);L.objetosDesenhados=0;}
+    const escala=this.q('.gm-mapescala');if(escala)escala.textContent=`${Math.round(vw)} blocos · arraste para explorar`;
     // nomes: a escolhida primeiro, depois cidades e vilas, depois o resto; sem sobrepor
     c.textAlign = 'center'; c.textBaseline = 'middle';
     const fs = Math.max(10, Math.min(15, cw / 34)) * dpr, placed = [];
@@ -1363,7 +1384,7 @@ export class GameMenu {
             ${row('Voar ou mergulhar (Cavar: use o golpe)', '<kbd>C</kbd> (controlando o Pokémon) · <kbd>X</kbd> pula')}
             ${row('Falar / interagir', '<kbd>E</kbd> ou <kbd>Enter</kbd>')}${row('Menu', '<kbd>M</kbd> ou <kbd>Esc</kbd>')}
             ${row('Zoom', 'roda do mouse ou <kbd>+</kbd> <kbd>−</kbd>')}
-            ${row('Minimapa / objetivo', '<kbd>N</kbd> gira o minimapa · <kbd>J</kbd> recolhe o objetivo')}
+            ${row('Minimapa / objetivo', 'Minimapa fixo ao norte · <kbd>J</kbd> recolhe o objetivo')}
             ${row('Online', '<kbd>O</kbd> abre · <kbd>T</kbd> conversa')}${row('Medidor de FPS', '<kbd>F3</kbd>')}</table>`;
         const pad = `<div class="gm-sub-t">Controle de videogame</div><table class="gm-tbl">
             ${row('Andar / mirar', 'analógico esquerdo anda · analógico direito mira')}
@@ -1376,7 +1397,7 @@ export class GameMenu {
             ${row('Golpes', 'toque = mira automática no mais perto · arraste o botão = mira manual')}
             ${row('Botões menores', 'esquiva, <b>A</b> (falar), sela (montaria) · no modo Pokémon: bola (voltar), trocar, voar/mergulhar e pular; Cavar é um golpe')}
             ${row('Zoom', 'pinça com dois dedos')}
-            ${row('Menu, mapa e objetivo', '<b>☰</b> abre o menu · toque no minimapa para girar · toque no objetivo para abrir ou recolher')}</table>`;
+            ${row('Menu, mapa e objetivo', '<b>☰</b> abre o menu · toque no minimapa para abrir o mapa · toque no objetivo para abrir ou recolher')}</table>`;
         body.innerHTML = `<div class="gm-box gm-scroll gm-ctlbox">${IS_TOUCH ? touch + kb + pad : kb + pad + touch}</div>`;
       },
     });

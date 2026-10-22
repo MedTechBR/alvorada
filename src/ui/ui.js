@@ -111,6 +111,7 @@ export class UI {
   toast(t, opts) { this.hud.toast(t, opts); }
   openMenu() { if (this.state !== 'play' || this.menu.isOpen || this.dialog.open) return; this.menu.open(); document.body.classList.add('menu-open'); this.g.audio?.duck?.(0.45); }
   openOnline() { this.menu.close(); const u = this.g.net?.ui; if (u && !u.modalOpen) u.toggleMenu(); }
+  openMap() { this.openMenu(); if(this.menu.isOpen)this.menu.openMap(); }
   openPC() { this.menu.openPC(); document.body.classList.add('menu-open'); this.g.audio?.duck?.(0.45); }
   openShop(stock, opts) { this.g.audio?.duck?.(0.45); return this.menu.openShop(stock, opts); }
   // Fila de avisos que param o jogo (aprender golpe, evolução): um de cada vez, na ordem em que chegaram
