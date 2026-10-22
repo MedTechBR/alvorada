@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { IS_TOUCH } from '../../engine/input.js';
 
 // Pós-processamento HD-2D da ambientação (substitui src/visual3d/pos.js quando o principal quiser):
 //   cena -> textura HDR -> pirâmide de reduções (1/2 .. 1/16) -> [raios de sol: desfoque radial a partir do sol]
@@ -80,7 +81,9 @@ export class PosHD {
     this.half = !!(ext.has?.('EXT_color_buffer_float') || ext.has?.('EXT_color_buffer_half_float'));
     const tipo = this.half ? THREE.HalfFloatType : THREE.UnsignedByteType;
     const mk = (depth) => new THREE.WebGLRenderTarget(4, 4, { type: tipo, depthBuffer: depth, stencilBuffer: false, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, generateMipmaps: false });
-    this.rt = mk(true); this.d = [mk(false), mk(false), mk(false), mk(false)]; this.rR = mk(false);
+    // No toque, nitidez e memória vêm primeiro: a composição simples já existente não usa pirâmide nem raios.
+    this.leve = IS_TOUCH;
+    this.rt = mk(true); this.d = this.leve ? [] : [mk(false), mk(false), mk(false), mk(false)]; this.rR = this.leve ? null : mk(false);
     this.cena = new THREE.Scene(); this.cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     const tri = new THREE.BufferGeometry();
     tri.setAttribute('position', new THREE.Float32BufferAttribute([-1, -1, 0, 3, -1, 0, -1, 3, 0], 3));
@@ -106,7 +109,7 @@ export class PosHD {
     this.rt.setSize(s.x, s.y);
     let w = s.x, h = s.y;
     for (const d of this.d) { w = Math.max(1, w >> 1); h = Math.max(1, h >> 1); d.setSize(w, h); }
-    this.rR.setSize(Math.max(1, s.x >> 2), Math.max(1, s.y >> 2));
+    this.rR?.setSize(Math.max(1, s.x >> 2), Math.max(1, s.y >> 2));
     this.u.aspecto.value.set(s.x / s.y, 1); this.mRaios.uniforms.aspecto.value.set(s.x / s.y, 1);
   }
   // ajusta tudo pela paleta do céu (CeuHD.update) e pela câmera: posição do sol na tela, cor e força dos raios
@@ -131,7 +134,7 @@ export class PosHD {
   }
   #passe(mat, alvo) { this.quad.material = mat; this.r.setRenderTarget(alvo); this.r.render(this.cena, this.cam); }
   render(scene, camera) {
-    const r = this.r, N = this.nivel, modo = N.pos ?? 'completo';
+    const r = this.r, N = this.nivel, modo = this.leve ? 'simples' : (N.pos ?? 'completo');
     if (modo === 'nenhum') { r.setRenderTarget(null); r.render(scene, camera); return; }
     r.setRenderTarget(this.rt); r.render(scene, camera);
     const u = this.u;

@@ -338,8 +338,8 @@ export class Masmorra {
     const K = KINDS[o.kind];
     o.cells = []; if (!K.flat) for (let j = 0; j < o.fh; j++) for (let i = 0; i < o.fw; i++) { const k = tx + i + (ty + j) * m.w; m.block[k] = 1; m.cellObj.set(k, o); o.cells.push(k); }
     // muda de setor: o mapa mostra/esconde o sprite com o setor
-    for (const c of m.chunks) { const i = c.objs.indexOf(o); if (i >= 0) c.objs.splice(i, 1); }
-    const c = m.chunks[Math.floor((o.tx + Math.floor(o.fw / 2)) / 16) + Math.floor((o.ty + o.fh - 1) / 16) * m.CW]; c?.objs.push(o);
+    for (const c of m.chunks) { if (!c) continue; const i = c.objs.indexOf(o); if (i >= 0) c.objs.splice(i, 1); }
+    const c = m.setorEm(o.tx + Math.floor(o.fw / 2), o.ty + o.fh - 1); c?.objs.push(o);
     if (o.sprite) { o.sprite.x = o.x; o.sprite.y = o.y + (K.oy ?? 0); o.sprite.zIndex = o.y - 1; }
   }
   #remove(o, save) {

@@ -70,8 +70,8 @@ export class GameMap {
     this.interiors = R.interiors.map((r) => ({ ...r })); this.region = R;
     this.#links();
     this.CW = Math.ceil(this.w / CH); this.CHh = Math.ceil(this.h / CH);
-    this.chunks = [];
-    for (let cy = 0; cy < this.CHh; cy++) for (let cx = 0; cx < this.CW; cx++) this.chunks.push({ cx, cy, x: cx * CPX, y: cy * CPX, objs: [], decor: [], built: false, shown: false, seen: 0 });
+    // O continente ampliado tem milhares de setores vazios: só guardamos os que recebem algo ou ficam perto.
+    this.chunks = new Array(this.CW * this.CHh);
     for (const d of this.decorDefs) { const c = this.#chunkAt(d.x, d.y); if (c) c.decor.push(d); }
     this.cellObj = new Map();
     this.#instalar(this.objects);
@@ -89,12 +89,17 @@ export class GameMap {
   }
   // tira da cena tudo o que o mundo anterior desenhou
   #descartar() {
-    for (const c of this.chunks) if (c.built) this.#freeChunk(c);
+    for (const c of this.chunks) if (c?.built) this.#freeChunk(c);
     for (const o of this.objects) if (o.sprite && !o.sprite.destroyed) { o.sprite.parent?.removeChild(o.sprite); o.sprite.destroy(); o.sprite = null; }
     this.groundLayer?.removeChildren(); this.decorLayer?.removeChildren();
     this.chunks = []; this.visible = new Set(); this.pending = null; this.construindo = null;
   }
-  #chunkAt(tx, ty) { return tx < 0 || ty < 0 || tx >= this.w || ty >= this.h ? null : this.chunks[Math.floor(tx / CH) + Math.floor(ty / CH) * this.CW]; }
+  #chunkAt(tx, ty) {
+    if (tx < 0 || ty < 0 || tx >= this.w || ty >= this.h) return null;
+    const cx = Math.floor(tx / CH), cy = Math.floor(ty / CH), k = cx + cy * this.CW;
+    return this.chunks[k] ??= { cx, cy, x: cx * CPX, y: cy * CPX, objs: [], decor: [], built: false, shown: false, seen: 0 };
+  }
+  setorEm(tx, ty) { return this.#chunkAt(tx, ty); }
   // objetos: tx/ty = bloco da pegada; x/y = pé do desenho em pixels (o combate usa x/y)
   #instalar(list) {
     for (const o of list) { o.tx = o.x; o.ty = o.y; o.x = (o.tx + o.fw / 2) * T; o.y = (o.ty + o.fh) * T; }
@@ -478,7 +483,7 @@ export class GameMap {
     const cy0 = Math.max(0, Math.floor(view.y0 / CPX)), cy1 = Math.min(this.CHh - 1, Math.floor(view.y1 / CPX));
     const now = new Set();
     for (let cy = cy0; cy <= cy1; cy++) for (let cx = cx0; cx <= cx1; cx++) {
-      const c = this.chunks[cx + cy * this.CW]; if (!c.built) this.#buildChunk(c);
+      const c = this.#chunkAt(cx * CH, cy * CH); if (!c.built) this.#buildChunk(c);
       this.#showChunk(c, true); c.seen = this.frameK; now.add(c);
     }
     for (const c of this.visible) if (!now.has(c)) this.#showChunk(c, false);
@@ -496,7 +501,7 @@ export class GameMap {
         let best = null, bd = Infinity;
         for (let cy = cy0 - 1; cy <= cy1 + 1; cy++) for (let cx = cx0 - 1; cx <= cx1 + 1; cx++) {
           if (cx < 0 || cy < 0 || cx >= this.CW || cy >= this.CHh) continue;
-          const c = this.chunks[cx + cy * this.CW]; if (c.built) continue;
+          const c = this.#chunkAt(cx * CH, cy * CH); if (c.built) continue;
           const d = Math.hypot(c.x + CPX / 2 - ax, c.y + CPX / 2 - ay); if (d < bd) { bd = d; best = c; }
         }
         if (!best) break;
@@ -547,7 +552,7 @@ export class GameMap {
     const k = x + y * this.w; const old = this.tiles[k]; if (old === t) return;
     this.tiles[k] = t;
     const c = this.chunks[Math.floor(x / CH) + Math.floor(y / CH) * this.CW];
-    if (c.built) {
+    if (c?.built) {
       if (TALLS.has(old) || old === TILE.CORN) { const s = c.tall.get(k); if (s) { this.ents?.removeChild(s); s.destroy(); c.tall.delete(k); } }
       if (TALLS.has(t) || t === TILE.CORN) this.#addTall(c, x, y, t);
       // animação do bloco (ex.: ponte de pedra cobrindo a lava): some com o bloco antigo
@@ -561,7 +566,7 @@ export class GameMap {
     const touched = new Map();
     for (const [x, y] of this.dirtyTiles) for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) {
       const tx = x + i, ty = y + j; if (tx < 0 || ty < 0 || tx >= this.w || ty >= this.h) continue;
-      const c = this.chunks[Math.floor(tx / CH) + Math.floor(ty / CH) * this.CW]; if (!c.built) continue;
+      const c = this.chunks[Math.floor(tx / CH) + Math.floor(ty / CH) * this.CW]; if (!c?.built) continue;
       if (!touched.has(c)) touched.set(c, []); touched.get(c).push([tx, ty]);
     }
     for (const [c, list] of touched) {
@@ -591,7 +596,7 @@ export class GameMap {
     const oc = this.chunks[Math.floor((o.tx + Math.floor(o.fw / 2)) / CH) + Math.floor((o.ty + o.fh - 1) / CH) * this.CW];
     o.tx = nt; o.ty = ntY; o.x += dx * T; o.y += dy * T;
     o.cells = []; for (let j = 0; j < o.fh; j++) for (let i = 0; i < o.fw; i++) { const k = nt + i + (ntY + j) * W; this.block[k] = 1; this.cellObj.set(k, o); o.cells.push(k); }
-    const nc = this.chunks[Math.floor((o.tx + Math.floor(o.fw / 2)) / CH) + Math.floor((o.ty + o.fh - 1) / CH) * this.CW];
+    const nc = this.#chunkAt(o.tx + Math.floor(o.fw / 2), o.ty + o.fh - 1);
     if (nc !== oc) { oc.objs.splice(oc.objs.indexOf(o), 1); nc.objs.push(o); }
     if (o.sprite) o.sprite.zIndex = o.y - 1;
     return true;

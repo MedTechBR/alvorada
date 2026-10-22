@@ -230,7 +230,7 @@ export class Setores {
   matParedeNovo() { const m = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide }); return this.v.pixel ? comPixel(m, this.v, { forca: 0.6 }) : m; }
   #liberar(s) {
     this.v.scene.remove(s.grupo); this.grupo.remove(s.grupo);
-    for (const m of [s.chao, s.agua, s.mato]) m?.geometry.dispose();
+    for (const m of [s.chao, s.agua, s.mato, s.luzJanela]) m?.geometry.dispose();
     for (const m of s.salas ?? []) m.geometry.dispose();
     this.modelos.liberar(s);
     if (s.lg) this.v.lg.chao.liberar(s.matChao);
