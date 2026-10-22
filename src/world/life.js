@@ -154,15 +154,17 @@ export class WorldLife {
   // teleporte com fade (também serve para a história levar o jogador a um ponto)
   warpTo(tx, ty, face = 'down', onArrive) {
     const g = this.g, p = g.player;
-    this.warping = true; p.stun = 0.6; g.audio?.sfx?.('dodge');
-    this.#tween(0.22, (k) => { this.fade.alpha = k; }, () => {
+    this.warping = true; p.stun = 0.4; g.audio?.sfx?.('dodge');
+    this.#tween(0.14, (k) => { this.fade.alpha = k; }, () => {
       p.x = tx * T + 8; p.y = ty * T + 12; p.vx = p.vy = p.kx = p.ky = 0; p.dir = face;
       if (g.lead?.alive) { const b = { down: [0, -14], up: [0, 14], left: [14, 0], right: [-14, 0] }[face]; g.lead.x = p.x + b[0]; g.lead.y = p.y + b[1]; g.lead.vx = g.lead.vy = 0; }
       if (g.cam) { g.cam.x = p.x; g.cam.y = p.y; }
+      // A nova sala já nasce enquadrada no escuro, sem cruzar o continente durante o fade.
+      if (g.v3d?.dinamica) { const c = g.v3d.dinamica; c.x = null; c.olhar.x = c.olhar.z = 0; }
       for (const w of g.wilds ?? []) if (w.alive && Math.hypot(w.x - p.x, w.y - p.y) > 30 * T) { w.dead = true; g.removeEntity?.(w); }
       this.warpCool = 0.5; this.lightT = 0;
       onArrive?.();
-      this.#tween(0.28, (k) => { this.fade.alpha = 1 - k; }, () => { this.warping = false; });
+      this.#tween(0.18, (k) => { this.fade.alpha = 1 - k; }, () => { this.warping = false; });
     });
   }
   // fade simples para cenas da história

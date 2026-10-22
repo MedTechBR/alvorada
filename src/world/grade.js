@@ -149,7 +149,18 @@ export class Grade {
     // alguém deslocou o corpo (porta, cena, voo, pouso): descarta o passo e realinha
     if (st.s && (Math.abs(p.x - st.lx) > 2.5 || Math.abs(p.y - st.ly) > 2.5)) st.s = null;
     st.somT -= dt; st.bump = false;
-    let rest = dt, guarda = 0;
+    // Só o treinador explorando: ganha velocidade no início e amortece o fim do último passo.
+    // Passos seguidos conservam o ritmo; não há freada a cada bloco. Combate e atores seguem iguais.
+    const suave = p === this.g.player && this.g.mode !== 'pokemon' && !this.g.mount?.active && !this.g.story?.busy;
+    let ritmo = 1;
+    if (suave) {
+      const s = st.s, falta = s ? T * (1 - s.k) : 0;
+      const alvo = o.dir ? o.vel : s ? Math.min(o.vel, Math.max(o.vel * 0.3, Math.sqrt(2 * o.vel / 0.09 * falta))) : 0;
+      const v = st.vel ?? 0, passo = o.vel * dt / 0.09;
+      st.vel = v < alvo ? Math.min(alvo, v + passo) : Math.max(alvo, v - passo);
+      ritmo = st.vel / o.vel;
+    }
+    let rest = dt * ritmo, guarda = 0;
     while (guarda++ < 5) {
       if (st.s) {
         const s = st.s, falta = (1 - s.k) * s.dur;
@@ -180,7 +191,7 @@ export class Grade {
       if (rest <= 1e-6) { this.#pos(p, st); break; }
     }
     const s = st.s;
-    p.vx = s ? DIRV[s.dir][0] * o.vel : 0; p.vy = s ? DIRV[s.dir][1] * o.vel : 0;
+    p.vx = s ? DIRV[s.dir][0] * o.vel * ritmo : 0; p.vy = s ? DIRV[s.dir][1] * o.vel * ritmo : 0;
     p.speed = s ? o.vel : 0; p.andando = !!s || st.bump;
     if (s) p.animIdx = FASE[(st.par * 2 + (s.k < 0.5 ? 0 : 1)) & 3];
     else if (st.bump) p.animIdx = FASE[Math.floor(st.bumpT / (0.5 * T / o.vel)) & 3];
@@ -212,5 +223,5 @@ export class Grade {
     st.lx = p.x; st.ly = p.y;
   }
   // Largou tudo (modo livre, voo, telhado): o próximo passo começa limpo
-  soltar(p) { if (p.gr) { p.gr.s = null; p.gr.cont = false; p.gr.giroDir = null; } p.animIdx = undefined; p.andando = undefined; }
+  soltar(p) { if (p.gr) { p.gr.s = null; p.gr.cont = false; p.gr.giroDir = null; p.gr.vel = 0; } p.animIdx = undefined; p.andando = undefined; }
 }

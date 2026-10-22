@@ -1,3 +1,4 @@
+import { noPilotoVisual } from '../world/piloto-visual.js';
 // Câmera dinâmica do 3D (estilo HD-2D: Octopath, Triangle Strategy). Só decide ONDE a câmera fica;
 // quem desenha é index.js. O zoom do jogador (+/−, roda, pinça) continua valendo por cima de tudo.
 //   explorar  : baixa e perto; olha um pouco à frente de para onde se anda; parado, aproxima de leve
@@ -35,6 +36,7 @@ export class CameraDinamica {
     const foco = pk ?? p;
     const room = p ? g.map.interiorAt(p.x, p.y) : null;
     const m = g.mount;
+    const piloto = noPilotoVisual(g.map, p.x, p.y);
     let alvoX = c.x, alvoZ = c.y, dist = 1, incl = this.cinema ? 44 : 48, giro = 0; // como no demo (HGSS/FireRed em 3D): ~45° // explorar: baixa, com céu e montanhas
     // olhar à frente (velocidade suavizada)
     const vx = foco?.vx ?? 0, vy = foco?.vy ?? 0, vel = Math.hypot(vx, vy);
@@ -42,9 +44,11 @@ export class CameraDinamica {
     this.olhar.x = amortece(this.olhar.x, vx * ah, 2.2, dt); this.olhar.z = amortece(this.olhar.z, vy * ah * 0.8, 2.2, dt);
     alvoX += this.olhar.x; alvoZ += this.olhar.z;
     this.parado = vel < 8 ? this.parado + dt : 0;
-    if (this.cinema && this.parado > 1.6 && !room) dist *= 0.93;
+    if (this.cinema && this.parado > 1.6 && !room && !piloto) dist *= 0.93;
     // batalha: enquadra os combatentes
     const lutadores = this.#combate(g, foco);
+    // Mantém a escala próxima que o jogador já via parado, sem respirar o zoom a cada parada.
+    if (piloto && !room && !lutadores && !m?.active) dist *= 0.93;
     this.batalhaK = amortece(this.batalhaK, lutadores ? 1 : 0, 1.8, dt);
     if (lutadores && this.cinema) {
       const { x0, x1, y0, y1 } = lutadores, cx = (x0 + x1) / 2, cz = (y0 + y1) / 2;
@@ -86,7 +90,7 @@ export class CameraDinamica {
       }
     }
     // giro de leve para dar vida (±3°), só explorando
-    if (this.cinema && !room && !lutadores) giro = Math.sin(this.v.t * 0.07) * 2.5;
+    if (this.cinema && !room && !lutadores && !piloto) giro = Math.sin(this.v.t * 0.07) * 2.5;
     // cena do roteiro
     const cn = this.cenaAtual;
     if (cn) {
