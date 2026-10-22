@@ -110,7 +110,11 @@ function pars(layout, leve) {
     g *= 0.93 + 0.14 * n3.b;
     g = mix(g, g * ${lin('#c8dc78')} * 1.6, flor * 0.35);
     g = mix(g, ${lin('#3f8a36')} * (0.85 + 0.3 * n2.g), escura * 0.85);
-    g = mix(g, ${lin('#447a49')} * (0.88 + 0.16 * n1.r + 0.08 * n2.g), modelo);
+    vec2 celula = floor(p / 5.0), mi = fract(p / 5.0);
+    float semente = fract(sin(dot(celula, vec2(127.1,311.7))) * 43758.5453);
+    float risca = step(0.88,semente) * step(0.40,mi.x) * (1.0-step(0.56,mi.x)) * step(0.25,mi.y) * (1.0-step(0.70,mi.y));
+    vec3 gramadoModelo = ${lin('#447a49')} * (0.88 + 0.16 * n1.r + 0.08 * n2.g) * (1.0 - escura * 0.18 - risca * 0.16);
+    g = mix(g, gramadoModelo, modelo);
     // selva: verde fundo e úmido, folhas caídas e manchas de luz
     vec3 sv = mix(${lin('#1c6528')}, ${lin('#3c9a3a')}, smoothstep(0.25, 0.8, m));
     sv = mix(sv, ${lin('#0e4624')}, smoothstep(0.55, 0.8, n3.r) * 0.55);
@@ -125,6 +129,7 @@ function pars(layout, leve) {
     t = mix(t, ${lin('#efd6a4')}, step(0.86, n3.r) * 0.5 * miolo * (1.0 - modelo * 0.75));
     t *= mix(vec3(1.0), vec3(0.58, 0.66, 0.74), modelo);
     t = mix(t, mix(${lin('#777b79')}, ${lin('#909592')}, n2.r * 0.25), modelo);
+    t *= 1.0 - modelo * (semente - 0.5) * 0.045;
     float meioFio = (1.0 - smoothstep(0.50, 0.60, c_terra)) * smoothstep(0.46, 0.50, c_terra);
     t *= 1.0 - meioFio * modelo * 0.25;
     // pedra clara da praça, com juntas apagadas

@@ -48,7 +48,7 @@ export class CameraDinamica {
     // batalha: enquadra os combatentes
     const lutadores = this.#combate(g, foco);
     // Mantém a escala próxima que o jogador já via parado, sem respirar o zoom a cada parada.
-    if (piloto && !room && !lutadores && !m?.active) { dist *= 1.25; incl = 58; }
+    if (piloto && !room && !lutadores && !m?.active) { dist *= 1.08; incl = 58; }
     this.batalhaK = amortece(this.batalhaK, lutadores ? 1 : 0, 1.8, dt);
     if (lutadores && this.cinema) {
       const { x0, x1, y0, y1 } = lutadores, cx = (x0 + x1) / 2, cz = (y0 + y1) / 2;
