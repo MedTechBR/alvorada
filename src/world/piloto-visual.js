@@ -20,6 +20,13 @@ export function comporPilotoVisual(S, P) {
     const jardim = JARDINS.find(r => dentro(r,x,y));
     t[k] = jardim ? (y === jardim[1] || y === jardim[1] + jardim[3] - 1 ? TILE.FLOWERS : TILE.GRASS2) : TILE.GRASS;
   }
+  // O vestir antigo duplicava postes junto à mesma esquina. Mantém as quatro luminárias da praça e a do laboratório.
+  // Retira também a pegada dos excedentes: nunca deixa um poste invisível bloqueando o gramado.
+  const postes = new Set(['1529,1753','1540,1753','1529,1761','1540,1761','1539,1772']);
+  const excedente = o => o.kind === 'lamp' && o.x >= 1505 && o.x < 1560 && o.y >= 1738 && o.y < 1780 && !postes.has(o.x+','+o.y);
+  const retirados = [...S.placed,...S.novos].filter(excedente);
+  S.placed = S.placed.filter(o => !excedente(o)); S.novos = S.novos.filter(o => !excedente(o));
+  for (const o of retirados) for (const k of o.cells) if (!S.placed.some(q => q.cells?.includes(k)) && !S.novos.some(q => q.cells?.includes(k))) S.block[k] = 0;
   // Na rota, as flores acompanham trechos da estrada: não repetem ilhas na malha inteira do terreno.
   for (let y = ROTA[1]; y < ROTA[1] + ROTA[3]; y++) for (let x = ROTA[0]; x < ROTA[0] + ROTA[2]; x++) {
     const k = x + y * W; if (!VERDES.has(t[k]) || S.block[k] || S.nearSpot.has(k)) continue;

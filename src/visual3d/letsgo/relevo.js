@@ -1,3 +1,4 @@
+import { noPilotoVisual } from '../../world/piloto-visual.js';
 import { TILE } from '../../world/tiles.js';
 import { PAREDE } from '../relevo.js';
 
@@ -40,6 +41,8 @@ export class RelevoLG {
   // alturas extras dos cantos de um setor (17x17), calculadas uma vez
   #setor(sx, sy) {
     const k = sx + sy * 4096; let c = this.cantos.get(k); if (c) return c;
+    const modelo = [[0,0],[16,0],[0,16],[16,16]].every(([x,y]) => noPilotoVisual(this.v.g.map, (sx*16+x)*16, (sy*16+y)*16));
+    if (modelo) { c = new Float32Array(17*17); this.cantos.set(k,c); return c; }
     const x0 = sx * 16 - RAIO, y0 = sy * 16 - RAIO, W = 16 + RAIO * 2, ok = new Uint8Array(W * W);
     for (let j = 0; j < W; j++) for (let i = 0; i < W; i++) ok[i + j * W] = this.#ondula(x0 + i, y0 + j) ? 1 : 0;
     c = new Float32Array(17 * 17);
@@ -50,7 +53,8 @@ export class RelevoLG {
         if (ok[(cx + a - x0) + (cy + b - y0) * W]) continue;
         const dd = Math.hypot(a + 0.5, b + 0.5) - 0.5; if (dd < d) d = dd;
       }
-      c[i + j * 17] = AMP * ss(0.35, 3.2, d) * ondaLG(cx, cy);
+      const modelo = noPilotoVisual(this.v.g.map, cx * 16, cy * 16);
+      c[i + j * 17] = (modelo ? 0 : AMP) * ss(0.35, 3.2, d) * ondaLG(cx, cy);
     }
     this.cantos.set(k, c);
     return c;

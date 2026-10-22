@@ -78,14 +78,18 @@ function pars(layout, leve) {
   float mk(float c, float nz){ return smoothstep(0.3, 0.7, c + (nz - 0.5) * 0.22); }
   vec3 pintarLG(){
     vec2 p = vMundo.xz;
+    vec2 pc = max(abs(p / 16.0 - vec2(1535.0, 1755.0)) - vec2(110.0, 90.0), 0.0);
+    vec2 pr = max(abs(p / 16.0 - vec2(1165.0, 1730.0)) - vec2(265.0, 140.0), 0.0);
+    float modelo = uModelo * (1.0 - smoothstep(0.0, 8.0, min(max(pc.x, pc.y), max(pr.x, pr.y))));
     vec4 n1 = texture2D(tRuido, p * (1.0 / 300.0));
     vec4 n2 = texture2D(tRuido, p * (1.0 / 70.0));
     vec4 n3 = ${leve ? 'n2.abgr' : 'texture2D(tRuido, p * (1.0 / 17.0))'};
     vec2 warp = (n2.rg - 0.5) * 16.0 + (n3.ba - 0.5) * 6.0;
+    warp *= mix(1.0, 0.18, modelo);
     vec2 uv = ((p + warp) / 16.0 - uOrig.xy) / uOrig.zw;
     vec2 uvR = ((p + warp * 0.18) / 16.0 - uOrig.xy) / uOrig.zw;
     ${leituras(layout, leve)}
-    float terra = mk(c_terra, n3.r);
+    float terra = mix(mk(c_terra, n3.r), smoothstep(0.46, 0.54, c_terra), modelo);
     float pedra = smoothstep(0.38, 0.62, c_pedra);
     float areia = mk(c_areia, n3.g);
     float mad = smoothstep(0.45, 0.55, c_madeira);
@@ -106,6 +110,7 @@ function pars(layout, leve) {
     g *= 0.93 + 0.14 * n3.b;
     g = mix(g, g * ${lin('#c8dc78')} * 1.6, flor * 0.35);
     g = mix(g, ${lin('#3f8a36')} * (0.85 + 0.3 * n2.g), escura * 0.85);
+    g = mix(g, ${lin('#447a49')} * (0.88 + 0.16 * n1.r + 0.08 * n2.g), modelo);
     // selva: verde fundo e úmido, folhas caídas e manchas de luz
     vec3 sv = mix(${lin('#1c6528')}, ${lin('#3c9a3a')}, smoothstep(0.25, 0.8, m));
     sv = mix(sv, ${lin('#0e4624')}, smoothstep(0.55, 0.8, n3.r) * 0.55);
@@ -116,12 +121,12 @@ function pars(layout, leve) {
     float miolo = smoothstep(0.55, 0.98, c_terra);
     vec3 t = mix(${lin('#b98a56')}, ${lin('#e2bf86')}, miolo);
     // A terra do modelo é mais baixa e neutra: a rua deixa de parecer uma superfície iluminada por dentro.
-    vec2 pc = max(abs(p / 16.0 - vec2(1535.0, 1755.0)) - vec2(110.0, 90.0), 0.0);
-    vec2 pr = max(abs(p / 16.0 - vec2(1165.0, 1730.0)) - vec2(265.0, 140.0), 0.0);
-    float modelo = uModelo * (1.0 - smoothstep(0.0, 8.0, min(max(pc.x, pc.y), max(pr.x, pr.y))));
     t *= 0.94 + 0.12 * n3.a;
     t = mix(t, ${lin('#efd6a4')}, step(0.86, n3.r) * 0.5 * miolo * (1.0 - modelo * 0.75));
     t *= mix(vec3(1.0), vec3(0.58, 0.66, 0.74), modelo);
+    t = mix(t, mix(${lin('#777b79')}, ${lin('#909592')}, n2.r * 0.25), modelo);
+    float meioFio = (1.0 - smoothstep(0.50, 0.60, c_terra)) * smoothstep(0.46, 0.50, c_terra);
+    t *= 1.0 - meioFio * modelo * 0.25;
     // pedra clara da praça, com juntas apagadas
     vec2 f = abs(fract(p / 16.0 + 0.5) - 0.5);
     float junta = 1.0 - smoothstep(0.0, 0.035, min(f.x, f.y));

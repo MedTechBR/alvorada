@@ -1,3 +1,4 @@
+import { noPilotoVisual } from '../../world/piloto-visual.js';
 import * as THREE from 'three';
 import { TILE } from '../../world/tiles.js';
 import { hash } from '../ambiente/ruido.js';
@@ -51,6 +52,7 @@ export function geometriaGramaLG(v, s) {
   for (let j = 0; j < 16; j++) for (let i = 0; i < 16; i++) {
     const x = ox + i, y = oy + j; if (x >= L.w || y >= L.h) continue;
     const t = L.bloco(x, y), H = (k) => hash(x, y, k), fase = x * 0.7 + y * 0.31;
+    const modelo = noPilotoVisual(v.g.map, x * 16, y * 16);
     const M = MATO[t];
     if (M) {
       const first = P.length / 3;
@@ -66,10 +68,10 @@ export function geometriaGramaLG(v, s) {
     }
     if (t === TILE.FLOWERS && !L.ocupado(x, y)) {
       // buquês: florzinhas fofas (octaedro achatado) em hastes curtas
-      const n = 6 + Math.floor(H(5) * 3);
+      const n = modelo ? 3 : 6 + Math.floor(H(5) * 3);
       for (let q = 0; q < n; q++) {
-        const fx = x * 16 + 1 + H(q * 7 + 11) * 14, fz = y * 16 + 1 + H(q * 7 + 12) * 14, fh = 3.5 + H(q * 7 + 13) * 4, cor = FLORES[Math.floor(H(q * 7 + 14) * FLORES.length)];
-        const r = 2.4 + H(q * 7 + 15) * 1.1, base = alt(fx, fz) - 0.3, cy = base + fh;
+        const fx = x * 16 + 1 + H(q * 7 + 11) * 14, fz = y * 16 + 1 + H(q * 7 + 12) * 14, fh = modelo ? 2.2 : 3.5 + H(q * 7 + 13) * 4, cor = FLORES[Math.floor(H(q * 7 + 14) * FLORES.length)];
+        const r = modelo ? 1.5 : 2.4 + H(q * 7 + 15) * 1.1, base = alt(fx, fz) - 0.3, cy = base + fh;
         lamina(fx, fz, fh, 1.4, H(q) * 6.28, 0.5, lin('#3a8a36'), lin('#4fa83c'), fase);
         const pts = [[fx + r, cy, fz], [fx, cy, fz + r], [fx - r, cy, fz], [fx, cy, fz - r]], top = [fx, cy + r * 0.55, fz], bot = [fx, cy - r * 0.5, fz];
         for (let e = 0; e < 4; e++) {
@@ -96,6 +98,7 @@ export function geometriaGramaLG(v, s) {
     if (!GRAMA[t] || L.ocupado(x, y)) continue;
     // tufinhos: mais perto das trilhas e das coisas
     let beira = 0; for (let b = -1; b <= 1; b++) for (let a = -1; a <= 1; a++) if (!GRAMA[L.bloco(x + a, y + b)]) beira++;
+    if (modelo && (beira === 0 || H(3) > 0.18)) continue;
     const n = beira ? 1 + Math.floor(H(1) * 2.5 * dens) : H(2) < 0.4 * dens ? 1 : 0;
     const escura = t === TILE.GRASS2 || t === TILE.DARK ? 0.75 : 1;
     for (let q = 0; q < n; q++) {

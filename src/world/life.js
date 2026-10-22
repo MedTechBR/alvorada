@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { noPilotoVisual } from './piloto-visual.js';
 import { T, TILE } from './tiles.js';
 import { SPR, LEAVES, VARAL } from './art.js';
 import { KINDS } from './objects.js';
@@ -160,7 +161,9 @@ export class WorldLife {
       if (g.lead?.alive) { const b = { down: [0, -14], up: [0, 14], left: [14, 0], right: [-14, 0] }[face]; g.lead.x = p.x + b[0]; g.lead.y = p.y + b[1]; g.lead.vx = g.lead.vy = 0; }
       if (g.cam) { g.cam.x = p.x; g.cam.y = p.y; }
       // A nova sala já nasce enquadrada no escuro, sem cruzar o continente durante o fade.
-      if (g.v3d?.dinamica) { const c = g.v3d.dinamica; c.x = null; c.olhar.x = c.olhar.z = 0; }
+      if (g.v3d?.dinamica) { const c = g.v3d.dinamica; c.x = null; c.olhar.x = c.olhar.z = 0;
+        c.fov = !g.map.interiorAt(p.x,p.y) && noPilotoVisual(g.map,p.x,p.y) ? 22 : 34;
+        g.v3d.camera.fov = c.fov; g.v3d.camera.updateProjectionMatrix(); }
       for (const w of g.wilds ?? []) if (w.alive && Math.hypot(w.x - p.x, w.y - p.y) > 30 * T) { w.dead = true; g.removeEntity?.(w); }
       this.warpCool = 0.5; this.lightT = 0;
       onArrive?.();
