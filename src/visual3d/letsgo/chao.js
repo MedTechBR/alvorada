@@ -72,7 +72,7 @@ function pars(layout, leve) {
   return /* glsl */`
   ${GLSL_BASE}
   ${GLSL_NUVEM}
-  ${Array.from({ length: nT }, (_, i) => `uniform sampler2D tM${i};`).join(' ')} uniform vec4 uOrig;
+  ${Array.from({ length: nT }, (_, i) => `uniform sampler2D tM${i};`).join(' ')} uniform vec4 uOrig; uniform float uModelo;
   varying vec3 vMundo; varying vec3 vNorM;
   float gSombra; vec3 gEmi;
   float mk(float c, float nz){ return smoothstep(0.3, 0.7, c + (nz - 0.5) * 0.22); }
@@ -115,8 +115,13 @@ function pars(layout, leve) {
     // terra: centro claro, beira mais escura e quente, pedrinhas
     float miolo = smoothstep(0.55, 0.98, c_terra);
     vec3 t = mix(${lin('#b98a56')}, ${lin('#e2bf86')}, miolo);
+    // A terra do modelo é mais baixa e neutra: a rua deixa de parecer uma superfície iluminada por dentro.
+    vec2 pc = max(abs(p / 16.0 - vec2(1535.0, 1755.0)) - vec2(110.0, 90.0), 0.0);
+    vec2 pr = max(abs(p / 16.0 - vec2(1165.0, 1730.0)) - vec2(265.0, 140.0), 0.0);
+    float modelo = uModelo * (1.0 - smoothstep(0.0, 8.0, min(max(pc.x, pc.y), max(pr.x, pr.y))));
     t *= 0.94 + 0.12 * n3.a;
-    t = mix(t, ${lin('#efd6a4')}, step(0.86, n3.r) * 0.5 * miolo);
+    t = mix(t, ${lin('#efd6a4')}, step(0.86, n3.r) * 0.5 * miolo * (1.0 - modelo * 0.75));
+    t *= mix(vec3(1.0), vec3(0.58, 0.66, 0.74), modelo);
     // pedra clara da praça, com juntas apagadas
     vec2 f = abs(fract(p / 16.0 + 0.5) - 0.5);
     float junta = 1.0 - smoothstep(0.0, 0.035, min(f.x, f.y));
@@ -275,7 +280,7 @@ export class ChaoLG {
     m.customProgramCacheKey = () => 'lg-chao' + (this.leve ? '-leve' : '');
     m.userData.mascaraLG = M;
     m.onBeforeCompile = (sh) => {
-      Object.assign(sh.uniforms, { tempo: U.tempo, tRuido: U.tRuido, nuvem: U.nuvem, noite: U.noite, uOrig: M.uOrig });
+      Object.assign(sh.uniforms, { tempo: U.tempo, tRuido: U.tRuido, nuvem: U.nuvem, noite: U.noite, uOrig: M.uOrig, uModelo: { value: this.v.g.map.id === 'alvorada' ? 1 : 0 } });
       M.t.forEach((tx, i) => { sh.uniforms['tM' + i] = { value: tx }; });
       sh.vertexShader = sh.vertexShader
         .replace('#include <common>', '#include <common>\n varying vec3 vMundo; varying vec3 vNorM;')

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { noPilotoVisual } from '../../world/piloto-visual.js';
 
 // Luz e pós do estilo Let's Go, por cima do que a ambientação (ambiente/ceu.js, ambiente/pos.js) e o ceu.js do jogo
 // já ajustaram no quadro: sol quente e macio, hemisfério claro (céu creme, chão verde), névoa clara e azulada,
@@ -63,6 +64,14 @@ export function aplicarLuzLG(v, w, room, nt = 0, dt = 0.016) {
     if (fog) { fog.color.lerp(X.nevoa, fm); const nk = lerp(1, X.nevoaK, k); fog.near *= nk; fog.far *= nk; }
     if (hz) hz.lerp(X.nevoa, fm);
   }
+  // No modelo, menos amarelo e exposição: a terra, as flores e a porta têm valores distintos.
+  const piloto = noPilotoVisual(v.g.map, v.g.player.x, v.g.player.y) && !room;
+  v.lg.pilotoK = lerp(v.lg.pilotoK ?? 0, piloto ? 1 : 0, 1 - Math.exp(-dt * 3));
+  const pk = v.lg.pilotoK;
+  if (pk > 0.001) {
+    ceuNeutro(A, k * pk);
+    if (P.exposicao) P.exposicao.value *= 1 - 0.16 * pk;
+  }
   // pós: cores limpas, bloom macio, tilt-shift e vinheta (dentro de casa também, mais fraco no tilt)
   const pw = 1, sat = room ? 0.98 : X.sat, qt = room ? 0.18 : X.quente, fr = room ? 0.28 : X.frio, ct = room ? 1.12 : X.contraste;
   if (P.sat) P.sat.value = lerp(P.sat.value, sat, w * pw);
@@ -74,7 +83,14 @@ export function aplicarLuzLG(v, w, room, nt = 0, dt = 0.016) {
   if (P.limiar) P.limiar.value = lerp(P.limiar.value, P.limiar.value - 0.06, w);
   if (P.raios) { P.raios.value *= 1 - 0.55 * w; P.raiosR.value *= 1 - 0.4 * w; }
   const bat = v.dinamica?.batalhaK ?? 0;
-  if (P.tilt) P.tilt.value = lerp(P.tilt.value, (room ? 0.5 : 1.0) * (A.pos.nivel.dof === false ? 0 : 1) * (1 - 0.75 * bat), w);
+  if (P.tilt) P.tilt.value = lerp(P.tilt.value, (piloto ? 0 : room ? 0.5 : 1.0) * (A.pos.nivel.dof === false ? 0 : 1) * (1 - 0.75 * bat), w);
   if (P.faixa) P.faixa.value = lerp(0.1, 0.13, w);
   if (P.vinheta) P.vinheta.value = lerp(0.4, 0.48, w);
+}
+
+// As cores são constantes e reaproveitadas, sem alocação por quadro.
+const CEU_NEUTRO = C(0xe2f0ff), SOL_NEUTRO = C(0xfff5e5);
+function ceuNeutro(A, k) {
+  A.ceu.hemi.color.lerp(CEU_NEUTRO, k * 0.5);
+  A.ceu.sol.color.lerp(SOL_NEUTRO, k * 0.55);
 }
