@@ -54,11 +54,11 @@ function salao(m,c) {
   return {y:wh+6,x0:-W/2,x1:W/2,z0:-D+2,z1:-2};
 }
 function arvore(m,c) {
-  const grande=/big|jequitiba/.test(c.kind),pin=/^pin|^tree/.test(c.kind),R=Math.max(17,c.L+2),h=grande?68:49;
-  m.cil(0,0,-8,4,2.8,17,6,{pe:'#665b3b',topo:'#8b7950'},{aberto:false});
+  const grande=/big|jequitiba/.test(c.kind),pin=/^pin|^tree/.test(c.kind),R=Math.max(17,c.L+2),h=grande?102:pin?96:74;
+  m.cil(0,0,-8,4,2.8,h*.4,6,{pe:'#665b3b',topo:'#8b7950'},{aberto:false});
   if(pin) {
     // Três andares contínuos: tronco legível e copa escura, sem bolas satélites.
-    for(let i=0;i<3;i++)m.cone(0,8+i*9,-8,R*(1-i*.20),h-25,8,{pe:'#234e3b',topo:i===2?'#668c4d':'#447342'},{ao:false,todas:true});
+    for(let i=0;i<3;i++)m.cone(0,h*.16+i*h*.17,-8,R*(1-i*.20),h*.5,8,{pe:'#234e3b',topo:i===2?'#668c4d':'#447342'},{ao:false,todas:true});
   } else {
     const pal=c.kind==='ipe'?['#97813c','#c9b75f']:c.kind==='paineira'?['#925c74','#c78fa5']:['#355e41','#72925a'];
     m.bola(0,h*.66,-8,R,h*.32,R*.85,{pe:pal[0],topo:pal[1]},{d:1,ao:false,todas:true});
