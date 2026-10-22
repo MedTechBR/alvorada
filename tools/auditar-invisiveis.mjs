@@ -33,7 +33,6 @@ register('data:text/javascript,' + encodeURIComponent(`export async function res
 globalThis.location ??= { search: '' };
 
 const { carregarMundo, TILE, SOLID } = await abrir('tools/vestir/mundo.mjs');
-const { noPilotoVisual } = await abrir('src/world/piloto-visual.js');
 const { KINDS } = await abrir('src/world/objects.js');
 const { MUNDOS } = await abrir('src/world/mundos.js');
 const { kit } = await abrir('src/visual3d/kit/index.js');
@@ -54,16 +53,16 @@ const MIUDO = /^(pedrinha|seixo|flor|concha|espuma|graveto|samambaia|vitoriaRegi
 
 // ---------- amostras de cada malha (cache por chave do modelo)
 const amostras = new Map();
-let mundoAtual = '';
+let mundoAtual = '', tilePintado=()=>-1;
 function malhaDe(kind, o) {
-  const md = (LG.temModeloLG(kind) && LG.modeloLG(kind, o, noPilotoVisual({id:mundoAtual},o.tx*16,o.ty*16)?'pintado':'')) || (kit.temModelo(kind) && kit.modelo(kind, o));
+  const md = (LG.temModeloLG(kind) && LG.modeloLG(kind, LG.opcoesPintadas(kind,o,tilePintado), 'pintado')) || (kit.temModelo(kind) && kit.modelo(kind, o));
   if (!md) return null;
   let a = amostras.get(md.chave); if (a) return a;
   const g = md.geometry, P = g.attributes.position, I = g.index, nt = I ? I.count / 3 : P.count / 3, pts = [];
   const v = (i) => { const k = I ? I.getX(i) : i; return [P.getX(k), P.getY(k), P.getZ(k)]; };
   for (let t = 0; t < nt; t++) {
     const pin = g.attributes.aPintura;
-    if (pin) { const k=I?I.getX(t*3):t*3; if(pin.getZ(k)>0.5&&(pin.getZ(k)<2.5||pin.getZ(k)>10.5))continue; }
+    if (pin) { const k=I?I.getX(t*3):t*3; if(pin.getZ(k)>0.5&&(pin.getZ(k)<2.5||(pin.getZ(k)>10.5&&pin.getZ(k)<12.5)))continue; }
     const A = v(t * 3), B = v(t * 3 + 1), C = v(t * 3 + 2);
     const x0 = Math.min(A[0], B[0], C[0]), x1 = Math.max(A[0], B[0], C[0]), z0 = Math.min(A[2], B[2], C[2]), z1 = Math.max(A[2], B[2], C[2]);
     const den = (B[2] - C[2]) * (A[0] - C[0]) + (C[0] - B[0]) * (A[2] - C[2]);
@@ -89,6 +88,7 @@ function malhaDe(kind, o) {
 async function auditar(id) {
   mundoAtual = id;
   const M = await carregarMundo(id), { R, S, W, H, OH } = M;
+  tilePintado=(x,y)=>x>=0&&y>=0&&x<W&&y<H?S.tiles[x+y*W]:-1;
   const placed = [...S.placed, ...(S.novos ?? [])];
   const cover = new Uint16Array(W * H);   // máscara por bloco: 16 células de 4x4 px com malha em cima (altura >= ALTURA_MIN)
   const pop = (m) => { let n = 0; for (; m; m &= m - 1) n++; return n; };

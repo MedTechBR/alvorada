@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { cor as linear, rng } from '../kit/construtor.js';
 import { KINDS } from '../../world/objects.js';
+import { TILE } from '../../world/tiles.js';
 import { SPR } from '../../world/art.js';
 
 // Modelos do estilo Let's Go: formas lisas e arredondadas (esferas de icosaedro, cilindros, caixas chanfradas),
@@ -101,6 +102,7 @@ export class MalhaLG {
     g.setAttribute('aBrilho', new THREE.Float32BufferAttribute(this.b, 1));
     if (this.pintado) g.setAttribute('aPintura', new THREE.Uint16BufferAttribute(this.uvP.map((v,i)=>i%3===2?v:Math.round(v*65535)), 3));
     g.setIndex(new THREE.BufferAttribute(nv > 65535 ? new Uint32Array(this.i) : new Uint16Array(this.i), 1));
+    g.userData.mataVolume=!!this.mataVolume;
     g.computeBoundingBox(); g.computeBoundingSphere();
     return g;
   }
@@ -355,7 +357,16 @@ const cache = new Map(), PERFIS = {};
 export function registrarPerfil(nome, tipos) { PERFIS[nome] = tipos; }
 export function ampliarPerfil(nome, completar) {
   const anteriores=PERFIS[nome]??{};
-  PERFIS[nome]={...completar(TIPOS, GRUPOS_LG),...anteriores};
+  const completos=completar(TIPOS, GRUPOS_LG);
+  PERFIS[nome]={...completos,...anteriores};
+  // Paredões de mata conservam a copa opaca que cobre as células sólidas.
+  // Árvores isoladas continuam usando a silhueta pintada do piloto.
+  for(const [kind,T] of Object.entries(anteriores))if(!/^house/.test(kind)&&completos[kind]){
+    PERFIS[nome][kind]={...T,mata:true,f:(m,c)=>{
+      if(c.o.forest||c.o.ss){m.mataVolume=true;return completos[kind].f(m,c);}
+      return T.f(m,c);
+    }};
+  }
 }
 // Registro dos tipos de outros arquivos (modelos-<grupo>.js; a lista está em modelos-todos.js): cada tipo é
 // { f: (m, c) => topo, var?, estado?: (o) => string, fruta? }, igual à tabela acima. Não sobrescreve um tipo existente.
@@ -367,11 +378,18 @@ export function registrar(grupo, tipos) {
 export const ARVORE = new Set(['tree', 'tree2', 'autumn', 'bigtree', 'bigautumn', 'pine', 'pine2', 'pineT', 'pinheiroAlto']);
 export const temModeloLG = (kind) => !!TIPOS[kind];
 // estado do objeto (fruta colhida, ponta de cerca); lite = árvore do miolo do paredão (o.ss: só a copa aparece)
+// Uma árvore plantada na borda da mata também precisa cobrir o chão bloqueado.
+export function opcoesPintadas(kind,o,tile) {
+  if(o.forest||o.ss||!PERFIS.pintado?.[kind]?.mata)return o;
+  const K=KINDS[kind],x=o.tx??o.x,y=o.ty??o.y;
+  return tile(x+Math.floor(K.fw/2),y)===TILE.FOREST||tile(x+Math.floor(K.fw/2),y+K.fh)===TILE.FOREST?{...o,forest:true}:o;
+}
 export function chaveLG(kind, o = {}, perfil = '') {
-  const T = PERFIS[perfil]?.[kind] ?? TIPOS[kind]; if (!T) return null;
+  const perfilT=PERFIS[perfil]?.[kind], mata=perfilT?.mata&&(o.forest||o.ss);
+  const T = mata ? TIPOS[kind] : perfilT ?? TIPOS[kind]; if (!T) return null;
   const v = T.var ? hashVar(o) % T.var : 0;
   const e = T.estado ? T.estado(o) : T.fruta ? ((o?.semFruta || (o?.sprite && o.sprite.texture === SPR.berryless)) ? 'sem' : '') : '';
-  return `${kind}|${v}|${e}|${o?.ss && ARVORE.has(kind) ? 1 : 0}${PERFIS[perfil]?.[kind] ? '|' + perfil : ''}`;
+  return `${kind}|${v}|${e}|${o?.ss && ARVORE.has(kind) ? 1 : 0}${mata?'|mata':''}${PERFIS[perfil]?.[kind] ? '|' + perfil : ''}`;
 }
 export function modeloLG(kind, o = {}, perfil = '') {
   const T = PERFIS[perfil]?.[kind] ?? TIPOS[kind]; if (!T) return null;

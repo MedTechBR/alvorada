@@ -8,13 +8,13 @@ const three=[process.env.THREE_JS,'tools/vendor/three.module.js','node_modules/t
 assert(three,'Aponte THREE_JS para three.module.js');
 registerHooks({resolve(s,c,n){return s==='three'?{url:pathToFileURL(three).href,shortCircuit:true}:n(s,c);}});
 await import('./vestir/mundo.mjs');
-const {modeloLG,chaveLG}=await import('../src/visual3d/letsgo/modelos-todos.js');
+const {modeloLG,chaveLG,opcoesPintadas}=await import('../src/visual3d/letsgo/modelos-todos.js');
 const {mesclar}=await import('../src/visual3d/kit/construtor.js');
 const o={tx:1520,ty:1746},base=modeloLG('houseA',o),pintado=modeloLG('houseA',o,'pintado');
 assert.notEqual(base.chave,pintado.chave);assert(!base.geometry.attributes.aPintura);
 assert.equal(pintado,modeloLG('houseA',{...o},'pintado'));
 assert.equal(pintado.chave,chaveLG('houseA',o,'pintado'));
-assert.equal(modeloLG('chest',o,'pintado'),modeloLG('chest',o));
+assert.deepEqual(modeloLG('chest',o,'pintado').geometry.attributes.position.array,modeloLG('chest',o).geometry.attributes.position.array);
 const g=mesclar([{geometry:base.geometry},{geometry:pintado.geometry,x:100}]);
 const b=base.geometry.attributes.position.count,uv=g.attributes.aPintura;
 for(let i=0;i<b;i++)assert.equal(uv.getZ(i),0);
@@ -24,6 +24,28 @@ for(const kind of ['tree','tree2','pine','bigtree','jequitiba','ipe','paineira',
  assert(a.tris<antigo.tris,`${kind}: o recorte precisa economizar triângulos`);
  assert([...a.geometry.attributes.aPintura.array].every(Number.isFinite));
 }
+for(const kind of ['tree','tree2','pine','bigtree','jequitiba','ipe','paineira','autumn','bigautumn'])for(const ss of [false,true]){
+ const objeto={...o,forest:true,ss},a=modeloLG(kind,objeto),b=modeloLG(kind,objeto,'pintado');
+ assert.deepEqual(b.geometry.attributes.position.array,a.geometry.attributes.position.array,kind+': mata sem cobertura original');
+ assert.deepEqual(b.geometry.index.array,a.geometry.index.array);
+ assert(b.geometry.userData.mataVolume);assert.notEqual(b.chave,chaveLG(kind,o,'pintado'));
+}
+const {TILE}=await import('../src/world/tiles.js');
+assert(opcoesPintadas('bigtree',o,()=>TILE.FOREST).forest);assert.equal(opcoesPintadas('bigtree',o,()=>TILE.GRASS),o);
 const cheia=modeloLG('oran',o,'pintado'),colhida=modeloLG('oran',{...o,semFruta:true},'pintado');
 assert.notEqual(cheia.chave,colhida.chave);assert(cheia.tris>colhida.tris);
+const {KINDS}=await import('../src/world/objects.js');
+const {TIPOS_PINTADOS}=await import('../src/visual3d/letsgo/modelos-pintados.js');
+const {temModeloLG}=await import('../src/visual3d/letsgo/modelos-todos.js');
+let conferidos=0;
+for(const kind of Object.keys(KINDS))if(temModeloLG(kind)&&!TIPOS_PINTADOS[kind]){
+ const a=modeloLG(kind,o),b=modeloLG(kind,o,'pintado');
+ assert.deepEqual(a.geometry.attributes.position.array,b.geometry.attributes.position.array,kind+': posição mudou');
+ assert.deepEqual(a.geometry.index.array,b.geometry.index.array,kind+': topologia mudou');
+ if(b.geometry.attributes.aPintura)assert(b.geometry.attributes.normal.array.byteLength+b.geometry.attributes.aPintura.array.byteLength<=a.geometry.attributes.normal.array.byteLength,kind+': orçamento de atributos aumentou');
+ const na=a.geometry.attributes.normal,nb=b.geometry.attributes.normal;
+ for(let i=0;i<na.count;i++)assert(Math.abs(na.getX(i)-nb.getX(i))<.00004&&Math.abs(na.getY(i)-nb.getY(i))<.00004&&Math.abs(na.getZ(i)-nb.getZ(i))<.00004,kind+': normal imprecisa');
+ conferidos++;
+}
+console.log('Modelos com volumes preservados:',conferidos);
 g.dispose();console.log('OK: perfil isolado, cache reutilizado, UV preservado e árvores com menos triângulos');

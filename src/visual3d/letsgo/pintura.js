@@ -76,8 +76,8 @@ export function pintarSala(mat) {
     antes(sh,r);sh.uniforms.tPintura={value:atlasPintado()};
     sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vSuperficieP;')
       .replace('#include <begin_vertex>','#include <begin_vertex>\nvSuperficieP = position;');
-    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vSuperficieP;\n'+GLSL_PINTURA)
-      .replace('#include <color_fragment>',`#include <color_fragment>\n diffuseColor.rgb *= pintura(7.0, fract(vSuperficieP.xz/64.0)).rgb * 0.85;`);
+    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vSuperficieP;\nuniform sampler2D tPintura;')
+      .replace('#include <color_fragment>',`#include <color_fragment>\n diffuseColor.rgb *= texture2D(tPintura, vec2(0.252,0.002)+fract(vSuperficieP.xz/64.0)*0.246).rgb * 0.85;`);
   };
   mat.customProgramCacheKey=()=>chave()+'+piso-pintado';
   return mat;

@@ -2,7 +2,7 @@ import { profundidadePintada } from '../letsgo/pintura.js';
 import * as THREE from 'three';
 import { kit } from './index.js';
 import { GLB_TIPOS, glbPronto, pedirGLB, onGLB } from './glb.js';
-import { modeloLG, chaveLG } from '../letsgo/modelos-todos.js';
+import { opcoesPintadas, modeloLG, chaveLG } from '../letsgo/modelos-todos.js';
 import { ARVORES_LG, proxyArvore, LONGE, HISTERESE, LOD_LIGA } from '../letsgo/arvores-lod.js';
 
 // Ponte entre o kit de modelos e os setores do visual 3D (src/visual3d/setores.js).
@@ -18,7 +18,7 @@ const MOVEL = (K) => !!(K && (K.breakable || K.push || K.strength || K.cart || K
 
 export class ModelosKit {
   constructor(v) {
-    this.v = v; this.mat = kit.material(); this.donos = new WeakSet(); this.setores = new Set();
+    this.v = v; this.tilePintado=(x,y)=>v.g.map.at(x,y); this.mat = kit.material(); this.donos = new WeakSet(); this.setores = new Set();
     // modelo GLB que chegou: refaz os setores montados (troca o bloco pelo móvel real)
     onGLB(() => { for (const s of [...this.setores]) this.setor(s); });
   }
@@ -30,8 +30,8 @@ export class ModelosKit {
   // (a beira da zona pode ter objetos lisos num setor voxel: as árvores da mata mudam de estilo junto, não no meio dela)
   lgDe(o, s) { return !!(s?.lg || (this.matLG && this.v.lg?.zona.objeto(o.tx, o.ty))); }
   perfilDe() { return 'pintado'; }
-  modeloDe(o, s) { return (this.lgDe(o, s) && modeloLG(o.kind, o, this.perfilDe(o))) || kit.modelo(o.kind, o); }
-  chaveDe(o, s) { return (this.lgDe(o, s) && chaveLG(o.kind, o, this.perfilDe(o))) || kit.chave(o.kind, o); }
+  modeloDe(o, s) { return (this.lgDe(o, s) && modeloLG(o.kind, opcoesPintadas(o.kind,o,this.tilePintado), this.perfilDe(o))) || kit.modelo(o.kind, o); }
+  chaveDe(o, s) { return (this.lgDe(o, s) && chaveLG(o.kind, opcoesPintadas(o.kind,o,this.tilePintado), this.perfilDe(o))) || kit.chave(o.kind, o); }
   matDe(s, o) { return (o ? this.lgDe(o, s) : s?.lg) && this.matLG ? this.matLG : this.mat; }
 
   setor(s) {
@@ -43,8 +43,8 @@ export class ModelosKit {
       if (o.dead || !kit.temModelo(o.kind) || this.v.g.vivo?.mexido?.(o)) continue;
       if (this.#movel(o)) { moveis.push(o); continue; }
       const md = this.modeloDe(o, s), K = kit.ficha(o.kind);
-      const lisa = this.lgDe(o, s) && this.matLG && md.chave === chaveLG(o.kind, o, this.perfilDe(o)), it = { geometry: md.geometry, x: o.x, y: this.#h(o.x, o.y, K.fh), z: o.y };
-      if (LOD_LIGA && lisa && ARVORES_LG.has(o.kind) && !md.geometry.attributes.aPintura) { arvP.push(it); arvL.push({ ...it, geometry: proxyArvore(o.kind, md) }); } // árvores lisas: modelo inteiro perto, substituto longe
+      const lisa = this.lgDe(o, s) && this.matLG && md.chave === chaveLG(o.kind, opcoesPintadas(o.kind,o,this.tilePintado), this.perfilDe(o)), it = { geometry: md.geometry, x: o.x, y: this.#h(o.x, o.y, K.fh), z: o.y };
+      if (LOD_LIGA && lisa && ARVORES_LG.has(o.kind) && (!md.geometry.attributes.aPintura || md.geometry.userData.mataVolume)) { arvP.push(it); arvL.push({ ...it, geometry: proxyArvore(o.kind, md) }); } // árvores lisas: modelo inteiro perto, substituto longe
       else (!s.lg && lisa ? itensLG : itens).push(it);
       if (o.sprite) donos.push(o.sprite);
     }

@@ -23,4 +23,4 @@ registrar('interior', TIPOS_INTERIOR);
 registrar('moveis', TIPOS_MOVEIS);
 ampliarPerfil('pintado', completarPintados);
 
-export { modeloLG, chaveLG, temModeloLG, trisLG, GRUPOS_LG } from './modelos.js';
+export { opcoesPintadas, modeloLG, chaveLG, temModeloLG, trisLG, GRUPOS_LG } from './modelos.js';
