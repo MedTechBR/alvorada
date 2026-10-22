@@ -303,3 +303,7 @@ em `src/data/species.js`. O chão onde podem aparecer sem mato alto inclui neve,
 Peso no celular: as texturas dos biomas repetem a cada 256 px e são assadas uma vez (nas folgas, logo depois de carregar),
 então um setor de bioma custa o mesmo que um de grama; as partículas do clima são um pool fixo que cai pela metade na
 qualidade baixa.
+
+## Planta original e geografia em execução
+
+Os JSON de Alvorada continuam na planta original de 1200×960 blocos externos. A montagem em `src/world/geografia.js` amplia o mundo para 4200×3360, preservando tamanhos de edifícios e interiores. Prefira spots nomeados para destinos; coordenadas numéricas externas em código precisam passar por `pontoGeografico`. Ferramentas que editam a planta devem carregar `original: true`, como o gerador de cenário, para não ampliar dados duas vezes. Saves antigos são migrados para o layout 3 ao carregar.

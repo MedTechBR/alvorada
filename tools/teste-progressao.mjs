@@ -1,3 +1,4 @@
+import { LARGURA_AMPLIADA, ALTURA_AMPLIADA, ALTURA_ORIGINAL, pontoGeografico } from '../src/world/geografia.js';
 // Teste da progressão clássica (docs/jornada-classica.md, seção 2), sem navegador. Simula flags e confere:
 //  1. cada líder recusa a luta sem a insígnia anterior (e aceita com ela);
 //  2. as barreiras são sólidas antes e passáveis depois da liberação;
@@ -59,7 +60,7 @@ ok(recusaLider({ badges: [] }, 'leader_tome') === null, 'leader_tome: o primeiro
 
 // 2. barreiras -----------------------------------------------------------------------------------------
 {
-  const W = 1200, H = 2080;
+  const W = LARGURA_AMPLIADA, H = 2080+ALTURA_AMPLIADA-ALTURA_ORIGINAL;
   for (const b of BARREIRAS) {
     const [x, y] = b.rects[0];
     const k = x + y * W;
@@ -91,7 +92,7 @@ ok(recusaLider({ badges: [] }, 'leader_tome') === null, 'leader_tome: o primeiro
   const teste = { ...TEMPESTADES[0], rects: [[10, 10, 5, 5]] };
   ok(emTempestade(12, 12, 'alvorada', {}) === null || TEMPESTADES[0].rects.length === 0, 'tempestade sem retângulo não deve barrar');
   ok(teste.rects.some(([x, y, w, h]) => 12 >= x && 12 < x + w && 12 >= y && 12 < y + h), 'retângulo de teste da tempestade');
-  ok(barreiraEm(94, 277, 'alvorada', {}, 1) !== null, 'aviso: encostar na guarda da Rota 2 deveria avisar');
+  ok(barreiraEm(...pontoGeografico(94,277), 'alvorada', {}, 1) !== null, 'aviso: encostar na guarda da Rota 2 deveria avisar');
 }
 
 // 3. montarias ----------------------------------------------------------------------------------------

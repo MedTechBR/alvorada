@@ -1,3 +1,4 @@
+import { LAYOUT_GEOGRAFICO, migrarSaveGeografico } from './world/geografia.js';
 import { Mon } from './data/mon.js';
 import { mundoInfo } from './world/mundos.js';
 
@@ -45,7 +46,7 @@ export function serialize(g) {
     pos: { x: Math.round(p.x), y: Math.round(p.y), dir: p.dir },
     // mundo (continente) em que o jogador está; dentro de uma sala, a posição também vai relativa à sala (as salas
     // ganham lugar sozinhas na faixa de interiores e podem mudar de lugar quando uma região cresce)
-    mundo: g.map?.id ?? 'alvorada', layout: 2,
+    mundo: g.map?.id ?? 'alvorada', layout: LAYOUT_GEOGRAFICO,
     sala: salaDe(g),
     mundoEstado: g.mundo?.saveState?.() ?? null,
     flags: g.flags,
@@ -61,6 +62,7 @@ function salaDe(g) {
 
 // Aplica um save no jogo já montado (antes de soltar o primeiro Pokémon). Se o save é de outro mundo, monta ele antes.
 export async function applySave(g, d) {
+  d = migrarSaveGeografico(d, g.map?.id==='alvorada' ? g.map.R?.items : []);
   const safe = (arr) => (arr ?? []).map((o) => { try { const m = Mon.from(o); if (o.item != null && m.item == null) m.item = o.item; return m; } catch { return null; } }).filter(Boolean);
   g.party = safe(d.party).slice(0, 6);
   g.box = safe(d.box);

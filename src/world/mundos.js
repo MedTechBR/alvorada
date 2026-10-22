@@ -1,3 +1,4 @@
+import { ampliarGeografia, pontoGeografico } from './geografia.js';
 import { KINDS } from './objects.js';
 import { gerarInteriores } from './interiores.js';
 import { mesclarVestir } from './vestir.js';
@@ -33,9 +34,10 @@ export function lerPrincipal(id) {
   return brutos.get(id);
 }
 // Dados montados de um mundo (promessa guardada: a segunda chamada não baixa de novo)
-export function dadosDoMundo(id) {
-  if (!cache.has(id)) cache.set(id, montar(id).catch((e) => { cache.delete(id); throw e; }));
-  return cache.get(id);
+export function dadosDoMundo(id, { original = false } = {}) {
+  const chave=id+(original?':autoral':'');
+  if (!cache.has(chave)) cache.set(chave, montar(id, original).catch((e) => { cache.delete(chave); throw e; }));
+  return cache.get(chave);
 }
 
 async function ler(url) {
@@ -47,7 +49,7 @@ const hashTxt = (s) => { let h = 2166136261; for (const c of String(s)) h = Math
 const dentro = (r, x, y) => r && x >= r[0] && y >= r[1] && x < r[0] + r[2] && y < r[1] + r[3];
 const tamanho = (r) => ({ w: Math.max(...r.rows.map((s) => s.length)), h: r.rows.length });
 
-async function montar(id) {
+async function montar(id, original = false) {
   const M = mundoInfo(id);
   if (!M) throw new Error(`mundo desconhecido: ${id}`);
   const base = new URL(M.arquivo, MAPS);
@@ -131,6 +133,10 @@ async function montar(id) {
   // passagens: [x, y] absoluto, ["sala", x, y] relativo à sala, "ponto" (nome em spots)
   R.warps = R.warps.map((w) => (w.mundo ? w : { ...w, to: Array.isArray(w.to) && typeof w.to[0] === 'string' ? alvoRel(w.to, null, porId) : w.to }));
   R.interiors = salas;
+  if (!original) {
+    ampliarGeografia(R, KINDS);
+    if (id !== 'alvorada') for (const w of R.warps) if(w.mundo === 'alvorada' && Array.isArray(w.to) && typeof w.to[0] === 'number') w.to=pontoGeografico(...w.to);
+  }
   marcarSaidas(R); // r.saidas: portas de saída de cada sala (tapete, abertura na frente e guia no mesmo bloco)
   return R;
 }

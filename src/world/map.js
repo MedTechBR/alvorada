@@ -1,3 +1,5 @@
+import { pontoGeografico } from './geografia.js';
+import { florestaDoSetor } from './floresta-setor.js';
 import * as PIXI from 'pixi.js';
 import { T, TILE, SOLID, SWIMMABLE, MOUNT_PASS, TALLS, WALLS } from './tiles.js';
 import { WATER_FRAMES, FLOWERS, LILY, TALL, CORN, SPR } from './art.js';
@@ -37,6 +39,7 @@ const CH = 16, CPX = CH * T; // setor: 16x16 blocos = 256 px
 // chão dos biomas onde um selvagem pode aparecer mesmo sem mato alto (cavernas, neve, deserto...)
 const WILD_GROUND = new Set([TILE.CAVE, TILE.SNOWFIELD, TILE.ASH, TILE.BASALT, TILE.DUNE, TILE.CAATINGA, TILE.CRACKED, TILE.WETSAND, TILE.MANGMUD, TILE.ICEFLOOR, TILE.LAVAFLOOR,
   TILE.DARKCAVE, TILE.CRYSTALFLOOR, TILE.OLDSTONE, TILE.TEMPLEFLOOR, TILE.SNOW, TILE.RAIL, TILE.SALT, TILE.REDROCK, TILE.DRYRIVER, TILE.SHALLOW]);
+const WILD_MEADOW = new Set([TILE.GRASS,TILE.GRASS2,TILE.FLOWERS,TILE.GOLD]);
 const hash = (x, y, s = 0) => { let h = (x * 374761393 + y * 668265263 + s * 1442695041) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; };
 const PERTO = 64 * T; // região a menos disso da tela começa a ser montada (em fatias)
 const agora = () => performance.now();
@@ -53,7 +56,7 @@ export class GameMap {
   async carregar(id, { fatiar = false, antes } = {}) {
     const t0 = agora();
     const R = await dadosDoMundo(id);
-    const S = prepararMundo(R);
+    const S = prepararMundo(R, { florestaPorSetor: !!R.layoutGeografico });
     for (const P of R.partes) if (!P.lazy) { if (fatiar) await this.#fatias(passosParte(S, P), 6); else montarParte(S, P); }
     antes?.(); // quem chamou ainda pode limpar o mundo antigo antes da troca
     this.#descartar();
@@ -122,6 +125,7 @@ export class GameMap {
     if (this.construindo?.P === P) this.construindo = null;
     for (const r of [P.rect, P.faixa]) if (r) this.#marcarSetores(r, 0);
     this.nPend--;
+    if(!this.nPend){this.S.nearSpot.clear();this.S.plantaTiles=null;}
     if (this.pending) { this.pending.img = this.pending.canvas = this.pending.ctx = null; this.pending = null; }
     const novos = this.S.novos.splice(0); this.objects.push(...novos); this.#instalar(novos);
     // setores já desenhados que encostam na região: redesenha só a faixa da borda (as transições de chão olham até
@@ -316,6 +320,8 @@ export class GameMap {
     return best;
   }
   // Lugar para um selvagem aparecer: de preferência no mato alto, longe da vista imediata
+  pontoDaPlanta(x,y) { return this.R.layoutGeografico ? pontoGeografico(x,y,this.id) : [x,y]; }
+
   randomSpawn(px, py, rMin = 9, rMax = 20) {
     const ptx = Math.floor(px / T), pty = Math.floor(py / T);
     if (this.isIndoor(px, py) && !this.interiorAt(px, py)?.wild) return null;
@@ -327,7 +333,7 @@ export class GameMap {
       const wx = x * T + 8, wy = y * T + 10;
       if (this.biome(wx, wy) === 'vila') continue;
       if (TALLS.has(t)) return { x: wx, y: wy, tall: true };
-      if (!fallback && (t === TILE.DARK || t === TILE.SAND || (t === TILE.GRASS && Math.random() < 0.15) || (WILD_GROUND.has(t) && Math.random() < 0.3))) fallback = { x: wx, y: wy };
+      if (!fallback && (t === TILE.DARK || t === TILE.SAND || (WILD_MEADOW.has(t) && Math.random() < 0.15) || (WILD_GROUND.has(t) && Math.random() < 0.3))) fallback = { x: wx, y: wy };
     }
     return fallback;
   }
@@ -365,6 +371,10 @@ export class GameMap {
   }
   #startChunk(c) {
     this.garantirArea(c.cx * CH - 3, c.cy * CH - 3, c.cx * CH + CH + 2, c.cy * CH + CH + 2);
+    if (this.S.florestaPorSetor && !c.floresta) {
+      c.floresta=florestaDoSetor(this,c.cx*CH,c.cy*CH);
+      c.objs.push(...c.floresta);
+    }
     const cv = document.createElement('canvas'); cv.width = CPX; cv.height = CPX;
     const ctx = cv.getContext('2d'); c.canvas = cv; c.ctx = ctx; c.img = ctx.createImageData(CPX, CPX); c.row = 0;
   }
@@ -449,6 +459,7 @@ export class GameMap {
     this.#showChunk(c, false);
     c.sprite.destroy(); c.tex.destroy(true); c.deco.destroy({ children: true });
     for (const s of c.tall.values()) s.destroy();
+    if(c.floresta){for(const o of c.floresta)o.sprite?.destroy();c.objs=c.objs.filter(o=>!o.porSetor);c.floresta=null;}
     c.canvas = c.ctx = c.img = c.tex = c.sprite = c.deco = c.tall = null; c.built = false;
   }
 

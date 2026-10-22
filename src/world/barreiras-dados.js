@@ -1,3 +1,4 @@
+import { pontoGeografico, retanguloGeografico } from './geografia.js';
 // Barreiras da progressão clássica (docs/jornada-classica.md, seções 2 e 3): bloqueios de história na saída de
 // cada cidade, a tempestade sobre o Planalto e a neblina dos mares. Módulo puro (sem PIXI): o mesmo código roda no
 // jogo (src/world/barreiras.js, que grava map.block) e no teste (tools/teste-progressao.mjs).
@@ -152,4 +153,11 @@ export function barreiraEm(tx, ty, mundo, f, raio = 1) {
     for (const [x, y, w, h] of d.rects) if (tx >= x - raio && ty >= y - raio && tx < x + w + raio && ty < y + h + raio) return d;
   }
   return null;
+}
+
+// As regras continuam as mesmas; só as coordenadas acompanham as distâncias do continente.
+for (const b of [...BARREIRAS, ...TEMPESTADES, ...NEVOAS, ...ZONAS_SEM_POUSO]) {
+  if(b.rects)b.rects=b.rects.map(r=>retanguloGeografico(r,b.mundo));
+  if(b.zona)b.zona=b.zona.map(r=>retanguloGeografico(r,b.mundo));
+  if(b.visual?.guardas)b.visual.guardas=b.visual.guardas.map(([x,y,...resto])=>[...pontoGeografico(x,y,b.mundo),...resto]);
 }

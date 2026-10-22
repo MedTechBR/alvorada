@@ -548,7 +548,7 @@ function gravar(id, V) {
 }
 
 async function verificarTudo() {
-  const C = await carregarMundo('alvorada', { semVestir: false });
+  const C = await carregarMundo('alvorada', { semVestir: false, original: true });
   const walk = new Uint8Array(W * H); for (let k = 0; k < W * H; k++) walk[k] = SOLID.has(C.S.tiles[k]) || C.S.block[k] ? 0 : 1;
   for (const o of C.S.placed) if ((o.opens || o.flag) && o.y < OH) for (const k of o.cells ?? []) walk[k] = 1; // porteiras e portões da história abrem
   const comp = componentes(walk, W, H).comp, erros = [];

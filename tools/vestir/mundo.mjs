@@ -24,10 +24,10 @@ const { prepararMundo, montarParte, passosParte } = await import('../../src/worl
 const { TILE, SOLID } = await import('../../src/world/tiles.js');
 
 // Monta todas as partes (inclusive as "lazy", que no jogo saem sob demanda) e devolve os blocos prontos.
-export async function carregarMundo(id = 'alvorada', { semVestir = false } = {}) {
+export async function carregarMundo(id = 'alvorada', { semVestir = false, original = semVestir } = {}) {
   semVestirAtual = semVestir;
   // dadosDoMundo guarda a primeira montagem em cache: quem chama com e sem enfeite roda em processos separados
-  const R = await dadosDoMundo(id).catch(() => null);
+  const R = await dadosDoMundo(id, { original }).catch(() => null);
   if (!R) throw new Error('mundo ' + id + ' não montou');
   const S = prepararMundo(R);
   for (const P of R.partes) montarParte(S, P);

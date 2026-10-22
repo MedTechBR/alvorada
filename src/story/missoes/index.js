@@ -1,3 +1,4 @@
+import { pontoGeografico } from '../../world/geografia.js';
 import { ITEMS, ITEM_INFO } from '../../data/items.js';
 import { MOVES } from '../../data/moves.js';
 import { SPECIES } from '../../data/species.js';
@@ -16,7 +17,12 @@ import * as jandaia from './regiao-jandaia.js';
 // Formato completo, com exemplos de cada tipo de etapa: docs/missoes.md.
 export const REGIOES = [alvorada, campina, sussurro, espelho, sul, geada, brasas, sertao, jandaia];
 
-export const MISSOES = REGIOES.flatMap((r) => r.MISSOES ?? []);
+// As etapas mantêm texto, ordem e condições; coordenadas literais externas acompanham o continente.
+const coordenada=e=>{
+  const q={...e};if(!e.sala&&e.x!=null&&e.y!=null){[q.x,q.y]=pontoGeografico(e.x,e.y,e.mundo??'alvorada');const [X,Y]=pontoGeografico(e.x+1,e.y+1,e.mundo??'alvorada');if(e.r)q.r=e.r*Math.min(X-q.x,Y-q.y);}
+  if(e.alfa)q.alfa=coordenada(e.alfa);return q;
+};
+export const MISSOES = REGIOES.flatMap(r=>(r.MISSOES??[]).map(m=>({...m,etapas:m.etapas.map(coordenada)})));
 export const NPCS = {};
 for (const r of REGIOES) for (const [id, d] of Object.entries(r.NPCS ?? {})) NPCS[id] = NPCS[id] ? { ...NPCS[id], ...d } : d;
 export const ITENS = Object.assign({}, ...REGIOES.map((r) => r.ITENS ?? {}));

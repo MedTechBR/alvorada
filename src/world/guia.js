@@ -22,6 +22,12 @@ const DY = [0, 0, 0, 1, -1];
 // G = { W, H, no(k), anda(k), pre(k) }: no = dá para estar/entrar no bloco (andável ou boca de passagem);
 // anda = dá para sair andando dele (andável e não é boca de passagem); pre(k) = blocos que chegam em k por uma
 // passagem especial (porta, escada, salto, barco), ou null.
+// Índices em páginas de 32 KB: evita milhões de números JS e uma máscara do tamanho do continente só para portas.
+class BlocosMarcados {
+  constructor(){this.blocos=[];this.length=0;}
+  push(k){const b=this.length>>>13,a=this.blocos[b]??(this.blocos[b]=new Uint32Array(8192));a[this.length++&8191]=k;}
+  limpar(dist,dir){for(let i=0;i<this.length;i++){const k=this.blocos[i>>>13][i&8191];dist[k]=dir[k]=0;}this.length=0;}
+}
 export class CampoGuia {
   constructor(W, H) {
     this.W = W; this.H = H; const N = W * H;
@@ -29,13 +35,13 @@ export class CampoGuia {
     this.dir = new Uint8Array(N);
     this.esp = new Map();           // bloco → próximo bloco, quando o passo é uma passagem
     this.fila = new Int32Array(1 << 20); this.ini = 0; this.fim = 0;
-    this.sujos = [];                // blocos marcados (para limpar rápido na próxima busca)
+    this.sujos = new BlocosMarcados();                // blocos marcados (para limpar rápido na próxima busca)
     this.G = null; this.semente = null;
   }
   // começa uma busca nova a partir dos blocos-alvo (sementes)
   iniciar(G, sementes) {
     const { dist, dir } = this;
-    if (this.sujos.length > this.W * this.H / 4) { dist.fill(0); dir.fill(0); } else for (const k of this.sujos) { dist[k] = 0; dir[k] = 0; }
+    if (this.sujos.length > this.W * this.H / 4) { dist.fill(0); dir.fill(0); } else this.sujos.limpar(dist,dir);
     this.sujos.length = 0; this.esp.clear(); this.ini = this.fim = 0;
     this.G = G; this.semente = sementes;
     for (const k of sementes) if (!dist[k]) { dist[k] = 1; this.sujos.push(k); this.#push(k); }
@@ -124,8 +130,8 @@ export function linhaLivre(G, a, b) {
 export function pontoDeVista(G, cam, alcance = 12, minimo = 8) {
   const base = pontoDePassagem(cam, alcance), { pts } = cam;
   if (base.porta) return base;
-  // se a linha reta livre passa de `alcance`, a seta segue o mesmo trecho reto (até 2x): não vira para o degrau do meio
-  let i = Math.min(alcance * 2, pts.length - 1);
+  // A direção considera todo o trecho livre; a projeção na tela continua perto do jogador.
+  let i = pts.length - 1; // campos amplos: encontra o trecho reto, mesmo além dos primeiros degraus do BFS
   const p0 = cam.passagens.find((q) => q > 0); if (p0 != null) i = Math.min(i, p0 - 1);
   while (i > 1 && !linhaLivre(G, pts[0], pts[i])) i--;
   return { k: pts[i], i, porta: false };
@@ -197,7 +203,7 @@ export function grafoDe(D) {
     if (t === TIDE) return true;
     return !SOLID.has(t) || passa.has(t);
   };
-  const boca = new Uint8Array(W * H); // boca de passagem: pisar leva a outro lugar
+  const boca = Object.create(null); // boca de passagem: pisar leva a outro lugar
   const pre = new Map(), lig = [];
   const liga = (de, para) => { if (!pre.has(para)) pre.set(para, []); pre.get(para).push(de); };
   for (const w of D.passagens ?? []) {
@@ -387,7 +393,9 @@ export class Guia {
     const trecho = cam.pts.slice(0, corte + 1).filter((_, i) => i % 2 === 0 || i === corte).map(xy);
     const fim = cam.pts.length - 1 <= corte; // o alvo fica neste mesmo lugar (sem porta no meio)
     // fim: onde o caminho termina de verdade (numa área, o mato alto mais perto; num ponto, o bloco livre dele)
-    return { pronto: true, ok: true, alvo, dist, wp: xy(wp.k), porta: wp.porta, trecho, saida: fim ? null : xy(cam.pts[corte]), fim: xy(cam.pts[cam.pts.length - 1]) };
+    const mira=xy(wp.k),origem=xy(k),dx=mira.x-origem.x,dy=mira.y-origem.y,d=Math.hypot(dx,dy),lim=ALCANCE_MAX*T;
+    if(!wp.porta&&d>lim){mira.x=origem.x+dx/d*lim;mira.y=origem.y+dy/d*lim;}
+    return { pronto: true, ok: true, alvo, dist, wp: mira, porta: wp.porta, trecho, saida: fim ? null : xy(cam.pts[corte]), fim: xy(cam.pts[cam.pts.length - 1]) };
   }
   // sem caminho com as montarias de agora: o que falta (montaria e insígnia) — calculado uma vez por busca
   #motivo(px, py) {

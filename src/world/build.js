@@ -1,3 +1,5 @@
+import { refinarCaminhos } from './caminhos-ampliados.js';
+import { pontoGeografico } from './geografia.js';
 import { TILE, CHARS, NAMES, SOLID } from './tiles.js';
 import { KINDS } from './objects.js';
 
@@ -29,12 +31,14 @@ function vnoise(x, y, s) {
 const fbm = (x, y, s) => vnoise(x, y, s) * 0.6 + vnoise(x * 2.3, y * 2.3, s + 9) * 0.4;
 
 // Prepara o mundo: blocos vazios, salas e objetos posicionados (pegadas ocupadas). Os blocos de cada parte vêm depois.
-export function prepararMundo(J) {
+export function prepararMundo(J, { florestaPorSetor = false } = {}) {
   const W = J.w, H = J.h, OH = J.outdoorH ?? H;
+  for(const P of J.partes??[])P.pronta=false; // voltar de outro mundo também precisa montar um mapa novo
   const tiles = new Uint8Array(W * H).fill(tileOf(J.base ?? 'grass'));
   if (OH < H) tiles.fill(TILE.VOID, OH * W); // faixa das salas: vazio entre elas
   const block = new Uint8Array(W * H);
-  const S = { J, W, H, tiles, block, seed: 1, objects: [], placed: [], decor: [], people: [...(J.people ?? [])], pets: [...(J.pets ?? [])], novos: [] };
+  const S = { J, W, H, florestaPorSetor, tiles, block, seed: 1, objects: [], placed: [], decor: [], people: [...(J.people ?? [])], pets: [...(J.pets ?? [])], novos: [] };
+  if(J.plantaOriginal){S.plantaW=J.plantaOriginal.w;S.plantaH=J.plantaOriginal.h;S.plantaTiles=new Uint8Array(S.plantaW*S.plantaH).fill(tileOf(J.base??'grass'));S.plantaTiles.fill(TILE.VOID,J.plantaOriginal.outdoorH*S.plantaW);}
   // salas: objetos, decoração, moradores e Pokémon em coordenadas da sala
   for (const r of J.interiors ?? []) {
     for (const o of r.objects ?? []) S.objects.push({ ...o, x: r.x + o.x, y: r.y + o.y, parte: r.parte });
@@ -75,10 +79,15 @@ export function* passosParte(S, P) {
   const { W, H, tiles, J } = S;
   const clip = P.rect;
   const inb = (x, y) => x >= 0 && y >= 0 && x < W && y < H;
-  const inClip = (x, y) => !clip || (x >= clip[0] && y >= clip[1] && x < clip[0] + clip[2] && y < clip[1] + clip[3]);
-  let cortar = true; // os carimbos das salas (na faixa) não são recortados
-  const get = (x, y) => (inb(x, y) ? tiles[x + y * W] : TILE.CLIFF);
-  const set = (x, y, t) => { if (inb(x, y) && (!cortar || inClip(x, y))) tiles[x + y * W] = t; };
+  let planta=!!P.escalaGeografica, cortar=true;
+  const inClip = (x,y) => {const r=planta?P.plantaRect:clip;return !r||(x>=r[0]&&y>=r[1]&&x<r[0]+r[2]&&y<r[1]+r[3]);};
+  const get = (x,y) => {if(planta)return x>=0&&y>=0&&x<S.plantaW&&y<S.plantaH?S.plantaTiles[x+y*S.plantaW]:TILE.CLIFF;return inb(x,y)?tiles[x+y*W]:TILE.CLIFF;};
+  const set = (x,y,t) => {
+    if(cortar&&!inClip(x,y))return;
+    let nx=1,ny=1;
+    if(planta){if(x>=0&&y>=0&&x<S.plantaW&&y<S.plantaH)S.plantaTiles[x+y*S.plantaW]=t;const q=pontoGeografico(x,y),fim=pontoGeografico(x+1,y+1);nx=fim[0]-q[0];ny=fim[1]-q[1];[x,y]=q;}
+    for(let j=0;j<ny;j++)for(let i=0;i<nx;i++)if(inb(x+i,y+j))tiles[x+i+(y+j)*W]=t;
+  };
   const onOk = (on, x, y) => !on || on.map(tileOf).includes(get(x, y));
   let own = P.seed ?? 0;
   const nextSeed = () => (P.seq ? S.seed++ : own++);
@@ -110,7 +119,7 @@ export function* passosParte(S, P) {
       }
     },
     path(o) {
-      const t = tileOf(o.t), r = (o.width ?? 3) / 2, s = nextSeed(), wob = o.wobble ?? 0;
+      const t = tileOf(o.t), r = (o.width ?? 3) / 2, s = o.semSemente ? 0 : nextSeed(), wob = o.wobble ?? 0;
       for (let i = 0; i < o.pts.length - 1; i++) {
         const [x0, y0] = o.pts[i], [x1, y1] = o.pts[i + 1], n = Math.ceil(Math.hypot(x1 - x0, y1 - y0) * 2);
         for (let k = 0; k <= n; k++) {
@@ -141,20 +150,31 @@ export function* passosParte(S, P) {
       const lg = o.legend ?? {};
       o.rows.forEach((row, j) => [...row].forEach((ch, i) => { if (ch === ' ') return; const t = lg[ch] !== undefined ? tileOf(lg[ch]) : CHARS[ch]; if (t !== undefined) set(o.x + i, o.y + j, t); }));
     },
-    trees(o) { treeOps.push(o); },
+    trees(o) { if(planta){const [x,y]=pontoGeografico(o.x,o.y),[X,Y]=pontoGeografico(o.x+o.w,o.y+o.h);treeOps.push({...o,x,y,w:X-x,h:Y-y,p:o.p*o.w*o.h/((X-x)*(Y-y))});}else treeOps.push(o); },
     comment() {},
     fence(o) {
       const v = o.dir === 'v', kind = (o.white ? 'wfence' : 'fence') + (v ? 'V' : '');
-      for (let i = 0; i < o.len; i++) { if (!inClip(o.x + (v ? 0 : i), o.y + (v ? i : 0))) continue; const f = { kind, x: o.x + (v ? 0 : i), y: o.y + (v ? i : 0), end: i === 0 ? 'L' : i === o.len - 1 ? 'R' : 'M', parte: P.i }; if (occupy(S, f)) novos.push(f); }
+      const [x,y]=planta?pontoGeografico(o.x,o.y):[o.x,o.y],fim=planta?pontoGeografico(o.x+(v?0:o.len),o.y+(v?o.len:0)):[o.x+(v?0:o.len),o.y+(v?o.len:0)],len=v?fim[1]-y:fim[0]-x;
+      for(let i=0;i<len;i++) {
+        const f={kind,x:x+(v?0:i),y:y+(v?i:0),end:i===0?'L':i===len-1?'R':'M',parte:P.i};
+        if(clip&&(f.x<clip[0]||f.y<clip[1]||f.x>=clip[0]+clip[2]||f.y>=clip[1]+clip[3]))continue;
+        if(occupy(S,f))novos.push(f);
+      }
     },
   };
   const treeOps = [...(P.trees ?? [])];
   for (const o of P.ops ?? []) { if (!ops[o.op]) { console.warn('op desconhecida', o); continue; } ops[o.op](o); yield; }
 
+  if(planta)refinarCaminhos(S,P);
+  planta=false;
   // salas desta parte: carimbos em texto (sem recorte)
   cortar = false;
   for (const r of J.interiors ?? []) if ((r.parte ?? 0) === P.i) ops.stamp({ x: r.x, y: r.y, rows: r.rows });
   cortar = true;
+  // Prédios continuam do tamanho original; a alameda liga sua porta ao caminho ampliado.
+  for(const o of S.placed)if(o.parte===P.i&&o.acessoAmpliado){
+    ops.path({t:'path',width:3,semSemente:true,pts:[[o.doorX,o.doorY],o.acessoAmpliado]});
+  }
   yield;
 
   // árvores soltas (só dentro do retângulo da parte, sem encostar na borda dele)
@@ -171,6 +191,7 @@ export function* passosParte(S, P) {
     }
     yield;
   }
+  if (!S.florestaPorSetor) {
   // floresta densa: árvores em grade sobre os blocos FOREST (fileiras alternadas, mesma paridade no mundo todo)
   const fk = J.forestKinds ?? ['tree', 'pine', 'tree2', 'pine2'];
   const [rx, ry, rw, rh] = clip ?? [0, 0, W, J.outdoorH ?? H];
@@ -202,7 +223,8 @@ export function* passosParte(S, P) {
       novos.push({ kind: 'moita', x, y, fw: 1, fh: 1, cells: [], forest: true, enchimento: true, parte: P.i });
     }
   }
-  S.novos.push(...novos);
+  }
+  for (const o of novos) S.novos.push(o);
   P.pronta = true;
 }
 export function montarParte(S, P) { for (const _ of passosParte(S, P)) { /* tudo de uma vez */ } }

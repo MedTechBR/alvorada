@@ -46,8 +46,8 @@ const JUMPABLE = new Set(['log', 'stump', 'fence', 'fenceV', 'wfence', 'wfenceV'
 const DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 
 // Monta o mundo uma vez e devolve o "mapa de alcance": blocos, objetos, salas, pontos e passagens em blocos.
-export async function montarAlcance(id = 'alvorada') {
-  const M = await carregarMundo(id);
+export async function montarAlcance(id = 'alvorada', opcoes = {}) {
+  const M = await carregarMundo(id, opcoes);
   const { R, S, W, H } = M;
   const OH = R.outdoorH ?? H;
   const tiles = S.tiles, block0 = S.block;
