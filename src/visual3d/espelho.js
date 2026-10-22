@@ -172,7 +172,33 @@ export class Espelho {
       this.gx = null; this.sil = false;
       for (const sp of d.children) { if (!sp.visible || sp.alpha <= 0.01) continue; if (v.amb && (FLORES2D.has(sp.texture?.source) && sp.f != null || sp.texture === SPR.pebble || sp.texture === SPR.pebble2 || sp.texture === SPR.foam || LILY.includes(sp.texture)) && (!v.pixel || v.lg?.zona.emBloco(sp.x >> 4, sp.y >> 4)) && (!(sp.texture === SPR.foam || LILY.includes(sp.texture)) || v.lg)) continue; /* estilo Let's Go: flores, seixos e espuma são 3D */ this.#no(sp, 1, 0, 0, 1, 0, 0, 1, true, true); }
     }
+    this.#efeitos();
     for (const l of this.lotes.values()) l.fechar();
+  }
+  // Faíscas, chamas, gotas e cabeças dos projéteis ficam em pé no espaço 3D, com altura e oclusão.
+  // Reaproveita o atlas e os lotes: no máximo dois lotes adicionais, sem criar sprites por quadro.
+  #efeitos(){
+    const g=this.g,v=this.v,fx=g.fx,vw=v.view;if(!fx)return;
+    const n=this.particula??(this.particula={anchor:{x:.5,y:.5},filters:null}),lim=v.touch?240:600;let usados=0;
+    this.sil=false;
+    for(const p of fx.live){
+      if(p.pc===fx.groundPC||p.pc===fx.pcT||p.alpha<.02)continue;
+      if(vw&&(p.px<vw.x0-48||p.px>vw.x1+48||p.py<vw.y0-48||p.py>vw.y1+64))continue;
+      if(usados++>=lim)break;
+      this.gx=p.px;this.gy=p.py;this.h=v.altura(p.px,p.py)+p.pz+2;
+      n.texture=p.texture;n.tint=((p.tint&255)<<16)|(p.tint&0xff00)|((p.tint>>>16)&255);n.blendMode=p.pc===fx.pcA?'add':'normal';
+      const c=Math.cos(p.rotation),s=Math.sin(p.rotation);
+      this.#sprite(n,c*p.scaleX,s*p.scaleX,-s*p.scaleY,c*p.scaleY,p.px,p.py,Math.min(.98,p.alpha),false);
+    }
+    for(const p of g.combat?.projectiles??[]){
+      if(p.dead||!p.head)continue;this.gx=p.x;this.gy=p.gy;this.h=v.altura(p.x,p.gy)+p.h;
+      for(const sp of [p.head.halo,p.head.core]){if(!sp.visible)continue;
+        const c=Math.cos(sp.rotation),s=Math.sin(sp.rotation);
+        n.texture=sp.texture;n.tint=sp.tint;n.blendMode=sp===p.head.halo||p.look.add?'add':'normal';
+        this.#sprite(n,c*sp.scale.x,s*sp.scale.x,-s*sp.scale.y,c*sp.scale.y,p.x,p.gy,Math.min(.98,sp.alpha),false);
+      }
+    }
+    this.particulas3d=Math.min(usados,lim);
   }
   // percorre a árvore do Pixi compondo a transformação (a, b, c, d, tx, ty) e a transparência
   // corpo trocado pela folha HGSS: quadro de 32x32 com o pé na linha "pe" (escala 1, como no demo)

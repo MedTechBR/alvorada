@@ -47,6 +47,9 @@ export class Sobreposicao {
     const vr = root?.visible, ve = ents.visible;
     if (root) root.visible = false; ents.visible = false;
     for (const c of climas) c.visible = false;
+    // Partículas e projéteis já estão nos lotes 3D; só marcas/anéis continuam deitados no chão.
+    const trid=[g.fx?.pcN,g.fx?.pcA,g.combat?.headsN,g.combat?.headsA].filter(Boolean),visFX=trid.map(c=>c.visible);
+    trid.forEach(c=>c.visible=false);
     this.mRT.set(k, 0, 0, k, -p.x0 * k, -p.y0 * k);
     R.render({ container: W, target: this.rt, clear: true, clearColor: [0, 0, 0, 0], transform: this.mRT });
     // desenhos em coordenadas de mundo que moram fora do mundo do Pixi: perigos da arena de ginásio dentro de
@@ -55,6 +58,7 @@ export class Sobreposicao {
     // chão dos quebra-cabeças (peças do circuito, raio de luar, tábuas de luz): mora na camada de decoração, que está
     // escondida acima; sem isto as peças não apareciam no 3D e não dava para saber o que girar
     for (const c of g.sobre3d ?? []) if (c && !c.destroyed && c.visible && c.children.length) R.render({ container: c, target: this.rt, clear: false, transform: this.mRT });
+    trid.forEach((c,i)=>c.visible=visFX[i]);
     const topo = g.arenaGinasio?.topo;
     if (topo && !topo.destroyed && topo.visible) { const ga = topo.children[0]; if (ga) R.render({ container: ga, target: this.rt, clear: false, transform: this.mRT }); }
     if (root) root.visible = vr; ents.visible = ve;

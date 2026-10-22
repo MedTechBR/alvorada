@@ -621,6 +621,12 @@ export class Enigmas {
     this.#toques();
     if ((this.pT = (this.pT ?? 0) - dt) <= 0) { this.pT = 1; this.#prisma(false); }
     if (this.g.flags !== this.ultFlags) { this.ultFlags = this.g.flags; this.aplicar(); }
+    // Cada puzzle pertence à sua sala. A sobreposição 3D não tem profundidade para esconder outro andar.
+    const sala=this.#sala(),batalha=!!this.g.story.battle,arena=!!this.g.arenaGinasio?.estadio||sala.startsWith('estadio_');
+    this.floor.visible=this.glow.visible=!arena;
+    for(const c of this.circ)c.gfx.visible=!arena&&!batalha&&c.d.sala===sala;
+    for(const r of Object.values(this.raios))r.gfx.visible=!arena&&r.d.sala===sala;
+    if(this.esp){this.esp.beam.visible=this.esp.beamGlow.visible=!arena&&!batalha&&this.esp.d.sala===sala;}
     // o raio de luar cintila
     if (this.esp) this.esp.beamGlow.alpha = 0.75 + Math.sin(this.t * 3) * 0.15;
     // luz das tábuas do brejo (mesmo de dia, bem fraca)
