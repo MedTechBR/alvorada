@@ -1,5 +1,6 @@
+import { recomporNucleos, vestirPaisagem, criarRecantos } from './paisagem.js';
 import { refinarCaminhos } from './caminhos-ampliados.js';
-import { pontoGeografico } from './geografia.js';
+import { pontoGeografico, pontoTerrenoGeografico } from './geografia.js';
 import { TILE, CHARS, NAMES, SOLID } from './tiles.js';
 import { KINDS } from './objects.js';
 
@@ -85,7 +86,7 @@ export function* passosParte(S, P) {
   const set = (x,y,t) => {
     if(cortar&&!inClip(x,y))return;
     let nx=1,ny=1;
-    if(planta){if(x>=0&&y>=0&&x<S.plantaW&&y<S.plantaH)S.plantaTiles[x+y*S.plantaW]=t;const q=pontoGeografico(x,y),fim=pontoGeografico(x+1,y+1);nx=fim[0]-q[0];ny=fim[1]-q[1];[x,y]=q;}
+    if(planta){if(x>=0&&y>=0&&x<S.plantaW&&y<S.plantaH)S.plantaTiles[x+y*S.plantaW]=t;const q=pontoTerrenoGeografico(x,y),fim=pontoTerrenoGeografico(x+1,y+1);nx=fim[0]-q[0];ny=fim[1]-q[1];[x,y]=q;}
     for(let j=0;j<ny;j++)for(let i=0;i<nx;i++)if(inb(x+i,y+j))tiles[x+i+(y+j)*W]=t;
   };
   const onOk = (on, x, y) => !on || on.map(tileOf).includes(get(x, y));
@@ -154,27 +155,35 @@ export function* passosParte(S, P) {
     comment() {},
     fence(o) {
       const v = o.dir === 'v', kind = (o.white ? 'wfence' : 'fence') + (v ? 'V' : '');
-      const [x,y]=planta?pontoGeografico(o.x,o.y):[o.x,o.y],fim=planta?pontoGeografico(o.x+(v?0:o.len),o.y+(v?o.len:0)):[o.x+(v?0:o.len),o.y+(v?o.len:0)],len=v?fim[1]-y:fim[0]-x;
-      for(let i=0;i<len;i++) {
-        const f={kind,x:x+(v?0:i),y:y+(v?i:0),end:i===0?'L':i===len-1?'R':'M',parte:P.i};
-        if(clip&&(f.x<clip[0]||f.y<clip[1]||f.x>=clip[0]+clip[2]||f.y>=clip[1]+clip[3]))continue;
-        if(occupy(S,f))novos.push(f);
+      const vistos=new Set();
+      for(let j=0;j<o.len;j++){
+        const a=planta?pontoGeografico(o.x+(v?0:j),o.y+(v?j:0)):[o.x+(v?0:j),o.y+(v?j:0)];
+        const b=planta?pontoGeografico(o.x+(v?0:j+1),o.y+(v?j+1:0)):[a[0]+(v?0:1),a[1]+(v?1:0)];
+        const n=Math.max(1,Math.abs(b[0]-a[0]),Math.abs(b[1]-a[1]));
+        for(let i=0;i<n;i++){
+          const x=Math.round(a[0]+(b[0]-a[0])*i/n),y=Math.round(a[1]+(b[1]-a[1])*i/n),k=x+y*W;
+          if(vistos.has(k))continue;vistos.add(k);const f={kind,x,y,end:'M',parte:P.i};
+          if(clip&&(x<clip[0]||y<clip[1]||x>=clip[0]+clip[2]||y>=clip[1]+clip[3]))continue;
+          if(occupy(S,f))novos.push(f);
+        }
       }
     },
   };
   const treeOps = [...(P.trees ?? [])];
   for (const o of P.ops ?? []) { if (!ops[o.op]) { console.warn('op desconhecida', o); continue; } ops[o.op](o); yield; }
 
-  if(planta)refinarCaminhos(S,P);
+  if(planta){refinarCaminhos(S,P);recomporNucleos(S,P);}
   planta=false;
   // salas desta parte: carimbos em texto (sem recorte)
   cortar = false;
   for (const r of J.interiors ?? []) if ((r.parte ?? 0) === P.i) ops.stamp({ x: r.x, y: r.y, rows: r.rows });
   cortar = true;
   // Prédios continuam do tamanho original; a alameda liga sua porta ao caminho ampliado.
-  for(const o of S.placed)if(o.parte===P.i&&o.acessoAmpliado){
+  for(const o of S.placed)if(o.acessoAmpliado&&(!clip||(o.doorX>=clip[0]&&o.doorY>=clip[1]&&o.doorX<clip[0]+clip[2]&&o.doorY<clip[1]+clip[3]))){
     ops.path({t:'path',width:3,semSemente:true,pts:[[o.doorX,o.doorY],o.acessoAmpliado]});
   }
+  if(P.escalaGeografica)criarRecantos(S,P,occupy);
+  if(P.escalaGeografica)for(const _ of vestirPaisagem(S,P,occupy))yield;
   yield;
 
   // árvores soltas (só dentro do retângulo da parte, sem encostar na borda dele)

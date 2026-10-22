@@ -1,4 +1,5 @@
-import { pontoGeografico } from './geografia.js';
+import { pontoGeografico, contemAreaGeografica, pontoDaGeografia } from './geografia.js';
+import { NUCLEOS } from './nucleos.js';
 import { florestaDoSetor } from './floresta-setor.js';
 import * as PIXI from 'pixi.js';
 import { T, TILE, SOLID, SWIMMABLE, MOUNT_PASS, TALLS, WALLS } from './tiles.js';
@@ -30,7 +31,7 @@ export const listaAreas = (all) => {
   const by = new Map();
   for (const a of all) {
     if (a.name === 'Alvorada') continue;
-    const [x, y] = a.rect ? [a.rect[0] + a.rect[2] / 2, a.rect[1] + a.rect[3] / 2] : [a.ellipse[0], a.ellipse[1]];
+    const [x, y] = a.centroGeografico ?? (a.rect ? [a.rect[0] + a.rect[2] / 2, a.rect[1] + a.rect[3] / 2] : [a.ellipse[0], a.ellipse[1]]);
     by.set(a.name, { ...a, x, y });
   }
   return [...by.values()];
@@ -108,7 +109,15 @@ export class GameMap {
     for (const r of this.interiors) for (let sy = Math.floor(r.y / CH); sy <= Math.floor((r.y + r.h - 1) / CH); sy++) for (let sx = Math.floor(r.x / CH); sx <= Math.floor((r.x + r.w - 1) / CH); sx++) { const k = sx + sy * this.CW; if (!this.salaSec.has(k)) this.salaSec.set(k, []); this.salaSec.get(k).push(r); }
     this.areaSec = new Map();
     this.areas.forEach((a, i) => {
-      const [x0, y0, x1, y1] = a.rect ? [a.rect[0], a.rect[1], a.rect[0] + a.rect[2], a.rect[1] + a.rect[3]] : [a.ellipse[0] - a.ellipse[2], a.ellipse[1] - a.ellipse[3], a.ellipse[0] + a.ellipse[2], a.ellipse[1] + a.ellipse[3]];
+      let [x0, y0, x1, y1] = a.rect ? [a.rect[0], a.rect[1], a.rect[0] + a.rect[2], a.rect[1] + a.rect[3]] : [a.ellipse[0] - a.ellipse[2], a.ellipse[1] - a.ellipse[3], a.ellipse[0] + a.ellipse[2], a.ellipse[1] + a.ellipse[3]];
+      if(a.plantaRect||a.plantaEllipse){
+        const r=a.plantaRect??[a.plantaEllipse[0]-a.plantaEllipse[2],a.plantaEllipse[1]-a.plantaEllipse[3],a.plantaEllipse[2]*2,a.plantaEllipse[3]*2];
+        for(const [,nx,ny,nw,nh] of NUCLEOS)if(r[0]<nx+nw&&r[1]<ny+nh&&r[0]+r[2]>nx&&r[1]+r[3]>ny){
+          // A região pode atravessar a borda do quarteirão: o índice inclui toda a transição.
+          const q=this.R.areas.find(t=>t.plantaRect?.[0]===nx&&t.plantaRect?.[1]===ny&&t.plantaRect?.[2]===nw&&t.plantaRect?.[3]===nh)?.rect;
+          if(q){x0=Math.min(x0,q[0]);y0=Math.min(y0,q[1]);x1=Math.max(x1,q[0]+q[2]);y1=Math.max(y1,q[1]+q[3]);}
+        }
+      }
       for (let sy = Math.max(0, Math.floor(y0 / CH)); sy <= Math.min(this.CHh - 1, Math.floor(y1 / CH)); sy++) for (let sx = Math.max(0, Math.floor(x0 / CH)); sx <= Math.min(this.CW - 1, Math.floor(x1 / CH)); sx++) { const k = sx + sy * this.CW; if (!this.areaSec.has(k)) this.areaSec.set(k, []); this.areaSec.get(k).push(i); }
     });
   }
@@ -211,12 +220,11 @@ export class GameMap {
     return null;
   }
   areaAt(px, py) {
-    const x = px / T, y = py / T; let best = null;
+    const x = px / T, y = py / T, planta=this.R.layoutGeografico?pontoDaGeografia(x,y):null; let best = null;
     const L = this.areaSec?.get(Math.floor(x / CH) + Math.floor(y / CH) * this.CW); if (!L) return null;
     for (const i of L) {
       const a = this.areas[i];
-      if (a.rect) { const [ax, ay, aw, ah] = a.rect; if (x >= ax && y >= ay && x < ax + aw && y < ay + ah) best = a; }
-      else if (a.ellipse) { const [cx, cy, rx, ry] = a.ellipse; if (Math.hypot((x - cx) / rx, (y - cy) / ry) < 1) best = a; }
+      if(contemAreaGeografica(a,x,y,planta))best=a;
     }
     return best;
   }

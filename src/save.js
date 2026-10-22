@@ -80,6 +80,7 @@ export async function applySave(g, d) {
   const mundo = d.mundo ?? 'alvorada';
   if (mundo !== g.map.id && g.viagem && mundoInfo(mundo)) await g.viagem.ir(mundo, null, { texto: 'Carregando', silencioso: true });
   if (d.sala) { const r = g.map.interiors.find((q) => q.id === d.sala.id); if (r) pos = { x: r.x * T + d.sala.x, y: r.y * T + d.sala.y, dir: pos?.dir }; }
+  if(pos&&Number.isFinite(pos.x)&&g.map.solidAt(pos.x,pos.y)){const q=g.map.livreMaisPerto(pos.x,pos.y);if(q&&Math.hypot(q.x-pos.x,q.y-pos.y)<=16*T)pos={...pos,x:q.x,y:q.y};}
   // posição salva só vale se ainda for chão (o mapa pode ter mudado entre versões)
   if (pos && Number.isFinite(pos.x) && !g.map.solidAt(pos.x, pos.y)) { p.x = pos.x; p.y = pos.y; p.dir = pos.dir ?? 'down'; }
   else { const h = g.story?.spots.get('home'); if (h) { p.x = h.x; p.y = h.y; } }

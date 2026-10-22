@@ -1,5 +1,5 @@
 import { TILE } from './tiles.js';
-import { pontoGeografico } from './geografia.js';
+import { pontoTerrenoGeografico as pontoGeografico } from './geografia.js';
 // A distância cresce, a estrada continua humana: afina a planta em uma linha contínua e repinta com 6 blocos.
 // As laterais viram gramado acessível, em vez de transformar uma trilha antiga numa avenida vazia de 15 blocos.
 export function refinarCaminhos(S,P) {
