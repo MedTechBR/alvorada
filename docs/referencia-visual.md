@@ -73,3 +73,84 @@ Chrome sem interface com GPU Metal, CPU limitada em 4×, viewport 844×390, DPR 
 | Rota — antes | 10,00 | 6,10 | 404,23 | 375,15 | 149 | 127 |
 
 Valores são medianas das três amostras de cada lugar. `performance.memory` mede heap JS, não toda a memória do processo ou GPU; `renderer.info` informa contagens, não bytes de VRAM. Não equivale a uma medição em Safari/iPhone físico. A tabela final deve manter ou reduzir cada indicador de desempenho e memória; regressão exige ajuste antes da entrega.
+
+## Etapa 2 — resultado do modelo
+
+A composição ficou restrita à Vila Alvorada e à Rota 1. A vila ganhou canteiros junto às fachadas e gramado contínuo na circulação; a rota perdeu a repetição de manchas floridas no terreno inteiro e ganhou pequenos trechos floridos junto à estrada. Mato de encontros, objetos sólidos, portas, destinos e pontos da história foram preservados. A terra ficou mais neutra e com menos manchas claras. A primeira versão dos canteiros estava carregada; a captura levou à redução da faixa de flores antes de fechar o modelo.
+
+No piloto, a câmera conserva orientação e escala ao parar, mantendo o amortecimento e a resposta à oclusão. O treinador ganha velocidade nos primeiros 90 ms e amortece a conclusão do último passo, sem frear a cada bloco. Essa mudança não é aplicada a Pokémon em combate, atores ou montarias. A porta usa fade de 0,14 + 0,18 s e reposiciona a câmera no escuro; a proteção de reentrada continua em 0,5 s.
+
+No celular, o pós simples existente substitui os passes de redução e raios; cinco render targets deixam de ser criados. O mapa não aloca mais metadados para todos os setores vazios do continente. O descarte 3D também libera a geometria da luz de janela, que antes só era liberada ao refazer o setor.
+
+### Capturas e comparações
+
+Todas as capturas normalizadas do jogo têm 844×390. Os pontos do modelo são os mesmos antes/depois: cidade `(1523,1750)` e rota `(1240,1750)`, às 11h. Há animações e moradores em movimento; os atributos aleatórios do Pokémon inicial do modo de teste não foram usados como medida de equilíbrio.
+
+- [Cidade — referência e versão anterior](../tools/shots/referencia/cidade.jpg)
+- [Rota — referência e versão anterior](../tools/shots/referencia/rota.jpg)
+- [Mata — trecho de rota arborizada e caminho do bosque](../tools/shots/referencia/mata.jpg)
+- [Margem — lago da referência e margem do Alvorada](../tools/shots/referencia/margem.jpg)
+- [Interior de casa](../tools/shots/referencia/casa.jpg)
+- [Centro Pokémon](../tools/shots/referencia/centro.jpg)
+- [Ginásio / arena](../tools/shots/referencia/ginasio.jpg)
+
+![Cidade: antes e depois](../tools/shots/referencia/cidade-antes-depois.jpg)
+
+![Rota: antes e depois](../tools/shots/referencia/rota-antes-depois.jpg)
+
+### Desempenho final — antes × depois
+
+Mesmo roteiro de comandos e configuração da medição inicial, três voltas alternadas por local. A medição final foi feita após terminar os testes pesados em Node. As distâncias efetivas estão nos JSON; colisões e moradores podem alterar o deslocamento, por isso também se registra a distância e se exige caminhada real. Não se promete repetição pixel a pixel de NPCs aleatórios.
+
+Nesta tabela, p95 e heap após GC são medianas das três amostras; **pico de heap e contagens de recursos são os máximos** das três, mais conservadores que a mediana da tabela inicial. O comparador reprova qualquer aumento, sem tolerância percentual.
+
+| Local | Versão | p95 quadro (ms) | p95 lógica CPU (ms) | Pico heap (MB) | Heap após GC (MB) | Geometrias máx. | Texturas máx. |
+|---|---|---:|---:|---:|---:|---:|---:|
+| Cidade | Antes | 14,00 | 7,20 | 408,75 | 374,61 | 151 | 128 |
+| Cidade | Depois | 11,60 | 6,30 | 396,31 | 362,01 | 140 | 111 |
+| Rota | Antes | 10,00 | 6,10 | 408,30 | 375,15 | 151 | 128 |
+| Rota | Depois | 8,40 | 4,20 | 402,96 | 363,49 | 140 | 111 |
+
+Nenhum dos indicadores aumentou. Fontes: `tools/resultados/referencia/antes.json`, `depois.json` e `comparacao.json`. A amostra intermediária foi preservada em `intermediario.json`; não representa o modelo final. Repetir: `node tools/teste-3d/referencia-desempenho.mjs depois` e `node tools/teste-3d/referencia-comparar.mjs`.
+
+### Validação
+
+As 14 verificações solicitadas em Node passaram: dados, jornada, jornada completa, progressão, alvos/passos, guia, caminhada do guia, sólidos, saídas, falantes, obtenção, invisíveis, geografia e vestir `--verificar`. Logs individuais e códigos de saída em `tools/resultados/referencia/`.
+
+- `auditar-invisiveis`: **0 achados** nos dois mundos.
+- `PORTA=8700 node tools/auditar-passagens-npc.mjs`: **179 NPCs, nenhum fecha passagem**.
+- `referencia-exploracao.mjs`: aceleração intermediária, parada no centro do bloco, nenhuma posição sólida no percurso, orientação e zoom estáveis ao parar, porta chegando ao Centro, shaders sem erro e pós sem buffers de redução no toque.
+- Descarte: **70 geometrias próprias liberadas de 70**, incluindo **uma luz de janela real**; o mundo deixou **50.832 setores sem metadados vazios alocados** nessa sessão.
+- Porta na execução final: **0,331 s de tempo de jogo / 0,507 s reais**, incluindo montagem da sala. Uma execução anterior com outras auditorias em andamento levou 0,989 s reais: o fade mais curto não elimina custo de primeira montagem ou contenção da máquina.
+- Comparador de desempenho: passou nos seis indicadores de cada local.
+
+Chrome sem interface usa `chrome.mjs` e `--mute-audio`; as medições finais foram isoladas. Os navegadores de teste foram encerrados; o Chrome pessoal não foi encerrado. Não foi necessário executar novamente testes de equilíbrio porque não houve edição de lógica de combate, recargas, dano ou dados de Pokémon.
+
+### Mudanças por arquivo
+
+| Arquivo | Resultado |
+|---|---|
+| `src/world/piloto-visual.js` | Recorte do modelo, jardins da vila e faixas de vegetação da rota, apenas com terrenos transitáveis |
+| `src/world/build.js` | Aplica a composição depois da montagem do núcleo |
+| `src/visual3d/letsgo/chao.js` | Terra mais neutra no modelo e menos manchas claras, com máscaras existentes |
+| `src/visual3d/letsgo/luz.js` | Luz menos amarela, exposição menor e nitidez do modelo; mistura gradual ao entrar/sair |
+| `src/visual3d/camera.js` | Remove giro ocioso e variação de escala na exploração do modelo |
+| `src/world/grade.js` | Aceleração e conclusão suave do último passo do treinador explorando |
+| `src/world/life.js` | Porta mais rápida e reinicialização do foco da câmera no escuro |
+| `src/world/map.js` | Metadados dos setores criados sob demanda, com acesso seguro em edição e movimento de objetos |
+| `src/world/masmorra.js` | Compatibilidade de objetos móveis com setores ainda não alocados |
+| `src/visual3d/ambiente/pos.js` | Composição simples no toque, sem criar pirâmide e alvo radial |
+| `src/visual3d/setores.js` | Libera também a geometria de luz das janelas ao descartar um setor |
+| `tools/teste-3d/referencia-desempenho.mjs` | Percurso antes/depois com CPU 4×, heap e recursos |
+| `tools/teste-3d/referencia-comparar.mjs` | Reprova regressão dos indicadores definidos |
+| `tools/teste-3d/referencia-exploracao.mjs` | Verifica controle, câmera, porta, colisão e descarte no navegador |
+| `tools/shots/referencia/` | Sete comparações com vídeo e fotos antes/depois do modelo |
+| `tools/resultados/referencia/` | Medições, auditorias e resultados reproduzíveis |
+
+### Próxima rodada e limites
+
+Não foi espalhado o novo desenho pelo restante do continente. O modelo melhorou nitidez e hierarquia, mas uma revisão de composição das outras cidades exige trabalhar seus marcos e caminhos individualmente. Também ficaram de fora uma reformulação de mata densa, água, céu, interiores e ginásios; as imagens desses lugares nesta etapa são comparações diagnósticas. A referência não permite medir carregamento real, aceleração exata ou desempenho do jogo filmado.
+
+Não houve teste em iPhone físico/Safari nem medição dos bytes totais de GPU. A redução observada no Chrome é evidência de melhora, não prova de que o fechamento do aplicativo por memória foi eliminado. Permanece necessário um teste longo no aparelho que apresentava o problema.
+
+A revisão anterior `57e60497` foi publicada e conferida no site antes de começar esta etapa. Os commits de `visual-referencia` permanecem locais, **sem push**.
