@@ -18,6 +18,11 @@ assert.deepEqual(modeloLG('chest',o,'pintado').geometry.attributes.position.arra
 const g=mesclar([{geometry:base.geometry},{geometry:pintado.geometry,x:100}]);
 const b=base.geometry.attributes.position.count,uv=g.attributes.aPintura;
 for(let i=0;i<b;i++)assert.equal(uv.getZ(i),0);
+for(const [src,offset] of [[base.geometry,0],[pintado.geometry,b]])for(let i=0;i<src.attributes.color.count;i++)for(const eixo of ['getX','getY','getZ'])assert(Math.abs(g.attributes.color[eixo](offset+i)-src.attributes.color[eixo](i))<.00002,'Cor da mescla mudou');
+const tom=mesclar([{geometry:pintado.geometry,k:.8}]);
+for(let i=0;i<pintado.geometry.attributes.color.count;i++)assert(Math.abs(tom.attributes.color.getX(i)-pintado.geometry.attributes.color.getX(i)*.8)<.00002);tom.dispose();
+const hdr=pintado.geometry.clone(),cores=new Float32Array(hdr.attributes.color.count*3).fill(1.2);hdr.setAttribute('color',new base.geometry.attributes.color.constructor(cores,3));
+const forte=mesclar([{geometry:hdr}]);assert(Math.abs(forte.attributes.color.getX(0)-1.2)<.00001);forte.dispose();hdr.dispose();
 assert([...uv.array.slice(b*3)].some(n=>n===3));
 for(const kind of ['tree','tree2','pine','bigtree','jequitiba','ipe','paineira','autumn','bigautumn']){
  const a=modeloLG(kind,o,'pintado'),antigo=modeloLG(kind,o);
@@ -43,6 +48,8 @@ for(const kind of Object.keys(KINDS))if(temModeloLG(kind)&&!TIPOS_PINTADOS[kind]
  assert.deepEqual(a.geometry.attributes.position.array,b.geometry.attributes.position.array,kind+': posição mudou');
  assert.deepEqual(a.geometry.index.array,b.geometry.index.array,kind+': topologia mudou');
  if(b.geometry.attributes.aPintura)assert(b.geometry.attributes.normal.array.byteLength+b.geometry.attributes.aPintura.array.byteLength<=a.geometry.attributes.normal.array.byteLength,kind+': orçamento de atributos aumentou');
+ const ca=a.geometry.attributes.color,cb=b.geometry.attributes.color;
+ for(let i=0;i<ca.count;i++)assert(Math.abs(ca.getX(i)-cb.getX(i))<.000016&&Math.abs(ca.getY(i)-cb.getY(i))<.000016&&Math.abs(ca.getZ(i)-cb.getZ(i))<.000016,kind+': cor mudou');
  const na=a.geometry.attributes.normal,nb=b.geometry.attributes.normal;
  for(let i=0;i<na.count;i++)assert(Math.abs(na.getX(i)-nb.getX(i))<.00004&&Math.abs(na.getY(i)-nb.getY(i))<.00004&&Math.abs(na.getZ(i)-nb.getZ(i))<.00004,kind+': normal imprecisa');
  conferidos++;

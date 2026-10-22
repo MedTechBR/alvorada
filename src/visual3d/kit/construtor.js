@@ -158,7 +158,10 @@ export function mesclar(itens) {
   let nv = 0, ni = 0;
   for (const it of itens) { nv += it.geometry.attributes.position.count; ni += it.geometry.index.count; }
   const pintado = itens.some(it => it.geometry.attributes.aPintura);
-  const P = new Float32Array(nv * 3), N = pintado ? new Int16Array(nv * 3) : new Float32Array(nv * 3), C = new Float32Array(nv * 3), B = new Float32Array(nv), I = nv > 65535 ? new Uint32Array(ni) : new Uint16Array(ni);
+  // Inteiros normalizados preservam os tons com erro menor que 1/65535.
+  // Peças com cor acima de 1 mantêm float, sem cortar luz ou alterar a paleta.
+  const corCompacta=pintado&&itens.every(it=>(it.k??1)<=1&&(it.k??1)>=0&&(it.geometry.attributes.color.normalized||it.geometry.attributes.color.array.every(v=>v>=0&&v<=1)));
+  const P = new Float32Array(nv * 3), N = pintado ? new Int16Array(nv * 3) : new Float32Array(nv * 3), C = corCompacta ? new Uint16Array(nv * 3) : new Float32Array(nv * 3), B = new Float32Array(nv), I = nv > 65535 ? new Uint32Array(ni) : new Uint16Array(ni);
   const UV = pintado ? new Uint16Array(nv * 3) : null;
   let ov = 0, oi = 0;
   for (const it of itens) {
@@ -167,12 +170,15 @@ export function mesclar(itens) {
     // A maioria das peças já tem o formato de destino: copia sem reconverter cada vértice.
     if(mesmaNormal)N.set(n,ov*3);
     const escalaN = (g.attributes.normal.normalized ? 1/32767 : 1) * (pintado ? 32767 : 1);
+    const mesmaCor=!!g.attributes.color.normalized===corCompacta&&(it.k??1)===1;
+    if(mesmaCor)C.set(c,ov*3);
+    const escalaC=(g.attributes.color.normalized?1/65535:1)*(corCompacta?65535:1);
     const x = it.x ?? 0, y = it.y ?? 0, z = it.z ?? 0, k = it.k ?? 1, cnt = p.length / 3;
     for (let v = 0; v < cnt; v++) {
       const s = v * 3, d = (ov + v) * 3;
       P[d] = p[s] + x; P[d + 1] = p[s + 1] + y; P[d + 2] = p[s + 2] + z;
-      if(!mesmaNormal){N[d] = Math.round(n[s]*escalaN); N[d + 1] = Math.round(n[s + 1]*escalaN); N[d + 2] = Math.round(n[s + 2]*escalaN);}
-      C[d] = c[s] * k; C[d + 1] = c[s + 1] * k; C[d + 2] = c[s + 2] * k;
+      if(!mesmaNormal){N[d] = pintado?Math.round(n[s]*escalaN):n[s]*escalaN; N[d + 1] = pintado?Math.round(n[s+1]*escalaN):n[s+1]*escalaN; N[d + 2] = pintado?Math.round(n[s+2]*escalaN):n[s+2]*escalaN;}
+      if(!mesmaCor){C[d] = corCompacta?Math.round(c[s]*escalaC*k):c[s]*escalaC*k; C[d + 1] = corCompacta?Math.round(c[s+1]*escalaC*k):c[s+1]*escalaC*k; C[d + 2] = corCompacta?Math.round(c[s+2]*escalaC*k):c[s+2]*escalaC*k;}
       B[ov + v] = b[v];
       if (UV && g.attributes.aPintura) { const a = g.attributes.aPintura.array; UV[d] = a[s]; UV[d + 1] = a[s + 1]; UV[d + 2] = a[s + 2]; }
     }
@@ -182,7 +188,7 @@ export function mesclar(itens) {
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.BufferAttribute(P, 3));
   g.setAttribute('normal', new THREE.BufferAttribute(N, 3, pintado));
-  g.setAttribute('color', new THREE.BufferAttribute(C, 3));
+  g.setAttribute('color', new THREE.BufferAttribute(C, 3, corCompacta));
   g.setAttribute('aBrilho', new THREE.BufferAttribute(B, 1));
   if (UV) g.setAttribute('aPintura', new THREE.BufferAttribute(UV, 3));
   g.setIndex(new THREE.BufferAttribute(I, 1));

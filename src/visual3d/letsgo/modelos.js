@@ -98,7 +98,8 @@ export class MalhaLG {
     const g = new THREE.BufferGeometry(), nv = this.p.length / 3;
     g.setAttribute('position', new THREE.Float32BufferAttribute(this.p, 3));
     g.setAttribute('normal', this.pintado ? new THREE.BufferAttribute(Int16Array.from(this.n,v=>Math.round(v*32767)),3,true) : new THREE.Float32BufferAttribute(this.n, 3));
-    g.setAttribute('color', new THREE.Float32BufferAttribute(this.c, 3));
+    const corCompacta=this.pintado&&this.c.every(v=>v>=0&&v<=1);
+    g.setAttribute('color',corCompacta?new THREE.BufferAttribute(Uint16Array.from(this.c,v=>Math.round(v*65535)),3,true):new THREE.Float32BufferAttribute(this.c, 3));
     g.setAttribute('aBrilho', new THREE.Float32BufferAttribute(this.b, 1));
     if (this.pintado) g.setAttribute('aPintura', new THREE.BufferAttribute(Uint16Array.from(this.uvP,(v,i)=>i%3===2?v:Math.round(v*65535)), 3));
     g.setIndex(new THREE.BufferAttribute(nv > 65535 ? new Uint32Array(this.i) : new Uint16Array(this.i), 1));

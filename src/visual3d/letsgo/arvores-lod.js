@@ -16,7 +16,7 @@ export function proxyArvore(kind, md) {
   let g = cache.get(md.chave); if (g) return g;
   const src = md.geometry, P = src.attributes.position.array, C = src.attributes.color.array, n = P.length / 3;
   if (!src.boundingBox) src.computeBoundingBox();
-  const H = src.boundingBox.max.y;
+  const H = src.boundingBox.max.y, escalaCor=src.attributes.color.normalized?1/65535:1;
   let cr = [0, 0, 0], tr = [0, 0, 0], nc = 0, nt = 0, x0 = 1e9, x1 = -1e9, z0 = 1e9, z1 = -1e9, y0 = 1e9, y1 = -1e9;
   for (let i = 0; i < n; i++) {
     const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2];
@@ -24,7 +24,7 @@ export function proxyArvore(kind, md) {
     if (y < H * 0.2) { tr[0] += C[i * 3]; tr[1] += C[i * 3 + 1]; tr[2] += C[i * 3 + 2]; nt++; }
     if (y > H * 0.3) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); z0 = Math.min(z0, z); z1 = Math.max(z1, z); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
   }
-  cr = cr.map((v) => v / Math.max(1, nc)); tr = tr.map((v) => v / Math.max(1, nt));
+  cr = cr.map((v) => v * escalaCor / Math.max(1, nc)); tr = tr.map((v) => v * escalaCor / Math.max(1, nt));
   const pos = [], nor = [], col = [], idx = [];
   const poe = (geo, T, cor, esf, grad) => {
     const p = geo.attributes.position, nn = geo.attributes.normal, base = pos.length / 3;
