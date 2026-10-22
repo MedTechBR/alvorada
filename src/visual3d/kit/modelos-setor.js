@@ -1,5 +1,4 @@
 import { profundidadePintada } from '../letsgo/pintura.js';
-import { noPilotoVisual } from '../../world/piloto-visual.js';
 import * as THREE from 'three';
 import { kit } from './index.js';
 import { GLB_TIPOS, glbPronto, pedirGLB, onGLB } from './glb.js';
@@ -30,7 +29,7 @@ export class ModelosKit {
   // setor no estilo Let's Go (s.lg): modelo liso quando o tipo tem um (src/visual3d/letsgo/modelos.js), senão o do kit
   // (a beira da zona pode ter objetos lisos num setor voxel: as árvores da mata mudam de estilo junto, não no meio dela)
   lgDe(o, s) { return !!(s?.lg || (this.matLG && this.v.lg?.zona.objeto(o.tx, o.ty))); }
-  perfilDe(o) { return noPilotoVisual(this.v.g.map, o.tx * 16, o.ty * 16) ? 'pintado' : ''; }
+  perfilDe() { return 'pintado'; }
   modeloDe(o, s) { return (this.lgDe(o, s) && modeloLG(o.kind, o, this.perfilDe(o))) || kit.modelo(o.kind, o); }
   chaveDe(o, s) { return (this.lgDe(o, s) && chaveLG(o.kind, o, this.perfilDe(o))) || kit.chave(o.kind, o); }
   matDe(s, o) { return (o ? this.lgDe(o, s) : s?.lg) && this.matLG ? this.matLG : this.mat; }

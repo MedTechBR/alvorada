@@ -1,3 +1,4 @@
+import { pintarSala } from './letsgo/pintura.js';
 import * as THREE from 'three';
 import { TILE } from '../world/tiles.js';
 import { desenharEnfeite, TAM_ENFEITE } from './salas-arte.js';
@@ -28,7 +29,8 @@ export function materialSala(v, chave) {
   if (!mats.has(chave)) {
     const piso = chave.startsWith('floor');
     const m = v.curvar(piso ? new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }) : v.setores.matParedeNovo());
-    m.map = texInterior(chave); m.needsUpdate = true; mats.set(chave, m);
+    if(v.lg?.ligado&&piso&&/wood|madeira/.test(chave))pintarSala(m);
+    else m.map = texInterior(chave); m.needsUpdate = true; mats.set(chave, m);
   }
   return mats.get(chave);
 }

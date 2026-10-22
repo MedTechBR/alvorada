@@ -45,6 +45,7 @@ export class MalhaLG {
   // geometria do three posta com { x, y, z, sx, sy, sz, rx, ry, rz }; cor: '#hex' | { pe, topo } (degradê pela normal)
   // | função (x, y, z, nx, ny, nz) -> [r, g, b] linear; o = { brilho, var (ruído de cor), ao (escurece perto do chão), todas }
   add(geo, T, cr, o = {}) {
+    o = this.acabamento?.(geo, T, cr, o) ?? o;
     _t.set(T.x ?? 0, T.y ?? 0, T.z ?? 0); _e.set(T.rx ?? 0, T.ry ?? 0, T.rz ?? 0); _q.setFromEuler(_e);
     _s.set(T.sx ?? T.s ?? 1, T.sy ?? T.s ?? 1, T.sz ?? T.s ?? 1); _m.compose(_t, _q, _s); _nm.getNormalMatrix(_m);
     const P = geo.attributes.position, N = geo.attributes.normal, UV = geo.attributes.uv, idx = geo.index, nt = idx ? idx.count / 3 : P.count / 3;
@@ -95,10 +96,10 @@ export class MalhaLG {
   geometria() {
     const g = new THREE.BufferGeometry(), nv = this.p.length / 3;
     g.setAttribute('position', new THREE.Float32BufferAttribute(this.p, 3));
-    g.setAttribute('normal', new THREE.Float32BufferAttribute(this.n, 3));
+    g.setAttribute('normal', this.pintado ? new THREE.Int16BufferAttribute(this.n.map(v=>Math.round(v*32767)),3,true) : new THREE.Float32BufferAttribute(this.n, 3));
     g.setAttribute('color', new THREE.Float32BufferAttribute(this.c, 3));
     g.setAttribute('aBrilho', new THREE.Float32BufferAttribute(this.b, 1));
-    if (this.pintado) g.setAttribute('aPintura', new THREE.Float32BufferAttribute(this.uvP, 3));
+    if (this.pintado) g.setAttribute('aPintura', new THREE.Uint16BufferAttribute(this.uvP.map((v,i)=>i%3===2?v:Math.round(v*65535)), 3));
     g.setIndex(new THREE.BufferAttribute(nv > 65535 ? new Uint32Array(this.i) : new Uint16Array(this.i), 1));
     g.computeBoundingBox(); g.computeBoundingSphere();
     return g;
@@ -352,6 +353,10 @@ export function hashVar(o) {
 }
 const cache = new Map(), PERFIS = {};
 export function registrarPerfil(nome, tipos) { PERFIS[nome] = tipos; }
+export function ampliarPerfil(nome, completar) {
+  const anteriores=PERFIS[nome]??{};
+  PERFIS[nome]={...completar(TIPOS, GRUPOS_LG),...anteriores};
+}
 // Registro dos tipos de outros arquivos (modelos-<grupo>.js; a lista está em modelos-todos.js): cada tipo é
 // { f: (m, c) => topo, var?, estado?: (o) => string, fruta? }, igual à tabela acima. Não sobrescreve um tipo existente.
 export const GRUPOS_LG = {};

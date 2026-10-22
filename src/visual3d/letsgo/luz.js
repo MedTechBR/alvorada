@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { noPilotoVisual } from '../../world/piloto-visual.js';
 
 // Luz e pós do estilo Let's Go, por cima do que a ambientação (ambiente/ceu.js, ambiente/pos.js) e o ceu.js do jogo
 // já ajustaram no quadro: sol quente e macio, hemisfério claro (céu creme, chão verde), névoa clara e azulada,
@@ -65,12 +64,12 @@ export function aplicarLuzLG(v, w, room, nt = 0, dt = 0.016) {
     if (hz) hz.lerp(X.nevoa, fm);
   }
   // No modelo, menos amarelo e exposição: a terra, as flores e a porta têm valores distintos.
-  const piloto = noPilotoVisual(v.g.map, v.g.player.x, v.g.player.y) && !room;
+  const piloto = v.lg.ligado;
   v.lg.pilotoK = lerp(v.lg.pilotoK ?? 0, piloto ? 1 : 0, 1 - Math.exp(-dt * 3));
   const pk = v.lg.pilotoK;
   if (pk > 0.001) {
     ceuNeutro(A, k * pk);
-    if (P.exposicao) P.exposicao.value *= 1 - 0.16 * pk;
+    if (P.exposicao) P.exposicao.value *= 1 - (room ? 0.04 : 0.16 * (1-nt)) * pk;
   }
   // pós: cores limpas, bloom macio, tilt-shift e vinheta (dentro de casa também, mais fraco no tilt)
   const pw = 1, sat = room ? 0.98 : X.sat, qt = room ? 0.18 : X.quente, fr = room ? 0.28 : X.frio, ct = room ? 1.12 : X.contraste;
@@ -86,7 +85,7 @@ export function aplicarLuzLG(v, w, room, nt = 0, dt = 0.016) {
   // devem lavar as folhas nem transformar a rua em uma fonte de luz.
   if (pk > 0.001) {
     if (P.sat) P.sat.value = lerp(P.sat.value, 0.92, pk);
-    if (P.quente) P.quente.value = lerp(P.quente.value, 0.04, pk);
+    if (P.quente) P.quente.value = lerp(P.quente.value, Math.max(0.04, X.quente * 0.4), pk);
     if (P.oliva) P.oliva.value *= 1 - pk;
     if (P.bloomK) P.bloomK.value *= 1 - pk;
     if (P.raios) { P.raios.value *= 1 - pk; P.raiosR.value *= 1 - pk; }

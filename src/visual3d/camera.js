@@ -1,4 +1,3 @@
-import { noPilotoVisual } from '../world/piloto-visual.js';
 // Câmera dinâmica do 3D (estilo HD-2D: Octopath, Triangle Strategy). Só decide ONDE a câmera fica;
 // quem desenha é index.js. O zoom do jogador (+/−, roda, pinça) continua valendo por cima de tudo.
 //   explorar  : baixa e perto; olha um pouco à frente de para onde se anda; parado, aproxima de leve
@@ -36,7 +35,7 @@ export class CameraDinamica {
     const foco = pk ?? p;
     const room = p ? g.map.interiorAt(p.x, p.y) : null;
     const m = g.mount;
-    const piloto = noPilotoVisual(g.map, p.x, p.y);
+    const piloto = !!this.v.lg?.ligado;
     let alvoX = c.x, alvoZ = c.y, dist = 1, incl = this.cinema ? 44 : 48, giro = 0; // como no demo (HGSS/FireRed em 3D): ~45° // explorar: baixa, com céu e montanhas
     // olhar à frente (velocidade suavizada)
     const vx = foco?.vx ?? 0, vy = foco?.vy ?? 0, vel = Math.hypot(vx, vy);

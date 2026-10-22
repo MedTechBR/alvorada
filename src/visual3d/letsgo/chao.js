@@ -74,7 +74,7 @@ function pars(layout, leve) {
   ${GLSL_BASE}
   ${GLSL_PINTURA}
   ${GLSL_NUVEM}
-  ${Array.from({ length: nT }, (_, i) => `uniform sampler2D tM${i};`).join(' ')} uniform vec4 uOrig; uniform float uModelo;
+  ${Array.from({ length: nT }, (_, i) => `uniform sampler2D tM${i};`).join(' ')} uniform vec4 uOrig; uniform float uModelo; uniform float uRuaPedra;
   varying vec3 vMundo; varying vec3 vNorM;
   float gSombra; vec3 gEmi;
   float mk(float c, float nz){ return smoothstep(0.3, 0.7, c + (nz - 0.5) * 0.22); }
@@ -118,9 +118,7 @@ function pars(layout, leve) {
     float miolo = smoothstep(0.55, 0.98, c_terra);
     vec3 t = mix(${lin('#b98a56')}, ${lin('#e2bf86')}, miolo);
     // A terra do modelo é mais baixa e neutra: a rua deixa de parecer uma superfície iluminada por dentro.
-    vec2 pc = max(abs(p / 16.0 - vec2(1535.0, 1755.0)) - vec2(110.0, 90.0), 0.0);
-    vec2 pr = max(abs(p / 16.0 - vec2(1165.0, 1730.0)) - vec2(265.0, 140.0), 0.0);
-    float modelo = uModelo * (1.0 - smoothstep(0.0, 8.0, min(max(pc.x, pc.y), max(pr.x, pr.y))));
+    float modelo = uModelo;
     t *= 0.94 + 0.12 * n3.a;
     t = mix(t, ${lin('#efd6a4')}, step(0.86, n3.r) * 0.5 * miolo * (1.0 - modelo * 0.75));
     t *= mix(vec3(1.0), vec3(0.58, 0.66, 0.74), modelo);
@@ -130,14 +128,18 @@ function pars(layout, leve) {
     vec3 pd = mix(${lin('#b3a993')}, ${lin('#cbc2ad')}, smoothstep(0.45, 0.9, c_pedra)) * (0.95 + 0.08 * n2.r);
     pd *= 1.0 - junta * 0.1;
     // Pintura compartilhada: rua de pedra na vila, trilha terrosa na rota.
-    float cidade = uModelo * (1.0 - smoothstep(0.0, 8.0, max(pc.x, pc.y)));
+    float cidade = uRuaPedra;
     if (modelo > 0.001) {
+    if (pedra > 0.001 || cidade * terra > 0.001) {
     vec3 lajes = pintura(5.0, fract(p / 64.0)).rgb;
     t = mix(t, lajes, cidade);
     pd = mix(pd, lajes, modelo);
+    }
+    if (max(max(terra,pedra),max(max(neve,areia),max(deserto,rocha))) < 0.999) {
     vec3 gramaP = pintura(6.0, fract(p / 70.0)).rgb;
     gramaP = mix(vec3(dot(gramaP, vec3(0.2126,0.7152,0.0722))), gramaP, 0.72);
-    g = mix(g, gramaP * vec3(0.27,0.34,0.34), modelo * 0.95);
+    g = mix(g, gramaP * vec3(0.27,0.34,0.34) * mix(1.0, 0.65, escura), modelo * (1.0 - selva * 0.7) * 0.95);
+    }
     }
     // areia da praia: dourada clara com ondulações bem leves; a faixa molhada fica mais escura e brilha
     vec3 ar = mix(${lin('#e6c98a')}, ${lin('#f2dfa6')}, smoothstep(0.3, 0.75, n2.r)) * (0.96 + 0.08 * n3.g);
@@ -292,7 +294,7 @@ export class ChaoLG {
     m.customProgramCacheKey = () => 'lg-chao' + (this.leve ? '-leve' : '');
     m.userData.mascaraLG = M;
     m.onBeforeCompile = (sh) => {
-      Object.assign(sh.uniforms, { tPintura: { value: atlasPintado() }, tempo: U.tempo, tRuido: U.tRuido, nuvem: U.nuvem, noite: U.noite, uOrig: M.uOrig, uModelo: { value: this.v.g.map.id === 'alvorada' ? 1 : 0 } });
+      Object.assign(sh.uniforms, { tPintura: { value: atlasPintado() }, tempo: U.tempo, tRuido: U.tRuido, nuvem: U.nuvem, noite: U.noite, uOrig: M.uOrig, uModelo: { value: 1 }, uRuaPedra: { value: (()=>{const a=this.v.g.map.areaAt((sx*16+8)*16,(sy*16+8)*16);return /cidade|vila|city|town/i.test((a?.biome??'')+' '+(a?.name??''))?1:0;})() } });
       M.t.forEach((tx, i) => { sh.uniforms['tM' + i] = { value: tx }; });
       sh.vertexShader = sh.vertexShader
         .replace('#include <common>', '#include <common>\n varying vec3 vMundo; varying vec3 vNorM;')
