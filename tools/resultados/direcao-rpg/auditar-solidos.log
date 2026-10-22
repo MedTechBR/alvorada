@@ -1,0 +1,6 @@
+alvorada: barreiras com 13 guarda(s) e 102741 objeto(s) conferidos
+alvorada: 0 sobreposição(ões)
+ocaso: 0 sobreposição(ões)
+total: 0
+(node:76575) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

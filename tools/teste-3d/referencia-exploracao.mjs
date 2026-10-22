@@ -12,6 +12,8 @@ try {
  await sleep(4000);
  const camA=await s.P.ev('({dist:v3d.dinamica.dist,giro:v3d.dinamica.giro})');await sleep(2500);
  const camB=await s.P.ev('({dist:v3d.dinamica.dist,giro:v3d.dinamica.giro})');assert(Math.abs(camA.dist-camB.dist)<.001);assert(Math.abs(camB.giro)<.001);
+ const perspectiva=await s.P.ev(`(()=>{const v=v3d,a=v.alvo,p=v.paraTela(a.x+32,a.z+48),q=v.daTela(p.x,p.y);return {fov:v.camera.fov,inclinacao:v.dinamica.incl,onda:v.lg.relevo.em(game.player.x,game.player.y),erroMira:Math.hypot(q.x-a.x-32,q.y-a.z-48)};})()`);
+ assert(Math.abs(perspectiva.fov-22)<.05);assert(Math.abs(perspectiva.inclinacao-58)<.1);assert.equal(perspectiva.onda,0);assert(perspectiva.erroMira<.05);
  const porta=await s.P.ev(`(async()=>{const g=game,r=g.map.interiors.find(r=>r.id==='centro_campina');let mx=2,my=3;r.rows.forEach((row,j)=>{const i=row.indexOf('m');if(i>=0){mx=i;my=j-2;}});const t=performance.now(),inicio=g.time;g.mundo.warpTo(r.x+mx,r.y+my,'up');while(g.mundo.warping)await new Promise(r=>setTimeout(r,10));return {ms:performance.now()-t,tempoJogo:g.time-inicio,sala:g.map.interiorAt(g.player.x,g.player.y)?.id,alpha:g.mundo.fade.alpha};})()`);
  console.log('porta',JSON.stringify(porta));assert.equal(porta.sala,'centro_campina');assert(porta.tempoJogo<.65);assert.equal(porta.alpha,0);
  // As geometrias próprias dos setores devem emitir dispose, inclusive a luz das janelas à noite.
@@ -22,5 +24,5 @@ try {
  const recursos=await s.P.ev('({posLeve:v3d.amb.pos.leve,reducoes:v3d.amb.pos.d.length,radial:!!v3d.amb.pos.rR,setoresVazios:game.map.chunks.length-game.map.chunks.filter(Boolean).length})');
  assert(recursos.posLeve);assert.equal(recursos.reducoes,0);assert(!recursos.radial);assert(recursos.setoresVazios>0);
  const erros=s.erros();assert(!erros.some(e=>/EXC|Error|VALIDATE_STATUS|Shader Error/.test(e)),erros.join('\n'));
- const r={movimento,camA,camB,porta,descarte,recursos,erros};writeFileSync('tools/resultados/referencia/exploracao.json',JSON.stringify(r,null,2)+'\n');console.log('OK',JSON.stringify({porta,descarte,recursos}));
+ const r={movimento,camA,camB,perspectiva,porta,descarte,recursos,erros};writeFileSync((process.env.RESULTADOS??'tools/resultados/referencia')+'/exploracao.json',JSON.stringify(r,null,2)+'\n');console.log('OK',JSON.stringify({porta,descarte,recursos}));
 }finally{s.kill();}

@@ -37,6 +37,7 @@ const { KINDS } = await abrir('src/world/objects.js');
 const { MUNDOS } = await abrir('src/world/mundos.js');
 const { kit } = await abrir('src/visual3d/kit/index.js');
 const LG = await abrir('src/visual3d/letsgo/modelos-todos.js');
+const { noPilotoVisual } = await abrir('src/world/piloto-visual.js');
 const { BARREIRAS, TEMPESTADES, NEVOAS, ativa } = await abrir('src/world/barreiras-dados.js');
 const { montarCenario, classe } = await abrir('src/world/barreiras-cenario.js');
 
@@ -53,8 +54,9 @@ const MIUDO = /^(pedrinha|seixo|flor|concha|espuma|graveto|samambaia|vitoriaRegi
 
 // ---------- amostras de cada malha (cache por chave do modelo)
 const amostras = new Map();
-function malhaDe(kind, o) {
-  const md = (LG.temModeloLG(kind) && LG.modeloLG(kind, o)) || (kit.temModelo(kind) && kit.modelo(kind, o));
+function malhaDe(kind, o, mundo) {
+  const perfil = noPilotoVisual({id:mundo}, (o.tx+.5)*16, (o.ty+.5)*16) ? 'rpg' : undefined;
+  const md = (LG.temModeloLG(kind) && LG.modeloLG(kind, o, perfil)) || (kit.temModelo(kind) && kit.modelo(kind, o));
   if (!md) return null;
   let a = amostras.get(md.chave); if (a) return a;
   const g = md.geometry, P = g.attributes.position, I = g.index, nt = I ? I.count / 3 : P.count / 3, pts = [];
@@ -115,7 +117,7 @@ async function auditar(id) {
   for (const [kind, t] of tipos) {
     const K = KINDS[kind], o = { ...t.ex, tx: t.ex.x, ty: t.ex.y };
     if (!t.solidos) continue; // sem pegada sólida: não trava ninguém
-    const a = malhaDe(kind, o);
+    const a = malhaDe(kind, o, id);
     const ex = [t.ex.x, t.ex.y];
     if (!a) { acha('tipo sólido sem modelo', kind, ex[0], ex[1], `${t.solidos} bloco(s), sem modelo liso nem do kit: só sobra o sprite 2D`); continue; }
     if (!a.tris) { acha('tipo sólido com modelo vazio', kind, ex[0], ex[1], `${t.solidos} bloco(s), modelo sem triângulos`); continue; }
@@ -146,7 +148,7 @@ async function auditar(id) {
   const leitor = { tile: (x, y) => (x < 0 || y < 0 || x >= W || y >= H ? -1 : S.tiles[x + y * W]), ocupado: (x, y) => x >= 0 && y >= 0 && x < W && y < H && S.block[x + y * W] === 1 };
   for (const o of placed) {
     const K = KINDS[o.kind]; if (!K) continue;
-    const a = malhaDe(o.kind, { ...o, tx: o.x, ty: o.y }); if (!a) continue;
+    const a = malhaDe(o.kind, { ...o, tx: o.x, ty: o.y }, id); if (!a) continue;
     marcar(a, (o.x + K.fw / 2) * 16, (o.y + K.fh) * 16, o.kind);
   }
   const { props, guardas } = montarCenario(id, {}, leitor);
