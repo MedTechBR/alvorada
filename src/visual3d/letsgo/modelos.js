@@ -23,6 +23,7 @@ export const coneG = (n) => prim('k' + n, () => { const g = new THREE.ConeGeomet
 export function caixaR(w, h, d, r, seg = 1) {
   return prim(`b${w}|${h}|${d}|${r}|${seg}`, () => {
     const s = seg * 2 + 1; r = Math.min(r, w / 2, h / 2, d / 2);
+    if (r === 0) return new THREE.BoxGeometry(w, h, d);
     const g = new THREE.BoxGeometry(1, 1, 1, s, s, s), P = g.attributes.position, N = g.attributes.normal;
     const box = new THREE.Vector3(w / 2 - r, h / 2 - r, d / 2 - r), p = new THREE.Vector3(), n = new THREE.Vector3(), meio = 0.5 / s;
     for (let i = 0; i < P.count; i++) {
@@ -336,7 +337,9 @@ export function hashVar(o) {
   const x = o?.tx ?? Math.floor((o?.x ?? 0) / 16), y = o?.ty ?? Math.floor((o?.y ?? 0) / 16);
   let h = (x * 374761393 + y * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0);
 }
-const cache = new Map();
+const cache = new Map(), perfis = new Map();
+export function registrarPerfil(nome, tipos) { perfis.set(nome, tipos); }
+const tipoDe = (kind, perfil) => perfis.get(perfil)?.[kind] ?? TIPOS[kind];
 // Registro dos tipos de outros arquivos (modelos-<grupo>.js; a lista está em modelos-todos.js): cada tipo é
 // { f: (m, c) => topo, var?, estado?: (o) => string, fruta? }, igual à tabela acima. Não sobrescreve um tipo existente.
 export const GRUPOS_LG = {};
@@ -347,15 +350,15 @@ export function registrar(grupo, tipos) {
 export const ARVORE = new Set(['tree', 'tree2', 'autumn', 'bigtree', 'bigautumn', 'pine', 'pine2', 'pineT', 'pinheiroAlto']);
 export const temModeloLG = (kind) => !!TIPOS[kind];
 // estado do objeto (fruta colhida, ponta de cerca); lite = árvore do miolo do paredão (o.ss: só a copa aparece)
-export function chaveLG(kind, o = {}) {
-  const T = TIPOS[kind]; if (!T) return null;
+export function chaveLG(kind, o = {}, perfil) {
+  const T = tipoDe(kind, perfil); if (!T) return null;
   const v = T.var ? hashVar(o) % T.var : 0;
   const e = T.estado ? T.estado(o) : T.fruta ? ((o?.semFruta || (o?.sprite && o.sprite.texture === SPR.berryless)) ? 'sem' : '') : '';
-  return `${kind}|${v}|${e}|${o?.ss && ARVORE.has(kind) ? 1 : 0}`;
+  return `${kind}|${v}|${e}|${o?.ss && ARVORE.has(kind) ? 1 : 0}${perfis.get(perfil)?.[kind] ? "|" + perfil : ""}`;
 }
-export function modeloLG(kind, o = {}) {
-  const T = TIPOS[kind]; if (!T) return null;
-  const k = chaveLG(kind, o); let r = cache.get(k); if (r) return r;
+export function modeloLG(kind, o = {}, perfil) {
+  const T = tipoDe(kind, perfil); if (!T) return null;
+  const k = chaveLG(kind, o, perfil); let r = cache.get(k); if (r) return r;
   const [, vs, estado, lite] = k.split('|'), v = +vs, K = KINDS[kind] ?? { fw: 1, fh: 1 };
   let seed = v * 7919 + 13; for (const ch of kind) seed = (seed * 31 + ch.charCodeAt(0)) % 2147483000;
   const m = new MalhaLG(seed);
