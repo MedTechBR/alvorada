@@ -159,7 +159,9 @@ export class Setores {
     // um setor novo por quadro (dois se nada estiver pronto ainda)
     if (falta) this.#montar(falta.cx, falta.cy);
     for (const [k, s] of this.mapa) if (!quer.has(k)) s.grupo.visible = false;
-    const limite = v.touch ? 16 : MAX_SETORES;
+    // No celular, guarda apenas uma margem curta de setores fora da vista.
+    // Os setores necessários à câmera nunca entram na lista de descarte.
+    const limite = v.touch ? 12 : MAX_SETORES;
     if (this.mapa.size > limite) {
       const velhos = [...this.mapa.entries()].filter(([, s]) => !s.grupo.visible).sort((a, b) => a[1].visto - b[1].visto);
       for (const [k, s] of velhos.slice(0, this.mapa.size - limite)) { this.#liberar(s); this.mapa.delete(k); }
