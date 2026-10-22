@@ -19,9 +19,11 @@ const g=mesclar([{geometry:base.geometry},{geometry:pintado.geometry,x:100}]);
 const b=base.geometry.attributes.position.count,uv=g.attributes.aPintura;
 for(let i=0;i<b;i++)assert.equal(uv.getZ(i),0);
 assert([...uv.array.slice(b*3)].some(n=>n===3));
-for(const kind of ['tree','tree2','pine','bigtree']){
+for(const kind of ['tree','tree2','pine','bigtree','jequitiba','ipe','paineira','autumn','bigautumn']){
  const a=modeloLG(kind,o,'pintado'),antigo=modeloLG(kind,o);
  assert(a.tris<antigo.tris,`${kind}: o recorte precisa economizar triângulos`);
  assert([...a.geometry.attributes.aPintura.array].every(Number.isFinite));
 }
+const cheia=modeloLG('oran',o,'pintado'),colhida=modeloLG('oran',{...o,semFruta:true},'pintado');
+assert.notEqual(cheia.chave,colhida.chave);assert(cheia.tris>colhida.tris);
 g.dispose();console.log('OK: perfil isolado, cache reutilizado, UV preservado e árvores com menos triângulos');

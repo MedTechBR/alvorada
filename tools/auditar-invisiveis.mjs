@@ -63,7 +63,7 @@ function malhaDe(kind, o) {
   const v = (i) => { const k = I ? I.getX(i) : i; return [P.getX(k), P.getY(k), P.getZ(k)]; };
   for (let t = 0; t < nt; t++) {
     const pin = g.attributes.aPintura;
-    if (pin) { const k=I?I.getX(t*3):t*3; if(pin.getZ(k)>0.5&&pin.getZ(k)<2.5)continue; }
+    if (pin) { const k=I?I.getX(t*3):t*3; if(pin.getZ(k)>0.5&&(pin.getZ(k)<2.5||pin.getZ(k)>10.5))continue; }
     const A = v(t * 3), B = v(t * 3 + 1), C = v(t * 3 + 2);
     const x0 = Math.min(A[0], B[0], C[0]), x1 = Math.max(A[0], B[0], C[0]), z0 = Math.min(A[2], B[2], C[2]), z1 = Math.max(A[2], B[2], C[2]);
     const den = (B[2] - C[2]) * (A[0] - C[0]) + (C[0] - B[0]) * (A[2] - C[2]);
