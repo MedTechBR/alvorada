@@ -1,3 +1,4 @@
+import { organizarPostes } from './organizar-postes.js';
 import { comporPilotoVisual } from './piloto-visual.js';
 import { recomporNucleos, vestirPaisagem, criarRecantos } from './paisagem.js';
 import { refinarCaminhos } from './caminhos-ampliados.js';
@@ -236,6 +237,7 @@ export function* passosParte(S, P) {
   }
   for (const o of novos) S.novos.push(o);
   comporPilotoVisual(S, P);
+  organizarPostes(S, P);
   P.pronta = true;
 }
 export function montarParte(S, P) { for (const _ of passosParte(S, P)) { /* tudo de uma vez */ } }
