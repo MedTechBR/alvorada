@@ -64,7 +64,7 @@ export class ModelosKit {
       for (const m of [s.kitArvP, s.kitArvL]) { m.matrixAutoUpdate = false; m.castShadow = m.receiveShadow = true; s.grupo.add(m); }
       s.arvPerto = null; this.#lod(s, true);
     }
-    s.kitMoveis = moveis.map((o) => { const m = new THREE.Mesh(this.modeloDe(o, s).geometry, this.matDe(s, o)); m.o = o; m.chave = this.chaveDe(o, s); s.grupo.add(m); if (o.sprite) donos.push(o.sprite); return m; });
+    s.kitMoveis = moveis.map((o) => { const m = new THREE.Mesh(this.modeloDe(o, s).geometry, this.matDe(s, o)); m.o = o; if (m.geometry.attributes.aPintura) m.customDepthMaterial = profundidadePintada(); m.chave = this.chaveDe(o, s); s.grupo.add(m); if (o.sprite) donos.push(o.sprite); return m; });
     s.kitDonos = donos; for (const sp of donos) this.donos.add(sp);
     this.setores.add(s);
   }
