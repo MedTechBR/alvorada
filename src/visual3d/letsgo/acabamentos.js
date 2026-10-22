@@ -18,7 +18,7 @@ export function acabamentoPintado(grupo, geo, T, cr, o) {
   if(predio && ((Math.abs(T.rx??0)>.15 && x>25) || ((T.y??0)>25 && y<12 && x>30 && z>12)))celula=12;
   else if(h>.035&&h<.15&&s>.17&&l<.65)celula=13;
   else if(predio&&s<.35&&l>.3&&y>15)celula=16;
-  else if(natureza&&s<.22&&l>.12)celula=14;
+  else if(natureza&&s<.22&&l>.12&&l<.75)celula=14;
   else if(natureza&&h>.18&&h<.48&&s>.2)celula=15;
   return celula==null?null:{...o,pintura:celula};
 }

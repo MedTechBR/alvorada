@@ -7,7 +7,10 @@ export function atlasPintado() {
   if (!atlas) {
     atlas = new THREE.TextureLoader().load('assets/visual/pintado/vila.png');
     atlas.colorSpace = THREE.SRGBColorSpace;
-    atlas.anisotropy = 2;
+    // A câmera fixa não precisa de anisotropia extra; mantém mipmaps e
+    // interpolação linear, com uma amostra de nível em vez de duas.
+    atlas.anisotropy = 1;
+    atlas.minFilter = THREE.LinearMipmapNearestFilter;
   }
   return atlas;
 }
