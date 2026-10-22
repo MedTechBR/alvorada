@@ -307,3 +307,5 @@ qualidade baixa.
 ## Planta original e geografia em execução
 
 Os JSON de Alvorada continuam na planta original de 1200×960 blocos externos. A montagem em `src/world/geografia.js` amplia o mundo para 4200×3360, preservando tamanhos de edifícios e interiores. Prefira spots nomeados para destinos; coordenadas numéricas externas em código precisam passar por `pontoGeografico`. Ferramentas que editam a planta devem carregar `original: true`, como o gerador de cenário, para não ampliar dados duas vezes. Saves antigos são migrados para o layout 3 ao carregar.
+
+No layout 4, os núcleos urbanos são recompostos por `src/world/nucleos.js`. `pontoGeografico` acompanha ruas e objetos compactos; `pontoTerrenoGeografico` mantém o referencial macro da planta. As áreas guardam a forma original para identificar corretamente o bioma após a recomposição. Detalhes em `docs/mapa-recomposto.md`.

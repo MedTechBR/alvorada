@@ -1,3 +1,5 @@
+> A composição e o mapa do menu foram revistos em 22/10/2026. Consulte [Mapa recomposto](mapa-recomposto.md) para o estado atual; os tempos abaixo registram a primeira expansão publicada.
+
 # Expansão geográfica de Alvorada
 
 ## Resultado e duração

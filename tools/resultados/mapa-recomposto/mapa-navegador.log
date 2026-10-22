@@ -1,0 +1,3 @@
+mapa {"titulo":"Mapa da região","objetos":115,"vista":{"x":736.5,"y":1811.625,"w":83.14285714285714},"recorte":{"x":694.9285714285714,"y":1790.1964285714287,"w":83.14285714285714,"h":42.857142857142854}}
+outro continente {"objetos":0,"largura":960,"pintou":true}
+norte {"gira":false,"angulo":0} erros []
