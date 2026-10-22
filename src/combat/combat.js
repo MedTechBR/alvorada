@@ -78,7 +78,7 @@ export class Combat {
     if (fluido && (e.stun > 0 || e.quedaAte > this.g.time || e.charging)) return false;
     if (fluido && e.recuperaEm <= this.g.time) { e.lock = 0; e.dashing = null; e.contato = null; }
     e.kx += dx * 320; e.ky += dy * 320;
-    e.iframes = Math.max(e.iframes, 0.32); e.dodgeCd = fluido ? 0.45 : 0.7;
+    e.iframes = Math.max(e.iframes, fluido ? 0.4 : 0.32); e.dodgeCd = fluido ? 0.45 : 0.7; // margem de esquiva maior nos campos abertos
     e.play('Hop'); e.vz = 80; this.onDodge(e);
     return true;
   }
