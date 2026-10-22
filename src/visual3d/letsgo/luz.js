@@ -70,9 +70,7 @@ export function aplicarLuzLG(v, w, room, nt = 0, dt = 0.016) {
   const pk = v.lg.pilotoK;
   if (pk > 0.001) {
     ceuNeutro(A, k * pk);
-    A.ceu.hemi.intensity *= 1 - 0.14 * pk * dia;
-    A.ceu.sol.intensity *= 1 - 0.08 * pk * dia;
-    if (P.exposicao) P.exposicao.value *= 1 - 0.28 * pk * dia;
+    if (P.exposicao) P.exposicao.value *= 1 - 0.16 * pk;
   }
   // pós: cores limpas, bloom macio, tilt-shift e vinheta (dentro de casa também, mais fraco no tilt)
   const pw = 1, sat = room ? 0.98 : X.sat, qt = room ? 0.18 : X.quente, fr = room ? 0.28 : X.frio, ct = room ? 1.12 : X.contraste;
@@ -87,13 +85,12 @@ export function aplicarLuzLG(v, w, room, nt = 0, dt = 0.016) {
   const bat = v.dinamica?.batalhaK ?? 0;
   if (P.tilt) P.tilt.value = lerp(P.tilt.value, (piloto ? 0 : room ? 0.5 : 1.0) * (A.pos.nivel.dof === false ? 0 : 1) * (1 - 0.75 * bat), w);
   if (P.faixa) P.faixa.value = lerp(0.1, 0.13, w);
-  if (P.vinheta) P.vinheta.value = lerp(0.4, 0.48 - pk * 0.36, w);
+  if (P.vinheta) P.vinheta.value = lerp(0.4, 0.48, w);
 }
 
 // As cores são constantes e reaproveitadas, sem alocação por quadro.
-const CEU_NEUTRO = C(0xe2f0ff), SOL_NEUTRO = C(0xffffff), SOLO_NEUTRO = C(0x646b70);
+const CEU_NEUTRO = C(0xe2f0ff), SOL_NEUTRO = C(0xfff5e5);
 function ceuNeutro(A, k) {
   A.ceu.hemi.color.lerp(CEU_NEUTRO, k * 0.5);
-  A.ceu.sol.color.lerp(SOL_NEUTRO, k * 0.85);
-  A.ceu.hemi.groundColor.lerp(SOLO_NEUTRO, k * 0.8);
+  A.ceu.sol.color.lerp(SOL_NEUTRO, k * 0.55);
 }

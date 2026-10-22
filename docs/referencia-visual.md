@@ -154,7 +154,3 @@ Não foi espalhado o novo desenho pelo restante do continente. O modelo melhorou
 Não houve teste em iPhone físico/Safari nem medição dos bytes totais de GPU. A redução observada no Chrome é evidência de melhora, não prova de que o fechamento do aplicativo por memória foi eliminado. Permanece necessário um teste longo no aparelho que apresentava o problema.
 
 A revisão anterior `57e60497` foi publicada e conferida no site antes de começar esta etapa. Os commits de `visual-referencia` permanecem locais, **sem push**.
-
-## Continuação — nova direção visual
-
-Após a revisão do dono, foi implementado um perfil de modelos e materiais que muda a linguagem visual do piloto, além dos ajustes de nitidez desta primeira rodada. Comparações, decisões e novas medições estão em [direcao-rpg.md](direcao-rpg.md). As tabelas acima permanecem como registro da etapa anterior.

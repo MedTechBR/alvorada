@@ -114,7 +114,7 @@ export class Visual3D {
     app.ticker.add(() => this.quadro(), null, -25);
   }
   // distância da câmera: um bloco no foco tem na tela o mesmo tamanho que tem no 2D com esse zoom
-  get distancia() { const z = Math.max(0.4, (this.g.zoom || 3) * (this.g.camK ?? 1)); return innerHeight / (2 * z * Math.tan(this.camera.fov * Math.PI / 360)) * 1.04; }
+  get distancia() { const z = Math.max(0.4, (this.g.zoom || 3) * (this.g.camK ?? 1)); return innerHeight / (2 * z * Math.tan(FOV * Math.PI / 360)) * 1.04; }
   altura(px, py) { const h = this.relevo.em(px, py); return this.lg ? h + this.lg.relevo.em(px, py) : h; }
   // aplica o mundo curvo uma vez em materiais que vieram de outros módulos (ambientação, kit)
   curvar(m) { if (m && !m.userData.curvado) { m.userData.curvado = true; curvarMaterial(m, this); m.needsUpdate = true; } return m; }
@@ -123,7 +123,6 @@ export class Visual3D {
     const g = this.g, agora = performance.now(), dt = Math.min(0.1, (agora - (this.tCam ?? agora)) / 1000); this.tCam = agora;
     const cd = this.dinamica.update(dt);
     if (!cd) return;
-    if (Math.abs(this.camera.fov - cd.fov) > 0.01) { this.camera.fov = cd.fov; this.camera.updateProjectionMatrix(); }
     // a altura do foco segue o chão com suavidade (subir uma escada não dá tranco)
     const h = this.altura(cd.x, cd.z);
     this.focoH = this.focoH == null ? h : this.focoH + (h - this.focoH) * Math.min(1, dt * 8);

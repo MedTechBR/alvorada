@@ -1,9 +1,0 @@
-aviso: como desconhecido em OBTENCAO[809]: evolucao
-Espécies: 1025; obteníveis: 1025; inativas: 0
-Por método: {"inicial":3,"evolucao":210,"toca":15,"selvagem":626,"evolucao_local":8,"troca":1,"presente":7,"fossil":15,"errante":15,"lendario":52,"evento":20,"clube":24,"ovo":16,"alfa":4,"ultrafera":9}
-Trocas: 25 regras de troca; sem alternativa: 0; espécies que só evoluíam por troca (agora têm jeito): 24
-Babies fora da Creche: 0
-Gravado: docs/obtencao.md
-Lendários: 62 cadastrados, 62 com lugar, 0 sem lugar ainda
-Fontes de OBTENCAO em lugares que ainda não existem no mapa: 0 (ex.: )
-Lugares das regras de evolução: 10 ids, 0 sem mapa

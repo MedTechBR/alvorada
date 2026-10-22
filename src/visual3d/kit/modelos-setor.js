@@ -1,4 +1,3 @@
-import { noPilotoVisual } from '../../world/piloto-visual.js';
 import * as THREE from 'three';
 import { kit } from './index.js';
 import { GLB_TIPOS, glbPronto, pedirGLB, onGLB } from './glb.js';
@@ -29,9 +28,8 @@ export class ModelosKit {
   // setor no estilo Let's Go (s.lg): modelo liso quando o tipo tem um (src/visual3d/letsgo/modelos.js), senão o do kit
   // (a beira da zona pode ter objetos lisos num setor voxel: as árvores da mata mudam de estilo junto, não no meio dela)
   lgDe(o, s) { return !!(s?.lg || (this.matLG && this.v.lg?.zona.objeto(o.tx, o.ty))); }
-  perfilDe(o) { return noPilotoVisual(this.v.g.map, (o.tx + .5) * 16, (o.ty + .5) * 16) ? 'rpg' : undefined; }
-  modeloDe(o, s) { return (this.lgDe(o, s) && modeloLG(o.kind, o, this.perfilDe(o))) || kit.modelo(o.kind, o); }
-  chaveDe(o, s) { return (this.lgDe(o, s) && chaveLG(o.kind, o, this.perfilDe(o))) || kit.chave(o.kind, o); }
+  modeloDe(o, s) { return (this.lgDe(o, s) && modeloLG(o.kind, o)) || kit.modelo(o.kind, o); }
+  chaveDe(o, s) { return (this.lgDe(o, s) && chaveLG(o.kind, o)) || kit.chave(o.kind, o); }
   matDe(s, o) { return (o ? this.lgDe(o, s) : s?.lg) && this.matLG ? this.matLG : this.mat; }
 
   setor(s) {
@@ -43,7 +41,7 @@ export class ModelosKit {
       if (o.dead || !kit.temModelo(o.kind) || this.v.g.vivo?.mexido?.(o)) continue;
       if (this.#movel(o)) { moveis.push(o); continue; }
       const md = this.modeloDe(o, s), K = kit.ficha(o.kind);
-      const lisa = this.lgDe(o, s) && this.matLG && md.chave === chaveLG(o.kind, o, this.perfilDe(o)), it = { geometry: md.geometry, x: o.x, y: this.#h(o.x, o.y, K.fh), z: o.y };
+      const lisa = this.lgDe(o, s) && this.matLG && md.chave === chaveLG(o.kind, o), it = { geometry: md.geometry, x: o.x, y: this.#h(o.x, o.y, K.fh), z: o.y };
       if (LOD_LIGA && lisa && ARVORES_LG.has(o.kind)) { arvP.push(it); arvL.push({ ...it, geometry: proxyArvore(o.kind, md) }); } // árvores lisas: modelo inteiro perto, substituto longe
       else (!s.lg && lisa ? itensLG : itens).push(it);
       if (o.sprite) donos.push(o.sprite);

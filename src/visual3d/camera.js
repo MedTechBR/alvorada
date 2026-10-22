@@ -48,7 +48,7 @@ export class CameraDinamica {
     // batalha: enquadra os combatentes
     const lutadores = this.#combate(g, foco);
     // Mantém a escala próxima que o jogador já via parado, sem respirar o zoom a cada parada.
-    if (piloto && !room && !lutadores && !m?.active) { dist *= 1.08; incl = 58; }
+    if (piloto && !room && !lutadores && !m?.active) dist *= 0.93;
     this.batalhaK = amortece(this.batalhaK, lutadores ? 1 : 0, 1.8, dt);
     if (lutadores && this.cinema) {
       const { x0, x1, y0, y1 } = lutadores, cx = (x0 + x1) / 2, cz = (y0 + y1) / 2;
@@ -113,8 +113,7 @@ export class CameraDinamica {
     this.dist = pula ? dist : amortece(this.dist, dist, 3, dt);
     this.incl = pula ? incl : amortece(this.incl, incl, 3, dt);
     this.giro = amortece(this.giro, giro, 1.5, dt);
-    this.fov = amortece(this.fov ?? 34, piloto && !room && !lutadores ? 22 : 34, 4, dt);
-    return { fov: this.fov, x: this.x, z: this.z, dist: this.dist, incl: this.incl * RAD, giro: this.giro * RAD, rolo: this.rolo * RAD };
+    return { x: this.x, z: this.z, dist: this.dist, incl: this.incl * RAD, giro: this.giro * RAD, rolo: this.rolo * RAD };
   }
   // Enquadramento da sala inteira (perspectiva de verdade): do topo da parede do fundo (72) à parede baixa da frente,
   // de lado a lado, centrado na tela, com folga para o HUD. Devolve o foco no chão e k = distância / distância padrão.
