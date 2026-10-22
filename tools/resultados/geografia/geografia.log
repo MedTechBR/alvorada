@@ -1,0 +1,3 @@
+OK: saves preservados, migração idempotente, portas livres, salas sem ampliação e 50 setores de mata cobertos.
+(node:66200) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

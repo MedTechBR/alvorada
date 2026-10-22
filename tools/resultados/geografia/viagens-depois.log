@@ -1,0 +1,45 @@
+centros centro_campina,centro_sussurro,centro_porto,centro_coral,centro_lamparina,centro_aurora,centro_jandaia,centro_termas,centro_538_186,centro_269_164,centro_137_95,centro_521_32,centro_290_5,centro_geada,centro_mandacaru,centro_buriti,centro_siri
+{
+  de: 'inicio',
+  para: 'porta_centro_campina',
+  blocos: 779,
+  segundosAnda: 194.75,
+  segundosCorre: 97.375
+}
+{
+  de: 'porta_centro_campina',
+  para: 'porta_centro_sussurro',
+  blocos: 846,
+  segundosAnda: 211.5,
+  segundosCorre: 105.75
+}
+{
+  de: 'porta_centro_sussurro',
+  para: 'porta_centro_porto',
+  blocos: 1800,
+  segundosAnda: 450,
+  segundosCorre: 225
+}
+{
+  de: 'porta_centro_porto',
+  para: 'porta_centro_coral',
+  blocos: 879,
+  segundosAnda: 219.75,
+  segundosCorre: 109.875
+}
+{
+  de: 'porta_centro_coral',
+  para: 'porta_centro_lamparina',
+  blocos: 995,
+  segundosAnda: 248.75,
+  segundosCorre: 124.375
+}
+{
+  de: 'porta_centro_lamparina',
+  para: 'porta_centro_aurora',
+  blocos: 827,
+  segundosAnda: 206.75,
+  segundosCorre: 103.375
+}
+(node:66196) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

@@ -1,0 +1,24 @@
+Guia do objetivo: 110 alvos da jornada, 524 verificações, 138.1 s
+  campina   de inicio                 alvos  9  caminho médio  933 blocos  reta errada 1
+  sussurro  de gym                    alvos  8  caminho médio  906 blocos  reta errada 2
+  espelho   de estufa_lia             alvos  6  caminho médio 1785 blocos  reta errada 0
+  coral     de galpao_barcos          alvos  7  caminho médio  927 blocos  reta errada 0
+  jandaias  de farol_coral            alvos  6  caminho médio  791 blocos  reta errada 0
+  lamparina de barqueira_coral        alvos  7  caminho médio 1305 blocos  reta errada 2
+  aurora    de casarao_velas          alvos  6  caminho médio 1018 blocos  reta errada 0
+  mina      de aurora_praca           alvos  5  caminho médio   99 blocos  reta errada 4
+  rochedo   de aurora_praca           alvos  8  caminho médio 1029 blocos  reta errada 3
+  sertao    de leader_bras            alvos  7  caminho médio 2821 blocos  reta errada 0
+  escarpa   de ninho_vila_mandacaru   alvos  7  caminho médio 3127 blocos  reta errada 3
+  brasas    de leader_graca           alvos  6  caminho médio 4239 blocos  reta errada 0
+  mirante   de ninho_ilha_basalto     alvos  8  caminho médio 4777 blocos  reta errada 2
+  relogio   de leader_celeste         alvos  5  caminho médio 1425 blocos  reta errada 0
+  geada     de relogio_pedra          alvos  6  caminho médio 2746 blocos  reta errada 2
+  liga      de geada_entrada_oeste    alvos  9  caminho médio 2404 blocos  reta errada 6
+  história  de cena a cena            alvos 99  caminho médio    0 blocos  reta errada 0
+  missões   de inicio                 alvos 13  caminho médio    0 blocos  reta errada 0
+  a linha reta (seta antiga) apontava para o lado oposto ao caminho em 25 de 110 alvos
+
+OK: de cada chegada há caminho até cada alvo, e a seta aponta para o próximo trecho dele.
+(node:66686) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

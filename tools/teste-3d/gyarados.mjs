@@ -4,10 +4,10 @@ try {
  const r=await s.P.ev(`(async()=>{
  const g=game;g.app.ticker.stop();g.story.battle=null;g.arenaGinasio=null;
  const {Mon}=await import('/src/data/mon.js'),{PokeEntity}=await import('/src/entities/pokemon.js');
- const resultados=[];
+ const [X,Y]=g.map.pontoDaPlanta?.(318,291)??[318,291],px=X*16+12,py=Y*16+14;const resultados=[];
  for(const dex of [7,130])for(const id of ['hydroPump','waterfall','aquaTail']){
   g.time=100;g.timers=[];Math.random=()=>0.5;const c=g.combat;for(const k of ['beams','projectiles','waves','swings','zones','falls','surfs','skyMarks','struggles'])c[k]=[];
-  const u=new PokeEntity(g,new Mon(dex,40),'ally',5100,4670),t=new PokeEntity(g,new Mon(133,40),'wild',5180,4670);
+  const u=new PokeEntity(g,new Mon(dex,40),'ally',px,py),t=new PokeEntity(g,new Mon(133,40),'wild',px+80,py);
   await Promise.all([u.ready,t.ready]);u.mon.moves=[id];u.mon.ability=null;t.mon.ability=null;u.mon.nature=t.mon.nature='hardy';u.mon.ivs=t.mon.ivs=[20,20,20,20,20,20];u.mon.evs=t.mon.evs=[0,0,0,0,0,0];u.mon.calc();t.mon.calc();t.mon.hp=t.mon.stats.hp;
   g.lead=u;g.entities=[u,t];g.wilds=[t];t.ai.state='aggro';t.aggroTarget=u;
   u.update(0);t.update(0);const hp=t.mon.hp;let y=null;

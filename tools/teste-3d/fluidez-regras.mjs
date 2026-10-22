@@ -8,7 +8,8 @@ try {
     const {combateFluido}=await import('/src/combat/fluidez.js');
     const erros=[];let verificacoes=0;const ok=(v,m)=>{verificacoes++;if(!v)erros.push(m);};
     g.story.battle=null;g.arenaGinasio=null;g.wilds=[];g.entities=[];g.timers=[];g.time=100;
-    const l=new PokeEntity(g,new Mon(4,30),'ally',5100,4670),w=new PokeEntity(g,new Mon(133,30),'wild',5120,4670);
+    const [X,Y]=g.map.pontoDaPlanta?.(318,291)??[318,291],px=X*16+12,py=Y*16+14;
+    const l=new PokeEntity(g,new Mon(4,30),'ally',px,py),w=new PokeEntity(g,new Mon(133,30),'wild',px+20,py);
     await Promise.all([l.ready,w.ready]);l.mon.moves=['scratch','dig'];w.mon.moves=['tackle'];
     g.lead=l;g.entities=[l,w];g.wilds=[w];w.ai.state='aggro';w.aggroTarget=l;w.temper='neutral';
     const c=g.combat;
@@ -38,7 +39,7 @@ try {
     ok(interacoes===1,'Cavar usa a interação existente com o terreno');
     l.alt=null;l.stun=0;l.iframes=0;l.quedaAte=0;l.lock=0;l.cds=[0,0,0,0];l.mon.moves=['scratch'];
     w.alt=null;w.stun=0;w.iframes=0;w.lock=0;w.charging=null;w.cds=[0,0,0,0];w.mon.moves=['tackle'];
-    l.x=5100;l.y=4670;w.x=5114;w.y=4670;g.timers=[];c.swings=[];
+    l.x=px;l.y=py;w.x=px+14;w.y=py;g.timers=[];c.swings=[];
     const hpL=l.mon.hp,hpW=w.mon.hp;
     c.use(l,0,w.x,w.y);c.use(w,0,l.x,l.y);g.time+=0.1;
     for(const tm of g.timers.slice())if(tm.t<=g.time){g.timers.splice(g.timers.indexOf(tm),1);tm.fn();}

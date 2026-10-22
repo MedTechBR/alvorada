@@ -15,8 +15,8 @@ try {
       const random=Math.random; let seed=${seed}; Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
       try {
         for(const e of [...g.entities]) g.removeEntity(e);
-        g.entities=[];g.wilds=[];g.timers=[];g.time=10;g.spawnT=1e9;g.story.battle=null;g.story.busy=false;g.mode='pokemon';
-        g.player.x=318*16;g.player.y=292*16;g.player.kx=g.player.ky=0;g.player.seguro=null;g.grade.soltar(g.player);
+        g.entities=[];g.wilds=[];g.timers=[];g.time=10;g.spawnT=g.ambienteT=1e9;g.story.battle=null;g.story.busy=false;g.mode='pokemon';
+        const [X,Y]=g.map.pontoDaPlanta?.(318,292)??[318,292];g.player.x=X*16;g.player.y=Y*16;g.player.kx=g.player.ky=0;g.player.seguro=null;g.grade.soltar(g.player);
         g.cam.x=g.player.x;g.cam.y=g.player.y;
         g.mundo.update=dt=>g.story.battle?.update(dt);g.vivo.update=()=>{};g.vivo.pensar=()=>null;
         const c=g.combat; for(const k of ['projectiles','zones','beams','waves','falls','swings','struggles','surfs','skyMarks']) c[k]=[];

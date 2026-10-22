@@ -1,0 +1,23 @@
+Jornada completa: 16 passos, 348 verificações, 47.0 s
+  campina    alvos 8  bloqueados 3  lugares de cena 6
+  sussurro   alvos 8  bloqueados 2  lugares de cena 17
+  espelho    alvos 6  bloqueados 3  lugares de cena 8
+  coral      alvos 7  bloqueados 4  lugares de cena 9
+  jandaias   alvos 5  bloqueados 3  lugares de cena 5
+  lamparina  alvos 7  bloqueados 4  lugares de cena 9
+  aurora     alvos 6  bloqueados 4  lugares de cena 0
+  mina       alvos 4  bloqueados 3  lugares de cena 0
+  rochedo    alvos 7  bloqueados 3  lugares de cena 14
+  sertao     alvos 6  bloqueados 4  lugares de cena 6
+  escarpa    alvos 6  bloqueados 5  lugares de cena 7
+  brasas     alvos 5  bloqueados 4  lugares de cena 6
+  mirante    alvos 7  bloqueados 4  lugares de cena 8
+  relogio    alvos 5  bloqueados 4  lugares de cena 10
+  geada      alvos 6  bloqueados 4  lugares de cena 5
+  liga       alvos 9  bloqueados 3  lugares de cena 9
+  49 treinadores das cenas mantidas conferidos no fim da jornada
+  pós-jogo: Mar do Sul, Farol Morto e as três entradas de mergulho alcançáveis depois da Liga
+
+OK: a jornada inteira é jogável na ordem, sem atalhos.
+(node:66286) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

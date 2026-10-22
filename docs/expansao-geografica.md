@@ -1,31 +1,50 @@
-# Espaço de exploração e tamanho da jornada
+# Expansão geográfica de Alvorada
 
-## Estado desta etapa
+## Resultado e duração
 
-A primeira etapa acrescenta habitantes tranquilos. Ela **não aumenta a distância física entre as cidades**, nem redistribui os ginásios. A ampliação geográfica solicitada depois continua pendente da definição de duração da viagem (opções apresentadas: 5–10, 10–15 ou 15–25 minutos com exploração).
+O alvo solicitado é **10–15 minutos entre cidades com exploração e encontros**. A área externa passou de 1200×960 para 4200×3360 blocos (12,25 vezes a área). As coordenadas do núcleo foram ampliadas 5 vezes; as extensões, 2 vezes. Edifícios, personagens e interiores mantêm seu tamanho. Ocaso mantém sua geografia.
 
-O retângulo externo de Alvorada tem 1200×960 blocos, mas os primeiros destinos estão concentrados no núcleo de 600×480. O tamanho do arquivo não demonstra uma jornada longa: é preciso medir o percurso entre os destinos da campanha.
+O teste automático mede o menor caminho a pé, com passagens liberadas, sem voo, exploração ou batalhas. Não foi realizada uma sessão humana completa de 10–15 minutos por ligação: esse tempo continua sendo um alvo de experiência, não uma duração comprovada. Correr reduz aproximadamente à metade os tempos abaixo. Não houve redução da velocidade nem inclusão de combates obrigatórios para prolongar o percurso.
 
-## Implementado localmente
+| Percurso | Antes, andando | Depois, andando |
+|---|---:|---:|
+| Início → Campina | 41 s | 3 min 15 s |
+| Campina → Sussurro | 41 s | 3 min 32 s |
+| Sussurro → Porto | 1 min 28 s | 7 min 30 s |
+| Porto → Coral | 43 s | 3 min 40 s |
+| Coral → Lamparina | 52 s | 4 min 9 s |
+| Lamparina → Aurora | 44 s | 3 min 27 s |
 
-`src/world/populacao.js`, `src/main.js`, `src/combat/ai.js`: quatro encontros normais e até seis Pokémon tranquilos, mais próximos da tela e com as espécies/níveis da área. Os extras passeiam, podem ser capturados e reagem a ataques diretos; ruído e proximidade não iniciam sua agressão. No máximo quatro selvagens pressionam o jogador. Não há reposição de população durante a luta; moradores tranquilos não impedem o retorno automático após a vitória.
+As estradas principais têm seis blocos de largura e gramado transitável nas laterais. A expansão amplia os biomas existentes; não acrescenta novos capítulos ou diálogos. Quatro encontros normais e até seis habitantes tranquilos povoam as áreas próximas. Extras podem ser capturados, mas não atacam espontaneamente. O limite permanece quatro agressores, sem reposição durante a luta.
 
-A tentativa de apenas retirar obstáculos da camada de cenário foi descartada: não aumentava a distância entre cidades e alterava a exposição em combates. Nenhuma mudança de terreno dessa tentativa ficou aplicada.
+## Alterações por arquivo
 
-## Ampliação geográfica a executar
+- `src/world/geografia.js`: transformação de coordenadas, portas, objetos, regiões e migração idempotente dos saves para layout 3; preserva itens coletados e alterações persistentes de cenário.
+- `src/world/mundos.js`: montagem ampliada de Alvorada e ligação de Ocaso; opção de carregar a planta original para ferramentas.
+- `src/world/build.js`: execução das operações na planta original, expansão do terreno, acessos das portas e reinicialização das regiões ao retornar a um mundo.
+- `src/world/caminhos-ampliados.js`: mantém estradas legíveis com gramado nas laterais, sem transformar cada caminho em uma avenida vazia.
+- `src/world/floresta-setor.js` e `src/world/map.js`: árvores naturais por setor visível, descarregadas à distância; encontros também no gramado dos campos ampliados.
+- `src/world/guia.js`: direção correta em campos abertos e armazenamento esparso da busca para reduzir alocações no mapa maior.
+- `src/world/barreiras-dados.js` e `src/world/barreiras-cenario.js`: barreiras nas novas posições e representação visível dos trechos bloqueados.
+- `src/save.js` e `src/world/life.js`: integração da migração de posições, interiores e coleta antiga.
+- `src/story/missoes/index.js`: conversão técnica das coordenadas externas, preservando roteiro, ordem e recompensas.
+- `src/combat/combat.js`: proteção da esquiva do jogador de 0,32 para 0,40 s nas lutas abrangidas, mantendo a recarga e os parâmetros adversários.
+- `tools/alcance.mjs`, `tools/vestir.mjs`, `tools/vestir/mundo.mjs` e `tools/teste-progressao.mjs`: ferramentas compatíveis com planta original e mundo ampliado.
+- `tools/medir-viagens.mjs`, `tools/teste-geografia.mjs`, `tools/teste-3d/geografia.mjs` e fixtures de combate: medição dos percursos, migração de saves, retorno entre mundos e testes nas novas coordenadas.
 
-1. Medir os percursos reais entre cada par de cidades da campanha, a pé e montado, incluindo atalhos já liberados.
-2. Redistribuir cidades e alongar as ligações que hoje permitem passar de um ginásio para outro em poucos minutos. O objetivo é distância nova de exploração, com terrenos diferentes e áreas opcionais conectadas.
-3. Construir campos, florestas e margens largas entre esses destinos, com caminhos alternativos que retornem à rota e populações apropriadas ao bioma. A passagem principal deve ser legível.
-4. Migrar posições de jogos salvos e atualizar portas, pontos da história, barreiras, NPCs, minimapa, navegação e encontros conforme a nova geografia.
-5. Verificar o trajeto completo e medir o tempo de viagem. Não usar redução artificial de velocidade, batalhas obrigatórias repetidas ou aumento de agressividade para preencher duração.
+## Equilíbrio reproduzível
 
-## Evidências
+Doze lutas com os mesmos pares, níveis e sementes da referência anterior. Médias por grupo; golpes A são do jogador, B do adversário. Nenhuma comparação individual aumentou a vida perdida por minuto. Estes ensaios não cobrem todas as espécies e situações do jogo.
 
-`tools/resultados/mapa/` guarda os testes do povoamento e equilíbrio. Capturas móveis em `tools/shots/exploracao-aberta/`.
+| Luta | PS perdidos/min antes → depois | Duração antes → depois | Golpes A/min antes → depois | Golpes B/min antes → depois |
+|---|---:|---:|---:|---:|
+| Selvagem | 10,83 → 2,89 | 17,55 → 17,28 s | 75,21 → 75,22 | 15,95 → 15,62 |
+| Rival | 14,52 → 5,32 | 17,22 → 16,92 s | 79,57 → 79,80 | 25,56 → 25,42 |
 
-A densidade foi testada em Chrome com toque e viewport 844×390. Safari/iPhone físico ainda não foram testados.
+Resultados completos em `tools/resultados/geografia/`. Testes de navegador confirmaram migração de posição externa e de interior, equipe, dinheiro e insígnias; retorno Ocaso–Alvorada; montaria aquática; Gyarados; regras de fluidez e equilíbrio. Auditoria de paredes: 24 lutas, 20.160 quadros, nenhuma travessia. Auditoria de NPCs: 1.750 passagens bloqueadas corretamente.
 
-- Seis habitantes tranquilos: nenhuma agressão espontânea; ao provocar todos, só quatro entram em combate; sem reposição durante a luta.
-- Dez selvagens carregados em 844×390, CPU 4×: p95 de 13,3 ms no ensaio de quatro segundos; nenhum erro de página. É uma amostra de Chrome, não uma garantia de desempenho em iPhone.
-- As 12 lutas automáticas mantiveram exatamente os resultados da versão publicada: selvagens 10,83 PS/min e 17,55 s; rival 14,52 PS/min e 17,22 s. Esses cenários não medem todas as combinações do jogo.
+No ensaio curto em Chrome 844×390 com CPU 4× e dez selvagens, p95 de 13,9 ms por quadro; nenhum erro de página. Isso não substitui teste no Safari ou em iPhone físico, ainda não realizados. A dimensão maior também aumenta a memória de terreno e navegação.
+
+Capturas de exploração: `tools/shots/exploracao-aberta/{campos,bosque,margem}.jpg`. Três capturas de combate selvagem 844×390: `tools/shots/geografia/acao-selvagem-{00,01,02}.jpg`.
+
+A bateria final de 12 testes Node passou, incluindo jornada completa, progressão, guia, caminhada, sólidos, saídas, falantes, obtenção e invisíveis. A auditoria final encontrou zero blocos sólidos sem representação visível.

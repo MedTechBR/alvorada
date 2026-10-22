@@ -40,7 +40,7 @@ const PILOTO = () => `(() => {
 
 const SELVAGEM = () => `(async () => {
   const G = window.game, espera = (ms) => new Promise((r) => setTimeout(r, ms));
-  G.player.x = 318 * 16; G.player.y = 292 * 16; G.cam.x = G.player.x; G.cam.y = G.player.y; G.mundo.setHour(11);
+  const [X,Y]=G.map.pontoDaPlanta?.(318,292)??[318,292]; G.player.x = X * 16; G.player.y = Y * 16; G.cam.x = G.player.x; G.cam.y = G.player.y; G.mundo.setHour(11);
   const { Mon } = await import('/src/data/mon.js');
   const VIT = ${modo === 'vitrine'};
   G.party = VIT ? [new Mon(6, 40), new Mon(25, 30)] : [new Mon(${Number(process.env.ALLY) || 25}, 30), new Mon(4, 28)]; G.leadIdx = 0; if (${Number(process.env.DEX) || 0}) G.party[0].moves = ${Number(process.env.ALLY)===130} ? ['hydroPump', 'waterfall', 'aquaTail', 'dragonDance'] : ['thunderShock', 'quickAttack', 'ironTail']; G.hudLead(); G.hudMoves();

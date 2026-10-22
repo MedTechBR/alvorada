@@ -1,0 +1,14 @@
+
+=== alvorada (4200x4480, ao ar livre até y=3360) ===
+tiles sólidos: ROCK 319525, CLIFF 241080, ICEWALL 6930, WATER 767233, DEEP 4005929, FOREST 1138431, CLIMB 8455, CANYON 89600, MUD 450, TEMPLEWALL 1274, LAVA 8452, CORN 12300, ROOTS 10807, CUR_E 1848, CUR_S 1792, CUR_N 620
+blocos de barreira da história conferidos: 35147 (mais 1073560 de zonas de clima, que o clima mostra)
+achados: 0
+
+=== ocaso (960x1040, ao ar livre até y=720) ===
+tiles sólidos: DEEP 35061
+blocos de barreira da história conferidos: 0 (mais 0 de zonas de clima, que o clima mostra)
+achados: 0
+
+total de blocos sólidos sem nada visível: 0 (alvorada 0, ocaso 0)
+(node:66834) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

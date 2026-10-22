@@ -1,0 +1,10 @@
+{
+  antes: 'nadar',
+  durante: 'nadar',
+  ok: true,
+  salto: true,
+  embarcou: true,
+  deslocamento: 59.493333333331975,
+  margem: { x: 64984, y: 330 }
+}
+OK: montaria aquática preservada enquanto carrega e navega após embarcar
