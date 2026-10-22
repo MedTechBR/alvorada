@@ -159,9 +159,10 @@ export class Setores {
     // um setor novo por quadro (dois se nada estiver pronto ainda)
     if (falta) this.#montar(falta.cx, falta.cy);
     for (const [k, s] of this.mapa) if (!quer.has(k)) s.grupo.visible = false;
-    if (this.mapa.size > MAX_SETORES) {
+    const limite = v.touch ? 20 : MAX_SETORES;
+    if (this.mapa.size > limite) {
       const velhos = [...this.mapa.entries()].filter(([, s]) => !s.grupo.visible).sort((a, b) => a[1].visto - b[1].visto);
-      for (const [k, s] of velhos.slice(0, this.mapa.size - MAX_SETORES)) { this.#liberar(s); this.mapa.delete(k); }
+      for (const [k, s] of velhos.slice(0, this.mapa.size - limite)) { this.#liberar(s); this.mapa.delete(k); }
     }
     // mato: o 2D guarda quem está balançando (sway); copiamos para os tufos
     for (const s of this.mapa.values()) if (s.grupo.visible && s.mato) this.#balanco(s);
