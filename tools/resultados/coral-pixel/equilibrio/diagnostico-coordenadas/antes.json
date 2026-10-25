@@ -1,0 +1,372 @@
+{
+  "commit": "bb1f9939386f7101551554e00f0bd5757bb455dc",
+  "fase": "antes",
+  "resultados": [
+    {
+      "modo": "selvagem",
+      "seed": 31,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "eventos": [],
+      "cena": "alvorada",
+      "hp": 44,
+      "perda": 0,
+      "dur": 17.066666666666666,
+      "perdaMin": 0,
+      "golpesA": 22,
+      "golpesB": 5,
+      "golpesMinA": 77.34375,
+      "golpesMinB": 17.578125,
+      "terminou": true
+    },
+    {
+      "modo": "selvagem",
+      "seed": 31,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "eventos": [
+        {
+          "dmg": 1,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            0,
+            0
+          ],
+          "fluido": true
+        },
+        {
+          "dmg": 1,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            0,
+            0
+          ],
+          "fluido": true
+        }
+      ],
+      "cena": "alvorada",
+      "hp": 46,
+      "perda": 2,
+      "dur": 20.7,
+      "perdaMin": 5.797101449275362,
+      "golpesA": 27,
+      "golpesB": 8,
+      "golpesMinA": 78.26086956521739,
+      "golpesMinB": 23.18840579710145,
+      "terminou": true
+    },
+    {
+      "modo": "selvagem",
+      "seed": 73,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "eventos": [],
+      "cena": "alvorada",
+      "hp": 49,
+      "perda": 0,
+      "dur": 15.866666666666667,
+      "perdaMin": 0,
+      "golpesA": 20,
+      "golpesB": 3,
+      "golpesMinA": 75.63025210084034,
+      "golpesMinB": 11.34453781512605,
+      "terminou": true
+    },
+    {
+      "modo": "selvagem",
+      "seed": 73,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "eventos": [
+        {
+          "dmg": 2,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            0,
+            0
+          ],
+          "fluido": true
+        }
+      ],
+      "cena": "alvorada",
+      "hp": 51,
+      "perda": 2,
+      "dur": 19.3,
+      "perdaMin": 6.217616580310881,
+      "golpesA": 26,
+      "golpesB": 8,
+      "golpesMinA": 80.82901554404145,
+      "golpesMinB": 24.870466321243523,
+      "terminou": true
+    },
+    {
+      "modo": "selvagem",
+      "seed": 137,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "eventos": [],
+      "cena": "alvorada",
+      "hp": 48,
+      "perda": 0,
+      "dur": 15.666666666666666,
+      "perdaMin": 0,
+      "golpesA": 17,
+      "golpesB": 0,
+      "golpesMinA": 65.1063829787234,
+      "golpesMinB": 0,
+      "terminou": true
+    },
+    {
+      "modo": "selvagem",
+      "seed": 137,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "eventos": [
+        {
+          "dmg": 1,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            1,
+            0
+          ],
+          "fluido": true
+        }
+      ],
+      "cena": "alvorada",
+      "hp": 50,
+      "perda": 1,
+      "dur": 15.1,
+      "perdaMin": 3.9735099337748347,
+      "golpesA": 18,
+      "golpesB": 3,
+      "golpesMinA": 71.52317880794702,
+      "golpesMinB": 11.920529801324504,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 31,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "eventos": [],
+      "cena": "alvorada",
+      "hp": 44,
+      "perda": 0,
+      "dur": 18.266666666666666,
+      "perdaMin": 0,
+      "golpesA": 22,
+      "golpesB": 4,
+      "golpesMinA": 72.26277372262774,
+      "golpesMinB": 13.138686131386862,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 31,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "eventos": [
+        {
+          "dmg": 1,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            0,
+            0
+          ],
+          "fluido": true
+        }
+      ],
+      "cena": "alvorada",
+      "hp": 46,
+      "perda": 1,
+      "dur": 18.9,
+      "perdaMin": 3.174603174603175,
+      "golpesA": 25,
+      "golpesB": 7,
+      "golpesMinA": 79.36507936507937,
+      "golpesMinB": 22.222222222222225,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 73,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "eventos": [],
+      "cena": "alvorada",
+      "hp": 49,
+      "perda": 0,
+      "dur": 16.866666666666667,
+      "perdaMin": 0,
+      "golpesA": 22,
+      "golpesB": 5,
+      "golpesMinA": 78.26086956521739,
+      "golpesMinB": 17.786561264822133,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 73,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "eventos": [
+        {
+          "dmg": 2,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            0,
+            0
+          ],
+          "fluido": true
+        },
+        {
+          "dmg": 2,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            0,
+            0
+          ],
+          "fluido": true
+        }
+      ],
+      "cena": "alvorada",
+      "hp": 51,
+      "perda": 4,
+      "dur": 19.9,
+      "perdaMin": 12.06030150753769,
+      "golpesA": 27,
+      "golpesB": 9,
+      "golpesMinA": 81.4070351758794,
+      "golpesMinB": 27.1356783919598,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 137,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "eventos": [],
+      "cena": "alvorada",
+      "hp": 48,
+      "perda": 0,
+      "dur": 16.466666666666665,
+      "perdaMin": 0,
+      "golpesA": 22,
+      "golpesB": 6,
+      "golpesMinA": 80.16194331983806,
+      "golpesMinB": 21.862348178137655,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 137,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "eventos": [
+        {
+          "dmg": 1,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            0,
+            1
+          ],
+          "fluido": true
+        },
+        {
+          "dmg": 1,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            0,
+            0
+          ],
+          "fluido": true
+        },
+        {
+          "dmg": 2,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            1,
+            1
+          ],
+          "fluido": true
+        }
+      ],
+      "cena": "alvorada",
+      "hp": 50,
+      "perda": 4,
+      "dur": 15.3,
+      "perdaMin": 15.686274509803921,
+      "golpesA": 19,
+      "golpesB": 4,
+      "golpesMinA": 74.50980392156862,
+      "golpesMinB": 15.686274509803921,
+      "terminou": true
+    }
+  ]
+}

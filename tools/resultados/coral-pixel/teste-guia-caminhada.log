@@ -1,0 +1,11 @@
+  bifurcacao         121 blocos, 480 quadros, pior desvio da seta 0°, distância final 0
+  trilha_jequitiba   206 blocos, 820 quadros, pior desvio da seta 0°, distância final 0
+  bifurcacao__leste  131 blocos, 520 quadros, pior desvio da seta 0°, distância final 0
+  caminhada física bifurcacao         chegou em 481 quadros
+  caminhada física trilha_jequitiba   chegou em 799 quadros
+  caminhada física bifurcacao__leste  chegou em 662 quadros
+  muro invisível: 2350 blocos em volta das rotas conferidos
+Caminhada do guia: 1964 verificações
+OK
+(node:98559) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

@@ -1,5 +1,7 @@
 # Cidade Coral: piloto local
 
+> Registro histórico do piloto 3D. A etapa atual está em [Coral em pixel art](coral-pixel-art.md), no branch `coral-pixel-art`; os pontos do bairro foram reorganizados.
+
 Ensaio restrito à cidade do Ginásio do Farol, à praça e ao cais. Branch `cidade-coral-piloto`. Não publicado.
 
 ## Experiência

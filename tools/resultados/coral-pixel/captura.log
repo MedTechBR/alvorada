@@ -1,0 +1,4 @@
+fachadas {"nome":"fachadas","x":1663.5,"y":1940.5,"p95":16.700000000000728,"cpuP95":2.8999999910593033,"picoMiB":280.6781253814697,"geometrias":45,"texturas":36,"pixel":true,"setoresPixel":20,"objetosPixel":15,"heapMiB":279.0678548812866}
+praca {"nome":"praca","x":1714.5,"y":1964.5,"p95":16.700000000000728,"cpuP95":3.4000000059604645,"picoMiB":280.09825229644775,"geometrias":45,"texturas":36,"pixel":true,"setoresPixel":15,"objetosPixel":33,"heapMiB":279.1722764968872}
+farol {"nome":"farol","x":1964.5,"y":2013.5,"p95":16.799999999999272,"cpuP95":2.7999999970197678,"picoMiB":281.4935646057129,"geometrias":45,"texturas":36,"pixel":true,"setoresPixel":15,"objetosPixel":12,"heapMiB":279.69197177886963}
+cais {"nome":"cais","x":1730.5,"y":2104.5,"p95":16.700000000004366,"cpuP95":3.2000000029802322,"picoMiB":280.4370708465576,"geometrias":45,"texturas":36,"pixel":true,"setoresPixel":20,"objetosPixel":0,"heapMiB":279.4519462585449}

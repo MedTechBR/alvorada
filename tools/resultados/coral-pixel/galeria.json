@@ -1,0 +1,10 @@
+{
+  "personagens": 4,
+  "animacoes": [
+    "walk",
+    "run",
+    "idle"
+  ],
+  "galeria844": true,
+  "erros": []
+}
