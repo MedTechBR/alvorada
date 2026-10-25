@@ -4,7 +4,7 @@ import { IS_TOUCH } from './input.js';
 
 // Efeitos: partículas em pool (ParticleContainer, um draw call por camada), anéis de choque,
 // raios, luzes, números e letreiros em fonte pixel, marcas no chão, tremor, pausa no impacto
-// e clarão de tela. Nada é criado por quadro: tudo sai de pools.
+// e luz curta no impacto. Nada é criado por quadro: tudo sai de pools.
 
 const TAU = Math.PI * 2;
 const DYN = { vertex: true, position: true, rotation: true, uvs: true, color: true };
@@ -34,7 +34,7 @@ export class Fx {
     this.layer.addChild(this.pcN, this.shapes, this.pcA, this.pcT);
     this.pool = []; this.live = [];
     this.rings = []; this.bolts = []; this.texts = []; this.decalList = [];
-    this.shake = 0; this.hitStop = 0; this.flash = 0; this.flashColor = 0xffffff;
+    this.shake = 0; this.hitStop = 0;
     this.max = IS_TOUCH ? 1400 : 3200;
     this.q = IS_TOUCH ? 0.65 : 1;               // qualidade (pode cair se o quadro pesar)
     this.dirty = new Set();
@@ -170,7 +170,8 @@ export class Fx {
 
   // ---------- câmera ----------
   kick(shake = 0.2, stop = 0.05) { this.shake = Math.max(this.shake, shake); this.hitStop = Math.max(this.hitStop, Math.min(stop, 0.06)); } // pausa no impacto: no máximo 60 ms
-  screenFlash(color = 0xffffff, a = 0.35) { this.flashColor = color; this.flash = Math.max(this.flash, Math.min(0.28, a * 0.6)); }
+  // Mantém a API dos golpes antigos, concentrando a luz no Pokémon, sem lavar a tela inteira.
+  screenFlash(color = 0xffffff, a = 0.35) { const p=this.g.lead??this.g.player;if(p)this.light(p.x,p.y-12,color,32,.12,Math.min(.35,a)); }
 
   // ---------- quadro ----------
   update(dt) {
@@ -229,12 +230,7 @@ export class Fx {
     }
     // marcas no chão somem devagar
     for (const d of this.decalList) if (d.life > 0) { d.life -= dt; d.s.alpha = d.a * Math.min(1, d.life / 4); if (d.life <= 0) d.s.visible = false; }
-    // clarão de tela
-    if (this.flash > 0 || this.flashSpr?.visible) {
-      if (!this.flashSpr) { this.flashSpr = new PIXI.Sprite(PIXI.Texture.WHITE); this.flashSpr.blendMode = 'add'; this.g.app.stage.addChild(this.flashSpr); }
-      const f = this.flashSpr; f.width = innerWidth; f.height = innerHeight; f.tint = this.flashColor;
-      f.alpha = Math.max(0, this.flash); f.visible = this.flash > 0.005; this.flash -= dt * 2.2;
-    }
+
   }
   get count() { return this.live.length; }
 }

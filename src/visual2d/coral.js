@@ -53,7 +53,7 @@ export class CoralPixel {
   }
   if(!on)return false;
   // Escala inteira para que sprites e cenário compartilhem a mesma grade visual.
-  const z=(g.encontro?.ativo?Math.max(3,Math.round(g.zoom||3)):Math.max(1,Math.round((g.zoom||3)*.67)))*(g.camK??1),c=g.cam;
+  const z=(g.encontro?.ativo?2:Math.max(1,Math.round((g.zoom||3)*.67)))*(g.camK??1),c=g.cam;
   const centroX=g.encontro?.ativo ? .42 : .47,centroY=g.encontro?.ativo ? .56 : .66;
   g.world.scale.set(z);g.world.x=Math.round(innerWidth*centroX-(c.x+(c.sx??0))*z);g.world.y=Math.round(innerHeight*centroY-(c.y+(c.sy??0))*z);
   const view={x0:c.x-innerWidth*centroX/z-96,x1:c.x+innerWidth*(1-centroX)/z+96,y0:c.y-innerHeight*centroY/z-176,y1:c.y+innerHeight*(1-centroY)/z+96};
@@ -119,7 +119,7 @@ export class CoralPixel {
   esconder(g.map.root);for(const o of this.objetos.keys())esconder(o.sprite);
   // Informações de PS e ações voltam assim que há um confronto próximo.
   const f=g.lead?.alive?g.lead:g.player;
-  const luta=!!g.story?.battle||g.wilds.some(w=>w.alive&&!w.dead&&w.ai?.state==='aggro'&&Math.hypot(w.x-f.x,w.y-f.y)<256);
+  const luta=!!g.encontro?.ativo||!!g.story?.battle||g.wilds.some(w=>w.alive&&!w.dead&&w.ai?.state==='aggro'&&Math.hypot(w.x-f.x,w.y-f.y)<256);
   document.body.classList.toggle('coral-luta',luta);
   const restaurar=this.pessoas.aplicar();
   try{g.app.renderer.render({container:g.app.stage});}finally{restaurar();for(const o of ocultos)o.visible=true;}

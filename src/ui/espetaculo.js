@@ -1,18 +1,9 @@
 import { TYPE_COLOR } from '../data/types.js';
 import { IS_TOUCH } from '../engine/input.js';
 
-// Espetáculo da luta (camada de TELA, por cima do jogo, sem pegar toque): o que deixa a batalha "acabada" como no vídeo
-// de referência do dono (Pokémon Battlegrounds, RED vs GOLD):
-// - textos que voam: dano grande com contorno (cor pela eficácia), "SUPER EFETIVO!", "POUCO EFETIVO", "NÃO AFETA",
-//   "CRÍTICO!" e os avisos curtos do jogo (Errou!, Paralisado!, +XP…). Antes eram letras de pixel desenhadas no CHÃO
-//   (no 3D a sobreposição deita tudo no plano do chão) e ficavam ilegíveis;
-// - anúncio do golpe: uma pílula "Nome do golpe!" do lado de quem usou (seu lado à esquerda, o adversário à direita);
-// - faixas enormes inclinadas: "<NOME> DESMAIOU!" e "MEGA <NOME>!";
-// - quadro de impacto (estilo mangá): golpe forte, crítico, super efetivo, choque de golpes e todo nocaute cortam por
-//   ~0,4 s para linhas de velocidade saindo do ponto do impacto, as silhuetas dos dois Pokémon (os sprites de verdade),
-//   o dano e a eficácia. Sem onomatopeias (pedido do dono). Com pausa no impacto curta; no máximo um a cada 4 s, fora
-//   os nocautes. Nunca segura o controle: a camada não recebe toque e o jogo continua por baixo.
-// Tudo num canvas 2D só; quando não há nada para mostrar ele fica limpo e parado (custo zero).
+// Informações da luta em coordenadas de tela: PS dos adversários, dano, eficácia e nome do golpe.
+// Reutiliza um canvas leve, sem quadros de impacto em tela inteira nem onomatopeias.
+// A projeção acompanha o renderer ativo, inclusive nas arenas em pixel art.
 const CSS = `
 #show { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
 `;
@@ -48,6 +39,7 @@ export class Espetaculo {
   // ponto da tela de um ponto do mundo (x, y no chão; h acima dele)
   // (no 3D: a altura do chão é lida uma vez por texto e a projeção usa a matriz pronta da câmera, sem alocar)
   #tela(x, y, h = 0, o = null) {
+    if(this.g.coralPixel?.ativo)return this.g.coralPixel.paraTela(x,y,h);
     const v = this.g.v3d;
     if (v?.pv && o) { o.alt ??= v.altura(x, y); return v.paraTelaPlano(x, y, o.alt + h, (this.tmp ??= {})); }
     return this.g.worldToScreen ? this.g.worldToScreen(x, y, h) : { x, y };
@@ -59,7 +51,7 @@ export class Espetaculo {
     const s = String(text), st = style ?? (/^[0-9]+$/.test(s) ? 'dmg' : 'info');
     this.#push({ x, y, h: 0, s, cor: hex(color), st, big, life: st === 'banner' ? 1.05 : st === 'dmg' ? 0.95 : 0.9 });
   }
-  // dano num alvo: número com contorno, cor pela eficácia; acima dele "SUPER EFETIVO!" etc. e "CRÍTICO!"
+  // Dano com contorno e cor pela eficácia; a frase fica acima do número.
   dano(t, dmg, { eff = 1, crit = false, forte = false } = {}) {
     const h = (t.topH ?? 20) * 0.85 + 6, x = t.x + (Math.random() - 0.5) * 8;
     const cor = eff > 1 ? '#ffc23a' : eff < 1 && eff > 0 ? '#c9ced8' : crit ? '#ff7a4a' : '#ffffff';
@@ -71,10 +63,10 @@ export class Espetaculo {
   }
   #palavras(eff, crit) {
     const out = [];
-    if (eff > 1) out.push({ s: 'SUPER EFETIVO!', cor: COR_EF.super });
-    else if (eff === 0) out.push({ s: 'NÃO AFETA', cor: COR_EF.nada });
-    else if (eff < 1) out.push({ s: 'POUCO EFETIVO', cor: COR_EF.pouco });
-    if (crit) out.push({ s: 'CRÍTICO!', cor: COR_EF.crit });
+    if (eff > 1) out.push({ s: 'É super eficaz!', cor: COR_EF.super });
+    else if (eff === 0) out.push({ s: 'Não afeta', cor: COR_EF.nada });
+    else if (eff < 1) out.push({ s: 'Pouco eficaz', cor: COR_EF.pouco });
+    // O crítico já aparece na cor e no tamanho do dano; só a eficácia recebe uma frase.
     return out;
   }
   #push(o) {

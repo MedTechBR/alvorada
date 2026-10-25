@@ -26,13 +26,20 @@ export function pintarSetorCoral(map,atlas,cx,cy){
   if(agua.has(t))continue;
   c.drawImage(atlas,(m%4)*128+(x%4)*32,Math.floor(m/4)*128+(y%4)*32,32,32,px,py,16,16);
   if(m===0){c.fillStyle='#e8cf9630';c.fillRect(px,py,16,16);}
-  // Espuma estreita só na margem; não clareia a água inteira.
+  // A grama termina numa borda irregular de dois pixels, sem recortes quadrados sobre a calçada.
+  if(m===2&&!pedra.has(t))for(const [dx,dy]of [[0,-1],[0,1],[-1,0],[1,0]]){
+   const viz=materialCoral(map.at(x+dx,y+dy));if(![0,1,4].includes(viz))continue;
+   c.save();c.beginPath();c.rect(px+(dx===1?14:0),py+(dy===1?14:0),dx?2:16,dy?2:16);c.clip();
+   c.drawImage(atlas,(viz%4)*128+(x%4)*32,Math.floor(viz/4)*128+(y%4)*32,32,32,px,py,16,16);c.restore();
+   c.fillStyle='#557d39';for(let k=1;k<16;k+=4){const n=(x*13+y*7+k)%3;if(dx)c.fillRect(px+(dx===1?13:1),py+k,2,n+1);else c.fillRect(px+k,py+(dy===1?13:1),n+1,2);}
+  }
+  // Espuma fina acompanha só a margem real; o contorno do piso continua legível.
   c.fillStyle='#f2eed4';
-  if(agua.has(map.at(x,y-1)))c.fillRect(px,py,16,2);
-  if(agua.has(map.at(x,y+1)))c.fillRect(px,py+14,16,2);
-  if(agua.has(map.at(x-1,y)))c.fillRect(px,py,2,16);
-  if(agua.has(map.at(x+1,y)))c.fillRect(px+14,py,2,16);
-  if(t===T.STAIRS){c.fillStyle='#8a8069';for(let k=3;k<16;k+=4)c.fillRect(px,py+k,16,1);}
+  if(agua.has(map.at(x,y-1)))c.fillRect(px,py,16,1);
+  if(agua.has(map.at(x,y+1)))c.fillRect(px,py+15,16,1);
+  if(agua.has(map.at(x-1,y)))c.fillRect(px,py,1,16);
+  if(agua.has(map.at(x+1,y)))c.fillRect(px+15,py,1,16);
+  if(t===T.STAIRS){for(let k=3;k<16;k+=4){c.fillStyle='#8a8069';c.fillRect(px,py+k,16,1);c.fillStyle='#f4e4c0';c.fillRect(px,py+k-1,16,1);}}
   // Sombra do barranco denuncia o bloqueio, inclusive sem objetos sobre ele.
   if(pedra.has(map.at(x,y-1))&&!pedra.has(t)){c.fillStyle='#203e403b';c.fillRect(px,py,16,3);}
  }
