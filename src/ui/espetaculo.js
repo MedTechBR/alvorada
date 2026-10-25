@@ -125,7 +125,7 @@ export class Espetaculo {
   // ---------- anúncio do golpe (pílula do lado de quem usou) ----------
   anuncio(lado, nome, tipo) {
     if (!nome) return;
-    this.anuncios[lado] = { s: nome + '!', cor: TYPE_COLOR[tipo] ?? '#8a8f9c', t: 0, life: 1.7 };
+    this.anuncios[lado] = { s: nome, cor: TYPE_COLOR[tipo] ?? '#8a8f9c', t: 0, life: 1.7 };
   }
 
   // ---------- faixas: "<X> DESMAIOU!", "MEGA <X>!" ----------
@@ -195,24 +195,21 @@ export class Espetaculo {
   #anuncio(x, lado, dt) {
     const o = this.anuncios[lado]; if (!o) return;
     o.t += dt; if (o.t >= o.life) { this.anuncios[lado] = null; return; }
-    const E = this.esc, tam = 15 * E, topo = this.#topoHud(lado) + 6;
-    x.font = `italic 900 ${tam.toFixed(1)}px ${FONTE}`;
-    const w = x.measureText(o.s).width + 30 * E, h = tam + 12 * E;
-    const ent = easeOut(clamp(o.t / 0.14, 0, 1)), sai = clamp((o.life - o.t) / 0.2, 0, 1);
+    const E = this.esc, tam = 13 * E, topo = this.#topoHud(lado) + 7;
+    x.font = `700 ${tam.toFixed(1)}px ${FONTE}`;
+    const w = Math.min(this.W * .38, x.measureText(o.s).width + 26 * E), h = tam + 14 * E;
+    const ent = easeOut(clamp(o.t / .14, 0, 1)), sai = clamp((o.life - o.t) / .2, 0, 1);
     const eu = lado === 'eu', margem = 10 + (eu ? this.sl : this.sr);
-    const px = eu ? margem - (1 - ent) * (w + 20) : this.W - margem - w + (1 - ent) * (w + 20);
-    x.globalAlpha = sai;
-    x.save(); x.translate(px, topo);
-    x.transform(1, 0, -0.16, 1, 0, 0);
-    const r = h / 2;
-    x.beginPath(); x.roundRect(0, 0, w, h, r); x.fillStyle = 'rgba(14,18,36,.35)'; x.fill();
-    x.beginPath(); x.roundRect(0, -2, w, h, r); x.fillStyle = '#fbf7ea'; x.fill();
-    x.lineWidth = 2.5; x.strokeStyle = '#151a30'; x.stroke();
-    x.beginPath(); x.roundRect(eu ? 3 : w - 9 * E - 3, 2, 9 * E, h - 8, 4); x.fillStyle = o.cor; x.fill();
-    x.textAlign = 'center'; x.fillStyle = '#151a30';
-    x.fillText(o.s, w / 2 + (eu ? 4 : -4) * E, h / 2 - 1);
-    x.restore(); x.globalAlpha = 1;
+    // O nome aparece inteiro desde o começo, sem deslizar cortado pela borda da tela.
+    const px = eu ? margem : this.W - margem - w;
+    x.save();x.globalAlpha=ent*sai;x.translate(px,topo+(1-ent)*3);
+    x.beginPath();x.roundRect(0,0,w,h,6);x.fillStyle='#173e4bf2';x.fill();
+    x.lineWidth=1;x.strokeStyle='#b4c7ba99';x.stroke();
+    x.fillStyle=o.cor;x.fillRect(eu?3:w-5,5,2,h-10);
+    x.textAlign='center';x.fillStyle='#fff6dc';x.fillText(o.s,w/2,h/2,w-22*E);
+    x.restore();x.globalAlpha=1;
   }
+
   // altura da barra do topo (HUD de batalha), para os anúncios ficarem logo abaixo
   // (sem a barra, luta com selvagens: abaixo do painel do seu Pokémon à esquerda e do minimapa/menu à direita)
   #topoHud(lado = null) {
