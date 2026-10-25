@@ -107,10 +107,11 @@ export class UI {
   }
 
   // ---------- atalhos ----------
-  say(lines, opts) { this.g.input?.taps.clear(); return this.dialog.say(lines, opts); }
+  say(lines, opts) { this.g.input?.limpar(); return this.dialog.say(lines, opts); }
   toast(t, opts) { this.hud.toast(t, opts); }
-  openMenu() { if (this.state !== 'play' || this.menu.isOpen || this.dialog.open) return; this.menu.open(); document.body.classList.add('menu-open'); this.g.audio?.duck?.(0.45); }
+  openMenu() { if (this.state !== 'play' || this.menu.isOpen || this.dialog.open) return; this.g.input?.limpar();this.menu.open(); document.body.classList.add('menu-open'); this.g.audio?.duck?.(0.45); }
   openOnline() { this.menu.close(); const u = this.g.net?.ui; if (u && !u.modalOpen) u.toggleMenu(); }
+  openParty() { this.openMenu(); if(this.menu.isOpen)this.menu.openParty(); }
   openMap() { this.openMenu(); if(this.menu.isOpen)this.menu.openMap(); }
   openPC() { this.menu.openPC(); document.body.classList.add('menu-open'); this.g.audio?.duck?.(0.45); }
   openShop(stock, opts) { this.g.audio?.duck?.(0.45); return this.menu.openShop(stock, opts); }

@@ -107,6 +107,8 @@ export class Combat {
   // ---------- quem é inimigo de quem ----------
   hostile(a, b) {
     if (!b || a === b) return false;
+    // Soltar o Pokémon não inicia uma briga durante o passeio.
+    if(this.g.encontro?.passeio()&&((a.side==='wild'&&(b.side==='ally'||b.isTrainer))||(b.side==='wild'&&(a.side==='ally'||a.isTrainer))))return false;
     if (b.isTrainer) return a.side === 'wild' && !a.isTrainer;
     if (b.dead || b.mon?.hp <= 0 || a.isTrainer) return false;
     if (a.side === 'wild' && b.side === 'wild') { // selvagens só brigam entre si se forem rivais/provocados

@@ -67,6 +67,7 @@ export class Toque {
     $('touch').appendChild(fx);
     const toque = (el, fn) => { el.addEventListener('touchstart', (e) => { e.preventDefault(); e.stopPropagation(); fn(e); }, { passive: false }); el.addEventListener('click', (e) => { e.preventDefault(); fn(e); }); };
     toque(tm, () => this.abrirEquipe(fx.hidden));
+    const duelo=document.createElement('button');duelo.id='t-battle';duelo.className='tb small tq-off';duelo.innerHTML=ICONES.fisico+'<span class="tq-contexto">Batalhar</span>';duelo.setAttribute('aria-label','Batalhar');this.box.appendChild(duelo);toque(duelo,()=>g.input.taps.add('battle'));
     fx.addEventListener('touchstart', (e) => { e.stopPropagation(); const b = e.target.closest('button'); if (!b) return; e.preventDefault(); this.#escolha(b); }, { passive: false });
     fx.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) this.#escolha(b); });
     addEventListener('resize', () => { this.v.lay = null; this.#recortes(); });
@@ -129,17 +130,22 @@ export class Toque {
     if (!this.ativo) return;
     const g = this.g, m = g.party[g.leadIdx], trainer = g.mode !== 'pokemon';
     const lead = g.lead?.mon === m ? g.lead : null, dmax = !!lead?.maxMoves;
+    const passeio=trainer&&g.encontro?.passeio(),alvo=passeio&&g.encontro.alvo();
     for (const b of document.querySelectorAll('.tb.move')) {
       const i = +b.dataset.slot;
       b.classList.remove('max'); b.style.setProperty('--cd', '0');
       if (trainer) {
-        // treinador: 1º = Enviar (o nome do Pokémon embaixo), 2º = Capturar (aparece com selvagem perto); 3º e 4º somem
-        const html = !m ? '' : i === 0 ? `<i class="tq-ic">${ICONES.bola}</i><span class="tq-nome">${m.name}</span>` : i === 1 ? `<i class="tq-ic">${ICONES.capturar}</i><b class="tq-n"></b>` : '';
+        b.dataset.acao=i===0&&passeio&&alvo?'batalhar':'';
+        b.setAttribute('aria-label',i===0&&m?(passeio?(alvo?'Batalhar contra '+alvo.mon.name:'Equipe'):'Enviar '+m.name):i===1?'Capturar':'Indisponível');
+        // Na exploração, o botão principal abre a equipe ou inicia a batalha diretamente.
+        const html = !m ? '' : i === 0 ? `<i class="tq-ic">${passeio?(alvo?ICONES.fisico:ICONES.equipe):ICONES.bola}</i><span class="tq-nome">${passeio?(alvo?"Batalhar":"Equipe"):m.name}</span>` : i === 1 ? `<i class="tq-ic">${ICONES.capturar}</i><b class="tq-n"></b>` : '';
         b.innerHTML = html; b.dataset.tem = html ? '1' : '';
         b.style.setProperty('--tc', i === 0 ? '#e8584a' : '#3a8ad8');
         continue;
       }
+      b.dataset.acao='';
       const mv = m && (lead ? g.combat.moveAt(lead, i).mv : MOVES[m.moves[i]]);
+      b.setAttribute('aria-label',mv?.name??'Sem golpe');
       b.dataset.tem = mv ? '1' : '';
       b.innerHTML = mv ? `<i class="tq-ic">${ICONE_CAT[mv.cat] ?? ICONES.fisico}</i><b class="tq-cd"></b><span class="tq-nome">${mv.name}</span>` : '';
       b.style.setProperty('--tc', TYPE_COLOR[mv?.type] ?? '#999');
@@ -166,22 +172,24 @@ export class Toque {
     const vis = {};
     const fala = !!this.ui.hud?.promptKey;
     const bolas = (g.currentBall?.() && g.bag[g.currentBall()]) || 0;
-    const luta = !!((g.story?.battle && !g.story.battle.done) || (g.tocas?.reide && !g.tocas.reide.done) || g.net?.duel?.active);
+    const luta = !!(g.encontro?.ativo || (g.story?.battle && !g.story.battle.done) || (g.tocas?.reide && !g.tocas.reide.done) || g.net?.duel?.active);
     const selv = !luta && bolas > 0 && this.#selvagemPerto(pk ? l : g.player, pk ? 15 * 16 : 9 * 16);
     const m = g.party[g.leadIdx];
     const nGolpes = pk ? l.mon.moves.length : 0;
     vis.move = [!!m, pk ? nGolpes > 1 : selv, pk && nGolpes > 2, pk && nGolpes > 3];
     vis['t-dodge'] = true;
-    vis['t-act'] = fala;
+    vis['t-act'] = fala&&!/Batalhar/.test(this.ui.hud?.promptKey??'');
     vis['t-team'] = g.party.length > 1 || pk;
     vis['t-ball'] = pk && selv;
     vis['t-alt'] = pk && !!(g.combat.alt.canFly(g.lead) || g.combat.alt.canDive(g.lead) || ['fly', 'dive'].includes(g.lead?.alt?.mode)); vis['t-jump'] = pk;
     vis['t-power'] = pk && !!g.poder?.opcao?.();
-    vis['t-mount'] = !pk && !!g.mount?.hint?.();
-    // A observação dos moradores de Coral prioriza a interação no passeio.
-    if(!pk&&!luta&&/Observar/.test(this.ui.hud?.promptKey??'')){vis['t-team']=false;vis['t-mount']=false;}
-    // Passeio no piloto: equipe e montarias seguem no menu; no campo os atalhos reaparecem.
-    if(g.coralPixel?.ativo&&!pk&&!luta){vis['t-team']=false;vis['t-mount']=false;vis.move[1]=false;}
+    const montaria=g.mount?.hint?.();
+    vis['t-mount'] = !pk && !luta && !g.encontro?.ativo && !!montaria && (g.mount?.active||!g.map.isIndoor(g.player.x,g.player.y));
+    const bm=document.getElementById('t-mount');if(bm&&montaria&&bm.getAttribute('aria-label')!==montaria.title)bm.setAttribute('aria-label',montaria.title);
+    // O passeio mantém os atalhos disponíveis; o botão contextual não substitui a montaria.
+    if(g.coralPixel?.ativo&&!pk&&!luta)vis.move[1]=false;
+    const alvo=g.encontro?.alvo?.();if(!pk&&g.encontro?.passeio()){vis['t-team']=!!alvo&&g.party.length>1;vis.move[1]=false;}vis['t-battle']=pk&&!!alvo&&(!fala||/Batalhar/.test(this.ui.hud?.promptKey??''));
+    const desafio=document.getElementById('t-battle');if(desafio&&alvo){const nome='Batalhar contra '+alvo.mon.name;if(desafio.title!==nome){desafio.setAttribute('aria-label',nome);desafio.title=nome;}}
     vis['t-swap'] = false; // trocar fica na faixa da equipe
     // ícone do botão grande da esquerda: esquiva com o Pokémon, correr com o treinador
     this.#set('esqIc', pk, (v) => { const b = document.getElementById('t-dodge'); if (b) { b.innerHTML = v ? ICONES.esquiva : ICONES.correr; b.setAttribute('aria-label', v ? 'Esquiva' : 'Correr'); } });
@@ -214,7 +222,7 @@ export class Toque {
     mostra($('t-swap'), false);
     // A: no treinador fica no arco (lugar do golpe 3); com o Pokémon, vai para uma vaga dos pequenos
     const peq = L.peq, livres = new Set(peq.map((_, i) => i)), fixo = FIXO[pk ? 'pokemon' : 'treinador'];
-    const ids = ['t-ball', 't-team', 't-jump', 't-alt', 't-mount', 't-power', 't-act'];
+    const ids = ['t-ball', 't-team', 't-jump', 't-alt', 't-mount', 't-power', 't-act', 't-battle'];
     const lugar = {};
     for (const id of ids) if (vis[id] && fixo[id] != null) { lugar[id] = fixo[id]; livres.delete(fixo[id]); }
     if (!pk) { pos($('t-act'), ARCO[2], TAM.arco); lugar['t-act'] = -1; pos($('t-team'), ARCO[3], TAM.peq); lugar['t-team'] = -1; }
@@ -233,10 +241,14 @@ export class Toque {
     this.box.style.setProperty('--tq-k', k.toFixed(3));
     this.box.style.width = w + 'px'; this.box.style.height = h + 'px';
     // No passeio, o par de ações fica junto e os nomes não cobrem o cenário.
-    if(this.g.coralPixel?.ativo&&!pk&&!this.g.story?.battle){
+    if(!pk&&!this.g.emLuta()){
       pos($('t-dodge'),[29,29],48);pos(document.querySelector('.tb.move[data-slot="0"]'),[86,29],48);
+      if(vis.move[1])pos(document.querySelector('.tb.move[data-slot="1"]'),[143,85],44);
+      if(vis['t-mount'])pos($('t-mount'),[143,29],48);
+      if(vis['t-team'])pos($('t-team'),[200,29],48);
       if(vis['t-act'])pos($('t-act'),[86,85],44);
-      this.box.style.width='114px';this.box.style.height=(vis['t-act']?'108':'56')+'px';this.box.style.setProperty('--tq-k','1');
+      if(vis['t-battle'])pos($('t-battle'),[86,85],44);
+      this.box.style.width=(vis['t-team']?'224':vis['t-mount']?'167':'114')+'px';this.box.style.height=(vis['t-act']||vis['t-battle']||vis.move[1]?'108':'56')+'px';this.box.style.setProperty('--tq-k','1');
     }
     this.#cabeNomes();
   }

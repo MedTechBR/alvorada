@@ -7,7 +7,7 @@ const KEYS = {
   KeyW: 'up', ArrowUp: 'up', KeyS: 'down', ArrowDown: 'down', KeyA: 'left', ArrowLeft: 'left', KeyD: 'right', ArrowRight: 'right',
   ShiftLeft: 'run', ShiftRight: 'run', Space: 'dodge', KeyE: 'act', Enter: 'act', KeyQ: 'ball', Tab: 'swap', KeyF: 'feed',
   Digit1: 'm0', Digit2: 'm1', Digit3: 'm2', Digit4: 'm3', Escape: 'menu', KeyM: 'menu', F3: 'perf',
-  KeyB: 'catch', KeyG: 'ballNext', KeyR: 'recall', KeyC: 'alt', KeyX: 'jump', KeyV: 'power', Equal: 'zoomIn', NumpadAdd: 'zoomIn', Minus: 'zoomOut', NumpadSubtract: 'zoomOut',
+  KeyZ: 'battle', KeyB: 'catch', KeyG: 'ballNext', KeyR: 'recall', KeyC: 'alt', KeyX: 'jump', KeyV: 'power', Equal: 'zoomIn', NumpadAdd: 'zoomIn', Minus: 'zoomOut', NumpadSubtract: 'zoomOut',
 };
 
 export class Input {
@@ -18,7 +18,7 @@ export class Input {
     this.mouse = { x: innerWidth / 2, y: innerHeight / 2, inside: false };
     this.aimStick = null; // vetor do analógico direito / arraste no toque
     this.touchAim = {};   // slot -> {x,y} enquanto arrasta um botão de golpe
-    this.usingPad = false;
+    this.usingPad = false;this.canceladores=[];
     // movimento em grade (src/world/grade.js): pilha das direções apertadas (vale a última), e a direção resultante
     this.pilha = []; this.gridDir = null; this.eixo = null;
     addEventListener('keydown', (e) => {
@@ -29,7 +29,8 @@ export class Input {
       if (DIRS4.includes(a) && !this.pilha.includes(a)) this.pilha.push(a);
     });
     addEventListener('keyup', (e) => { const a = KEYS[e.code]; if (a) { this.held.delete(a); this.pilha = this.pilha.filter((d) => d !== a); } });
-    addEventListener('blur', () => { this.held.clear(); this.pilha.length = 0; });
+    addEventListener('blur', () => this.limpar());
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)this.limpar();});
     canvas.addEventListener('mousemove', (e) => { this.mouse.x = e.clientX; this.mouse.y = e.clientY; this.mouse.inside = true; this.usingPad = false; });
     // toque/clique em algo do mundo (peça de quebra-cabeça): alvoToque(x, y) diz se ali tem algo; o toque vai para
     // `toques` (src/story/enigmas.js consome) e não vira golpe, arremesso nem analógico
@@ -68,6 +69,7 @@ export class Input {
     // a zona do analógico cobre metade da tela: um toque curto em cima de uma peça do quebra-cabeça gira a peça;
     // se o dedo arrasta (mais de 14 px), vira analógico normal a partir de onde encostou
     let pend = null;
+    this.canceladores.push(()=>{sid=null;pend=null;stick.classList.remove('on');stick.style.left=stick.style.top=stick.style.bottom='';knob.style.transform='';});
     const ligaStick = (id, x, y) => {
       sid = id; cx = x; cy = y;
       const r = stick.offsetWidth / 2;
@@ -95,6 +97,7 @@ export class Input {
     // Botões de golpe: toque = mira automática; arrastar = mira manual (estilo Brawl Stars)
     for (const b of document.querySelectorAll('.tb.move')) {
       const slot = +b.dataset.slot; let id = null, bx = 0, by = 0;
+      const cancelar=()=>{id=null;this.touchAim[slot]=null;b.classList.remove('aiming');};this.canceladores.push(cancelar);b.addEventListener('touchcancel',cancelar);
       b.addEventListener('touchstart', (e) => { const t = e.changedTouches[0]; id = t.identifier; bx = t.clientX; by = t.clientY; this.touchAim[slot] = null; b.classList.add('aiming'); e.preventDefault(); }, { passive: false });
       b.addEventListener('touchmove', (e) => { for (const t of e.changedTouches) if (t.identifier === id) { const dx = t.clientX - bx, dy = t.clientY - by; if (Math.hypot(dx, dy) > 18) this.touchAim[slot] = { x: dx, y: dy }; } e.preventDefault(); }, { passive: false });
       b.addEventListener('touchend', (e) => { for (const t of e.changedTouches) if (t.identifier === id) { this.taps.add('m' + slot); this.releasedAim = { slot, dir: this.touchAim[slot] }; this.touchAim[slot] = null; b.classList.remove('aiming'); id = null; } });
@@ -114,6 +117,7 @@ export class Input {
     box.innerHTML = '<button data-d="up" aria-label="Cima"></button><button data-d="left" aria-label="Esquerda"></button><button data-d="right" aria-label="Direita"></button><button data-d="down" aria-label="Baixo"></button>';
     stick.after(box);
     const ids = new Map(); // dedo -> direção
+    this.canceladores.push(()=>{ids.clear();box.querySelectorAll('.on').forEach(b=>b.classList.remove('on'));});
     const por = (e) => {
       for (const t of e.changedTouches) {
         const el = document.elementFromPoint(t.clientX, t.clientY)?.closest?.('#dpad button'), d = el?.dataset.d ?? null;
@@ -174,6 +178,8 @@ export class Input {
     this.eixo = ax >= ay ? 'x' : 'y';
     return this.eixo === 'x' ? (x > 0 ? 'right' : 'left') : (y > 0 ? 'down' : 'up');
   }
+  // Troca de app, tela bloqueada ou gesto cancelado não deixam movimento/ataque presos.
+  limpar(){this.held.clear();this.taps.clear();this.pilha.length=0;this.move.x=this.move.y=0;this.gridDir=this.eixo=this.aimStick=this.releasedAim=null;this.touchAim={};this.corre=this.corriaBtn=false;for(const f of this.canceladores)f();}
   pressed(a) { return this.taps.has(a); }
   down(a) { return this.held.has(a); }
   endFrame() { this.taps.clear(); this.releasedAim = null; }

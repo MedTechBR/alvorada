@@ -174,7 +174,8 @@ class Game {
   // Envia o Pokémon i para o campo (onde a bola caiu) e passa a controlar ele
   async #sendOut(i, at = null) {
     const mon = this.party[i]; if (!mon) return;
-    if (this.lead) { this.fx.burst(this.lead.x, this.lead.y - 8, 0xff5a5a, 0.8); this.ents.removeChild(this.lead.view); this.entities = this.entities.filter((e) => e !== this.lead); this.lead = null; }
+    const pedido=this.envioToken=(this.envioToken??0)+1;
+    if (this.lead) { this.fx.burst(this.lead.x, this.lead.y - 8, 0xff5a5a, 0.8); this.removeEntity(this.lead); this.lead = null; }
     this.leadIdx = i;
     let x = at?.x ?? this.player.x + 14, y = at?.y ?? this.player.y + 6;
     // arena de ginásio: o Pokémon que entra (bola, troca, o próximo depois de um desmaio) nasce DENTRO da arena, perto do
@@ -184,7 +185,8 @@ class Game {
     const e = new PokeEntity(this, mon, 'ally', x, y);
     this.sendingOut = (this.sendingOut ?? 0) + 1; // enquanto o sprite carrega, ninguém joga outra bola (evita Pokémon duplicados)
     try { await e.ready; } finally { this.sendingOut--; }
-    if (this.lead) { this.ents.removeChild(this.lead.view); this.entities = this.entities.filter((o) => o !== this.lead); this.lead = null; }
+    if(pedido!==this.envioToken){e.view.destroy({children:true});return;} // a última escolha prevalece, mesmo com sprites baixando
+    if (this.lead) { this.removeEntity(this.lead); this.lead = null; }
     // o treinador passou por uma porta (ou foi levado pela história) enquanto a bola voava: sai do lado dele
     if (Math.hypot(e.x - this.player.x, e.y - this.player.y) > 6 * T) { e.x = this.player.x + 14; e.y = this.player.y + 6; }
     if (A && !A.done) ({ x: e.x, y: e.y } = this.#ondeEntra(A, e.x, e.y));
@@ -236,10 +238,12 @@ class Game {
   }
   // Chama o Pokémon de volta (raio vermelho até o treinador) e volta a controlar o treinador
   recall(silent = false) {
+    this.envioToken=(this.envioToken??0)+1;
+    if(this.throwingMon){this.throwingMon.s.destroy();this.throwingMon=null;}
     const l = this.lead; if (!l) { this.mode = 'trainer'; return; }
     this.retornoAuto = null;
     this.#feixe(l);
-    this.ents.removeChild(l.view); this.entities = this.entities.filter((e) => e !== l); this.lead = null;
+    this.removeEntity(l); this.lead = null;
     this.mode = 'trainer';
     if (!silent) { this.toast(`${l.mon.name}, volte!`); this.audio.sfx('pop'); }
     this.hudLead(); this.hudMoves();
@@ -271,8 +275,9 @@ class Game {
       const i = (this.leadIdx + k) % n;
       if (this.party[i].fainted) continue;
       if (i === this.leadIdx) return;
-      if (this.mode === 'pokemon' && this.lead) this.#trocaEmCampo(i);
-      else { this.leadIdx = i; this.toast(`Escolhido: ${this.party[i].name} (Q para enviar)`); this.hudLead(); this.hudMoves(); }
+      if(this.sendingOut>0)this.#sendOut(i);
+      else if (this.mode === 'pokemon' && this.lead) this.#trocaEmCampo(i);
+      else { this.leadIdx = i; this.toast(`Escolhido: ${this.party[i].name} (escolhido para a próxima batalha)`); this.hudLead(); this.hudMoves(); }
       return;
     }
   }
@@ -280,13 +285,14 @@ class Game {
   escolher(i) {
     const m = this.party[i]; if (!m || i === this.leadIdx) return;
     if (m.fainted) { this.toast(`${m.name} não pode lutar.`); return; }
-    if (this.mode === 'pokemon' && this.lead) this.#trocaEmCampo(i);
+    if(this.sendingOut>0)this.#sendOut(i);
+    else if (this.mode === 'pokemon' && this.lead) this.#trocaEmCampo(i);
     else { this.leadIdx = i; this.toast(`Escolhido: ${m.name}`); this.hudLead(); this.hudMoves(); }
   }
 
   // ---------- selvagens ----------
   async spawnWild(ambiente = false) {
-    const p = this.player;
+    const p = this.player, mapa=this.map;
     for (let tries = 0; tries < 12; tries++) {
       const sp = this.map.randomSpawn(p.x, p.y, ambiente ? 5 : 9, ambiente ? 14 : 20); if (!sp) return; // de preferência no mato alto
       const { x, y } = sp;
@@ -304,6 +310,7 @@ class Game {
       const mon = new Mon(dex, lo + Math.floor(Math.random() * (hi - lo + 1)), { form: form ?? null });
       const w = new PokeEntity(this, mon, 'wild', x, y);
       await w.ready;
+      if(this.map!==mapa||this.encontro?.ativo){w.view.destroy({children:true});return;} // uma carga antiga não entra na arena nem em outro continente
       if (this.wilds.filter((o) => o.alive).length >= WILD_MAX + WILD_AMBIENTE) { w.view.destroy({ children: true }); return; } // a área encheu enquanto o sprite baixava
       // sem internet: só aparecem espécies cujos sprites já estão guardados (nada de bolinha no lugar do Pokémon)
       if (w.set?.placeholder && !navigator.onLine) { w.view.destroy({ children: true }); continue; }
@@ -379,7 +386,7 @@ class Game {
     } else {
       // numa luta de treinador (ou reide), o próximo saudável sai sozinho depois de um respiro (~0,6 s): o arremesso
       // automático do #control, sem tela de escolha; nesse respiro dá para tocar outro na faixa da equipe (escolher)
-      const inBattle = (this.story?.battle && !this.story.battle.done) || (this.tocas?.reide && !this.tocas.reide.done);
+      const inBattle = this.encontro?.ativo || (this.story?.battle && !this.story.battle.done) || (this.tocas?.reide && !this.tocas.reide.done);
       this.koAte = this.time + 0.6;
       if (inBattle && this.party.some((m) => !m.fainted)) return;
       this.toast(`${e.mon.name} desmaiou!`);
@@ -412,7 +419,7 @@ class Game {
       this.toast(`O Alfa deixou cair ${n > 1 ? n + '× ' : ''}${itemName(k)}!`);
     });
   }
-  removeEntity(e) { this.ents.removeChild(e.view); e.view.destroy({ children: true }); this.entities = this.entities.filter((o) => o !== e); this.wilds = this.wilds.filter((o) => o !== e); }
+  removeEntity(e) { if(!e)return;if(e.view&&!e.view.destroyed){e.view.parent?.removeChild(e.view);e.view.destroy({children:true});}this.entities=this.entities.filter(o=>o!==e);this.wilds=this.wilds.filter(o=>o!==e); }
   // XP: quem lutou ganha tudo; com o Exp. Compartilhado ligado, o resto da equipe (sem desmaiar) ganha o mesmo, como
   // nos jogos novos. Assim o Pokémon capturado também cresce sem precisar moer.
   // Os avisos de XP e de nível vão para a pilha do canto (hud.toast com chave): uma linha por Pokémon que soma o XP
@@ -435,7 +442,7 @@ class Game {
   }
   // em luta: treinador, reide, duelo online ou um selvagem bravo perto (as telas de escolha esperam, src/ui/ui.js queue)
   emLuta() {
-    if ((this.story?.battle && !this.story.battle.done) || (this.tocas?.reide && !this.tocas.reide.done) || this.net?.duel?.active) return true;
+    if (this.encontro?.ativo||this.encontro?.transicao||(this.story?.battle && !this.story.battle.done) || (this.tocas?.reide && !this.tocas.reide.done) || this.net?.duel?.active) return true;
     const l = this.lead ?? this.player;
     return (this.wilds ?? []).some((w) => w.alive && !w.dead && w.ai?.state === 'aggro' && Math.hypot(w.x - l.x, w.y - l.y) < 12 * 16);
   }
@@ -597,6 +604,7 @@ class Game {
   frame(rdt) {
     const t0 = performance.now();
     const inp = this.input; inp.poll();
+    if(document.hidden&&!this.net?.room){inp.endFrame();return;} // fora do app, a luta offline espera pelo jogador
     this.encontro?.update();
     if(this.encontro?.transicao){this.#camera(rdt);inp.endFrame();return;}
     if (inp.pressed('perf')) $('perf').hidden = !$('perf').hidden;
@@ -622,8 +630,8 @@ class Game {
     this.#crowd();
     this.arenaGinasio?.conterTodos(); // arena de ginásio: no fim do quadro, ninguém da luta fica fora dela
     this.fx.update(dt);
-    this.show.update(rdt, dt);
     this.#camera(rdt);
+    this.show.update(rdt, dt);
     this.map.flushDirty();
     if(this.encontro?.ativo)this.map.update(rdt);else this.mundo.update(rdt);
     if(!this.encontro?.ativo)this.viagem?.update(rdt); // ninhos de pouso visitados
@@ -656,7 +664,7 @@ class Game {
     if (inp.pressed('zoomOut')) this.setZoom(this.zoom - 1);
     const pk = this.mode === 'pokemon' && this.lead?.alive;
     // numa batalha de treinador da história, o seu Pokémon sai sozinho (como nos jogos)
-    if (!pk && this.time >= (this.koAte ?? 0) && ((this.story?.battle && !this.story.battle.done) || (this.tocas?.reide && !this.tocas.reide.done)) && !this.throwingMon && !(this.sendingOut > 0) && this.party.some((m) => !m.fainted)) {
+    if (!pk && this.time >= (this.koAte ?? 0) && (this.encontro?.ativo || (this.story?.battle && !this.story.battle.done) || (this.tocas?.reide && !this.tocas.reide.done)) && !this.throwingMon && !(this.sendingOut > 0) && this.party.some((m) => !m.fainted)) {
       const i = this.party[this.leadIdx]?.fainted ? this.party.findIndex((m) => !m.fainted) : this.leadIdx;
       const a = this.#aimPoint(); this.throwMon(i, a.x, a.y);
     }
@@ -778,6 +786,7 @@ class Game {
     } else {
       // atrás do Pokémon (contra o movimento dele), a uns 4,5 blocos
       const v = Math.hypot(l.vx, l.vy), a = l.angle ?? 0;
+      if(v<5&&dl<=6*T)return null; // parado no passeio: o treinador não recua sozinho nem sai do ponto de retorno
       const fx = v > 10 ? l.vx / v : Math.cos(a), fy = v > 10 ? l.vy / v : Math.sin(a);
       ax = l.x - fx * 4.5 * T; ay = l.y - fy * 4.5 * T;
     }

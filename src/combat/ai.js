@@ -49,6 +49,7 @@ export class WildAI {
     // A população extra não transforma exploração em combate contra uma multidão.
     const contraJogador = by === this.g.player || by.side === 'ally';
     const jaPressiona = w.ai.state === 'aggro' && (w.aggroTarget === this.g.player || w.aggroTarget?.side === 'ally');
+    if(contraJogador&&this.g.encontro?.passeio())return;
     if (contraJogador && !jaPressiona && (this.g.wilds ?? []).filter(o =>
       o !== w && o.alive && o.ai.state === 'aggro' && (o.aggroTarget === this.g.player || o.aggroTarget?.side === 'ally')).length >= SELVAGENS_COMBATE) return;
     if (w.ai.state === 'sleep') this.wake(w);
@@ -72,7 +73,7 @@ export class WildAI {
 
   // ---------- bandos com alfa ----------
   async onSpawn(w) {
-    const g = this.g;
+    const g = this.g, mapa=g.map;
     if (w.ai.state === 'sleep' || Math.random() > ALPHA_ODDS || (g.wilds?.filter((o) => o.alive).length ?? 0) > 2) return; // bando só com a área vazia
     const pack = { id: ++this.packs, alpha: w, members: new Set([w]), called: false };
     w.pack = pack; this.makeAlpha(w);
@@ -83,6 +84,7 @@ export class WildAI {
       if (g.map.solidAt(x, y)) continue;
       const m = new PokeEntity(g, new Mon(w.mon.dex, Math.max(2, w.mon.level - 4 + Math.floor(Math.random() * 2))), 'wild', x, y);
       await m.ready;
+      if(g.map!==mapa||g.encontro?.ativo){m.view.destroy({children:true});return;}
       if (g.wilds.filter(o => o.alive).length >= SELVAGENS_TOTAL) { m.view.destroy({ children: true }); break; }
       m.pack = pack; pack.members.add(m); m.ai.state = 'follow'; m.temper = w.temper === 'timid' ? 'timid' : 'neutral';
       g.entities.push(m); g.wilds.push(m); g.ents.addChild(m.view); m.alpha = 0; m.fadeIn = true;
@@ -98,6 +100,7 @@ export class WildAI {
   // ---------- decisão por quadro ----------
   think(e, dt) {
     const g = this.g, ai = e.ai, pl = g.player;
+    if(g.encontro?.passeio()&&ai.state==='aggro'&&(e.aggroTarget===pl||e.aggroTarget?.side==='ally')){ai.state='idle';ai.t=2;e.aggroTarget=null;e.charging=null;}
     ai.t -= dt; ai.dodgeCd = (ai.dodgeCd ?? 0) - dt; ai.react = (ai.react ?? 0) - dt;
     if (e.charging) {
       // Deslocamento lateral lento durante o aviso; não encurta o aviso nem aproxima o adversário.
@@ -151,7 +154,7 @@ export class WildAI {
     if (sight > 0 && ai.react <= 0) {
       const tgt = lead?.alive && !this.c.alt.hidden(lead) ? lead : pl;
       const d = Math.hypot(tgt.x - e.x, tgt.y - e.y);
-      if (!e.ambiente && e.temper === 'aggressive' && d < sight) { this.provoke(e, tgt); return Z; }
+      if (!g.encontro?.passeio()&&!e.ambiente && e.temper === 'aggressive' && d < sight) { this.provoke(e, tgt); return Z; }
     }
     if (ai.state === 'follow') {
       const a = e.pack?.alpha;
@@ -249,6 +252,7 @@ export class WildAI {
 
   // ---------- rivais e bandos (varredura lenta) ----------
   update(dt) {
+    if(this.g.encontro?.passeio())return; // a exploração não vira uma briga automática entre espécies
     this.scanT -= dt; if (this.scanT > 0) return; this.scanT = 1.5;
     const W = (this.g.wilds ?? []).filter((w) => w.alive && !w.ambiente && (w.ai.state === 'idle' || w.ai.state === 'wander'));
     const pl = this.g.player;

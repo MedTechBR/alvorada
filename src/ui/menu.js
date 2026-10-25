@@ -615,11 +615,13 @@ export class GameMenu {
     }
     const m = g.party[i];
     const canSend = i !== g.leadIdx && !m.fainted && !this.ui.story?.busy;
-    const opts = ['Resumo', 'Editar golpes', ...(canSend ? ['Enviar ao campo'] : []), 'Mudar ordem', 'Usar item', 'Item equipado', ...(mountModes(m).length ? ['Usar como montaria'] : []), 'Cancelar'];
+    const escolha=g.encontro?.passeio()?'Escolher para batalha':'Enviar ao campo';
+    const opts = ['Resumo', 'Editar golpes', ...(canSend ? [escolha] : []), 'Mudar ordem', 'Usar item', 'Item equipado', ...(mountModes(m).length ? ['Usar como montaria'] : []), 'Cancelar'];
     const c = await this.#choose(esc(m.name), opts);
     const pick = opts[c];
     if (pick === 'Resumo') this.#summary(i);
     else if (pick === 'Editar golpes') telaEditarGolpes(this, { screen: (o) => this.#screen(o), push: (l) => this.#push(l), choose: (t, o) => this.#choose(t, o), msg: (t) => this.#msg(t), refresh: () => this.refresh(), focus: (n) => this.#focus(n), pop: () => this.#pop(), q: (s) => this.q(s), helpers: { CAT_PT, KIND_PT, moveEffect } }, i);
+    else if(pick==='Escolher para batalha'){g.escolher(i);this.ui.partyChanged();this.refresh();}
     else if (pick === 'Enviar ao campo') { await g.sendOut(i); g.toast?.(`Vai, ${m.name}!`); this.ui.partyChanged(); this.refresh(); }
     else if (pick === 'Mudar ordem') { L.swap = i; this.refresh(); }
     else if (pick === 'Item equipado') await this.#heldMenu(m);
@@ -1126,6 +1128,7 @@ export class GameMenu {
   // ---------- Mapa (desenhado dos próprios blocos do mapa) ----------
   // Mapa de um continente por vez: abas com os mundos já visitados (Alvorada, Ocaso…). O do mundo atual vem dos blocos
   // do mapa montado; o de outro mundo é montado à parte (src/world/viagem.js, fonteMapa), só com o que foi visitado.
+  openParty() { this.#party(); }
   openMap() { this.#map(); }
   #map(mundo = this.g.map.id) {
     const g = this.g;

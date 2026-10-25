@@ -252,18 +252,20 @@ export class WorldLife {
       if (o.dead || !(o.text || o.berry || o.kind === 'pc') || o.berry && this.g.vivo?.mexido(o)) continue; // árvore caída/toco (src/world/vivo.js) não dá fruta
       const d = Math.hypot(o.x - ax, o.y - 8 - ay); if (d < bd + (o.berry ? 10 : 0)) { bd = d; best = o; }
     }
-    const who = this.people.nearest(p.x, p.y, p.dir);
+    const who = this.people.nearest(p.x, p.y, p.dir), selvagem=g.encontro?.alvo?.();
     const hud = g.ui?.hud;
     // balão "E · Falar" (só quando a história não mostrou o dela neste quadro)
     if (hud?.setPrompt && (!hud.bubble?.visible || this.ownPrompt)) {
       if (who) hud.setPrompt({ x: who.o.x, y: who.o.y, h: 30 }, who.kind === 'pet' ? (who.o.d.ecologia?'Observar':'Brincar') : 'Falar');
       else if (best) hud.setPrompt({ x: best.x, y: best.y - 8, h: 24 }, best.berry ? 'Sacudir' : best.kind === 'pc' ? 'Usar o PC' : best.kind === 'sign' ? 'Ler' : 'Ver');
+      else if(selvagem)hud.setPrompt({x:selvagem.x,y:selvagem.y,h:selvagem.topH??24},'Batalhar com '+selvagem.mon.name);
       else if (this.ownPrompt) hud.setPrompt(null);
-      this.ownPrompt = !!(who || best);
+      this.ownPrompt = !!(who || best || selvagem);
     }
     if (!inp.pressed('act')) return;
     if (who?.kind === 'npc' && who.o.def?.viagem && g.viagem) { inp.taps.delete('act'); g.viagem.conversar(who.o); return; } // navio, balsa, trem (viagem.js)
     if (who) { inp.taps.delete('act'); this.people.talk(who); return; }
+    if(!best&&selvagem){inp.taps.delete('act');g.encontro.desafiar(selvagem).catch(e=>console.error('[Encontro Coral]',e));return;}
     if (!best) return;
     inp.taps.delete('act');
     if (best.kind === 'pc' && !best.text) { g.audio?.sfx?.('blip'); g.ui?.openPC?.(); return; }

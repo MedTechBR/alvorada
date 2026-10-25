@@ -505,3 +505,10 @@ body.touch:not(.mais-on) #zoom { display: flex; }
 /* Controles compactos: quatro golpes alinhados e ações próximas ao polegar. */
 body.touch .tq-nome { max-width: 74px; font-size: 10px; padding-inline: 4px; }
 body.touch #tbtns { right: calc(10px + var(--nr, 0px)); bottom: calc(10px + var(--sb)); }
+
+/* Exploração: o mesmo conjunto discreto de controles em todas as regiões. */
+body.touch:not(.mode-pokemon) .tb{background:#173e4be8;border:1px solid #d5e0d3;box-shadow:0 2px 0 #102c3844}
+body.touch:not(.mode-pokemon) .tb.move .tq-nome{display:none}
+
+/* A ação contextual tem nome visível; os atalhos permanentes usam apenas ícones. */
+body.touch:not(.mode-pokemon) .tb.move[data-acao="batalhar"] .tq-nome{display:block;font-size:10px;top:auto;bottom:calc(100% + 4px);background:#173e4b;padding:1px 5px;border-radius:5px;color:#fff6dc}

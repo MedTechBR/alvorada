@@ -202,9 +202,10 @@ export class Hud {
   moves() {
     const g = this.g, m = g.party[g.leadIdx];
     const trainer = g.mode !== 'pokemon';
+    const passeio=trainer&&g.encontro?.passeio(),alvo=passeio&&g.encontro.alvo();
     const bk = trainer ? g.currentBall?.() : null, balls = bk ? g.bag[bk] : 0;
     const lead = g.lead?.mon === m ? g.lead : null, dmax = !!lead?.maxMoves; // em Dynamax, os Max Golpes no lugar
-    const ids = (trainer ? 'T:' + (m?.name ?? '') + ':' + bk + balls : 'P:') + (m ? m.moves.join(',') : '') + '|' + (g.mount?.hint()?.key ?? '') + (trainer ? '' : '|' + (dmax ? 'D' + lead.mon.formKind : '') + (g.poder?.hudKey() ?? ''));
+    const ids = (trainer ? 'T:' + (passeio?(alvo?'batalhar':'equipe'):'enviar') + (m?.name ?? '') + ':' + bk + balls : 'P:') + (m ? m.moves.join(',') : '') + '|' + (g.mount?.hint()?.key ?? '') + (trainer ? '' : '|' + (dmax ? 'D' + lead.mon.formKind : '') + (g.poder?.hudKey() ?? ''));
     if (ids === this.v.moves) return;
     this.v.moves = ids;
     this.v.cds = null;
@@ -212,7 +213,7 @@ export class Hud {
     if (trainer) {
       const hint = (t, sub, k) => `<div class="mv hint"><kbd>${k}</kbd><span><b>${esc(t)}</b><small>${esc(sub)}</small></span></div>`;
       $('moves').innerHTML = IS_TOUCH || !m ? '' :
-        hint(`Enviar ${m.name}`, 'sai da Poké Bola', 'Q') +
+        hint(passeio?(alvo?'Batalhar':'Equipe'):`Enviar ${m.name}`, passeio?(alvo?alvo.mon.name:'escolher Pokémon'):'sai da Poké Bola', 'Q') +
         hint('Capturar', bk ? `${itemName(bk)} ×${balls} · G troca` : 'sem Poké Bolas', 'B') +
         hint('Escolher', 'próximo da equipe', 'Tab') +
         hint('Zoom', 'roda do mouse', '+ −') +
