@@ -1,0 +1,84 @@
+[
+  {
+    "modo": "pixel",
+    "pontos": [
+      {
+        "nome": "praca",
+        "cpuP95": 11.099999979138374,
+        "quadroP95": 17,
+        "picoMiB": 289.37828636169434,
+        "setores": 15,
+        "geometrias": 53,
+        "texturas": 44,
+        "pixelMiB": 6.03125,
+        "heapMiB": 282.39871311187744
+      },
+      {
+        "nome": "farol",
+        "cpuP95": 9.899999991059303,
+        "quadroP95": 15.100000000002183,
+        "picoMiB": 289.6367473602295,
+        "setores": 15,
+        "geometrias": 53,
+        "texturas": 44,
+        "pixelMiB": 6.078125,
+        "heapMiB": 282.78256702423096
+      }
+    ],
+    "arte": {
+      "amostra": false,
+      "quadros": 12,
+      "fontes": 1,
+      "erroPe": 2.220446049250313e-16,
+      "restaurado": true
+    },
+    "porta": true,
+    "descarte": {
+      "atlas": false,
+      "setores": 0,
+      "pessoas": 0
+    },
+    "erros": []
+  },
+  {
+    "modo": "aventura",
+    "pontos": [
+      {
+        "nome": "praca",
+        "cpuP95": 8.699999988079071,
+        "quadroP95": 14.600000000000364,
+        "picoMiB": 296.2703094482422,
+        "setores": 15,
+        "geometrias": 58,
+        "texturas": 48,
+        "pixelMiB": 5.625,
+        "heapMiB": 283.15664768218994
+      },
+      {
+        "nome": "farol",
+        "cpuP95": 16.599999994039536,
+        "quadroP95": 32.10000000000218,
+        "picoMiB": 288.8162031173706,
+        "setores": 15,
+        "geometrias": 58,
+        "texturas": 48,
+        "pixelMiB": 5.71875,
+        "heapMiB": 283.2476234436035
+      }
+    ],
+    "arte": {
+      "amostra": false,
+      "quadros": 12,
+      "fontes": 1,
+      "erroPe": 2.220446049250313e-16,
+      "restaurado": true
+    },
+    "porta": true,
+    "descarte": {
+      "atlas": false,
+      "setores": 0,
+      "pessoas": 0
+    },
+    "erros": []
+  }
+]

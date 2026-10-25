@@ -17,7 +17,7 @@ for(const modo of ['pixel','aventura']){
    await s.P.raw('HeapProfiler.collectGarbage');r.heapMiB=await s.P.ev('performance.memory.usedJSHeapSize/1048576');await s.P.raw('Emulation.setCPUThrottlingRate',{rate:1});pontos.push({nome,...r});
   }
   const arte=await s.P.ev(`(()=>{const c=game.coralPixel,p=game.player,a=c.pessoas.atores.find(a=>a.n===p),b=p.body,t=b.texture,sx=b.scale.x,sy=b.scale.y,y=b.y,antes=y-((p.frames.fh??32)-(p.frames.groundY??31))*sy,restaurar=c.pessoas.aplicar();const fontes=new Set(Object.values(a.f.sets).flat().map(t=>t.source)).size,depois=b.y-((a.f.fh??32)-a.f.pe)*b.scale.y;restaurar();return{amostra:!!a.f.amostra,quadros:Object.values(a.f.sets).flat().length,fontes,erroPe:Math.abs(antes-depois),restaurado:t===b.texture&&sx===b.scale.x&&sy===b.scale.y&&y===b.y};})()`);
-  assert.equal(arte.amostra,modo==='aventura');assert.equal(arte.quadros,modo==='aventura'?20:12);assert(arte.fontes===1&&arte.erroPe<.001&&arte.restaurado);
+  assert.equal(arte.amostra,false);assert.equal(arte.quadros,12);assert(arte.fontes===1&&arte.erroPe<.001&&arte.restaurado);
   if(modo==='aventura'){
    await s.P.ev(`Object.assign(game.player,{x:1720*16+8,y:1968*16+8});game.grade.soltar(game.player);`);
    for(const code of ['ArrowDown','ArrowLeft','ArrowUp','ArrowRight']){

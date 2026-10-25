@@ -1,5 +1,7 @@
 # Amostra de aventura em Coral
 
+> Histórico da primeira amostra. Os humanos alongados descritos abaixo foram retirados após a revisão do dono. Consulte [a correção atual dos personagens](correcao-personagens.md); o cenário optativo foi preservado.
+
 Branch `amostra-aventura-coral`, 25/10/2026. Amostra local optativa, sem publicação. A versão publicada permanece no commit `5d611684`.
 
 ## Escopo

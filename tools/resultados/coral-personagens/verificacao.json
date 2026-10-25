@@ -1,0 +1,57 @@
+{
+  "ids": {
+    "seu_ze": "frlg_oldman",
+    "benta": "npc_076",
+    "bia_lab": "npc_055_scientist_f",
+    "iracema_inauguracao": "npc_076"
+  },
+  "cache": [
+    "npc_001_ace_trainer_m",
+    "npc_002_ace_trainer_f"
+  ],
+  "atores": [
+    {
+      "id": "jogador",
+      "altura": 36,
+      "original": true,
+      "quadros": 12
+    },
+    {
+      "id": "coral_fa3",
+      "altura": 30,
+      "original": true,
+      "quadros": 12
+    },
+    {
+      "id": "coral_velho",
+      "altura": 36,
+      "original": true,
+      "quadros": 12
+    },
+    {
+      "id": "coral_surf",
+      "altura": 36,
+      "original": true,
+      "quadros": 12
+    },
+    {
+      "id": "coral_farol",
+      "altura": 36,
+      "original": true,
+      "quadros": 12
+    }
+  ],
+  "chaves": [
+    "J:menino|a|#e8413c|#3b2a22|#f6c9a2|#3466d8|#2d3550|",
+    "frlg_little_girl",
+    "frlg_oldman",
+    "npc_033_sailor",
+    "npc_027_swimmer_m"
+  ],
+  "fora": {
+    "coral": false,
+    "id": "frlg_oldman",
+    "folha": "http://127.0.0.1:8700/assets/hgss/personagens/frlg_oldman.webp"
+  },
+  "erros": []
+}
