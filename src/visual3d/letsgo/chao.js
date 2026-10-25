@@ -1,3 +1,4 @@
+import { emCidadeCoral } from '../../world/coral-piloto.js';
 import { atlasPintado, GLSL_PINTURA } from './pintura.js';
 import * as THREE from 'three';
 import { TILE } from '../../world/tiles.js';
@@ -74,7 +75,7 @@ function pars(layout, leve) {
   ${GLSL_BASE}
   ${GLSL_PINTURA}
   ${GLSL_NUVEM}
-  ${Array.from({ length: nT }, (_, i) => `uniform sampler2D tM${i};`).join(' ')} uniform vec4 uOrig; uniform float uModelo; uniform float uRuaPedra;
+  ${Array.from({ length: nT }, (_, i) => `uniform sampler2D tM${i};`).join(' ')} uniform vec4 uOrig; uniform float uModelo; uniform float uRuaPedra; uniform float uCoral;
   varying vec3 vMundo; varying vec3 vNorM;
   float gSombra; vec3 gEmi;
   float mk(float c, float nz){ return smoothstep(0.3, 0.7, c + (nz - 0.5) * 0.22); }
@@ -131,7 +132,12 @@ function pars(layout, leve) {
     float cidade = uRuaPedra;
     if (modelo > 0.001) {
     if (pedra > 0.001 || cidade * terra > 0.001) {
-    vec3 lajes = pintura(5.0, fract(p / 64.0)).rgb;
+    vec3 lajes;
+    if(uCoral>.5){
+      vec2 lajota=fract(vec2(p.x+floor(p.y/12.0)*12.0,p.y)/vec2(24.0,12.0));
+      float borda=1.0-smoothstep(0.01,0.045,min(min(lajota.x,1.0-lajota.x),min(lajota.y,1.0-lajota.y)));
+      lajes=mix(vec3(.32,.29,.23),vec3(.43,.39,.31),n2.r)*(1.0-borda*.15)*(0.98+n3.r*.04);
+    }else lajes = pintura(5.0, fract(p / 64.0)).rgb;
     t = mix(t, lajes, cidade);
     pd = mix(pd, lajes, modelo);
     }
@@ -141,6 +147,7 @@ function pars(layout, leve) {
     g = mix(g, gramaP * vec3(0.27,0.34,0.34) * mix(1.0, 0.65, escura), modelo * (1.0 - selva * 0.7) * 0.95);
     }
     }
+    g=mix(g,vec3(.14,.24,.14)*(0.9+n2.r*.15),uCoral*.35);
     // areia da praia: dourada clara com ondulações bem leves; a faixa molhada fica mais escura e brilha
     vec3 ar = mix(${lin('#e6c98a')}, ${lin('#f2dfa6')}, smoothstep(0.3, 0.75, n2.r)) * (0.96 + 0.08 * n3.g);
     ar *= 1.0 + 0.035 * sin((p.x * 0.6 + p.y * 0.9) * 0.22 + n2.g * 5.0);
@@ -294,7 +301,7 @@ export class ChaoLG {
     m.customProgramCacheKey = () => 'lg-chao' + (this.leve ? '-leve' : '');
     m.userData.mascaraLG = M;
     m.onBeforeCompile = (sh) => {
-      Object.assign(sh.uniforms, { tPintura: { value: atlasPintado() }, tempo: U.tempo, tRuido: U.tRuido, nuvem: U.nuvem, noite: U.noite, uOrig: M.uOrig, uModelo: { value: 1 }, uRuaPedra: { value: (()=>{const a=this.v.g.map.areaAt((sx*16+8)*16,(sy*16+8)*16);return /cidade|vila|city|town/i.test((a?.biome??'')+' '+(a?.name??''))?1:0;})() } });
+      Object.assign(sh.uniforms, { tPintura: { value: atlasPintado() }, tempo: U.tempo, tRuido: U.tRuido, nuvem: U.nuvem, noite: U.noite, uOrig: M.uOrig, uModelo: { value: 1 }, uCoral:{value:emCidadeCoral(this.v.g.map,(sx*16+8)*16,(sy*16+8)*16)?1:0}, uRuaPedra: { value: (()=>{const a=this.v.g.map.areaAt((sx*16+8)*16,(sy*16+8)*16);return /cidade|vila|city|town/i.test((a?.biome??'')+' '+(a?.name??''))?1:0;})() } });
       M.t.forEach((tx, i) => { sh.uniforms['tM' + i] = { value: tx }; });
       sh.vertexShader = sh.vertexShader
         .replace('#include <common>', '#include <common>\n varying vec3 vMundo; varying vec3 vNorM;')

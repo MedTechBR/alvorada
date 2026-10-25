@@ -355,6 +355,7 @@ export function hashVar(o) {
   let h = (x * 374761393 + y * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0);
 }
 const cache = new Map(), PERFIS = {};
+export function derivarPerfil(nome,base,alterar){PERFIS[nome]=Object.fromEntries(Object.entries(PERFIS[base]).map(([kind,T])=>[kind,alterar(T,kind)]));}
 export function registrarPerfil(nome, tipos) { PERFIS[nome] = tipos; }
 export function ampliarPerfil(nome, completar) {
   const anteriores=PERFIS[nome]??{};

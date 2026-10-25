@@ -1,8 +1,9 @@
+import { acabamentoCoral } from './modelos-coral.js';
 import { completarPintados } from './acabamentos.js';
 import { TIPOS_PINTADOS } from './modelos-pintados.js';
 // Ponto de entrada dos modelos lisos (estilo Let's Go): registra os grupos extras na tabela de modelos.js e
 // reexporta a interface. Quem usa os modelos (kit/modelos-setor.js, tools/vitrine-3d.js) importa DAQUI.
-import { registrar, registrarPerfil, ampliarPerfil } from './modelos.js';
+import { registrar, registrarPerfil, ampliarPerfil, derivarPerfil } from './modelos.js';
 import { TIPOS_NATUREZA_A } from './modelos-natureza-a.js';
 import { TIPOS_NATUREZA_B } from './modelos-natureza-b.js';
 import { TIPOS_OBJETOS_A } from './modelos-objetos-a.js';
@@ -22,5 +23,6 @@ registrar('barreiras', TIPOS_BARREIRAS);
 registrar('interior', TIPOS_INTERIOR);
 registrar('moveis', TIPOS_MOVEIS);
 ampliarPerfil('pintado', completarPintados);
+derivarPerfil('coral','pintado',acabamentoCoral);
 
 export { opcoesPintadas, modeloLG, chaveLG, temModeloLG, trisLG, GRUPOS_LG } from './modelos.js';
