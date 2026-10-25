@@ -9,7 +9,7 @@ import { portraitURL } from './portrait.js';
 // - analógico flutuante à esquerda (src/engine/input.js); botões à direita, num cacho só;
 // - Pokémon em campo: quatro golpes em duas fileiras (tocar = mira automática, arrastar = mira),
 //   esquiva ao lado e utilidades agrupadas acima (bola de captura, equipe, voar, pular, Mega);
-// - treinador: só o essencial (Enviar, correr, equipe, montaria); A e Capturar aparecem quando há o que fazer;
+// - treinador: Equipe/Batalhar, correr e montaria; a interação aparece quando há o que fazer;
 // - botão que não faz nada no momento some (não fica cinza ocupando lugar);
 // - "Equipe" abre uma faixa com os retratos (toque troca) e o botão Recolher.
 // Ícones: um conjunto só de SVG (traço 2, pontas redondas, sem emoji nem letra). As posições saem de uma tabela

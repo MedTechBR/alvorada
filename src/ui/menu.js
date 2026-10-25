@@ -582,7 +582,7 @@ export class GameMenu {
       draw: (body) => {
         const card = (m, i) => {
           const f = m.hp / m.stats.hp, st = m.status ? `<span class="status ${stPT(m.status)[2]}">${stPT(m.status)[0]}</span>` : '', big = i === 0;
-          const campo = i === g.leadIdx && g.lead?.alive ? '<span class="gm-tag">Em campo</span>' : '';
+          const campo = i === g.leadIdx ? '<span class="gm-tag">'+(g.lead?.alive?'Em campo':'Escolhido')+'</span>' : '';
           const held = heldKey(m) ? `<span class="gm-ic sm" title="${esc(itemName(heldKey(m)))}">${itemIcon(heldKey(m))}</span>` : '';
           return `<div class="nav gm-box gm-pcard ${big ? 'big' : ''} ${m.fainted ? 'ko' : ''} ${L.swap === i ? 'swap' : ''}" data-i="${i}" style="--tc:${TYPE_COLOR[m.types[0]] ?? '#8d93ab'}">
             <span class="gm-cur">▶</span>${slot(m.spriteKey ?? m.dex, big ? 'big' : '', false, TYPE_COLOR[m.types[0]])}
