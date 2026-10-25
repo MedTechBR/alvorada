@@ -37,6 +37,7 @@ const { KINDS } = await abrir('src/world/objects.js');
 const { MUNDOS } = await abrir('src/world/mundos.js');
 const { kit } = await abrir('src/visual3d/kit/index.js');
 const LG = await abrir('src/visual3d/letsgo/modelos-todos.js');
+const { perfilCoral } = await abrir('src/visual3d/letsgo/modelos-coral.js');
 const { BARREIRAS, TEMPESTADES, NEVOAS, ativa } = await abrir('src/world/barreiras-dados.js');
 const { montarCenario, classe } = await abrir('src/world/barreiras-cenario.js');
 
@@ -55,7 +56,7 @@ const MIUDO = /^(pedrinha|seixo|flor|concha|espuma|graveto|samambaia|vitoriaRegi
 const amostras = new Map();
 let mundoAtual = '', tilePintado=()=>-1;
 function malhaDe(kind, o) {
-  const md = (LG.temModeloLG(kind) && LG.modeloLG(kind, LG.opcoesPintadas(kind,o,tilePintado), 'pintado')) || (kit.temModelo(kind) && kit.modelo(kind, o));
+  const md = (LG.temModeloLG(kind) && LG.modeloLG(kind, LG.opcoesPintadas(kind,o,tilePintado), perfilCoral({id:mundoAtual},{...o,kind}))) || (kit.temModelo(kind) && kit.modelo(kind, o));
   if (!md) return null;
   let a = amostras.get(md.chave); if (a) return a;
   const g = md.geometry, P = g.attributes.position, I = g.index, nt = I ? I.count / 3 : P.count / 3, pts = [];

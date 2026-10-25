@@ -56,3 +56,15 @@ for(const kind of Object.keys(KINDS))if(temModeloLG(kind)&&!TIPOS_PINTADOS[kind]
 }
 console.log('Modelos com volumes preservados:',conferidos);
 g.dispose();console.log('OK: perfil isolado, cache reutilizado, UV preservado e árvores com menos triângulos');
+// Coral só cria variações para as seis famílias que receberam acabamento local.
+const {perfilCoral}=await import('../src/visual3d/letsgo/modelos-coral.js');
+assert.equal(perfilCoral({id:'alvorada'},{kind:'center',tx:1658,ty:1934}),'coral');
+assert.equal(perfilCoral({id:'alvorada'},{kind:'chest',tx:1658,ty:1934}),'pintado');
+assert.equal(perfilCoral({id:'alvorada'},{kind:'center',tx:1523,ty:1750}),'pintado');
+assert.equal(perfilCoral({id:'ocaso'},{kind:'center',tx:1658,ty:1934}),'pintado');
+for(const kind of ['center','mart','housePink','farol','palm','palmSmall']){
+ const c=modeloLG(kind,o,'coral');assert.equal(c,modeloLG(kind,o,'coral'));
+ assert.notEqual(c.chave,modeloLG(kind,o,'pintado').chave);
+ assert([...c.geometry.attributes.position.array].every(Number.isFinite));
+}
+console.log('OK: perfil costeiro isolado e cache das peças inalteradas compartilhado.');

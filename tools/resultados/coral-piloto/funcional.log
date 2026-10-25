@@ -1,0 +1,33 @@
+{"pets":4,"visitas":[{"dex":98,"carregado":true,"dialogo":true},{"dex":79,"carregado":true,"dialogo":true},{"dex":278,"carregado":true,"dialogo":true}],"recompensa":3,"repetida":0,"observacoes":{"areia":true,"praca":true,"farol":true,"premio":true},"combate":0}
+{
+  "pets": 4,
+  "visitas": [
+    {
+      "dex": 98,
+      "carregado": true,
+      "dialogo": true
+    },
+    {
+      "dex": 79,
+      "carregado": true,
+      "dialogo": true
+    },
+    {
+      "dex": 278,
+      "carregado": true,
+      "dialogo": true
+    }
+  ],
+  "recompensa": 3,
+  "repetida": 0,
+  "observacoes": {
+    "areia": true,
+    "praca": true,
+    "farol": true,
+    "premio": true
+  },
+  "combate": 0,
+  "musicaDia": "coral",
+  "musicaNoite": "coralNoite",
+  "erros": []
+}
