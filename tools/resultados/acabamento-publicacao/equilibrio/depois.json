@@ -1,0 +1,421 @@
+{
+  "protocolo": "mesma arena, coordenadas, Pokémon, níveis, sementes e piloto; reação inicial zero nos dois lados",
+  "commit": "85ce46ae6228b1ba81afd455a7b3761c6ed774bc",
+  "fase": "depois",
+  "resultados": [
+    {
+      "modo": "selvagem",
+      "seed": 31,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "eventos": [],
+      "cena": "encontro-coral",
+      "hp": 44,
+      "perda": 0,
+      "dur": 17.066666666666666,
+      "perdaMin": 0,
+      "golpesA": 22,
+      "golpesB": 5,
+      "golpesMinA": 77.34375,
+      "golpesMinB": 17.578125,
+      "terminou": true
+    },
+    {
+      "modo": "selvagem",
+      "seed": 31,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "eventos": [
+        {
+          "dmg": 1,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            5,
+            5
+          ],
+          "fluido": true
+        },
+        {
+          "dmg": 1,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            5,
+            5
+          ],
+          "fluido": true
+        },
+        {
+          "dmg": 1,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            5,
+            5
+          ],
+          "fluido": true
+        }
+      ],
+      "cena": "encontro-coral",
+      "hp": 46,
+      "perda": 3,
+      "dur": 21.5,
+      "perdaMin": 8.372093023255815,
+      "golpesA": 27,
+      "golpesB": 7,
+      "golpesMinA": 75.34883720930233,
+      "golpesMinB": 19.53488372093023,
+      "terminou": true
+    },
+    {
+      "modo": "selvagem",
+      "seed": 73,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "eventos": [],
+      "cena": "encontro-coral",
+      "hp": 49,
+      "perda": 0,
+      "dur": 15.866666666666667,
+      "perdaMin": 0,
+      "golpesA": 20,
+      "golpesB": 3,
+      "golpesMinA": 75.63025210084034,
+      "golpesMinB": 11.34453781512605,
+      "terminou": true
+    },
+    {
+      "modo": "selvagem",
+      "seed": 73,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "eventos": [
+        {
+          "dmg": 2,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            5,
+            5
+          ],
+          "fluido": true
+        },
+        {
+          "dmg": 2,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            5,
+            5
+          ],
+          "fluido": true
+        },
+        {
+          "dmg": 2,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            5,
+            5
+          ],
+          "fluido": true
+        }
+      ],
+      "cena": "encontro-coral",
+      "hp": 51,
+      "perda": 6,
+      "dur": 19.3,
+      "perdaMin": 18.65284974093264,
+      "golpesA": 26,
+      "golpesB": 8,
+      "golpesMinA": 80.82901554404145,
+      "golpesMinB": 24.870466321243523,
+      "terminou": true
+    },
+    {
+      "modo": "selvagem",
+      "seed": 137,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "eventos": [],
+      "cena": "encontro-coral",
+      "hp": 48,
+      "perda": 0,
+      "dur": 15.666666666666666,
+      "perdaMin": 0,
+      "golpesA": 17,
+      "golpesB": 0,
+      "golpesMinA": 65.1063829787234,
+      "golpesMinB": 0,
+      "terminou": true
+    },
+    {
+      "modo": "selvagem",
+      "seed": 137,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "eventos": [
+        {
+          "dmg": 1,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            5,
+            5
+          ],
+          "fluido": true
+        },
+        {
+          "dmg": 2,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            5,
+            5
+          ],
+          "fluido": true
+        }
+      ],
+      "cena": "encontro-coral",
+      "hp": 50,
+      "perda": 3,
+      "dur": 15.1,
+      "perdaMin": 11.920529801324504,
+      "golpesA": 18,
+      "golpesB": 3,
+      "golpesMinA": 71.52317880794702,
+      "golpesMinB": 11.920529801324504,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 31,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "eventos": [],
+      "cena": "encontro-coral",
+      "hp": 44,
+      "perda": 0,
+      "dur": 17.066666666666666,
+      "perdaMin": 0,
+      "golpesA": 19,
+      "golpesB": 1,
+      "golpesMinA": 66.796875,
+      "golpesMinB": 3.515625,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 31,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "eventos": [
+        {
+          "dmg": 1,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            5,
+            5
+          ],
+          "fluido": true
+        },
+        {
+          "dmg": 2,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            5,
+            5
+          ],
+          "fluido": true
+        }
+      ],
+      "cena": "encontro-coral",
+      "hp": 46,
+      "perda": 3,
+      "dur": 18.3,
+      "perdaMin": 9.836065573770492,
+      "golpesA": 24,
+      "golpesB": 6,
+      "golpesMinA": 78.68852459016394,
+      "golpesMinB": 19.672131147540984,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 73,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "eventos": [],
+      "cena": "encontro-coral",
+      "hp": 49,
+      "perda": 0,
+      "dur": 16.866666666666667,
+      "perdaMin": 0,
+      "golpesA": 22,
+      "golpesB": 5,
+      "golpesMinA": 78.26086956521739,
+      "golpesMinB": 17.786561264822133,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 73,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "eventos": [
+        {
+          "dmg": 2,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            5,
+            5
+          ],
+          "fluido": true
+        },
+        {
+          "dmg": 2,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            5,
+            5
+          ],
+          "fluido": true
+        }
+      ],
+      "cena": "encontro-coral",
+      "hp": 51,
+      "perda": 4,
+      "dur": 21.9,
+      "perdaMin": 10.958904109589042,
+      "golpesA": 27,
+      "golpesB": 6,
+      "golpesMinA": 73.97260273972603,
+      "golpesMinB": 16.438356164383563,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 137,
+      "par": [
+        25,
+        133
+      ],
+      "nivel": 20,
+      "eventos": [],
+      "cena": "encontro-coral",
+      "hp": 48,
+      "perda": 0,
+      "dur": 16.466666666666665,
+      "perdaMin": 0,
+      "golpesA": 22,
+      "golpesB": 6,
+      "golpesMinA": 80.16194331983806,
+      "golpesMinB": 21.862348178137655,
+      "terminou": true
+    },
+    {
+      "modo": "rival",
+      "seed": 137,
+      "par": [
+        4,
+        7
+      ],
+      "nivel": 20,
+      "eventos": [
+        {
+          "dmg": 1,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            5,
+            5
+          ],
+          "fluido": true
+        },
+        {
+          "dmg": 2,
+          "mv": "Revólver d'Água",
+          "eff": 2,
+          "crit": false,
+          "note": null,
+          "tiles": [
+            5,
+            5
+          ],
+          "fluido": true
+        }
+      ],
+      "cena": "encontro-coral",
+      "hp": 50,
+      "perda": 3,
+      "dur": 15.3,
+      "perdaMin": 11.76470588235294,
+      "golpesA": 19,
+      "golpesB": 4,
+      "golpesMinA": 74.50980392156862,
+      "golpesMinB": 15.686274509803921,
+      "terminou": true
+    }
+  ]
+}

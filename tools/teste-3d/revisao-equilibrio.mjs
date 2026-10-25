@@ -5,7 +5,7 @@ import { sessao } from './rb-lib.mjs';
 import { writeFileSync, readFileSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 const fase='depois',versao=process.env.VERSAO??'depois';
-const pasta = 'tools/resultados/revisao-jogabilidade/equilibrio'; mkdirSync(pasta, { recursive: true });
+const pasta = process.env.RESULTADOS??'tools/resultados/revisao-jogabilidade/equilibrio'; mkdirSync(pasta, { recursive: true });
 const s = await sessao({ W: 844, H: 390, qs: 'nosw&coral='+(fase==='antes'?'3d':'pixel'), port: process.env.PORT ?? 8700 });
 try {
   await s.P.ev(`(async () => { for(let i=0;i<60 && (game.story.busy || game.ui.dialog.open);i++){ dispatchEvent(new KeyboardEvent('keydown',{code:'Enter',key:'Enter',bubbles:true})); await new Promise(r=>setTimeout(r,100)); } game.app.ticker.stop(); return true; })()`);

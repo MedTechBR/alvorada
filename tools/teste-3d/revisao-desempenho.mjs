@@ -1,7 +1,7 @@
 // Antes/depois no mesmo percurso, sem spawns ou roteiro durante a medição.
 // Baseline servido em 8701 a partir de 855089f0; revisão em 8700. Um Chrome por vez.
 import{sessao,sleep}from'./rb-lib.mjs';import{writeFileSync,mkdirSync}from'node:fs';
-const resultados=[],dir='tools/resultados/revisao-jogabilidade/';mkdirSync(dir,{recursive:true});
+const resultados=[],dir=process.env.RESULTADOS??'tools/resultados/revisao-jogabilidade/';mkdirSync(dir,{recursive:true});
 for(const [versao,port]of [['antes',8701],['depois',8700]]){
  const s=await sessao({W:844,H:390,cel:true,port,qs:'nosw&ir=1720,1968'});
  try{

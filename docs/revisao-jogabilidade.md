@@ -1,6 +1,6 @@
 # Revisão de jogabilidade e acabamento
 
-Trabalho local em `revisao-jogabilidade`, a partir de `855089f0`. Não publicado nesta rodada. Mantidos os sprites humanos originais e a direção visual aprovada. A revisão corrige fluxos e problemas reproduzidos; não certifica ausência de bugs em todo o jogo.
+Trabalho local em `revisao-jogabilidade`, a partir de `855089f0`. A publicação para teste foi autorizada na rodada seguinte; veja [acabamento e medições atualizadas](acabamento-publicacao.md). Mantidos os sprites humanos originais e a direção visual aprovada. A revisão corrige fluxos e problemas reproduzidos; não certifica ausência de bugs em todo o jogo.
 
 ## Fluxo de exploração e batalha
 
