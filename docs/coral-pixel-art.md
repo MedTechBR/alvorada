@@ -1,6 +1,6 @@
 # Coral em pixel art: bairro e encontros
 
-Piloto local no branch `coral-pixel-art`, em 25/10/2026. Não publicado. A imagem aprovada orienta composição, escala, câmera e interface; ela não é usada como fundo estático do jogo.
+Piloto implementado no branch `coral-pixel-art`, com publicação autorizada pelo dono em 25/10/2026. A imagem aprovada orienta composição, escala, câmera e interface; ela não é usada como fundo estático do jogo.
 
 ## O que foi implementado
 
@@ -129,7 +129,7 @@ Os humanos reutilizam o acervo FRLG/HGSS já adotado pelo projeto (`docs/visual-
 - As outras cidades, interiores, Centro por dentro, puzzle e ginásio não receberam essa apresentação. A passagem para o restante do mundo ainda revela a diferença entre estilos do piloto.
 - A praia de encontros foi aplicada apenas aos encontros comuns de Coral e treinadores elegíveis. Clareiras, cavernas e demais biomas ficam para uma etapa posterior; online, bandos, reides e ginásios mantêm o fluxo anterior.
 - Faltam revisão visual do dono e teste prolongado em iPhone/Safari físico, incluindo memória total de GPU e várias idas e voltas. Os contadores do Chrome não eliminam essa pendência.
-- Não houve push nem publicação. O arquivo preexistente `tools/teste-3d/inicial-tmp.mjs` não foi alterado.
+- A publicação desta versão foi autorizada pelo dono em 25/10/2026. Os pacotes externos da pesquisa posterior não foram incorporados. O arquivo preexistente `tools/teste-3d/inicial-tmp.mjs` não foi alterado.
 
 ## Reprodução
 
