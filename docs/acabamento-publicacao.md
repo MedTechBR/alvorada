@@ -53,3 +53,11 @@ Destino: https://medtechbr.com.br/alvorada/. Publicar os commits revisados em `m
 Se a versão impedir abertura, montagem ou entrada/saída de batalha, reverter os commits da revisão até o estado `855089f0` por commits de reversão, sem reescrever o histórico e sem apagar saves. Não há migração de banco ou mudança no formato de save.
 
 Pendências: validação física no iPhone, sessão prolongada, multiplayer/reides e revisão artística completa das demais regiões. Esta rodada dá acabamento ao padrão e aos fluxos existentes.
+
+## Conferência no site público
+
+Publicação de código `acc318c0acff2900b7dd73783c3a957a6eb585f2` confirmada no GitHub Pages. Os 19 arquivos de execução alterados foram baixados do endereço público e comparados byte a byte com os locais: todos iguais.
+
+Em uma sessão nova, 844×390 e DPR 2, o site abriu com o service worker registrado, ativo e controlando a página. O toque em Batalhar enviou o Pokémon diretamente à arena; Capturar ficou disponível; Fugir retornou ao mesmo ponto, com distância de retorno zero e Pokémon recolhido. Nenhum erro de execução ou shader foi registrado no teste. A etiqueta Escolhido também foi conferida na equipe.
+
+Provas: `arquivos-publicos.json`, `publicacao.json`, `publicacao.log` e `publico-arena.jpg` em `tools/resultados/acabamento-publicacao/`. O commit posterior acrescenta apenas este registro e as provas da publicação; não altera o jogo.

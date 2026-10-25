@@ -1,0 +1,28 @@
+{
+  "url": "https://medtechbr.com.br/alvorada/",
+  "inicio": {
+    "x": 748,
+    "y": 351,
+    "acao": "Batalhar contra Krabby",
+    "semEnvio": true,
+    "montaria": true
+  },
+  "arena": {
+    "nome": "Praia",
+    "adversarios": 1,
+    "capturar": true,
+    "semBarraSelvagem": true,
+    "minimo": 44
+  },
+  "retorno": {
+    "mapa": true,
+    "recolhido": true,
+    "dist": 0
+  },
+  "offline": {
+    "registrado": true,
+    "ativo": true,
+    "controlado": true
+  },
+  "erros": []
+}

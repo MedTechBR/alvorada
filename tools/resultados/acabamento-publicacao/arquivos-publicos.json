@@ -1,0 +1,120 @@
+{
+  "commit": "acc318c0acff2900b7dd73783c3a957a6eb585f2",
+  "pages": "built",
+  "arquivos": [
+    {
+      "arquivo": "index.html",
+      "status": 200,
+      "igual": true,
+      "sha256": "84cc26da58f8a4fd48ba5037407564bc32e19eb3625176aaed7e54b2ec296882"
+    },
+    {
+      "arquivo": "src/combat/ai.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "74a4494b9b531dfdc807047f4f85487c4dbec41b952ee81cd03b64b771e4470a"
+    },
+    {
+      "arquivo": "src/combat/combat.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "c37a17f39a3a82aceedf29ddaefc34f473fb32caf817ddc3e4ef81c67b816a4c"
+    },
+    {
+      "arquivo": "src/combat/encontro-coral-dados.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "f20463d7946b894f5152a942f782070d307df17da47c8c27957a275b8617060b"
+    },
+    {
+      "arquivo": "src/combat/encontro-coral.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "e3989568d0bfb49aa708ccc5335d25d290c58af26990ad7b2e765713e106c48b"
+    },
+    {
+      "arquivo": "src/engine/fx.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "334e2fa431664f4fe750d728ae0a077c5bd3ef39592dca67ef4c5d49b9174794"
+    },
+    {
+      "arquivo": "src/engine/input.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "cd4245605de9f4519155ed254ac4d0b325827fcf22d46b2b73c646bfabbfdd15"
+    },
+    {
+      "arquivo": "src/main.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "04b87f16db464b6167f0db0a0094af34c907334adf8ec64c44665e1d65e9cf9b"
+    },
+    {
+      "arquivo": "src/ui/espetaculo.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "f14c95246df3d51438a40d18050f08b4fecf314955c64437066514c37c676ac5"
+    },
+    {
+      "arquivo": "src/ui/hud.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "4e635c181e2680503c27ee623ca5d933d56419d367d5e2d3001fbf3a2859c21e"
+    },
+    {
+      "arquivo": "src/ui/menu.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "d8b17c527e29ae7a28aaca1c98d7142bf5f69329d32326eea20abcb3cb819015"
+    },
+    {
+      "arquivo": "src/ui/style.css",
+      "status": 200,
+      "igual": true,
+      "sha256": "d7f8c2fe1a02ad56c93d08ff7d1dc386c777d81ae92a344125657922f1b83ee9"
+    },
+    {
+      "arquivo": "src/ui/toque.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "ea5228b9b4a58400d40442fc06aa53891ab1b4b36f1936162d8de30abecd03f3"
+    },
+    {
+      "arquivo": "src/ui/ui.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "425dc21725b793e2be7899208ffe467b9cd1a282694303458465b8721ee1f900"
+    },
+    {
+      "arquivo": "src/visual2d/coral-pessoas.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "8cd16991919bab1a2050b1e522ccfff9d58f6a0e3a86d8dff691728579cdea3b"
+    },
+    {
+      "arquivo": "src/visual2d/coral-terreno.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "07d351224fa721a041a18f5fdc7ad8cb068721047b573699e804ce12ca719e89"
+    },
+    {
+      "arquivo": "src/visual2d/coral.css",
+      "status": 200,
+      "igual": true,
+      "sha256": "fe3aa180ff280cadf912061c86fbec56c83de6903e57cf631c9e94737470f658"
+    },
+    {
+      "arquivo": "src/visual2d/coral.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "f8e276033cfa47da09cd3ab816bb2f13b4e19b75ced9799807df2f289539db41"
+    },
+    {
+      "arquivo": "src/world/life.js",
+      "status": 200,
+      "igual": true,
+      "sha256": "fb394a6bd7f7ce1f6f12084493e4fac3382b6c5584966ef31ac3671bc6580a9d"
+    }
+  ]
+}
