@@ -2,9 +2,11 @@ import * as PIXI from 'pixi.js';
 import { folhaTreinador, chaveDe } from '../sprites/treinador-hgss.js';
 import { toCharLook } from '../ui/looks.js';
 import { idPessoaCoral, COLUNAS_ANDAR } from '../sprites/pessoas-coral.js';
+import { carregarPessoaAventura } from './coral-aventura.js';
 
 const BASE=new URL('../../assets/hgss/personagens/',import.meta.url),DIRS=['down','up','left','right'];
-async function montar({id,look,correndo,jogador}){
+async function montar({id,look,correndo,jogador,amostra}){
+ if(amostra)return carregarPessoaAventura(amostra);
  let img,propria=false;
  if(jogador)img=await folhaTreinador(look,correndo);
  else{const r=await fetch(new URL(id+'.webp',BASE));if(!r.ok)throw Error('Folha ausente: '+id);img=await createImageBitmap(await r.blob());propria=true;}
@@ -22,7 +24,7 @@ function descartar(f){for(const ds of Object.values(f.sets))for(const t of ds)t.
 // Folhas prontas FRLG/HGSS: o mesmo acervo do 3D, agora também no desenho do bairro.
 // Substitui o corpo apenas ao renderizar; direção, passos, colisão e interações continuam nativos.
 export class PessoasCoral{
- constructor(g){this.g=g;this.cache=new Map();this.carregando=new Set();this.atores=[];this.indices=new WeakMap();this.token=0;}
+ constructor(g,{amostra=false}={}){this.g=g;this.amostra=amostra;this.cache=new Map();this.carregando=new Set();this.atores=[];this.indices=new WeakMap();this.token=0;}
  atualizar(view){
   const g=this.g,agora=performance.now();
   if(!this.J){if(!this.indice){this.indice=true;fetch(new URL('indice.json',BASE)).then(r=>r.json()).then(J=>this.J=J).catch(e=>{this.indice=false;console.warn('[Coral] Índice de personagens indisponível.',e);});}return;}
@@ -36,12 +38,13 @@ export class PessoasCoral{
    if(n===g.player&&g.mount?.active)continue;
    const jogador=n===g.player,correndo=jogador&&!!(n.correndo||(n.speed??0)>95),look=jogador?toCharLook(g.look??n.look??g.flags?.look):null;
    const id=jogador?null:idPessoaCoral(n,this.J,(look,quem)=>g.v3d?.espelho?.pers?.idDe(look,quem));
-   const key=jogador?'J:'+chaveDe(look,correndo):id;vistos.add(key);
+   const pessoaAmostra=this.amostra?(jogador?'treinador':{coral_farol:'marinheiro',coral_velho:'pescador'}[n.id]):null;
+   const key=pessoaAmostra?'A:'+pessoaAmostra:jogador?'J:'+chaveDe(look,correndo):id;vistos.add(key);
    const f=this.cache.get(key);
-   if(f){f.visto=agora;const altura=(n.def?.kid||/little|kid|youngster/.test(id??''))?30:36;n.alturaVisual=altura*Math.abs(n.body.scale.y);this.atores.push({n,f,k:altura/Math.max(1,f.altura)});}
+   if(f){f.visto=agora;const altura=f.amostra?48:(n.def?.kid||/little|kid|youngster/.test(id??''))?30:36;n.alturaVisual=altura*Math.abs(n.body.scale.y);this.atores.push({n,f,k:altura/Math.max(1,f.altura)});}
    else if(!this.carregando.has(key)){
     const token=this.token;this.carregando.add(key);
-    montar({id,look,correndo,jogador}).then(f=>{if(token!==this.token){descartar(f);return;}f.visto=performance.now();this.cache.set(key,f);}).catch(e=>console.warn('[Coral] Mantendo personagem original.',id,e)).finally(()=>{if(token===this.token)this.carregando.delete(key);});
+    montar({id,look,correndo,jogador,amostra:pessoaAmostra}).then(f=>{if(token!==this.token){descartar(f);return;}f.visto=performance.now();this.cache.set(key,f);}).catch(e=>console.warn('[Coral] Mantendo personagem original.',id,e)).finally(()=>{if(token===this.token)this.carregando.delete(key);});
    }
   }
   for(const [k,f]of this.cache)if(!vistos.has(k)&&agora-f.visto>1500){descartar(f);this.cache.delete(k);}
@@ -52,8 +55,9 @@ export class PessoasCoral{
    if(n.body.destroyed)continue;
    let idx=this.indices.get(n.frames);
    if(!idx){idx=new Map();for(const a of ['walk','run','throw','ride'])for(const d of DIRS)(n.frames[a]?.[d]??(a==='walk'?n.frames[d]:[])??[]).forEach((t,i)=>idx.set(t,{a,d,i}));this.indices.set(n.frames,idx);}
-   const p=idx.get(n.body.texture)??{a:'walk',d:n.dir??'down',i:0},col=p.a==='throw'?0:COLUNAS_ANDAR[p.i%4],tex=f.sets[p.d]?.[col];
-   if(tex){const b=n.body,sx=b.scale.x,sy=b.scale.y,fh=n.frames.fh??b.texture.height,ground=n.frames.groundY??fh-1;volta.push([b,b.texture,sx,sy,b.y]);b.texture=tex;b.scale.set(sx*k,sy*k);b.y+=((32-f.pe)*k-(fh-ground))*sy;}
+   const p=idx.get(n.body.texture)??{a:'walk',d:n.dir??'down',i:0},andando=!!n.andando||(n.speed??0)>5;
+   const col=f.amostra?(andando&&p.a!=='throw'?f.andar[p.i%4]:f.parado):p.a==='throw'?0:COLUNAS_ANDAR[p.i%4],tex=f.sets[p.d]?.[col];
+   if(tex){const b=n.body,sx=b.scale.x,sy=b.scale.y,fh=n.frames.fh??b.texture.height,ground=n.frames.groundY??fh-1;volta.push([b,b.texture,sx,sy,b.y]);b.texture=tex;b.scale.set(sx*k,sy*k);b.y+=(((f.fh??32)-f.pe)*k-(fh-ground))*sy;}
   }
   return ()=>{for(const [b,t,sx,sy,y]of volta)if(!b.destroyed){b.texture=t;b.scale.set(sx,sy);b.y=y;}};
  }

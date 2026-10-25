@@ -55,7 +55,7 @@ export class Npc {
     bg.poly([-2, 5, 2, 5, 0, 8]).fill(0xffffff);
     const tx = new PIXI.Text({ text, style: { fontFamily: 'Avenir Next, Nunito, ui-rounded, system-ui, sans-serif', fontWeight: '900', fontSize: 40, fill: color } });
     tx.anchor.set(0.5); tx.scale.set(0.25); tx.y = -1;
-    c.addChild(bg, tx); c.y = -this.h - 4;
+    c.addChild(bg, tx); c.y = -(this.alturaVisual ?? this.h) - 4;
     this.view.addChild(c);
     let t = 0;
     const tick = () => { t += g.app.ticker.deltaMS / 1000; c.scale.set(Math.min(1, t * 8)); if (t > 1.1) { g.app.ticker.remove(tick); c.destroy({ children: true }); } };

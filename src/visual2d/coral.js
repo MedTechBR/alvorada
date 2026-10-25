@@ -3,10 +3,11 @@ import { emCidadeCoral } from '../world/coral-piloto.js';
 import { KINDS } from '../world/objects.js';
 import { pintarSetorCoral } from './coral-terreno.js';
 import { PessoasCoral } from './coral-pessoas.js';
+import { ARTE_AVENTURA } from './coral-aventura.js';
 
 const BASE=new URL('../../assets/coral-pixel/',import.meta.url);
 const TIPOS={center:'centro',mart:'loja',housePink:'casa',houseA:'casa',houseB:'casa',houseYellow:'casa',houseBlue:'casa',farol:'farol',palm:'palmeira',palmSmall:'palmeira',canteiro:'canteiro',flowerpot:'canteiro',fountain:'fonte',lamp:'poste'};
-const bitmap=async nome=>{const r=await fetch(new URL(nome,BASE));if(!r.ok)throw Error(`${nome}: ${r.status}`);return createImageBitmap(await r.blob());};
+const bitmap=async (nome,base)=>{const r=await fetch(new URL(nome,base));if(!r.ok)throw Error(`${nome}: ${r.status}`);return createImageBitmap(await r.blob());};
 
 // Apresentação local: usa o mesmo mundo, entidades, portas, golpes e colisões.
 // Não é uma imagem de fundo: chão por setor e objetos separados com ordem pelo pé.
@@ -14,7 +15,8 @@ export class CoralPixel {
  constructor(v){
   this.v=v;this.g=v.g;this.setores=new Map();this.objetos=new Map();this.ativo=false;this.tempo=0;
   this.local=document.createElement('div');this.local.id='coral-local';this.local.textContent='Cidade Coral';document.body.appendChild(this.local);
-  this.pessoas=new PessoasCoral(this.g);
+  this.amostra=new URLSearchParams(location.search).get('coral')==='aventura';this.base=this.amostra?ARTE_AVENTURA:BASE;
+  this.pessoas=new PessoasCoral(this.g,{amostra:this.amostra});
   this.ligado=new URLSearchParams(location.search).get('coral')!=='3d';
   this.chao=new PIXI.Container();this.chao.visible=false;this.g.world.addChildAt(this.chao,0);
   this.sombras=new PIXI.Graphics();this.sombras.visible=false;this.g.fx.ground.addChild(this.sombras);
@@ -23,7 +25,7 @@ export class CoralPixel {
  async carregar(){
   if(this.carregando||this.pronto||this.falhou)return;
   this.carregando=true;const token=this.token={};
-  const partes=await Promise.allSettled([bitmap('objetos.png'),bitmap('terrenos.png'),fetch(new URL('atlas.json',BASE)).then(r=>{if(!r.ok)throw Error('atlas não encontrado');return r.json();})]);
+  const partes=await Promise.allSettled([bitmap('objetos.png',this.base),bitmap('terrenos.png',this.base),fetch(new URL('atlas.json',this.base)).then(r=>{if(!r.ok)throw Error('atlas não encontrado');return r.json();})]);
   if(token!==this.token||partes.some(p=>p.status==='rejected')){
    for(const p of partes)if(p.status==='fulfilled')p.value?.close?.();
    if(token===this.token){this.carregando=false;this.falhou=true;console.error('[Coral pixel] Não foi possível carregar a arte; mantendo o visual anterior.',partes.filter(p=>p.status==='rejected').map(p=>String(p.reason)));}return;
