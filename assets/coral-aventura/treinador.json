@@ -1,0 +1,21 @@
+{
+  "fw": 40,
+  "fh": 52,
+  "pe": 49,
+  "altura": 48,
+  "direcoes": [
+    "down",
+    "up",
+    "left",
+    "right"
+  ],
+  "colunas": 5,
+  "andar": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "parado": 4,
+  "corridaExclusiva": false
+}
