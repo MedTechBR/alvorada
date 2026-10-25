@@ -55,6 +55,7 @@ const SELVAGEM = () => `(async () => {
   w.x = G.player.x + 80; w.y = G.player.y - 30; w.mon.level = VIT ? 50 : 28; w.mon.calc?.(); w.mon.hp = w.mon.stats.hp;
   w.ai.state = 'aggro'; w.aggroTarget = G.player;
   G.throwMon(0, G.player.x + 30, G.player.y - 10); await espera(1500);
+  if(!BANDO)await G.encontro.entrar({selvagem:w});
   w.aggroTarget = G.lead; w.provoke?.(G.lead); for (const o of bando) { o.aggroTarget = G.lead; o.provoke?.(G.lead); }
   // vitrine: Mega Evolução logo de cara e o selvagem fraco (desmaia na gravação: quadro de impacto + faixa)
   return w.mon.name;

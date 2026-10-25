@@ -1,0 +1,21 @@
+RETORNO {"mapa":true,"dist":0,"ativo":true}
+vitoria {"mapa":true,"retirado":true,"capturado":false,"id":"alvorada","transicao":false,"ativo":false}
+captura {"mapa":true,"retirado":false,"capturado":false,"id":"alvorada","transicao":false,"ativo":false}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(r.retirado)
+
+    at file:///Users/matheusparente/Documents/Claude/pokemon-2d/tools/teste-3d/coral-encontro.mjs:43:317 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v26.5.0

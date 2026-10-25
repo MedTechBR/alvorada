@@ -1,0 +1,110 @@
+[
+  {
+    "modo": "3d",
+    "inicial": {
+      "atlas": 1,
+      "setores": 8,
+      "botoes": [
+        {
+          "id": "",
+          "x": 724,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-dodge",
+          "x": 781,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-mount",
+          "x": 667,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        }
+      ],
+      "pessoa": true,
+      "lead": "none",
+      "objetivo": "none",
+      "local": "block"
+    },
+    "pes": {
+      "mudou": true,
+      "fontes": 1,
+      "erroPe": 2.220446049250313e-16,
+      "restaurado": true
+    },
+    "porta": {
+      "x": 1711,
+      "y": 1963
+    },
+    "descarte": {
+      "ativo": false,
+      "pronto": false,
+      "setores": 0,
+      "objetos": 0,
+      "atlas": false,
+      "pessoas": 0
+    },
+    "retorno": true,
+    "erros": []
+  },
+  {
+    "modo": "2d",
+    "inicial": {
+      "atlas": 1,
+      "setores": 8,
+      "botoes": [
+        {
+          "id": "",
+          "x": 724,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-dodge",
+          "x": 781,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-mount",
+          "x": 667,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        }
+      ],
+      "pessoa": true,
+      "lead": "none",
+      "objetivo": "none",
+      "local": "block"
+    },
+    "pes": {
+      "mudou": true,
+      "fontes": 1,
+      "erroPe": 2.220446049250313e-16,
+      "restaurado": true
+    },
+    "porta": {
+      "x": 1711,
+      "y": 1963
+    },
+    "descarte": {
+      "ativo": false,
+      "pronto": false,
+      "setores": 0,
+      "objetos": 0,
+      "atlas": false,
+      "pessoas": 0
+    },
+    "retorno": true,
+    "erros": []
+  }
+]

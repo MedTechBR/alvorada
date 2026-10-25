@@ -1,0 +1,35 @@
+[
+  {
+    "teste": "encontros",
+    "codigo": 0,
+    "log": "encontros-final.log"
+  },
+  {
+    "teste": "navegacao",
+    "codigo": 0
+  },
+  {
+    "teste": "montaria-agua",
+    "codigo": 0
+  },
+  {
+    "teste": "passagens",
+    "codigo": 0
+  },
+  {
+    "teste": "paredes",
+    "codigo": 0
+  },
+  {
+    "teste": "batalha",
+    "codigo": 0
+  },
+  {
+    "teste": "fluxo-final",
+    "codigo": 0
+  },
+  {
+    "teste": "equilibrio",
+    "codigo": 0
+  }
+]

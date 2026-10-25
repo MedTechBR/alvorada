@@ -1,0 +1,105 @@
+{
+  "equipeDireta": true,
+  "passeio": {
+    "semLuta": true,
+    "semAgressao": true,
+    "ps": [
+      34,
+      19
+    ],
+    "antes": [
+      34,
+      19
+    ],
+    "hostil": false
+  },
+  "entrada": {
+    "participantes": 1,
+    "stats": true,
+    "barraTopo": false,
+    "montaria": false
+  },
+  "placa": {
+    "pixels": 1726,
+    "x": 546.4049902557286,
+    "y": 93.60622653116383
+  },
+  "trocaContinua": true,
+  "retorno": {
+    "mapa": true,
+    "aliados": 0,
+    "cenaDescartada": true,
+    "antigoDescartado": true
+  },
+  "cancelamento": true,
+  "ciclos": {
+    "descartados": true,
+    "aliados": 1
+  },
+  "envioConcorrente": {
+    "ultima": true,
+    "cancelou": true
+  },
+  "menus": [
+    {
+      "id": "party",
+      "aberto": true,
+      "largura": 820,
+      "altura": 368,
+      "x": 12,
+      "y": 12,
+      "transbordou": false
+    },
+    {
+      "id": "bag",
+      "aberto": true,
+      "largura": 820,
+      "altura": 368,
+      "x": 12,
+      "y": 12,
+      "transbordou": false
+    },
+    {
+      "id": "map",
+      "aberto": true,
+      "largura": 820,
+      "altura": 368,
+      "x": 12,
+      "y": 12,
+      "transbordou": false
+    },
+    {
+      "id": "mounts",
+      "aberto": true,
+      "largura": 820,
+      "altura": 368,
+      "x": 12,
+      "y": 12,
+      "transbordou": false
+    },
+    {
+      "id": "options",
+      "aberto": true,
+      "largura": 820,
+      "altura": 368,
+      "x": 12,
+      "y": 12,
+      "transbordou": false
+    },
+    {
+      "id": "dex",
+      "aberto": true,
+      "largura": 820,
+      "altura": 368,
+      "x": 12,
+      "y": 12,
+      "transbordou": false
+    }
+  ],
+  "rota": {
+    "nome": "Clareira",
+    "inimigos": 1,
+    "stats": true
+  },
+  "erros": []
+}

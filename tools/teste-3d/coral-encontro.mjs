@@ -7,7 +7,7 @@ const s=await sessao({W:844,H:390,cel:true,port:8700,qs:'nosw&ir=1664,1941&shade
 try{
  await s.P.ev(`(async()=>{for(let i=0;i<80&&game.ui.dialog.open;i++){dispatchEvent(new KeyboardEvent('keydown',{code:'Enter',key:'Enter',bubbles:true}));dispatchEvent(new KeyboardEvent('keyup',{code:'Enter',key:'Enter',bubbles:true}));await new Promise(r=>setTimeout(r,40));}game.story.roteiro.tick=()=>false;game.story.busy=false;game.spawnT=game.ambienteT=1e9;for(const w of [...game.wilds])game.removeEntity(w);game.mundo.setHour(15);})()`);
  await until(()=>s.P.ev('!!v3d.coralPixel.ativo'),30000,100);
- const criar=`(async()=>{const g=game;const {Mon}=await import('/src/data/mon.js'),{PokeEntity}=await import('/src/entities/pokemon.js');g.party=[new Mon(25,12),new Mon(4,12)];g.leadIdx=0;await g.sendOut(0);await g.lead.ready;const w=new PokeEntity(g,new Mon(98,10),'wild',g.player.x+80,g.player.y);await w.ready;g.entities.push(w);g.wilds.push(w);g.ents.addChild(w.view);window.__selv=w;window.__mapa=g.map;window.__volta={x:g.player.x,y:g.player.y};window.__stats=JSON.stringify(w.mon.stats);g.combat.ai.provoke(w,g.lead);return{hp:w.mon.hp,stats:w.mon.stats};})()`;
+ const criar=`(async()=>{const g=game;const {Mon}=await import('/src/data/mon.js'),{PokeEntity}=await import('/src/entities/pokemon.js');g.party=[new Mon(25,12),new Mon(4,12)];g.leadIdx=0;await g.sendOut(0);await g.lead.ready;const w=new PokeEntity(g,new Mon(98,10),'wild',g.player.x+80,g.player.y);await w.ready;g.entities.push(w);g.wilds.push(w);g.ents.addChild(w.view);window.__selv=w;window.__mapa=g.map;window.__volta={x:g.player.x,y:g.player.y};window.__stats=JSON.stringify(w.mon.stats);await g.encontro.desafiar(w);return{hp:w.mon.hp,stats:w.mon.stats};})()`;
  const inicio=await s.P.ev(criar);
  await until(()=>s.P.ev('game.encontro.ativo&&!game.encontro.transicao'),30000,100);
  await sleep(1000);
@@ -30,8 +30,8 @@ try{
  // Vitória usa o gancho real de dano/XP; captura usa a bola real em alvo atordoado, para testar o retorno sem depender de acertar um alvo móvel.
  const finais=[];
  for(const modo of ['vitoria','captura','derrota']){
-  await s.P.ev(`(async()=>{const g=game;g.encontro.espera=0;const {Mon}=await import('/src/data/mon.js'),{PokeEntity}=await import('/src/entities/pokemon.js');if(!g.lead?.alive)await g.sendOut(0);const w=window.__novo=new PokeEntity(g,new Mon(98,8),'wild',g.player.x+64,g.player.y);await w.ready;g.entities.push(w);g.wilds.push(w);g.ents.addChild(w.view);g.combat.ai.provoke(w,g.lead);})()`);
-  await until(()=>s.P.ev('game.encontro.ativo&&!game.encontro.transicao'),15000,100);
+  await s.P.ev(`(async()=>{const g=game;g.encontro.espera=0;const {Mon}=await import('/src/data/mon.js'),{PokeEntity}=await import('/src/entities/pokemon.js');if(!g.lead?.alive)await g.sendOut(0);const w=window.__novo=new PokeEntity(g,new Mon(98,8),'wild',g.player.x+64,g.player.y);await w.ready;g.entities.push(w);g.wilds.push(w);g.ents.addChild(w.view);if(!await g.encontro.desafiar(w))throw Error('Entrada recusada: '+JSON.stringify({sending:g.sendingOut,bola:!!g.throwingMon,espera:g.encontro.espera,time:g.time,busy:g.story.busy,montaria:g.mount.active}));})()`);
+  assert(await until(()=>s.P.ev('game.encontro.ativo&&!game.encontro.transicao'),15000,100),'Não entrou na arena');
   if(modo==='vitoria'){
    await s.P.ev(`game.combat.use(game.lead,0,__novo.x,__novo.y)`);
    for(let i=0;i<3;i++){await sleep(180);const shot=await s.P.raw('Page.captureScreenshot',{format:'jpeg',quality:92});writeFileSync('tools/shots/coral-pixel/arena-acao-'+i+'.jpg',Buffer.from(shot.result.data,'base64'));}

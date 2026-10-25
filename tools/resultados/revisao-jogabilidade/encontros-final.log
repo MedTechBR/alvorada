@@ -1,0 +1,78 @@
+RETORNO {"mapa":true,"dist":0,"ativo":true}
+vitoria {"mapa":true,"retirado":true,"capturado":false,"id":"alvorada","transicao":false,"ativo":false}
+captura {"mapa":true,"retirado":true,"capturado":true,"id":"alvorada","transicao":false,"ativo":false}
+derrota {"mapa":true,"retirado":false,"capturado":false,"id":"alvorada","transicao":false,"ativo":false}
+{
+  "inicio": {
+    "hp": 27,
+    "stats": {
+      "hp": 27,
+      "atk": 23,
+      "def": 25,
+      "spa": 12,
+      "spd": 11,
+      "spe": 16
+    }
+  },
+  "dentro": {
+    "mapa": "encontro-coral",
+    "ps": 27,
+    "stats": true,
+    "save": "alvorada",
+    "pos": {
+      "x": 26632,
+      "y": 31068,
+      "dir": "down"
+    },
+    "volta": {
+      "x": 26632,
+      "y": 31068,
+      "dir": "down"
+    },
+    "erroProjecao": 0,
+    "borda": true,
+    "campo": true,
+    "participantes": 1,
+    "foeTop": false
+  },
+  "retorno": {
+    "mapa": true,
+    "dist": 0,
+    "ativo": true
+  },
+  "treinador": {
+    "mapa": true,
+    "npc": 0,
+    "ativos": 0
+  },
+  "finais": [
+    {
+      "modo": "vitoria",
+      "mapa": true,
+      "retirado": true,
+      "capturado": false,
+      "id": "alvorada",
+      "transicao": false,
+      "ativo": false
+    },
+    {
+      "modo": "captura",
+      "mapa": true,
+      "retirado": true,
+      "capturado": true,
+      "id": "alvorada",
+      "transicao": false,
+      "ativo": false
+    },
+    {
+      "modo": "derrota",
+      "mapa": true,
+      "retirado": false,
+      "capturado": false,
+      "id": "alvorada",
+      "transicao": false,
+      "ativo": false
+    }
+  ],
+  "erros": []
+}
