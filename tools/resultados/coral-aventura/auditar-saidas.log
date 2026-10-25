@@ -1,0 +1,4 @@
+209 salas, 182 saídas conferidas
+0 problemas: todo tapete de saída está numa porta, toda porta tem tapete e abertura, nenhum móvel no caminho
+(node:7988) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
