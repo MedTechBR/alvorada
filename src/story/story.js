@@ -280,7 +280,7 @@ export class Story {
   }
   async #fight0(npc, def, opts) {
     const b = new TrainerBattle(this, npc, def, opts);
-    const volta = await this.#espacoDaLuta(npc, b);
+    const volta = this.g.encontro?.podeTreinador(b)?null:await this.#espacoDaLuta(npc, b);
     this.battle = b;
     this.busy = false; // a luta é livre: o jogador anda, mira e ataca
     this.refreshObjective();
@@ -395,6 +395,7 @@ export class Story {
   // ---------- laço ----------
   update(dt) {
     const g = this.g, f = this.flags, p = g.player;
+    if(g.encontro?.ativo){this.battle?.update(dt);this.#music(dt);return;}
     for (const n of this.npcs.values()) {
       n.update(dt);
       // ninguém atravessa as pessoas

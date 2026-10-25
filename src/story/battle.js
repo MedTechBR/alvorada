@@ -4,7 +4,8 @@ import { PokeEntity } from '../entities/pokemon.js';
 import { dexMark } from '../ui/menu.js';
 import { arenaPara } from '../combat/arena-ginasio.js';
 
-// Batalha contra treinador NO MAPA, sem tela de batalha: o treinador arremessa a Poké Bola e o
+// Batalha contra treinador em tempo real: no piloto de Coral, uma cena costeira separada;
+// no restante, o treinador arremessa a Poké Bola no campo e o
 // Pokémon dele luta no mundo, com o mesmo combate em tempo real (src/combat/combat.js).
 // Os Pokémon do treinador usam o lado 'foe': inimigos do seu lado ('ally'), mas não entram na lista
 // de selvagens (não dá para capturar, não somem por distância, não brigam com os selvagens).
@@ -27,11 +28,19 @@ export class TrainerBattle {
 
   start() {
     const g = this.g;
+    if(g.encontro?.podeTreinador(this)){
+      g.encontro.entrar({batalha:this}).then(()=>this.#iniciar()).catch(err=>{console.error('[Encontro Coral]',err);this.#iniciar();});
+    }else this.#iniciar();
+    return this.promise;
+  }
+
+  #iniciar(){
+    const g=this.g;
+    if(this.done)return;
     g.audio?.music?.('battle');
     const vai = () => { if (!this.done) for (let i = 0; i < this.max; i++) this.sendNext(i * 0.35); };
     if (this.arena) this.arena.abertura().catch((err) => console.warn('abertura da arena', err)).then(vai);
     else vai();
-    return this.promise;
   }
 
   // Ponto onde o Pokémon cai: entre o treinador e o jogador (lado a lado, se forem dois)
@@ -159,6 +168,6 @@ export class TrainerBattle {
     this.active = [];
     this.arena?.fim(result);
     this.s.restoreMusic?.();
-    this.resolve(result);
+    if(g.encontro?.batalha===this)g.encontro.sair().then(()=>this.resolve(result));else this.resolve(result);
   }
 }

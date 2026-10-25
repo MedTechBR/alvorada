@@ -114,6 +114,7 @@ export class Hud {
 
   frame() {
     const g = this.g;
+    if(g.encontro?.ativo){this.marker.visible=this.seta.visible=this.bubble.visible=false;return;}
     if (this.bubble.visible && this.promptTarget) {
       const t = this.promptTarget;
       this.bubble.x = Math.round(t.x); this.bubble.y = Math.round(t.y - (t.h ?? 30) + Math.sin(g.time * 5) * 1.2);
@@ -124,7 +125,7 @@ export class Hud {
     let info = null;
     try { info = this.guia.update(dt, tg); } catch (e) { if (!this.guiaErro) { this.guiaErro = true; console.warn('guia', e); } }
     this.#aviso(info?.pronto && !info.ok && !info.enigma ? info.motivo : null);
-    const show = tg && this.ui.state === 'play' && !this.ui.blocking && !this.ui.story?.busy;
+    const show = !g.coralPixel?.ativo && tg && this.ui.state === 'play' && !this.ui.blocking && !this.ui.story?.busy;
     if (!show) { m.visible = S.visible = false; return; }
     const p = g.player, W = innerWidth, H = innerHeight;
     const tela = (x, y, h = 0) => (g.worldToScreen ? g.worldToScreen(x, y, h) : { x: g.world.x + x * g.world.scale.x, y: g.world.y + (y - h) * g.world.scale.x });

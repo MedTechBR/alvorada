@@ -34,7 +34,9 @@ function monJSON(m) { const j = m.toJSON(); if (m.item != null && j.item === und
 
 // Fotografia do jogo: equipe, PC, mochila, posição, flags (história, Pokédex, insígnias), hora e tempo de jogo
 export function serialize(g) {
-  const p = g.player;
+  // A cena de encontro é descartável: salvar nela mantém o ponto real de exploração.
+  const a=g.encontro?.ativo?g.encontro.antes:null;
+  const p = a?.player??g.player,map=a?.map??g.map;
   return {
     v: SAVE_VERSION,
     savedAt: Date.now(),
@@ -46,12 +48,12 @@ export function serialize(g) {
     pos: { x: Math.round(p.x), y: Math.round(p.y), dir: p.dir },
     // mundo (continente) em que o jogador está; dentro de uma sala, a posição também vai relativa à sala (as salas
     // ganham lugar sozinhas na faixa de interiores e podem mudar de lugar quando uma região cresce)
-    mundo: g.map?.id ?? 'alvorada', layout: LAYOUT_GEOGRAFICO,
-    sala: salaDe(g),
+    mundo: map?.id ?? 'alvorada', layout: LAYOUT_GEOGRAFICO,
+    sala: salaDe({player:p,map}),
     mundoEstado: g.mundo?.saveState?.() ?? null,
     flags: g.flags,
     clock: { time: g.time ?? 0, dayTime: g.dayTime ?? null },
-    area: g.map?.areaName?.(p.x, p.y) ?? '',
+    area: map?.areaName?.(p.x, p.y) ?? '',
   };
 }
 

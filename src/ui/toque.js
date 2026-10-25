@@ -180,12 +180,14 @@ export class Toque {
     vis['t-mount'] = !pk && !!g.mount?.hint?.();
     // A observação dos moradores de Coral prioriza a interação no passeio.
     if(!pk&&!luta&&/Observar/.test(this.ui.hud?.promptKey??'')){vis['t-team']=false;vis['t-mount']=false;}
+    // Passeio no piloto: equipe e montarias seguem no menu; no campo os atalhos reaparecem.
+    if(g.coralPixel?.ativo&&!pk&&!luta){vis['t-team']=false;vis['t-mount']=false;vis.move[1]=false;}
     vis['t-swap'] = false; // trocar fica na faixa da equipe
     // ícone do botão grande da esquerda: esquiva com o Pokémon, correr com o treinador
     this.#set('esqIc', pk, (v) => { const b = document.getElementById('t-dodge'); if (b) { b.innerHTML = v ? ICONES.esquiva : ICONES.correr; b.setAttribute('aria-label', v ? 'Esquiva' : 'Correr'); } });
     // número de bolas no Capturar do treinador
     if (!pk) { const n = document.querySelector('.tb.move[data-slot="1"] .tq-n'); if (n && n.textContent !== String(bolas)) n.textContent = bolas; }
-    const key = JSON.stringify(vis) + (innerWidth > innerHeight * 1.15 ? 'L' : 'P') + innerWidth + 'x' + innerHeight;
+    const key = JSON.stringify(vis) + !!g.coralPixel?.ativo + (innerWidth > innerHeight * 1.15 ? 'L' : 'P') + innerWidth + 'x' + innerHeight;
     if (key !== this.v.lay) { this.v.lay = key; this.#arruma(vis, pk); }
     if (pk) this.#recargas(l);
     if (!this.faixa.hidden && !vis['t-team']) this.abrirEquipe(false);
@@ -230,6 +232,12 @@ export class Toque {
     const k = Math.min(ui, altoMax / Math.max(1, h), largoMax / Math.max(1, w));
     this.box.style.setProperty('--tq-k', k.toFixed(3));
     this.box.style.width = w + 'px'; this.box.style.height = h + 'px';
+    // No passeio, o par de ações fica junto e os nomes não cobrem o cenário.
+    if(this.g.coralPixel?.ativo&&!pk&&!this.g.story?.battle){
+      pos($('t-dodge'),[29,29],48);pos(document.querySelector('.tb.move[data-slot="0"]'),[86,29],48);
+      if(vis['t-act'])pos($('t-act'),[86,85],44);
+      this.box.style.width='114px';this.box.style.height=(vis['t-act']?'108':'56')+'px';this.box.style.setProperty('--tq-k','1');
+    }
     this.#cabeNomes();
   }
 

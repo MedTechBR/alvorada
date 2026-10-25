@@ -1,0 +1,42 @@
+/* O ensaio costeiro usa o mesmo HUD; a exploração deixa o cenário respirar. */
+body.coral-pixel{--coral-tinta:#173e4b;--coral-papel:#f4e8ca}
+body.coral-pixel #menu-btn,body.coral-pixel #zoom{background:#173e4be8;border:1px solid #d8caa4;color:#f4e8ca;box-shadow:0 2px 0 #102c38;border-radius:8px}
+body.coral-pixel #menu-btn{min-width:44px;height:44px}
+body.coral-pixel #zoom{top:68px;right:12px;transform:scale(.8);transform-origin:top right}
+body.coral-pixel #minimapa{top:12px;right:68px}
+body.coral-pixel #minimapa canvas{width:82px!important;height:82px!important;border-radius:9px;border:2px solid #173e4b;box-shadow:0 2px 0 #102c3866}
+body.coral-pixel #minimapa .mm-lab{color:#173e4b;text-shadow:0 1px #fff9}
+body.coral-pixel:not(.coral-luta) #lead{width:150px;border:1px solid #c6b794;background:#173e4be8;color:#f4e8ca;box-shadow:0 2px 0 #102c3866;border-radius:7px}
+body.coral-pixel:not(.coral-luta) #lead .ld-mid,body.coral-pixel:not(.coral-luta) #lead .ld-party{display:none}
+body.coral-pixel:not(.coral-luta) #lead .ld-nm,body.coral-pixel:not(.coral-luta) #lead .ld-lv{color:#f4e8ca}
+body.coral-pixel:not(.coral-luta) #lead .bar.hp{height:4px;margin-top:3px}
+body.coral-pixel .objective{max-width:190px;border:1px solid #c6b794;background:#f4e8caeb;color:#173e4b;box-shadow:none;border-radius:6px}
+body.coral-pixel:not(.coral-luta) .tb{background:#173e4bdd;border:1.5px solid #ead8a9;color:#fff6dc;box-shadow:0 2px 0 #102c3866}
+body.coral-pixel:not(.coral-luta) .tb.max{background:#a94b40}
+body.coral-pixel:not(.coral-luta) .tq-n,body.coral-pixel:not(.coral-luta) .tq-cd{color:#fff6dc}
+body.coral-encontro #minimapa,body.coral-encontro #zoom,body.coral-encontro .objective{visibility:hidden}
+#sair-encontro{position:fixed;top:12px;right:68px;z-index:30;min-height:44px;padding:0 15px;border:1px solid #ead8a9;border-radius:7px;background:#173e4be8;color:#fff6dc;font:700 14px system-ui;touch-action:manipulation}
+#sair-encontro[hidden]{display:none}
+body.menu-open #sair-encontro,body.dlg-open #sair-encontro{visibility:hidden}
+/* Os SVG do zoom usam currentColor, assim como o botão de menu. */
+body.coral-pixel #zoom button{color:#f4e8ca}
+body.coral-pixel:not(.coral-luta) #lead{width:190px}
+body.coral-pixel .objective{top:60px}
+body.coral-pixel .tb{background:#173e4be8;border:1.5px solid #ead8a9;color:#fff6dc;box-shadow:0 2px 0 #102c3866}
+body.coral-pixel.coral-luta #lead{background:#173e4bf2;border:1px solid #d5c79f;border-radius:7px;color:#fff6dc;box-shadow:none}
+body.coral-pixel.coral-luta #lead .ld-nm,body.coral-pixel.coral-luta #lead .ld-lv,body.coral-pixel.coral-luta #lead .ld-hpt{color:#fff6dc}
+/* Passeio: localização e mapa substituem os painéis de batalha e missão. */
+#coral-local{display:none;position:fixed;top:10px;left:10px;z-index:19;padding:7px 16px 7px 30px;border:1px solid #c8d6ce77;border-radius:20px;background:#13334cdd;color:#fff8e8;font:700 14px system-ui;box-shadow:0 2px 4px #102c3833;pointer-events:none}
+#coral-local:before{content:'●';position:absolute;left:12px;color:#aec9d0;font-size:12px}
+body.coral-pixel:not(.coral-luta) #coral-local{display:block}
+body.coral-pixel:not(.coral-luta) #lead,body.coral-pixel:not(.coral-luta) .objective,body.coral-pixel #zoom{display:none!important}
+body.coral-pixel #minimapa{top:9px;right:63px;background:#13334cdd;padding:12px 3px 3px;border:1px solid #b0cbc699;border-radius:8px}
+body.coral-pixel #minimapa:before{content:'N';position:absolute;top:0;left:0;width:100%;text-align:center;color:#fff;font:700 10px system-ui}
+body.coral-pixel #minimapa canvas{border:0;box-shadow:none;width:76px!important;height:58px!important;border-radius:3px;object-fit:cover}
+body.coral-pixel #minimapa .mm-lab{display:none}
+body.coral-pixel #menu-btn{top:9px;right:10px;width:44px;min-width:44px;border:1px solid #94bec14d;border-radius:7px;background:#13334cdd;box-shadow:none}
+body.coral-pixel:not(.coral-luta) #stick{background:#183c535e;border:1px solid #eef4e8aa;box-shadow:none;opacity:.7;transform:scale(.72);transform-origin:bottom left}
+body.coral-pixel:not(.coral-luta) #stick-knob{background:#eff1df99;border:1px solid #fff;box-shadow:none}
+body.coral-pixel:not(.coral-luta) .tb{background:#13334cdd!important;border:1px solid #d1e0d6cc;box-shadow:none}
+body.coral-pixel:not(.coral-luta) .tq-nome{display:none}
+body.menu-open #coral-local,body.dlg-open #coral-local,body.at-title #coral-local{visibility:hidden}

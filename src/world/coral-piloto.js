@@ -1,8 +1,9 @@
 import { TILE } from './tiles.js';
 import { KINDS } from './objects.js';
+import { comporBairroCoral } from './coral-bairro.js';
 
 // Recorte do ensaio: Coral, o cais e a subida já existente do farol.
-// As portas, moradores, pontos de roteiro e barreiras continuam no lugar.
+// O bairro compacto preserva as salas e os identificadores usados pelo roteiro.
 export const CORAL = [1504,1856,512,288];
 const dentro=(x,y)=>x>=CORAL[0]&&y>=CORAL[1]&&x<CORAL[0]+CORAL[2]&&y<CORAL[1]+CORAL[3];
 export const emCidadeCoral=(map,px,py)=>map.id==='alvorada'&&dentro(px/16,py/16);
@@ -43,6 +44,7 @@ export function comporCoral(S,P){
  S.J.coralPets=[];
  for(const d of pets){let p=null;for(let r=0;r<=4&&!p;r++)for(let dy=-r;dy<=r&&!p;dy++)for(let dx=-r;dx<=r&&!p;dx++)if((livre(d.x+dx,d.y+dy)||(!S.block[d.x+dx+(d.y+dy)*W]&&S.tiles[d.x+dx+(d.y+dy)*W]===TILE.DOCK))&&!pertoPessoa(d.x+dx,d.y+dy,2))p={...d,x:d.x+dx,y:d.y+dy};if(p){S.pets.push(p);S.J.coralPets.push(p);}}
  S.J.coralResumo={postesRetirados:retirar.size,pets:S.J.coralPets.length};
+ comporBairroCoral(S,P);
 }
 
 // Caderno opcional de observação: uma recompensa única, sem mudar a campanha.

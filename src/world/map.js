@@ -54,18 +54,19 @@ export class GameMap {
   }
 
   // Monta o mundo `id` (assets/maps/mundos.json). fatiar: monta em pedaços entre os quadros (troca de mapa sem travar).
-  async carregar(id, { fatiar = false, antes } = {}) {
+  async carregar(id, { fatiar = false, antes, dados = null, temporario = false } = {}) {
     const t0 = agora();
-    const R = await dadosDoMundo(id);
+    const R = dados ?? await dadosDoMundo(id);
     const S = prepararMundo(R, { florestaPorSetor: !!R.layoutGeografico });
     for (const P of R.partes) if (!P.lazy) { if (fatiar) await this.#fatias(passosParte(S, P), 6); else montarParte(S, P); }
     antes?.(); // quem chamou ainda pode limpar o mundo antigo antes da troca
     this.#descartar();
-    REGION = R; this.R = R; this.S = S; this.id = id; this.nome = R.nome;
+    if(!temporario)REGION = R;
+    this.R = R; this.S = S; this.id = id; this.nome = R.nome;
     this.w = R.w; this.h = R.h; this.tiles = S.tiles; this.block = S.block;
     this.objects = [...S.placed, ...S.novos]; S.novos.length = 0;
     this.decorDefs = S.decor; this.peopleDefs = S.people; this.petDefs = S.pets;
-    this.outdoorH = R.outdoorH ?? this.h; this.areas = R.areas; AREAS = listaAreas(R.areas);
+    this.outdoorH = R.outdoorH ?? this.h; this.areas = R.areas;if(!temporario)AREAS = listaAreas(R.areas);
     this.signs = R.signs ?? []; this.items = R.items ?? []; this.regioes = R.regioes ?? [];
     this.interiors = R.interiors.map((r) => ({ ...r })); this.region = R;
     this.#links();
@@ -80,10 +81,13 @@ export class GameMap {
     this.secPend = new Uint8Array(this.CW * this.CHh); this.nPend = 0; this.construindo = null;
     for (const P of R.partes) if (!P.pronta) { this.nPend++; for (const r of [P.rect, P.faixa]) if (r) this.#marcarSetores(r, P.i + 1); }
     this.dirtyTiles = []; this.visible = new Set(); this.pending = null;
-    prewarm(this); // texturas dos biomas assadas nas folgas (ground.js)
+    if(!temporario)prewarm(this); // a arena transitória usa apenas o atlas local
     this.tempoCarga = Math.round(agora() - t0);
     return this;
   }
+
+  // Usado pela cena de encontro: o continente original não é desmontado nem recarregado.
+  descartarCena(){this.#descartar();this.root?.destroy({children:true});this.root=null;}
   async #fatias(it, budget) {
     for (;;) { const t = agora(); while (agora() - t < budget) if (it.next().done) return; await new Promise((r) => setTimeout(r, 0)); }
   }

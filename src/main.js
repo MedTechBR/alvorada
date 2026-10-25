@@ -30,6 +30,7 @@ import { NIGHT_ENCOUNTERS } from './data/species.js';
 import { BIOMAS_PADRAO, BIOMAS_NOITE } from './data/habitats-biomas.js'; // biomas novos do mundo ampliado (gerado)
 import { ITEM_INFO, itemInfo, itemName } from './data/items.js';
 import { rollShakes } from './mechanics/capture.js';
+import { EncontroCoral } from './combat/encontro-coral.js';
 import { setAmbiente, isNight as nightNow } from './mechanics/ambiente.js';
 import { formaRegionalEm } from './data/regioes.js';
 import { OPTIONS } from './ui/options.js';
@@ -102,6 +103,13 @@ class Game {
       try { const { Visual3D } = await import('./visual3d/index.js'); this.v3d = new Visual3D(this); this.v3d.instalar(); }
       catch (e) { console.error('[3D] não deu para ligar o visual 3D; seguindo em 2D', e); this.v3d = null; this.app.renderer.background.alpha = 1; }
     }
+    if(this.v3d)this.coralPixel=this.v3d.coralPixel;
+    else{
+      const {CoralPixel}=await import('./visual2d/coral.js');this.coralPixel=new CoralPixel({g:this});
+      this.app.ticker.remove(this.app.render,this.app);
+      this.app.ticker.add(()=>{if(this.coralPixel.ativo)this.coralPixel.quadro(Math.min(.05,this.app.ticker.deltaMS/1000));else this.app.render();},null,-25);
+    }
+    this.encontro = new EncontroCoral(this);
     window.game = this;
     // tela de título (conta + personagem); depois o primeiro Pokémon sai da bola e a história começa
     // ?teste=1: entra direto com equipe de teste e sem gravar (para testes; não aparece para o jogador)
@@ -483,6 +491,7 @@ class Game {
     this.hudLead(); this.hudMoves(); this.ui.partyChanged?.();
   }
   blackout() {
+    if(this.encontro?.ativo){this.encontro.sair().then(()=>this.blackout());return;}
     if (this.story?.onBlackout()) return; // batalha que não manda para casa (ex.: rival no laboratório)
     this.toast('Sua equipe desmaiou! Você voltou para casa.');
     this.party.forEach((m) => m.heal());
@@ -588,10 +597,12 @@ class Game {
   frame(rdt) {
     const t0 = performance.now();
     const inp = this.input; inp.poll();
+    this.encontro?.update();
+    if(this.encontro?.transicao){this.#camera(rdt);inp.endFrame();return;}
     if (inp.pressed('perf')) $('perf').hidden = !$('perf').hidden;
     if (this.viagem?.ocupada) { this.viagem.quadro(rdt); this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // trocando de mundo
     // título, menu e diálogo param o mundo (a câmera e o desenho continuam)
-    if (this.ui?.frame(rdt)) { this.show.update(0); this.net?.update(rdt, true); this.#camera(rdt); this.map.flushDirty(); this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // o online segue mesmo com o menu aberto
+    if (this.ui?.frame(rdt)) { this.show.update(0); if(!this.encontro?.ativo)this.net?.update(rdt, true); this.#camera(rdt); this.map.flushDirty(); if(this.encontro?.ativo)this.map.update(rdt);else this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // o online segue mesmo com o menu aberto
     // pausa no impacto: o mundo congela por alguns milissegundos
     let dt = rdt;
     if (this.fx.hitStop > 0.06) this.fx.hitStop = 0.06; // pausa no impacto: no máximo 60 ms, de qualquer origem
@@ -600,7 +611,7 @@ class Game {
     for (const tm of this.timers.slice()) if (tm.t <= this.time) { this.timers.splice(this.timers.indexOf(tm), 1); tm.fn(); }
     this.atualizarRetorno();
     this.#control(dt, rdt);
-    this.net?.update(dt); // online: manda sua posição, mostra os outros, cuida do duelo
+    if(!this.encontro?.ativo)this.net?.update(dt); // online: manda sua posição, mostra os outros, cuida do duelo
     this.#updateWild(dt);
     this.combat.update(dt);
     this.poder.update(dt);
@@ -614,8 +625,8 @@ class Game {
     this.show.update(rdt, dt);
     this.#camera(rdt);
     this.map.flushDirty();
-    this.mundo.update(rdt);
-    this.viagem?.update(rdt); // ninhos de pouso visitados
+    if(this.encontro?.ativo)this.map.update(rdt);else this.mundo.update(rdt);
+    if(!this.encontro?.ativo)this.viagem?.update(rdt); // ninhos de pouso visitados
     this.hudUpdate(rdt);
     this.quality.sample(rdt);
     inp.endFrame();
@@ -844,6 +855,7 @@ class Game {
   }
 
   #updateWild(dt) {
+    if(this.encontro?.ativo){for(const w of this.wilds){if(!w.alive||w.busy||w.stun>0||(w.lock>0&&!this.combat.andando(w))){w.vx=w.vy=0;continue;}const v=w.think(dt);w.vx=v.vx;w.vy=v.vy;if(Math.hypot(v.vx,v.vy)>1)w.face(v.vx,v.vy);}return;}
     this.spawnT -= dt;
     const p = this.player;
     // Quatro encontros normais e até seis habitantes tranquilos, sem reposição no meio da luta.
@@ -879,6 +891,7 @@ class Game {
 
   // ninguém atravessa ninguém
   #crowd() {
+    this.encontro?.conter();
     const grade = this.grade.ativo && !this.mount?.flying && !this.player.pouso;
     // o treinador acompanhando o Pokémon não esbarra em ninguém (não prende o Pokémon nem os selvagens)
     const segue = this.mode === 'pokemon' && this.lead?.alive;
@@ -910,13 +923,14 @@ class Game {
     c.x += (fx - c.x) * Math.min(1, dt * ck); c.y += (fy - c.y) * Math.min(1, dt * ck);
     let sx = 0, sy = 0;
     if (this.fx.shake > 0) { this.fx.shake -= dt; const k = this.fx.shake * 6; sx = (Math.random() - 0.5) * k; sy = (Math.random() - 0.5) * k; }
+    c.sx=sx;c.sy=sy; // a apresentação pixel usa o mesmo tranco de impacto
     const z = this.zoom * (this.camK ?? 1); // camK < 1: câmera afasta (Dynamax, reide; src/combat/poder.js)
     if (this.world.scale.x !== z) this.world.scale.set(z);
     this.world.x = Math.round(innerWidth / 2 - (c.x + sx) * z);
     this.world.y = Math.round(innerHeight / 2 - (c.y + sy) * z);
     const hw = innerWidth / 2 / z + 40, hh = innerHeight / 2 / z + 40;
-    if (this.v3d) this.v3d.cull(); else this.map.cullChunks({ x0: c.x - hw, x1: c.x + hw, y0: c.y - hh, y1: c.y + hh });
-    const area = this.map.areaName(p.x, p.y);
+    if (this.v3d) this.v3d.cull(); else if(!this.coralPixel?.cull())this.map.cullChunks({ x0: c.x - hw, x1: c.x + hw, y0: c.y - hh, y1: c.y + hh });
+    const area = this.encontro?.ativo?this.encontro.antes.area:this.map.areaName(p.x, p.y);
     if (area !== this.area) { this.area = area; this.missoes?.evento('area', { nome: area }); const el = $('area'); el.textContent = area; el.classList.add('on'); clearTimeout(this.areaT); this.areaT = setTimeout(() => el.classList.remove('on'), 2500); }
   }
 

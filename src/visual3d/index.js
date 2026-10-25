@@ -16,6 +16,7 @@ import { Quadra3D } from './quadra.js';
 import { HudBatalha } from '../ui/hud-batalha.js';
 import { ZonasClima } from './zonas-clima.js';
 import { LetsGo } from './letsgo/index.js';
+import { CoralPixel } from '../visual2d/coral.js';
 
 // Visual 3D (HD-2D, estilo HeartGold/SoulSilver). Só desenha: a lógica do jogo é a mesma do 2D.
 // Liga-se ao jogo com ?visual=3d (main.js). Desenho completo em docs/visual-3d.md.
@@ -65,6 +66,7 @@ export class Visual3D {
     this.zonas = new ZonasClima(this); // tempestade e neblina das zonas fechadas (barreiras-dados.js)
     this.espelho = new Espelho(this);
     this.sobre = new Sobreposicao(this);
+    this.coralPixel = new CoralPixel(this);
     this.tocas = new Tocas3D(this);
     this.quadra = new Quadra3D(this);
     this.hudBatalha = new HudBatalha(g); // HUD de batalha no estilo do demo (src/ui/hud-batalha.js)
@@ -157,6 +159,7 @@ export class Visual3D {
   }
   // chamado pela câmera do jogo no lugar de map.cullChunks
   cull() {
+    if (this.coralPixel.cull()) return;
     if (this.L.versao !== this.versao) this.#novoMundo();
     // região nova montada (motor do mapa): o relevo e os setores daquela parte são refeitos aos poucos
     if (this.L.montadas !== this.montadas) { const prim = this.montadas == null; this.montadas = this.L.montadas; if (!prim) { this.relevo.limpar(); for (const s of this.setores.mapa.values()) s.sujo = true; } }
@@ -173,6 +176,7 @@ export class Visual3D {
   #novoMundo() { this.versao = this.L.versao; this.relevo.limpar(); this.lg?.limpar(); this.setores.limpar(); this.zonas?.limpar(); }
 
   paraTela(x, y, h = 0) {
+    if(this.coralPixel.ativo)return this.coralPixel.paraTela(x,y,h);
     const v = this.tmpV ??= new THREE.Vector3();
     v.set(x, this.altura(x, y) + h + this.curvaY(y), y).project(this.camera);
     return { x: (v.x * 0.5 + 0.5) * innerWidth, y: (-v.y * 0.5 + 0.5) * innerHeight };
@@ -195,6 +199,7 @@ export class Visual3D {
   }
   // ponto do chão sob um ponto da tela
   daTela(sx, sy) {
+    if(this.coralPixel.ativo)return this.coralPixel.daTela(sx,sy);
     const cam = this.camera, v = new THREE.Vector3((sx / innerWidth) * 2 - 1, -(sy / innerHeight) * 2 + 1, 0.5).unproject(cam).sub(cam.position).normalize();
     const h = this.focoH ?? 0, t = v.y < -1e-3 ? (h - cam.position.y) / v.y : 0;
     return { x: cam.position.x + v.x * t, y: cam.position.z + v.z * t };
@@ -202,6 +207,7 @@ export class Visual3D {
 
   quadro() {
     const g = this.g, dt = Math.min(0.05, g.app.ticker.deltaMS / 1000);
+    if(this.coralPixel.ativo){this.coralPixel.quadro(dt);return;}
     this.t += dt; this.u.tempo.value = this.t;
     if (!this.view) this.cull();
     // qualidade mudou (automática ou nas Opções): resolução, sombras, densidade da grama
