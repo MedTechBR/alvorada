@@ -117,7 +117,7 @@ export class Hud {
     if(g.encontro?.ativo){this.marker.visible=this.seta.visible=this.bubble.visible=false;return;}
     if (this.bubble.visible && this.promptTarget) {
       const t = this.promptTarget;
-      this.bubble.x = Math.round(t.x); this.bubble.y = Math.round(t.y - (t.h ?? 30) + Math.sin(g.time * 5) * 1.2);
+      this.bubble.x = Math.round(t.x); this.bubble.y = Math.round(t.y - (t.alturaVisual ?? t.h ?? 30) + Math.sin(g.time * 5) * 1.2);
     }
     const dt = Math.min(0.1, (g.app.ticker.deltaMS ?? 16) / 1000);
     const o = this.obj, m = this.marker, S = this.seta;

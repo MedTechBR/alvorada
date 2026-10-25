@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import { emCidadeCoral } from '../world/coral-piloto.js';
 import { KINDS } from '../world/objects.js';
 import { pintarSetorCoral } from './coral-terreno.js';
+import { PessoasCoral } from './coral-pessoas.js';
 
 const BASE=new URL('../../assets/coral-pixel/',import.meta.url);
 const TIPOS={center:'centro',mart:'loja',housePink:'casa',houseA:'casa',houseB:'casa',houseYellow:'casa',houseBlue:'casa',farol:'farol',palm:'palmeira',palmSmall:'palmeira',canteiro:'canteiro',flowerpot:'canteiro',fountain:'fonte',lamp:'poste'};
@@ -13,6 +14,7 @@ export class CoralPixel {
  constructor(v){
   this.v=v;this.g=v.g;this.setores=new Map();this.objetos=new Map();this.ativo=false;this.tempo=0;
   this.local=document.createElement('div');this.local.id='coral-local';this.local.textContent='Cidade Coral';document.body.appendChild(this.local);
+  this.pessoas=new PessoasCoral(this.g);
   this.ligado=new URLSearchParams(location.search).get('coral')!=='3d';
   this.chao=new PIXI.Container();this.chao.visible=false;this.g.world.addChildAt(this.chao,0);
   this.sombras=new PIXI.Graphics();this.sombras.visible=false;this.g.fx.ground.addChild(this.sombras);
@@ -45,7 +47,7 @@ export class CoralPixel {
    if(this.v.renderer)this.v.renderer.domElement.style.visibility=on?'hidden':'';
    if(this.v.sobre)this.v.sobre.mesh.visible=!on;
    if(on){this.v.setores?.limpar();this.v.view=null;}
-   else{for(const s of this.objetos.values())s.visible=false;document.body.classList.remove('coral-luta');}
+   else{this.pessoas.ocultar();for(const s of this.objetos.values())s.visible=false;document.body.classList.remove('coral-luta');}
   }
   if(!on)return false;
   // Escala inteira para que sprites e cenário compartilhem a mesma grade visual.
@@ -68,7 +70,7 @@ export class CoralPixel {
   }
   for(const [k,s] of this.setores)if(!quer.has(k)){s.destroy({texture:true,textureSource:true});this.setores.delete(k);}
   this.mar.position.set(piso.x0,piso.y0);this.mar.width=piso.x1-piso.x0;this.mar.height=piso.y1-piso.y0;
-  this.#objetos();return true;
+  this.#objetos();this.pessoas.atualizar({x0:piso.x0-32,x1:piso.x1+32,y0:piso.y0,y1:piso.y1+40});return true;
  }
  #objetos(){
   const vistos=new Set(),g=this.g;this.sombras.clear();
@@ -117,10 +119,11 @@ export class CoralPixel {
   const f=g.lead?.alive?g.lead:g.player;
   const luta=!!g.story?.battle||g.wilds.some(w=>w.alive&&!w.dead&&w.ai?.state==='aggro'&&Math.hypot(w.x-f.x,w.y-f.y)<256);
   document.body.classList.toggle('coral-luta',luta);
-  try{g.app.renderer.render({container:g.app.stage});}finally{for(const o of ocultos)o.visible=true;}
+  const restaurar=this.pessoas.aplicar();
+  try{g.app.renderer.render({container:g.app.stage});}finally{restaurar();for(const o of ocultos)o.visible=true;}
  }
  liberar(){
-  this.token=null;this.carregando=false;
+  this.pessoas.liberar();this.token=null;this.carregando=false;
   for(const s of this.setores.values())s.destroy({texture:true,textureSource:true});this.setores.clear();
   for(const s of this.objetos.values())s.destroy();this.objetos.clear();
   this.mar?.destroy();this.mar=null;this.marTex?.destroy();this.marBase?.destroy(true);

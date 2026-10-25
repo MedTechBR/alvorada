@@ -79,6 +79,7 @@ export function comporBairroCoral(S,P){
  for(let y=1952;y<1963;y+=2)colocar('wfenceV',1736,y);
  // Os Pokémon observáveis acompanham seus ambientes, com espaço para circular.
  const pets={areia:[1731,1976],praca:[1713,1969],farol:[1735,1963]};
- S.pets=S.pets.map(p=>pets[p.coralObs]?{...p,x:pets[p.coralObs][0],y:pets[p.coralObs][1]}:p);
+ const reposicionarPet=p=>pets[p.coralObs]?{...p,x:pets[p.coralObs][0],y:pets[p.coralObs][1]}:p;
+ S.pets=S.pets.map(reposicionarPet);R.coralPets=(R.coralPets??[]).map(reposicionarPet);
  R.coralBairro={rect:[1688,1938,72,57],vista:[1720,1967],portas:Object.keys(destinos)};
 }
