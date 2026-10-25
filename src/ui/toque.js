@@ -42,11 +42,11 @@ const ICONE_CAT = { phys: ICONES.fisico, spec: ICONES.especial, status: ICONES.s
 
 // Golpes em duas fileiras próximas; esquiva ao lado e utilidades agrupadas acima.
 // Centros medidos a partir do canto inferior direito. Nenhuma ação ocupa o centro da luta.
-const TAM = { main: 68, arco: 64, esq: 60, peq: 48 };
-const ARCO = [[44, 44], [120, 44], [120, 120], [44, 120]];
+const TAM = { main: 60, arco: 56, esq: 56, peq: 44 };
+const ARCO = [[34, 34], [100, 34], [100, 104], [34, 104]];
 const LAYOUT = {
-  deitado: { esq: [196, 44], peq: [[196, 112], [44, 192], [100, 192], [156, 192], [212, 192], [196, 250]] },
-  empe: { esq: [196, 44], peq: [[196, 112], [44, 192], [100, 192], [156, 192], [212, 192], [196, 250]] },
+  deitado: { esq: [166, 34], peq: [[166, 104], [28, 170], [78, 170], [128, 170], [178, 170], [166, 222]] },
+  empe: { esq: [166, 34], peq: [[166, 104], [28, 170], [78, 170], [128, 170], [178, 170], [166, 222]] },
 };
 // lugar fixo de cada botão pequeno (índice em peq); os de contexto (Mega, A no modo Pokémon) ocupam a próxima vaga livre
 const FIXO = { pokemon: { 't-ball': 0, 't-team': 1, 't-jump': 2, 't-alt': 3 }, treinador: { 't-mount': 0 } };
@@ -173,7 +173,8 @@ export class Toque {
     const fala = !!this.ui.hud?.promptKey;
     const bolas = (g.currentBall?.() && g.bag[g.currentBall()]) || 0;
     const luta = !!(g.encontro?.ativo || (g.story?.battle && !g.story.battle.done) || (g.tocas?.reide && !g.tocas.reide.done) || g.net?.duel?.active);
-    const selv = !luta && bolas > 0 && this.#selvagemPerto(pk ? l : g.player, pk ? 15 * 16 : 9 * 16);
+    const capturaLivre=g.encontro?.ativo?!g.encontro.batalha:!luta;
+    const selv = capturaLivre && bolas > 0 && this.#selvagemPerto(pk ? l : g.player, pk ? 15 * 16 : 9 * 16);
     const m = g.party[g.leadIdx];
     const nGolpes = pk ? l.mon.moves.length : 0;
     vis.move = [!!m, pk ? nGolpes > 1 : selv, pk && nGolpes > 2, pk && nGolpes > 3];
@@ -202,7 +203,7 @@ export class Toque {
   }
 
   #selvagemPerto(de, r) {
-    for (const e of this.g.wilds ?? []) if (e.alive && !e.dead && !e.saindo && Math.hypot(e.x - de.x, e.y - de.y) < r) return true;
+    for (const e of this.g.wilds ?? []) if (e.alive && !e.dead && !e.saindo && !e.busy && !e.catchPending && Math.hypot(e.x - de.x, e.y - de.y) < r) return true;
     return false;
   }
 

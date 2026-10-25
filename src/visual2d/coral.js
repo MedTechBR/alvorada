@@ -13,7 +13,7 @@ const bitmap=async (nome,base)=>{const r=await fetch(new URL(nome,base));if(!r.o
 // Não é uma imagem de fundo: chão por setor e objetos separados com ordem pelo pé.
 export class CoralPixel {
  constructor(v){
-  this.v=v;this.g=v.g;this.setores=new Map();this.objetos=new Map();this.ativo=false;this.tempo=0;
+  this.v=v;this.g=v.g;this.setores=new Map();this.objetos=new Map();this.ativo=false;this.tempo=0;this.ocultos=[];
   this.local=document.createElement('div');this.local.id='coral-local';this.local.textContent='Cidade Coral';document.body.appendChild(this.local);
   this.amostra=new URLSearchParams(location.search).get('coral')==='aventura';this.base=this.amostra?ARTE_AVENTURA:BASE;
   this.pessoas=new PessoasCoral(this.g);
@@ -49,7 +49,7 @@ export class CoralPixel {
    if(this.v.renderer)this.v.renderer.domElement.style.visibility=on?'hidden':'';
    if(this.v.sobre)this.v.sobre.mesh.visible=!on;
    if(on){this.v.setores?.limpar();this.v.view=null;}
-   else{this.pessoas.ocultar();for(const s of this.objetos.values())s.visible=false;document.body.classList.remove('coral-luta');}
+   else{this.pessoas.ocultar();for(const s of this.objetos.values())s.visible=false;document.body.classList.remove('coral-luta');this.emLuta=null;}
   }
   if(!on)return false;
   // Escala inteira para que sprites e cenário compartilhem a mesma grade visual.
@@ -75,11 +75,11 @@ export class CoralPixel {
   this.#objetos();this.pessoas.atualizar({x0:piso.x0-32,x1:piso.x1+32,y0:piso.y0,y1:piso.y1+40});return true;
  }
  #objetos(){
-  const vistos=new Set(),g=this.g;this.sombras.clear();
+  const vistos=new Set(),g=this.g;let sombrasMudaram=false;
   for(const c of g.map.visible)for(const o of c.objs){
    const nome=TIPOS[o.kind];if(!nome||o.dead||!o.sprite?.parent)continue;vistos.add(o);
    let s=this.objetos.get(o);
-   if(!s){s=new PIXI.Sprite(this.texturas[nome]);s.anchor.set(.5,1);g.ents.addChild(s);this.objetos.set(o,s);
+   if(!s){sombrasMudaram=true;s=new PIXI.Sprite(this.texturas[nome]);s.anchor.set(.5,1);g.ents.addChild(s);this.objetos.set(o,s);
     let largura=o.fw*16+8;
     if(nome==='farol')largura=64;
     if(nome==='palmeira')largura=o.kind==='palmSmall'?42:80;
@@ -89,17 +89,20 @@ export class CoralPixel {
     s.scale.set(largura/s.texture.width);
    }
    const K=KINDS[o.kind],porta=K?.door;
-   s.position.set(o.x+(typeof porta==='number'?(porta+.5-o.fw/2)*16:0),o.y);
+   const x=o.x+(typeof porta==='number'?(porta+.5-o.fw/2)*16:0);
+   if(s.x!==x||s.y!==o.y)sombrasMudaram=true;s.position.set(x,o.y);
    s.zIndex=o.sprite.zIndex;s.alpha=o.sprite.alpha;s.tint=o.sprite.tint;s.visible=true;
    // Atrás da copa/telhado, o personagem continua legível sem perder o obstáculo.
    const f=g.mode==='pokemon'&&g.lead?.alive?g.lead:g.player;
    if(!K?.flat&&f.y<s.y&&f.y>s.y-s.height&&Math.abs(f.x-s.x)<s.width*.48)s.alpha=.48;
-   if(nome!=='canteiro'&&nome!=='fonte'){
-    const w=nome==='palmeira'?16:o.fw*8;
-    this.sombras.poly([s.x-w,s.y-3,s.x+w,s.y-3,s.x+w+15,s.y+8,s.x-w+12,s.y+8]).fill({color:0x29443f,alpha:.22});
-   }
   }
-  for(const [o,s] of this.objetos)if(!vistos.has(o)){s.destroy();this.objetos.delete(o);}
+  for(const [o,s] of this.objetos)if(!vistos.has(o)){s.destroy();this.objetos.delete(o);sombrasMudaram=true;}
+  // Sombras estáticas só refazem a geometria quando um objeto entra, sai ou muda de lugar.
+  if(sombrasMudaram){this.sombras.clear();for(const [o,s] of this.objetos){
+   const nome=TIPOS[o.kind];if(nome==='canteiro'||nome==='fonte')continue;
+   const w=nome==='palmeira'?16:o.fw*8;
+   this.sombras.poly([s.x-w,s.y-3,s.x+w,s.y-3,s.x+w+15,s.y+8,s.x-w+12,s.y+8]).fill({color:0x29443f,alpha:.22});
+  }}
  }
  // O mapa pequeno usa a mesma arte, reduzida, em vez de quadrados no lugar das casas.
  minimapa(c){
@@ -114,15 +117,15 @@ export class CoralPixel {
  quadro(dt){
   const g=this.g;this.tempo+=dt;
   this.mar.tilePosition.set(-this.mar.x+Math.floor(this.tempo*2),-this.mar.y+Math.floor(this.tempo*.6));
-  const ocultos=[];
-  const esconder=o=>{if(o?.visible){ocultos.push(o);o.visible=false;}};
-  esconder(g.map.root);for(const o of this.objetos.keys())esconder(o.sprite);
+  const ocultos=this.ocultos;ocultos.length=0;
+  if(g.map.root.visible){ocultos.push(g.map.root);g.map.root.visible=false;}
+  for(const o of this.objetos.keys())if(o.sprite?.visible){ocultos.push(o.sprite);o.sprite.visible=false;}
   // Informações de PS e ações voltam assim que há um confronto próximo.
   const f=g.lead?.alive?g.lead:g.player;
   const luta=!!g.encontro?.ativo||!!g.story?.battle||g.wilds.some(w=>w.alive&&!w.dead&&w.ai?.state==='aggro'&&Math.hypot(w.x-f.x,w.y-f.y)<256);
-  document.body.classList.toggle('coral-luta',luta);
+  if(this.emLuta!==luta){this.emLuta=luta;document.body.classList.toggle('coral-luta',luta);}
   const restaurar=this.pessoas.aplicar();
-  try{g.app.renderer.render({container:g.app.stage});}finally{restaurar();for(const o of ocultos)o.visible=true;}
+  try{g.app.renderer.render({container:g.app.stage});}finally{restaurar();for(const o of ocultos)o.visible=true;ocultos.length=0;}
  }
  liberar(){
   this.pessoas.liberar();this.token=null;this.carregando=false;
@@ -131,6 +134,6 @@ export class CoralPixel {
   this.mar?.destroy();this.mar=null;this.marTex?.destroy();this.marBase?.destroy(true);
   for(const t of Object.values(this.texturas??{}))t.destroy();this.atlas?.destroy(true);
   for(const i of this.imagens??[])i.close();this.imagens=[];this.texturas={};this.pronto=false;this.terreno=null;this.atlas=this.marBase=this.marTex=null;
-  this.sombras.clear();
+  this.sombras.clear();this.ocultos.length=0;
  }
 }

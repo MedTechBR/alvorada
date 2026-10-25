@@ -22,7 +22,8 @@ function descartar(f){for(const ds of Object.values(f.sets))for(const t of ds)t.
 // Folhas prontas FRLG/HGSS: o mesmo acervo do 3D, agora também no desenho do bairro.
 // Substitui o corpo apenas ao renderizar; direção, passos, colisão e interações continuam nativos.
 export class PessoasCoral{
- constructor(g){this.g=g;this.cache=new Map();this.carregando=new Set();this.atores=[];this.indices=new WeakMap();this.token=0;}
+ constructor(g){this.g=g;this.cache=new Map();this.carregando=new Set();this.atores=[];this.indices=new WeakMap();this.token=0;this.volta=[];
+  this.restaurar=()=>{const v=this.volta;for(let i=0;i<v.length;i+=5){const b=v[i];if(!b.destroyed){b.texture=v[i+1];b.scale.set(v[i+2],v[i+3]);b.y=v[i+4];}}v.length=0;};}
  atualizar(view){
   const g=this.g,agora=performance.now();
   if(!this.J){if(!this.indice){this.indice=true;fetch(new URL('indice.json',BASE)).then(r=>r.json()).then(J=>this.J=J).catch(e=>{this.indice=false;console.warn('[Coral] Índice de personagens indisponível.',e);});}return;}
@@ -38,7 +39,7 @@ export class PessoasCoral{
    const id=jogador?null:idPessoaCoral(n,this.J);
    const key=jogador?'J:'+chaveDe(look,correndo):id;vistos.add(key);
    const f=this.cache.get(key);
-   if(f){f.visto=agora;const altura=(n.def?.kid||/little|kid|youngster/.test(id??''))?30:36;n.alturaVisual=altura*Math.abs(n.body.scale.y);this.atores.push({n,f,k:altura/Math.max(1,f.altura)});}
+   if(f){f.visto=agora;const altura=(n.def?.kid||/little|kid|youngster/.test(id??''))?(g.encontro?.ativo?25:30):(g.encontro?.ativo?30:36);n.alturaVisual=altura*Math.abs(n.body.scale.y);this.atores.push({n,f,k:altura/Math.max(1,f.altura)});}
    else if(!this.carregando.has(key)){
     const token=this.token;this.carregando.add(key);
     montar({id,look,correndo,jogador}).then(f=>{if(token!==this.token){descartar(f);return;}f.visto=performance.now();this.cache.set(key,f);}).catch(e=>console.warn('[Coral] Mantendo personagem original.',id,e)).finally(()=>{if(token===this.token)this.carregando.delete(key);});
@@ -47,16 +48,16 @@ export class PessoasCoral{
   for(const [k,f]of this.cache)if(!vistos.has(k)&&agora-f.visto>1500){descartar(f);this.cache.delete(k);}
  }
  aplicar(){
-  const volta=[];
+  const volta=this.volta;volta.length=0;
   for(const {n,f,k}of this.atores){
    if(n.body.destroyed)continue;
    let idx=this.indices.get(n.frames);
    if(!idx){idx=new Map();for(const a of ['walk','run','throw','ride'])for(const d of DIRS)(n.frames[a]?.[d]??(a==='walk'?n.frames[d]:[])??[]).forEach((t,i)=>idx.set(t,{a,d,i}));this.indices.set(n.frames,idx);}
    const p=idx.get(n.body.texture)??{a:'walk',d:n.dir??'down',i:0};
    const col=p.a==='throw'?0:COLUNAS_ANDAR[p.i%4],tex=f.sets[p.d]?.[col];
-   if(tex){const b=n.body,sx=b.scale.x,sy=b.scale.y,fh=n.frames.fh??b.texture.height,ground=n.frames.groundY??fh-1;volta.push([b,b.texture,sx,sy,b.y]);b.texture=tex;b.scale.set(sx*k,sy*k);b.y+=(((f.fh??32)-f.pe)*k-(fh-ground))*sy;}
+   if(tex){const b=n.body,sx=b.scale.x,sy=b.scale.y,fh=n.frames.fh??b.texture.height,ground=n.frames.groundY??fh-1;volta.push(b,b.texture,sx,sy,b.y);b.texture=tex;b.scale.set(sx*k,sy*k);b.y+=(((f.fh??32)-f.pe)*k-(fh-ground))*sy;}
   }
-  return ()=>{for(const [b,t,sx,sy,y]of volta)if(!b.destroyed){b.texture=t;b.scale.set(sx,sy);b.y=y;}};
+  return this.restaurar;
  }
  ocultar(){for(const {n}of this.atores)delete n.alturaVisual;this.atores=[];}
  get bytes(){let n=0;for(const f of this.cache.values())n+=f.bytes;return n;}

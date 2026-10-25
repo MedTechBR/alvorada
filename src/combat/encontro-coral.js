@@ -34,7 +34,9 @@ export class EncontroCoral {
   if(!g.party.some(m=>!m.fainted)){g.toast('Cure seus Pokémon no Centro antes de batalhar.');return false;}
   return this.entrar({selvagem:w});
  }
- limparGolpes(){for(const n of ['projectiles','zones','beams','waves','falls','swings','struggles','surfs','skyMarks'])this.g.combat[n].length=0;}
+ limparGolpes(){for(const b of this.g.balls??[]){b.done=true;if(!b.s.destroyed)b.s.destroy();}this.g.balls=[];
+  for(const w of this.g.wilds??[])if(w.catchPending){w.catchPending=false;w.busy=false;w.lock=0;w.view.visible=true;}
+  for(const n of ['projectiles','zones','beams','waves','falls','swings','struggles','surfs','skyMarks'])this.g.combat[n].length=0;}
  update(){
   const g=this.g;const alvo=this.alvo(),oculto=!alvo||!!this.transicao;if(this.inicio.hidden!==oculto)this.inicio.hidden=oculto;if(alvo){const texto='E · Batalhar com '+alvo.mon.name;if(this.inicio.textContent!==texto)this.inicio.textContent=texto;}if(this.transicao)return;
   if(this.ativo){

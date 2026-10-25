@@ -537,22 +537,23 @@ class Game {
       b.t += dt / b.dur; const k = Math.min(1, b.t);
       b.x = b.x0 + (b.x1 - b.x0) * k; b.y = b.y0 + (b.y1 - b.y0) * k - Math.sin(k * Math.PI) * 26;
       b.s.x = b.x; b.s.y = b.y; b.s.rotation += dt * 20;
-      const target = this.wilds.find((w) => w.alive && Math.hypot(w.x - b.x, w.y - 8 - b.y) < w.r + 6);
+      const target = this.wilds.find((w) => w.alive && !w.busy && !w.catchPending && Math.hypot(w.x - b.x, w.y - 8 - b.y) < w.r + 6);
       if (target) { this.#capture(b, target); continue; }
       if (k >= 1) { b.done = true; this.fx.burst(b.x, b.y, 0xffffff, 0.3); this.later(1, () => b.s.destroy()); }
     }
     this.balls = (this.balls ?? []).filter((b) => !b.done);
   }
   #capture(b, w) {
-    b.capture = true; w.busy = true; w.lock = 99;
+    b.capture = true; w.catchPending=true;w.busy = true; w.lock = 99;
     const chance = this.combat.catchChance(w, b.key ?? 'pokeBall');
     const shakes = chance >= 1 ? 4 : rollShakes(chance); // sacudidas seguidas, como nos jogos (4 = capturou)
     this.fx.burst(w.x, w.y - 8, 0xffffff, 1.2); this.audio.sfx('pop');
     w.view.visible = false;
     b.s.x = w.x; b.s.y = w.y - 3;
-    for (let i = 0; i < Math.min(3, shakes); i++) this.later(0.5 + i * 0.6, () => { this.audio.sfx('shake'); b.wob = 0.3; });
+    for (let i = 0; i < Math.min(3, shakes); i++) this.later(0.5 + i * 0.6, () => { if(b.done)return;this.audio.sfx('shake'); b.wob = 0.3; });
     const end = 0.5 + Math.min(3, shakes) * 0.6 + 0.3;
     this.later(end, () => {
+      if(b.done)return;w.catchPending=false;
       if (shakes >= 4) {
         this.audio.sfx('caught'); this.fx.emit(b.s.x, b.s.y, { color: 0xffe27a, n: 14, speed: 40, size: 4, life: 0.7, vz: 60 });
         const m = w.mon; m.status = null;

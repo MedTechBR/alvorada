@@ -49,3 +49,11 @@ body.menu-open #iniciar-encontro,body.dlg-open #iniciar-encontro,body.at-title #
 #t-battle{border-color:#eed39a;background:#234f5c}
 #t-act{animation:none}
 .tb:focus-visible,#iniciar-encontro:focus-visible,#sair-encontro:focus-visible{outline:3px solid #f3d797;outline-offset:3px}
+
+/* Arena no mesmo acabamento do passeio, com contraste sem bordas grossas. */
+body.coral-luta .tb{background:#173e4be8;border-width:1.5px;border-color:#c2d4c9;box-shadow:0 2px 0 #102c3866}
+body.coral-luta .tb.move{border-color:var(--tc);background:radial-gradient(circle at 50% 30%,color-mix(in srgb,var(--tc) 25%,#173e4b),#173e4b 85%)}
+body.coral-luta .tq-nome{max-width:64px;font-size:9px;line-height:14px;padding:0 4px;box-shadow:0 0 0 1px #b4c7ba88;background:#173e4bef}
+body.coral-luta #lead{border:1px solid #c6cdb3;border-radius:10px;background:#173e4be8;box-shadow:none}
+body.coral-luta #lead .ld-nm,body.coral-luta #lead .ld-lv{color:#fff6dc}
+body.coral-luta #stick{opacity:.65;transform:scale(.82);transform-origin:bottom left}
