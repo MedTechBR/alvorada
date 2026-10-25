@@ -41,3 +41,13 @@ export const PARTITURAS = {
   cave: compor({tonica:64,menor:true,bpm:68,acordes:[0,5,0,4,3,5,1,4],suave:true}),
   temple: compor({tonica:69,menor:true,bpm:78,acordes:[0,5,3,4,0,2,5,4],suave:true}),
 };
+
+// Coral: tema próprio de passeio marítimo, com resposta longa e ponte baixa.
+const MARE=[
+ [0,-1,2,4,-1,3,2,-1,1,-1,0,-1,2,1,0,-2],
+ [2,-1,4,-1,5,4,2,-1,3,-1,2,-1,1,0,-1,-2],
+ [4,-1,-1,3,2,-1,0,-1,1,-1,2,3,2,-1,-1,-2],
+ [0,-1,1,2,4,-1,3,-1,2,-1,1,-1,0,-1,-1,-2],
+];
+PARTITURAS.coral={...compor({tonica:65,bpm:96,acordes:[0,3,5,4,2,3,1,4],suave:true,motivos:MARE}),timbre:'sine'};
+PARTITURAS.coralNoite={...compor({tonica:65,bpm:76,acordes:[0,5,3,4,2,5,3,0],suave:true,motivos:[MARE[2],MARE[0],MARE[3],MARE[1]]}),timbre:'sine'};

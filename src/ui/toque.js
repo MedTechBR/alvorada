@@ -178,6 +178,8 @@ export class Toque {
     vis['t-alt'] = pk && !!(g.combat.alt.canFly(g.lead) || g.combat.alt.canDive(g.lead) || ['fly', 'dive'].includes(g.lead?.alt?.mode)); vis['t-jump'] = pk;
     vis['t-power'] = pk && !!g.poder?.opcao?.();
     vis['t-mount'] = !pk && !!g.mount?.hint?.();
+    // A observação dos moradores de Coral prioriza a interação no passeio.
+    if(!pk&&!luta&&/Observar/.test(this.ui.hud?.promptKey??'')){vis['t-team']=false;vis['t-mount']=false;}
     vis['t-swap'] = false; // trocar fica na faixa da equipe
     // ícone do botão grande da esquerda: esquiva com o Pokémon, correr com o treinador
     this.#set('esqIc', pk, (v) => { const b = document.getElementById('t-dodge'); if (b) { b.innerHTML = v ? ICONES.esquiva : ICONES.correr; b.setAttribute('aria-label', v ? 'Esquiva' : 'Correr'); } });

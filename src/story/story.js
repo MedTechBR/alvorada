@@ -1,3 +1,4 @@
+import { emCidadeCoral } from '../world/coral-piloto.js';
 import { BIOME_TRACK } from '../world/clima.js';
 import { MAP_ID } from '../world/map.js';
 import * as PIXI from 'pixi.js';
@@ -483,7 +484,8 @@ export class Story {
     if (briga) this.musicaLutaAte = g.time + 2;
     const costa = /praia|costa|mar|oceano|porto/.test(bio ?? '');
     const noite = g.mundo?.isNight?.() && (town || !BIOME_TRACK[bio]) && !costa;
-    const want = briga || g.time < (this.musicaLutaAte ?? 0) ? 'battle' : noite ? 'night' : town ? 'town' : costa ? 'coast' : bio === 'floresta' ? 'forest' : BIOME_TRACK[bio] ?? 'route'; // biomas novos: src/world/clima.js
+    const coral=emCidadeCoral(g.map,p.x,p.y);
+    const want = briga || g.time < (this.musicaLutaAte ?? 0) ? 'battle' : coral ? (g.mundo?.isNight?.()?'coralNoite':'coral') : noite ? 'night' : town ? 'town' : costa ? 'coast' : bio === 'floresta' ? 'forest' : BIOME_TRACK[bio] ?? 'route'; // biomas novos: src/world/clima.js
     if (this.music !== want || g.audio?.track !== want) { this.music = want; g.audio?.music?.(want); }
   }
 

@@ -254,7 +254,7 @@ export class Audio {
     const tick = () => {
       while (next < this.ctx.currentTime + 0.2) {
         const l = lead[i % lead.length];
-        if (l !== '-' && l !== '.') this.#tone(freq(l), next, step * sustain(lead, i % lead.length) * 0.92, { type: tr.soft ? 'triangle' : 'pulse', vol: tr.soft ? 0.16 : 0.09, dest: saida, attack: tr.soft ? 0.03 : 0.01 });
+        if (l !== '-' && l !== '.') this.#tone(freq(l), next, step * sustain(lead, i % lead.length) * 0.92, { type: tr.timbre ?? (tr.soft ? 'triangle' : 'pulse'), vol: tr.soft ? 0.16 : 0.09, dest: saida, attack: tr.soft ? 0.03 : 0.01 });
         const b = bass[i % bass.length];
         if (b !== '-' && b !== '.') this.#tone(freq(b), next, step * 0.9, { type: 'triangle', vol: 0.22, dest: saida, attack: 0.005 });
         const ar = tr.arp?.[i % tr.arp.length];

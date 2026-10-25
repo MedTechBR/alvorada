@@ -1,3 +1,5 @@
+import { observarCoral } from './coral-piloto.js';
+import { rotinaCoral } from './ecologia-coral.js';
 import * as PIXI from 'pixi.js';
 import { T } from './tiles.js';
 import { Npc } from '../story/npc.js';
@@ -47,8 +49,14 @@ export class People {
     view.addChild(shadow, body); view.visible = false;
     g.ents.addChild(view);
     const p = { d, view, body, shadow, x: d.x * T + 8, y: d.y * T + 10, home: { x: d.x * T + 8, y: d.y * T + 10 }, vx: 0, vy: 0, dir: 2, t: Math.random() * 3, anim: 'Idle', wanderT: 2, z: d.z ?? 0, r: 5 };
-    loadPokemonSprites(d.dex).then((set) => { p.set = set; p.scale = speciesScale(d.dex, set) * (d.scale ?? 1); shadow.scale.set(...(set.shadowScale ?? [0.8, 0.8])); }).catch(() => {});
+    if(!d.ecologia)this.#carregarPet(p);
     return p;
+  }
+
+  #carregarPet(p) {
+    if(p.carregando||p.set)return;
+    p.carregando=true;
+    loadPokemonSprites(p.d.dex).then(set=>{p.set=set;p.scale=speciesScale(p.d.dex,set)*(p.d.scale??1);p.shadow.scale.set(...(set.shadowScale??[.8,.8]));}).catch(()=>{});
   }
 
   update(dt, paused) {
@@ -92,11 +100,13 @@ export class People {
   #updatePet(p, dt, paused) {
     const g = this.g, pl = g.player;
     const near = Math.abs(p.x - pl.x) < NEAR && Math.abs(p.y - pl.y) < NEAR;
+    if(near&&p.d.ecologia&&!p.set)this.#carregarPet(p);
     p.view.visible = near && !!p.set; if (!p.view.visible) return;
     p.t += dt;
+    if (!paused && p.d.ecologia) rotinaCoral(p,pl,dt);
     if (!paused && p.d.wander && !p.d.perch) {
-      p.wanderT -= dt;
-      if (p.wanderT <= 0) {
+      if(!p.d.ecologia)p.wanderT -= dt;
+      if (!p.d.ecologia && p.wanderT <= 0) {
         p.wanderT = 1.5 + Math.random() * 3.5;
         if (Math.random() < 0.55) { const a = Math.random() * Math.PI * 2, s = 22 + Math.random() * 14; p.vx = Math.cos(a) * s; p.vy = Math.sin(a) * s; }
         else { p.vx = p.vy = 0; }
@@ -107,7 +117,7 @@ export class People {
     }
     const moving = Math.hypot(p.vx, p.vy) > 4 && !p.d.perch;
     if (moving) p.dir = dir8(p.vx, p.vy);
-    p.anim = moving ? 'Walk' : (p.d.sleep && p.set.anims?.Sleep ? 'Sleep' : 'Idle');
+    p.anim = moving ? 'Walk' : (p.ecoAnim??(p.d.sleep && p.set.anims?.Sleep ? 'Sleep' : 'Idle'));
     const f = frameOf(p.set, p.anim, p.d.perch ? 0 : p.dir, p.t, true);
     p.body.texture = f.tex; p.body.anchor.set(f.ax ?? 0.5, f.ay ?? 1); p.body.scale.set(p.scale);
     p.body.y = -p.z;
@@ -129,7 +139,7 @@ export class People {
       const p = it.o, name = SPECIES[p.d.dex]?.name ?? 'Pokémon';
       p.vx = p.vy = 0; p.wanderT = 2; p.z = 0;
       const t0 = p.t; const hop = () => { const k = p.t - t0; p.z = Math.max(0, Math.sin(k * 12) * 5); if (k < 0.5) requestAnimationFrame(hop); else p.z = 0; }; hop();
-      g.toast?.(`${name}: ${p.d.say ?? '!'}`);
+      if(p.d.ecologia){const registro=observarCoral(g,p.d.coralObs);g.mundo.showSign((p.d.say??name)+registro,p.x,p.y,'Caderno de Coral');}else g.toast?.(`${name}: ${p.d.say ?? '!'}`);
       return;
     }
     const n = it.o;

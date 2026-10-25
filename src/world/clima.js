@@ -1,3 +1,4 @@
+import { emCidadeCoral } from './coral-piloto.js';
 import * as PIXI from 'pixi.js';
 import { T, TILE } from './tiles.js';
 import { canvas, texOf, SPR } from './art.js';
@@ -27,6 +28,7 @@ export const CLIMA = {
   brejo:   { nevoa: 1, tinta: 0xdde8da, som: 'mangue', musica: 'mangrove' },
   selva:   { chuva: 1, nevoa: 0.3, tinta: 0xe4f2e0, som: 'mangue', musica: 'forest' },
   praia:   { som: 'mar' },
+  coral:   { som: 'mar' },
   mar:     { som: 'mar' },
   recife:  { brilhos: 0.4, tinta: 0xdcf0ff, som: 'mar' },
   abismo:  { escuro: 1, tinta: 0xc8d8f0, som: 'gotas', musica: 'cave' },
@@ -75,7 +77,7 @@ export class Clima {
   conf(room) {
     const p = this.g.player, m = this.g.map;
     const zone = room ?? m.areaAt(p.x, p.y), biome = m.biome(p.x, p.y);
-    let c = CLIMA[biome] ?? {};
+    let c = !room&&emCidadeCoral(m,p.x,p.y)?CLIMA.coral:CLIMA[biome]??{};
     const z = zone?.clima;
     if (typeof z === 'string') c = CLIMA[z] ?? c; else if (z) c = { ...c, ...z };
     return c;

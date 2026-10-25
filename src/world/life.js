@@ -256,7 +256,7 @@ export class WorldLife {
     const hud = g.ui?.hud;
     // balão "E · Falar" (só quando a história não mostrou o dela neste quadro)
     if (hud?.setPrompt && (!hud.bubble?.visible || this.ownPrompt)) {
-      if (who) hud.setPrompt({ x: who.o.x, y: who.o.y, h: 30 }, who.kind === 'pet' ? 'Brincar' : 'Falar');
+      if (who) hud.setPrompt({ x: who.o.x, y: who.o.y, h: 30 }, who.kind === 'pet' ? (who.o.d.ecologia?'Observar':'Brincar') : 'Falar');
       else if (best) hud.setPrompt({ x: best.x, y: best.y - 8, h: 24 }, best.berry ? 'Sacudir' : best.kind === 'pc' ? 'Usar o PC' : best.kind === 'sign' ? 'Ler' : 'Ver');
       else if (this.ownPrompt) hud.setPrompt(null);
       this.ownPrompt = !!(who || best);
