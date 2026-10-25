@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { idPessoa } from '../sprites/pessoas.js';
 import { screenHeight } from '../sprites/scale.js';
 import { folhaTreinador, folhaPronta, chaveDe } from '../sprites/treinador-hgss.js';
 import { toCharLook } from '../ui/looks.js';
@@ -11,28 +12,6 @@ import { toCharLook } from '../ui/looks.js';
 const RAIZ = new URL('../../assets/hgss/personagens/', import.meta.url).href;
 const RAIZ_PK = new URL('../../assets/hgss/pokemon/', import.meta.url).href;
 const DIRS = { down: 0, up: 1, left: 2, right: 3 };
-// Figurantes: folhas FireRed dos moradores (o resto do acervo HGSS só entra se elas faltarem)
-const GERAIS_FRLG = ['frlg_oldman', 'frlg_woman', 'frlg_girl', 'frlg_lass', 'frlg_kid', 'frlg_little_girl', 'frlg_youngster', 'frlg_camper', 'frlg_bug_catcher', 'frlg_cooltrainer_f'];
-// Papéis fixos pelo id da pessoa (vale mesmo quando o look é uma predefinição de objeto)
-const PAPEL_FRLG = [
-  [/(^|_)joy(\d|_|$)|enfermeira|nurse/i, 'frlg_nurse'],
-  [/vendedor|vendedora|balconista|lojista|clerk/i, 'frlg_clerk'],
-  [/atendente_clube/i, 'frlg_woman'],
-  [/(^|_)(mae|mom)(_|\d|$)/i, 'frlg_mom'],
-  [/(^|_)(prof|jatoba|oak)(_|\d|$)/i, 'frlg_oak'],
-  [/(^|_)teo(_|\d|$)/i, 'frlg_rival'],
-  [/cientista|scientist|bia_lab|lab_assistente|dr_icaro/i, 'frlg_scientist'],
-  [/guia_(gin|ginasio)|gym_guide/i, 'frlg_gym_guide'],
-  [/leader_(graca|bras)/i, 'frlg_brock'],
-  // a Equipe Crepúsculo (looks de objeto no 2D não chegam ao 3D: sem isto o recruta saía com a folha de um morador qualquer)
-  [/^recruta2_/i, 'npc_185_rocket_grunt_f'],
-  [/^recruta(_|\d|$)/i, 'npc_184_rocket_grunt_m'],
-  [/^ebano(_|$)/i, 'npc_187_rocket_executive_proton'],
-  [/^sereno(_|$)/i, 'npc_186_rocket_executive_petrel'],
-  [/^vespera(_|$)/i, 'npc_188_rocket_executive_ariana'],
-  [/^solano(_|$)/i, 'npc_189_rocket_executive_archer'],
-  [/^lucio(_|$)/i, 'frlg_scientist'],
-];
 
 export class Personagens {
   constructor(v) {
@@ -92,30 +71,12 @@ export class Personagens {
     }
     return t;
   }
-  // look de um NPC -> folha HGSS. Nunca a folha do jogador (frlg_trainer, frlg_trainer_green, as de correr):
-  // cada pessoa tem sempre a mesma (sorteio estável pelo id/nome), dentro do grupo do look quando há um.
-  idDe(look, quem = '') {
-    const J = this.J; if (!J) return null;
-    const ck = (typeof look === 'string' ? look : '') + '|' + quem, m = (this.idCache ??= new Map());
-    if (m.has(ck)) return m.get(ck);
-    const r = this.#idDe(look, quem); m.set(ck, r); return r;
-  }
-  #idDe(look, quem) {
-    const J = this.J;
-    const PROIBIDO = /^frlg_trainer/;
-    // papel fixo pelo id da pessoa (enfermeira Joy, atendente, Mãe, Prof. Jatobá...): vale mesmo com look de predefinição
-    const q = String(quem ?? '');
-    if (q) for (const [re, k] of PAPEL_FRLG) if (re.test(q) && J.personagens[k]) return k;
-    let id = typeof look === 'string' ? (J.personagens[look] ? look : J.looks[look]) : null;
-    if (look === 'rival') id = 'frlg_rival';
-    if (id && !PROIBIDO.test(id)) {
-      // looks genéricos (menino, menina, treinador...) variam por pessoa dentro de folhas parecidas
-      if (!/^(menino|menina|treinador|treinadora|garoto|moca|youngster)$/.test(look) || !quem) return id;
-    }
-    this.pool ??= GERAIS_FRLG.some((k) => J.personagens[k]) ? GERAIS_FRLG.filter((k) => J.personagens[k])
-      : Object.keys(J.personagens).filter((k) => !PROIBIDO.test(k) && !/_run$|_bike|_surf|_fishing|_heal|_save|_poketch|_watering|_ladder|_shake|_hm|_vsseeker|_contest|_rocket|running|gym_leader|elite_four|champion|boss|commander|executive|prof_|npc_19[89]|npc_20[0-8]/.test(k));
-    let h = 2166136261; for (const c of String(quem || look || '')) h = Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0;
-    return this.pool[h % this.pool.length];
+  // A mesma seleção de identidade usada pelo desenho de Coral, sem sorteio entre perfis diferentes.
+  idDe(look, quem = '', nome = '') {
+    if (!this.J) return null;
+    const ck = JSON.stringify([look, quem, nome]), m = (this.idCache ??= new Map());
+    if (!m.has(ck)) m.set(ck, idPessoa(this.J, look, quem, nome));
+    return m.get(ck);
   }
   // folha recolorida do jogador (ou de outro jogador) pelo criador de personagem; null enquanto carrega
   #texJogador(look, correndo) {
@@ -135,9 +96,9 @@ export class Personagens {
     const g = this.v.g, t = this.v.t, J = this.J;
     if (this.P) for (const e of g.entities ?? []) { if (!e.body || e.alt?.mode === 'dig') continue; const r = this.#pokemon(e); if (r) C.set(e.body, r); }
     const quadro = (dir, andando, correndo, idx) => { const lin = DIRS[dir] ?? 0, col = andando ? J.andar[idx != null ? idx % J.andar.length : Math.floor(t * (correndo ? 11 : 7.5)) % J.andar.length] : J.parado, W = J.fw * J.colunas, H = J.fh * 4; return { u0: (col * J.fw) / W, u1: ((col + 1) * J.fw) / W, v0: (lin * J.fh) / H, v1: ((lin + 1) * J.fh) / H }; };
-    const por = (body, look, dir, andando, correndo, quem) => {
+    const por = (body, look, dir, andando, correndo, quem, nome) => {
       if (!body || !body.parent?.visible) return; // só quem está na cena (a lista de moradores é do mundo inteiro)
-      let id = this.idDe(look, quem); if (!id) return;
+      let id = this.idDe(look, quem, nome); if (!id) return;
       if (correndo && J.personagens[id + '_run']) id += '_run';
       const info = J.personagens[id]; if (!info) return;
       C.set(body, { tex: this.#tex(id), ...quadro(dir, andando, correndo), pe: info.pe ?? 31, fw: J.fw, fh: J.fh });
@@ -155,9 +116,9 @@ export class Personagens {
       const grade = p.animIdx != null && g.grade?.ativo;
       treinador(p.body, toCharLook(g.look ?? p.look ?? g.flags?.look), p.dir, grade ? !!p.andando : (p.speed ?? 0) > 10, grade ? !!p.correndo : (p.speed ?? 0) > 95, grade ? p.animIdx : null);
     }
-    for (const n of g.mundo?.people?.list ?? []) por(n.body, n.look ?? n.def?.look, n.dir, !!n.walk || (n.speed ?? 0) > 5, false, n.def?.id ?? n.id ?? n.name);
-    for (const n of g.story?.roteiro?.atores?.values?.() ?? []) por(n.body, n.look, n.dir, !!n.walk, false, n.id ?? n.name);
-    for (const n of g.story?.npcs?.values?.() ?? []) por(n.body, n.look, n.dir, !!n.walk, false, n.id ?? n.name);
+    for (const n of g.mundo?.people?.list ?? []) por(n.body, n.look ?? n.def?.look, n.dir, !!n.walk || (n.speed ?? 0) > 5, false, n.def?.id ?? n.id ?? n.name, n.name ?? n.def?.name);
+    for (const n of g.story?.roteiro?.atores?.values?.() ?? []) por(n.body, n.look, n.dir, !!n.walk, false, n.id ?? n.name, n.name);
+    for (const n of g.story?.npcs?.values?.() ?? []) por(n.body, n.look, n.dir, !!n.walk, false, n.id ?? n.name, n.name);
     for (const r of g.net?.remotes?.map?.values?.() ?? []) { let lk = null; try { lk = r.lookKey ? JSON.parse(r.lookKey) : null; } catch { /* */ } treinador(r.body, toCharLook(lk), r.dir, Math.hypot(r.vx ?? 0, r.vy ?? 0) > 10, false); }
     return C;
   }

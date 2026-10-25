@@ -16,7 +16,7 @@ export class CoralPixel {
   this.v=v;this.g=v.g;this.setores=new Map();this.objetos=new Map();this.ativo=false;this.tempo=0;
   this.local=document.createElement('div');this.local.id='coral-local';this.local.textContent='Cidade Coral';document.body.appendChild(this.local);
   this.amostra=new URLSearchParams(location.search).get('coral')==='aventura';this.base=this.amostra?ARTE_AVENTURA:BASE;
-  this.pessoas=new PessoasCoral(this.g,{amostra:this.amostra});
+  this.pessoas=new PessoasCoral(this.g);
   this.ligado=new URLSearchParams(location.search).get('coral')!=='3d';
   this.chao=new PIXI.Container();this.chao.visible=false;this.g.world.addChildAt(this.chao,0);
   this.sombras=new PIXI.Graphics();this.sombras.visible=false;this.g.fx.ground.addChild(this.sombras);
