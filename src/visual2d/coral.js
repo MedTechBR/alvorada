@@ -122,7 +122,9 @@ export class CoralPixel {
   const ocultos=this.ocultos;ocultos.length=0;
   // Conserva a decoração e as animações nativas dos biomas (lava, correnteza,
   // mato alto). Só o piso e a água são substituídos pelo compositor compartilhado.
-  for(const camada of [g.map.groundLayer,g.map.water])if(camada?.visible){ocultos.push(camada);camada.visible=false;}
+  const costeiro=g.encontro?.ativo||emCidadeCoral(g.map,g.player.x,g.player.y);
+  const camadas=costeiro?[g.map.root]:[g.map.groundLayer,g.map.water];
+  for(const camada of camadas)if(camada?.visible){ocultos.push(camada);camada.visible=false;}
   for(const o of this.objetos.keys())if(o.sprite?.visible){ocultos.push(o.sprite);o.sprite.visible=false;}
   // Informações de PS e ações voltam assim que há um confronto próximo.
   const f=g.lead?.alive?g.lead:g.player;
