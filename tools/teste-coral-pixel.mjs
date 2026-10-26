@@ -26,10 +26,11 @@ console.log('OK: planta isolada, bordas visíveis, campo livre, save no continen
 const {carregarMundo}=await import('./vestir/mundo.mjs');
 const bairro=await carregarMundo('alvorada'),{S:BS,R:BR,W:BW}=bairro;
 const bloqueia=(x,y)=>BS.block[x+y*BW]||SOLID.has(BS.tiles[x+y*BW]);
-const vistos=new Set(['1720,1968']),fila=[[1720,1968]];
+const inicio=[BR.coralBairro.vista[0],BR.coralBairro.vista[1]+1],rect=BR.coralBairro.rect;
+const vistos=new Set([inicio.join(',')]),fila=[inicio];
 for(let i=0;i<fila.length;i++){
  const [x,y]=fila[i];for(const [dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){
-  const a=x+dx,b=y+dy,k=a+','+b;if(a<1688||a>=1760||b<1938||b>=1995||vistos.has(k)||bloqueia(a,b))continue;
+  const a=x+dx,b=y+dy,k=a+','+b;if(a<rect[0]||a>=rect[0]+rect[2]||b<rect[1]||b>=rect[1]+rect[3]||vistos.has(k)||bloqueia(a,b))continue;
   vistos.add(k);fila.push([a,b]);
  }
 }

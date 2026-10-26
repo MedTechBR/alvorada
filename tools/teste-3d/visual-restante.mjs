@@ -15,5 +15,9 @@ try{
   assert.equal(estado.local,estado.esperado);assert.equal(estado.lead,'none');assert.equal(estado.objetivo,'none');assert(estado.setores<=16);assert.equal(estado.lotes,0);assert.equal(estado.texturas,0);assert(estado.botoes.every(b=>b.w>=40&&b.h>=40&&b.x>=0&&b.y>=0&&b.x+b.w<=845&&b.y+b.h<=391));
   const foto=await s.P.raw('Page.captureScreenshot',{format:'jpeg',quality:92});writeFileSync(pasta+nome+'.jpg',Buffer.from(foto.result.data,'base64'));resultados.push(estado);
  }
+ await s.P.ev("game.viagem.ir('ocaso',{area:'porto_rubro'},{silencioso:true}).then(()=>true)");
+ assert(await until(()=>s.P.ev("game.map.id==='ocaso'&&game.coralPixel.ativo"),30000,100));await sleep(2000);
+ const ocaso=await s.P.ev("({nome:'ocaso',ativo:game.coralPixel.ativo,local:game.coralPixel.local.textContent,esperado:game.map.areaName(game.player.x,game.player.y),setores:game.coralPixel.setores.size})");assert.equal(ocaso.local,ocaso.esperado);assert(ocaso.setores<=16);resultados.push(ocaso);
+ const q=await s.P.raw('Page.captureScreenshot',{format:'jpeg',quality:92});writeFileSync(pasta+'ocaso.jpg',Buffer.from(q.result.data,'base64'));
  const erros=s.erros().filter(e=>/EXC|Error/.test(e));assert.equal(erros.length,0,erros.join('\n'));writeFileSync('tools/resultados/cidades-compactas/visual-restante.json',JSON.stringify({resultados,erros},null,2));console.log(JSON.stringify({resultados,erros},null,2));
 }finally{s.kill();}

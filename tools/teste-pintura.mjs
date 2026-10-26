@@ -1,3 +1,4 @@
+import{CORAL_DX,CORAL_DY}from'../src/world/geografia.js';
 // Contrato do atlas: cache por perfil, UV nas mesclas e modelos antigos intactos.
 import assert from 'node:assert/strict';
 import { registerHooks } from 'node:module';
@@ -58,10 +59,10 @@ console.log('Modelos com volumes preservados:',conferidos);
 g.dispose();console.log('OK: perfil isolado, cache reutilizado, UV preservado e árvores com menos triângulos');
 // Coral só cria variações para as seis famílias que receberam acabamento local.
 const {perfilCoral}=await import('../src/visual3d/letsgo/modelos-coral.js');
-assert.equal(perfilCoral({id:'alvorada'},{kind:'center',tx:1658,ty:1934}),'coral');
-assert.equal(perfilCoral({id:'alvorada'},{kind:'chest',tx:1658,ty:1934}),'pintado');
-assert.equal(perfilCoral({id:'alvorada'},{kind:'center',tx:1523,ty:1750}),'pintado');
-assert.equal(perfilCoral({id:'ocaso'},{kind:'center',tx:1658,ty:1934}),'pintado');
+assert.equal(perfilCoral({id:'alvorada'},{kind:'center',tx:1658+CORAL_DX,ty:1934+CORAL_DY}),'coral');
+assert.equal(perfilCoral({id:'alvorada'},{kind:'chest',tx:1658+CORAL_DX,ty:1934+CORAL_DY}),'pintado');
+assert.equal(perfilCoral({id:'alvorada'},{kind:'center',tx:1523+CORAL_DX,ty:1750+CORAL_DY}),'pintado');
+assert.equal(perfilCoral({id:'ocaso'},{kind:'center',tx:1658+CORAL_DX,ty:1934+CORAL_DY}),'pintado');
 for(const kind of ['center','mart','housePink','farol','palm','palmSmall']){
  const c=modeloLG(kind,o,'coral');assert.equal(c,modeloLG(kind,o,'coral'));
  assert.notEqual(c.chave,modeloLG(kind,o,'pintado').chave);

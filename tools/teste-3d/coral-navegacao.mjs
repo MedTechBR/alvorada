@@ -1,10 +1,11 @@
+import{CORAL_DX,CORAL_DY}from'../../src/world/geografia.js';
 // Entrada real pela porta, descarte da arte, volta ao piloto e compatibilidade com o modo 2D.
 import {sessao,sleep,until} from './rb-lib.mjs';
 import assert from 'node:assert/strict';
 import {writeFileSync} from 'node:fs';
 const resultados=[];
 for(const modo of ['3d','2d']){
- const s=await sessao({W:844,H:390,cel:true,port:8700,qs:'nosw&ir=1664,1941&visual='+modo});
+ const s=await sessao({W:844,H:390,cel:true,port:8700,qs:`nosw&coral=local&ir=${1664+CORAL_DX},${1941+CORAL_DY}&visual=${modo}`});
  try{
   await s.P.ev(`(async()=>{for(let i=0;i<80&&game.ui.dialog.open;i++){dispatchEvent(new KeyboardEvent('keydown',{code:'Enter',key:'Enter',bubbles:true}));dispatchEvent(new KeyboardEvent('keyup',{code:'Enter',key:'Enter',bubbles:true}));await new Promise(r=>setTimeout(r,40));}game.story.update=()=>{};game.story.busy=false;game.spawnT=game.ambienteT=1e9;for(const w of [...game.wilds])game.removeEntity(w);})()`);
   await until(()=>s.P.ev('!!game.coralPixel.ativo'),30000,100);await sleep(650);
@@ -15,7 +16,7 @@ for(const modo of ['3d','2d']){
   await s.P.ev(`dispatchEvent(new KeyboardEvent('keyup',{code:'ArrowUp',key:'ArrowUp',bubbles:true}))`);await sleep(4600);
   if(modo==='3d')assert(await s.P.ev('game.v3d.espelho.lotes.size>0'),'O interior precisa reconstruir o espelho 3D');
   const descarte=await s.P.ev('({ativo:game.coralPixel.ativo,pronto:game.coralPixel.pronto,setores:game.coralPixel.setores.size,objetos:game.coralPixel.objetos.size,atlas:!!game.coralPixel.atlas,pessoas:game.coralPixel.pessoas.cache.size})');assert(!descarte.ativo&&!descarte.pronto&&!descarte.atlas&&descarte.setores===0&&descarte.objetos===0&&descarte.pessoas===0);
-  await s.P.ev(`game.viagem.ir('alvorada',{x:1664,y:1941},{silencioso:true}).then(()=>true)`);await until(()=>s.P.ev('game.coralPixel.ativo&&game.coralPixel.pronto'),30000,100);
+  await s.P.ev(`game.viagem.ir('alvorada',{x:${1664+CORAL_DX},y:${1941+CORAL_DY}},{silencioso:true}).then(()=>true)`);await until(()=>s.P.ev('game.coralPixel.ativo&&game.coralPixel.pronto'),30000,100);
   const erros=s.erros();assert(!erros.some(e=>/EXC|Shader Error/.test(e)),erros.join('\n'));resultados.push({modo,inicial,pes,porta,descarte,retorno:true,erros});
  }finally{s.kill();}
 }
