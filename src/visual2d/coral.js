@@ -48,7 +48,7 @@ export class CoralPixel {
    this.g.ui.hud.seta.scale.set(on ? .65 : 1);
    if(this.v.renderer)this.v.renderer.domElement.style.visibility=on?'hidden':'';
    if(this.v.sobre)this.v.sobre.mesh.visible=!on;
-   if(on){this.v.setores?.limpar();this.v.view=null;}
+   if(on){this.v.setores?.limpar();this.v.espelho?.limpar();this.v.view=null;}
    else{this.pessoas.ocultar();for(const s of this.objetos.values())s.visible=false;document.body.classList.remove('coral-luta');this.emLuta=null;}
   }
   if(!on)return false;

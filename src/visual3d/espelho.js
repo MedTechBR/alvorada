@@ -120,8 +120,11 @@ export class Espelho {
     t.flipY = false; t.colorSpace = THREE.SRGBColorSpace;
     t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false;
     t.needsUpdate = true; t.uid = this.texs.size;
-    src.on?.('update', () => { t.image = src.resource; t.needsUpdate = true; });
-    src.on?.('destroy', () => { this.texs.delete(src); t.dispose(); });
+    const update = () => { t.image = src.resource; t.needsUpdate = true; };
+    const destroy = () => { this.texs.delete(src); t.dispose(); };
+    t.userData.eventosFonte = { update, destroy };
+    src.on?.('update', update);
+    src.on?.('destroy', destroy);
     this.texs.set(src, t);
     return t;
   }
@@ -132,6 +135,19 @@ export class Espelho {
     return l;
   }
   #quad() { const q = this.pool[this.np++] ?? (this.pool[this.np - 1] = { p: new Float32Array(12), uv: new Float32Array(8), c: new Float32Array(4), b: new Float32Array(3), w: 0, d: 0 }); return q; }
+
+  // Coral desenha os sprites diretamente no Pixi. Os lotes 3D ocultos podem ser refeitos ao sair.
+  limpar() {
+    for (const l of this.lotes.values()) {
+      this.grupo.remove(l.mesh); l.geo.dispose(); l.mat.dispose(); l.mesh.customDepthMaterial?.dispose();
+    }
+    this.lotes.clear();
+    for (const [src, t] of this.texs) {
+      const e = t.userData.eventosFonte;
+      src.off?.('update', e.update); src.off?.('destroy', e.destroy); t.dispose();
+    }
+    this.texs.clear(); this.pool.length = 0; this.np = 0; this.M.length = 0;
+  }
 
   update() {
     const g = this.g, v = this.v, ents = g.ents;
