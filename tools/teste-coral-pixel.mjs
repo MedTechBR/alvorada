@@ -33,11 +33,11 @@ for(let i=0;i<fila.length;i++){
   vistos.add(k);fila.push([a,b]);
  }
 }
-const portas=[...BS.placed,...BS.novos].filter(o=>BR.coralBairro.portas.includes(o.to));assert.equal(portas.length,8);
+const portas=[...BS.placed,...BS.novos].filter(o=>BR.coralBairro.portas.includes(o.to));assert.equal(portas.length,9);assert(portas.some(o=>o.to==='casa_375_385'),'A casa a leste precisa fazer parte do bairro alcançável');
 for(const o of portas){assert(!bloqueia(o.doorX,o.doorY),o.to+' bloqueada');assert(vistos.has(o.doorX+','+(o.doorY+1)),o.to+' sem acesso à rua');assert(BR.interiors.some(r=>r.id===o.to));}
 for(const id of ['farol_entrada','palco_solano','iracema_praca','calcadao','teo_calcadao']){const [x,y]=BR.spots[id];assert(vistos.has(x+','+y),id+' inacessível');}
 for(const p of BR.coralPets){const real=BS.pets.find(q=>q.dex===p.dex&&q.say===p.say);assert(real);assert.equal(real.x,p.x);assert.equal(real.y,p.y);assert(!bloqueia(real.x,real.y),'Pokémon morador dentro de sólido');}
 const retrato=portas.map(o=>[o.to,o.x,o.y,o.doorX,o.doorY]);
 const segunda=await carregarMundo('alvorada');
 assert.deepEqual([...segunda.S.placed,...segunda.S.novos].filter(o=>BR.coralBairro.portas.includes(o.to)).map(o=>[o.to,o.x,o.y,o.doorX,o.doorY]),retrato,'Voltar de uma sala não pode deslocar o bairro');
-console.log('OK: oito portas reais, palco, calçadão e farol alcançáveis; remontagem estável.');
+console.log('OK: nove portas reais, palco, calçadão e farol alcançáveis; remontagem estável.');
