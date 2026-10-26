@@ -30,15 +30,16 @@ export class PessoasCoral{
   if(!this.J){if(!this.indice){this.indice=true;fetch(new URL('indice.json',BASE)).then(r=>r.json()).then(J=>this.J=J).catch(e=>{this.indice=false;console.warn('[Coral] Índice de personagens indisponível.',e);});}return;}
   if(agora<(this.proxima??0)&&this.mundo===g.map.S)return;
   this.proxima=agora+100;this.mundo=g.map.S;
-  const vistos=new Set(),lista=new Set([g.player,...(g.mundo.people.list??[]),...(g.story.npcs?.values()??[]),...(g.story.roteiro.atores?.values()??[]),g.story.battle?.npc]);
+  const remotos=new Set(this.opcoes.original?[...(g.net?.remotes?.map?.values()??[])]:[]);
+  const vistos=new Set(),lista=new Set([g.player,...remotos,...(g.mundo.people.list??[]),...(g.story.npcs?.values()??[]),...(g.story.roteiro.atores?.values()??[]),g.story.battle?.npc]);
   this.ocultar();
   for(const n of lista){
    if(!n?.body||!n.frames||!n.view?.visible||n.body.destroyed||n.x<view.x0||n.x>view.x1||n.y<view.y0||n.y>view.y1)continue;
    // Montaria conserva a pose sentada existente; estas folhas são de caminhada/corrida.
    if(n===g.player&&g.mount?.active&&!this.opcoes.original)continue;
-   const jogador=n===g.player,correndo=jogador&&!!(n.correndo||(n.speed??0)>95),look=jogador?toCharLook(g.look??n.look??g.flags?.look):null;
+   const jogador=n===g.player||remotos.has(n),correndo=jogador&&!!(n.correndo||(n.speed??0)>95),look=jogador?toCharLook(n===g.player?(g.look??n.look??g.flags?.look):(n.frames.look??n.look)):null;
    const id=jogador?null:(this.opcoes.resolver??idPessoaCoral)(n,this.J);
-   const montado=jogador&&!!g.mount?.active,key=jogador?'J:'+chaveDe(look,correndo)+(montado?':montado':''):id;vistos.add(key);
+   const montado=jogador&&(n===g.player?!!g.mount?.active:!!n.rig?.kind),key=jogador?'J:'+chaveDe(look,correndo)+(montado?':montado':''):id;vistos.add(key);
    const f=this.cache.get(key);
    if(f){f.visto=agora;const altura=this.opcoes.original?f.altura:(n.def?.kid||/little|kid|youngster/.test(id??''))?(g.encontro?.ativo?25:30):(g.encontro?.ativo?30:36);n.alturaVisual=altura*(this.opcoes.original?1:Math.abs(n.body.scale.y));this.atores.push({n,f,k:altura/Math.max(1,f.altura),montado});}
    else if(!this.carregando.has(key)){
