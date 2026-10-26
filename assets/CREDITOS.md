@@ -57,3 +57,14 @@ Nintendo, Game Freak e The Pokémon Company; aqui entram só como referência de
   cores, janelas, portas, copas, troncos), na paleta e no estilo das do demo.
 - **Godot 4.4.1** (oficial, github.com/godotengine/godot, SHA512 conferido) só como ferramenta de conversão, em
   `tools/godot/` (fora do git).
+
+## Exploração FireRed (assets/firered/)
+
+- Terrenos, metatiles, paletas, fachadas, móveis e folhas de moradores de Pokémon FireRed/LeafGreen,
+  disponibilizados como gráficos no projeto público [pret/pokefirered](https://github.com/pret/pokefirered),
+  revisão `ce6406d8c2eaf46d543c8a2606de0c3cb1951982`. Arte original: Game Freak / Nintendo / The Pokémon Company.
+- `tools/firered/baixar.py` obtém somente os gráficos e as tabelas de montagem, sem ROM ou código executável.
+  `tools/firered/preparar.py` recompõe os blocos de 16 px com suas paletas e reorganiza os quadros dos humanos.
+  As fachadas repetem colunas inteiras para respeitar os lotes e as portas de Alvorada; não usam os mapas de Kanto.
+- Neve, lama e lava reutilizam os pixels com paletas curtas para os biomas próprios de Alvorada.
+  Os objetos exclusivos de enigmas mantêm seus sprites e estados existentes.

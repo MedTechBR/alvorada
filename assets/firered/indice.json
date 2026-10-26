@@ -1,0 +1,293 @@
+{
+  "origem": {
+    "repositorio": "pret/pokefirered",
+    "commit": "ce6406d8c2eaf46d543c8a2606de0c3cb1951982"
+  },
+  "bloco": 16,
+  "bancos": {
+    "exterior": {
+      "arquivo": "exterior.png",
+      "blocos": 729
+    },
+    "caverna": {
+      "arquivo": "caverna.png",
+      "blocos": 801
+    },
+    "interior": {
+      "arquivo": "interior.png",
+      "blocos": 664
+    },
+    "centro": {
+      "arquivo": "centro.png",
+      "blocos": 895
+    }
+  },
+  "objetos": {
+    "arvore": [
+      0,
+      0,
+      32,
+      48
+    ],
+    "arvore_grande": [
+      32,
+      0,
+      48,
+      48
+    ],
+    "arbusto": [
+      80,
+      0,
+      16,
+      16
+    ],
+    "flores": [
+      96,
+      0,
+      16,
+      16
+    ],
+    "placa": [
+      112,
+      0,
+      16,
+      16
+    ],
+    "cerca": [
+      128,
+      0,
+      16,
+      16
+    ],
+    "cerca_madeira": [
+      144,
+      0,
+      16,
+      16
+    ],
+    "pedra": [
+      160,
+      0,
+      16,
+      16
+    ],
+    "rochedo": [
+      176,
+      0,
+      32,
+      32
+    ],
+    "casa": [
+      208,
+      0,
+      80,
+      80
+    ],
+    "centro": [
+      288,
+      0,
+      80,
+      80
+    ],
+    "loja": [
+      368,
+      0,
+      64,
+      64
+    ],
+    "ginasio": [
+      0,
+      80,
+      112,
+      80
+    ],
+    "laboratorio": [
+      112,
+      80,
+      112,
+      80
+    ],
+    "vaso": [
+      224,
+      80,
+      16,
+      16
+    ],
+    "prateleira": [
+      240,
+      80,
+      16,
+      32
+    ],
+    "pc": [
+      256,
+      80,
+      16,
+      32
+    ],
+    "tv": [
+      272,
+      80,
+      16,
+      32
+    ],
+    "mesa": [
+      288,
+      80,
+      32,
+      32
+    ],
+    "balcao": [
+      320,
+      80,
+      64,
+      32
+    ],
+    "cama": [
+      384,
+      80,
+      16,
+      32
+    ],
+    "poste": [
+      400,
+      80,
+      16,
+      32
+    ],
+    "banco": [
+      416,
+      80,
+      32,
+      16
+    ],
+    "borda_pedra": [
+      448,
+      80,
+      32,
+      16
+    ],
+    "bau": [
+      480,
+      80,
+      16,
+      16
+    ]
+  },
+  "fontes": {
+    "originais/primary/building/metatile_attributes.bin": "c609529ecdf1b443b75f144fd733f353a8ddaeb3584ab018a369bb2bea8da5d4",
+    "originais/primary/building/metatiles.bin": "6b53b219dcacf26af58c7174279c24a44ad13194c7292c74fcf24c48a1be4b4b",
+    "originais/primary/building/palettes/00.pal": "6d8396ee26f5d12f993004066251e5b0b578adad04740aa17745a70853a1a725",
+    "originais/primary/building/palettes/01.pal": "93c52f1deab53435356361fe1c47de7d6a038ae6f393adc8650a1641ed10846c",
+    "originais/primary/building/palettes/02.pal": "220932f7bc7c1a6ef2dfa2efdc47d6b0f238440361400b629c441acd89306bea",
+    "originais/primary/building/palettes/03.pal": "103665f17a67f4a83acfefdfa04a4e1ce736927dd65a9b6b64867ecbb9437c6c",
+    "originais/primary/building/palettes/04.pal": "7a205e7a627e475e0f110f4082c221c39fb10c7b543cf4c90f1e6817831f30a1",
+    "originais/primary/building/palettes/05.pal": "63c7f7fc52611a66b6371ea09da8d30ab1e9763136aceeb93bcae1016ba42211",
+    "originais/primary/building/palettes/06.pal": "a88e85688071309411a19eea8f42792b69e073af41b5be6be6743f7e36b435f0",
+    "originais/primary/building/palettes/07.pal": "86e55272f3d9823763f6b4345297787f060aa3974efa53fa83ddea93ae4dc0c6",
+    "originais/primary/building/palettes/08.pal": "86e55272f3d9823763f6b4345297787f060aa3974efa53fa83ddea93ae4dc0c6",
+    "originais/primary/building/palettes/09.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/primary/building/palettes/10.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/primary/building/palettes/11.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/primary/building/palettes/12.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/primary/building/palettes/13.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/primary/building/palettes/14.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/primary/building/palettes/15.pal": "bf04092ebe65f2846c64e84f686749bce590f62b490303c8d23f275fe4067fa2",
+    "originais/primary/building/tiles.png": "0c6faa0058210ffd5794613c28969d1982737cc3b7d4feeab03a13895c8363f2",
+    "originais/primary/general/metatile_attributes.bin": "1f62a949da41adca90ad36ca3597754bee953a8f21781f32aedf6158922c89cb",
+    "originais/primary/general/metatiles.bin": "8d950c1a1f151f5e1bded1ecee165b815c3a4d62b69a4a9cec4f676283f9041e",
+    "originais/primary/general/palettes/00.pal": "757529e794c7fb9c333b1c2ef83704f6b03bb0fe756443b80025b2bc55dbe7f0",
+    "originais/primary/general/palettes/01.pal": "baec95e65952c79e6ceb9cf8306995379982dc9253e67797b350556e1db83bfb",
+    "originais/primary/general/palettes/02.pal": "ea0310019345ea29e2196c4326182e32cbddf0e5fc2c4d010e8c40794c78852b",
+    "originais/primary/general/palettes/03.pal": "117156779971950f6693bbefa2e92c373662209f2e39e4716f1e37a4f72ba022",
+    "originais/primary/general/palettes/04.pal": "7fed8601788c83852288c2395afd84a2c9ca6717c1eb38b762ad8ae7a9d61c5d",
+    "originais/primary/general/palettes/05.pal": "f8497b9b541ebe7ba0a80b0ac865135410d9cf6324f13949f3285c70b1119e07",
+    "originais/primary/general/palettes/06.pal": "4d2d0cfdc068acb9bc2adc9d4d762bcee527fd0cf045c30728632e15b0590582",
+    "originais/primary/general/palettes/07.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/primary/general/palettes/08.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/primary/general/palettes/09.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/primary/general/palettes/10.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/primary/general/palettes/11.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/primary/general/palettes/12.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/primary/general/palettes/13.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/primary/general/palettes/14.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/primary/general/palettes/15.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/primary/general/tiles.png": "9ff889d1b9da5383a0cd0c85ac7b791812867804f3a38566b46172087419e0b9",
+    "originais/secondary/cave/metatile_attributes.bin": "f129180c9f4cd88012667f68da61f16a157ad6962e6c2a22f4f4a3aed43a153d",
+    "originais/secondary/cave/metatiles.bin": "66de5f752585eada510afe5744e10f03c8f6a55caf1aecd952fc3af46c87d5e7",
+    "originais/secondary/cave/palettes/00.pal": "757529e794c7fb9c333b1c2ef83704f6b03bb0fe756443b80025b2bc55dbe7f0",
+    "originais/secondary/cave/palettes/01.pal": "baec95e65952c79e6ceb9cf8306995379982dc9253e67797b350556e1db83bfb",
+    "originais/secondary/cave/palettes/02.pal": "ea0310019345ea29e2196c4326182e32cbddf0e5fc2c4d010e8c40794c78852b",
+    "originais/secondary/cave/palettes/03.pal": "f07eaeb3f7d9b3d2442bd8ec0a5be36f32e89a22c7475b721a866fde68317de7",
+    "originais/secondary/cave/palettes/04.pal": "0d1bf43416772bbcf957e85b243ee9982156a74ae808ece145144b8f997c39cb",
+    "originais/secondary/cave/palettes/05.pal": "f8497b9b541ebe7ba0a80b0ac865135410d9cf6324f13949f3285c70b1119e07",
+    "originais/secondary/cave/palettes/06.pal": "0fafa47fc224ee18f623a75a85eba3a2de3b077005b71c48e8f490b3b43c7c70",
+    "originais/secondary/cave/palettes/07.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/secondary/cave/palettes/08.pal": "cf92ef4b8d5afe0f6f9ae54e4b3ab413954f6113b9811282b7869ccdc95a6d04",
+    "originais/secondary/cave/palettes/09.pal": "bbdf09fd8e0f1b33dc227f4591afb1ccf41cfd7b60fb2b8323fd3fb119ceeec7",
+    "originais/secondary/cave/palettes/10.pal": "4616aa4a0a46e2df00a70116b6fda7742af3b9b60afb54525c63b07027e754e9",
+    "originais/secondary/cave/palettes/11.pal": "64a682c94c701f0291bfa2b49e99a0c84d964d238e6d96b24a6145840f9fb2db",
+    "originais/secondary/cave/palettes/12.pal": "82ca1600b646ead9e3218038a99a5a36ec91527224049250679593cbe88d6c63",
+    "originais/secondary/cave/palettes/13.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/cave/palettes/14.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/cave/palettes/15.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/cave/tiles.png": "6929fbf3ea8680f86c384bf59608861e0ae130bd471d5171dcc74d280b15c71c",
+    "originais/secondary/generic_building_1/metatile_attributes.bin": "f3eeab19d3b86637c293fd535a3a3de6c22238c7efd126e79c74a0ada34ac637",
+    "originais/secondary/generic_building_1/metatiles.bin": "f73d826f0ea271ecc32785c45b04697fb507b061259e9f0ce3dbd665fc928990",
+    "originais/secondary/generic_building_1/palettes/00.pal": "db75c8cdc25dd0de19b1f55dddc7e3dd2f27c95786dd95e5ee8ce32cc2637279",
+    "originais/secondary/generic_building_1/palettes/01.pal": "2b826a76d9c7c7ab4ae951e33d5773ffc14d65391d6846edf20b1aa42e08d33c",
+    "originais/secondary/generic_building_1/palettes/02.pal": "fc31ee1ac15c204703fc9538e6d7638c8b0c72a195193532927a4f35aac15cd0",
+    "originais/secondary/generic_building_1/palettes/03.pal": "96b62ae519b84ce226bbcbfb38bd4a00829c990e2b501c4921e4693c4641d709",
+    "originais/secondary/generic_building_1/palettes/04.pal": "de915f823eedf2ea3b1285cf006a53103fd04dca2e41b8267977def71d2c0969",
+    "originais/secondary/generic_building_1/palettes/05.pal": "de915f823eedf2ea3b1285cf006a53103fd04dca2e41b8267977def71d2c0969",
+    "originais/secondary/generic_building_1/palettes/06.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/generic_building_1/palettes/07.pal": "86e55272f3d9823763f6b4345297787f060aa3974efa53fa83ddea93ae4dc0c6",
+    "originais/secondary/generic_building_1/palettes/08.pal": "fcb5aa6ea392db03980cb83438f7858f01f22ec5655b38cb6057b1c20c35368a",
+    "originais/secondary/generic_building_1/palettes/09.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/secondary/generic_building_1/palettes/10.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/secondary/generic_building_1/palettes/11.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/secondary/generic_building_1/palettes/12.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/secondary/generic_building_1/palettes/13.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/generic_building_1/palettes/14.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/generic_building_1/palettes/15.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/generic_building_1/tiles.png": "efff402dbbe15d908c73aed857c19ca61ea5cdc5347c2815f81304746cd5ac4f",
+    "originais/secondary/pallet_town/metatile_attributes.bin": "8af5fbc8c32e5d0de4fe66735603d46ecd3506c42fcbe8b6cac744496a25203a",
+    "originais/secondary/pallet_town/metatiles.bin": "3b7ba7f75fd5d750413fc252519569a9f98fac586d87f62066bdf1e3edf35ca2",
+    "originais/secondary/pallet_town/palettes/00.pal": "77bf9872166325d3efeac30fd239248fdf52d9f726aad11658c3b9043af6294f",
+    "originais/secondary/pallet_town/palettes/01.pal": "df2417a4e46e1089cb56041750c6b81a2c98fef14f8256de0d7dcdda64e1da8b",
+    "originais/secondary/pallet_town/palettes/02.pal": "1232c6a269f74fa49e0b34ca573cb336b6f2b262feb41c3b2f36e8044159f3bc",
+    "originais/secondary/pallet_town/palettes/03.pal": "0c6d9358c87a8245d0ec44f40b7064f5e0cec3ad2142157bb8e62e44628fd9a7",
+    "originais/secondary/pallet_town/palettes/04.pal": "dc6c7c3af8e1da0d769b72653d369181c5c65d82cbead71ecd5e73481f74dc2d",
+    "originais/secondary/pallet_town/palettes/05.pal": "2bb3f814b7be56fd42b2ba870a3a09b96bdb7cbcbf8d57bcc39fe82c68e14d2d",
+    "originais/secondary/pallet_town/palettes/06.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/pallet_town/palettes/07.pal": "a47bca4043b26b45e2e06f38bd87f2c611c81629a65dc46e7144273143d3d5b2",
+    "originais/secondary/pallet_town/palettes/08.pal": "14c4f6f561b62186b212917e7e922e12ddcc2eae3cca047b53c3354220669997",
+    "originais/secondary/pallet_town/palettes/09.pal": "18fa76a58a43b9968fd1b506a6a5b72b39a1093d1cb8b7479115e2f3bcd514c9",
+    "originais/secondary/pallet_town/palettes/10.pal": "24abe115664ebcb82c3651b316d2496999c0ec99690dcb956ccee2afc2f030e9",
+    "originais/secondary/pallet_town/palettes/11.pal": "9a4bea40b1915f05d12a5867c1d9c65d72a876f23931d7aa95f035eddbb04c5f",
+    "originais/secondary/pallet_town/palettes/12.pal": "1ad9341bbc8ee6284a665f18d2bd535637cffdc2c0a2e47bd2a7d9253af32ba6",
+    "originais/secondary/pallet_town/palettes/13.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/pallet_town/palettes/14.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/pallet_town/palettes/15.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/pallet_town/tiles.png": "321a23f388126175b34b85cf46c2d8f943daab5ee4d0916129c345b99b9108d2",
+    "originais/secondary/pokemon_center/metatile_attributes.bin": "3e078fe415ef46509d1eb873a3545badbacfc7e9eddd44aa29b995f254bd6d24",
+    "originais/secondary/pokemon_center/metatiles.bin": "032e59dca08e16d5ff1c92b9720e3172005984b9e587436dd98d3bb468650e21",
+    "originais/secondary/pokemon_center/palettes/00.pal": "db75c8cdc25dd0de19b1f55dddc7e3dd2f27c95786dd95e5ee8ce32cc2637279",
+    "originais/secondary/pokemon_center/palettes/01.pal": "490f2d906b17823bcd5f1f80402bb397994d52670baf943f0237e98d520daccc",
+    "originais/secondary/pokemon_center/palettes/02.pal": "e2e9e8e38bae82c1a4aaffa3ef30d410413a9f56bc4189462da53e52f44959ce",
+    "originais/secondary/pokemon_center/palettes/03.pal": "10c0a6e1f360d17248a742ad7033490f8c814e7f06f75b050fd235c4fe8af889",
+    "originais/secondary/pokemon_center/palettes/04.pal": "de915f823eedf2ea3b1285cf006a53103fd04dca2e41b8267977def71d2c0969",
+    "originais/secondary/pokemon_center/palettes/05.pal": "de915f823eedf2ea3b1285cf006a53103fd04dca2e41b8267977def71d2c0969",
+    "originais/secondary/pokemon_center/palettes/06.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/pokemon_center/palettes/07.pal": "7d7027eff6ba37acc79bbd65a132a5640e1009bba9e5763a11750e25a0e2ec49",
+    "originais/secondary/pokemon_center/palettes/08.pal": "5eba9f700f511e27b38b51ee74d936109baa0f79d194a180448f95379b2027f4",
+    "originais/secondary/pokemon_center/palettes/09.pal": "41ffca803f819a83425152042e3c573e777cb63ff40851237832d0286da5ed02",
+    "originais/secondary/pokemon_center/palettes/10.pal": "83b9a21486fae105f03f4f36d3f9543be857f901074a5d8d3de27423fe66ddf6",
+    "originais/secondary/pokemon_center/palettes/11.pal": "0e4c1818c9bcf8d74c6a4aea2010067f268c22b6b7a4ba9177bd8479b0b42ec9",
+    "originais/secondary/pokemon_center/palettes/12.pal": "e7cab4b6790208f652f8e94a0494d66a1cfa3f84e1a876d88857281bde7314c4",
+    "originais/secondary/pokemon_center/palettes/13.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/pokemon_center/palettes/14.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/pokemon_center/palettes/15.pal": "bf04092ebe65f2846c64e84f686749bce590f62b490303c8d23f275fe4067fa2",
+    "originais/secondary/pokemon_center/tiles.png": "6aeb12ed0248b4b241ec687cb06dd37ab9a89c3f7804413668bcf4e6c6ef1774"
+  }
+}
