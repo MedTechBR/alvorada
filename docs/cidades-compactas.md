@@ -86,7 +86,7 @@ A tabela abaixo compara a versão publicada `fcde2264` à revisão, no mesmo rot
 
 A caminhada melhorou; as amostras paradas de praça e farol tiveram regressão de CPU e de intervalo entre quadros. Portanto, o requisito estrito de não piorar em nenhum trecho permanece pendente. A memória retida e o pico caíram nos três pontos. O pico ficou em 198,7 / 198,8 / 198,1 MiB depois, contra 286,8 / 286,6 / 291,6 MiB antes. As texturas Pixi estimadas ficaram em 5,4 / 6,2 / 5,3 MiB, medidas à parte de `renderer.info`. Campina, Sussurro e a rota melhoraram em CPU, quadro e memória; veja a tabela em [Apresentação compartilhada](visual-compartilhado.md).
 
-A validação usa Chrome emulado. iPhone físico e Safari continuam pendentes. A planta de Ocaso não foi recomposta; sua câmera e interface receberam o padrão compartilhado. Não houve publicação desta rodada; as mudanças ficam no branch `cidades-compactas` para revisão.
+A validação usa Chrome emulado. iPhone físico e Safari continuam pendentes. A planta de Ocaso não foi recomposta; sua câmera e interface receberam o padrão compartilhado. A revisão `5f63bcaa` foi publicada em 26/10/2026, após autorização do dono. O código de trabalho permanece no branch `cidades-compactas`; a publicação atualiza `main`. As pendências de desempenho em Coral e de iPhone/Safari continuam abertas.
 
 
 ## Conteúdo e apresentação

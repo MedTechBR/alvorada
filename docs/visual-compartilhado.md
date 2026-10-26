@@ -27,7 +27,7 @@ Os mesmos dois atlas são carregados uma vez. Só os setores próximos têm canv
 
 `tools/teste-3d/exploracao-rotas.mjs` percorre entrada e saída reais dos três desvios, interage com baús e alavanca e confere coleta única. Os registros ficam em `tools/resultados/cidades-compactas/`.
 
-iPhone físico/Safari e uma revisão manual completa de cada ambiente continuam pendentes. As mudanças permanecem locais no branch `cidades-compactas`.
+iPhone físico/Safari e uma revisão manual completa de cada ambiente continuam pendentes. A revisão `5f63bcaa` foi publicada em 26/10/2026 com autorização do dono, a partir do branch `cidades-compactas`, atualizando `main`. As pendências de desempenho e de validação em iPhone/Safari permanecem abertas.
 
 ## Medição nas regiões
 
