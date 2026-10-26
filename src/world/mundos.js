@@ -5,6 +5,7 @@ import { mesclarVestir } from './vestir.js';
 import { vestirSalas } from './receitas.js';
 import { marcarSaidas } from './saidas.js';
 import { salasEstadios } from './estadios.js';
+import { salasExploracaoRotas } from './exploracao-rotas.js';
 
 // Mundos (continentes) e a montagem dos dados de um mapa a partir dos arquivos de assets/maps/.
 //
@@ -122,6 +123,8 @@ async function montar(id, original = false) {
   const ids = new Set(salas.map((r) => r.id));
   const novos = gerarInteriores(R, { KINDS, ids, parteDe });
   for (const s of novos) salas.push({ ...s, ...tamanho(s) });
+  // Acrescentadas no fim: as salas antigas conservam a ordem de alocação e os saves.
+  if(id==='alvorada'&&!original)salas.push(...salasExploracaoRotas());
   vestirSalas(R, salas); // mobília no estilo dos originais (Centro, Mercado, casas, laboratório): src/world/receitas.js
   alocar(R, salas);
   // conteúdo das salas em coordenadas da sala → absolutas (itens, passagens internas)

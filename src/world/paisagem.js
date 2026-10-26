@@ -2,6 +2,7 @@ import { TILE } from './tiles.js';
 import { KINDS } from './objects.js';
 import { NUCLEOS, descompactarPonto } from './nucleos.js';
 import { pontoTerrenoGeografico } from './geografia.js';
+import { DESTINOS_ROTAS } from './exploracao-rotas.js';
 const VERDES=new Set([TILE.GRASS,TILE.GRASS2,TILE.GOLD,TILE.FLOWERS,TILE.DARK]);
 const hash=(x,y,s=0)=>{let h=Math.imul(x,374761393)^Math.imul(y,668265263)^s;h=Math.imul(h^(h>>>13),1274126177);return ((h^(h>>>16))>>>0)/4294967296;};
 
@@ -57,9 +58,9 @@ export function* vestirPaisagem(S,P,ocupar){
 
 // Pequenos destinos novos nas rotas: cada recanto tem um desenho e um uso, em escala humana.
 const RECANTOS = [
- {id:'recanto_ipe',nome:'Recanto do Ipê',p:[248,350],pecas:[['ipe',1,1],['bench',5,3],['oran',10,1],['pecha',13,2]],item:'potion'},
+ {id:'recanto_ipe',nome:'Recanto do Ipê',p:[248,350],pecas:[['ipe',1,1],['bench',5,3],['oran',10,5],['pecha',13,2]],item:'potion'},
  {id:'jardim_bosque',nome:'Jardim dos Cogumelos',p:[278,249],pecas:[['bigtree',2,1],['cogumelos',6,2],['cogumelos',9,4],['bench',11,3]],item:'oran'},
- {id:'pomar_espelho',nome:'Pomar do Espelho',p:[365,340],pecas:[['oran',1,1],['pecha',4,1],['oran',7,1],['well',11,2],['bench',6,7]],item:'potion'},
+ {id:'pomar_espelho',nome:'Pomar do Espelho',p:[365,340],pecas:[['oran',1,1],['pecha',4,1],['oran',12,7],['well',11,2],['bench',6,7]],item:'potion'},
  {id:'clareira_ventos',nome:'Clareira dos Ventos',p:[280,310],pecas:[['windmill',1,1],['bench',7,3],['pecha',12,1]],item:'pokeball'},
 ];
 export function criarRecantos(S,P,ocupar){
@@ -80,5 +81,49 @@ export function criarRecantos(S,P,ocupar){
   R.spots[d.id]=[x+8,y+8];
   if(!R.items.some(i=>i.recanto===d.id))R.items.push({recanto:d.id,x:x+9,y:y+7,item:d.item,n:d.item==='pokeball'?3:1});
   if(!R.areas.some(a=>a.id===d.id))R.areas.push({id:d.id,name:d.nome,biome:'campo',rect:[x-2,y-2,20,15]});
+  const destino=DESTINOS_ROTAS.find(q=>q.recanto===d.id),sala=destino&&R.interiors.find(r=>r.id===destino.id);
+  if(sala&&!R.warps.some(w=>w.exploracaoRota===d.id)){
+   // Uma boca visível no fundo do recanto. O acesso não atravessa mata sólida,
+   // rios ou cercas, e a volta chega ao lado de fora da boca, sem reentrar sozinha.
+   for(let j=0;j<3;j++)for(let i=6;i<=10;i++)S.tiles[x+i+(y+j)*W]=j===2?TILE.PATH:TILE.CAVE;
+   S.tiles[x+8+(y+1)*W]=destino.biome==='floresta'?TILE.DARK:TILE.CAVEDOOR;
+   // Moldura com peças já existentes, em vez de um bloco retangular de rocha.
+   const moldura=destino.biome==='floresta'?[['jequitiba',5,0],['jequitiba',9,0]]:
+    destino.biome==='ruinas'?[['portico',6,1],['brokenColumn',10,0]]:
+    [['boulder',6,0],['boulder2',9,0],['grayrock',8,-1]];
+   for(const[kind,dx,dy]of moldura){const o={kind,x:x+dx,y:y+dy,parte:P.i,paisagem:true};if(ocupar(S,o))S.novos.push(o);}
+   R.spots[d.id+'_retorno']=[x+8,y+3];
+   R.warps.push({x:x+8,y:y+1,dir:'up',to:[sala.x+15,sala.y+20],face:'up',label:destino.nome,exploracaoRota:d.id});
+   const placa={kind:'sign',x:x+3,y:y+6,text:destino.nome+'\nDesvio opcional • retorno por esta entrada',parte:P.i,paisagem:true};
+   if(ocupar(S,placa))S.novos.push(placa);
+   ligarRecanto(S,x+8,y+8,d.id);
+  }
  }
+}
+
+// Liga o destino a uma estrada existente pelo chão que já era atravessável.
+// Busca local, só na montagem: não há trabalho extra a cada quadro.
+function ligarRecanto(S,x,y,id){
+ const W=S.W,passa=new Set([...VERDES,TILE.TALL,TILE.PATH]),fila=[[x,y]],pais=new Map([[x+y*W,null]]);
+ let fim=null;
+ for(let i=0;i<fila.length;i++){
+  const [px,py]=fila[i],k=px+py*W;
+  if(Math.abs(px-x)+Math.abs(py-y)>12&&S.tiles[k]===TILE.PATH){fim=k;break;}
+  for(const[dx,dy]of[[0,1],[-1,0],[1,0],[0,-1]]){
+   const a=px+dx,b=py+dy,n=a+b*W;
+   if(a<0||b<0||a>=W||b>=S.J.outdoorH||Math.abs(a-x)>72||Math.abs(b-y)>72||pais.has(n)||S.block[n]||!passa.has(S.tiles[n]))continue;
+   pais.set(n,k);fila.push([a,b]);
+  }
+ }
+ if(fim===null)return;
+ const caminho=[];
+ for(let k=fim;k!==null;k=pais.get(k)){
+  const px=k%W,py=Math.floor(k/W);caminho.push([px,py]);
+  for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++){
+   const a=px+i,b=py+j,n=a+b*W;
+   if(a<0||b<0||a>=W||b>=S.J.outdoorH||S.block[n]||!passa.has(S.tiles[n]))continue;
+   S.tiles[n]=TILE.PATH;S.nearSpot.add(n);
+  }
+ }
+ S.J.exploracaoRotas??={};S.J.exploracaoRotas[id]={estrada:caminho[0],caminho};
 }
