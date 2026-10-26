@@ -42,7 +42,7 @@ export class CoralPixel {
  cull(){
   const g=this.g,local=this.ligado&&(!this.somenteCoral||g.encontro?.ativo||(emCidadeCoral(g.map,g.player.x,g.player.y)&&!g.map.interiorAt(g.player.x,g.player.y)));
   if(local){this.foraDesde=null;if(!this.pronto)this.carregar();}
-  else if(this.pronto||this.carregando){this.foraDesde??=performance.now();if(performance.now()-this.foraDesde>4000)this.liberar();}
+  else if(!this.manterPronto&&(this.pronto||this.carregando)){this.foraDesde??=performance.now();if(performance.now()-this.foraDesde>4000)this.liberar();}
   const on=local&&this.pronto;
   if(on!==this.ativo){
    this.ativo=on;this.chao.visible=this.sombras.visible=on;document.body.classList.toggle('coral-pixel',on);
@@ -132,6 +132,12 @@ export class CoralPixel {
   if(this.emLuta!==luta){this.emLuta=luta;document.body.classList.toggle('coral-luta',luta);}
   const restaurar=this.pessoas.aplicar();
   try{g.app.renderer.render({container:g.app.stage});}finally{restaurar();for(const o of ocultos)o.visible=true;ocultos.length=0;}
+ }
+ limparCena(){
+  this.pessoas.liberar();
+  for(const s of this.setores.values())if(!s.destroyed)s.destroy({texture:true,textureSource:true});this.setores.clear();
+  for(const s of this.objetos.values())if(!s.destroyed)s.destroy();this.objetos.clear();
+  this.sombras.clear();this.mundo=null;
  }
  liberar(){
   this.pessoas.liberar();this.token=null;this.carregando=false;

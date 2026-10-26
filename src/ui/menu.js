@@ -1322,7 +1322,6 @@ export class GameMenu {
       { k: 'fps', label: 'Mostrar FPS (F3)', type: 'bool', on: 'Sim', off: 'Não' },
       { k: 'online', label: 'Jogar online', type: 'bool', on: 'Ligado', off: 'Desligado' },
       { k: 'dicas', label: 'Dicas de teclas', type: 'bool', on: 'Mostrar', off: 'Esconder' },
-      { k: 'visual', label: 'Visual (vale ao reabrir)', type: 'choice', values: ['3d', '2d'], show: (v) => (v === '2d' ? '2D clássico' : '3D') },
       ...(this.g.v3d ? [{ k: 'camCinema', label: 'Movimentos de câmera (3D)', type: 'bool', on: 'Ligados', off: 'Só seguir' }] : []),
       ...(this.g.v3d ? [{ k: 'estilo3d', label: 'Estilo do 3D (vale ao reabrir)', type: 'choice', values: ['zona', 'voxel', 'letsgo'], show: (v) => ESTILO3D_PT[v] ?? ESTILO3D_PT.zona }] : []),
     ];

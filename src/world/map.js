@@ -81,7 +81,7 @@ export class GameMap {
     this.secPend = new Uint8Array(this.CW * this.CHh); this.nPend = 0; this.construindo = null;
     for (const P of R.partes) if (!P.pronta) { this.nPend++; for (const r of [P.rect, P.faixa]) if (r) this.#marcarSetores(r, P.i + 1); }
     this.dirtyTiles = []; this.visible = new Set(); this.pending = null;
-    if(!temporario)prewarm(this); // a arena transitória usa apenas o atlas local
+    if(!temporario&&!this.classico)prewarm(this); // FireRed e arenas montam só os blocos usados
     this.tempoCarga = Math.round(agora() - t0);
     return this;
   }
@@ -400,7 +400,7 @@ export class GameMap {
   }
   #rowsChunk(c, r0, r1) {
     const ox = c.cx * CH, oy = c.cy * CH, th = Math.min(r1, this.h - oy) - r0;
-    if (th > 0 && !this.semArte) renderTiles(this, c.img, ox, oy, ox, oy + r0, Math.min(CH, this.w - ox), th); // semArte: o visual 3D pinta o chão sozinho
+    if (th > 0 && !this.semArte) (this.pintar??renderTiles)(this, c.img, ox, oy, ox, oy + r0, Math.min(CH, this.w - ox), th); // semArte: o visual 3D pinta o chão sozinho
     c.row = r1;
   }
   #finishChunk(c) {
@@ -536,8 +536,8 @@ export class GameMap {
   // animações baratas: água (troca de quadro), flores e mato alto balançando
   update(dt) {
     this.time += dt;
-    const wf = Math.floor(this.time / 0.32) % WATER_FRAMES.length;
-    if (this.water && this.water.texture !== WATER_FRAMES[wf]) this.water.texture = WATER_FRAMES[wf];
+    const quadrosAgua=this.waterFrames??WATER_FRAMES,wf = Math.floor(this.time / 0.32) % quadrosAgua.length;
+    if (this.water && this.water.texture !== quadrosAgua[wf]) this.water.texture = quadrosAgua[wf];
     const ff = Math.floor(this.time / 0.25);
     if (ff !== this.lastFF) { this.lastFF = ff; for (const c of this.visible) for (const s of c.flowers) s.texture = FLOWERS[s.f][(ff + s.ph) % 4]; }
     const af = Math.floor(this.time * 10);
@@ -582,7 +582,7 @@ export class GameMap {
       const ox = c.cx * CH, oy = c.cy * CH;
       const xs = list.map((p) => p[0]), ys = list.map((p) => p[1]);
       const x0 = Math.min(...xs), y0 = Math.min(...ys), x1 = Math.max(...xs), y1 = Math.max(...ys);
-      renderTiles(this, c.img, ox, oy, x0, y0, x1 - x0 + 1, y1 - y0 + 1);
+      (this.pintar??renderTiles)(this, c.img, ox, oy, x0, y0, x1 - x0 + 1, y1 - y0 + 1);
       c.ctx.putImageData(c.img, 0, 0, (x0 - ox) * T, (y0 - oy) * T, (x1 - x0 + 1) * T, (y1 - y0 + 1) * T);
       c.tex.source.update();
     }

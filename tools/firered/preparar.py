@@ -74,12 +74,14 @@ por('centro',[[0x17b,0x17c,0x17d,0x17e,0x17f],[0x048,0x049,0x04a,0x04b,0x187],[0
 por('loja',[[0x028,0x029,0x02a,0x02b],[0x030,0x031,0x032,0x033],[0x038,0x039,0x03a,0x03b],[0x040,0x041,0x062,0x063]])
 por('ginasio',[[0x139]+[0x13a]*5+[0x13b],[0x141]+[0x142]*5+[0x143],[0x149]+[0x14a]*5+[0x14b],[0x150,0x151,0x152,0x153,0x154,0x155,0x156],[0x158,0x159,0x15a,0x15b,0x15c,0x15d,0x15e]])
 por('laboratorio',[[0x2a8,0x2a9,0x2a9,0x2a9,0x2a9,0x2bd,0x2b5],[0x2b0,0x2b1,0x2b1,0x2b1,0x2b1,0x2b3,0x2b4],[0x2b8,0x2b9,0x2b9,0x2b9,0x2b9,0x2bb,0x2bc],[0x2c0,0x2c1,0x2c2,0x2d0,0x2c3,0x2c4,0x2c5],[0x2c8,0x2c9,0x2ac,0x2d8,0x2cb,0x2cc,0x2cd]])
-por('vaso',[[0x07f]],'interior')
-por('prateleira',[[0x064],[0x074]],'interior')
-por('pc',[[0x063],[0x073]],'interior')
-por('tv',[[0x062],[0x072]],'interior')
-por('mesa',[[0x063,0x064],[0x073,0x074]],'interior')
-por('balcao',[[0x0d8,0x0d9,0x0da,0x0db],[0x0e0,0x0e1,0x0e2,0x0e3]],'interior')
+por('vaso',[[0x057],[0x05f]],'interior')
+por('prateleira',[[0x2cb,0x2cc],[0x2cd,0x2ce]],'centro')
+por('pc',[[0x062],[0x295]],'centro')
+por('tv',[[0x036,0x037],[0x03e,0x03f]],'interior')
+por('mesa',[[0x04c,0x04d],[0x054,0x055]],'interior')
+por('balcao',[[0x2b9,0x2bc,0x2bc,0x298,0x2bc,0x2bc,0x2bd],[0x2a3,0x2b7,0x2b7,0x2b7,0x2b7,0x2b7,0x2bf]],'centro')
+por('escada',[[0x2d0,0x2d1],[0x2d8,0x2d9],[0x2e0,0x2e1]],'centro')
+por('maquina',[[0x2a9,0x2aa,0x2ab],[0x2b1,0x2b2,0x2b3]],'centro')
 por('cama',[[0x287],[0x28f]],'interior')
 por('poste',[[0x0e8],[0x0f1]])
 por('banco',[[0x284,0x284]])
@@ -111,7 +113,7 @@ for p in (root/'pessoas').glob('*.png'):
    cv.paste(rgba,(col*32+(32-fw)//2,row*32))
  cv.save(pessoas/(p.stem+'.webp'),lossless=True)
 J=json.loads((RAIZ/'assets/hgss/personagens/indice.json').read_text())
-fixos={'frlg_trainer':'red_normal','frlg_trainer_green':'green_normal','frlg_oak':'prof_oak','frlg_mom':'mom','frlg_rival':'blue','frlg_little_girl':'little_girl','frlg_kid':'little_boy','frlg_oldman':'old_man_1','frlg_woman':'woman_1','frlg_gym_guide':'gym_guy','frlg_girl':'picnicker'}
+fixos={'npc_076':'old_woman','frlg_trainer':'red_normal','frlg_trainer_green':'green_normal','frlg_oak':'prof_oak','frlg_mom':'mom','frlg_rival':'blue','frlg_little_girl':'little_girl','frlg_kid':'little_boy','frlg_oldman':'old_man_1','frlg_woman':'woman_1','frlg_gym_guide':'gym_guy','frlg_girl':'picnicker'}
 regras=[('old woman','old_woman'),('elder','old_man_1'),('sage','old_man_2'),('scientist f','woman_2'),('scientist','scientist'),('ace trainer f','cooltrainer_f'),('ace trainer','cooltrainer_m'),('school kid f','little_girl'),('school kid','little_boy'),('swimmer f','swimmer_f_land'),('swimmer','swimmer_m_land'),('beauty','beauty'),('fisher','fisher'),('rancher','man'),('guitarist','rocker'),('worker f','worker_f'),('worker','worker_m'),('nurse','nurse'),('clerk','clerk'),('gentleman','gentleman'),('lady','woman_2'),('medium','channeler'),('psychic','man'),('black belt','black_belt'),('prof','prof_oak'),('policeman','policeman'),('sailor','sailor'),('biker','biker'),('hiker','hiker'),('youngster','youngster'),('bug catcher','bug_catcher'),('lass','lass'),('camper','camper'),('waitress','woman_2'),('waiter','man'),('rocket grunt f','rocket_f'),('rocket grunt','rocket_m'),('bruno','bruno'),('brock','brock'),('misty','misty'),('erika','erika'),('koga','koga'),('blaine','blaine'),('sabrina','sabrina'),('surge','lt_surge'),('agatha','agatha'),('lance','lance'),('lorelei','lorelei'),('giovanni','giovanni'),('girl','little_girl'),('boy','boy')]
 aliases={}
 for k,v in J['personagens'].items():

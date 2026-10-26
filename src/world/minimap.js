@@ -109,17 +109,17 @@ export class Minimap {
     const room = this.map.interiorAt(p.x, p.y);
     const zoom = room ? z * 2.2 : z * (g.mount?.flying ? 0.6 : 1); // voando, o minimapa mostra mais longe
     ctx.save(); ctx.clearRect(0, 0, S, S);
-    ctx.beginPath(); if(g.coralPixel?.ativo)ctx.rect(0,0,S,S);else ctx.arc(R,R,R,0,7); ctx.clip();
+    ctx.beginPath(); if(g.visual2d?.ativo||g.coralPixel?.ativo)ctx.rect(0,0,S,S);else ctx.arc(R,R,R,0,7); ctx.clip();
     ctx.fillStyle = '#1b2a1e'; ctx.fillRect(0, 0, S, S);
     ctx.imageSmoothingEnabled = false;
     const px = p.x / T, py = p.y / T, a = room ? 0 : this.angle;
     ctx.translate(R, R); ctx.rotate(-a); ctx.scale(zoom, zoom); ctx.translate(-px, -py);
     const vr = S / zoom * 0.75; this.#base(ctx, px - vr, py - vr, px + vr, py + vr);
-    g.coralPixel?.minimapa(ctx);
+    g.coralPixel?.minimapa(ctx);g.visual2d?.minimapa(ctx);
     ctx.restore();
     // marcadores (sempre de pé)
     const toS = (wx, wy) => { const dx = (wx / T - px) * zoom, dy = (wy / T - py) * zoom; const c = Math.cos(-a), s = Math.sin(-a); return [R + dx * c - dy * s, R + dx * s + dy * c]; };
-    ctx.save(); ctx.beginPath(); if(g.coralPixel?.ativo)ctx.rect(0,0,S,S);else ctx.arc(R,R,R,0,7); ctx.clip();
+    ctx.save(); ctx.beginPath(); if(g.visual2d?.ativo||g.coralPixel?.ativo)ctx.rect(0,0,S,S);else ctx.arc(R,R,R,0,7); ctx.clip();
     for (const w of g.wilds ?? []) { if (!w.alive) continue; const [x, y] = toS(w.x, w.y); ctx.fillStyle = '#ff4a3a'; ctx.beginPath(); ctx.arc(x, y, 2.2 * this.dpr, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a0a0a'; ctx.lineWidth = this.dpr * 0.8; ctx.stroke(); }
     // outros jogadores online no mesmo lugar (src/net/remotes.js): ponto amarelo de borda escura
     for (const o of g.net?.remotes?.dots?.() ?? []) { const [x, y] = toS(o.x, o.y); ctx.globalAlpha = o.drop ? 0.45 : 1; ctx.fillStyle = '#ffd23a'; ctx.strokeStyle = '#3a2a00'; ctx.lineWidth = this.dpr; ctx.beginPath(); ctx.arc(x, y, 3 * this.dpr, 0, 7); ctx.fill(); ctx.stroke(); ctx.globalAlpha = 1; }
@@ -165,7 +165,7 @@ export class Minimap {
     ctx.beginPath(); ctx.moveTo(0, -6 * u); ctx.lineTo(4.5 * u, 4.5 * u); ctx.lineTo(0, 2 * u); ctx.lineTo(-4.5 * u, 4.5 * u); ctx.closePath(); ctx.fill(); ctx.stroke();
     ctx.restore();
     // norte
-    if (!room&&!g.coralPixel?.ativo) {
+    if (!room&&!g.coralPixel?.ativo&&!g.visual2d?.ativo) {
       const na = -a, nx = R + Math.sin(na) * (R - 9 * this.dpr), ny = R - Math.cos(na) * (R - 9 * this.dpr);
       ctx.fillStyle = '#e8584a'; ctx.beginPath(); ctx.arc(nx, ny, 6 * this.dpr, 0, 7); ctx.fill();
       ctx.fillStyle = '#fff'; ctx.font = `800 ${8 * this.dpr}px Avenir Next, ui-rounded, system-ui, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('N', nx, ny + 0.5);

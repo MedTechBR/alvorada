@@ -1,7 +1,7 @@
 // Opções do jogador (ficam neste aparelho, em localStorage). Sempre com try/catch:
 // em janela anônima ou com o armazenamento bloqueado, o jogo segue com os valores padrão.
 const KEY = 'alvorada2d.opcoes';
-export const DEFAULT_OPTS = { music: 7, sfx: 8, textSpeed: 'normal', vibrate: true, uiScale: 100, fps: false, quality: 'auto', camCinema: true, visual: '3d', online: true, dicas: true, movimento: 'classico', toque: 'analogico', expShare: true, estilo3d: 'zona' };
+export const DEFAULT_OPTS = { music: 7, sfx: 8, textSpeed: 'normal', vibrate: true, uiScale: 100, fps: false, quality: 'auto', camCinema: true, visual: '2d', online: true, dicas: true, movimento: 'classico', toque: 'analogico', expShare: true, estilo3d: 'zona' };
 export const QUALITY_PT = { auto: 'Automática', alta: 'Alta', baixa: 'Baixa' };
 export const TEXT_SPEED = { lenta: 24, normal: 46, rapida: 95 };
 export const TEXT_SPEED_PT = { lenta: 'Lenta', normal: 'Normal', rapida: 'Rápida' };
@@ -26,7 +26,8 @@ export function applyOpts(g) {
   const perf = document.getElementById('perf');
   if (perf && applyOpts.fps !== o.fps) { perf.hidden = !o.fps; applyOpts.fps = o.fps; }
   if (g?.quality && g.quality.mode !== o.quality) g.quality.setMode(o.quality);
-  try { localStorage.setItem('alvorada.visual', o.visual === '2d' ? '2d' : '3d'); } catch { /* sem armazenamento */ } // vale ao reabrir (src/main.js)
+  o.visual='2d'; // migra a preferência antiga; o jogo passa a usar o padrão FireRed
+  try { localStorage.setItem('alvorada.visual', '2d'); } catch { /* sem armazenamento */ }
   g?.v3d?.dinamica?.setCinema(o.camCinema !== false);
   if (g?.net && !!o.online !== g.net.worldOn) g.net.setWorld(!!o.online); // Jogar online (ligado por padrão no mundo Firebase; quem desligar fica offline)
   document.body.classList.toggle('cruz', o.toque === 'cruz'); // direcional em cruz no lugar do analógico (src/engine/input.js)

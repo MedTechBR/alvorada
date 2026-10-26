@@ -32,6 +32,7 @@ export class MapaDetalhado {
   for(let j=Math.max(0,Math.floor(y));j<Math.min(m.outdoorH,Math.ceil(y+h));j++)for(let i=Math.max(0,Math.floor(x));i<Math.min(m.w,Math.ceil(x+w));i++){
    if(!visitado(i,j))continue;
    const t=m.tiles[i+j*m.w],p=piso(t);
+   if(m.g?.visual2d?.ativo){m.g.visual2d.bloco(ctx,t,i,j);continue;}
    if(p)ctx.drawImage(p,i,j,1,1);else{ctx.fillStyle=`rgb(${CORES[t]??[120,200,96]})`;ctx.fillRect(i,j,1,1);}
    if(t===TILE.FLOWERS)textura(ctx,FLOWERS[(i*7+j*3)%FLOWERS.length][0],i,j,1,1);
    else if(t===TILE.TALL)textura(ctx,TALL,i,j,1,1);
@@ -39,14 +40,14 @@ export class MapaDetalhado {
   }
   for(let sy=Math.max(0,Math.floor((y-12)/16));sy<=Math.min(m.CHh-1,Math.floor((y+h+12)/16));sy++)for(let sx=Math.max(0,Math.floor((x-12)/16));sx<=Math.min(m.CW-1,Math.floor((x+w+12)/16));sx++){
    const k=sx+sy*m.CW;
-   for(const o of this.decor.get(k)??[])if(visitado(o.x,o.y))textura(ctx,m.tx[DECOR[o.kind]],o.x,o.y);
+   if(!m.g?.visual2d?.ativo)for(const o of this.decor.get(k)??[])if(visitado(o.x,o.y))textura(ctx,m.tx[DECOR[o.kind]],o.x,o.y);
    lista.push(...(this.setores.get(k)??[]));
    if(m.R.layoutGeografico)lista.push(...florestaDoSetor(m,sx*16,sy*16));
   }
   lista.sort((a,b)=>a.ty+a.fh-b.ty-b.fh);
   for(const o of lista){
    if(o.dead||!visitado(o.tx,o.ty)||o.tx>x+w+8||o.tx+o.fw<x-8||o.ty>y+h+12||o.ty<y-12)continue;
-   const K=KINDS[o.kind],tex=o.sprite?.texture??m.tx[K?.tex];if(!tex)continue;
+   const K=KINDS[o.kind],tex=m.g?.visual2d?.ativo?m.g.visual2d.objeto(o).tex:o.sprite?.texture??m.tx[K?.tex];if(!tex)continue;
    const tw=tex.width/16,th=tex.height/16;
    if(textura(ctx,tex,o.tx+o.fw/2-tw/2,o.ty+o.fh+(K?.oy??0)/16-th,tw,th))objetos++;
   }

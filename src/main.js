@@ -40,9 +40,9 @@ import { SELVAGENS_COMBATE as WILD_MAX, SELVAGENS_TRANQUILOS as WILD_AMBIENTE } 
 const ALPHA_DROPS = [['greatBall', 2, 30], ['superPotion', 2, 25], ['stardust', 1, 14], ['pearl', 1, 14], ['bigMushroom', 1, 6], ['rareCandy', 1, 7], ['nugget', 1, 4]];
 
 const $ = (id) => document.getElementById(id);
-// Visual 3D (src/visual3d, estilo HGSS/FireRed em 3D) é o padrão; ?visual=2d (ou a opção "Visual" = 2D) volta ao 2D.
-// Sem WebGL ou se o 3D falhar ao ligar, o jogo segue em 2D sozinho.
-const VISUAL_3D = (() => { const q = new URLSearchParams(location.search).get('visual'); if (q) return q !== '2d'; try { return localStorage.getItem('alvorada.visual') !== '2d'; } catch { return true; } })();
+// FireRed em 2D é a apresentação padrão. O renderer anterior fica disponível
+// somente por URL de diagnóstico; uma preferência antiga não o religa nos saves.
+const VISUAL_3D = new URLSearchParams(location.search).get('visual') === '3d';
 
 class Game {
   async init() {
@@ -58,6 +58,7 @@ class Game {
     // camadas do mundo
     this.world = new PIXI.Container();
     this.map = new GameMap(this.tx);
+    this.map.classico=!VISUAL_3D;
     await this.map.carregar(Viagem.mundoInicial()); // continente do jogo salvo (assets/maps/mundos.json)
     this.world.addChild(this.map.buildLayer());
     this.fx = new Fx(this);
@@ -93,6 +94,13 @@ class Game {
     this.spawnT = 0; this.wilds = [];
     this.zoom = 3; this.#resize(); addEventListener('resize', () => this.#resize());
     this.cam = { x: this.player.x, y: this.player.y };
+    if(!VISUAL_3D){
+      const {VisualFireRed}=await import('./visual2d/firered/index.js');
+      this.visual2d=new VisualFireRed(this);await this.visual2d.carregar();
+      this.coralPixel=this.visual2d.combate;
+      this.app.ticker.remove(this.app.render,this.app);
+      this.app.ticker.add(()=>this.visual2d.quadro(Math.min(.05,this.app.ticker.deltaMS/1000)),null,-25);
+    }
     if (window.__bootDone) window.__bootDone(); else $('loading')?.remove();
     this.hudInit();
     this.net = new Online(this); // modo online (src/net): salas, outros jogadores, troca e PvP
@@ -104,7 +112,7 @@ class Game {
       catch (e) { console.error('[3D] não deu para ligar o visual 3D; seguindo em 2D', e); this.v3d = null; this.app.renderer.background.alpha = 1; }
     }
     if(this.v3d)this.coralPixel=this.v3d.coralPixel;
-    else{
+    else if(!this.visual2d){
       const {CoralPixel}=await import('./visual2d/coral.js');this.coralPixel=new CoralPixel({g:this});
       this.app.ticker.remove(this.app.render,this.app);
       this.app.ticker.add(()=>{if(this.coralPixel.ativo)this.coralPixel.quadro(Math.min(.05,this.app.ticker.deltaMS/1000));else this.app.render();},null,-25);
@@ -138,7 +146,7 @@ class Game {
     // escala inteira para o pixel art ficar nítido; o jogador ajusta com roda, pinça ou + e −
     // (em pé, a largura manda: sem isso o celular em retrato mostraria só 6 blocos de largura)
     const auto = Math.max(2, Math.round(Math.min(innerHeight, innerWidth * 0.75) / (T * (IS_TOUCH ? 13 : 18))));
-    let pref = null; try { pref = +localStorage.getItem('alvorada.zoom') || null; } catch (e) { /* sem armazenamento */ }
+    let pref = null; try { pref = +localStorage.getItem(VISUAL_3D?'alvorada.zoom':'alvorada.firered.zoom') || null; } catch (e) { /* sem armazenamento */ }
     this.zoomAuto = auto;
     this.zoom = Math.max(1, Math.min(6, pref ?? auto));
     this.world.scale.set(this.zoom);
@@ -147,7 +155,7 @@ class Game {
     z = Math.max(1, Math.min(6, Math.round(z)));
     if (z === this.zoom) return;
     this.zoom = z; this.world.scale.set(z);
-    try { localStorage.setItem('alvorada.zoom', String(z)); } catch (e) { /* sem armazenamento */ }
+    try { localStorage.setItem(VISUAL_3D?'alvorada.zoom':'alvorada.firered.zoom', String(z)); } catch (e) { /* sem armazenamento */ }
     this.toast(`Zoom ${z}x`);
   }
 
@@ -939,7 +947,7 @@ class Game {
     this.world.x = Math.round(innerWidth / 2 - (c.x + sx) * z);
     this.world.y = Math.round(innerHeight / 2 - (c.y + sy) * z);
     const hw = innerWidth / 2 / z + 40, hh = innerHeight / 2 / z + 40;
-    if (this.v3d) this.v3d.cull(); else if(!this.coralPixel?.cull())this.map.cullChunks({ x0: c.x - hw, x1: c.x + hw, y0: c.y - hh, y1: c.y + hh });
+    if (this.v3d) this.v3d.cull(); else if(!(this.visual2d??this.coralPixel)?.cull())this.map.cullChunks({ x0: c.x - hw, x1: c.x + hw, y0: c.y - hh, y1: c.y + hh });
     const area = this.encontro?.ativo?this.encontro.antes.area:this.map.areaName(p.x, p.y);
     if (area !== this.area) { this.area = area; this.missoes?.evento('area', { nome: area }); const el = $('area'); el.textContent = area; el.classList.add('on'); clearTimeout(this.areaT); this.areaT = setTimeout(() => el.classList.remove('on'), 2500); }
   }
