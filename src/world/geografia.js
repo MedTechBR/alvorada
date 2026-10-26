@@ -1,12 +1,14 @@
-import { compactarPonto, descompactarPonto, NUCLEOS, NUCLEOS_LAYOUT4 } from './nucleos.js';
+import { compactarPonto, descompactarPonto, NUCLEOS, NUCLEOS_LAYOUT4, ESCALA_TERRITORIO, ESCALA_TERRITORIO_EXTENSAO } from './nucleos.js';
 // Coordenadas da planta original → continente ampliado. Personagens, prédios e salas mantêm sua escala.
 // Os dados autorais continuam legíveis; só a montagem converte terreno, destinos e pontos externos.
-export const ESCALA_NUCLEO = 5;
-export const ESCALA_EXTENSAO = 2;
+export const ESCALA_NUCLEO = ESCALA_TERRITORIO;
+export const ESCALA_EXTENSAO = ESCALA_TERRITORIO_EXTENSAO;
 export const ALTURA_ORIGINAL = 960;
-export const ALTURA_AMPLIADA = 3360;
-export const LARGURA_AMPLIADA = 4200;
-export const LAYOUT_GEOGRAFICO = 5;
+export const ALTURA_AMPLIADA = 480*ESCALA_NUCLEO+480*ESCALA_EXTENSAO;
+export const LARGURA_AMPLIADA = 600*ESCALA_NUCLEO+600*ESCALA_EXTENSAO;
+export const LAYOUT_GEOGRAFICO = 6;
+export const CORAL_DX=343*(ESCALA_NUCLEO-5),CORAL_DY=393*(ESCALA_NUCLEO-5);
+export const pontoTerrenoAnterior=(x,y)=>y<960?[x<=600?x*5:3000+(x-600)*2,y<=480?y*5:2400+(y-480)*2]:[x,y+2400];
 const eixoX=x=>x<=600?x*ESCALA_NUCLEO:600*ESCALA_NUCLEO+(x-600)*ESCALA_EXTENSAO;
 const eixoY=y=>y<=480?y*ESCALA_NUCLEO:480*ESCALA_NUCLEO+(y-480)*ESCALA_EXTENSAO;
 export function pontoTerrenoGeografico(x,y,mundo='alvorada') {
@@ -17,29 +19,30 @@ export function pontoGeografico(x,y,mundo='alvorada') {
  if(mundo!=='alvorada'||y>=ALTURA_ORIGINAL)return pontoTerrenoGeografico(x,y,mundo);
  const [X,Y]=compactarPonto(x,y);return pontoTerrenoGeografico(X,Y).map(Math.round);
 }
-// Layout 4 → 5: acompanha os quarteirões sem reduzir a distância das estradas externas.
-export function recomporBairro(x,y){
- if(y>=ALTURA_AMPLIADA)return [x,y];
+// Layouts 4/5 → 6: acompanha os quarteirões e encurta a ampliação artificial das rotas.
+export function recomporBairro(x,y,layout=4){
+ if(y>=3360)return [x,y-3360+ALTURA_AMPLIADA];
  // O piloto de Coral tem composição autoral em coordenadas finais desde o layout 4.
- if(x>=1688&&x<1760&&y>=1938&&y<1995)return [x,y];
+ if(x>=1688&&x<1760&&y>=1938&&y<1995)return [x+CORAL_DX,y+CORAL_DY];
  const X=x<=3000?x/5:600+(x-3000)/2,Y=y<=2400?y/5:480+(y-2400)/2;
- const n=NUCLEOS_LAYOUT4.find(n=>X>=n[1]&&Y>=n[2]&&X<n[1]+n[3]&&Y<n[2]+n[4]);
- const original=n?descompactarPonto(X,Y,n,true):[X,Y],p=compactarPonto(...original);
+ const n=(layout===4?NUCLEOS_LAYOUT4:NUCLEOS).find(n=>X>=n[1]&&Y>=n[2]&&X<n[1]+n[3]&&Y<n[2]+n[4]);
+ const original=n?descompactarPonto(X,Y,n,layout===4,5,2):[X,Y],p=compactarPonto(...original);
  return pontoTerrenoGeografico(...p);
 }
+function pontoLayout5(x,y){return pontoTerrenoAnterior(...(y<960?compactarPonto(x,y,false,5,2):[x,y])).map(Math.round);}
 function pontoLayout4(x,y){
- if(y>=ALTURA_ORIGINAL)return pontoTerrenoGeografico(x,y);
- return pontoTerrenoGeografico(...compactarPonto(x,y,true)).map(Math.round);
+ if(y>=ALTURA_ORIGINAL)return pontoTerrenoAnterior(x,y);
+ return pontoTerrenoAnterior(...compactarPonto(x,y,true)).map(Math.round);
 }
 // Posição do layout 3 (continente esticado) → quarteirões recompostos do layout 4.
 export function recomporPonto(x,y) {
- if(y>=ALTURA_AMPLIADA)return [x,y];
+ if(y>=3360)return [x,y-3360+ALTURA_AMPLIADA];
  const X=x<=3000?x/5:600+(x-3000)/2,Y=y<=2400?y/5:480+(y-2400)/2;
  const [cx,cy]=compactarPonto(X,Y);return pontoTerrenoGeografico(cx,cy);
 }
 export function pontoDaGeografia(x,y){
  if(y>=ALTURA_AMPLIADA)return [x,y-ALTURA_AMPLIADA+ALTURA_ORIGINAL];
- const X=x<=3000?x/5:600+(x-3000)/2,Y=y<=2400?y/5:480+(y-2400)/2;
+ const X=x<=600*ESCALA_NUCLEO?x/ESCALA_NUCLEO:600+(x-600*ESCALA_NUCLEO)/ESCALA_EXTENSAO,Y=y<=480*ESCALA_NUCLEO?y/ESCALA_NUCLEO:480+(y-480*ESCALA_NUCLEO)/ESCALA_EXTENSAO;
  const n=NUCLEOS.find(n=>X>=n[1]&&Y>=n[2]&&X<n[1]+n[3]&&Y<n[2]+n[4]);
  return n?descompactarPonto(X,Y,n):[X,Y];
 }
@@ -58,7 +61,7 @@ export function ampliarGeografia(R, catalogo) {
   R.plantaOriginal={w:R.w,h:R.h,outdoorH:R.outdoorH};
   const dy=ALTURA_AMPLIADA-ALTURA_ORIGINAL, objetos=[];
   // A porta continua encostada no prédio, que não cresce junto com a distância entre cidades.
-  for(const o of R.objects) {const K=catalogo[o.kind];if(o.y<ALTURA_ORIGINAL&&K?.door!==undefined)objetos.push({x:o.x,y:o.y,w:K.fw,h:K.fh,origem:pontoGeografico(o.x+K.door,o.y+K.fh-1).map((v,i)=>v-(i?K.fh-1:K.door)),origemLayout4:pontoLayout4(o.x+K.door,o.y+K.fh-1).map((v,i)=>v-(i?K.fh-1:K.door)),origemLayout3:pontoTerrenoGeografico(o.x+K.door,o.y+K.fh-1).map((v,i)=>v-(i?K.fh-1:K.door))});}
+  for(const o of R.objects) {const K=catalogo[o.kind];if(o.y<ALTURA_ORIGINAL&&K?.door!==undefined)objetos.push({x:o.x,y:o.y,w:K.fw,h:K.fh,origem:pontoGeografico(o.x+K.door,o.y+K.fh-1).map((v,i)=>v-(i?K.fh-1:K.door)),origemLayout5:pontoLayout5(o.x+K.door,o.y+K.fh-1).map((v,i)=>v-(i?K.fh-1:K.door)),origemLayout4:pontoLayout4(o.x+K.door,o.y+K.fh-1).map((v,i)=>v-(i?K.fh-1:K.door)),origemLayout3:pontoTerrenoAnterior(o.x+K.door,o.y+K.fh-1).map((v,i)=>v-(i?K.fh-1:K.door))});}
   const ponto=(x,y,porta=false)=>{
     if(porta&&y<ALTURA_ORIGINAL){const o=objetos.find(o=>x>=o.x-1&&x<=o.x+o.w&&y>=o.y-1&&y<=o.y+o.h+1);if(o)return [o.origem[0]+x-o.x,o.origem[1]+y-o.y];}
     return pontoGeografico(x,y);
@@ -87,7 +90,7 @@ export function ampliarGeografia(R, catalogo) {
     const K=catalogo[o.kind],x=o.x,y=o.y;o.cvk??=`alvorada/${o.kind}@${x},${y}`;if(!o.id&&persistente(K))o.id=`${o.kind}@${x},${y}`;pos(o);
     if(y<ALTURA_ORIGINAL&&K?.door!==undefined){const [X,Y]=pontoGeografico(x+K.door,y+K.fh-1);o.x=X-K.door;o.y=Y-(K.fh-1);const q=pontoGeografico(x+K.door,y+K.fh);o.acessoAmpliado=[q[0]+1,q[1]+1];}
   }
-  for(const key of ['people','pets','items','signs','tocas'])for(const o of R[key]??[]){if(key==='items'){o.chaveAnterior=`${o.x},${o.y}`;const b=objetos.find(b=>o.x>=b.x-1&&o.x<=b.x+b.w&&o.y>=b.y-1&&o.y<=b.y+b.h+1);o.chaveLayout4=(b?[b.origemLayout4[0]+o.x-b.x,b.origemLayout4[1]+o.y-b.y]:pontoLayout4(o.x,o.y)).join(',');o.chaveLayout3=(b?[b.origemLayout3[0]+o.x-b.x,b.origemLayout3[1]+o.y-b.y]:pontoTerrenoGeografico(o.x,o.y)).join(',');}pos(o,true);}
+  for(const key of ['people','pets','items','signs','tocas'])for(const o of R[key]??[]){if(key==='items'){o.chaveAnterior=`${o.x},${o.y}`;const b=objetos.find(b=>o.x>=b.x-1&&o.x<=b.x+b.w&&o.y>=b.y-1&&o.y<=b.y+b.h+1);o.chaveLayout5=(b?[b.origemLayout5[0]+o.x-b.x,b.origemLayout5[1]+o.y-b.y]:pontoLayout5(o.x,o.y)).join(',');o.chaveLayout4=(b?[b.origemLayout4[0]+o.x-b.x,b.origemLayout4[1]+o.y-b.y]:pontoLayout4(o.x,o.y)).join(',');o.chaveLayout3=(b?[b.origemLayout3[0]+o.x-b.x,b.origemLayout3[1]+o.y-b.y]:pontoTerrenoAnterior(o.x,o.y)).join(',');}pos(o,true);}
   for(const o of R.decor){if(o.w&&o.h)Object.assign(o,ret(o));else pos(o);}
   for(const w of R.warps){pos(w,true);if(Array.isArray(w.to)&&typeof w.to[0]==='number'&&(!w.mundo||w.mundo===R.id))[w.to[0],w.to[1]]=ponto(w.to[0],w.to[1],true);}
   R.noTrees=(R.noTrees??[]).map(r=>retanguloGeografico(r));
@@ -98,17 +101,31 @@ export function ampliarGeografia(R, catalogo) {
   return R;
 }
 
+// Os setores explorados também acompanham a largura menor do continente.
+function migrarVisitados(s,converter){
+ if(!s?.visited?.alvorada)return;
+ const oldCW=Math.ceil(4200/16),CW=Math.ceil(LARGURA_AMPLIADA/16),out=new Set();
+ for(const k of s.visited.alvorada){
+  const x=k%oldCW,y=Math.floor(k/oldCW),p=[];
+  for(const dx of[0,15])for(const dy of[0,15])p.push(converter(x*16+dx,y*16+dy));
+  const x0=Math.floor(Math.min(...p.map(p=>p[0]))/16),x1=Math.floor(Math.max(...p.map(p=>p[0]))/16),y0=Math.floor(Math.min(...p.map(p=>p[1]))/16),y1=Math.floor(Math.max(...p.map(p=>p[1]))/16);
+  for(let j=y0;j<=y1;j++)for(let i=x0;i<=x1;i++)if(i>=0&&i<CW&&j>=0)out.add(i+j*CW);
+ }
+ s.visited={...s.visited,alvorada:[...out]};
+}
+
 // Migração idempotente: nunca apaga equipe, dinheiro, progresso nem o histórico dos outros mundos.
 export function migrarSaveGeografico(d, itens = []) {
   if(!d || (d.layout??0)>=LAYOUT_GEOGRAFICO)return d;
-  if(d.layout===4){
-    const n=structuredClone(d);
-    if(n.pos&&(n.mundo??'alvorada')==='alvorada'){const p=recomporBairro(n.pos.x/16,n.pos.y/16);n.pos.x=p[0]*16;n.pos.y=p[1]*16;}
-    const locais=new Map(itens.filter(it=>it.chaveLayout4).map(it=>[it.chaveLayout4,`${it.x},${it.y}`]));
-    if(n.mundoEstado?.taken)n.mundoEstado.taken=n.mundoEstado.taken.map(k=>locais.get(k)??(/^[-\d.]+,[-\d.]+$/.test(k)?'layout4:'+k:k));
-    if(n.mundoEstado?.picked){const old=n.mundoEstado.picked;n.mundoEstado.picked=[...new Map([...old,...old.map(([k,v])=>/^[-\d.]+,[-\d.]+$/.test(k)?[recomporBairro(...k.split(',').map(Number)).map(Math.round).join(','),v]:[k,v])])];}
-    if(n.flags?.dg?.pos)n.flags.dg.pos=Object.fromEntries(Object.entries(n.flags.dg.pos).map(([k,v])=>[k,recomporBairro(...v).map(Math.round)]));
-    if(n.flags?.dg?.tiles)n.flags.dg.tiles=Object.fromEntries(Object.entries(n.flags.dg.tiles).map(([k,v])=>[recomporBairro(...k.split(',').map(Number)).map(Math.round).join(','),v]));
+  if(d.layout===4||d.layout===5){
+    const n=structuredClone(d),converter=(x,y)=>recomporBairro(x,y,d.layout),chave=d.layout===4?'chaveLayout4':'chaveLayout5';
+    if(n.pos&&(n.mundo??'alvorada')==='alvorada'){const p=converter(n.pos.x/16,n.pos.y/16);n.pos.x=p[0]*16;n.pos.y=p[1]*16;}
+    const locais=new Map(itens.filter(it=>it[chave]).map(it=>[it[chave],`${it.x},${it.y}`]));
+    if(n.mundoEstado?.taken)n.mundoEstado.taken=n.mundoEstado.taken.map(k=>locais.get(k)??(/^[-\d.]+,[-\d.]+$/.test(k)?'layout'+d.layout+':'+k:k));
+    if(n.mundoEstado?.picked){const old=n.mundoEstado.picked;n.mundoEstado.picked=[...new Map([...old,...old.map(([k,v])=>/^[-\d.]+,[-\d.]+$/.test(k)?[converter(...k.split(',').map(Number)).map(Math.round).join(','),v]:[k,v])])];}
+    if(n.flags?.dg?.pos)n.flags.dg.pos=Object.fromEntries(Object.entries(n.flags.dg.pos).map(([k,v])=>[k,converter(...v).map(Math.round)]));
+    if(n.flags?.dg?.tiles)n.flags.dg.tiles=Object.fromEntries(Object.entries(n.flags.dg.tiles).map(([k,v])=>[converter(...k.split(',').map(Number)).map(Math.round).join(','),v]));
+    migrarVisitados(n.mundoEstado,converter);
     n.layout=LAYOUT_GEOGRAFICO;return n;
   }
   if(d.layout===3){
@@ -119,6 +136,7 @@ export function migrarSaveGeografico(d, itens = []) {
     if(n.mundoEstado?.taken)n.mundoEstado.taken=n.mundoEstado.taken.map(k=>locais.get(k)??(/^[-\d.]+,[-\d.]+$/.test(k)?'layout3:'+k:k));
     if(n.mundoEstado?.picked){const old=n.mundoEstado.picked;n.mundoEstado.picked=[...new Map([...old,...old.map(([k,v])=>{if(!/^[-\d.]+,[-\d.]+$/.test(k))return [k,v];return [recomporPonto(...k.split(',').map(Number)).map(Math.round).join(','),v];})])];}
     if(n.flags?.dg?.pos)n.flags.dg.pos=Object.fromEntries(Object.entries(n.flags.dg.pos).map(([k,v])=>[k,recomporPonto(...v).map(Math.round)]));
+    migrarVisitados(n.mundoEstado,recomporPonto);
     n.layout=LAYOUT_GEOGRAFICO;return n;
   }
   const n=structuredClone(d), antigo=n.layout??0;

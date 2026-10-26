@@ -195,7 +195,7 @@ export class WorldLife {
   #items(dt) {
     const g = this.g, p = g.player, t = this.map.time;
     for (const s of this.itemSprites) {
-      if (this.taken.has(s.key) || (s.it.chaveAnterior && this.taken.has('legado:'+s.it.chaveAnterior)) || (s.it.chaveLayout3 && this.taken.has('layout3:'+s.it.chaveLayout3)) || (s.it.chaveLayout4 && this.taken.has('layout4:'+s.it.chaveLayout4))) { if (s.parent) { s.parent.removeChild(s); s.sparkle.parent?.removeChild(s.sparkle); } continue; }
+      if (this.taken.has(s.key) || (s.it.chaveAnterior && this.taken.has('legado:'+s.it.chaveAnterior)) || (s.it.chaveLayout3 && this.taken.has('layout3:'+s.it.chaveLayout3)) || (s.it.chaveLayout4 && this.taken.has('layout4:'+s.it.chaveLayout4)) || (s.it.chaveLayout5 && this.taken.has('layout5:'+s.it.chaveLayout5))) { if (s.parent) { s.parent.removeChild(s); s.sparkle.parent?.removeChild(s.sparkle); } continue; }
       const near = Math.abs(s.x - p.x) < 260 && Math.abs(s.y - p.y) < 200;
       if (near && !s.parent) { g.ents.addChild(s); this.air.addChild(s.sparkle); }
       if (!near && s.parent) { s.parent.removeChild(s); this.air.removeChild(s.sparkle); }
