@@ -1,0 +1,43 @@
+{
+  "layout": 4,
+  "largura": 4200,
+  "alturaExterna": 3360,
+  "rotas": [
+    {
+      "nome": "Alvorada → Campina",
+      "inicio": [
+        1546,
+        1769
+      ],
+      "fim": [
+        736,
+        1811
+      ],
+      "blocos": 852
+    },
+    {
+      "nome": "Campina → Sussurro",
+      "inicio": [
+        736,
+        1811
+      ],
+      "fim": [
+        750,
+        1121
+      ],
+      "blocos": 948
+    },
+    {
+      "nome": "Sussurro → Porto Espelho",
+      "inicio": [
+        750,
+        1121
+      ],
+      "fim": [
+        2154,
+        1577
+      ],
+      "blocos": 1860
+    }
+  ]
+}

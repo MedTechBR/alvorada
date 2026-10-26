@@ -1,0 +1,26 @@
+[
+  {
+    "teste": "teste-nucleos-compactos",
+    "codigo": 0
+  },
+  {
+    "teste": "teste-geografia",
+    "codigo": 1
+  },
+  {
+    "teste": "teste-coral-pixel",
+    "codigo": 0
+  },
+  {
+    "teste": "auditar-solidos",
+    "codigo": 1
+  },
+  {
+    "teste": "teste-jornada-completa",
+    "codigo": 0
+  },
+  {
+    "teste": "teste-guia-caminhada",
+    "codigo": 0
+  }
+]

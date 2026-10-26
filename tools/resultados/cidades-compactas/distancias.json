@@ -1,0 +1,201 @@
+[
+  {
+    "etapa": "antes",
+    "inicio": [
+      1711,
+      1964
+    ],
+    "percursos": {
+      "loja": {
+        "alvo": [
+          1701,
+          1979
+        ],
+        "blocos": 25
+      },
+      "farol": {
+        "alvo": [
+          1732,
+          1964
+        ],
+        "blocos": 21
+      },
+      "escola": {
+        "alvo": [
+          1709,
+          1985
+        ],
+        "blocos": 27
+      },
+      "casaLeste": {
+        "alvo": [
+          1803,
+          1951
+        ],
+        "blocos": 133
+      },
+      "cais": {
+        "alvo": [
+          1730,
+          2105
+        ],
+        "blocos": 160
+      },
+      "chegada": {
+        "alvo": [
+          1730,
+          2120
+        ],
+        "blocos": 175
+      }
+    },
+    "servicos": [
+      {
+        "cidade": "Cidade Campina",
+        "blocos": 13
+      },
+      {
+        "cidade": "Vila Sussurro",
+        "blocos": 100
+      },
+      {
+        "cidade": "Cidade Coral",
+        "blocos": 25
+      },
+      {
+        "cidade": "Vila Lamparina",
+        "blocos": 13
+      },
+      {
+        "cidade": "Cidade Aurora",
+        "blocos": 38
+      },
+      {
+        "cidade": "Vila Geada",
+        "blocos": 13
+      },
+      {
+        "cidade": "Vila Mandacaru",
+        "blocos": 13
+      },
+      {
+        "cidade": "Vila Siri",
+        "blocos": 12
+      },
+      {
+        "cidade": "Vila Jandaia",
+        "blocos": 41
+      },
+      {
+        "cidade": "Vila Termas",
+        "blocos": 12
+      }
+    ],
+    "layout": 4,
+    "erros": []
+  },
+  {
+    "etapa": "depois",
+    "inicio": [
+      1027,
+      1178
+    ],
+    "percursos": {
+      "loja": {
+        "alvo": [
+          1023,
+          1188
+        ],
+        "blocos": 16
+      },
+      "farol": {
+        "alvo": [
+          1042,
+          1176
+        ],
+        "blocos": 19
+      },
+      "escola": {
+        "alvo": [
+          1018,
+          1193
+        ],
+        "blocos": 26
+      },
+      "casaLeste": {
+        "alvo": [
+          1023,
+          1161
+        ],
+        "blocos": 27
+      },
+      "cais": {
+        "alvo": [
+          1059,
+          1184
+        ],
+        "blocos": 38
+      },
+      "chegada": {
+        "alvo": [
+          1033,
+          1181
+        ],
+        "blocos": 9
+      }
+    },
+    "servicos": [
+      {
+        "cidade": "Cidade Campina",
+        "blocos": 10
+      },
+      {
+        "cidade": "Vila Sussurro",
+        "blocos": 20
+      },
+      {
+        "cidade": "Cidade Coral",
+        "blocos": 14
+      },
+      {
+        "cidade": "Vila Lamparina",
+        "blocos": 10
+      },
+      {
+        "cidade": "Cidade Aurora",
+        "blocos": 30
+      },
+      {
+        "cidade": "Vila Geada",
+        "blocos": 10
+      },
+      {
+        "cidade": "Vila Mandacaru",
+        "blocos": 10
+      },
+      {
+        "cidade": "Vila Siri",
+        "blocos": 10
+      },
+      {
+        "cidade": "Vila Jandaia",
+        "blocos": 33
+      },
+      {
+        "cidade": "Vila Termas",
+        "blocos": 10
+      }
+    ],
+    "layout": 6,
+    "save": {
+      "campo": {
+        "equipe": true,
+        "dinheiro": true,
+        "flags": true,
+        "livre": true
+      },
+      "interior": true
+    },
+    "erros": []
+  }
+]

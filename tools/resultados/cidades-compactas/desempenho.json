@@ -1,0 +1,80 @@
+[
+  {
+    "versao": "antes",
+    "pontos": [
+      {
+        "nome": "praca",
+        "cpuP95": 5.200000002980232,
+        "quadroP95": 8.899999999997817,
+        "picoMiB": 286.7592315673828,
+        "dist": 0,
+        "geometrias": 61,
+        "texturas": 51,
+        "pixelMiB": 6.03125,
+        "heapMiB": 283.55133724212646
+      },
+      {
+        "nome": "farol",
+        "cpuP95": 5.300000011920929,
+        "quadroP95": 8.599999999998545,
+        "picoMiB": 286.57586193084717,
+        "dist": 0,
+        "geometrias": 61,
+        "texturas": 51,
+        "pixelMiB": 6.078125,
+        "heapMiB": 283.95949935913086
+      },
+      {
+        "nome": "caminhada",
+        "cpuP95": 6.399999991059303,
+        "quadroP95": 9.10000000000582,
+        "picoMiB": 291.58712673187256,
+        "dist": 260.7882026666666,
+        "geometrias": 61,
+        "texturas": 51,
+        "pixelMiB": 4.734375,
+        "heapMiB": 284.5978355407715
+      }
+    ],
+    "erros": []
+  },
+  {
+    "versao": "depois",
+    "pontos": [
+      {
+        "nome": "praca",
+        "cpuP95": 6.200000002980232,
+        "quadroP95": 9.599999999998545,
+        "picoMiB": 198.6645965576172,
+        "dist": 0,
+        "geometrias": 16,
+        "texturas": 15,
+        "pixelMiB": 5.375,
+        "heapMiB": 191.95689392089844
+      },
+      {
+        "nome": "farol",
+        "cpuP95": 7,
+        "quadroP95": 10.099999999998545,
+        "picoMiB": 198.81155395507812,
+        "dist": 0,
+        "geometrias": 16,
+        "texturas": 15,
+        "pixelMiB": 6.171875,
+        "heapMiB": 192.18207550048828
+      },
+      {
+        "nome": "caminhada",
+        "cpuP95": 6,
+        "quadroP95": 8.900000000001455,
+        "picoMiB": 198.1063108444214,
+        "dist": 260.7364906666626,
+        "geometrias": 16,
+        "texturas": 15,
+        "pixelMiB": 5.328125,
+        "heapMiB": 192.2335662841797
+      }
+    ],
+    "erros": []
+  }
+]

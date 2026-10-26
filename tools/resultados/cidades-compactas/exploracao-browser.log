@@ -1,0 +1,50 @@
+{
+  "resultados": [
+    {
+      "destino": "Gruta de Lúmen",
+      "entrada": true,
+      "saque": {
+        "antes": 5,
+        "depois": 7,
+        "n": 2,
+        "outra": 0,
+        "salvo": true
+      },
+      "retorno": {
+        "distancia": 4,
+        "solido": false
+      }
+    },
+    {
+      "destino": "Clareira das Raízes",
+      "entrada": true,
+      "saque": {
+        "antes": 10,
+        "depois": 13,
+        "n": 3,
+        "outra": 0,
+        "salvo": true
+      },
+      "retorno": {
+        "distancia": 4,
+        "solido": false
+      }
+    },
+    {
+      "destino": "Ruína do Pomar",
+      "entrada": true,
+      "saque": {
+        "antes": 0,
+        "depois": 1,
+        "n": 1,
+        "outra": 0,
+        "salvo": true
+      },
+      "retorno": {
+        "distancia": 4,
+        "solido": false
+      }
+    }
+  ],
+  "erros": []
+}

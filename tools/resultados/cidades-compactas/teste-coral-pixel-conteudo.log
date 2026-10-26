@@ -1,0 +1,4 @@
+OK: planta isolada, bordas visíveis, campo livre, save no continente e atlas dentro do orçamento.
+OK: nove portas reais, palco, calçadão e farol alcançáveis; remontagem estável.
+(node:30297) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

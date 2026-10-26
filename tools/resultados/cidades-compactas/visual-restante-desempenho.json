@@ -1,0 +1,74 @@
+[
+  {
+    "versao": "antes",
+    "pontos": [
+      {
+        "nome": "campina",
+        "cpuP95": 19.399999991059303,
+        "quadroP95": 28.599999999998545,
+        "picoMiB": 306.564001083374,
+        "geometrias": 110,
+        "texturas": 77,
+        "pixelMiB": 0,
+        "heapMiB": 289.7001371383667
+      },
+      {
+        "nome": "sussurro",
+        "cpuP95": 15.400000005960464,
+        "quadroP95": 22.600000000002183,
+        "picoMiB": 310.5779037475586,
+        "geometrias": 103,
+        "texturas": 80,
+        "pixelMiB": 0,
+        "heapMiB": 297.4785318374634
+      },
+      {
+        "nome": "rota",
+        "cpuP95": 15.999999985098839,
+        "quadroP95": 21.599999999998545,
+        "picoMiB": 308.54925441741943,
+        "geometrias": 99,
+        "texturas": 85,
+        "pixelMiB": 0,
+        "heapMiB": 296.49177837371826
+      }
+    ],
+    "erros": []
+  },
+  {
+    "versao": "depois",
+    "pontos": [
+      {
+        "nome": "campina",
+        "cpuP95": 10.099999994039536,
+        "quadroP95": 10.80000000000291,
+        "picoMiB": 205.2999906539917,
+        "geometrias": 16,
+        "texturas": 16,
+        "pixelMiB": 5.984375,
+        "heapMiB": 192.88542652130127
+      },
+      {
+        "nome": "sussurro",
+        "cpuP95": 11.400000005960464,
+        "quadroP95": 15.399999999997817,
+        "picoMiB": 201.94888973236084,
+        "geometrias": 16,
+        "texturas": 16,
+        "pixelMiB": 5.140625,
+        "heapMiB": 195.08397006988525
+      },
+      {
+        "nome": "rota",
+        "cpuP95": 9.200000002980232,
+        "quadroP95": 12.400000000001455,
+        "picoMiB": 229.5654067993164,
+        "geometrias": 16,
+        "texturas": 16,
+        "pixelMiB": 5.84375,
+        "heapMiB": 221.26791763305664
+      }
+    ],
+    "erros": []
+  }
+]

@@ -1,0 +1,242 @@
+[
+  {
+    "nome": "centro",
+    "pos": [
+      1033.5,
+      1181.5
+    ],
+    "visivel": true,
+    "projecao": {
+      "x": 397,
+      "y": 257
+    },
+    "ator": true,
+    "view": [
+      16536,
+      18904,
+      18904
+    ],
+    "pai": true,
+    "corpo": {
+      "visivel": true,
+      "renderavel": true,
+      "alpha": 1,
+      "escala": [
+        1,
+        1
+      ],
+      "y": 2,
+      "bounds": {
+        "minX": 385,
+        "minY": 227,
+        "maxX": 409,
+        "maxY": 259,
+        "matrix": {
+          "array": null,
+          "a": 1,
+          "b": 0,
+          "c": 0,
+          "d": 1,
+          "tx": 397,
+          "ty": 259
+        }
+      },
+      "textura": [
+        24,
+        32
+      ]
+    }
+  },
+  {
+    "nome": "bairro",
+    "pos": [
+      1028.5,
+      1171.5
+    ],
+    "visivel": true,
+    "projecao": {
+      "x": 397,
+      "y": 257
+    },
+    "ator": true,
+    "view": [
+      16456,
+      18744,
+      18744
+    ],
+    "pai": true,
+    "corpo": {
+      "visivel": true,
+      "renderavel": true,
+      "alpha": 1,
+      "escala": [
+        1,
+        1
+      ],
+      "y": 2,
+      "bounds": {
+        "minX": 385,
+        "minY": 227,
+        "maxX": 409,
+        "maxY": 259,
+        "matrix": {
+          "array": null,
+          "a": 1,
+          "b": 0,
+          "c": 0,
+          "d": 1,
+          "tx": 397,
+          "ty": 259
+        }
+      },
+      "textura": [
+        24,
+        32
+      ]
+    }
+  },
+  {
+    "nome": "orla",
+    "pos": [
+      1044.5,
+      1189.5
+    ],
+    "visivel": true,
+    "projecao": {
+      "x": 397,
+      "y": 257
+    },
+    "ator": true,
+    "view": [
+      16712,
+      19032,
+      19032
+    ],
+    "pai": true,
+    "corpo": {
+      "visivel": true,
+      "renderavel": true,
+      "alpha": 1,
+      "escala": [
+        1,
+        1
+      ],
+      "y": 2,
+      "bounds": {
+        "minX": 385,
+        "minY": 227,
+        "maxX": 409,
+        "maxY": 259,
+        "matrix": {
+          "array": null,
+          "a": 1,
+          "b": 0,
+          "c": 0,
+          "d": 1,
+          "tx": 397,
+          "ty": 259
+        }
+      },
+      "textura": [
+        24,
+        32
+      ]
+    }
+  },
+  {
+    "nome": "sussurro",
+    "pos": [
+      476.5,
+      700.5
+    ],
+    "visivel": true,
+    "projecao": {
+      "x": 397,
+      "y": 257
+    },
+    "ator": true,
+    "view": [
+      7624,
+      11208,
+      11208
+    ],
+    "pai": true,
+    "corpo": {
+      "visivel": true,
+      "renderavel": true,
+      "alpha": 1,
+      "escala": [
+        1,
+        1
+      ],
+      "y": 2,
+      "bounds": {
+        "minX": 385,
+        "minY": 227,
+        "maxX": 409,
+        "maxY": 259,
+        "matrix": {
+          "array": null,
+          "a": 1,
+          "b": 0,
+          "c": 0,
+          "d": 1,
+          "tx": 397,
+          "ty": 259
+        }
+      },
+      "textura": [
+        24,
+        32
+      ]
+    }
+  },
+  {
+    "nome": "campina",
+    "pos": [
+      443.5,
+      1086.5
+    ],
+    "visivel": true,
+    "projecao": {
+      "x": 397,
+      "y": 257
+    },
+    "ator": true,
+    "view": [
+      7096,
+      17384,
+      17384
+    ],
+    "pai": true,
+    "corpo": {
+      "visivel": true,
+      "renderavel": true,
+      "alpha": 1,
+      "escala": [
+        1,
+        1
+      ],
+      "y": 2,
+      "bounds": {
+        "minX": 385,
+        "minY": 227,
+        "maxX": 409,
+        "maxY": 259,
+        "matrix": {
+          "array": null,
+          "a": 1,
+          "b": 0,
+          "c": 0,
+          "d": 1,
+          "tx": 397,
+          "ty": 259
+        }
+      },
+      "textura": [
+        24,
+        32
+      ]
+    }
+  }
+]

@@ -1,0 +1,369 @@
+{
+  "resultados": [
+    {
+      "nome": "campina",
+      "local": "Cidade Campina",
+      "esperado": "Cidade Campina",
+      "ativo": true,
+      "setores": 12,
+      "pessoas": 5,
+      "lead": "none",
+      "objetivo": "none",
+      "botoes": [
+        {
+          "id": "",
+          "x": 724,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-dodge",
+          "x": 781,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-act",
+          "x": 726,
+          "y": 273,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "t-mount",
+          "x": 667,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        }
+      ],
+      "lotes": 0,
+      "texturas": 0
+    },
+    {
+      "nome": "sussurro",
+      "local": "Vila Sussurro",
+      "esperado": "Vila Sussurro",
+      "ativo": true,
+      "setores": 12,
+      "pessoas": 3,
+      "lead": "none",
+      "objetivo": "none",
+      "botoes": [
+        {
+          "id": "",
+          "x": 724,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-dodge",
+          "x": 781,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-mount",
+          "x": 667,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        }
+      ],
+      "lotes": 0,
+      "texturas": 0
+    },
+    {
+      "nome": "geada",
+      "local": "Vila Geada",
+      "esperado": "Vila Geada",
+      "ativo": true,
+      "setores": 15,
+      "pessoas": 1,
+      "lead": "none",
+      "objetivo": "none",
+      "botoes": [
+        {
+          "id": "",
+          "x": 724,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-dodge",
+          "x": 781,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-mount",
+          "x": 667,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        }
+      ],
+      "lotes": 0,
+      "texturas": 0
+    },
+    {
+      "nome": "mandacaru",
+      "local": "Vila Mandacaru",
+      "esperado": "Vila Mandacaru",
+      "ativo": true,
+      "setores": 15,
+      "pessoas": 1,
+      "lead": "none",
+      "objetivo": "none",
+      "botoes": [
+        {
+          "id": "",
+          "x": 724,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-dodge",
+          "x": 781,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-mount",
+          "x": 667,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        }
+      ],
+      "lotes": 0,
+      "texturas": 0
+    },
+    {
+      "nome": "gruta",
+      "local": "Gruta de Lúmen",
+      "esperado": "Gruta de Lúmen",
+      "ativo": true,
+      "setores": 12,
+      "pessoas": 1,
+      "lead": "none",
+      "objetivo": "none",
+      "botoes": [
+        {
+          "id": "",
+          "x": 724,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-dodge",
+          "x": 781,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-team",
+          "x": 610,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        }
+      ],
+      "lotes": 0,
+      "texturas": 0
+    },
+    {
+      "nome": "mata",
+      "local": "Clareira das Raízes",
+      "esperado": "Clareira das Raízes",
+      "ativo": true,
+      "setores": 12,
+      "pessoas": 1,
+      "lead": "none",
+      "objetivo": "none",
+      "botoes": [
+        {
+          "id": "",
+          "x": 724,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-dodge",
+          "x": 781,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-team",
+          "x": 610,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        }
+      ],
+      "lotes": 0,
+      "texturas": 0
+    },
+    {
+      "nome": "ruina",
+      "local": "Ruína do Pomar",
+      "esperado": "Ruína do Pomar",
+      "ativo": true,
+      "setores": 12,
+      "pessoas": 1,
+      "lead": "none",
+      "objetivo": "none",
+      "botoes": [
+        {
+          "id": "",
+          "x": 724,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-dodge",
+          "x": 781,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-team",
+          "x": 610,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        }
+      ],
+      "lotes": 0,
+      "texturas": 0
+    },
+    {
+      "nome": "centro",
+      "local": "Centro Pokémon de Cidade Coral",
+      "esperado": "Centro Pokémon de Cidade Coral",
+      "ativo": true,
+      "setores": 6,
+      "pessoas": 4,
+      "lead": "none",
+      "objetivo": "none",
+      "botoes": [
+        {
+          "id": "",
+          "x": 724,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-dodge",
+          "x": 781,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-team",
+          "x": 610,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        }
+      ],
+      "lotes": 0,
+      "texturas": 0
+    },
+    {
+      "nome": "casa",
+      "local": "Casa da Família Brito",
+      "esperado": "Casa da Família Brito",
+      "ativo": true,
+      "setores": 8,
+      "pessoas": 3,
+      "lead": "none",
+      "objetivo": "none",
+      "botoes": [
+        {
+          "id": "",
+          "x": 724,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-dodge",
+          "x": 781,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-team",
+          "x": 610,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        }
+      ],
+      "lotes": 0,
+      "texturas": 0
+    },
+    {
+      "nome": "ginasio",
+      "local": "Farol Coral — Térreo (Ginásio de Cidade Coral)",
+      "esperado": "Farol Coral — Térreo (Ginásio de Cidade Coral)",
+      "ativo": true,
+      "setores": 10,
+      "pessoas": 2,
+      "lead": "none",
+      "objetivo": "none",
+      "botoes": [
+        {
+          "id": "",
+          "x": 724,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-dodge",
+          "x": 781,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "t-team",
+          "x": 610,
+          "y": 327,
+          "w": 48,
+          "h": 48
+        }
+      ],
+      "lotes": 0,
+      "texturas": 0
+    },
+    {
+      "nome": "ocaso",
+      "ativo": true,
+      "local": "Porto Rubro",
+      "esperado": "Porto Rubro",
+      "setores": 12
+    }
+  ],
+  "erros": []
+}

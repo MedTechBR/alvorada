@@ -1,0 +1,20 @@
+[
+  {
+    "rota": "Alvorada → Campina",
+    "antes": 852,
+    "depois": 508,
+    "reducaoPct": 40.4
+  },
+  {
+    "rota": "Campina → Sussurro",
+    "antes": 948,
+    "depois": 567,
+    "reducaoPct": 40.2
+  },
+  {
+    "rota": "Sussurro → Porto Espelho",
+    "antes": 1860,
+    "depois": 1069,
+    "reducaoPct": 42.5
+  }
+]
