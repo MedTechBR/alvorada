@@ -28,8 +28,10 @@ body.coral-pixel.coral-luta #lead .ld-nm,body.coral-pixel.coral-luta #lead .ld-l
 /* Passeio: localização e mapa substituem os painéis de batalha e missão. */
 #coral-local{display:none;position:fixed;top:10px;left:10px;z-index:19;padding:7px 16px 7px 30px;border:1px solid #c8d6ce77;border-radius:20px;background:#13334cdd;color:#fff8e8;font:700 14px system-ui;box-shadow:0 2px 4px #102c3833;pointer-events:none}
 #coral-local:before{content:'●';position:absolute;left:12px;color:#aec9d0;font-size:12px}
+#coral-local{max-width:calc(100vw - 180px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;box-sizing:border-box}
 body.coral-pixel:not(.coral-luta) #coral-local{display:block}
 body.coral-pixel:not(.coral-luta) #lead,body.coral-pixel:not(.coral-luta) .objective,body.coral-pixel #zoom{display:none!important}
+body.coral-pixel #area{display:none}
 body.coral-pixel #minimapa{top:9px;right:63px;background:#13334cdd;padding:12px 3px 3px;border:1px solid #b0cbc699;border-radius:8px}
 body.coral-pixel #minimapa:before{content:'N';position:absolute;top:0;left:0;width:100%;text-align:center;color:#fff;font:700 10px system-ui}
 body.coral-pixel #minimapa canvas{border:0;box-shadow:none;width:76px!important;height:58px!important;border-radius:3px;object-fit:cover}

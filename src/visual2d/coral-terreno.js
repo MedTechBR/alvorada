@@ -1,4 +1,6 @@
 import { TILE as T } from '../world/tiles.js';
+import { renderTiles } from '../world/ground.js';
+import { emCidadeCoral } from '../world/coral-piloto.js';
 
 // Os oito materiais do atlas compartilham a mesma resolução e paleta.
 const agua=new Set([T.WATER,T.DEEP,T.CUR_E,T.CUR_W,T.CUR_N,T.CUR_S,T.SHALLOW,T.REEF,T.TIDE]);
@@ -15,16 +17,24 @@ export function materialCoral(t){
  if(t===T.FLOWERS)return 6;
  if(t===T.PATH)return 0; // em Coral o acesso de terra é areia; evita manchas marrons quadriculadas
  if(t===T.PLAZA||t===T.COURT||t===T.TILEFLOOR||t===T.STAIRS)return 1;
- return 0;
+ if(t===T.SAND||t===T.WETSAND)return 0;
+ // Neve, lava, ruínas, cavernas e interiores conservam os materiais do bioma.
+ // Nenhum piso perigoso ou parede passa a parecer uma praia atravessável.
+ return -1;
 }
 
 // Um setor custa um canvas de 256². As bordas seguem a colisão real do mapa.
 export function pintarSetorCoral(map,atlas,cx,cy){
  const cv=document.createElement('canvas');cv.width=cv.height=256;
  const c=cv.getContext('2d');c.imageSmoothingEnabled=false;
+ const material=(t,y,x)=>y>=(map.outdoorH??map.h)||(t===T.PATH&&map.id!=='encontro-coral'&&!emCidadeCoral(map,x*16,y*16))?-1:materialCoral(t);
+ let nativo=false;
+ for(let j=0;j<16&&!nativo;j++)for(let i=0;i<16;i++)if(material(map.at(cx*16+i,cy*16+j),cy*16+j,cx*16+i)<0){nativo=true;break;}
+ if(nativo){const img=c.createImageData(256,256);renderTiles(map,img,cx*16,cy*16,cx*16,cy*16,16,16);c.putImageData(img,0,0);}
  for(let j=0;j<16;j++)for(let i=0;i<16;i++){
-  const x=cx*16+i,y=cy*16+j,t=map.at(x,y),m=materialCoral(t),px=i*16,py=j*16;
+  const x=cx*16+i,y=cy*16+j,t=map.at(x,y),m=material(t,y,x),px=i*16,py=j*16;
   if(agua.has(t))continue;
+  if(m<0)continue;
   c.drawImage(atlas,(m%4)*128+(x%4)*32,Math.floor(m/4)*128+(y%4)*32,32,32,px,py,16,16);
   if(m===0){c.fillStyle='#e8cf9630';c.fillRect(px,py,16,16);}
   // A grama termina numa borda irregular de dois pixels, sem recortes quadrados sobre a calçada.

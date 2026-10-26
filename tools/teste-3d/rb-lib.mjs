@@ -13,7 +13,7 @@ export async function sessao({ W = 1280, H = 720, cel = false, qs = '', port = p
   if (cpu > 1) await P.raw('Emulation.setCPUThrottlingRate', { rate: cpu });
   if (process.env.LAT) { await P.raw('Network.enable'); await P.raw('Network.emulateNetworkConditions', { offline: false, latency: +process.env.LAT, downloadThroughput: 300 * 1024, uploadThroughput: 100 * 1024 }); }
   await P.raw('Page.navigate', { url: `http://127.0.0.1:${port}/index.html?teste=1${qs ? '&' + qs : ''}` });
-  await until(() => P.ev('!!(window.game && game.ui && game.ui.state === "play")'), 120000, 300);
+  if(!await until(() => P.ev('!!(window.game && game.ui && game.ui.state === "play")'), 180000, 300))throw Error('O jogo não concluiu a abertura: '+await P.ev('document.body.innerText.slice(-500)'));
   await P.ev(`import('/tools/jornadas-teste.js').then(() => 1)`);
   await sleep(2500);
   const foto = async (n) => { const s = await P.raw('Page.captureScreenshot', { format: 'jpeg', quality: 80 }); writeFileSync(new URL(n + '.jpg', out), Buffer.from(s.result.data, 'base64')); return n; };

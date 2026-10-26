@@ -9,7 +9,7 @@ const BASE=new URL('../../assets/coral-pixel/',import.meta.url);
 const TIPOS={center:'centro',mart:'loja',housePink:'casa',houseA:'casa',houseB:'casa',houseYellow:'casa',houseBlue:'casa',farol:'farol',palm:'palmeira',palmSmall:'palmeira',canteiro:'canteiro',flowerpot:'canteiro',fountain:'fonte',lamp:'poste'};
 const bitmap=async (nome,base)=>{const r=await fetch(new URL(nome,base));if(!r.ok)throw Error(`${nome}: ${r.status}`);return createImageBitmap(await r.blob());};
 
-// Apresentação local: usa o mesmo mundo, entidades, portas, golpes e colisões.
+// Apresentação compartilhada: usa o mesmo mundo, entidades, portas, golpes e colisões.
 // Não é uma imagem de fundo: chão por setor e objetos separados com ordem pelo pé.
 export class CoralPixel {
  constructor(v){
@@ -18,6 +18,7 @@ export class CoralPixel {
   this.amostra=new URLSearchParams(location.search).get('coral')==='aventura';this.base=this.amostra?ARTE_AVENTURA:BASE;
   this.pessoas=new PessoasCoral(this.g);
   this.ligado=new URLSearchParams(location.search).get('coral')!=='3d';
+  this.somenteCoral=new URLSearchParams(location.search).get('coral')==='local';
   this.chao=new PIXI.Container();this.chao.visible=false;this.g.world.addChildAt(this.chao,0);
   this.sombras=new PIXI.Graphics();this.sombras.visible=false;this.g.fx.ground.addChild(this.sombras);
   if(!document.getElementById('coral-pixel-css')){const l=document.createElement('link');l.id='coral-pixel-css';l.rel='stylesheet';l.href=new URL('./coral.css',import.meta.url).href;document.head.appendChild(l);}
@@ -39,7 +40,7 @@ export class CoralPixel {
   this.carregando=false;this.pronto=true;
  }
  cull(){
-  const g=this.g,local=this.ligado&&(g.encontro?.ativo||(emCidadeCoral(g.map,g.player.x,g.player.y)&&!g.map.interiorAt(g.player.x,g.player.y)));
+  const g=this.g,local=this.ligado&&(!this.somenteCoral||g.encontro?.ativo||(emCidadeCoral(g.map,g.player.x,g.player.y)&&!g.map.interiorAt(g.player.x,g.player.y)));
   if(local){this.foraDesde=null;if(!this.pronto)this.carregar();}
   else if(this.pronto||this.carregando){this.foraDesde??=performance.now();if(performance.now()-this.foraDesde>4000)this.liberar();}
   const on=local&&this.pronto;
@@ -52,6 +53,7 @@ export class CoralPixel {
    else{this.pessoas.ocultar();for(const s of this.objetos.values())s.visible=false;document.body.classList.remove('coral-luta');this.emLuta=null;}
   }
   if(!on)return false;
+  const nome=g.map.areaName(g.player.x,g.player.y);if(this.local.textContent!==nome)this.local.textContent=nome;
   // Escala inteira para que sprites e cenário compartilhem a mesma grade visual.
   const z=(g.encontro?.ativo?2:Math.max(1,Math.round((g.zoom||3)*.67)))*(g.camK??1),c=g.cam;
   const centroX=g.encontro?.ativo ? .42 : .47,centroY=g.encontro?.ativo ? .56 : .66;
@@ -118,7 +120,9 @@ export class CoralPixel {
   const g=this.g;this.tempo+=dt;
   this.mar.tilePosition.set(-this.mar.x+Math.floor(this.tempo*2),-this.mar.y+Math.floor(this.tempo*.6));
   const ocultos=this.ocultos;ocultos.length=0;
-  if(g.map.root.visible){ocultos.push(g.map.root);g.map.root.visible=false;}
+  // Conserva a decoração e as animações nativas dos biomas (lava, correnteza,
+  // mato alto). Só o piso e a água são substituídos pelo compositor compartilhado.
+  for(const camada of [g.map.groundLayer,g.map.water])if(camada?.visible){ocultos.push(camada);camada.visible=false;}
   for(const o of this.objetos.keys())if(o.sprite?.visible){ocultos.push(o.sprite);o.sprite.visible=false;}
   // Informações de PS e ações voltam assim que há um confronto próximo.
   const f=g.lead?.alive?g.lead:g.player;
