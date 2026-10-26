@@ -68,7 +68,8 @@ export function criarRecantos(S,P,ocupar){
  for(const d of RECANTOS){
   const [X,Y]=pontoTerrenoGeografico(...d.p);R.recantosPos??={};let origem=R.recantosPos[d.id]??null;
   // Não abre mata, não atravessa rio nem mexe em bloqueios; usa uma clareira já acessível na área prevista.
-  for(let raio=0;raio<=40&&!origem;raio+=4)for(let dy=-raio;dy<=raio&&!origem;dy+=4)for(let dx=-raio;dx<=raio&&!origem;dx+=4){
+  for(let raio=0;raio<=64&&!origem;raio+=2)for(let dy=-raio;dy<=raio&&!origem;dy+=2)for(let dx=-raio;dx<=raio&&!origem;dx+=2){
+   if(raio&&Math.abs(dx)<raio&&Math.abs(dy)<raio)continue;
    const x=X+dx,y=Y+dy;let ok=true;
    for(let j=-2;j<13&&ok;j++)for(let i=-2;i<18;i++)if(!permitidos.has(S.tiles[x+i+(y+j)*W])||S.block[x+i+(y+j)*W]||S.nearSpot.has(x+i+(y+j)*W)){ok=false;break;}
    if(ok)origem=[x,y];

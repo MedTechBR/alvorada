@@ -55,6 +55,8 @@ export function prepararMundo(J, { florestaPorSetor = false } = {}) {
   for (const d of J.decor ?? []) { if (d.w) { for (let y = d.y; y < d.y + d.h; y++) for (let x = d.x; x < d.x + d.w; x++) S.decor.push({ kind: d.kind, x, y }); } else S.decor.push({ ...d }); }
   // árvores soltas não nascem em cima dos pontos da história
   S.nearSpot = new Set();
+  // A vegetação gerada também deixa livre o chão dos moradores e treinadores.
+  for(const p of S.people)if(!p.room)for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++)S.nearSpot.add(Math.floor(p.x)+i+(Math.floor(p.y)+j)*W);
   for (const [x0, y0, w0, h0] of J.noTrees ?? []) for (let y = y0; y < y0 + h0; y++) for (let x = x0; x < x0 + w0; x++) S.nearSpot.add(x + y * W);
   for (const v of Object.values(J.spots ?? {})) if (Array.isArray(v)) for (let j = -2; j <= 1; j++) for (let i = -2; i <= 2; i++) S.nearSpot.add(Math.floor(v[0]) + i + (Math.floor(v[1]) + j) * W);
   for (const o of S.objects) if (occupy(S, o)) S.placed.push(o);
