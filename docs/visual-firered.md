@@ -114,3 +114,13 @@ Não houve teste em iPhone físico/Safari nem uma sessão online entre dois apar
 | `tools/vestir/hooks.mjs`, `tools/vestir/stubs/biomas.mjs` | Interface de biomas completa nos testes de dados sem navegador. |
 | `tools/resultados/firered/`, `tools/shots/firered/` | Resultados e fotos reais de revisão. |
 | `tools/shots/exploracao-rotas/*.jpg` | Fotos atualizadas da entrada, exploração e destino dos três desvios. |
+
+## Publicação em 26/10/2026
+
+Código publicado a partir de `b00ab69a`, com [build e implantação do GitHub Pages concluídos](https://github.com/MedTechBR/alvorada/actions/runs/40430269150). Endereço: https://medtechbr.com.br/alvorada/.
+
+Em uma sessão nova de Chrome, com 844×390 e DPR 2, o teste público confirmou a exploração FireRed sem renderizador Three, o botão de montaria, a equipe escolhida, entrada na arena pelo toque, apresentação de combate preservada, captura disponível e fuga com retorno à mesma posição e Pokémon recolhido. Nenhum erro de execução foi registrado. O service worker ficou registrado, ativo e controlando a página; o cache de código foi renovado para `alvorada-codigo-v3-firered`, mantendo o cache separado dos sprites.
+
+Os oito arquivos públicos conferidos possuem os mesmos hashes dos arquivos locais: entrada HTML, módulo principal, compositor e estado FireRed, CSS, atlas exterior, aliases de personagens e service worker. Evidências em `tools/resultados/firered-publicacao/`. A galeria usa ligação relativa para abrir o jogo tanto no servidor local quanto no subdiretório público.
+
+Se surgir falha crítica na exploração ou na entrada/saída da arena, a referência anterior é `b307145e`: publicar um commit de reversão, sem reescrever o histórico, e repetir a validação do Pages e do jogo. A validação em iPhone físico/Safari continua pendente.

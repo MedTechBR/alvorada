@@ -32,7 +32,7 @@ for nome, titulo in cenas:
 
 html = '''<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Alvorada — exploração FireRed</title>
 <style>*{box-sizing:border-box}body{margin:0;background:#15262c;color:#f8f7e4;font:16px/1.5 system-ui,sans-serif}main{max-width:1740px;margin:auto;padding:24px}h1{font-size:30px;margin:0 0 8px}h2{font-size:22px}p{max-width:860px}a{color:#c6f49b}nav{display:flex;gap:24px;margin:20px 0 32px}figure{margin:0}figcaption{padding:8px 0;color:#d5dfd5}img{display:block;width:100%;height:auto;image-rendering:pixelated;background:#000;border:1px solid #607570}.par,.fotos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}section{margin-bottom:32px}@media(max-width:900px){.par,.fotos{grid-template-columns:1fr}main{padding:14px}}</style>
-<main><h1>Pokémon Alvorada · FireRed</h1><p>Fotos reais do jogo em 844×390. A exploração usa os blocos e personagens de FireRed, com câmera 2D fixa. As arenas continuam com o combate atual em tempo real.</p><nav><a href="/?teste&amp;nosw">Jogar esta versão local</a><a href="#cenas">Explorar as cenas</a></nav>
+<main><h1>Pokémon Alvorada · FireRed</h1><p>Fotos reais do jogo em 844×390. A exploração usa os blocos e personagens de FireRed, com câmera 2D fixa. As arenas continuam com o combate atual em tempo real.</p><nav><a href="../../../?teste&amp;nosw">Jogar esta versão</a><a href="#cenas">Explorar as cenas</a></nav>
 '''
 html += ''.join(pares) + '<h2 id="cenas">Cidades, interiores e gameplay</h2><div class="fotos">' + ''.join(fotos) + '</div></main></html>'
 (pasta / 'index.html').write_text(html)

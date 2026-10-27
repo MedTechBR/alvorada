@@ -1,0 +1,38 @@
+{
+  "commit": "b00ab69a15a175aab9c052d2e35039c28ba777a5",
+  "url": "https://medtechbr.com.br/alvorada/",
+  "arquivos": [
+    {
+      "arquivo": "index.html",
+      "sha256": "84cc26da58f8a4fd48ba5037407564bc32e19eb3625176aaed7e54b2ec296882"
+    },
+    {
+      "arquivo": "src/main.js",
+      "sha256": "3936baf2c15216089cb9f95d336b41929ef1e125fbd198b693b82daf629a7ebe"
+    },
+    {
+      "arquivo": "src/visual2d/firered/index.js",
+      "sha256": "3736d7fdfecabe948bc6f89e0c705ce271f0e8e613420459c7d485d2db574881"
+    },
+    {
+      "arquivo": "src/visual2d/firered/estado.js",
+      "sha256": "8921854e5040a9bac38b2c34c53dbd9811710aaad86c09b913bbc24643030f7f"
+    },
+    {
+      "arquivo": "src/visual2d/firered/interface.css",
+      "sha256": "df0cd6227cdeef3b2dc41a495627b725ad4ac5c09ec62331aa633afb32bb990b"
+    },
+    {
+      "arquivo": "assets/firered/exterior.png",
+      "sha256": "2c51af220e59864b6aa2a88ef915f197bbe3a7feb4e47cfc46bf501ac1be2780"
+    },
+    {
+      "arquivo": "assets/firered/pessoas/aliases.json",
+      "sha256": "9350851bd50933d271ea23c147dc87f12c18d3c5def1c8c29d3f1c907cabd7df"
+    },
+    {
+      "arquivo": "sw.js",
+      "sha256": "e8d5350f9d71c7026b1325fa5ba538eef33e8e6b6e6be2d58b6f7154baa0b847"
+    }
+  ]
+}
