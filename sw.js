@@ -6,7 +6,7 @@
 //   assets/pmd (index.json, substitutos.json) mudam quando entram sprites novos: essas vão pela rede primeiro.
 // - Na primeira visita a página ainda não passa pelo service worker; por isso ela manda a lista do que já
 //   carregou ({ type: 'guardar', urls }) e ele guarda esses arquivos, para o modo offline funcionar logo.
-const CODE = 'alvorada-codigo-v7-revisao-visual';
+const CODE = 'alvorada-codigo-v8-pracas-firered';
 const SPR = 'alvorada-sprites-v2'; // v2: todas as espécies e formas, só as animações usadas
 const KEEP = [CODE, SPR];
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'src/main.js', 'src/ui/style.css', 'src/ui/menu.css', 'src/ui/encaixe.js', 'assets/icons/icon-192.png',

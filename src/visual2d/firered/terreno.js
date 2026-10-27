@@ -1,3 +1,4 @@
+import { pisoPraca } from './pracas.js';
 import { TILE, WALLS, TALLS } from '../../world/tiles.js';
 
 // Metatiles originais de 16 px. O desenho consulta vizinhos, sem alterar chão,
@@ -8,10 +9,11 @@ const CAVERNA=new Set([TILE.CAVE,TILE.DARKCAVE,TILE.CRYSTALFLOOR,TILE.BASALT,TIL
 const GELO=new Set([TILE.SNOW,TILE.SNOWFIELD,TILE.DEEPSNOW,TILE.ICEFLOOR,TILE.ICE,TILE.FROZEN]);
 const CAMINHO=new Set([TILE.PATH,TILE.PLAZA,TILE.COURT]);
 const ix=(x,y,s=0)=>Math.abs((x*31+y*17+s*13)|0);
-function borda(map,x,y,igual,grid){const cx=!igual(map.at(x-1,y))?0:!igual(map.at(x+1,y))?2:1,cy=!igual(map.at(x,y-1))?0:!igual(map.at(x,y+1))?2:1;return grid[cy][cx];}
+function borda(map,x,y,igual,grid){const cx=!igual(map.at(x-1,y),x-1,y)?0:!igual(map.at(x+1,y),x+1,y)?2:1,cy=!igual(map.at(x,y-1),x,y-1)?0:!igual(map.at(x,y+1),x,y+1)?2:1;return grid[cy][cx];}
 const ESTRADA=[[0x0d3,0x0d4,0x0d5],[0x0db,0x0dc,0x0dd],[0x0e3,0x0e4,0x0e5]];
 const PRACA=[[0x1b8,0x1b9,0x1ba],[0x1c0,0x1c1,0x1c2],[0x1c8,0x1c9,0x1ca]];
 export function escolherBloco(map,t,x,y){
+ t=pisoPraca(map,t,x,y);
  if(t===TILE.PLAZA&&map.R?.temaVisual==='Campo rochoso')return ['caverna',0x281];
  if(t===TILE.PLAZA&&map.R?.temaVisual==='Clareira fria')return ['gelo',0x001];
  if(t===TILE.VOID)return ['exterior',0];
@@ -46,7 +48,7 @@ export function escolherBloco(map,t,x,y){
  if(t===TILE.RAIL)return ['pisos',map.at(x,y-1)===TILE.RAIL||map.at(x,y+1)===TILE.RAIL?3:2];
  if(CAMINHO.has(t)){
   const urbana=t!==TILE.PATH||map.areaAt(x*16+8,y*16+8)?.biome==='vila';
-  return ['exterior',borda(map,x,y,q=>CAMINHO.has(q),urbana?PRACA:ESTRADA)];
+  return ['exterior',borda(map,x,y,(q,xx,yy)=>CAMINHO.has(pisoPraca(map,q,xx,yy)),urbana?PRACA:ESTRADA)];
  }
  if(AREIA.has(t))return ['exterior',[0x125,0x12d,0x12e][ix(x,y)%3]];
  if(CAVERNA.has(t))return ['caverna',ix(x,y)%7===0?0x289:0x281];

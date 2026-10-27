@@ -25,3 +25,16 @@ const aliases=JSON.parse(readFileSync('assets/firered/pessoas/aliases.json'));fo
 assert.equal(aliases.npc_076,'old_woman');assert.equal(aliases.frlg_oldman,'old_man_1');assert.equal(aliases.npc_002_ace_trainer_f,'cooltrainer_f');
 assert(Object.keys(J.fontes).length>20,'falta rastreabilidade das peças originais');
 console.log('OK: 79 terrenos, sólidos visíveis, recorte incremental idêntico, atlas pequenos, identidades FireRed e seleção de todas as modalidades de combate.');
+
+// O desenho dos jardins não altera corredores, sólidos nem a seleção de cenários de combate.
+const {pisoPraca}=await import('../src/visual2d/firered/pracas.js');
+for(const [x,y]of [[447,288],[992,659],[1532,551],[1977,367],[242,1562]]){
+ const m={...map,id:'alvorada',outdoorH:2000,at:()=>TILE.PLAZA};
+ assert.notEqual(pisoPraca(m,TILE.PLAZA,x,y),TILE.PLAZA);
+ assert(!SOLID.has(pisoPraca(m,TILE.PLAZA,x,y)));
+ for(const t of tipos)if(t!==TILE.PLAZA&&t!==TILE.COURT)assert.equal(pisoPraca(m,t,x,y),t);
+ assert.equal(m.at(x,y),TILE.PLAZA,'o desenho não pode alterar o mapa lógico');
+ assert.equal(pisoPraca({...m,id:'encontro-coral'},TILE.PLAZA,x,y),TILE.PLAZA);
+ assert.equal(pisoPraca({...m,id:'ocaso'},TILE.PLAZA,x,y),TILE.PLAZA);
+}
+console.log('OK: cinco praças, eixos preservados e nenhuma mudança de colisão ou arena.');
