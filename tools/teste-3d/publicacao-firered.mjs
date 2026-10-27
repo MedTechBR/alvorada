@@ -2,7 +2,7 @@
 import{launch,open,sleep,until}from'./chrome.mjs';
 import assert from'node:assert/strict';
 import{mkdirSync,writeFileSync}from'node:fs';
-const base=process.env.URL_JOGO??'https://medtechbr.com.br/alvorada/',dir='tools/resultados/firered-publicacao/';mkdirSync(dir,{recursive:true});
+const base=process.env.URL_JOGO??'https://medtechbr.com.br/alvorada/',dir=process.env.RESULTADOS??'tools/resultados/firered-publicacao/';mkdirSync(dir,{recursive:true});
 const b=await launch();
 try{
  const P=await open(b,'about:blank','publicacao');await P.raw('Page.enable');await P.raw('Page.bringToFront');await P.raw('Emulation.setFocusEmulationEnabled',{enabled:true});await P.raw('Emulation.setDeviceMetricsOverride',{width:844,height:390,deviceScaleFactor:2,mobile:true});await P.raw('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});
@@ -13,7 +13,7 @@ try{
  assert(await P.ev("document.body.classList.contains('firered')"));
  const inicio=await P.ev(`(()=>{const b=document.querySelector('.tb.move[data-slot="0"]'),r=b.getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2,acao:b.getAttribute('aria-label'),semEnvio:!game.lead,montaria:!document.getElementById('t-mount').classList.contains('tq-off')};})()`);assert(inicio.semEnvio&&inicio.montaria&&/Batalhar/.test(inicio.acao));
  await P.raw('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:inicio.x,y:inicio.y}]});await sleep(80);await P.raw('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});assert(await until(()=>P.ev('game.encontro.ativo&&!game.encontro.transicao&&game.lead?.alive'),20000,100));await sleep(500);
- const arena=await P.ev(`({visualPreservado:game.coralPixel.ativo&&!game.visual2d.ativo,nome:game.map.nome,adversarios:game.wilds.length,capturar:!document.getElementById('t-ball').classList.contains('tq-off'),semBarraSelvagem:document.getElementById('foe').hidden,minimo:Math.min(...[...document.querySelectorAll('#tbtns .tb:not(.tq-off)')].map(b=>b.getBoundingClientRect().width))})`);assert(arena.visualPreservado&&arena.adversarios===1&&arena.capturar&&arena.semBarraSelvagem&&arena.minimo>=44);
+ const arena=await P.ev(`({visualPreservado:game.visual2d.emCombate&&game.visual2d.ativo,nome:game.map.nome,adversarios:game.wilds.length,capturar:!document.getElementById('t-ball').classList.contains('tq-off'),semBarraSelvagem:document.getElementById('foe').hidden,minimo:Math.min(...[...document.querySelectorAll('#tbtns .tb:not(.tq-off)')].map(b=>b.getBoundingClientRect().width))})`);assert(arena.visualPreservado&&arena.adversarios===1&&arena.capturar&&arena.semBarraSelvagem&&arena.minimo>=44);
  const foto=await P.raw('Page.captureScreenshot',{format:'jpeg',quality:90});writeFileSync(dir+'publico-arena.jpg',Buffer.from(foto.result.data,'base64'));
  await P.ev(`document.getElementById('sair-encontro').click()`);assert(await until(()=>P.ev('!game.encontro.ativo&&!game.encontro.transicao'),15000,100));
  const retorno=await P.ev('({classico:game.visual2d.ativo,mapa:game.map===__origemPublica.mapa,recolhido:!game.lead,dist:Math.hypot(game.player.x-__origemPublica.x,game.player.y-__origemPublica.y)})');assert(retorno.classico&&retorno.mapa&&retorno.recolhido&&retorno.dist<1);
