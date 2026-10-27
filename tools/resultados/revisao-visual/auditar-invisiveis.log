@@ -10,5 +10,5 @@ blocos de barreira da história conferidos: 0 (mais 0 de zonas de clima, que o c
 achados: 0
 
 total de blocos sólidos sem nada visível: 0 (alvorada 0, ocaso 0)
-(node:91241) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(node:92827) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
 (Use `node --trace-deprecation ...` to show where the warning was created)

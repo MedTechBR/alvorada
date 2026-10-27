@@ -1,4 +1,4 @@
-Guia do objetivo: 110 alvos da jornada, 524 verificações, 49.8 s
+Guia do objetivo: 110 alvos da jornada, 524 verificações, 47.4 s
   campina   de inicio                 alvos  9  caminho médio  534 blocos  reta errada 0
   sussurro  de gym                    alvos  8  caminho médio  585 blocos  reta errada 2
   espelho   de estufa_lia             alvos  6  caminho médio 1038 blocos  reta errada 0
@@ -20,5 +20,5 @@ Guia do objetivo: 110 alvos da jornada, 524 verificações, 49.8 s
   a linha reta (seta antiga) apontava para o lado oposto ao caminho em 24 de 110 alvos
 
 OK: de cada chegada há caminho até cada alvo, e a seta aponta para o próximo trecho dele.
-(node:91170) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(node:92786) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
 (Use `node --trace-deprecation ...` to show where the warning was created)

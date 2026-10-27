@@ -29,12 +29,12 @@ Foram inspecionadas 27 vistas: Coral e seu Centro, três andares do Farol, casa,
 
 As correções de recorte e identidade valem para as famílias de objetos no continente, não só para Coral. O mapa grande também desenha as peças preservadas, com seus recortes reais. O minimapa inclui essas peças e evita salvar/restaurar transformações para objetos sem rotação.
 
-**A revisão não tornou todas as cidades prontas em composição.** As comparações deixam visíveis praças ainda amplas em Escarpa, Aurora, Lamparina, Geada e Jandaia. Elas precisam de recomposição autoral dos quarteirões e das áreas úteis, com validação de caminhos e migração de posições salvas. Não foram preenchidas com objetos aleatórios nem apresentadas como concluídas. Não foi refeita a geografia, o roteiro, os diálogos ou a progressão nesta rodada.
+**Escarpa, Aurora, Lamparina, Geada e Jandaia receberam canteiros autorais de piso** no lugar de parte das grandes lajes: jardim assimétrico em Escarpa, passeio central em Aurora, recortes alternados em Lamparina e Jandaia e áreas de neve em Geada. O eixo de passagem e os caminhos existentes permanecem livres. A mudança é visual, aplicada apenas a piso caminhável; não cria obstáculos, encontros ou mudanças de posição salva. As cinco praças são testadas para preservar caminhos, sólidos e arenas. Uma recomposição mais profunda dos prédios e das áreas úteis continua fora desta rodada; não foram espalhados objetos aleatórios para simular densidade.
 
 ## Testes
 
 - 24 verificações Node/camada vestir, com resultados individuais em `tools/resultados/revisao-visual/node.json`.
-- Navegador: cenário/visibilidade, oito direções da montaria, dois painéis de PS, retirada das duplicatas, troca/saída da arena, liberação do piso, mapa grande, montaria aquática, acompanhante, bolsa, batalha fluida, combate contra paredes e passagens de NPCs. Resultado em `navegador.json`.
+- Navegador: cenário/visibilidade, oito direções da montaria, dois painéis de PS, retirada das duplicatas, troca/saída da arena, liberação do piso, mapa grande, montaria aquática, acompanhante, bolsa, batalha fluida, combate contra paredes e passagens de NPCs. Resultado final em `navegador-entrega.json`; as capturas comparativas estão em `depois-cenas.json`.
 - Recortes de rocha: `python3 tools/firered/verificar-objetos.py`.
 - Módulos iniciais: `python3 tools/precarregar-modulos.py --verificar`.
 - Chrome sem interface, um processo principal de cada vez, com áudio silenciado. Não houve teste em iPhone/Safari físico.
@@ -50,17 +50,18 @@ As três amostras iniciais identificaram uma regressão de aproximadamente 2,6 M
 
 | Local | CPU P95 antes → depois (ms) | Quadro P95 antes → depois (ms) | Pico heap antes → depois (MiB) | Heap após GC antes → depois (MiB) | Texturas Pixi antes → depois (MiB) |
 | --- | --- | --- | --- | --- | --- |
-| coral | 5.40 → 6.10 | 6.60 → 7.40 | 163.31 → 163.00 | 159.60 → 159.45 | 57.40 → 57.63 |
-| campina | 4.70 → 4.50 | 6.20 → 5.80 | 165.12 → 164.64 | 161.41 → 161.16 | 58.20 → 58.42 |
-| rota | 5.00 → 5.10 | 6.40 → 6.00 | 165.53 → 166.36 | 162.78 → 162.59 | 57.96 → 58.18 |
+| coral | 5.50 → 4.20 | 6.70 → 5.40 | 163.60 → 163.67 | 159.67 → 160.14 | 57.40 → 57.67 |
+| campina | 4.10 → 3.90 | 5.20 → 5.40 | 164.39 → 165.01 | 161.44 → 161.88 | 58.20 → 58.46 |
+| rota | 4.70 → 4.10 | 5.10 → 5.00 | 165.68 → 166.88 | 162.85 → 162.98 | 57.96 → 58.22 |
 
-**A exigência estrita de não piorar nenhum indicador não foi demonstrada.** A rota ainda apresentou aumento no tempo P95, apesar da retirada da folha de 2,6 MiB. Os valores de heap oscilaram entre amostras. Portanto, os testes funcionais passaram, mas o orçamento estrito de desempenho e memória continua pendente; não deve ser confundido com uma validação física no iPhone. Os dados brutos anteriores e as tentativas de cache de lista e de grupo de renderização, não adotadas foram preservados para auditoria.
+**A exigência estrita de não piorar nenhum indicador não foi demonstrada.** Há locais com aumento no tempo P95, apesar da retirada da folha de 2,6 MiB. A comparação final, incluindo os canteiros, está em `entrega/desempenho-controlado.json`. Os valores de heap oscilaram entre amostras. Portanto, os testes funcionais passaram, mas o orçamento estrito de desempenho e memória continua pendente; não deve ser confundido com uma validação física no iPhone. Os dados brutos anteriores e as tentativas de cache de lista e de grupo de renderização, não adotadas foram preservados para auditoria.
 
 
 ## Arquivos
 
 - `src/visual2d/firered/objetos.js`: correspondência semântica, proporções, tampo do balcão e preservação dos estados de puzzle.
 - `src/visual2d/firered/terreno.js` e `pisos.js`: areia variada, caverna, escadas, pontes e trilhos.
+- `src/visual2d/firered/pracas.js`: cinco planos de canteiros, com caminhos, arena e grade lógica preservados.
 - `src/visual2d/firered/index.js`: paleta da areia seca, posição da máquina, mapa detalhado, desenho da decoração preservada e HUD criado apenas quando necessário.
 - `src/visual2d/firered/interface.css`: dois painéis compactos de PS, mantendo os controles existentes.
 - `src/visual2d/coral-pessoas.js`: carga RGBA, tratamento de falha, descarte e ancoragem temporária restaurada após desenhar.
@@ -69,5 +70,5 @@ As três amostras iniciais identificaram uma regressão de aproximadamente 2,6 M
 - `src/ui/espetaculo.js` e `src/entities/pokemon.js`: não repetir as vidas sobre os personagens quando os painéis estão ativos.
 - `src/combat/arena-ginasio.js`: apenas desenho do piso, com geometria reaproveitada e descarte.
 - `assets/firered/objetos.png`, `indice.json`, `assets/CREDITOS.md`, `tools/firered/baixar.py`, `preparar.py` e `verificar-objetos.py`: recortes originais, extração reproduzível, origem e regressão dos pixels.
-- `index.html` e `sw.js`: dependências da abertura e atualização do cache de código v7, preservando o cache de espécies PMD.
+- `index.html` e `sw.js`: dependências da abertura e atualização do cache de código v8, preservando o cache de espécies PMD.
 - Ferramentas de diagnóstico, desempenho, testes e publicação em `tools/teste-3d/`; evidências em `tools/resultados/revisao-visual/` e `tools/shots/revisao-visual/`.

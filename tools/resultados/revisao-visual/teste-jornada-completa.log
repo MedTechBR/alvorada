@@ -1,4 +1,4 @@
-Jornada completa: 16 passos, 348 verificações, 9.5 s
+Jornada completa: 16 passos, 348 verificações, 9.0 s
   campina    alvos 8  bloqueados 3  lugares de cena 6
   sussurro   alvos 8  bloqueados 2  lugares de cena 17
   espelho    alvos 6  bloqueados 3  lugares de cena 8
@@ -19,5 +19,5 @@ Jornada completa: 16 passos, 348 verificações, 9.5 s
   pós-jogo: Mar do Sul, Farol Morto e as três entradas de mergulho alcançáveis depois da Liga
 
 OK: a jornada inteira é jogável na ordem, sem atalhos.
-(node:91159) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(node:92779) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
 (Use `node --trace-deprecation ...` to show where the warning was created)

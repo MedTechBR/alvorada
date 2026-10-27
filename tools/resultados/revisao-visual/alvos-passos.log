@@ -100,5 +100,5 @@ ok  [nova14] j14_portao (depois de j14_brasa) → elite_ibere (824,1935): j14_ib
 --  [nova14] j14_portao (depois de j14_ibere) → ninho_liga_zenite (918,30): próximas: 
 ok  [nova14] j14_irma_revela → campea_dalva (864,1935): j14_dalva_luta (fala com campea_dalva)
 0 de 101 alvos longe de qualquer gatilho
-(node:91168) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(node:92785) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
 (Use `node --trace-deprecation ...` to show where the warning was created)

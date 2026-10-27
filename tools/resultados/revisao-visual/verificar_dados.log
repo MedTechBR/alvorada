@@ -26,7 +26,7 @@ OK  Onix: usar o Revestimento Metálico não evolui mais (troca substituída): u
 OK  Kadabra com 4 golpes Psíquicos → Alakazam (sem troca): 65
 OK  Haunter de noite no Cemitério das Velas → Gengar: 94
 OK  Save antigo migra (IVs, golpes válidos, EVs zerados, não shiny): [[1,2,3,4,5,6],["scratch"],[0,0,0,0,0,0],false,10,"abc"]
-OK  toJSON → from preserva tudo: "{\"v\":2,\"dex\":4,\"level\":15,\"ivs\":[31,31,31,31,31,31],\"evs\":[252,252,6,0,0,0],\"nature\":\"hardy\",\"ability\":\"blaze\",\"gender\":\"m\",\"shiny\":false,\"friendship\":70,\"item\":null,\"ball\":\"pokeBall\",\"metLevel\":15,\"nick\":null,\"xp\":2035,\"moves\":[\"growl\",\"ember\",\"smokescreen\",\"dragonBreath\"],\"status\":null,\"hp\":50,\"uid\":\"t42m69av\",\"learned\":[\"growl\",\"ember\",\"smokescreen\",\"dragonBreath\"]}"
+OK  toJSON → from preserva tudo: "{\"v\":2,\"dex\":4,\"level\":15,\"ivs\":[31,31,31,31,31,31],\"evs\":[252,252,6,0,0,0],\"nature\":\"hardy\",\"ability\":\"blaze\",\"gender\":\"m\",\"shiny\":false,\"friendship\":70,\"item\":null,\"ball\":\"pokeBall\",\"metLevel\":15,\"nick\":null,\"xp\":2035,\"moves\":[\"growl\",\"ember\",\"smokescreen\",\"dragonBreath\"],\"status\":null,\"hp\":50,\"uid\":\"km4u9t8a\",\"learned\":[\"growl\",\"ember\",\"smokescreen\",\"dragonBreath\"]}"
 OK  Raichu de Alola: tipos, chave do sprite e forma no save: [["electric","psychic"],"26-alola","alola"]
 OK  Forma volta do save: "alola"
 OK  Save sem forma = forma padrão (e o JSON continua sem o campo): [null,false]

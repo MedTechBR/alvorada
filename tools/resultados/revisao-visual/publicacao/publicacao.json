@@ -1,0 +1,142 @@
+{
+  "url": "https://medtechbr.com.br/alvorada/",
+  "interrupcoes": [],
+  "inicio": {
+    "x": 748,
+    "y": 351,
+    "acao": "Batalhar contra Krabby",
+    "semEnvio": true,
+    "montaria": true
+  },
+  "arena": {
+    "chaoNativo": true,
+    "semLegado": true,
+    "visualPreservado": true,
+    "nome": "Praia",
+    "adversarios": 1,
+    "capturar": true,
+    "semBarraAntiga": true,
+    "vidasNoTopo": true,
+    "semDuplicatas": true,
+    "minimo": 44
+  },
+  "controles": {
+    "dash": {
+      "x": 640,
+      "y": 346
+    },
+    "pulo": {
+      "x": 640,
+      "y": 284
+    },
+    "itens": {
+      "x": 806,
+      "y": 210
+    },
+    "bola": {
+      "x": 756,
+      "y": 210
+    },
+    "equipe": {
+      "x": 706,
+      "y": 210
+    },
+    "acompanhanteOculto": true
+  },
+  "painel": {
+    "x": 502,
+    "direita": 832,
+    "baixo": 378
+  },
+  "retorno": {
+    "classico": true,
+    "mapa": true,
+    "recolhido": true,
+    "dist": 0
+  },
+  "mapa": {
+    "aberto": true,
+    "largura": 1164
+  },
+  "menu": [
+    {
+      "texto": "▶Pokédex",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Pokémon",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Montarias",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Mochila",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Missões",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Mapa",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Voar",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Teste",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Online",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Opções",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Salvar",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Fechar",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    }
+  ],
+  "offline": {
+    "registrado": true,
+    "ativo": true,
+    "controlado": true,
+    "bibliotecaLocal": true
+  },
+  "erros": []
+}

@@ -5,5 +5,5 @@ OK: dano controlado por atributos, escala simétrica, cura finita e 14 temas de 
 │ Charmander │ 4     │
 │ Charizard  │ 7     │
 └────────────┴───────┘
-(node:91273) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(node:92882) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
 (Use `node --trace-deprecation ...` to show where the warning was created)

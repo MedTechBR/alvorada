@@ -7,5 +7,5 @@
   muro invisível: 1190 blocos em volta das rotas conferidos
 Caminhada do guia: 1115 verificações
 OK
-(node:91233) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(node:92818) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
 (Use `node --trace-deprecation ...` to show where the warning was created)

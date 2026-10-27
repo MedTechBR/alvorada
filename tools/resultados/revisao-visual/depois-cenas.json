@@ -34,23 +34,23 @@
       {
         "id": "coral_fa3",
         "nome": "Menina da Festa",
-        "x": 16552,
-        "y": 18705.2704,
+        "x": 16581.93919999996,
+        "y": 18714,
         "fh": 32,
         "groundY": 31,
         "bodyY": 18,
         "bounds": {
           "type": "rectangle",
-          "x": 422,
-          "y": -235,
+          "x": 482,
+          "y": -217,
           "width": 64,
           "height": 64
         },
         "alpha": 1,
         "visible": true,
         "renderable": true,
-        "dir": "up",
-        "z": 18705.2704,
+        "dir": "right",
+        "z": 18714,
         "pe": 15,
         "ancora": [
           0.5,
@@ -60,23 +60,23 @@
       {
         "id": "coral_velho",
         "nome": "Seu Abel",
-        "x": 16408,
-        "y": 18906,
+        "x": 16424,
+        "y": 18890,
         "fh": 32,
         "groundY": 31,
         "bodyY": 2,
         "bounds": {
           "type": "rectangle",
-          "x": 134,
-          "y": 135,
+          "x": 166,
+          "y": 103,
           "width": 64,
           "height": 64
         },
         "alpha": 1,
         "visible": true,
         "renderable": true,
-        "dir": "left",
-        "z": 18906,
+        "dir": "up",
+        "z": 18890,
         "pe": 31,
         "ancora": [
           0.5,
@@ -86,23 +86,23 @@
       {
         "id": "coral_surf",
         "nome": "Surfista",
-        "x": 16776,
-        "y": 19050,
+        "x": 16760,
+        "y": 19066,
         "fh": 32,
         "groundY": 31,
         "bodyY": 2,
         "bounds": {
           "type": "rectangle",
-          "x": 870,
-          "y": 423,
+          "x": 838,
+          "y": 455,
           "width": 64,
           "height": 64
         },
         "alpha": 1,
         "visible": true,
         "renderable": true,
-        "dir": "right",
-        "z": 19050,
+        "dir": "down",
+        "z": 19066,
         "pe": 31,
         "ancora": [
           0.5,
@@ -1600,25 +1600,6 @@
         }
       },
       {
-        "kind": "radio",
-        "x": 16104,
-        "y": 30960,
-        "fw": 1,
-        "fh": 1,
-        "nome": "pc",
-        "z": 30959,
-        "altura": 32,
-        "sx": 16104,
-        "sy": 30960,
-        "bounds": {
-          "type": "rectangle",
-          "x": 422,
-          "y": 83,
-          "width": 32,
-          "height": 64
-        }
-      },
-      {
         "kind": "bed",
         "x": 16056,
         "y": 30976,
@@ -1876,63 +1857,6 @@
           "x": 566,
           "y": 115,
           "width": 32,
-          "height": 64
-        }
-      },
-      {
-        "kind": "gondola",
-        "x": 928,
-        "y": 32784,
-        "fw": 4,
-        "fh": 1,
-        "nome": "prateleira",
-        "z": 32783,
-        "altura": 32,
-        "sx": 928,
-        "sy": 32784,
-        "bounds": {
-          "type": "rectangle",
-          "x": 470,
-          "y": 147,
-          "width": 64,
-          "height": 64
-        }
-      },
-      {
-        "kind": "gondola",
-        "x": 928,
-        "y": 32816,
-        "fw": 4,
-        "fh": 1,
-        "nome": "prateleira",
-        "z": 32815,
-        "altura": 32,
-        "sx": 928,
-        "sy": 32816,
-        "bounds": {
-          "type": "rectangle",
-          "x": 470,
-          "y": 211,
-          "width": 64,
-          "height": 64
-        }
-      },
-      {
-        "kind": "expositor",
-        "x": 816,
-        "y": 32816,
-        "fw": 2,
-        "fh": 1,
-        "nome": "prateleira",
-        "z": 32815,
-        "altura": 32,
-        "sx": 816,
-        "sy": 32816,
-        "bounds": {
-          "type": "rectangle",
-          "x": 246,
-          "y": 211,
-          "width": 64,
           "height": 64
         }
       },
@@ -2389,22 +2313,22 @@
         "id": "fazendeiro",
         "nome": "Seu Bento",
         "x": 7304,
-        "y": 17509.731199999937,
+        "y": 17514,
         "fh": 32,
         "groundY": 31,
         "bodyY": 2,
         "bounds": {
           "type": "rectangle",
           "x": 774,
-          "y": -1,
+          "y": 7,
           "width": 64,
           "height": 64
         },
         "alpha": 1,
         "visible": true,
         "renderable": true,
-        "dir": "up",
-        "z": 17509.731199999937,
+        "dir": "down",
+        "z": 17514,
         "pe": 31,
         "ancora": [
           0.5,
@@ -2456,25 +2380,6 @@
           "y": -619,
           "width": 224,
           "height": 160
-        }
-      },
-      {
-        "kind": "mailbox",
-        "x": 6696,
-        "y": 17248,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 17247,
-        "altura": 16,
-        "sx": 6696,
-        "sy": 17248,
-        "bounds": {
-          "type": "rectangle",
-          "x": -426,
-          "y": -497,
-          "width": 32,
-          "height": 32
         }
       },
       {
@@ -2630,25 +2535,6 @@
         }
       },
       {
-        "kind": "mailbox",
-        "x": 6712,
-        "y": 17296,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 17295,
-        "altura": 16,
-        "sx": 6712,
-        "sy": 17296,
-        "bounds": {
-          "type": "rectangle",
-          "x": -394,
-          "y": -401,
-          "width": 32,
-          "height": 32
-        }
-      },
-      {
         "kind": "lamp",
         "x": 6776,
         "y": 17328,
@@ -2684,25 +2570,6 @@
           "y": -241,
           "width": 32,
           "height": 64
-        }
-      },
-      {
-        "kind": "mailbox",
-        "x": 6776,
-        "y": 17392,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 17391,
-        "altura": 16,
-        "sx": 6776,
-        "sy": 17392,
-        "bounds": {
-          "type": "rectangle",
-          "x": -266,
-          "y": -209,
-          "width": 32,
-          "height": 32
         }
       },
       {
@@ -3143,25 +3010,6 @@
         }
       },
       {
-        "kind": "mailbox",
-        "x": 7176,
-        "y": 17280,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 17279,
-        "altura": 16,
-        "sx": 7176,
-        "sy": 17280,
-        "bounds": {
-          "type": "rectangle",
-          "x": 534,
-          "y": -433,
-          "width": 32,
-          "height": 32
-        }
-      },
-      {
         "kind": "canteiro",
         "x": 7312,
         "y": 17328,
@@ -3196,25 +3044,6 @@
           "x": 790,
           "y": -271,
           "width": 64,
-          "height": 32
-        }
-      },
-      {
-        "kind": "mailbox",
-        "x": 7336,
-        "y": 17168,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 17167,
-        "altura": 16,
-        "sx": 7336,
-        "sy": 17168,
-        "bounds": {
-          "type": "rectangle",
-          "x": 854,
-          "y": -657,
-          "width": 32,
           "height": 32
         }
       },
@@ -4568,25 +4397,6 @@
         }
       },
       {
-        "kind": "mailbox",
-        "x": 6952,
-        "y": 17872,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 17871,
-        "altura": 16,
-        "sx": 6952,
-        "sy": 17872,
-        "bounds": {
-          "type": "rectangle",
-          "x": 86,
-          "y": 751,
-          "width": 32,
-          "height": 32
-        }
-      },
-      {
         "kind": "lamp",
         "x": 7160,
         "y": 17888,
@@ -5928,25 +5738,6 @@
         }
       },
       {
-        "kind": "mailbox",
-        "x": 14520,
-        "y": 16768,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 16767,
-        "altura": 16,
-        "sx": 14520,
-        "sy": 16768,
-        "bounds": {
-          "type": "rectangle",
-          "x": -42,
-          "y": -17,
-          "width": 32,
-          "height": 32
-        }
-      },
-      {
         "kind": "lamp",
         "x": 14536,
         "y": 16864,
@@ -6118,25 +5909,6 @@
         }
       },
       {
-        "kind": "mailbox",
-        "x": 14808,
-        "y": 16672,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 16671,
-        "altura": 16,
-        "sx": 14808,
-        "sy": 16672,
-        "bounds": {
-          "type": "rectangle",
-          "x": 534,
-          "y": -209,
-          "width": 32,
-          "height": 32
-        }
-      },
-      {
         "kind": "lamp",
         "x": 14712,
         "y": 16688,
@@ -6194,25 +5966,6 @@
         }
       },
       {
-        "kind": "mailbox",
-        "x": 14904,
-        "y": 16768,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 16767,
-        "altura": 16,
-        "sx": 14904,
-        "sy": 16768,
-        "bounds": {
-          "type": "rectangle",
-          "x": 726,
-          "y": -17,
-          "width": 32,
-          "height": 32
-        }
-      },
-      {
         "kind": "sign",
         "x": 15048,
         "y": 16864,
@@ -6229,25 +5982,6 @@
           "y": 175,
           "width": 32,
           "height": 32
-        }
-      },
-      {
-        "kind": "radioStation",
-        "x": 14992,
-        "y": 16816,
-        "fw": 6,
-        "fh": 3,
-        "nome": "casa",
-        "z": 16815,
-        "altura": 80,
-        "sx": 14992,
-        "sy": 16819,
-        "bounds": {
-          "type": "rectangle",
-          "x": 822,
-          "y": -43,
-          "width": 192,
-          "height": 160
         }
       },
       {
@@ -6612,25 +6346,6 @@
         }
       },
       {
-        "kind": "mailbox",
-        "x": 14616,
-        "y": 16992,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 16991,
-        "altura": 16,
-        "sx": 14616,
-        "sy": 16992,
-        "bounds": {
-          "type": "rectangle",
-          "x": 150,
-          "y": 431,
-          "width": 32,
-          "height": 32
-        }
-      },
-      {
         "kind": "canteiro",
         "x": 14608,
         "y": 17008,
@@ -6683,25 +6398,6 @@
           "type": "rectangle",
           "x": 214,
           "y": 497,
-          "width": 32,
-          "height": 32
-        }
-      },
-      {
-        "kind": "mailbox",
-        "x": 14664,
-        "y": 17024,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 17023,
-        "altura": 16,
-        "sx": 14664,
-        "sy": 17024,
-        "bounds": {
-          "type": "rectangle",
-          "x": 246,
-          "y": 495,
           "width": 32,
           "height": 32
         }
@@ -6856,25 +6552,6 @@
           "y": 303,
           "width": 32,
           "height": 64
-        }
-      },
-      {
-        "kind": "mailbox",
-        "x": 15000,
-        "y": 16960,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 16959,
-        "altura": 16,
-        "sx": 15000,
-        "sy": 16960,
-        "bounds": {
-          "type": "rectangle",
-          "x": 918,
-          "y": 367,
-          "width": 32,
-          "height": 32
         }
       },
       {
@@ -9082,25 +8759,6 @@
         }
       },
       {
-        "kind": "mailbox",
-        "x": 7832,
-        "y": 11056,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 11055,
-        "altura": 16,
-        "sx": 7832,
-        "sy": 11056,
-        "bounds": {
-          "type": "rectangle",
-          "x": 502,
-          "y": 79,
-          "width": 32,
-          "height": 32
-        }
-      },
-      {
         "kind": "flowerpot",
         "x": 7896,
         "y": 11056,
@@ -9135,25 +8793,6 @@
           "x": 310,
           "y": 113,
           "width": 64,
-          "height": 32
-        }
-      },
-      {
-        "kind": "mailbox",
-        "x": 7704,
-        "y": 11088,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 11087,
-        "altura": 16,
-        "sx": 7704,
-        "sy": 11088,
-        "bounds": {
-          "type": "rectangle",
-          "x": 246,
-          "y": 143,
-          "width": 32,
           "height": 32
         }
       },
@@ -9748,22 +9387,22 @@
         "id": "pescadora_porto",
         "nome": "Pescadora Nalva",
         "x": 21000,
-        "y": 15052.313600000029,
+        "y": 15050,
         "fh": 32,
         "groundY": 31,
         "bodyY": 2,
         "bounds": {
           "type": "rectangle",
           "x": 806,
-          "y": 75,
+          "y": 71,
           "width": 64,
           "height": 64
         },
         "alpha": 1,
         "visible": true,
         "renderable": true,
-        "dir": "down",
-        "z": 15052.313600000029,
+        "dir": "up",
+        "z": 15050,
         "pe": 31,
         "ancora": [
           0.5,
@@ -10417,23 +10056,23 @@
       {
         "id": "coral_fa3",
         "nome": "Menina da Festa",
-        "x": 16552,
-        "y": 18698,
+        "x": 16584,
+        "y": 18714,
         "fh": 32,
         "groundY": 31,
         "bodyY": 18,
         "bounds": {
           "type": "rectangle",
-          "x": 550,
-          "y": -185,
+          "x": 614,
+          "y": -153,
           "width": 64,
           "height": 64
         },
         "alpha": 1,
         "visible": true,
         "renderable": true,
-        "dir": "up",
-        "z": 18698,
+        "dir": "right",
+        "z": 18714,
         "pe": 15,
         "ancora": [
           0.5,
@@ -10443,15 +10082,15 @@
       {
         "id": "coral_velho",
         "nome": "Seu Abel",
-        "x": 16408,
-        "y": 18892.53440000003,
+        "x": 16424,
+        "y": 18890,
         "fh": 32,
         "groundY": 31,
         "bodyY": 2,
         "bounds": {
           "type": "rectangle",
-          "x": 262,
-          "y": 173,
+          "x": 294,
+          "y": 167,
           "width": 64,
           "height": 64
         },
@@ -10459,7 +10098,7 @@
         "visible": true,
         "renderable": true,
         "dir": "up",
-        "z": 18892.53440000003,
+        "z": 18890,
         "pe": 31,
         "ancora": [
           0.5,
@@ -12278,25 +11917,6 @@
         }
       },
       {
-        "kind": "mailbox",
-        "x": 16312,
-        "y": 10352,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 10351,
-        "altura": 16,
-        "sx": 16312,
-        "sy": 10352,
-        "bounds": {
-          "type": "rectangle",
-          "x": 886,
-          "y": -177,
-          "width": 32,
-          "height": 32
-        }
-      },
-      {
         "kind": "lamp",
         "x": 16248,
         "y": 10416,
@@ -13133,25 +12753,6 @@
         }
       },
       {
-        "kind": "mailbox",
-        "x": 16360,
-        "y": 10608,
-        "fw": 1,
-        "fh": 1,
-        "nome": "placa",
-        "z": 10607,
-        "altura": 16,
-        "sx": 16360,
-        "sy": 10608,
-        "bounds": {
-          "type": "rectangle",
-          "x": 982,
-          "y": 335,
-          "width": 32,
-          "height": 32
-        }
-      },
-      {
         "kind": "canteiro",
         "x": 16128,
         "y": 10624,
@@ -13292,14 +12893,14 @@
       {
         "id": "aurora_executiva",
         "nome": "Executiva",
-        "x": 24952.944000000007,
+        "x": 24952,
         "y": 9082,
         "fh": 32,
         "groundY": 31,
         "bodyY": 2,
         "bounds": {
           "type": "rectangle",
-          "x": 872,
+          "x": 870,
           "y": 423,
           "width": 64,
           "height": 64
@@ -13307,7 +12908,7 @@
         "alpha": 1,
         "visible": true,
         "renderable": true,
-        "dir": "right",
+        "dir": "left",
         "z": 9082,
         "pe": 31,
         "ancora": [
