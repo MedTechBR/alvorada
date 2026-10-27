@@ -115,8 +115,10 @@ export class Minimap {
     ctx.imageSmoothingEnabled = false;
     const px = p.x / T, py = p.y / T, a = room ? 0 : this.angle;
     ctx.translate(R, R); ctx.rotate(-a); ctx.scale(zoom, zoom); ctx.translate(-px, -py);
-    const vr = S / zoom * 0.75; this.#base(ctx, px - vr, py - vr, px + vr, py + vr);
-    g.coralPixel?.minimapa(ctx);g.visual2d?.minimapa(ctx,{x0:(px-vr)*T,y0:(py-vr)*T,x1:(px+vr)*T,y1:(py+vr)*T});
+    const vr=S/zoom*.75,r=S/zoom/2,v={x0:(px-r)*T,y0:(py-r)*T,x1:(px+r)*T,y1:(py+r)*T};
+    // Evita desenhar duas bases quando os setores nativos já cobrem o painel.
+    if(!g.visual2d?.minimapaPronto?.(v))this.#base(ctx,px-vr,py-vr,px+vr,py+vr);
+    g.coralPixel?.minimapa(ctx);g.visual2d?.minimapa(ctx,v);
     const vista=g.visual2d?.vista;if(vista&&!g.visual2d.emCombate){ctx.strokeStyle='#f8ffffbf';ctx.lineWidth=1/zoom;ctx.strokeRect(vista.x0/T,vista.y0/T,(vista.x1-vista.x0)/T,(vista.y1-vista.y0)/T);}
     ctx.restore();
     // marcadores (sempre de pé)
