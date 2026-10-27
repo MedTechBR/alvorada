@@ -86,7 +86,7 @@ export class VisualFireRed{
  }
  objeto(o){const nome=tipoObjeto(o);if(nome==='nativo')return{tex:o.sprite?.texture??this.g.tx[KINDS[o.kind]?.tex],nome};const key=[nome,o.fw,o.fh,o.kind].join(':');if(!this.texturas.has(key))this.texturas.set(key,montarObjeto(this.atlasObjetos,this.indice.objetos,o));const f=this.texturas.get(key);f.visto=this.g.time;return f;}
  bloco(ctx,t,x,y){const [b,id]=escolherBloco(this.g.map,t,x,y),f=this.bancos[b];ctx.drawImage(f.canvas,id%16*16,(id>>4)*16,16,16,x,y,1,1);}
- minimapa(ctx){if(!this.ativo)return;for(const c of this.g.map.visible)if(c.canvas)ctx.drawImage(c.canvas,c.cx*16,c.cy*16,16,16);for(const [o,{f}]of this.objetos)ctx.drawImage(f.canvas,(o.x-f.canvas.width/2)/16,(o.y-f.canvas.height)/16,f.canvas.width/16,f.canvas.height/16);}
+ minimapa(ctx,v){if(!this.ativo)return;const cabe=(x,y,w,h)=>!v||x<v.x1&&x+w>v.x0&&y<v.y1&&y+h>v.y0;for(const c of this.g.map.visible)if(c.canvas&&cabe(c.x,c.y,256,256))ctx.drawImage(c.canvas,c.cx*16,c.cy*16,16,16);for(const [o,{f}]of this.objetos){const x=o.x-f.canvas.width/2,y=o.y-f.canvas.height;if(cabe(x,y,f.canvas.width,f.canvas.height))ctx.drawImage(f.canvas,x/16,y/16,f.canvas.width/16,f.canvas.height/16);}}
  #limparObjetos(){for(const [o,e]of this.objetos){if(o.sprite&&!o.sprite.destroyed)o.sprite.renderable=e.renderable;e.sp.destroy();}this.objetos.clear();for(const [t,a]of this.matos)if(!t.destroyed){t.frames=a.frames;t.texture=a.texture;t.tint=a.tint;}this.matos.clear();}
  #camadas(on){
   const atuais=on?[this.g.map.decorLayer,this.g.mundo.lights]:[];

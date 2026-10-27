@@ -47,7 +47,7 @@ export class Minimap {
     this.ctx = cv.getContext('2d'); this.label = lab;
   }
   #fit() {
-    const size = IS_TOUCH ? (innerHeight < 500 ? 84 : 104) : (innerHeight < 640 ? 112 : 140);
+    const size = this.g.map.classico ? 76 : IS_TOUCH ? (innerHeight < 500 ? 84 : 104) : (innerHeight < 640 ? 112 : 140);
     if (size === this.size) return;
     this.size = size;
     this.cv.width = this.cv.height = Math.round(size * this.dpr);
@@ -97,6 +97,7 @@ export class Minimap {
   }
 
   update(dt) {
+    if(this.g.visual2d?.emCombate){this.t=0;return;} // o painel fica oculto na arena
     this.t -= dt; const p = this.g.player;
     const want = this.rotate ? DIR_ANGLE[p.dir] ?? 0 : 0;
     let da = want - this.angle; while (da > Math.PI) da -= Math.PI * 2; while (da < -Math.PI) da += Math.PI * 2;
@@ -115,7 +116,7 @@ export class Minimap {
     const px = p.x / T, py = p.y / T, a = room ? 0 : this.angle;
     ctx.translate(R, R); ctx.rotate(-a); ctx.scale(zoom, zoom); ctx.translate(-px, -py);
     const vr = S / zoom * 0.75; this.#base(ctx, px - vr, py - vr, px + vr, py + vr);
-    g.coralPixel?.minimapa(ctx);g.visual2d?.minimapa(ctx);
+    g.coralPixel?.minimapa(ctx);g.visual2d?.minimapa(ctx,{x0:(px-vr)*T,y0:(py-vr)*T,x1:(px+vr)*T,y1:(py+vr)*T});
     const vista=g.visual2d?.vista;if(vista&&!g.visual2d.emCombate){ctx.strokeStyle='#f8ffffbf';ctx.lineWidth=1/zoom;ctx.strokeRect(vista.x0/T,vista.y0/T,(vista.x1-vista.x0)/T,(vista.y1-vista.y0)/T);}
     ctx.restore();
     // marcadores (sempre de pé)
