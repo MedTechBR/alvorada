@@ -1239,13 +1239,13 @@ export class GameMenu {
     const list = (F.areas ?? []).filter((a) => a.name === L.focus || this.#visited(a.x, a.y, F)).sort((a, b) => (b.name === L.focus) - (a.name === L.focus) || big(b) - big(a));
     for (const a of list) {
       const on = a.name === L.focus, size = on ? fs * 1.15 : big(a) ? fs : fs * 0.86;
-      c.font = `900 ${Math.round(size)}px Avenir Next, Nunito, ui-rounded, system-ui, sans-serif`;
+      c.font = `600 ${Math.round(size)}px system-ui, sans-serif`;
       const [x, y] = S(a.x, a.y), w = c.measureText(a.name).width + 8 * dpr, h = size + 6 * dpr;
       const r = [x - w / 2, y - h / 2, x + w / 2, y + h / 2];
       if (!on && placed.some((q) => r[0] < q[2] && r[2] > q[0] && r[1] < q[3] && r[3] > q[1])) continue;
       placed.push(r);
-      c.lineWidth = 4 * dpr; c.lineJoin = 'round'; c.strokeStyle = on ? '#1d2340' : 'rgba(255,255,255,.95)'; c.strokeText(a.name, x, y);
-      c.fillStyle = on ? '#ffd23f' : '#1d2340'; c.fillText(a.name, x, y);
+      c.fillStyle=on?'#194b5b':'#f8fbfdf2';c.beginPath();c.roundRect(r[0],r[1],w,h,4*dpr);c.fill();
+      c.fillStyle=on?'#fff':'#183445';c.fillText(a.name,x,y);
     }
     if (!aqui) return; // outro continente: sem jogador, objetivo nem missões
     // missões ativas com lugar alvo (src/story/missoes): círculo azul com "!"; a acompanhada é maior

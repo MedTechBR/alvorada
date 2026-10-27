@@ -13,7 +13,7 @@ async function imagem(nome){const r=await fetch(new URL(nome,BASE));if(!r.ok)thr
 // A câmera de luta enquadra os participantes; os golpes mantêm sprites PMD.
 export class VisualFireRed{
  constructor(g){
-  this.g=g;this.ativo=false;this.texturas=new Map();this.objetos=new Map();this.matos=new Map();this.camadasOcultas=new Map();
+  this.g=g;this.ativo=false;this.texturas=new Map();this.objetos=new Map();this.matos=new Map();this.nativos=new WeakSet();this.camadasOcultas=new Map();
   this.local=document.createElement('div');this.local.id='coral-local';document.body.appendChild(this.local);
   g.worldToScreen=(x,y,h=0)=>({x:g.world.x+x*g.world.scale.x,y:g.world.y+(y-h)*g.world.scale.y});
   g.screenToWorld=(x,y)=>({x:(x-g.world.x)/g.world.scale.x,y:(y-g.world.y)/g.world.scale.y});
@@ -54,7 +54,7 @@ export class VisualFireRed{
   this.cameraLuta=luta?cameraBatalha(g,this.cameraLuta,dt):null;
   const z=this.cameraLuta?.z??Math.max(1,Math.round(g.zoom||2)),c=this.cameraLuta??g.cam;
   g.ui.hud.seta.scale.set(.65);
-  const sala=g.map.interiorAt(g.player.x,g.player.y),hw=innerWidth/2/z,hh=innerHeight/2/z;
+  const sala=g.map.interiorAt(g.player.x,g.player.y)??(g.encontro?.ativo?{x:0,y:0,w:g.map.w,h:g.map.h}:null),hw=innerWidth/2/z,hh=innerHeight/2/z;
   const limitar=(v,a,n,h)=>n*16<=h*2?(a+n/2)*16:Math.max(a*16+h,Math.min((a+n)*16-h,v));
   // Como no GBA: uma sala pequena cabe inteira e fica parada; numa sala maior
   // a câmera acompanha até a borda. Não mostra vazio no lugar dos móveis.
@@ -67,10 +67,10 @@ export class VisualFireRed{
   const vistos=new Set(),objetosVistos=new Set(),matosVistos=new Set();
   for(const chunk of g.map.visible){
    for(const o of chunk.objs){
-    if(!o.sprite?.parent||o.dead)continue;
-    const nome=tipoObjeto(o);if(nome==='nativo')continue;const key=[nome,o.fw,o.fh,o.kind].join(':');vistos.add(key);objetosVistos.add(o);
+    if(!o.sprite?.parent||o.dead||this.nativos.has(o))continue;
     let entrada=this.objetos.get(o);
-    if(!entrada){const f=this.objeto(o),sp=new PIXI.Sprite(f.tex);sp.anchor.set(.5,1);g.ents.addChild(sp);entrada={f,sp,renderable:o.sprite.renderable};this.objetos.set(o,entrada);o.sprite.renderable=false;}
+    if(!entrada){const nome=tipoObjeto(o);if(nome==='nativo'){this.nativos.add(o);continue;}const key=[nome,o.fw,o.fh,o.kind].join(':'),f=this.objeto(o),sp=new PIXI.Sprite(f.tex);sp.anchor.set(.5,1);g.ents.addChild(sp);entrada={f,sp,key,renderable:o.sprite.renderable};this.objetos.set(o,entrada);o.sprite.renderable=false;}
+    vistos.add(entrada.key);objetosVistos.add(o);
     const sp=entrada.sp;sp.position.set(o.sprite.x,o.sprite.y);sp.rotation=o.sprite.rotation;sp.zIndex=o.sprite.zIndex;sp.alpha=o.sprite.alpha;sp.tint=o.sprite.tint;sp.visible=o.sprite.visible;
     entrada.f.visto=g.time;
    }

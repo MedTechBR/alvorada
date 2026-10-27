@@ -38,7 +38,7 @@ body.firered .gm-main .gm-ic{width:28px;height:28px;border:0;border-radius:8px;b
 body.firered .gm-side{padding:8px;border:1px solid #ccdae2;background:#f8fbfd;border-radius:15px;box-shadow:0 8px 24px #0d2b3733}
 body.firered .gm-chip,body.firered .gm-tag{background:#e2f1f2;color:#24677a;border:0;border-radius:7px;text-shadow:none}
 body.firered .gm-mapbox{position:relative;padding:6px;overflow:hidden}
-body.firered .gm-mapcv{border-radius:9px;border:0}
+body.firered .gm-mapcv{border-radius:9px;border:0;box-shadow:none}
 body.firered .gm-maptools{gap:5px;background:#f8fbfdf2;padding:5px;border:1px solid #dce6ec;border-radius:12px;box-shadow:0 3px 8px #1634441c}
 body.firered .gm-maptools button{min-width:40px;min-height:40px;border:0;background:#eaf1f5;border-radius:8px;color:#183445;font:650 13px system-ui}
 body.firered .gm-mapescala{color:#536d7b;background:#f8fbfdf2;border:1px solid #dce6ec;border-radius:8px;font:500 10px system-ui}
