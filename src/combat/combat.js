@@ -478,7 +478,9 @@ export class Combat {
   // ---------- feixes contínuos ----------
   #beam(user, mv, id, ang, A) {
     const cfg = BEAMS[id];
-    const b = { user, mv, id, cfg, ang, A, len: 0, t: 0, tick: 0, color: typeHex(mv.type), mash: 0, struggle: null, ox: user.x, oy: user.y, hx: user.x, hy: user.y, maxLen: cfg.range * M };
+    // A receita visual não encurta o alcance anunciado do jogador.
+    // O alcance dos adversários continua igual ao publicado.
+    const b = { user, mv, id, cfg, ang, A, len: 0, t: 0, tick: 0, color: typeHex(mv.type), mash: 0, struggle: null, ox: user.x, oy: user.y, hx: user.x, hy: user.y, maxLen: user.side==='ally'?Math.max(cfg.range*M,this.range(mv,user)):cfg.range*M };
     this.beams.push(b);
     this.vfx.muzzle(mv.type, user.x, user.y - 10, ang, mv.power);
     this.g.fx.kick(0.12, 0);
