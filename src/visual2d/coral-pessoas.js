@@ -6,11 +6,13 @@ import { idPessoaCoral, COLUNAS_ANDAR } from '../sprites/pessoas-coral.js';
 const BASE=new URL('../../assets/hgss/personagens/',import.meta.url),DIRS=['down','up','left','right'];
 async function montar({id,look,correndo,jogador,montado=false,baseURL=BASE}){
  let img,propria=false;
- if(jogador)img=await folhaTreinador(look,correndo);
+ // O canvas de cores é compartilhado pelo criador, mas cada compositor possui
+ // seu bitmap/textura. Sair da arena não pode destruir o avatar da exploração.
+ if(jogador){img=await createImageBitmap(await folhaTreinador(look,correndo));propria=true;}
  else{const r=await fetch(new URL(id+'.webp',baseURL));if(!r.ok)throw Error('Folha ausente: '+id);img=await createImageBitmap(await r.blob());propria=true;}
  const cv=document.createElement('canvas');cv.width=img.width;cv.height=img.height;
  const ctx=cv.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0);
- if(montado){for(let j=0;j<4;j++)ctx.clearRect(0,j*32+25,cv.width,7);img=await createImageBitmap(cv);propria=true;}
+ if(montado){for(let j=0;j<4;j++)ctx.clearRect(0,j*32+25,cv.width,7);const anterior=img;img=await createImageBitmap(cv);if(propria)anterior.close?.();propria=true;}
  const d=ctx.getImageData(0,0,cv.width,cv.height).data;let topo=32,pe=0;
  for(let y=0;y<cv.height;y++)for(let x=0;x<cv.width;x++)if(d[(y*cv.width+x)*4+3]>40){topo=Math.min(topo,y%32);pe=Math.max(pe,y%32);}
  cv.width=cv.height=0;
