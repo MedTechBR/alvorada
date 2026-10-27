@@ -180,7 +180,7 @@ export class MountRig {
     const sx = ox + f.center.x * s - cx * C.back;
     const k = o.k ?? 1, r4 = RIDER_DIR[this.dir];
     // de frente para a câmera, o treinador fica atrás do pescoço/cabeça da montaria
-    const behind = C.behind ? C.behind.includes(this.dir) : this.dir >= 1 && this.dir <= 3; // Sneasler leva nas costas: de lado, ele fica na frente
+    const behind = C.behind ? C.behind.includes(this.dir) : this.g.visual2d ? this.dir === 2 : this.dir >= 1 && this.dir <= 3; // Sneasler leva nas costas: de lado, ele fica na frente
     if (C.topo != null) {
       // de frente para a câmera e atrás dela: quadril de 5 a 10 px abaixo do topo da silhueta (pernas escondidas, tronco aparece)
       const top = oy + (f.center.y * s - C.topo) - z + bob;
