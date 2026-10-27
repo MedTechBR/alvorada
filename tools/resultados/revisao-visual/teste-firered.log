@@ -1,0 +1,3 @@
+OK: 79 terrenos, sólidos visíveis, recorte incremental idêntico, atlas pequenos, identidades FireRed e seleção de todas as modalidades de combate.
+(node:91272) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

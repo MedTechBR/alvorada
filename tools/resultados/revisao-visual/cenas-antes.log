@@ -1,0 +1,2034 @@
+[
+  {
+    "nome": "Cidade Coral",
+    "npcs": [
+      {
+        "x": 16536,
+        "y": 18906,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 18906,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "coral_fa3",
+        "nome": "Menina da Festa",
+        "x": 16579.83999999996,
+        "y": 18714,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 18,
+        "bounds": {
+          "type": "rectangle",
+          "x": 478,
+          "y": -217,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "right",
+        "z": 18714,
+        "pe": 15,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "coral_velho",
+        "nome": "Seu Abel",
+        "x": 16424,
+        "y": 18890,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 166,
+          "y": 103,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 18890,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "coral_surf",
+        "nome": "Surfista",
+        "x": 16776,
+        "y": 19050,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 870,
+          "y": 423,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "right",
+        "z": 19050,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "coral_farol",
+        "nome": "Guarda do Farol",
+        "x": 16728,
+        "y": 18810,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 774,
+          "y": -57,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 18810,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "rumor_coral",
+        "nome": "Pescador de Coral",
+        "x": 16520,
+        "y": 18970,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 358,
+          "y": 263,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "left",
+        "z": 18970,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Centro Pokémon de Cidade Coral",
+    "npcs": [
+      {
+        "x": 280,
+        "y": 32826,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 219,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 32826,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "joy_centro_coral",
+        "nome": "Enfermeira Joy",
+        "x": 264,
+        "y": 32746,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 3,
+        "bounds": {
+          "type": "rectangle",
+          "x": 358,
+          "y": 61,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 32746,
+        "pe": 30,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "banhista_cc",
+        "nome": "Banhista",
+        "x": 216,
+        "y": 32810,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 262,
+          "y": 187,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "right",
+        "z": 32810,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "centro_coral_atendente_clube",
+        "nome": "Atendente do Clube",
+        "x": 200,
+        "y": 32762,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 230,
+          "y": 91,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 32762,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Farol Coral — Térreo (Ginásio de Cidade Coral)",
+    "npcs": [
+      {
+        "x": 3208,
+        "y": 32858,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 251,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 32858,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "g4_saulo",
+        "nome": "Técnico Saulo",
+        "x": 3288,
+        "y": 32842,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 550,
+          "y": 219,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 32842,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Farol Coral — Primeiro andar",
+    "npcs": [
+      {
+        "x": 3848,
+        "y": 32874,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 254,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 32874,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "g4_duda",
+        "nome": "Técnica Duda",
+        "x": 3920,
+        "y": 32762,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 534,
+          "y": 30,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 32762,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Farol Coral — Lanterna",
+    "npcs": [
+      {
+        "x": 4536,
+        "y": 32906,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 406,
+          "y": 254,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 32906,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "jonas",
+        "nome": "Líder Jonas",
+        "x": 4568,
+        "y": 32771.6,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 470,
+          "y": -14,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 32771.6,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Casa em Cidade Coral",
+    "npcs": [
+      {
+        "x": 16104,
+        "y": 31018,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 406,
+          "y": 203,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 31018,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "casa_301_384_m1",
+        "nome": "Dona Zuleide",
+        "x": 16136,
+        "y": 31018,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 4,
+        "bounds": {
+          "type": "rectangle",
+          "x": 470,
+          "y": 207,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 31018,
+        "pe": 29,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Mercado Pokémon de Cidade Coral",
+    "npcs": [
+      {
+        "x": 888,
+        "y": 32810,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 203,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 32810,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "cliente_lc",
+        "nome": "Turista",
+        "x": 904,
+        "y": 32794,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 18,
+        "bounds": {
+          "type": "rectangle",
+          "x": 422,
+          "y": 203,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 32794,
+        "pe": 15,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "vendedor_coral",
+        "nome": "Vendedor",
+        "x": 824,
+        "y": 32755.6,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 262,
+          "y": 95,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 32755.6,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Toca do Absol (Gruta do Musgo)",
+    "npcs": [
+      {
+        "x": 3208,
+        "y": 31626,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 158,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 31626,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Templo das Raízes: Átrio",
+    "npcs": [
+      {
+        "x": 4440,
+        "y": 41434,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 190,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 41434,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "tr1_ivo",
+        "nome": "Guardião Ivo",
+        "x": 4280,
+        "y": 41274,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 70,
+          "y": -130,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 41274,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Campos do Manguezal",
+    "npcs": [
+      {
+        "x": 18296,
+        "y": 16618,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 16618,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Cidade Campina",
+    "npcs": [
+      {
+        "x": 7112,
+        "y": 17578,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 17578,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "feirante",
+        "nome": "Dona Cida",
+        "x": 7144,
+        "y": 17402,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 4,
+        "bounds": {
+          "type": "rectangle",
+          "x": 454,
+          "y": -213,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 17402,
+        "pe": 29,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "fazendeiro",
+        "nome": "Seu Bento",
+        "x": 7304,
+        "y": 17514,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 774,
+          "y": 7,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 17514,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "vovo_camp",
+        "nome": "Vô Lino",
+        "x": 7080,
+        "y": 17386,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 326,
+          "y": -249,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 17386,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Cidade Escarpa",
+    "npcs": [
+      {
+        "x": 7352,
+        "y": 4762,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 4762,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "g7_juvenal",
+        "nome": "Mineiro Juvenal",
+        "x": 7352,
+        "y": 4762,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 4762,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "g7_rita",
+        "nome": "Alpinista Rita",
+        "x": 7352,
+        "y": 4762,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 4762,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Vila Alvorada",
+    "npcs": [
+      {
+        "x": 14744,
+        "y": 16858,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 16858,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "kid_vila1",
+        "nome": "Nina",
+        "x": 14696,
+        "y": 16922,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 18,
+        "bounds": {
+          "type": "rectangle",
+          "x": 294,
+          "y": 295,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 16922,
+        "pe": 15,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "kid_vila2",
+        "nome": "Lucas",
+        "x": 14776,
+        "y": 16842,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 18,
+        "bounds": {
+          "type": "rectangle",
+          "x": 454,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 16842,
+        "pe": 15,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "pescador",
+        "nome": "Seu Tonho",
+        "x": 14968,
+        "y": 16698,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 838,
+          "y": -185,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 16698,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "mom",
+        "nome": "Mãe",
+        "x": 14616,
+        "y": 16792,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 4,
+        "bounds": {
+          "type": "rectangle",
+          "x": 134,
+          "y": 7,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "left",
+        "z": 16792,
+        "pe": 29,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "rival",
+        "nome": "Téo",
+        "x": 14856,
+        "y": 16788.8,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 614,
+          "y": -3,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 16788.8,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Vila Sussurro",
+    "npcs": [
+      {
+        "x": 7784,
+        "y": 11098,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 11098,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Porto Espelho",
+    "npcs": [
+      {
+        "x": 20792,
+        "y": 15082,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 15082,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "pescadora_porto",
+        "nome": "Pescadora Nalva",
+        "x": 21000,
+        "y": 15050,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 806,
+          "y": 71,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 15050,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Praia Oeste",
+    "npcs": [
+      {
+        "x": 12920,
+        "y": 18826,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 18826,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Praia dos Corais",
+    "npcs": [
+      {
+        "x": 20440,
+        "y": 19210,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 19210,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Cidade Coral",
+    "npcs": [
+      {
+        "x": 16472,
+        "y": 18874,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 18874,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "coral_fa3",
+        "nome": "Menina da Festa",
+        "x": 16584,
+        "y": 18714,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 18,
+        "bounds": {
+          "type": "rectangle",
+          "x": 614,
+          "y": -153,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "right",
+        "z": 18714,
+        "pe": 15,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "coral_velho",
+        "nome": "Seu Abel",
+        "x": 16424,
+        "y": 18890,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 294,
+          "y": 167,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 18890,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "coral_farol",
+        "nome": "Guarda do Farol",
+        "x": 16728,
+        "y": 18810,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 902,
+          "y": 7,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 18810,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "rumor_coral",
+        "nome": "Pescador de Coral",
+        "x": 16520,
+        "y": 18970,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 486,
+          "y": 327,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "left",
+        "z": 18970,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Vila Lamparina",
+    "npcs": [
+      {
+        "x": 16072,
+        "y": 10522,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 10522,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "lamp_acendedor",
+        "nome": "Acendedor de Lampiões",
+        "x": 15992,
+        "y": 10456.579200000002,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 230,
+          "y": 5,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 10456.579200000002,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "lamp_menino",
+        "nome": "Joãozinho",
+        "x": 16184,
+        "y": 10538,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 18,
+        "bounds": {
+          "type": "rectangle",
+          "x": 614,
+          "y": 199,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 10538,
+        "pe": 15,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "lamp_tecela",
+        "nome": "Tecelã Rosário",
+        "x": 15928,
+        "y": 10602,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 4,
+        "bounds": {
+          "type": "rectangle",
+          "x": 102,
+          "y": 299,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 10602,
+        "pe": 29,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "lazaro",
+        "nome": "Seu Lázaro",
+        "x": 16056,
+        "y": 10346,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 358,
+          "y": -217,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 10346,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Cidade Aurora",
+    "npcs": [
+      {
+        "x": 24712,
+        "y": 8938,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 8938,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "aurora_menino",
+        "nome": "Menino",
+        "x": 24552,
+        "y": 8922,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 18,
+        "bounds": {
+          "type": "rectangle",
+          "x": 70,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 8922,
+        "pe": 15,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "aurora_executiva",
+        "nome": "Executiva",
+        "x": 24952,
+        "y": 9082,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 870,
+          "y": 423,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "left",
+        "z": 9082,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "aurora_guarda",
+        "nome": "Vigilante Aurora",
+        "x": 24664,
+        "y": 8778,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 294,
+          "y": -185,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 8778,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "aurora_turista",
+        "nome": "Turista",
+        "x": 24472,
+        "y": 8842,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": -90,
+          "y": -57,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "right",
+        "z": 8842,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Vila Geada",
+    "npcs": [
+      {
+        "x": 31848,
+        "y": 6010,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 6010,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "geada_aldeao1",
+        "nome": "Dona Alzira",
+        "x": 31656,
+        "y": 6058,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 4,
+        "bounds": {
+          "type": "rectangle",
+          "x": 6,
+          "y": 235,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 6058,
+        "pe": 29,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "geada_aldeao2",
+        "nome": "Seu Nilton",
+        "x": 32104,
+        "y": 5866,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 902,
+          "y": -153,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "left",
+        "z": 5866,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "rumor_geada",
+        "nome": "Velha da Neve",
+        "x": 31816,
+        "y": 6106,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 326,
+          "y": 327,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "right",
+        "z": 6106,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Praia do Levante",
+    "npcs": [
+      {
+        "x": 36856,
+        "y": 18634,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 18634,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Cidade Buriti",
+    "npcs": [
+      {
+        "x": 35880,
+        "y": 13162,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 13162,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "buriti_idosa",
+        "nome": "Dona Zulmira",
+        "x": 36072,
+        "y": 12970,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 4,
+        "bounds": {
+          "type": "rectangle",
+          "x": 774,
+          "y": -245,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "left",
+        "z": 12970,
+        "pe": 29,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Vila Mandacaru",
+    "npcs": [
+      {
+        "x": 31688,
+        "y": 11242,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 11242,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "forro_sanfona",
+        "nome": "Sanfoneiro Zé de Nô",
+        "x": 31528,
+        "y": 11242,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 70,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "right",
+        "z": 11242,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "forro_zabumba",
+        "nome": "Zabumbeiro Dedé",
+        "x": 31576,
+        "y": 11338,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 166,
+          "y": 327,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "right",
+        "z": 11338,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "forro_triangulo",
+        "nome": "Triangueiro Nenê",
+        "x": 31624,
+        "y": 11242,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 262,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "left",
+        "z": 11242,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Vila Siri",
+    "npcs": [
+      {
+        "x": 30664,
+        "y": 18490,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 18490,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "siri_menina",
+        "nome": "Naiara",
+        "x": 30616,
+        "y": 18538,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 18,
+        "bounds": {
+          "type": "rectangle",
+          "x": 294,
+          "y": 263,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 18538,
+        "pe": 15,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Vila Jandaia",
+    "npcs": [
+      {
+        "x": 4088,
+        "y": 25130,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 25130,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "rumor_jandaia",
+        "nome": "Guia da Selva",
+        "x": 4184,
+        "y": 24938,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 582,
+          "y": -249,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 24938,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  },
+  {
+    "nome": "Praia do Cipó",
+    "npcs": [
+      {
+        "x": 10568,
+        "y": 29770,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 29770,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "pendentes": 0
+  }
+]

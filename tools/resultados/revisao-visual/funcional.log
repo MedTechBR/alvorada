@@ -1,0 +1,114 @@
+<string>:6: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+{
+  "visibilidade": [
+    {
+      "id": "jogador",
+      "pixels": 840
+    },
+    {
+      "id": "joy_centro_coral",
+      "pixels": 880
+    },
+    {
+      "id": "banhista_cc",
+      "pixels": 712
+    },
+    {
+      "id": "centro_coral_atendente_clube",
+      "pixels": 840
+    }
+  ],
+  "montaria": [
+    {
+      "dir": 0,
+      "montado": true,
+      "erroEncaixe": 0,
+      "canvas": true,
+      "corpoNaFrente": true
+    },
+    {
+      "dir": 1,
+      "montado": true,
+      "erroEncaixe": 0,
+      "canvas": true,
+      "corpoNaFrente": true
+    },
+    {
+      "dir": 2,
+      "montado": true,
+      "erroEncaixe": 0,
+      "canvas": true,
+      "corpoNaFrente": false
+    },
+    {
+      "dir": 3,
+      "montado": true,
+      "erroEncaixe": 0,
+      "canvas": true,
+      "corpoNaFrente": true
+    },
+    {
+      "dir": 4,
+      "montado": true,
+      "erroEncaixe": 0,
+      "canvas": true,
+      "corpoNaFrente": true
+    },
+    {
+      "dir": 5,
+      "montado": true,
+      "erroEncaixe": 0,
+      "canvas": true,
+      "corpoNaFrente": true
+    },
+    {
+      "dir": 6,
+      "montado": true,
+      "erroEncaixe": 0,
+      "canvas": true,
+      "corpoNaFrente": true
+    },
+    {
+      "dir": 7,
+      "montado": true,
+      "erroEncaixe": 0,
+      "canvas": true,
+      "corpoNaFrente": true
+    }
+  ],
+  "topo": {
+    "nomes": [
+      "Pikachu",
+      "Krabby"
+    ],
+    "rs": [
+      {
+        "x": 12,
+        "y": 10.883146286010742,
+        "w": 375,
+        "h": 48.5,
+        "b": 59.38314628601074
+      },
+      {
+        "x": 403,
+        "y": 10.883146286010742,
+        "w": 375,
+        "h": 48.5,
+        "b": 59.38314628601074
+      }
+    ],
+    "atualizou": true,
+    "placas": 0,
+    "barraCorpo": 0
+  },
+  "arena": {
+    "tipo": "electric",
+    "estatico": true,
+    "tamanho": [
+      48,
+      32
+    ]
+  },
+  "pisoLiberado": true,
+  "erros": []
+}

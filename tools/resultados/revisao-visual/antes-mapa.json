@@ -1,0 +1,5899 @@
+{
+  "salas": [
+    {
+      "id": "casa_jogador",
+      "nome": "Casa do Ravi",
+      "x": 4,
+      "y": 1932,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_jogador_2",
+      "nome": "Quarto do Ravi",
+      "x": 39,
+      "y": 1932,
+      "w": 11,
+      "h": 7
+    },
+    {
+      "id": "casa_teo",
+      "nome": "Casa do Téo — Padaria Pão do Sol",
+      "x": 74,
+      "y": 1932,
+      "w": 13,
+      "h": 8
+    },
+    {
+      "id": "laboratorio",
+      "nome": "Laboratório do Prof. Jatobá",
+      "x": 109,
+      "y": 1932,
+      "w": 17,
+      "h": 12
+    },
+    {
+      "id": "radio",
+      "nome": "Rádio Alvorada",
+      "x": 144,
+      "y": 1932,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "casa_vizinha",
+      "nome": "Casa da Dona Flor",
+      "x": 179,
+      "y": 1932,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "centro_campina",
+      "nome": "Centro Pokémon de Campina",
+      "x": 214,
+      "y": 1932,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "loja_campina",
+      "nome": "Mercado Pokémon de Campina",
+      "x": 249,
+      "y": 1932,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_quinzinho",
+      "nome": "Casa do Seu Quinzinho",
+      "x": 284,
+      "y": 1932,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "casa_campina2",
+      "nome": "Casa do Agricultor",
+      "x": 319,
+      "y": 1932,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "celeiro_tome",
+      "nome": "Celeiro da Fazenda do Tomé",
+      "x": 354,
+      "y": 1932,
+      "w": 15,
+      "h": 9
+    },
+    {
+      "id": "centro_sussurro",
+      "nome": "Centro Pokémon de Vila Sussurro",
+      "x": 4,
+      "y": 1964,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "loja_sussurro",
+      "nome": "Mercado Pokémon de Vila Sussurro",
+      "x": 39,
+      "y": 1964,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "oficina_juca",
+      "nome": "Oficina do Seu Juca",
+      "x": 74,
+      "y": 1964,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "casa_tito",
+      "nome": "Casa do Tito",
+      "x": 109,
+      "y": 1964,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "estufa_lia",
+      "nome": "Estufa-Teia — Ginásio de Vila Sussurro",
+      "x": 144,
+      "y": 1964,
+      "w": 23,
+      "h": 18
+    },
+    {
+      "id": "toca_absol",
+      "nome": "Toca do Absol (Gruta do Musgo)",
+      "x": 184,
+      "y": 1964,
+      "w": 34,
+      "h": 18
+    },
+    {
+      "id": "centro_porto",
+      "nome": "Centro Pokémon de Porto Espelho",
+      "x": 254,
+      "y": 1964,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "casa_nestor",
+      "nome": "Casa do Seu Nestor",
+      "x": 289,
+      "y": 1964,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "galpao_barcos",
+      "nome": "Galpão de Barcos — Ginásio de Porto Espelho",
+      "x": 324,
+      "y": 1964,
+      "w": 21,
+      "h": 16
+    },
+    {
+      "id": "centro_coral",
+      "nome": "Centro Pokémon de Cidade Coral",
+      "x": 10,
+      "y": 2044,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "loja_coral",
+      "nome": "Mercado Pokémon de Cidade Coral",
+      "x": 49,
+      "y": 2044,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_coral",
+      "nome": "Casa da Família Brito",
+      "x": 86,
+      "y": 2044,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "escola_surfe",
+      "nome": "Escola de Surfe do Kauã",
+      "x": 121,
+      "y": 2044,
+      "w": 13,
+      "h": 8
+    },
+    {
+      "id": "casa_iracema",
+      "nome": "Casa da Iracema",
+      "x": 158,
+      "y": 2044,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "farol_coral",
+      "nome": "Farol Coral — Térreo (Ginásio de Cidade Coral)",
+      "x": 193,
+      "y": 2044,
+      "w": 15,
+      "h": 12
+    },
+    {
+      "id": "farol_coral_2",
+      "nome": "Farol Coral — Primeiro andar",
+      "x": 232,
+      "y": 2044,
+      "w": 17,
+      "h": 13
+    },
+    {
+      "id": "farol_topo",
+      "nome": "Farol Coral — Lanterna",
+      "x": 273,
+      "y": 2044,
+      "w": 20,
+      "h": 15
+    },
+    {
+      "id": "centro_lamparina",
+      "nome": "Centro Pokémon de Vila Lamparina",
+      "x": 312,
+      "y": 2044,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "loja_lamparina",
+      "nome": "Mercado Pokémon de Vila Lamparina",
+      "x": 351,
+      "y": 2044,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_lamparina",
+      "nome": "Casa do Seu Bento",
+      "x": 388,
+      "y": 2044,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "casa_benta",
+      "nome": "Casa da Vó Benta",
+      "x": 423,
+      "y": 2044,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_solano",
+      "nome": "Casa abandonada dos Solano",
+      "x": 460,
+      "y": 2044,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "casarao_velas",
+      "nome": "Casarão das Velas — Ginásio de Vila Lamparina",
+      "x": 495,
+      "y": 2044,
+      "w": 66,
+      "h": 22
+    },
+    {
+      "id": "centro_aurora",
+      "nome": "Centro Pokémon de Cidade Aurora",
+      "x": 568,
+      "y": 2044,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "loja_aurora",
+      "nome": "Mercado Pokémon de Cidade Aurora",
+      "x": 10,
+      "y": 2080,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "redacao_farol",
+      "nome": "Redação do jornal \"O Farol\"",
+      "x": 47,
+      "y": 2080,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_mineiro",
+      "nome": "Casa do Seu Dito",
+      "x": 84,
+      "y": 2080,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "torre_aurora",
+      "nome": "Torre Aurora — Recepção",
+      "x": 119,
+      "y": 2080,
+      "w": 21,
+      "h": 14
+    },
+    {
+      "id": "mina_aurora_n1",
+      "nome": "Mina Aurora — Nível 1",
+      "x": 164,
+      "y": 2080,
+      "w": 34,
+      "h": 20
+    },
+    {
+      "id": "mina_aurora_n2",
+      "nome": "Mina Aurora — Nível 2",
+      "x": 222,
+      "y": 2080,
+      "w": 34,
+      "h": 20
+    },
+    {
+      "id": "mina_aurora_n3",
+      "nome": "Mina Aurora — Nível 3",
+      "x": 280,
+      "y": 2080,
+      "w": 30,
+      "h": 20
+    },
+    {
+      "id": "mina_aurora_n4",
+      "nome": "Mina Aurora — Nível 4",
+      "x": 334,
+      "y": 2080,
+      "w": 30,
+      "h": 18
+    },
+    {
+      "id": "roda_capoeira",
+      "nome": "Roda de Capoeira — Ginásio do Forte Rochedo",
+      "x": 389,
+      "y": 1932,
+      "w": 20,
+      "h": 14
+    },
+    {
+      "id": "cova_paredao",
+      "nome": "Cova do Paredão",
+      "x": 429,
+      "y": 1932,
+      "w": 14,
+      "h": 9
+    },
+    {
+      "id": "mina_velha",
+      "nome": "Mina Velha — Ginásio de Cidade Escarpa",
+      "x": 463,
+      "y": 1932,
+      "w": 20,
+      "h": 14
+    },
+    {
+      "id": "ruinas_vigias",
+      "nome": "Ruínas dos Vigias — Colunata",
+      "x": 503,
+      "y": 1932,
+      "w": 16,
+      "h": 9
+    },
+    {
+      "id": "ruinas_vigias_sub",
+      "nome": "Ruínas dos Vigias — Sala dos Murais",
+      "x": 539,
+      "y": 1932,
+      "w": 16,
+      "h": 9
+    },
+    {
+      "id": "torre_vento",
+      "nome": "Torre do Vento — Ginásio de Mirante dos Ventos",
+      "x": 575,
+      "y": 1932,
+      "w": 20,
+      "h": 14
+    },
+    {
+      "id": "camara_coracao",
+      "nome": "Câmara do Coração — Relógio de Pedra",
+      "x": 615,
+      "y": 1932,
+      "w": 20,
+      "h": 14
+    },
+    {
+      "id": "portao_liga",
+      "nome": "Portão da Liga — Cidadela do Zênite",
+      "x": 655,
+      "y": 1932,
+      "w": 20,
+      "h": 14
+    },
+    {
+      "id": "sala_madrugada",
+      "nome": "Liga — Sala da Madrugada — Aurélio",
+      "x": 695,
+      "y": 1932,
+      "w": 20,
+      "h": 14
+    },
+    {
+      "id": "sala_manha",
+      "nome": "Liga — Sala da Manhã — Clarice",
+      "x": 735,
+      "y": 1932,
+      "w": 20,
+      "h": 14
+    },
+    {
+      "id": "sala_meio_dia",
+      "nome": "Liga — Sala do Meio-dia — Seu Brasa",
+      "x": 775,
+      "y": 1932,
+      "w": 20,
+      "h": 14
+    },
+    {
+      "id": "sala_entardecer",
+      "nome": "Liga — Sala do Entardecer — Iberê",
+      "x": 815,
+      "y": 1932,
+      "w": 20,
+      "h": 14
+    },
+    {
+      "id": "salao_campea",
+      "nome": "Liga — Salão da Campeã — Dalva",
+      "x": 855,
+      "y": 1932,
+      "w": 20,
+      "h": 14
+    },
+    {
+      "id": "caverna_zenite",
+      "nome": "Caverna do Zênite",
+      "x": 895,
+      "y": 1932,
+      "w": 22,
+      "h": 14
+    },
+    {
+      "id": "casa_olavo",
+      "nome": "Casa do Seu Olavo",
+      "x": 4,
+      "y": 2252,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "observatorio_boreal",
+      "nome": "Observatório Boreal",
+      "x": 39,
+      "y": 2252,
+      "w": 16,
+      "h": 12
+    },
+    {
+      "id": "casa_nev",
+      "nome": "Casa da Família Nev",
+      "x": 75,
+      "y": 2252,
+      "w": 14,
+      "h": 10
+    },
+    {
+      "id": "sorveteria_geada",
+      "nome": "Sorveteria da Dona Branca",
+      "x": 109,
+      "y": 2252,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "estalagem_uivo",
+      "nome": "Estalagem do Uivo",
+      "x": 142,
+      "y": 2252,
+      "w": 20,
+      "h": 12
+    },
+    {
+      "id": "caverna_gelo_1",
+      "nome": "Caverna de Gelo Cristalino: Saguão",
+      "x": 182,
+      "y": 2252,
+      "w": 46,
+      "h": 30
+    },
+    {
+      "id": "caverna_gelo_2",
+      "nome": "Caverna de Gelo Cristalino: Rio Congelado",
+      "x": 248,
+      "y": 2252,
+      "w": 46,
+      "h": 30
+    },
+    {
+      "id": "caverna_gelo_3",
+      "nome": "Caverna de Gelo Cristalino: Coração Azul",
+      "x": 314,
+      "y": 2252,
+      "w": 50,
+      "h": 30
+    },
+    {
+      "id": "camara_zero",
+      "nome": "Câmara do Zero Absoluto",
+      "x": 384,
+      "y": 2252,
+      "w": 24,
+      "h": 18
+    },
+    {
+      "id": "posto_neve",
+      "nome": "Posto da Neve",
+      "x": 428,
+      "y": 2252,
+      "w": 14,
+      "h": 9
+    },
+    {
+      "id": "casa_brasa",
+      "nome": "Casa do Seu Brasa",
+      "x": 4,
+      "y": 2412,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "lab_fosseis",
+      "nome": "Laboratório de Fósseis",
+      "x": 39,
+      "y": 2412,
+      "w": 17,
+      "h": 11
+    },
+    {
+      "id": "museu_sertao",
+      "nome": "Museu do Sertão",
+      "x": 76,
+      "y": 2412,
+      "w": 19,
+      "h": 11
+    },
+    {
+      "id": "tenda_rainha",
+      "nome": "Tenda da Rainha do Bazar",
+      "x": 115,
+      "y": 2412,
+      "w": 14,
+      "h": 9
+    },
+    {
+      "id": "ruinas_pintada_1",
+      "nome": "Ruínas de Pedra Pintada: Pátio das Pinturas",
+      "x": 149,
+      "y": 2412,
+      "w": 31,
+      "h": 24
+    },
+    {
+      "id": "ruinas_pintada_2",
+      "nome": "Ruínas de Pedra Pintada: Galeria da Areia",
+      "x": 200,
+      "y": 2412,
+      "w": 36,
+      "h": 24
+    },
+    {
+      "id": "ruinas_pintada_3",
+      "nome": "Ruínas de Pedra Pintada: Câmara do Sol",
+      "x": 256,
+      "y": 2412,
+      "w": 27,
+      "h": 21
+    },
+    {
+      "id": "centro_jandaia",
+      "nome": "Centro Pokémon da Vila Jandaia",
+      "x": 4,
+      "y": 2572,
+      "w": 17,
+      "h": 10
+    },
+    {
+      "id": "loja_jandaia",
+      "nome": "Mercado da Vila Jandaia",
+      "x": 41,
+      "y": 2572,
+      "w": 14,
+      "h": 9
+    },
+    {
+      "id": "creche_iara",
+      "nome": "Creche da Vó Iara",
+      "x": 75,
+      "y": 2572,
+      "w": 17,
+      "h": 11
+    },
+    {
+      "id": "casa_tupa",
+      "nome": "Casa do Pescador Tupã",
+      "x": 112,
+      "y": 2572,
+      "w": 15,
+      "h": 9
+    },
+    {
+      "id": "pousada_praia",
+      "nome": "Pousada da Praia",
+      "x": 147,
+      "y": 2572,
+      "w": 19,
+      "h": 10
+    },
+    {
+      "id": "terminal_jandaia",
+      "nome": "Píer da Balsa",
+      "x": 186,
+      "y": 2572,
+      "w": 15,
+      "h": 8
+    },
+    {
+      "id": "acampamento_selva",
+      "nome": "Acampamento dos Pesquisadores",
+      "x": 221,
+      "y": 2572,
+      "w": 17,
+      "h": 10
+    },
+    {
+      "id": "templo_raizes_1",
+      "nome": "Templo das Raízes: Átrio",
+      "x": 258,
+      "y": 2572,
+      "w": 34,
+      "h": 22
+    },
+    {
+      "id": "templo_raizes_2",
+      "nome": "Templo das Raízes: Galerias Inundadas",
+      "x": 312,
+      "y": 2572,
+      "w": 38,
+      "h": 22
+    },
+    {
+      "id": "templo_raizes_3",
+      "nome": "Templo das Raízes: Câmara da Semente",
+      "x": 370,
+      "y": 2572,
+      "w": 30,
+      "h": 18
+    },
+    {
+      "id": "templo_mares_1",
+      "nome": "Templo das Marés: Portal de Coral",
+      "x": 4,
+      "y": 2732,
+      "w": 20,
+      "h": 12
+    },
+    {
+      "id": "templo_mares_2",
+      "nome": "Templo das Marés: Galeria das Conchas",
+      "x": 44,
+      "y": 2732,
+      "w": 20,
+      "h": 12
+    },
+    {
+      "id": "templo_mares_3",
+      "nome": "Templo das Marés: Câmara do Mar Profundo",
+      "x": 84,
+      "y": 2732,
+      "w": 20,
+      "h": 12
+    },
+    {
+      "id": "caverna_iceberg_1",
+      "nome": "Caverna do Iceberg: Entrada de Gelo",
+      "x": 124,
+      "y": 2732,
+      "w": 18,
+      "h": 12
+    },
+    {
+      "id": "caverna_iceberg_2",
+      "nome": "Caverna do Iceberg: Câmara do Cristal",
+      "x": 162,
+      "y": 2732,
+      "w": 22,
+      "h": 12
+    },
+    {
+      "id": "farol_morto_torre",
+      "nome": "Farol Morto: Torre da Lâmpada",
+      "x": 204,
+      "y": 2732,
+      "w": 12,
+      "h": 16
+    },
+    {
+      "id": "recife_grande_fundo",
+      "nome": "Recife Grande: Fundo Submerso",
+      "x": 236,
+      "y": 2732,
+      "w": 20,
+      "h": 12
+    },
+    {
+      "id": "fossa_abissal",
+      "nome": "Fossa Abissal: Câmara do Rei do Mar",
+      "x": 276,
+      "y": 2732,
+      "w": 20,
+      "h": 14
+    },
+    {
+      "id": "centro_termas",
+      "nome": "Centro Pokémon de Vila Termas",
+      "x": 4,
+      "y": 2892,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "loja_termas",
+      "nome": "Mercado de Vila Termas",
+      "x": 39,
+      "y": 2892,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "casa_banhos",
+      "nome": "Casa de Banhos",
+      "x": 70,
+      "y": 2892,
+      "w": 17,
+      "h": 12
+    },
+    {
+      "id": "pousada_vapor",
+      "nome": "Pousada do Vapor",
+      "x": 107,
+      "y": 2892,
+      "w": 15,
+      "h": 11
+    },
+    {
+      "id": "forja_termas",
+      "nome": "Forja do Ferreiro Brasão",
+      "x": 142,
+      "y": 2892,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_vulcanologa",
+      "nome": "Casa da Vulcanóloga Dra. Lava",
+      "x": 175,
+      "y": 2892,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "templo_chama_1",
+      "nome": "Templo da Chama: Portal de Basalto",
+      "x": 208,
+      "y": 2892,
+      "w": 38,
+      "h": 24
+    },
+    {
+      "id": "templo_chama_2",
+      "nome": "Templo da Chama: Rio de Lava",
+      "x": 266,
+      "y": 2892,
+      "w": 44,
+      "h": 26
+    },
+    {
+      "id": "templo_chama_3",
+      "nome": "Templo da Chama: Forja Antiga",
+      "x": 330,
+      "y": 2892,
+      "w": 36,
+      "h": 30
+    },
+    {
+      "id": "estadio_tome",
+      "nome": "Estádio do Milharal",
+      "x": 4,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "estadio_lia",
+      "nome": "Estádio da Estufa-Teia",
+      "x": 74,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "estadio_marina",
+      "nome": "Estádio das Marés",
+      "x": 144,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "estadio_marina_pier",
+      "nome": "Estádio do Píer",
+      "x": 214,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "estadio_jonas",
+      "nome": "Estádio da Lanterna",
+      "x": 284,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "estadio_zelia",
+      "nome": "Estádio do Luar",
+      "x": 354,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "estadio_bras",
+      "nome": "Estádio da Roda",
+      "x": 424,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "estadio_graca",
+      "nome": "Estádio da Mina",
+      "x": 494,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "estadio_celeste",
+      "nome": "Estádio do Céu",
+      "x": 564,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "estadio_vespera",
+      "nome": "Estádio dos Menires",
+      "x": 634,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "estadio_necrozma",
+      "nome": "Estádio do Coração",
+      "x": 704,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "estadio_aurelio",
+      "nome": "Estádio da Madrugada",
+      "x": 774,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "estadio_clarice",
+      "nome": "Estádio da Manhã",
+      "x": 844,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "estadio_brasa",
+      "nome": "Estádio do Meio-dia",
+      "x": 914,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "estadio_ibere",
+      "nome": "Estádio do Entardecer",
+      "x": 984,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "estadio_dalva",
+      "nome": "Estádio da Campeã",
+      "x": 1054,
+      "y": 2122,
+      "w": 50,
+      "h": 36
+    },
+    {
+      "id": "loja_443_317",
+      "nome": "Mercado Pokémon de Porto Espelho",
+      "x": 937,
+      "y": 1932,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "casa_443_326",
+      "nome": "Casa em Porto Espelho",
+      "x": 968,
+      "y": 1932,
+      "w": 12,
+      "h": 10
+    },
+    {
+      "id": "casa_301_384",
+      "nome": "Casa em Cidade Coral",
+      "x": 1000,
+      "y": 1932,
+      "w": 12,
+      "h": 9
+    },
+    {
+      "id": "casa_320_386",
+      "nome": "Casa em Cidade Coral",
+      "x": 1032,
+      "y": 1932,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "casa_375_385",
+      "nome": "Casa em Cidade Coral",
+      "x": 1063,
+      "y": 1932,
+      "w": 12,
+      "h": 9
+    },
+    {
+      "id": "casa_375_385_2",
+      "nome": "Casa em Cidade Coral (andar de cima)",
+      "x": 1095,
+      "y": 1932,
+      "w": 10,
+      "h": 8
+    },
+    {
+      "id": "casa_346_226",
+      "nome": "Casa em Vila Lamparina",
+      "x": 1125,
+      "y": 1932,
+      "w": 12,
+      "h": 9
+    },
+    {
+      "id": "oficina_478_174",
+      "nome": "Oficina de Cidade Aurora",
+      "x": 1157,
+      "y": 1932,
+      "w": 11,
+      "h": 10
+    },
+    {
+      "id": "centro_538_186",
+      "nome": "Centro Pokémon de Cidade Aurora",
+      "x": 365,
+      "y": 1966,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "casa_521_203",
+      "nome": "Casa em Cidade Aurora",
+      "x": 400,
+      "y": 1966,
+      "w": 13,
+      "h": 10
+    },
+    {
+      "id": "oficina_530_203",
+      "nome": "Oficina de Cidade Aurora",
+      "x": 433,
+      "y": 1966,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "oficina_539_203",
+      "nome": "Oficina de Cidade Aurora",
+      "x": 466,
+      "y": 1966,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "centro_269_164",
+      "nome": "Centro Pokémon de Forte Rochedo",
+      "x": 497,
+      "y": 1966,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "loja_293_164",
+      "nome": "Mercado Pokémon de Forte Rochedo",
+      "x": 532,
+      "y": 1966,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "casa_266_176",
+      "nome": "Casa em Forte Rochedo",
+      "x": 563,
+      "y": 1966,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_266_176_2",
+      "nome": "Casa em Forte Rochedo (andar de cima)",
+      "x": 596,
+      "y": 1966,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "casa_296_176",
+      "nome": "Casa em Forte Rochedo",
+      "x": 627,
+      "y": 1966,
+      "w": 12,
+      "h": 10
+    },
+    {
+      "id": "centro_137_95",
+      "nome": "Centro Pokémon de Cidade Escarpa",
+      "x": 659,
+      "y": 1966,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "loja_161_95",
+      "nome": "Mercado Pokémon de Cidade Escarpa",
+      "x": 694,
+      "y": 1966,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "casa_134_107",
+      "nome": "Casa em Cidade Escarpa",
+      "x": 725,
+      "y": 1966,
+      "w": 12,
+      "h": 9
+    },
+    {
+      "id": "casa_134_107_2",
+      "nome": "Casa em Cidade Escarpa (andar de cima)",
+      "x": 757,
+      "y": 1966,
+      "w": 10,
+      "h": 8
+    },
+    {
+      "id": "casa_164_107",
+      "nome": "Casa em Cidade Escarpa",
+      "x": 787,
+      "y": 1966,
+      "w": 12,
+      "h": 9
+    },
+    {
+      "id": "centro_521_32",
+      "nome": "Centro Pokémon de Mirante dos Ventos",
+      "x": 819,
+      "y": 1966,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "loja_545_32",
+      "nome": "Mercado Pokémon de Mirante dos Ventos",
+      "x": 854,
+      "y": 1966,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "casa_518_44",
+      "nome": "Casa em Mirante dos Ventos",
+      "x": 885,
+      "y": 1966,
+      "w": 13,
+      "h": 10
+    },
+    {
+      "id": "casa_548_44",
+      "nome": "Casa em Mirante dos Ventos",
+      "x": 918,
+      "y": 1966,
+      "w": 12,
+      "h": 10
+    },
+    {
+      "id": "centro_290_5",
+      "nome": "Centro Pokémon de Liga Alvorada (Cidadela do Zênite)",
+      "x": 950,
+      "y": 1966,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "loja_314_5",
+      "nome": "Mercado Pokémon de Liga Alvorada (Cidadela do Zênite)",
+      "x": 985,
+      "y": 1966,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "arquivo_forte",
+      "nome": "Arquivo do Forte",
+      "x": 1016,
+      "y": 1966,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "casa_cobra",
+      "nome": "Casa do Mestre Cobra",
+      "x": 1047,
+      "y": 1966,
+      "w": 11,
+      "h": 10
+    },
+    {
+      "id": "atelie_pedrina",
+      "nome": "Ateliê da Dona Pedrina",
+      "x": 1078,
+      "y": 1966,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "pousada_planalto",
+      "nome": "Pousada do Planalto",
+      "x": 1111,
+      "y": 1966,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "pousada_planalto_2",
+      "nome": "Pousada do Planalto (andar de cima)",
+      "x": 1144,
+      "y": 1966,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "igreja_pedra",
+      "nome": "Igreja de Pedra",
+      "x": 1175,
+      "y": 1966,
+      "w": 15,
+      "h": 11
+    },
+    {
+      "id": "casa_762_108",
+      "nome": "Casa em Vila Geada",
+      "x": 462,
+      "y": 2252,
+      "w": 13,
+      "h": 10
+    },
+    {
+      "id": "centro_geada",
+      "nome": "Centro Pokémon (cabana de troncos)",
+      "x": 495,
+      "y": 2252,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "loja_geada",
+      "nome": "Mercado",
+      "x": 530,
+      "y": 2252,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "casa_786_108",
+      "nome": "Casa em Vila Geada",
+      "x": 561,
+      "y": 2252,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_786_108_2",
+      "nome": "Casa em Vila Geada (andar de cima)",
+      "x": 594,
+      "y": 2252,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "casa_782_132",
+      "nome": "Casa em Vila Geada",
+      "x": 625,
+      "y": 2252,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_782_132_2",
+      "nome": "Casa em Vila Geada (andar de cima)",
+      "x": 658,
+      "y": 2252,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "casa_794_132",
+      "nome": "Casa em Vila Geada",
+      "x": 689,
+      "y": 2252,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "casa_808_132",
+      "nome": "Casa em Vila Geada",
+      "x": 720,
+      "y": 2252,
+      "w": 12,
+      "h": 9
+    },
+    {
+      "id": "casa_812_118",
+      "nome": "Casa em Vila Geada",
+      "x": 752,
+      "y": 2252,
+      "w": 13,
+      "h": 10
+    },
+    {
+      "id": "casa_760_142",
+      "nome": "Casa em Vila Geada",
+      "x": 785,
+      "y": 2252,
+      "w": 12,
+      "h": 9
+    },
+    {
+      "id": "casa_924_175",
+      "nome": "Cabana do Eremita",
+      "x": 817,
+      "y": 2252,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_924_175_2",
+      "nome": "Cabana do Eremita (andar de cima)",
+      "x": 850,
+      "y": 2252,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "estacao_mandacaru",
+      "nome": "Estação Mandacaru",
+      "x": 303,
+      "y": 2412,
+      "w": 12,
+      "h": 10
+    },
+    {
+      "id": "centro_mandacaru",
+      "nome": "Centro Pokémon",
+      "x": 335,
+      "y": 2412,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "loja_mandacaru",
+      "nome": "Bodega do Zé Preá (loja)",
+      "x": 370,
+      "y": 2412,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "casa_farinha",
+      "nome": "Casa de Farinha",
+      "x": 401,
+      "y": 2412,
+      "w": 15,
+      "h": 11
+    },
+    {
+      "id": "capela_mandacaru",
+      "nome": "Capela de São Pedro",
+      "x": 436,
+      "y": 2412,
+      "w": 15,
+      "h": 11
+    },
+    {
+      "id": "casa_cacimba",
+      "nome": "Casa da Dona Socorro",
+      "x": 471,
+      "y": 2412,
+      "w": 11,
+      "h": 10
+    },
+    {
+      "id": "casa_767_239",
+      "nome": "Casa em Vila Mandacaru",
+      "x": 502,
+      "y": 2412,
+      "w": 12,
+      "h": 9
+    },
+    {
+      "id": "casa_790_239",
+      "nome": "Casa em Vila Mandacaru",
+      "x": 534,
+      "y": 2412,
+      "w": 11,
+      "h": 10
+    },
+    {
+      "id": "casa_800_239",
+      "nome": "Casa em Vila Mandacaru",
+      "x": 565,
+      "y": 2412,
+      "w": 11,
+      "h": 10
+    },
+    {
+      "id": "centro_buriti",
+      "nome": "Centro Pokémon",
+      "x": 596,
+      "y": 2412,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "bazar_buriti",
+      "nome": "Bazar do Oásis (loja)",
+      "x": 631,
+      "y": 2412,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "hotel_oasis",
+      "nome": "Hotel Oásis",
+      "x": 662,
+      "y": 2412,
+      "w": 12,
+      "h": 10
+    },
+    {
+      "id": "casa_caravana",
+      "nome": "Casa da Caravana",
+      "x": 694,
+      "y": 2412,
+      "w": 12,
+      "h": 10
+    },
+    {
+      "id": "arena_areia",
+      "nome": "Arena de Areia",
+      "x": 726,
+      "y": 2412,
+      "w": 15,
+      "h": 11
+    },
+    {
+      "id": "casa_1014_280",
+      "nome": "Casa em Cidade Buriti",
+      "x": 761,
+      "y": 2412,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_1014_280_2",
+      "nome": "Casa em Cidade Buriti (andar de cima)",
+      "x": 794,
+      "y": 2412,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "casa_1024_281",
+      "nome": "Casa em Cidade Buriti",
+      "x": 825,
+      "y": 2412,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_1024_281_2",
+      "nome": "Casa em Cidade Buriti (andar de cima)",
+      "x": 858,
+      "y": 2412,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "casa_1047_280",
+      "nome": "Casa em Cidade Buriti",
+      "x": 889,
+      "y": 2412,
+      "w": 13,
+      "h": 10
+    },
+    {
+      "id": "casa_1057_281",
+      "nome": "Casa em Cidade Buriti",
+      "x": 922,
+      "y": 2412,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_1065_280",
+      "nome": "Casa em Cidade Buriti",
+      "x": 955,
+      "y": 2412,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_1065_280_2",
+      "nome": "Casa em Cidade Buriti (andar de cima)",
+      "x": 988,
+      "y": 2412,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "centro_siri",
+      "nome": "Centro Pokémon (palafita)",
+      "x": 1019,
+      "y": 2412,
+      "w": 15,
+      "h": 10
+    },
+    {
+      "id": "loja_siri",
+      "nome": "Mercado do Caranguejo",
+      "x": 1054,
+      "y": 2412,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "casa_mare",
+      "nome": "Casa da Marisqueira Dona Maré",
+      "x": 1085,
+      "y": 2412,
+      "w": 13,
+      "h": 10
+    },
+    {
+      "id": "escola_canoa",
+      "nome": "Escola de Canoa",
+      "x": 1118,
+      "y": 2412,
+      "w": 11,
+      "h": 10
+    },
+    {
+      "id": "casa_rendeira",
+      "nome": "Casa da Rendeira",
+      "x": 1149,
+      "y": 2412,
+      "w": 12,
+      "h": 9
+    },
+    {
+      "id": "cais_siri",
+      "nome": "Cais do Barco das Brasas",
+      "x": 1181,
+      "y": 2412,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_76_607",
+      "nome": "Casa em Vila Jandaia",
+      "x": 420,
+      "y": 2572,
+      "w": 11,
+      "h": 10
+    },
+    {
+      "id": "casa_100_607",
+      "nome": "Casa em Vila Jandaia",
+      "x": 451,
+      "y": 2572,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_100_607_2",
+      "nome": "Casa em Vila Jandaia (andar de cima)",
+      "x": 484,
+      "y": 2572,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "casa_113_607",
+      "nome": "Casa em Ilha Jandaia",
+      "x": 515,
+      "y": 2572,
+      "w": 12,
+      "h": 9
+    },
+    {
+      "id": "casa_1012_644",
+      "nome": "Casa em Vila Termas",
+      "x": 386,
+      "y": 2892,
+      "w": 12,
+      "h": 9
+    },
+    {
+      "id": "casa_998_654",
+      "nome": "Casa da Dona Ritinha",
+      "x": 418,
+      "y": 2892,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "casa_1008_654",
+      "nome": "Casa em Vila Termas",
+      "x": 449,
+      "y": 2892,
+      "w": 13,
+      "h": 10
+    },
+    {
+      "id": "casa_966_666",
+      "nome": "Casa em Vila Termas",
+      "x": 482,
+      "y": 2892,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_966_666_2",
+      "nome": "Casa em Vila Termas (andar de cima)",
+      "x": 515,
+      "y": 2892,
+      "w": 11,
+      "h": 8
+    },
+    {
+      "id": "casa_976_666",
+      "nome": "Casa em Vila Termas",
+      "x": 546,
+      "y": 2892,
+      "w": 12,
+      "h": 9
+    },
+    {
+      "id": "casa_998_667",
+      "nome": "Casa do Seu Cinzas",
+      "x": 578,
+      "y": 2892,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "casa_1008_666",
+      "nome": "Casa em Vila Termas",
+      "x": 609,
+      "y": 2892,
+      "w": 13,
+      "h": 10
+    },
+    {
+      "id": "casa_930_629",
+      "nome": "Cabana do Barqueiro",
+      "x": 642,
+      "y": 2892,
+      "w": 13,
+      "h": 9
+    },
+    {
+      "id": "casa_918_652",
+      "nome": "Casa do Pescador Gaudêncio",
+      "x": 675,
+      "y": 2892,
+      "w": 12,
+      "h": 9
+    },
+    {
+      "id": "casa_918_652_2",
+      "nome": "Casa do Pescador Gaudêncio (andar de cima)",
+      "x": 707,
+      "y": 2892,
+      "w": 10,
+      "h": 8
+    },
+    {
+      "id": "oficina_902_641",
+      "nome": "Armazém de Pedra",
+      "x": 737,
+      "y": 2892,
+      "w": 13,
+      "h": 10
+    },
+    {
+      "id": "escritorio_1038_533",
+      "nome": "Farol das Brasas",
+      "x": 770,
+      "y": 2892,
+      "w": 11,
+      "h": 9
+    },
+    {
+      "id": "gruta_lumen",
+      "nome": "Gruta de Lúmen",
+      "x": 603,
+      "y": 2016,
+      "w": 31,
+      "h": 23
+    },
+    {
+      "id": "clareira_raizes",
+      "nome": "Clareira das Raízes",
+      "x": 654,
+      "y": 2016,
+      "w": 31,
+      "h": 23
+    },
+    {
+      "id": "ruina_pomar",
+      "nome": "Ruína do Pomar",
+      "x": 705,
+      "y": 2016,
+      "w": 31,
+      "h": 23
+    }
+  ],
+  "areas": [
+    {
+      "name": "Planalto dos Ventos",
+      "biome": "planalto",
+      "rect": [
+        0,
+        36,
+        1800,
+        324
+      ],
+      "id": "planalto_ventos",
+      "plantaRect": [
+        0,
+        12,
+        600,
+        108
+      ],
+      "centroGeografico": [
+        900,
+        198
+      ]
+    },
+    {
+      "name": "Rota Marítima 13",
+      "biome": "praia",
+      "rect": [
+        360,
+        1260,
+        1440,
+        180
+      ],
+      "id": "rota13",
+      "plantaRect": [
+        120,
+        420,
+        480,
+        60
+      ],
+      "centroGeografico": [
+        1080,
+        1350
+      ]
+    },
+    {
+      "name": "Bosque Sussurrante",
+      "biome": "floresta",
+      "rect": [
+        180,
+        504,
+        756,
+        324
+      ],
+      "id": "bosque_sussurrante",
+      "plantaRect": [
+        60,
+        168,
+        252,
+        108
+      ],
+      "centroGeografico": [
+        558,
+        666
+      ]
+    },
+    {
+      "name": "Lago Espelho",
+      "biome": "margem",
+      "rect": [
+        1188,
+        648,
+        504,
+        324
+      ],
+      "id": "lago_espelho",
+      "plantaRect": [
+        396,
+        216,
+        168,
+        108
+      ],
+      "centroGeografico": [
+        1440,
+        810
+      ]
+    },
+    {
+      "name": "Rota 9, Estepe dos Ventos",
+      "biome": "campo",
+      "rect": [
+        504,
+        144,
+        1044,
+        144
+      ],
+      "id": "rota9",
+      "plantaRect": [
+        168,
+        48,
+        348,
+        48
+      ],
+      "centroGeografico": [
+        1026,
+        216
+      ],
+      "caminhoAfinado": 2686,
+      "bordasCompostas": 492
+    },
+    {
+      "name": "Rota 4, Rio Lúmen e Restinga",
+      "biome": "praia",
+      "rect": [
+        1116,
+        972,
+        288,
+        252
+      ],
+      "id": "rota4",
+      "plantaRect": [
+        372,
+        324,
+        96,
+        84
+      ],
+      "centroGeografico": [
+        1260,
+        1098
+      ]
+    },
+    {
+      "name": "Paredão",
+      "biome": "planalto",
+      "rect": [
+        144,
+        396,
+        1584,
+        36
+      ],
+      "id": "paredao",
+      "plantaRect": [
+        48,
+        132,
+        528,
+        12
+      ],
+      "centroGeografico": [
+        936,
+        414
+      ]
+    },
+    {
+      "name": "Rota 6, Ferrovia da Aurora",
+      "biome": "campo",
+      "rect": [
+        1080,
+        504,
+        324,
+        144
+      ],
+      "id": "rota6",
+      "plantaRect": [
+        360,
+        168,
+        108,
+        48
+      ],
+      "centroGeografico": [
+        1242,
+        576
+      ],
+      "caminhoAfinado": 886,
+      "bordasCompostas": 82
+    },
+    {
+      "name": "Rota 10, Águas do Véu",
+      "biome": "margem",
+      "rect": [
+        1332,
+        720,
+        252,
+        180
+      ],
+      "id": "rota10",
+      "plantaRect": [
+        444,
+        240,
+        84,
+        60
+      ],
+      "centroGeografico": [
+        1458,
+        810
+      ]
+    },
+    {
+      "name": "Rota 5, Brejo das Lamparinas",
+      "biome": "floresta",
+      "rect": [
+        1008,
+        648,
+        216,
+        180
+      ],
+      "id": "rota5",
+      "plantaRect": [
+        336,
+        216,
+        72,
+        60
+      ],
+      "centroGeografico": [
+        1116,
+        738
+      ]
+    },
+    {
+      "name": "Rota 8, Escalada do Paredão",
+      "biome": "campo",
+      "rect": [
+        468,
+        288,
+        180,
+        144
+      ],
+      "id": "rota8",
+      "plantaRect": [
+        156,
+        96,
+        60,
+        48
+      ],
+      "centroGeografico": [
+        558,
+        360
+      ],
+      "caminhoAfinado": 549,
+      "bordasCompostas": 41
+    },
+    {
+      "name": "Rota 7, Ravina do Rochedo",
+      "biome": "campo",
+      "rect": [
+        900,
+        450,
+        468,
+        54
+      ],
+      "id": "rota7",
+      "plantaRect": [
+        300,
+        150,
+        156,
+        18
+      ],
+      "centroGeografico": [
+        1134,
+        477
+      ],
+      "caminhoAfinado": 230,
+      "bordasCompostas": 0
+    },
+    {
+      "name": "Rota 1, Campos de Lúmen",
+      "biome": "campo",
+      "rect": [
+        432,
+        990,
+        396,
+        54
+      ],
+      "id": "rota1",
+      "plantaRect": [
+        144,
+        330,
+        132,
+        18
+      ],
+      "centroGeografico": [
+        630,
+        1017
+      ],
+      "caminhoAfinado": 94,
+      "bordasCompostas": 246
+    },
+    {
+      "name": "Rota 3, Margem das Garças",
+      "biome": "campo",
+      "rect": [
+        972,
+        990,
+        324,
+        54
+      ],
+      "id": "rota3",
+      "plantaRect": [
+        324,
+        330,
+        108,
+        18
+      ],
+      "centroGeografico": [
+        1134,
+        1017
+      ],
+      "caminhoAfinado": 296,
+      "bordasCompostas": 0
+    },
+    {
+      "name": "Rota 12, Caminho do Zênite",
+      "biome": "planalto",
+      "rect": [
+        828,
+        36,
+        108,
+        144
+      ],
+      "id": "rota12",
+      "plantaRect": [
+        276,
+        12,
+        36,
+        48
+      ],
+      "centroGeografico": [
+        882,
+        108
+      ]
+    },
+    {
+      "name": "Ilhas Coral",
+      "biome": "praia",
+      "rect": [
+        396,
+        1260,
+        216,
+        72
+      ],
+      "id": "ilhas_coral",
+      "plantaRect": [
+        132,
+        420,
+        72,
+        24
+      ],
+      "centroGeografico": [
+        504,
+        1296
+      ]
+    },
+    {
+      "name": "Rota 2, Trilha das Paineiras",
+      "biome": "floresta",
+      "rect": [
+        342,
+        792,
+        72,
+        198
+      ],
+      "id": "rota2",
+      "plantaRect": [
+        114,
+        264,
+        24,
+        66
+      ],
+      "centroGeografico": [
+        378,
+        891
+      ]
+    },
+    {
+      "name": "Cidade Campina",
+      "biome": "vila",
+      "rect": [
+        360,
+        1008,
+        126,
+        108
+      ],
+      "id": "cidade_campina",
+      "plantaRect": [
+        120,
+        336,
+        42,
+        36
+      ],
+      "centroGeografico": [
+        437,
+        1086
+      ]
+    },
+    {
+      "name": "Mata dos Jequitibás",
+      "biome": "campo",
+      "rect": [
+        36,
+        504,
+        126,
+        108
+      ],
+      "id": "mata_jequitibas",
+      "plantaRect": [
+        12,
+        168,
+        42,
+        36
+      ],
+      "centroGeografico": [
+        99,
+        558
+      ]
+    },
+    {
+      "name": "Cidade Escarpa",
+      "biome": "vila",
+      "rect": [
+        396,
+        252,
+        126,
+        90
+      ],
+      "id": "cidade_escarpa",
+      "plantaRect": [
+        132,
+        84,
+        42,
+        30
+      ],
+      "centroGeografico": [
+        459,
+        297
+      ]
+    },
+    {
+      "name": "Vila Alvorada",
+      "biome": "vila",
+      "rect": [
+        864,
+        1008,
+        108,
+        90
+      ],
+      "id": "vila_alvorada",
+      "plantaRect": [
+        288,
+        336,
+        36,
+        30
+      ],
+      "centroGeografico": [
+        920,
+        1053
+      ]
+    },
+    {
+      "name": "Vila Sussurro",
+      "biome": "vila",
+      "rect": [
+        432,
+        648,
+        108,
+        90
+      ],
+      "id": "vila_sussurro",
+      "plantaRect": [
+        144,
+        216,
+        36,
+        30
+      ],
+      "centroGeografico": [
+        486,
+        703
+      ]
+    },
+    {
+      "name": "Porto Espelho",
+      "biome": "vila",
+      "rect": [
+        1296,
+        936,
+        126,
+        72
+      ],
+      "id": "porto_espelho",
+      "plantaRect": [
+        432,
+        312,
+        42,
+        24
+      ],
+      "centroGeografico": [
+        1359,
+        972
+      ]
+    },
+    {
+      "name": "Forte Rochedo",
+      "biome": "vila",
+      "rect": [
+        792,
+        468,
+        126,
+        72
+      ],
+      "id": "forte_rochedo",
+      "plantaRect": [
+        264,
+        156,
+        42,
+        24
+      ],
+      "centroGeografico": [
+        855,
+        504
+      ]
+    },
+    {
+      "name": "Mirante dos Ventos",
+      "biome": "vila",
+      "rect": [
+        1548,
+        72,
+        126,
+        72
+      ],
+      "id": "mirante_ventos",
+      "plantaRect": [
+        516,
+        24,
+        42,
+        24
+      ],
+      "centroGeografico": [
+        1611,
+        108
+      ]
+    },
+    {
+      "name": "Rota 11, Escadaria dos Vigias",
+      "biome": "campo",
+      "rect": [
+        828,
+        216,
+        72,
+        108
+      ],
+      "id": "rota11",
+      "plantaRect": [
+        276,
+        72,
+        24,
+        36
+      ],
+      "centroGeografico": [
+        864,
+        270
+      ],
+      "caminhoAfinado": 134,
+      "bordasCompostas": 0
+    },
+    {
+      "name": "Pico Geada",
+      "biome": "campo",
+      "rect": [
+        72,
+        0,
+        108,
+        72
+      ],
+      "id": "pico_geada",
+      "plantaRect": [
+        24,
+        0,
+        36,
+        24
+      ],
+      "centroGeografico": [
+        126,
+        36
+      ]
+    },
+    {
+      "name": "Liga Alvorada (Cidadela do Zênite)",
+      "biome": "vila",
+      "rect": [
+        864,
+        0,
+        108,
+        54
+      ],
+      "id": "liga_zenite",
+      "plantaRect": [
+        288,
+        0,
+        36,
+        18
+      ],
+      "centroGeografico": [
+        918,
+        27
+      ]
+    },
+    {
+      "name": "Relógio de Pedra",
+      "biome": "planalto",
+      "rect": [
+        864,
+        180,
+        72,
+        72
+      ],
+      "id": "relogio_pedra",
+      "plantaRect": [
+        288,
+        60,
+        24,
+        24
+      ],
+      "centroGeografico": [
+        900,
+        216
+      ]
+    },
+    {
+      "name": "Ilha do Sol Nascente",
+      "biome": "campo",
+      "rect": [
+        1728,
+        1152,
+        72,
+        72
+      ],
+      "id": "ilha_sol_nascente",
+      "plantaRect": [
+        576,
+        384,
+        24,
+        24
+      ],
+      "centroGeografico": [
+        1764,
+        1188
+      ]
+    },
+    {
+      "name": "Fazenda do Tomé",
+      "biome": "campo",
+      "rect": [
+        288,
+        900,
+        72,
+        54
+      ],
+      "id": "fazenda_tome",
+      "plantaRect": [
+        96,
+        300,
+        24,
+        18
+      ],
+      "centroGeografico": [
+        327,
+        928
+      ]
+    },
+    {
+      "name": "Ilha do Véu (Base Crepúsculo)",
+      "biome": "praia",
+      "rect": [
+        1512,
+        720,
+        72,
+        54
+      ],
+      "id": "ilha_veu",
+      "plantaRect": [
+        504,
+        240,
+        24,
+        18
+      ],
+      "centroGeografico": [
+        1548,
+        747
+      ]
+    },
+    {
+      "name": "Mina Aurora",
+      "biome": "planalto",
+      "rect": [
+        1152,
+        432,
+        72,
+        54
+      ],
+      "id": "mina_aurora",
+      "plantaRect": [
+        384,
+        144,
+        24,
+        18
+      ],
+      "centroGeografico": [
+        1188,
+        459
+      ]
+    },
+    {
+      "name": "Ruínas dos Vigias",
+      "biome": "campo",
+      "rect": [
+        648,
+        108,
+        72,
+        54
+      ],
+      "id": "ruinas_vigias",
+      "plantaRect": [
+        216,
+        36,
+        24,
+        18
+      ],
+      "centroGeografico": [
+        684,
+        135
+      ]
+    },
+    {
+      "name": "Recife Afundado",
+      "biome": "margem",
+      "rect": [
+        720,
+        1296,
+        72,
+        54
+      ],
+      "id": "recife_afundado",
+      "plantaRect": [
+        240,
+        432,
+        24,
+        18
+      ],
+      "centroGeografico": [
+        756,
+        1323
+      ]
+    },
+    {
+      "name": "Toca do Absol (Gruta do Musgo)",
+      "biome": "planalto",
+      "rect": [
+        576,
+        576,
+        54,
+        54
+      ],
+      "id": "toca_absol",
+      "plantaRect": [
+        192,
+        192,
+        18,
+        18
+      ],
+      "centroGeografico": [
+        603,
+        603
+      ]
+    },
+    {
+      "name": "Santuário do Crepúsculo",
+      "biome": "margem",
+      "rect": [
+        1440,
+        792,
+        54,
+        54
+      ],
+      "id": "santuario_crepusculo",
+      "plantaRect": [
+        480,
+        264,
+        18,
+        18
+      ],
+      "centroGeografico": [
+        1467,
+        819
+      ]
+    },
+    {
+      "name": "Lagoa Dourada",
+      "biome": "campo",
+      "rect": [
+        612,
+        900,
+        54,
+        54
+      ],
+      "id": "lagoa_dourada",
+      "plantaRect": [
+        204,
+        300,
+        18,
+        18
+      ],
+      "centroGeografico": [
+        639,
+        927
+      ]
+    },
+    {
+      "name": "Fenda Prismática",
+      "biome": "campo",
+      "rect": [
+        864,
+        216,
+        54,
+        54
+      ],
+      "id": "fenda_prismatica",
+      "plantaRect": [
+        288,
+        72,
+        18,
+        18
+      ],
+      "centroGeografico": [
+        891,
+        243
+      ]
+    },
+    {
+      "name": "Gruta da Maré",
+      "biome": "planalto",
+      "rect": [
+        756,
+        1188,
+        54,
+        36
+      ],
+      "id": "gruta_mare",
+      "plantaRect": [
+        252,
+        396,
+        18,
+        12
+      ],
+      "centroGeografico": [
+        783,
+        1206
+      ]
+    },
+    {
+      "name": "Bosque Sussurrante",
+      "biome": "floresta",
+      "rect": [
+        180,
+        504,
+        756,
+        324
+      ],
+      "id": "bosque_sussurrante",
+      "encounters": [
+        [
+          11,
+          15,
+          19,
+          6
+        ],
+        [
+          12,
+          15,
+          19,
+          2
+        ],
+        [
+          415,
+          15,
+          19,
+          10
+        ],
+        [
+          167,
+          15,
+          19,
+          10
+        ],
+        [
+          48,
+          15,
+          19,
+          10
+        ],
+        [
+          285,
+          15,
+          19,
+          8
+        ],
+        [
+          590,
+          15,
+          19,
+          8
+        ],
+        [
+          546,
+          15,
+          19,
+          6
+        ],
+        [
+          290,
+          15,
+          19,
+          6
+        ],
+        [
+          731,
+          15,
+          19,
+          6
+        ],
+        [
+          819,
+          15,
+          19,
+          6
+        ],
+        [
+          708,
+          15,
+          19,
+          4
+        ],
+        [
+          570,
+          15,
+          19,
+          3
+        ],
+        [
+          214,
+          15,
+          19,
+          1
+        ],
+        [
+          123,
+          15,
+          19,
+          2
+        ],
+        [
+          216,
+          15,
+          19,
+          4
+        ],
+        [
+          14,
+          15,
+          19,
+          4
+        ],
+        [
+          15,
+          15,
+          19,
+          2
+        ]
+      ],
+      "plantaRect": [
+        60,
+        168,
+        252,
+        108
+      ],
+      "centroGeografico": [
+        558,
+        666
+      ]
+    },
+    {
+      "name": "Campos ao norte da Rota 1",
+      "biome": "campo",
+      "rect": [
+        420,
+        828,
+        510,
+        144
+      ],
+      "plantaRect": [
+        140,
+        276,
+        170,
+        48
+      ],
+      "centroGeografico": [
+        675,
+        900
+      ]
+    },
+    {
+      "name": "Rota 1, Campos de Lúmen",
+      "biome": "campo",
+      "rect": [
+        540,
+        954,
+        318,
+        168
+      ],
+      "plantaRect": [
+        180,
+        318,
+        106,
+        56
+      ],
+      "centroGeografico": [
+        699,
+        1038
+      ],
+      "caminhoAfinado": 992,
+      "bordasCompostas": 82
+    },
+    {
+      "name": "Lagoa Dourada",
+      "biome": "margem",
+      "rect": [
+        606,
+        897,
+        69,
+        63
+      ],
+      "plantaRect": [
+        202,
+        299,
+        23,
+        21
+      ],
+      "centroGeografico": [
+        641,
+        929
+      ]
+    },
+    {
+      "name": "Cidade Campina",
+      "biome": "vila",
+      "rect": [
+        348,
+        1002,
+        192,
+        192
+      ],
+      "plantaRect": [
+        116,
+        334,
+        64,
+        64
+      ],
+      "centroGeografico": [
+        444,
+        1098
+      ]
+    },
+    {
+      "name": "Ginásio de Campina",
+      "biome": "vila",
+      "rect": [
+        330,
+        1086,
+        114,
+        114
+      ],
+      "plantaRect": [
+        110,
+        362,
+        38,
+        38
+      ],
+      "centroGeografico": [
+        425,
+        1113
+      ]
+    },
+    {
+      "name": "Fazenda do Tomé",
+      "biome": "vila",
+      "rect": [
+        282,
+        894,
+        93,
+        69
+      ],
+      "plantaRect": [
+        94,
+        298,
+        31,
+        23
+      ],
+      "centroGeografico": [
+        329,
+        929
+      ]
+    },
+    {
+      "name": "Rota 2, Trilha das Paineiras",
+      "biome": "floresta",
+      "rect": [
+        282,
+        786,
+        132,
+        108
+      ],
+      "id": "rota2",
+      "encounters": [
+        [
+          10,
+          15,
+          19,
+          10
+        ],
+        [
+          11,
+          15,
+          19,
+          4
+        ],
+        [
+          415,
+          15,
+          19,
+          12
+        ],
+        [
+          406,
+          15,
+          19,
+          12
+        ],
+        [
+          819,
+          15,
+          19,
+          12
+        ],
+        [
+          731,
+          15,
+          19,
+          10
+        ],
+        [
+          290,
+          15,
+          19,
+          8
+        ],
+        [
+          546,
+          15,
+          19,
+          8
+        ],
+        [
+          194,
+          15,
+          19,
+          8
+        ],
+        [
+          749,
+          15,
+          19,
+          5
+        ],
+        [
+          13,
+          15,
+          19,
+          6
+        ],
+        [
+          664,
+          15,
+          19,
+          6
+        ]
+      ],
+      "plantaRect": [
+        94,
+        262,
+        44,
+        36
+      ],
+      "centroGeografico": [
+        348,
+        840
+      ]
+    },
+    {
+      "name": "Vila Alvorada",
+      "biome": "vila",
+      "rect": [
+        855,
+        999,
+        132,
+        108
+      ],
+      "plantaRect": [
+        285,
+        333,
+        44,
+        36
+      ],
+      "centroGeografico": [
+        921,
+        1053
+      ]
+    },
+    {
+      "name": "Vila Sussurro",
+      "biome": "vila",
+      "ellipse": [
+        486,
+        703,
+        63,
+        51
+      ],
+      "plantaEllipse": [
+        162,
+        231,
+        21,
+        17
+      ]
+    },
+    {
+      "name": "Rota 3, Margem das Garças",
+      "biome": "margem",
+      "rect": [
+        987,
+        978,
+        312,
+        120
+      ],
+      "id": "rota3",
+      "encounters": [
+        [
+          54,
+          5,
+          9,
+          18
+        ],
+        [
+          278,
+          5,
+          9,
+          16
+        ],
+        [
+          183,
+          5,
+          9,
+          14
+        ],
+        [
+          283,
+          5,
+          9,
+          12
+        ],
+        [
+          194,
+          5,
+          9,
+          10
+        ],
+        [
+          270,
+          5,
+          9,
+          12
+        ],
+        [
+          580,
+          5,
+          9,
+          10
+        ],
+        [
+          973,
+          5,
+          9,
+          4
+        ],
+        [
+          129,
+          5,
+          9,
+          8
+        ],
+        [
+          418,
+          5,
+          9,
+          6
+        ],
+        [
+          396,
+          5,
+          9,
+          6
+        ],
+        [
+          17,
+          5,
+          9,
+          4
+        ],
+        [
+          656,
+          5,
+          9,
+          2
+        ]
+      ],
+      "plantaRect": [
+        329,
+        326,
+        104,
+        40
+      ],
+      "centroGeografico": [
+        1143,
+        1038
+      ]
+    },
+    {
+      "name": "Lago Espelho",
+      "biome": "margem",
+      "rect": [
+        1188,
+        648,
+        504,
+        276
+      ],
+      "id": "lago_espelho",
+      "encounters": [
+        [
+          54,
+          19,
+          23,
+          16
+        ],
+        [
+          278,
+          19,
+          23,
+          16
+        ],
+        [
+          183,
+          19,
+          23,
+          12
+        ],
+        [
+          418,
+          19,
+          23,
+          10
+        ],
+        [
+          79,
+          19,
+          23,
+          8
+        ],
+        [
+          550,
+          19,
+          23,
+          6
+        ],
+        [
+          422,
+          19,
+          23,
+          10
+        ],
+        [
+          270,
+          19,
+          23,
+          8
+        ],
+        [
+          129,
+          19,
+          23,
+          8
+        ],
+        [
+          130,
+          19,
+          23,
+          1
+        ],
+        [
+          349,
+          19,
+          23,
+          1
+        ]
+      ],
+      "plantaRect": [
+        396,
+        216,
+        168,
+        92
+      ],
+      "centroGeografico": [
+        1440,
+        786
+      ]
+    },
+    {
+      "name": "Porto Espelho",
+      "biome": "vila",
+      "rect": [
+        1242,
+        870,
+        114,
+        144
+      ],
+      "id": "porto_espelho",
+      "plantaRect": [
+        414,
+        290,
+        38,
+        48
+      ],
+      "centroGeografico": [
+        1299,
+        942
+      ]
+    },
+    {
+      "name": "Campos do Manguezal",
+      "biome": "campo",
+      "rect": [
+        1116,
+        972,
+        192,
+        132
+      ],
+      "id": "manguezal",
+      "encounters": [
+        [
+          54,
+          6,
+          10,
+          10
+        ],
+        [
+          396,
+          6,
+          10,
+          10
+        ],
+        [
+          397,
+          6,
+          10,
+          4
+        ],
+        [
+          183,
+          6,
+          10,
+          8
+        ],
+        [
+          194,
+          6,
+          10,
+          8
+        ],
+        [
+          278,
+          6,
+          10,
+          8
+        ],
+        [
+          403,
+          6,
+          10,
+          6
+        ],
+        [
+          179,
+          6,
+          10,
+          6
+        ],
+        [
+          163,
+          6,
+          10,
+          4
+        ]
+      ],
+      "cap456": true,
+      "cap456b": true,
+      "night": [
+        [
+          163,
+          19,
+          22,
+          12
+        ],
+        [
+          164,
+          22,
+          23,
+          3
+        ],
+        [
+          41,
+          19,
+          22,
+          10
+        ],
+        [
+          194,
+          19,
+          22,
+          8
+        ],
+        [
+          403,
+          20,
+          22,
+          6
+        ]
+      ],
+      "plantaRect": [
+        372,
+        324,
+        64,
+        44
+      ],
+      "centroGeografico": [
+        1212,
+        1038
+      ]
+    },
+    {
+      "name": "Praia Oeste",
+      "biome": "praia",
+      "rect": [
+        714,
+        1110,
+        186,
+        132
+      ],
+      "id": "praia_oeste",
+      "encounters": [
+        [
+          551,
+          5,
+          9,
+          12
+        ],
+        [
+          328,
+          5,
+          9,
+          10
+        ],
+        [
+          278,
+          5,
+          9,
+          12
+        ],
+        [
+          120,
+          5,
+          9,
+          8
+        ],
+        [
+          688,
+          5,
+          9,
+          8
+        ],
+        [
+          692,
+          5,
+          9,
+          6
+        ],
+        [
+          422,
+          5,
+          9,
+          10
+        ]
+      ],
+      "cap456": true,
+      "cap456b": true,
+      "night": [
+        [
+          120,
+          23,
+          26,
+          14
+        ],
+        [
+          170,
+          23,
+          26,
+          10
+        ],
+        [
+          422,
+          22,
+          25,
+          8
+        ],
+        [
+          551,
+          22,
+          25,
+          6
+        ]
+      ],
+      "plantaRect": [
+        238,
+        370,
+        62,
+        44
+      ],
+      "centroGeografico": [
+        807,
+        1176
+      ]
+    },
+    {
+      "name": "Rota 7, Ravina do Rochedo",
+      "biome": "campo",
+      "rect": [
+        900,
+        450,
+        468,
+        54
+      ],
+      "id": "rota7",
+      "encounters": [
+        [
+          66,
+          20,
+          24,
+          12
+        ],
+        [
+          56,
+          20,
+          24,
+          12
+        ],
+        [
+          532,
+          20,
+          24,
+          10
+        ],
+        [
+          296,
+          20,
+          24,
+          10
+        ],
+        [
+          74,
+          20,
+          24,
+          10
+        ],
+        [
+          75,
+          20,
+          24,
+          3
+        ],
+        [
+          524,
+          20,
+          24,
+          8
+        ],
+        [
+          307,
+          20,
+          24,
+          5
+        ],
+        [
+          447,
+          20,
+          24,
+          1
+        ],
+        [
+          67,
+          20,
+          24,
+          2
+        ],
+        [
+          903,
+          23,
+          24,
+          3
+        ]
+      ],
+      "cap456": true,
+      "cap456b": true,
+      "night": [
+        [
+          66,
+          34,
+          37,
+          10
+        ],
+        [
+          198,
+          34,
+          37,
+          8
+        ],
+        [
+          41,
+          34,
+          36,
+          8
+        ],
+        [
+          42,
+          36,
+          38,
+          4
+        ],
+        [
+          524,
+          34,
+          37,
+          8
+        ],
+        [
+          302,
+          35,
+          37,
+          3
+        ]
+      ],
+      "plantaRect": [
+        300,
+        150,
+        156,
+        18
+      ],
+      "centroGeografico": [
+        1134,
+        477
+      ],
+      "caminhoAfinado": 23,
+      "bordasCompostas": 0
+    },
+    {
+      "name": "Pé do Paredão (Mina Aurora)",
+      "biome": "planalto",
+      "rect": [
+        1140,
+        432,
+        96,
+        18
+      ],
+      "id": "mina_aurora",
+      "encounters": [
+        [
+          524,
+          22,
+          26,
+          12
+        ],
+        [
+          529,
+          22,
+          26,
+          10
+        ],
+        [
+          74,
+          22,
+          26,
+          10
+        ],
+        [
+          969,
+          22,
+          26,
+          6
+        ],
+        [
+          41,
+          22,
+          26,
+          6
+        ]
+      ],
+      "cap456": true,
+      "cap456b": true,
+      "plantaRect": [
+        380,
+        144,
+        32,
+        6
+      ],
+      "centroGeografico": [
+        1188,
+        441
+      ]
+    },
+    {
+      "name": "Rota 4, Rio Lúmen",
+      "biome": "margem",
+      "rect": [
+        1308,
+        972,
+        132,
+        150
+      ],
+      "cap456": true,
+      "id": "rota4",
+      "encounters": [
+        [
+          418,
+          14,
+          18,
+          14
+        ],
+        [
+          419,
+          14,
+          18,
+          3
+        ],
+        [
+          422,
+          14,
+          18,
+          12
+        ],
+        [
+          278,
+          14,
+          18,
+          12
+        ],
+        [
+          279,
+          14,
+          18,
+          3
+        ],
+        [
+          54,
+          14,
+          18,
+          6
+        ],
+        [
+          550,
+          14,
+          18,
+          6
+        ],
+        [
+          170,
+          14,
+          18,
+          5
+        ],
+        [
+          456,
+          14,
+          18,
+          8
+        ],
+        [
+          339,
+          14,
+          18,
+          6
+        ],
+        [
+          283,
+          14,
+          18,
+          5
+        ],
+        [
+          284,
+          14,
+          18,
+          2
+        ]
+      ],
+      "plantaRect": [
+        436,
+        324,
+        44,
+        50
+      ],
+      "centroGeografico": [
+        1374,
+        1047
+      ]
+    },
+    {
+      "name": "Restinga",
+      "biome": "praia",
+      "rect": [
+        1200,
+        1110,
+        150,
+        48
+      ],
+      "cap456": true,
+      "id": "restinga",
+      "encounters": [
+        [
+          551,
+          9,
+          13,
+          14
+        ],
+        [
+          552,
+          9,
+          13,
+          2
+        ],
+        [
+          328,
+          9,
+          13,
+          12
+        ],
+        [
+          449,
+          9,
+          13,
+          6
+        ],
+        [
+          932,
+          9,
+          13,
+          8
+        ],
+        [
+          688,
+          9,
+          13,
+          6
+        ],
+        [
+          278,
+          9,
+          13,
+          8
+        ],
+        [
+          692,
+          9,
+          13,
+          5
+        ],
+        [
+          415,
+          9,
+          13,
+          4
+        ]
+      ],
+      "plantaRect": [
+        400,
+        370,
+        50,
+        16
+      ],
+      "centroGeografico": [
+        1275,
+        1134
+      ]
+    },
+    {
+      "name": "Praia dos Corais",
+      "biome": "praia",
+      "rect": [
+        1203,
+        1158,
+        147,
+        84
+      ],
+      "cap456": true,
+      "id": "praia_corais",
+      "encounters": [
+        [
+          120,
+          11,
+          15,
+          12
+        ],
+        [
+          688,
+          11,
+          15,
+          10
+        ],
+        [
+          692,
+          11,
+          15,
+          8
+        ],
+        [
+          422,
+          11,
+          15,
+          10
+        ],
+        [
+          278,
+          11,
+          15,
+          8
+        ],
+        [
+          279,
+          11,
+          15,
+          3
+        ],
+        [
+          690,
+          11,
+          15,
+          5
+        ],
+        [
+          458,
+          11,
+          15,
+          4
+        ],
+        [
+          116,
+          11,
+          15,
+          5
+        ],
+        [
+          121,
+          11,
+          15,
+          1
+        ],
+        [
+          226,
+          14,
+          15,
+          2
+        ]
+      ],
+      "night": [
+        [
+          120,
+          25,
+          28,
+          14
+        ],
+        [
+          170,
+          25,
+          28,
+          10
+        ],
+        [
+          422,
+          24,
+          27,
+          8
+        ],
+        [
+          690,
+          25,
+          27,
+          6
+        ],
+        [
+          171,
+          27,
+          28,
+          2
+        ],
+        [
+          457,
+          26,
+          28,
+          4
+        ],
+        [
+          688,
+          24,
+          27,
+          6
+        ]
+      ],
+      "plantaRect": [
+        401,
+        386,
+        49,
+        28
+      ],
+      "centroGeografico": [
+        1277,
+        1200
+      ]
+    },
+    {
+      "name": "Cidade Coral",
+      "biome": "vila",
+      "rect": [
+        900,
+        1116,
+        258,
+        126
+      ],
+      "cap456": true,
+      "id": "cidade_coral",
+      "plantaRect": [
+        300,
+        372,
+        86,
+        42
+      ],
+      "centroGeografico": [
+        1029,
+        1179
+      ]
+    },
+    {
+      "name": "Morro do Farol",
+      "biome": "vila",
+      "rect": [
+        1152,
+        1185,
+        51,
+        45
+      ],
+      "cap456": true,
+      "id": "morro_farol",
+      "plantaRect": [
+        384,
+        395,
+        17,
+        15
+      ],
+      "centroGeografico": [
+        1178,
+        1208
+      ]
+    },
+    {
+      "name": "Rota 5, Brejo das Lamparinas",
+      "biome": "floresta",
+      "rect": [
+        936,
+        696,
+        303,
+        165
+      ],
+      "cap456": true,
+      "id": "rota5",
+      "encounters": [
+        [
+          453,
+          13,
+          17,
+          14
+        ],
+        [
+          535,
+          13,
+          17,
+          12
+        ],
+        [
+          536,
+          13,
+          17,
+          4
+        ],
+        [
+          618,
+          13,
+          17,
+          8
+        ],
+        [
+          590,
+          13,
+          17,
+          10
+        ],
+        [
+          591,
+          13,
+          17,
+          2
+        ],
+        [
+          163,
+          13,
+          17,
+          8
+        ],
+        [
+          194,
+          13,
+          17,
+          8
+        ],
+        [
+          195,
+          13,
+          17,
+          3
+        ],
+        [
+          285,
+          13,
+          17,
+          6
+        ],
+        [
+          708,
+          13,
+          17,
+          4
+        ],
+        [
+          339,
+          13,
+          17,
+          6
+        ]
+      ],
+      "night": [
+        [
+          92,
+          28,
+          31,
+          14
+        ],
+        [
+          93,
+          31,
+          32,
+          3
+        ],
+        [
+          200,
+          28,
+          31,
+          10
+        ],
+        [
+          355,
+          28,
+          31,
+          10
+        ],
+        [
+          163,
+          27,
+          30,
+          10
+        ],
+        [
+          164,
+          31,
+          32,
+          4
+        ],
+        [
+          708,
+          28,
+          31,
+          6
+        ],
+        [
+          535,
+          27,
+          30,
+          8
+        ],
+        [
+          453,
+          28,
+          31,
+          6
+        ],
+        [
+          618,
+          28,
+          31,
+          5
+        ]
+      ],
+      "plantaRect": [
+        312,
+        232,
+        101,
+        55
+      ],
+      "centroGeografico": [
+        1088,
+        779
+      ]
+    },
+    {
+      "name": "Vila Lamparina",
+      "biome": "vila",
+      "rect": [
+        936,
+        618,
+        135,
+        78
+      ],
+      "cap456": true,
+      "id": "vila_lamparina",
+      "plantaRect": [
+        312,
+        206,
+        45,
+        26
+      ],
+      "centroGeografico": [
+        1004,
+        657
+      ]
+    },
+    {
+      "name": "Cemitério das Velas",
+      "biome": "floresta",
+      "rect": [
+        945,
+        570,
+        114,
+        48
+      ],
+      "cap456": true,
+      "id": "cemiterio_velas",
+      "encounters": [
+        [
+          163,
+          15,
+          19,
+          10
+        ],
+        [
+          509,
+          15,
+          19,
+          8
+        ],
+        [
+          198,
+          15,
+          19,
+          4
+        ]
+      ],
+      "night": [
+        [
+          92,
+          28,
+          31,
+          12
+        ],
+        [
+          200,
+          28,
+          31,
+          10
+        ],
+        [
+          355,
+          28,
+          31,
+          12
+        ],
+        [
+          353,
+          28,
+          31,
+          8
+        ],
+        [
+          607,
+          29,
+          31,
+          5
+        ],
+        [
+          971,
+          28,
+          30,
+          4
+        ],
+        [
+          425,
+          29,
+          31,
+          3
+        ]
+      ],
+      "plantaRect": [
+        315,
+        190,
+        38,
+        16
+      ],
+      "centroGeografico": [
+        1002,
+        594
+      ]
+    },
+    {
+      "name": "Rota 6, Ferrovia da Aurora",
+      "biome": "campo",
+      "rect": [
+        1068,
+        504,
+        360,
+        138
+      ],
+      "cap456": true,
+      "id": "rota6",
+      "encounters": [
+        [
+          309,
+          19,
+          23,
+          14
+        ],
+        [
+          310,
+          19,
+          23,
+          3
+        ],
+        [
+          81,
+          19,
+          23,
+          12
+        ],
+        [
+          82,
+          19,
+          23,
+          3
+        ],
+        [
+          100,
+          19,
+          23,
+          10
+        ],
+        [
+          101,
+          19,
+          23,
+          2
+        ],
+        [
+          921,
+          19,
+          23,
+          10
+        ],
+        [
+          922,
+          19,
+          23,
+          4
+        ],
+        [
+          835,
+          19,
+          23,
+          10
+        ],
+        [
+          836,
+          19,
+          23,
+          3
+        ],
+        [
+          568,
+          19,
+          23,
+          8
+        ],
+        [
+          569,
+          19,
+          23,
+          2
+        ],
+        [
+          179,
+          19,
+          23,
+          6
+        ],
+        [
+          180,
+          19,
+          23,
+          3
+        ],
+        [
+          403,
+          19,
+          23,
+          5
+        ],
+        [
+          404,
+          19,
+          23,
+          3
+        ],
+        [
+          694,
+          19,
+          23,
+          5
+        ],
+        [
+          823,
+          22,
+          23,
+          2
+        ]
+      ],
+      "night": [
+        [
+          309,
+          32,
+          35,
+          12
+        ],
+        [
+          81,
+          32,
+          35,
+          12
+        ],
+        [
+          100,
+          32,
+          35,
+          12
+        ],
+        [
+          602,
+          32,
+          34,
+          8
+        ],
+        [
+          163,
+          31,
+          34,
+          8
+        ],
+        [
+          164,
+          34,
+          35,
+          4
+        ],
+        [
+          568,
+          31,
+          34,
+          8
+        ]
+      ],
+      "plantaRect": [
+        356,
+        168,
+        120,
+        46
+      ],
+      "centroGeografico": [
+        1248,
+        573
+      ],
+      "caminhoAfinado": 136,
+      "bordasCompostas": 41
+    },
+    {
+      "name": "Cidade Aurora",
+      "biome": "vila",
+      "rect": [
+        1428,
+        480,
+        231,
+        156
+      ],
+      "cap456": true,
+      "id": "cidade_aurora",
+      "plantaRect": [
+        476,
+        160,
+        77,
+        52
+      ],
+      "centroGeografico": [
+        1544,
+        558
+      ]
+    },
+    {
+      "id": "rota15",
+      "name": "Rota 15, Passo do Uivo",
+      "biome": "neve",
+      "rect": [
+        1800,
+        0,
+        160,
+        120
+      ],
+      "plantaRect": [
+        600,
+        0,
+        160,
+        40
+      ],
+      "centroGeografico": [
+        1880,
+        60
+      ]
+    },
+    {
+      "id": "lago_congelado",
+      "name": "Lago Congelado",
+      "biome": "gelo",
+      "rect": [
+        1800,
+        330,
+        80,
+        270
+      ],
+      "plantaRect": [
+        600,
+        110,
+        80,
+        90
+      ],
+      "centroGeografico": [
+        1840,
+        465
+      ]
+    },
+    {
+      "id": "lago_congelado",
+      "name": "Lago Congelado",
+      "biome": "gelo",
+      "rect": [
+        1880,
+        570,
+        80,
+        30
+      ],
+      "plantaRect": [
+        680,
+        190,
+        80,
+        10
+      ],
+      "centroGeografico": [
+        1920,
+        585
+      ]
+    },
+    {
+      "id": "rota16",
+      "name": "Rota 16, Campos Nevados",
+      "biome": "neve",
+      "rect": [
+        1960,
+        0,
+        220,
+        240
+      ],
+      "plantaRect": [
+        760,
+        0,
+        220,
+        80
+      ],
+      "centroGeografico": [
+        2070,
+        120
+      ]
+    },
+    {
+      "id": "rota16",
+      "name": "Rota 16, Campos Nevados",
+      "biome": "neve",
+      "rect": [
+        1960,
+        450,
+        60,
+        150
+      ],
+      "plantaRect": [
+        760,
+        150,
+        60,
+        50
+      ],
+      "centroGeografico": [
+        1990,
+        525
+      ]
+    },
+    {
+      "id": "rota16",
+      "name": "Rota 16, Campos Nevados",
+      "biome": "neve",
+      "rect": [
+        2020,
+        510,
+        160,
+        90
+      ],
+      "plantaRect": [
+        820,
+        170,
+        160,
+        30
+      ],
+      "centroGeografico": [
+        2100,
+        555
+      ]
+    },
+    {
+      "id": "geleira_uivo",
+      "name": "Geleira do Uivo",
+      "biome": "neve",
+      "rect": [
+        2180,
+        0,
+        60,
+        60
+      ],
+      "plantaRect": [
+        980,
+        0,
+        60,
+        20
+      ],
+      "centroGeografico": [
+        2210,
+        30
+      ]
+    },
+    {
+      "id": "geleira_uivo",
+      "name": "Geleira do Uivo",
+      "biome": "neve",
+      "rect": [
+        2180,
+        540,
+        160,
+        60
+      ],
+      "plantaRect": [
+        980,
+        180,
+        160,
+        20
+      ],
+      "centroGeografico": [
+        2260,
+        570
+      ]
+    },
+    {
+      "id": "rota15",
+      "name": "Rota 15, Passo do Uivo",
+      "biome": "planalto",
+      "rect": [
+        1800,
+        120,
+        160,
+        210
+      ],
+      "plantaRect": [
+        600,
+        40,
+        160,
+        70
+      ],
+      "centroGeografico": [
+        1880,
+        225
+      ]
+    },
+    {
+      "id": "vila_geada",
+      "name": "Vila Geada",
+      "biome": "vila",
+      "rect": [
+        1960,
+        300,
+        60,
+        150
+      ],
+      "plantaRect": [
+        760,
+        100,
+        60,
+        50
+      ],
+      "centroGeografico": [
+        1990,
+        375
+      ]
+    },
+    {
+      "id": "lago_congelado",
+      "name": "Lago Congelado",
+      "biome": "gelo",
+      "rect": [
+        1880,
+        360,
+        80,
+        210
+      ],
+      "plantaRect": [
+        680,
+        120,
+        80,
+        70
+      ],
+      "centroGeografico": [
+        1920,
+        465
+      ]
+    },
+    {
+      "id": "rota16",
+      "name": "Rota 16, Campos Nevados",
+      "biome": "neve",
+      "rect": [
+        2020,
+        240,
+        160,
+        270
+      ],
+      "plantaRect": [
+        820,
+        80,
+        160,
+        90
+      ],
+      "centroGeografico": [
+        2100,
+        375
+      ]
+    },
+    {
+      "id": "geleira_uivo",
+      "name": "Geleira do Uivo",
+      "biome": "neve",
+      "rect": [
+        2180,
+        60,
+        160,
+        480
+      ],
+      "plantaRect": [
+        980,
+        20,
+        160,
+        160
+      ],
+      "centroGeografico": [
+        2260,
+        300
+      ]
+    },
+    {
+      "id": "cume_vento_branco",
+      "name": "Cume do Vento Branco",
+      "biome": "pico",
+      "rect": [
+        2240,
+        0,
+        100,
+        60
+      ],
+      "plantaRect": [
+        1040,
+        0,
+        100,
+        20
+      ],
+      "centroGeografico": [
+        2290,
+        30
+      ]
+    },
+    {
+      "id": "fiorde_levante",
+      "name": "Fiorde do Levante",
+      "biome": "mar",
+      "rect": [
+        2340,
+        0,
+        60,
+        600
+      ],
+      "plantaRect": [
+        1140,
+        0,
+        60,
+        200
+      ],
+      "centroGeografico": [
+        2370,
+        300
+      ]
+    },
+    {
+      "id": "rota14",
+      "name": "Rota 14, Estrada do Sertão",
+      "biome": "sertao",
+      "rect": [
+        1800,
+        600,
+        150,
+        210
+      ],
+      "plantaRect": [
+        600,
+        200,
+        150,
+        70
+      ],
+      "centroGeografico": [
+        1875,
+        705
+      ]
+    },
+    {
+      "id": "rota14",
+      "name": "Rota 14, Estrada do Sertão",
+      "biome": "sertao",
+      "rect": [
+        1800,
+        810,
+        22,
+        288
+      ],
+      "plantaRect": [
+        600,
+        270,
+        22,
+        96
+      ],
+      "centroGeografico": [
+        1811,
+        954
+      ]
+    },
+    {
+      "id": "rota20",
+      "name": "Rota 20, Caatinga do Lajedo",
+      "biome": "sertao",
+      "rect": [
+        1950,
+        600,
+        240,
+        180
+      ],
+      "plantaRect": [
+        750,
+        200,
+        240,
+        60
+      ],
+      "centroGeografico": [
+        2070,
+        690
+      ]
+    },
+    {
+      "id": "rota20",
+      "name": "Rota 20, Caatinga do Lajedo",
+      "biome": "sertao",
+      "rect": [
+        1950,
+        780,
+        80,
+        24
+      ],
+      "plantaRect": [
+        750,
+        260,
+        80,
+        8
+      ],
+      "centroGeografico": [
+        1990,
+        792
+      ]
+    },
+    {
+      "id": "mar_levante",
+      "name": "Mar do Levante",
+      "biome": "mar",
+      "rect": [
+        2340,
+        600,
+        60,
+        840
+      ],
+      "plantaRect": [
+        1140,
+        200,
+        60,
+        280
+      ],
+      "centroGeografico": [
+        2370,
+        1020
+      ]
+    },
+    {
+      "id": "canion_rio_seco",
+      "name": "Cânion do Rio Seco",
+      "biome": "canion",
+      "rect": [
+        1806,
+        786,
+        224,
+        318
+      ],
+      "plantaRect": [
+        606,
+        262,
+        224,
+        106
+      ],
+      "centroGeografico": [
+        1918,
+        945
+      ]
+    },
+    {
+      "id": "fundo_canion",
+      "name": "Fundo do Cânion",
+      "biome": "canion",
+      "rect": [
+        1880,
+        900,
+        115,
+        126
+      ],
+      "plantaRect": [
+        680,
+        300,
+        115,
+        42
+      ],
+      "centroGeografico": [
+        1938,
+        963
+      ]
+    },
+    {
+      "id": "rota20",
+      "name": "Rota 20, Caatinga do Lajedo",
+      "biome": "sertao",
+      "rect": [
+        2030,
+        786,
+        30,
+        120
+      ],
+      "plantaRect": [
+        830,
+        262,
+        30,
+        40
+      ],
+      "centroGeografico": [
+        2045,
+        846
+      ]
+    },
+    {
+      "id": "dunas_douradas",
+      "name": "Dunas Douradas",
+      "biome": "deserto",
+      "rect": [
+        2052,
+        870,
+        214,
+        390
+      ],
+      "plantaRect": [
+        852,
+        290,
+        214,
+        130
+      ],
+      "centroGeografico": [
+        2159,
+        1065
+      ]
+    },
+    {
+      "id": "cratera_estrela",
+      "name": "Cratera da Estrela",
+      "biome": "deserto",
+      "rect": [
+        2128,
+        984,
+        36,
+        108
+      ],
+      "plantaRect": [
+        928,
+        328,
+        36,
+        36
+      ],
+      "centroGeografico": [
+        2146,
+        1038
+      ]
+    },
+    {
+      "id": "chapada_vermelha",
+      "name": "Chapada Vermelha",
+      "biome": "canion",
+      "rect": [
+        2184,
+        600,
+        160,
+        162
+      ],
+      "plantaRect": [
+        984,
+        200,
+        160,
+        54
+      ],
+      "centroGeografico": [
+        2264,
+        681
+      ]
+    },
+    {
+      "id": "mangue_siri",
+      "name": "Mangue do Siri",
+      "biome": "mangue",
+      "rect": [
+        1800,
+        1098,
+        232,
+        342
+      ],
+      "plantaRect": [
+        600,
+        366,
+        232,
+        114
+      ],
+      "centroGeografico": [
+        1916,
+        1269
+      ]
+    },
+    {
+      "id": "praia_levante",
+      "name": "Praia do Levante",
+      "biome": "praia",
+      "rect": [
+        2032,
+        1260,
+        268,
+        180
+      ],
+      "plantaRect": [
+        832,
+        420,
+        268,
+        60
+      ],
+      "centroGeografico": [
+        2166,
+        1350
+      ]
+    },
+    {
+      "id": "praia_levante",
+      "name": "Praia do Levante",
+      "biome": "praia",
+      "rect": [
+        2266,
+        888,
+        74,
+        552
+      ],
+      "plantaRect": [
+        1066,
+        296,
+        74,
+        184
+      ],
+      "centroGeografico": [
+        2303,
+        1164
+      ]
+    },
+    {
+      "id": "oasis_buriti",
+      "name": "Oásis do Buriti",
+      "biome": "margem",
+      "rect": [
+        2266,
+        750,
+        74,
+        138
+      ],
+      "plantaRect": [
+        1066,
+        250,
+        74,
+        46
+      ],
+      "centroGeografico": [
+        2303,
+        819
+      ]
+    },
+    {
+      "id": "cidade_buriti",
+      "name": "Cidade Buriti",
+      "biome": "vila",
+      "rect": [
+        2194,
+        750,
+        96,
+        144
+      ],
+      "plantaRect": [
+        994,
+        250,
+        96,
+        48
+      ],
+      "centroGeografico": [
+        2242,
+        822
+      ]
+    },
+    {
+      "id": "vila_mandacaru",
+      "name": "Vila Mandacaru",
+      "biome": "vila",
+      "rect": [
+        1942,
+        624,
+        76,
+        156
+      ],
+      "plantaRect": [
+        742,
+        208,
+        76,
+        52
+      ],
+      "centroGeografico": [
+        1980,
+        702
+      ]
+    },
+    {
+      "id": "vila_siri",
+      "name": "Vila Siri",
+      "biome": "vila",
+      "rect": [
+        1884,
+        1098,
+        64,
+        114
+      ],
+      "plantaRect": [
+        684,
+        366,
+        64,
+        38
+      ],
+      "centroGeografico": [
+        1916,
+        1155
+      ]
+    },
+    {
+      "id": "rota17",
+      "name": "Rota Marítima 17",
+      "biome": "mar",
+      "rect": [
+        300,
+        1440,
+        600,
+        100
+      ],
+      "plantaRect": [
+        100,
+        480,
+        200,
+        100
+      ],
+      "centroGeografico": [
+        600,
+        1490
+      ]
+    },
+    {
+      "id": "ilha_jandaia",
+      "name": "Ilha Jandaia",
+      "biome": "praia",
+      "rect": [
+        90,
+        1520,
+        420,
+        90
+      ],
+      "plantaRect": [
+        30,
+        560,
+        140,
+        90
+      ],
+      "centroGeografico": [
+        300,
+        1565
+      ]
+    },
+    {
+      "id": "vila_jandaia",
+      "name": "Vila Jandaia",
+      "biome": "vila",
+      "rect": [
+        180,
+        1550,
+        150,
+        40
+      ],
+      "plantaRect": [
+        60,
+        590,
+        50,
+        40
+      ],
+      "centroGeografico": [
+        255,
+        1570
+      ]
+    },
+    {
+      "id": "ilhas_gemeas",
+      "name": "Ilhas Gêmeas",
+      "biome": "praia",
+      "rect": [
+        690,
+        1560,
+        330,
+        70
+      ],
+      "plantaRect": [
+        230,
+        600,
+        110,
+        70
+      ],
+      "centroGeografico": [
+        855,
+        1595
+      ]
+    },
+    {
+      "id": "mar_jandaias",
+      "name": "Mar das Jandaias",
+      "biome": "mar",
+      "rect": [
+        0,
+        1620,
+        1200,
+        300
+      ],
+      "plantaRect": [
+        0,
+        660,
+        400,
+        300
+      ],
+      "centroGeografico": [
+        600,
+        1770
+      ]
+    },
+    {
+      "id": "praia_cipo",
+      "name": "Praia do Cipó",
+      "biome": "praia",
+      "rect": [
+        450,
+        1840,
+        420,
+        40
+      ],
+      "plantaRect": [
+        150,
+        880,
+        140,
+        40
+      ],
+      "centroGeografico": [
+        660,
+        1860
+      ]
+    },
+    {
+      "id": "selva_grande",
+      "name": "Selva Grande",
+      "biome": "selva",
+      "rect": [
+        120,
+        1660,
+        750,
+        180
+      ],
+      "plantaRect": [
+        40,
+        700,
+        250,
+        180
+      ],
+      "centroGeografico": [
+        495,
+        1750
+      ]
+    },
+    {
+      "id": "cachoeira_veu_verde",
+      "name": "Cachoeira do Véu Verde",
+      "biome": "margem",
+      "rect": [
+        540,
+        1680,
+        180,
+        60
+      ],
+      "plantaRect": [
+        180,
+        720,
+        60,
+        60
+      ],
+      "centroGeografico": [
+        630,
+        1710
+      ]
+    },
+    {
+      "id": "ilha_miragem",
+      "name": "Ilha Miragem",
+      "biome": "praia",
+      "rect": [
+        990,
+        1840,
+        120,
+        40
+      ],
+      "plantaRect": [
+        330,
+        880,
+        40,
+        40
+      ],
+      "centroGeografico": [
+        1050,
+        1860
+      ]
+    },
+    {
+      "id": "rota18",
+      "name": "Rota Marítima 18",
+      "biome": "mar",
+      "rect": [
+        1200,
+        1440,
+        600,
+        120
+      ],
+      "plantaRect": [
+        400,
+        480,
+        200,
+        120
+      ],
+      "centroGeografico": [
+        1500,
+        1500
+      ]
+    },
+    {
+      "id": "recife_grande",
+      "name": "Recife Grande",
+      "biome": "mar",
+      "rect": [
+        1350,
+        1560,
+        520,
+        100
+      ],
+      "plantaRect": [
+        450,
+        600,
+        220,
+        100
+      ],
+      "centroGeografico": [
+        1680,
+        1610
+      ]
+    },
+    {
+      "id": "mar_do_sul",
+      "name": "Mar do Sul Profundo",
+      "biome": "mar",
+      "rect": [
+        1200,
+        1660,
+        800,
+        100
+      ],
+      "plantaRect": [
+        400,
+        700,
+        400,
+        100
+      ],
+      "centroGeografico": [
+        1800,
+        1710
+      ]
+    },
+    {
+      "id": "ilha_farol_morto",
+      "name": "Ilha do Farol Morto",
+      "biome": "praia",
+      "rect": [
+        1880,
+        1580,
+        80,
+        60
+      ],
+      "plantaRect": [
+        680,
+        620,
+        80,
+        60
+      ],
+      "centroGeografico": [
+        1920,
+        1610
+      ]
+    },
+    {
+      "id": "ilhas_austrais",
+      "name": "Ilhas Austrais",
+      "biome": "neve",
+      "rect": [
+        1260,
+        1760,
+        740,
+        160
+      ],
+      "plantaRect": [
+        420,
+        800,
+        380,
+        160
+      ],
+      "centroGeografico": [
+        1810,
+        1840
+      ]
+    },
+    {
+      "id": "estacao_austral",
+      "name": "Estação Austral",
+      "biome": "vila",
+      "rect": [
+        1560,
+        1810,
+        120,
+        30
+      ],
+      "plantaRect": [
+        520,
+        850,
+        40,
+        30
+      ],
+      "centroGeografico": [
+        1620,
+        1825
+      ]
+    },
+    {
+      "id": "rota19",
+      "name": "Rota Marítima 19",
+      "biome": "mar",
+      "rect": [
+        2000,
+        1440,
+        400,
+        100
+      ],
+      "plantaRect": [
+        800,
+        480,
+        400,
+        100
+      ],
+      "centroGeografico": [
+        2200,
+        1490
+      ]
+    },
+    {
+      "id": "rota19",
+      "name": "Rota Marítima 19",
+      "biome": "mar",
+      "rect": [
+        2000,
+        1540,
+        400,
+        120
+      ],
+      "plantaRect": [
+        800,
+        580,
+        400,
+        120
+      ],
+      "centroGeografico": [
+        2200,
+        1600
+      ]
+    },
+    {
+      "id": "mar_brasas",
+      "name": "Mar das Brasas",
+      "biome": "mar",
+      "rect": [
+        2000,
+        1660,
+        400,
+        180
+      ],
+      "plantaRect": [
+        800,
+        700,
+        400,
+        180
+      ],
+      "centroGeografico": [
+        2200,
+        1750
+      ]
+    },
+    {
+      "id": "ilha_basalto",
+      "name": "Ilha do Basalto",
+      "biome": "praia",
+      "rect": [
+        2040,
+        1560,
+        120,
+        80
+      ],
+      "plantaRect": [
+        840,
+        600,
+        120,
+        80
+      ],
+      "centroGeografico": [
+        2100,
+        1600
+      ]
+    },
+    {
+      "id": "fontes_termais",
+      "name": "Fontes Termais do Vapor",
+      "biome": "termal",
+      "rect": [
+        2220,
+        1580,
+        100,
+        80
+      ],
+      "plantaRect": [
+        1020,
+        620,
+        100,
+        80
+      ],
+      "centroGeografico": [
+        2270,
+        1620
+      ]
+    },
+    {
+      "id": "campos_cinza",
+      "name": "Campos de Cinza",
+      "biome": "vulcao",
+      "rect": [
+        2126,
+        1656,
+        180,
+        80
+      ],
+      "plantaRect": [
+        926,
+        696,
+        180,
+        80
+      ],
+      "centroGeografico": [
+        2216,
+        1696
+      ]
+    },
+    {
+      "id": "vulcao_ticao",
+      "name": "Vulcão Tição",
+      "biome": "vulcao",
+      "rect": [
+        2190,
+        1730,
+        156,
+        112
+      ],
+      "plantaRect": [
+        990,
+        770,
+        156,
+        112
+      ],
+      "centroGeografico": [
+        2268,
+        1786
+      ]
+    },
+    {
+      "id": "vila_termas",
+      "name": "Vila Termas",
+      "biome": "vila",
+      "rect": [
+        2158,
+        1580,
+        62,
+        78
+      ],
+      "plantaRect": [
+        958,
+        620,
+        62,
+        78
+      ],
+      "centroGeografico": [
+        2189,
+        1619
+      ]
+    },
+    {
+      "id": "cratera_ticao",
+      "name": "Cratera do Tição",
+      "biome": "vulcao",
+      "rect": [
+        2240,
+        1760,
+        52,
+        40
+      ],
+      "plantaRect": [
+        1040,
+        800,
+        52,
+        40
+      ],
+      "centroGeografico": [
+        2266,
+        1780
+      ]
+    },
+    {
+      "id": "mar_brasas",
+      "name": "Mar das Brasas",
+      "biome": "mar",
+      "rect": [
+        2000,
+        1840,
+        400,
+        80
+      ],
+      "plantaRect": [
+        800,
+        880,
+        400,
+        80
+      ],
+      "centroGeografico": [
+        2200,
+        1880
+      ]
+    },
+    {
+      "id": "ilhota_fumegante",
+      "name": "Ilhota Fumegante",
+      "biome": "termal",
+      "rect": [
+        2350,
+        1860,
+        40,
+        40
+      ],
+      "plantaRect": [
+        1150,
+        900,
+        40,
+        40
+      ],
+      "centroGeografico": [
+        2370,
+        1880
+      ]
+    },
+    {
+      "id": "recanto_ipe",
+      "name": "Recanto do Ipê",
+      "biome": "campo",
+      "rect": [
+        766,
+        1050,
+        20,
+        15
+      ]
+    },
+    {
+      "id": "jardim_bosque",
+      "name": "Jardim dos Cogumelos",
+      "biome": "campo",
+      "rect": [
+        848,
+        745,
+        20,
+        15
+      ]
+    },
+    {
+      "id": "pomar_espelho",
+      "name": "Pomar do Espelho",
+      "biome": "campo",
+      "rect": [
+        1081,
+        1030,
+        20,
+        15
+      ]
+    },
+    {
+      "id": "clareira_ventos",
+      "name": "Clareira dos Ventos",
+      "biome": "campo",
+      "rect": [
+        872,
+        920,
+        20,
+        15
+      ]
+    }
+  ],
+  "contagem": {
+    "geladeira": 35,
+    "pia": 24,
+    "fogaoMod": 30,
+    "tvConsole": 25,
+    "radio": 30,
+    "estanteAlta": 103,
+    "sofaCasaN": 36,
+    "mesaJantar": 46,
+    "cadeiraL": 30,
+    "cadeiraR": 30,
+    "plantaGrande": 242,
+    "bed": 60,
+    "criado": 27,
+    "pc": 53,
+    "poltronaCasa": 36,
+    "plant": 97,
+    "relogioPe": 29,
+    "cadeira": 27,
+    "aquario": 35,
+    "maquinaLab": 4,
+    "computadorLab": 6,
+    "tanque": 4,
+    "balltable": 1,
+    "mesaPapeis": 6,
+    "machine": 10,
+    "shelf": 33,
+    "table": 42,
+    "estante": 26,
+    "tvRack": 29,
+    "counterJoy": 17,
+    "maquinaCura": 16,
+    "escadaRolante": 16,
+    "counterTroca": 16,
+    "mesaRevistas": 34,
+    "sofaCentroN": 17,
+    "sofaLadoR": 10,
+    "counterLoja": 15,
+    "prateleiraParede": 15,
+    "vitrineFria": 36,
+    "gondola": 29,
+    "expositor": 15,
+    "cestas": 15,
+    "piano": 8,
+    "mesaCentroCasa": 32,
+    "tv": 36,
+    "vaso": 20,
+    "haybale": 15,
+    "crate": 86,
+    "armarioCentro": 15,
+    "sofaLadoL": 7,
+    "luzita": 11,
+    "rock": 156,
+    "boulder2": 843,
+    "sign": 405,
+    "cristal": 27,
+    "painel": 3,
+    "lampiao": 119,
+    "fogao": 8,
+    "velas": 10,
+    "quadro": 20,
+    "sofa": 2,
+    "elevador": 1,
+    "counter": 4,
+    "maquete": 2,
+    "placaAurora": 1,
+    "bench": 59,
+    "carrinhoParado": 3,
+    "pedregulho": 3,
+    "carrinho": 3,
+    "vigaCaida": 1,
+    "garra": 1,
+    "stoneDoor": 16,
+    "lamp": 461,
+    "crystal": 101,
+    "column": 31,
+    "mural": 27,
+    "lareira": 1,
+    "stalagmiteIce": 371,
+    "chest": 58,
+    "iceBlock": 6,
+    "plate": 7,
+    "barsGate": 7,
+    "crackedIce": 4,
+    "brazier": 38,
+    "altar": 23,
+    "crystalPink": 5,
+    "statue": 36,
+    "torch": 18,
+    "obelisk": 10,
+    "brokenColumn": 24,
+    "pot": 7,
+    "bell": 7,
+    "crackedWall": 1,
+    "strengthRock": 13,
+    "gondola3": 1,
+    "bale": 8,
+    "surfboard": 9,
+    "lever": 5,
+    "stalagmite": 59,
+    "obsidianRock": 106,
+    "lanternaPedra": 106,
+    "fumarola": 428,
+    "barrel": 26,
+    "estanteLarga": 6,
+    "sofaCasaLadoL": 4,
+    "crackedRock": 2,
+    "lavaRock": 514,
+    "lockedDoor": 1,
+    "stands": 130,
+    "sundial": 3,
+    "menhir": 91,
+    "roundbush": 1036,
+    "flowerpot": 122,
+    "boulder": 2499,
+    "gerador": 6,
+    "cavalete": 6,
+    "sofaCasaLadoR": 2,
+    "bigtree": 994,
+    "cogumelos": 755,
+    "oran": 19,
+    "houseA": 9,
+    "houseBlue": 5,
+    "lab": 2,
+    "houseB": 9,
+    "mailbox": 44,
+    "center": 15,
+    "mart": 15,
+    "well": 8,
+    "windmill": 9,
+    "pecha": 15,
+    "barn": 4,
+    "ipe": 19,
+    "log": 144,
+    "stump": 961,
+    "paineira": 4,
+    "bigautumn": 692,
+    "jequitiba": 13,
+    "treeCenter": 1,
+    "greenhouse": 1,
+    "treeHouse": 1,
+    "houseC": 8,
+    "radioStation": 1,
+    "portico": 3,
+    "gate": 3,
+    "varal": 7,
+    "palm": 170,
+    "casaMaquinas": 1,
+    "housePink": 6,
+    "houseYellow": 6,
+    "palco": 1,
+    "posteLuzita": 24,
+    "barraca": 26,
+    "guardaSol": 48,
+    "farol": 2,
+    "houseStone": 6,
+    "houseStone2": 4,
+    "casarao": 2,
+    "fence": 317,
+    "fenceV": 312,
+    "lapideVela": 9,
+    "lapide": 16,
+    "torreTx": 7,
+    "torre": 3,
+    "estacao": 3,
+    "vidro": 4,
+    "megaloja": 1,
+    "redacao": 1,
+    "hospital": 1,
+    "houseMiner": 6,
+    "outdoor": 2,
+    "grayrock": 622,
+    "capela": 3,
+    "pine": 614,
+    "tree": 1997,
+    "arcoPedra": 65,
+    "ruina": 30,
+    "arvoreVento": 447,
+    "cercaVara": 123,
+    "horta": 246,
+    "espantalho": 13,
+    "arvoreGigante": 17,
+    "celeiro": 1,
+    "santuario": 46,
+    "cachoeira": 6,
+    "barco": 15,
+    "redePesca": 21,
+    "palmeira": 2382,
+    "coqueiro": 1660,
+    "jangada": 23,
+    "pocaMare": 121,
+    "escarpa": 1468,
+    "moita": 2652,
+    "pinheiroAlto": 698,
+    "pedrinha": 1085,
+    "autumn": 597,
+    "cone": 1548,
+    "tree2": 2189,
+    "pine2": 95,
+    "pineT": 33,
+    "samambaia": 2789,
+    "taboa": 704,
+    "pedraMar": 1729,
+    "driftwood": 1078,
+    "palmSmall": 2027,
+    "concha": 949,
+    "degrau": 884,
+    "vitoriaRegia": 296,
+    "canteiro": 140,
+    "fonte": 6,
+    "caixotes": 62,
+    "igloo": 7,
+    "cabin": 6,
+    "snowman": 44,
+    "snowPineBig": 3233,
+    "pedraGelo": 1292,
+    "monteNeve": 2634,
+    "pinheiroNevado": 2863,
+    "snowPine": 2451,
+    "moitaNeve": 935,
+    "galhoNevado": 768,
+    "degrauNeve": 432,
+    "taipa": 12,
+    "mandacaru": 879,
+    "xiquexique": 1097,
+    "boia": 44,
+    "juazeiro": 681,
+    "skull": 139,
+    "beachStall": 6,
+    "umbu": 890,
+    "ossada": 26,
+    "mesa": 493,
+    "pilarRocha": 844,
+    "mangue": 409,
+    "cactus": 1583,
+    "escarpaVerm": 506,
+    "arbustoSeco": 2036,
+    "cactoBarril": 936,
+    "pedrinhaVerm": 522,
+    "duna": 239,
+    "escarpaBasalto": 382,
+    "pinaculo": 661,
+    "basaltoColunas": 747,
+    "pedrinhaBasalto": 503,
+    "degrauAreia": 186,
+    "arvoreCinza": 336,
+    "bush": 156,
+    "arvoreSelva": 272,
+    "folhaGigante": 296,
+    "bambu": 279,
+    "houseGlass": 1,
+    "sucata": 1,
+    "fendaLava": 12,
+    "wfence": 208,
+    "wfenceV": 87,
+    "arvoreSeca": 6
+  }
+}

@@ -1,0 +1,1504 @@
+[
+  {
+    "local": {
+      "id": "coral",
+      "x": 16536,
+      "y": 18906
+    },
+    "nome": "Cidade Coral",
+    "atores": [
+      {
+        "x": 16536,
+        "y": 18906,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 18906,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "coral_fa3",
+        "nome": "Menina da Festa",
+        "x": 16568,
+        "y": 18698,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 18,
+        "bounds": {
+          "type": "rectangle",
+          "x": 454,
+          "y": -249,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 18698,
+        "pe": 15,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "coral_velho",
+        "nome": "Seu Abel",
+        "x": 16420.31360000001,
+        "y": 18906,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 158,
+          "y": 135,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "left",
+        "z": 18906,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "coral_surf",
+        "nome": "Surfista",
+        "x": 16744,
+        "y": 19050,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 806,
+          "y": 423,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "left",
+        "z": 19050,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "coral_farol",
+        "nome": "Guarda do Farol",
+        "x": 16728,
+        "y": 18810,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 774,
+          "y": -57,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 18810,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "rumor_coral",
+        "nome": "Pescador de Coral",
+        "x": 16520,
+        "y": 18970,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 358,
+          "y": 263,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "left",
+        "z": 18970,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "objetos": [
+      {
+        "kind": "houseYellow",
+        "x": 16216,
+        "y": 18848,
+        "fw": 7,
+        "fh": 3,
+        "nome": "casa",
+        "z": 18847,
+        "altura": 80,
+        "sx": 16216,
+        "sy": 18851,
+        "bounds": {
+          "type": "rectangle",
+          "x": -330,
+          "y": -75,
+          "width": 224,
+          "height": 160
+        }
+      },
+      {
+        "kind": "canteiro",
+        "x": 16160,
+        "y": 18784,
+        "fw": 2,
+        "fh": 1,
+        "nome": "flores",
+        "z": 18783,
+        "altura": 16,
+        "sx": 16160,
+        "sy": 18785,
+        "bounds": {
+          "type": "rectangle",
+          "x": -362,
+          "y": -79,
+          "width": 64,
+          "height": 32
+        }
+      },
+      {
+        "kind": "canteiro",
+        "x": 16368,
+        "y": 18864,
+        "fw": 2,
+        "fh": 1,
+        "nome": "flores",
+        "z": 18863,
+        "altura": 16,
+        "sx": 16368,
+        "sy": 18865,
+        "bounds": {
+          "type": "rectangle",
+          "x": 54,
+          "y": 81,
+          "width": 64,
+          "height": 32
+        }
+      },
+      {
+        "kind": "flowerpot",
+        "x": 16152,
+        "y": 18704,
+        "fw": 1,
+        "fh": 1,
+        "nome": "vaso",
+        "z": 18703,
+        "altura": 32,
+        "sx": 16152,
+        "sy": 18704,
+        "bounds": {
+          "type": "rectangle",
+          "x": -362,
+          "y": -273,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "flowerpot",
+        "x": 16152,
+        "y": 18736,
+        "fw": 1,
+        "fh": 1,
+        "nome": "vaso",
+        "z": 18735,
+        "altura": 32,
+        "sx": 16152,
+        "sy": 18736,
+        "bounds": {
+          "type": "rectangle",
+          "x": -362,
+          "y": -209,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "flowerpot",
+        "x": 16360,
+        "y": 18768,
+        "fw": 1,
+        "fh": 1,
+        "nome": "vaso",
+        "z": 18767,
+        "altura": 32,
+        "sx": 16360,
+        "sy": 18768,
+        "bounds": {
+          "type": "rectangle",
+          "x": 54,
+          "y": -145,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "center",
+        "x": 16440,
+        "y": 18848,
+        "fw": 9,
+        "fh": 3,
+        "nome": "centro",
+        "z": 18847,
+        "altura": 80,
+        "sx": 16440,
+        "sy": 18851,
+        "bounds": {
+          "type": "rectangle",
+          "x": 86,
+          "y": -75,
+          "width": 288,
+          "height": 160
+        }
+      },
+      {
+        "kind": "housePink",
+        "x": 16440,
+        "y": 18720,
+        "fw": 7,
+        "fh": 3,
+        "nome": "casa",
+        "z": 18719,
+        "altura": 80,
+        "sx": 16440,
+        "sy": 18723,
+        "bounds": {
+          "type": "rectangle",
+          "x": 118,
+          "y": -331,
+          "width": 224,
+          "height": 160
+        }
+      },
+      {
+        "kind": "sign",
+        "x": 16392,
+        "y": 18896,
+        "fw": 1,
+        "fh": 1,
+        "nome": "placa",
+        "z": 18895,
+        "altura": 16,
+        "sx": 16392,
+        "sy": 18896,
+        "bounds": {
+          "type": "rectangle",
+          "x": 118,
+          "y": 143,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "kind": "posteLuzita",
+        "x": 16504,
+        "y": 18720,
+        "fw": 1,
+        "fh": 1,
+        "nome": "poste",
+        "z": 18719,
+        "altura": 32,
+        "sx": 16504,
+        "sy": 18720,
+        "bounds": {
+          "type": "rectangle",
+          "x": 342,
+          "y": -241,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "sign",
+        "x": 16472,
+        "y": 18864,
+        "fw": 1,
+        "fh": 1,
+        "nome": "placa",
+        "z": 18863,
+        "altura": 16,
+        "sx": 16472,
+        "sy": 18864,
+        "bounds": {
+          "type": "rectangle",
+          "x": 278,
+          "y": 79,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "kind": "sign",
+        "x": 16632,
+        "y": 18832,
+        "fw": 1,
+        "fh": 1,
+        "nome": "placa",
+        "z": 18831,
+        "altura": 16,
+        "sx": 16632,
+        "sy": 18832,
+        "bounds": {
+          "type": "rectangle",
+          "x": 598,
+          "y": 15,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "kind": "canteiro",
+        "x": 16512,
+        "y": 18720,
+        "fw": 2,
+        "fh": 1,
+        "nome": "flores",
+        "z": 18719,
+        "altura": 16,
+        "sx": 16512,
+        "sy": 18721,
+        "bounds": {
+          "type": "rectangle",
+          "x": 342,
+          "y": -207,
+          "width": 64,
+          "height": 32
+        }
+      },
+      {
+        "kind": "canteiro",
+        "x": 16624,
+        "y": 18800,
+        "fw": 2,
+        "fh": 1,
+        "nome": "flores",
+        "z": 18799,
+        "altura": 16,
+        "sx": 16624,
+        "sy": 18801,
+        "bounds": {
+          "type": "rectangle",
+          "x": 566,
+          "y": -47,
+          "width": 64,
+          "height": 32
+        }
+      },
+      {
+        "kind": "flowerpot",
+        "x": 16504,
+        "y": 18768,
+        "fw": 1,
+        "fh": 1,
+        "nome": "vaso",
+        "z": 18767,
+        "altura": 32,
+        "sx": 16504,
+        "sy": 18768,
+        "bounds": {
+          "type": "rectangle",
+          "x": 342,
+          "y": -145,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "lamp",
+        "x": 16504,
+        "y": 18784,
+        "fw": 1,
+        "fh": 1,
+        "nome": "poste",
+        "z": 18783,
+        "altura": 32,
+        "sx": 16504,
+        "sy": 18784,
+        "bounds": {
+          "type": "rectangle",
+          "x": 342,
+          "y": -113,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "posteLuzita",
+        "x": 16648,
+        "y": 18720,
+        "fw": 1,
+        "fh": 1,
+        "nome": "poste",
+        "z": 18719,
+        "altura": 32,
+        "sx": 16648,
+        "sy": 18720,
+        "bounds": {
+          "type": "rectangle",
+          "x": 630,
+          "y": -241,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "lamp",
+        "x": 16648,
+        "y": 18832,
+        "fw": 1,
+        "fh": 1,
+        "nome": "poste",
+        "z": 18831,
+        "altura": 32,
+        "sx": 16648,
+        "sy": 18832,
+        "bounds": {
+          "type": "rectangle",
+          "x": 630,
+          "y": -17,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "lamp",
+        "x": 16808,
+        "y": 18912,
+        "fw": 1,
+        "fh": 1,
+        "nome": "poste",
+        "z": 18911,
+        "altura": 32,
+        "sx": 16808,
+        "sy": 18912,
+        "bounds": {
+          "type": "rectangle",
+          "x": 950,
+          "y": 143,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "wfence",
+        "x": 16776,
+        "y": 18864,
+        "fw": 1,
+        "fh": 1,
+        "nome": "cerca",
+        "z": 18863,
+        "altura": 16,
+        "sx": 16776,
+        "sy": 18866,
+        "bounds": {
+          "type": "rectangle",
+          "x": 886,
+          "y": 83,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "kind": "wfence",
+        "x": 16792,
+        "y": 18864,
+        "fw": 1,
+        "fh": 1,
+        "nome": "cerca",
+        "z": 18863,
+        "altura": 16,
+        "sx": 16792,
+        "sy": 18866,
+        "bounds": {
+          "type": "rectangle",
+          "x": 918,
+          "y": 83,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "kind": "wfence",
+        "x": 16808,
+        "y": 18864,
+        "fw": 1,
+        "fh": 1,
+        "nome": "cerca",
+        "z": 18863,
+        "altura": 16,
+        "sx": 16808,
+        "sy": 18866,
+        "bounds": {
+          "type": "rectangle",
+          "x": 950,
+          "y": 83,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "kind": "wfenceV",
+        "x": 16808,
+        "y": 18704,
+        "fw": 1,
+        "fh": 1,
+        "nome": "cerca",
+        "z": 18703,
+        "altura": 16,
+        "sx": 16808,
+        "sy": 18706,
+        "bounds": {
+          "type": "rectangle",
+          "x": 950,
+          "y": -237,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "kind": "wfenceV",
+        "x": 16808,
+        "y": 18736,
+        "fw": 1,
+        "fh": 1,
+        "nome": "cerca",
+        "z": 18735,
+        "altura": 16,
+        "sx": 16808,
+        "sy": 18738,
+        "bounds": {
+          "type": "rectangle",
+          "x": 950,
+          "y": -173,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "kind": "wfenceV",
+        "x": 16808,
+        "y": 18768,
+        "fw": 1,
+        "fh": 1,
+        "nome": "cerca",
+        "z": 18767,
+        "altura": 16,
+        "sx": 16808,
+        "sy": 18770,
+        "bounds": {
+          "type": "rectangle",
+          "x": 950,
+          "y": -109,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "kind": "wfenceV",
+        "x": 16808,
+        "y": 18800,
+        "fw": 1,
+        "fh": 1,
+        "nome": "cerca",
+        "z": 18799,
+        "altura": 16,
+        "sx": 16808,
+        "sy": 18802,
+        "bounds": {
+          "type": "rectangle",
+          "x": 950,
+          "y": -45,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "kind": "wfenceV",
+        "x": 16808,
+        "y": 18832,
+        "fw": 1,
+        "fh": 1,
+        "nome": "cerca",
+        "z": 18831,
+        "altura": 16,
+        "sx": 16808,
+        "sy": 18834,
+        "bounds": {
+          "type": "rectangle",
+          "x": 950,
+          "y": 19,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "kind": "mart",
+        "x": 16376,
+        "y": 19008,
+        "fw": 7,
+        "fh": 3,
+        "nome": "loja",
+        "z": 19007,
+        "altura": 64,
+        "sx": 16376,
+        "sy": 19011,
+        "bounds": {
+          "type": "rectangle",
+          "x": -10,
+          "y": 277,
+          "width": 224,
+          "height": 128
+        }
+      },
+      {
+        "kind": "houseYellow",
+        "x": 16296,
+        "y": 19088,
+        "fw": 7,
+        "fh": 3,
+        "nome": "casa",
+        "z": 19087,
+        "altura": 80,
+        "sx": 16296,
+        "sy": 19091,
+        "bounds": {
+          "type": "rectangle",
+          "x": -170,
+          "y": 405,
+          "width": 224,
+          "height": 160
+        }
+      },
+      {
+        "kind": "sign",
+        "x": 16264,
+        "y": 19120,
+        "fw": 1,
+        "fh": 1,
+        "nome": "placa",
+        "z": 19119,
+        "altura": 16,
+        "sx": 16264,
+        "sy": 19120,
+        "bounds": {
+          "type": "rectangle",
+          "x": -138,
+          "y": 591,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "kind": "housePink",
+        "x": 16392,
+        "y": 19168,
+        "fw": 7,
+        "fh": 3,
+        "nome": "casa",
+        "z": 19167,
+        "altura": 80,
+        "sx": 16392,
+        "sy": 19171,
+        "bounds": {
+          "type": "rectangle",
+          "x": 22,
+          "y": 565,
+          "width": 224,
+          "height": 160
+        }
+      },
+      {
+        "kind": "posteLuzita",
+        "x": 16456,
+        "y": 19168,
+        "fw": 1,
+        "fh": 1,
+        "nome": "poste",
+        "z": 19167,
+        "altura": 32,
+        "sx": 16456,
+        "sy": 19168,
+        "bounds": {
+          "type": "rectangle",
+          "x": 246,
+          "y": 655,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "canteiro",
+        "x": 16480,
+        "y": 19056,
+        "fw": 2,
+        "fh": 1,
+        "nome": "flores",
+        "z": 19055,
+        "altura": 16,
+        "sx": 16480,
+        "sy": 19057,
+        "bounds": {
+          "type": "rectangle",
+          "x": 278,
+          "y": 465,
+          "width": 64,
+          "height": 32
+        }
+      },
+      {
+        "kind": "flowerpot",
+        "x": 16472,
+        "y": 19072,
+        "fw": 1,
+        "fh": 1,
+        "nome": "vaso",
+        "z": 19071,
+        "altura": 32,
+        "sx": 16472,
+        "sy": 19072,
+        "bounds": {
+          "type": "rectangle",
+          "x": 278,
+          "y": 463,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "flowerpot",
+        "x": 16488,
+        "y": 19072,
+        "fw": 1,
+        "fh": 1,
+        "nome": "vaso",
+        "z": 19071,
+        "altura": 32,
+        "sx": 16488,
+        "sy": 19072,
+        "bounds": {
+          "type": "rectangle",
+          "x": 310,
+          "y": 463,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "lamp",
+        "x": 16504,
+        "y": 19136,
+        "fw": 1,
+        "fh": 1,
+        "nome": "poste",
+        "z": 19135,
+        "altura": 32,
+        "sx": 16504,
+        "sy": 19136,
+        "bounds": {
+          "type": "rectangle",
+          "x": 342,
+          "y": 591,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "canteiro",
+        "x": 16784,
+        "y": 19104,
+        "fw": 2,
+        "fh": 1,
+        "nome": "flores",
+        "z": 19103,
+        "altura": 16,
+        "sx": 16784,
+        "sy": 19105,
+        "bounds": {
+          "type": "rectangle",
+          "x": 886,
+          "y": 561,
+          "width": 64,
+          "height": 32
+        }
+      },
+      {
+        "kind": "boulder",
+        "x": 16784,
+        "y": 19008,
+        "fw": 2,
+        "fh": 1,
+        "nome": "rochedo",
+        "z": 19007,
+        "altura": 32,
+        "sx": 16784,
+        "sy": 19010,
+        "bounds": {
+          "type": "rectangle",
+          "x": 886,
+          "y": 339,
+          "width": 64,
+          "height": 64
+        }
+      },
+      {
+        "kind": "boulder",
+        "x": 16816,
+        "y": 19088,
+        "fw": 2,
+        "fh": 1,
+        "nome": "rochedo",
+        "z": 19087,
+        "altura": 32,
+        "sx": 16816,
+        "sy": 19090,
+        "bounds": {
+          "type": "rectangle",
+          "x": 950,
+          "y": 499,
+          "width": 64,
+          "height": 64
+        }
+      }
+    ],
+    "pendentes": 0,
+    "carregando": []
+  },
+  {
+    "local": {
+      "id": "centro_coral",
+      "x": 280,
+      "y": 32826
+    },
+    "nome": "Centro Pokémon de Cidade Coral",
+    "atores": [
+      {
+        "x": 280,
+        "y": 32826,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 219,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 32826,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "joy_centro_coral",
+        "nome": "Enfermeira Joy",
+        "x": 264,
+        "y": 32746,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 3,
+        "bounds": {
+          "type": "rectangle",
+          "x": 358,
+          "y": 61,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 32746,
+        "pe": 30,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "banhista_cc",
+        "nome": "Banhista",
+        "x": 216,
+        "y": 32810,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 262,
+          "y": 187,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "right",
+        "z": 32810,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "centro_coral_atendente_clube",
+        "nome": "Atendente do Clube",
+        "x": 200,
+        "y": 32762,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 230,
+          "y": 91,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 32762,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "objetos": [
+      {
+        "kind": "armarioCentro",
+        "x": 240,
+        "y": 32752,
+        "fw": 2,
+        "fh": 1,
+        "nome": "prateleira",
+        "z": 32751,
+        "altura": 32,
+        "sx": 240,
+        "sy": 32752,
+        "bounds": {
+          "type": "rectangle",
+          "x": 310,
+          "y": 67,
+          "width": 64,
+          "height": 64
+        }
+      },
+      {
+        "kind": "plantaGrande",
+        "x": 184,
+        "y": 32752,
+        "fw": 1,
+        "fh": 1,
+        "nome": "vaso",
+        "z": 32751,
+        "altura": 32,
+        "sx": 184,
+        "sy": 32752,
+        "bounds": {
+          "type": "rectangle",
+          "x": 214,
+          "y": 67,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "plantaGrande",
+        "x": 200,
+        "y": 32752,
+        "fw": 1,
+        "fh": 1,
+        "nome": "vaso",
+        "z": 32751,
+        "altura": 32,
+        "sx": 200,
+        "sy": 32752,
+        "bounds": {
+          "type": "rectangle",
+          "x": 246,
+          "y": 67,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "counterJoy",
+        "x": 272,
+        "y": 32768,
+        "fw": 8,
+        "fh": 2,
+        "nome": "balcao",
+        "z": 32767,
+        "altura": 32,
+        "sx": 272,
+        "sy": 32768,
+        "bounds": {
+          "type": "rectangle",
+          "x": 278,
+          "y": 99,
+          "width": 256,
+          "height": 64
+        }
+      },
+      {
+        "kind": "pc",
+        "x": 344,
+        "y": 32768,
+        "fw": 1,
+        "fh": 1,
+        "nome": "pc",
+        "z": 32767,
+        "altura": 32,
+        "sx": 344,
+        "sy": 32768,
+        "bounds": {
+          "type": "rectangle",
+          "x": 534,
+          "y": 99,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "escadaRolante",
+        "x": 368,
+        "y": 32768,
+        "fw": 2,
+        "fh": 2,
+        "nome": "escada",
+        "z": 32767,
+        "altura": 48,
+        "sx": 368,
+        "sy": 32768,
+        "bounds": {
+          "type": "rectangle",
+          "x": 566,
+          "y": 67,
+          "width": 64,
+          "height": 96
+        }
+      },
+      {
+        "kind": "plantaGrande",
+        "x": 344,
+        "y": 32752,
+        "fw": 1,
+        "fh": 1,
+        "nome": "vaso",
+        "z": 32751,
+        "altura": 32,
+        "sx": 344,
+        "sy": 32752,
+        "bounds": {
+          "type": "rectangle",
+          "x": 534,
+          "y": 67,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "counterTroca",
+        "x": 192,
+        "y": 32784,
+        "fw": 2,
+        "fh": 1,
+        "nome": "balcao",
+        "z": 32783,
+        "altura": 32,
+        "sx": 192,
+        "sy": 32784,
+        "bounds": {
+          "type": "rectangle",
+          "x": 214,
+          "y": 131,
+          "width": 64,
+          "height": 64
+        }
+      },
+      {
+        "kind": "plantaGrande",
+        "x": 184,
+        "y": 32848,
+        "fw": 1,
+        "fh": 1,
+        "nome": "vaso",
+        "z": 32847,
+        "altura": 32,
+        "sx": 184,
+        "sy": 32848,
+        "bounds": {
+          "type": "rectangle",
+          "x": 214,
+          "y": 259,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "plantaGrande",
+        "x": 184,
+        "y": 32800,
+        "fw": 1,
+        "fh": 1,
+        "nome": "vaso",
+        "z": 32799,
+        "altura": 32,
+        "sx": 184,
+        "sy": 32800,
+        "bounds": {
+          "type": "rectangle",
+          "x": 214,
+          "y": 163,
+          "width": 32,
+          "height": 64
+        }
+      },
+      {
+        "kind": "tvRack",
+        "x": 368,
+        "y": 32800,
+        "fw": 2,
+        "fh": 1,
+        "nome": "tv",
+        "z": 32799,
+        "altura": 32,
+        "sx": 368,
+        "sy": 32800,
+        "bounds": {
+          "type": "rectangle",
+          "x": 566,
+          "y": 163,
+          "width": 64,
+          "height": 64
+        }
+      },
+      {
+        "kind": "plantaGrande",
+        "x": 376,
+        "y": 32848,
+        "fw": 1,
+        "fh": 1,
+        "nome": "vaso",
+        "z": 32847,
+        "altura": 32,
+        "sx": 376,
+        "sy": 32848,
+        "bounds": {
+          "type": "rectangle",
+          "x": 598,
+          "y": 259,
+          "width": 32,
+          "height": 64
+        }
+      }
+    ],
+    "pendentes": 0,
+    "carregando": []
+  },
+  {
+    "local": {
+      "id": "farol_coral",
+      "x": 3208,
+      "y": 32858
+    },
+    "nome": "Farol Coral — Térreo (Ginásio de Cidade Coral)",
+    "atores": [
+      {
+        "x": 3208,
+        "y": 32858,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 251,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 32858,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "g4_saulo",
+        "nome": "Técnico Saulo",
+        "x": 3288,
+        "y": 32842,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 550,
+          "y": 219,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 32842,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "objetos": [
+      {
+        "kind": "sign",
+        "x": 3112,
+        "y": 32848,
+        "fw": 1,
+        "fh": 1,
+        "nome": "placa",
+        "z": 32847,
+        "altura": 16,
+        "sx": 3112,
+        "sy": 32848,
+        "bounds": {
+          "type": "rectangle",
+          "x": 214,
+          "y": 259,
+          "width": 32,
+          "height": 32
+        }
+      }
+    ],
+    "pendentes": 0,
+    "carregando": []
+  },
+  {
+    "local": {
+      "id": "farol_coral_2",
+      "x": 3848,
+      "y": 32874
+    },
+    "nome": "Farol Coral — Primeiro andar",
+    "atores": [
+      {
+        "x": 3848,
+        "y": 32874,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 390,
+          "y": 254,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 32874,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "g4_duda",
+        "nome": "Técnica Duda",
+        "x": 3920,
+        "y": 32762,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 534,
+          "y": 30,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 32762,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "objetos": [
+      {
+        "kind": "sign",
+        "x": 3864,
+        "y": 32864,
+        "fw": 1,
+        "fh": 1,
+        "nome": "placa",
+        "z": 32863,
+        "altura": 16,
+        "sx": 3864,
+        "sy": 32864,
+        "bounds": {
+          "type": "rectangle",
+          "x": 438,
+          "y": 262,
+          "width": 32,
+          "height": 32
+        }
+      }
+    ],
+    "pendentes": 0,
+    "carregando": []
+  },
+  {
+    "local": {
+      "id": "farol_topo",
+      "x": 4528,
+      "y": 32906
+    },
+    "nome": "Farol Coral — Lanterna",
+    "atores": [
+      {
+        "x": 4536,
+        "y": 32906,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 406,
+          "y": 254,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "up",
+        "z": 32906,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      },
+      {
+        "id": "jonas",
+        "nome": "Líder Jonas",
+        "x": 4568,
+        "y": 32771.6,
+        "fh": 32,
+        "groundY": 31,
+        "bodyY": 2,
+        "bounds": {
+          "type": "rectangle",
+          "x": 470,
+          "y": -14,
+          "width": 64,
+          "height": 64
+        },
+        "alpha": 1,
+        "visible": true,
+        "renderable": true,
+        "dir": "down",
+        "z": 32771.6,
+        "pe": 31,
+        "ancora": [
+          0.5,
+          1
+        ]
+      }
+    ],
+    "objetos": [
+      {
+        "kind": "sign",
+        "x": 4456,
+        "y": 32736,
+        "fw": 1,
+        "fh": 1,
+        "nome": "placa",
+        "z": 32735,
+        "altura": 16,
+        "sx": 4456,
+        "sy": 32736,
+        "bounds": {
+          "type": "rectangle",
+          "x": 262,
+          "y": -58,
+          "width": 32,
+          "height": 32
+        }
+      }
+    ],
+    "pendentes": 0,
+    "carregando": []
+  }
+]

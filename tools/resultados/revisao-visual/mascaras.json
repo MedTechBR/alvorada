@@ -1,0 +1,46 @@
+[
+  {
+    "id": "jogador",
+    "nome": "Jogador",
+    "bounds": {
+      "x": 390,
+      "y": 219,
+      "w": 64,
+      "h": 64
+    },
+    "canvas": true
+  },
+  {
+    "id": "joy_centro_coral",
+    "nome": "Enfermeira Joy",
+    "bounds": {
+      "x": 358,
+      "y": 61,
+      "w": 64,
+      "h": 64
+    },
+    "canvas": true
+  },
+  {
+    "id": "banhista_cc",
+    "nome": "Banhista",
+    "bounds": {
+      "x": 262,
+      "y": 187,
+      "w": 64,
+      "h": 64
+    },
+    "canvas": true
+  },
+  {
+    "id": "centro_coral_atendente_clube",
+    "nome": "Atendente do Clube",
+    "bounds": {
+      "x": 230,
+      "y": 91,
+      "w": 64,
+      "h": 64
+    },
+    "canvas": true
+  }
+]

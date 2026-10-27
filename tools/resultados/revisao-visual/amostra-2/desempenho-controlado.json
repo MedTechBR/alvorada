@@ -1,0 +1,110 @@
+[
+  {
+    "versao": "antes",
+    "pontos": [
+      {
+        "nome": "coral",
+        "x": 1033,
+        "y": 1181,
+        "quadros": 240,
+        "dist": 253.15555555555693,
+        "cpuP95": 4.200000017881393,
+        "quadroP95": 5.399999976158142,
+        "picoMiB": 162.95856189727783,
+        "pixelMiB": 2.9384765625,
+        "texturasPixi": 306,
+        "texturasPixiMiB": 57.399173736572266,
+        "geometrias": 0,
+        "texturas3d": 0,
+        "heapMiB": 159.5468349456787
+      },
+      {
+        "nome": "campina",
+        "x": 443,
+        "y": 1086,
+        "quadros": 240,
+        "dist": 96,
+        "cpuP95": 3.5,
+        "quadroP95": 4.800000011920929,
+        "picoMiB": 164.85039901733398,
+        "pixelMiB": 3.6103515625,
+        "texturasPixi": 317,
+        "texturasPixiMiB": 58.198604583740234,
+        "geometrias": 0,
+        "texturas3d": 0,
+        "heapMiB": 161.27503395080566
+      },
+      {
+        "nome": "rota",
+        "x": 762,
+        "y": 1043,
+        "quadros": 240,
+        "dist": 123.33037037036775,
+        "cpuP95": 3.7000000178813934,
+        "quadroP95": 4.899999976158142,
+        "picoMiB": 165.3101568222046,
+        "pixelMiB": 3.623046875,
+        "texturasPixi": 314,
+        "texturasPixiMiB": 57.961299896240234,
+        "geometrias": 0,
+        "texturas3d": 0,
+        "heapMiB": 162.71308135986328
+      }
+    ],
+    "erros": []
+  },
+  {
+    "versao": "depois",
+    "pontos": [
+      {
+        "nome": "coral",
+        "x": 1033,
+        "y": 1181,
+        "quadros": 240,
+        "dist": 253.15555555555693,
+        "cpuP95": 4.800000011920929,
+        "quadroP95": 5.9000000059604645,
+        "picoMiB": 164.43224716186523,
+        "pixelMiB": 2.935546875,
+        "texturasPixi": 308,
+        "texturasPixiMiB": 57.58871841430664,
+        "geometrias": 0,
+        "texturas3d": 0,
+        "heapMiB": 160.44880771636963
+      },
+      {
+        "nome": "campina",
+        "x": 443,
+        "y": 1086,
+        "quadros": 240,
+        "dist": 96,
+        "cpuP95": 3.7000000178813934,
+        "quadroP95": 5,
+        "picoMiB": 165.88670444488525,
+        "pixelMiB": 3.599609375,
+        "texturasPixi": 317,
+        "texturasPixiMiB": 58.38290023803711,
+        "geometrias": 0,
+        "texturas3d": 0,
+        "heapMiB": 162.2181215286255
+      },
+      {
+        "nome": "rota",
+        "x": 762,
+        "y": 1043,
+        "quadros": 240,
+        "dist": 123.33037037036775,
+        "cpuP95": 3.800000011920929,
+        "quadroP95": 4.799999982118607,
+        "picoMiB": 166.50918102264404,
+        "pixelMiB": 3.59375,
+        "texturasPixi": 318,
+        "texturasPixiMiB": 60.84981918334961,
+        "geometrias": 0,
+        "texturas3d": 0,
+        "heapMiB": 163.7323980331421
+      }
+    ],
+    "erros": []
+  }
+]

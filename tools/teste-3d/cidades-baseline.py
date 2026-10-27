@@ -15,7 +15,7 @@ with tempfile.TemporaryDirectory(prefix='alvorada-cidades-antes-') as pasta:
     base = pathlib.Path(pasta)
     # Congela todas as fontes: uma edição posterior não pode contaminar a base.
     arquivos = subprocess.check_output(
-        ['git', 'ls-tree', '-r', '--name-only', commit, '--', 'src', 'index.html', 'sw.js'],
+        ['git', 'ls-tree', '-r', '--name-only', commit, '--', 'src', 'index.html', 'sw.js', 'assets/firered'],
         cwd=raiz, text=True).splitlines()
     for arquivo in arquivos:
         r = subprocess.run(['git', 'show', commit + ':' + arquivo],

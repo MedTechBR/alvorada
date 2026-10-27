@@ -1,0 +1,3 @@
+OK: bosquetes presentes, pontos e bordas conectados, câmera com enquadramento e zoom suave.
+(node:91278) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
