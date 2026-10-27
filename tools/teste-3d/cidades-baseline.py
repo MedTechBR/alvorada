@@ -13,8 +13,9 @@ porta = int(os.environ.get('PORTA', '8701'))
 
 with tempfile.TemporaryDirectory(prefix='alvorada-cidades-antes-') as pasta:
     base = pathlib.Path(pasta)
+    # Congela todas as fontes: uma edição posterior não pode contaminar a base.
     arquivos = subprocess.check_output(
-        ['git', 'diff', '--name-only', commit, '--', 'src', 'index.html'],
+        ['git', 'ls-tree', '-r', '--name-only', commit, '--', 'src', 'index.html', 'sw.js'],
         cwd=raiz, text=True).splitlines()
     for arquivo in arquivos:
         r = subprocess.run(['git', 'show', commit + ':' + arquivo],
