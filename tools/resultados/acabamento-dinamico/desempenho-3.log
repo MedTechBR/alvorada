@@ -1,0 +1,6 @@
+antes {"nome":"coral","cpuP95":2.300000011920929,"quadroP95":3.2000000000007276,"picoMiB":179.83287143707275,"dist":231.88556799999787,"geometrias":0,"texturas3d":0,"pixelMiB":4.8916015625,"setores":6,"three":false,"heapMiB":173.60625743865967}
+antes {"nome":"campina","cpuP95":2.4000000059604645,"quadroP95":2.7999999999992724,"picoMiB":178.49963760375977,"dist":96,"geometrias":0,"texturas3d":0,"pixelMiB":5.6103515625,"setores":9,"three":false,"heapMiB":175.40439891815186}
+antes {"nome":"rota","cpuP95":2.0999999940395355,"quadroP95":2.400000000001455,"picoMiB":182.4680118560791,"dist":224,"geometrias":0,"texturas3d":0,"pixelMiB":5.349609375,"setores":9,"three":false,"heapMiB":176.34451961517334}
+depois {"nome":"coral","cpuP95":2.5,"quadroP95":3.7000000000007276,"picoMiB":180.3382968902588,"dist":232.5537919999988,"geometrias":0,"texturas3d":0,"pixelMiB":2.8916015625,"setores":6,"three":false,"heapMiB":173.56034469604492}
+depois {"nome":"campina","cpuP95":2.9000000059604645,"quadroP95":3.599999999998545,"picoMiB":178.54040718078613,"dist":96,"geometrias":0,"texturas3d":0,"pixelMiB":3.6103515625,"setores":9,"three":false,"heapMiB":175.57102584838867}
+depois {"nome":"rota","cpuP95":2.5,"quadroP95":3,"picoMiB":183.1266050338745,"dist":227.44959999999992,"geometrias":0,"texturas3d":0,"pixelMiB":2.599609375,"setores":6,"three":false,"heapMiB":174.7715721130371}

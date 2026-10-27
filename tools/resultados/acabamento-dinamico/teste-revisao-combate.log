@@ -1,0 +1,9 @@
+OK: dano controlado por atributos, escala simétrica, cura finita e 14 temas de 32 compassos
+┌────────────┬───────┐
+│ (index)    │ Brasa │
+├────────────┼───────┤
+│ Charmander │ 4     │
+│ Charizard  │ 7     │
+└────────────┴───────┘
+(node:60010) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

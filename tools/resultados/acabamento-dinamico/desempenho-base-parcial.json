@@ -1,0 +1,98 @@
+[
+  {
+    "versao": "antes",
+    "pontos": [
+      {
+        "nome": "coral",
+        "x": 1033,
+        "y": 1181,
+        "quadros": 240,
+        "dist": 253.15555555555693,
+        "cpuP95": 5,
+        "quadroP95": 6.299999982118607,
+        "picoMiB": 163.35676765441895,
+        "pixelMiB": 4.9384765625,
+        "geometrias": 0,
+        "texturas3d": 0,
+        "heapMiB": 160.06953525543213
+      },
+      {
+        "nome": "campina",
+        "x": 443,
+        "y": 1086,
+        "quadros": 240,
+        "dist": 96,
+        "cpuP95": 4.0999999940395355,
+        "quadroP95": 5.199999988079071,
+        "picoMiB": 164.8720350265503,
+        "pixelMiB": 5.6103515625,
+        "geometrias": 0,
+        "texturas3d": 0,
+        "heapMiB": 161.8284730911255
+      },
+      {
+        "nome": "rota",
+        "x": 776,
+        "y": 1047,
+        "quadros": 240,
+        "dist": 255.32208709798644,
+        "cpuP95": 4.200000017881393,
+        "quadroP95": 5.199999988079071,
+        "picoMiB": 165.26444911956787,
+        "pixelMiB": 4.587890625,
+        "geometrias": 0,
+        "texturas3d": 0,
+        "heapMiB": 161.77374172210693
+      }
+    ],
+    "erros": []
+  },
+  {
+    "versao": "depois",
+    "pontos": [
+      {
+        "nome": "coral",
+        "x": 1033,
+        "y": 1181,
+        "quadros": 240,
+        "dist": 253.15555555555693,
+        "cpuP95": 4.5999999940395355,
+        "quadroP95": 5.5,
+        "picoMiB": 162.9182834625244,
+        "pixelMiB": 2.9384765625,
+        "geometrias": 0,
+        "texturas3d": 0,
+        "heapMiB": 159.78198528289795
+      },
+      {
+        "nome": "campina",
+        "x": 443,
+        "y": 1086,
+        "quadros": 240,
+        "dist": 96,
+        "cpuP95": 3.699999988079071,
+        "quadroP95": 5,
+        "picoMiB": 164.59718322753906,
+        "pixelMiB": 3.6103515625,
+        "geometrias": 0,
+        "texturas3d": 0,
+        "heapMiB": 161.50053310394287
+      },
+      {
+        "nome": "rota",
+        "x": 776,
+        "y": 1047,
+        "quadros": 240,
+        "dist": 255.32208709798644,
+        "cpuP95": 3.0999999940395355,
+        "quadroP95": 3.7000000178813934,
+        "picoMiB": 164.54539966583252,
+        "pixelMiB": 2.6064453125,
+        "geometrias": 0,
+        "texturas3d": 0,
+        "heapMiB": 161.49621677398682
+      }
+    ],
+    "erros": []
+  }
+]

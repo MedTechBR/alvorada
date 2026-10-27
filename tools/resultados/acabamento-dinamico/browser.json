@@ -1,0 +1,30 @@
+[
+  {
+    "teste": "acabamento-dinamico",
+    "codigo": 0
+  },
+  {
+    "teste": "firered-jogo",
+    "codigo": 0
+  },
+  {
+    "teste": "firered-interface",
+    "codigo": 0
+  },
+  {
+    "teste": "batalha-fluida",
+    "codigo": 0
+  },
+  {
+    "teste": "combate-paredes",
+    "codigo": 0
+  },
+  {
+    "teste": "exploracao-rotas",
+    "codigo": 0
+  },
+  {
+    "teste": "auditar-passagens-npc",
+    "codigo": 0
+  }
+]

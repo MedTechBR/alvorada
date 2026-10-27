@@ -1,0 +1,142 @@
+[
+  {
+    "arquivo": "src/combat/arena.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/combat/combat.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/combat/encontro-coral-dados.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/combat/encontro-coral.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/engine/pokebola.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/engine/quality.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/entities/pokemon.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/main.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/story/battle.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/ui/menu.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/visual2d/coral-pessoas.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/visual2d/firered/camera-batalha.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/visual2d/firered/index.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/visual2d/firered/terreno.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/world/build.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/world/minimap.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/world/people.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/world/rotas-compostas.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "src/world/tocas.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "sw.js",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "tools/teste-3d/acabamento-desempenho.mjs",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "tools/teste-3d/acabamento-dinamico.mjs",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "tools/teste-3d/acabamento-fotos.mjs",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "tools/teste-3d/firered-desempenho.mjs",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "tools/teste-3d/firered-jogo.mjs",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "tools/teste-3d/publicacao-firered.mjs",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "tools/teste-acabamento.mjs",
+    "codigo": 0,
+    "erros": ""
+  },
+  {
+    "arquivo": "tools/teste-coral-pixel.mjs",
+    "codigo": 0,
+    "erros": ""
+  }
+]

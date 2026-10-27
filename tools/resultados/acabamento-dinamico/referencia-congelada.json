@@ -1,0 +1,32 @@
+[
+  {
+    "arquivo": "src/main.js",
+    "igualAoCommit": true,
+    "sha256": "3936baf2c15216089cb9f95d336b41929ef1e125fbd198b693b82daf629a7ebe"
+  },
+  {
+    "arquivo": "src/world/people.js",
+    "igualAoCommit": true,
+    "sha256": "4ba086ac1d132101f238a5cb4d89ca9fe3b3af75a783d79d47820b35c0c2f94d"
+  },
+  {
+    "arquivo": "src/combat/combat.js",
+    "igualAoCommit": true,
+    "sha256": "c37a17f39a3a82aceedf29ddaefc34f473fb32caf817ddc3e4ef81c67b816a4c"
+  },
+  {
+    "arquivo": "src/ui/menu.js",
+    "igualAoCommit": true,
+    "sha256": "667f16986ae126745bbb8994b878833d1b29515568b426e04219112cb2ff706c"
+  },
+  {
+    "arquivo": "src/world/build.js",
+    "igualAoCommit": true,
+    "sha256": "029590343665c61d0fbee4d2ab08b52034d0f57e7c39a105c25569934ab2a52b"
+  },
+  {
+    "arquivo": "src/visual2d/firered/index.js",
+    "igualAoCommit": true,
+    "sha256": "3736d7fdfecabe948bc6f89e0c705ce271f0e8e613420459c7d485d2db574881"
+  }
+]

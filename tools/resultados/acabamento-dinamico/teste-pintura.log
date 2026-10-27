@@ -1,0 +1,5 @@
+Modelos com volumes preservados: 251
+OK: perfil isolado, cache reutilizado, UV preservado e árvores com menos triângulos
+OK: perfil costeiro isolado e cache das peças inalteradas compartilhado.
+(node:60003) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

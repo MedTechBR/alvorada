@@ -1,0 +1,602 @@
+{
+  "resultados": [
+    {
+      "nome": "barreiras-por-setor",
+      "total": 35727,
+      "perto": 277,
+      "colisoes": 385619,
+      "apos": 385619
+    },
+    {
+      "nome": "coleta-sem-duplicar",
+      "x": 12248,
+      "y": 15753,
+      "antes": 10,
+      "n": 2,
+      "depois": 12,
+      "salvo": true
+    },
+    {
+      "nome": "coral",
+      "local": "Cidade Coral",
+      "esperado": "Cidade Coral",
+      "ativo": true,
+      "three": false,
+      "cache": 25,
+      "zoom": 2,
+      "pessoas": [
+        {
+          "nome": "jogador",
+          "altura": 20,
+          "k": 1
+        },
+        {
+          "nome": "Menina da Festa",
+          "altura": 16,
+          "k": 1
+        },
+        {
+          "nome": "Seu Abel",
+          "altura": 19,
+          "k": 1
+        },
+        {
+          "nome": "Guarda do Farol",
+          "altura": 21,
+          "k": 1
+        },
+        {
+          "nome": "Pescador de Coral",
+          "altura": 21,
+          "k": 1
+        }
+      ],
+      "botoes": [
+        {
+          "id": "",
+          "w": 48,
+          "h": 48,
+          "x": 724,
+          "y": 327
+        },
+        {
+          "id": "t-dodge",
+          "w": 48,
+          "h": 48,
+          "x": 781,
+          "y": 327
+        },
+        {
+          "id": "t-mount",
+          "w": 48,
+          "h": 48,
+          "x": 667,
+          "y": 327
+        }
+      ]
+    },
+    {
+      "nome": "alvorada",
+      "local": "Laboratório do Prof. Jatobá",
+      "esperado": "Laboratório do Prof. Jatobá",
+      "ativo": true,
+      "three": false,
+      "cache": 18,
+      "zoom": 2,
+      "pessoas": [
+        {
+          "nome": "jogador",
+          "altura": 20,
+          "k": 1
+        },
+        {
+          "nome": "Dr. Paulo",
+          "altura": 21,
+          "k": 1
+        },
+        {
+          "nome": "Bia",
+          "altura": 21,
+          "k": 1
+        }
+      ],
+      "botoes": [
+        {
+          "id": "",
+          "w": 48,
+          "h": 48,
+          "x": 724,
+          "y": 327
+        },
+        {
+          "id": "t-dodge",
+          "w": 48,
+          "h": 48,
+          "x": 781,
+          "y": 327
+        },
+        {
+          "id": "t-team",
+          "w": 48,
+          "h": 48,
+          "x": 610,
+          "y": 327
+        }
+      ]
+    },
+    {
+      "nome": "campina",
+      "local": "Cidade Campina",
+      "esperado": "Cidade Campina",
+      "ativo": true,
+      "three": false,
+      "cache": 21,
+      "zoom": 2,
+      "pessoas": [
+        {
+          "nome": "jogador",
+          "altura": 20,
+          "k": 1
+        },
+        {
+          "nome": "Dona Cida",
+          "altura": 19,
+          "k": 1
+        },
+        {
+          "nome": "Seu Bento",
+          "altura": 21,
+          "k": 1
+        },
+        {
+          "nome": "Vô Lino",
+          "altura": 19,
+          "k": 1
+        }
+      ],
+      "botoes": [
+        {
+          "id": "",
+          "w": 48,
+          "h": 48,
+          "x": 724,
+          "y": 327
+        },
+        {
+          "id": "t-dodge",
+          "w": 48,
+          "h": 48,
+          "x": 781,
+          "y": 327
+        },
+        {
+          "id": "t-act",
+          "w": 44,
+          "h": 44,
+          "x": 726,
+          "y": 273
+        },
+        {
+          "id": "t-mount",
+          "w": 48,
+          "h": 48,
+          "x": 667,
+          "y": 327
+        }
+      ]
+    },
+    {
+      "nome": "sussurro",
+      "local": "Vila Sussurro",
+      "esperado": "Vila Sussurro",
+      "ativo": true,
+      "three": false,
+      "cache": 29,
+      "zoom": 2,
+      "pessoas": [
+        {
+          "nome": "jogador",
+          "altura": 20,
+          "k": 1
+        },
+        {
+          "nome": "Anciã Iara",
+          "altura": 20,
+          "k": 1
+        },
+        {
+          "nome": "Pipo",
+          "altura": 16,
+          "k": 1
+        }
+      ],
+      "botoes": [
+        {
+          "id": "",
+          "w": 48,
+          "h": 48,
+          "x": 724,
+          "y": 327
+        },
+        {
+          "id": "t-dodge",
+          "w": 48,
+          "h": 48,
+          "x": 781,
+          "y": 327
+        },
+        {
+          "id": "t-mount",
+          "w": 48,
+          "h": 48,
+          "x": 667,
+          "y": 327
+        }
+      ]
+    },
+    {
+      "nome": "geada",
+      "local": "Vila Geada",
+      "esperado": "Vila Geada",
+      "ativo": true,
+      "three": false,
+      "cache": 28,
+      "zoom": 2,
+      "pessoas": [
+        {
+          "nome": "jogador",
+          "altura": 20,
+          "k": 1
+        }
+      ],
+      "botoes": [
+        {
+          "id": "",
+          "w": 48,
+          "h": 48,
+          "x": 724,
+          "y": 327
+        },
+        {
+          "id": "t-dodge",
+          "w": 48,
+          "h": 48,
+          "x": 781,
+          "y": 327
+        },
+        {
+          "id": "t-mount",
+          "w": 48,
+          "h": 48,
+          "x": 667,
+          "y": 327
+        }
+      ]
+    },
+    {
+      "nome": "mandacaru",
+      "local": "Vila Mandacaru",
+      "esperado": "Vila Mandacaru",
+      "ativo": true,
+      "three": false,
+      "cache": 19,
+      "zoom": 2,
+      "pessoas": [
+        {
+          "nome": "jogador",
+          "altura": 20,
+          "k": 1
+        }
+      ],
+      "botoes": [
+        {
+          "id": "",
+          "w": 48,
+          "h": 48,
+          "x": 724,
+          "y": 327
+        },
+        {
+          "id": "t-dodge",
+          "w": 48,
+          "h": 48,
+          "x": 781,
+          "y": 327
+        },
+        {
+          "id": "t-mount",
+          "w": 48,
+          "h": 48,
+          "x": 667,
+          "y": 327
+        }
+      ]
+    },
+    {
+      "nome": "casa",
+      "local": "Casa da Família Brito",
+      "esperado": "Casa da Família Brito",
+      "ativo": true,
+      "three": false,
+      "cache": 18,
+      "zoom": 2,
+      "pessoas": [
+        {
+          "nome": "jogador",
+          "altura": 20,
+          "k": 1
+        },
+        {
+          "nome": "Dona Marlene",
+          "altura": 19,
+          "k": 1
+        },
+        {
+          "nome": "Clarinha",
+          "altura": 16,
+          "k": 1
+        }
+      ],
+      "botoes": [
+        {
+          "id": "",
+          "w": 48,
+          "h": 48,
+          "x": 724,
+          "y": 327
+        },
+        {
+          "id": "t-dodge",
+          "w": 48,
+          "h": 48,
+          "x": 781,
+          "y": 327
+        },
+        {
+          "id": "t-team",
+          "w": 48,
+          "h": 48,
+          "x": 610,
+          "y": 327
+        }
+      ]
+    },
+    {
+      "nome": "centro",
+      "local": "Centro Pokémon de Cidade Coral",
+      "esperado": "Centro Pokémon de Cidade Coral",
+      "ativo": true,
+      "three": false,
+      "cache": 15,
+      "zoom": 2,
+      "pessoas": [
+        {
+          "nome": "jogador",
+          "altura": 20,
+          "k": 1
+        },
+        {
+          "nome": "Enfermeira Joy",
+          "altura": 20,
+          "k": 1
+        },
+        {
+          "nome": "Banhista",
+          "altura": 21,
+          "k": 1
+        },
+        {
+          "nome": "Atendente do Clube",
+          "altura": 20,
+          "k": 1
+        }
+      ],
+      "botoes": [
+        {
+          "id": "",
+          "w": 48,
+          "h": 48,
+          "x": 724,
+          "y": 327
+        },
+        {
+          "id": "t-dodge",
+          "w": 48,
+          "h": 48,
+          "x": 781,
+          "y": 327
+        },
+        {
+          "id": "t-team",
+          "w": 48,
+          "h": 48,
+          "x": 610,
+          "y": 327
+        }
+      ]
+    },
+    {
+      "nome": "ginasio",
+      "local": "Farol Coral — Térreo (Ginásio de Cidade Coral)",
+      "esperado": "Farol Coral — Térreo (Ginásio de Cidade Coral)",
+      "ativo": true,
+      "three": false,
+      "cache": 14,
+      "zoom": 2,
+      "pessoas": [
+        {
+          "nome": "jogador",
+          "altura": 20,
+          "k": 1
+        },
+        {
+          "nome": "Técnico Saulo",
+          "altura": 21,
+          "k": 1
+        }
+      ],
+      "botoes": [
+        {
+          "id": "",
+          "w": 48,
+          "h": 48,
+          "x": 724,
+          "y": 327
+        },
+        {
+          "id": "t-dodge",
+          "w": 48,
+          "h": 48,
+          "x": 781,
+          "y": 327
+        },
+        {
+          "id": "t-team",
+          "w": 48,
+          "h": 48,
+          "x": 610,
+          "y": 327
+        }
+      ]
+    },
+    {
+      "nome": "gruta",
+      "local": "Gruta de Lúmen",
+      "esperado": "Gruta de Lúmen",
+      "ativo": true,
+      "three": false,
+      "cache": 3,
+      "zoom": 2,
+      "pessoas": [
+        {
+          "nome": "jogador",
+          "altura": 20,
+          "k": 1
+        }
+      ],
+      "botoes": [
+        {
+          "id": "",
+          "w": 48,
+          "h": 48,
+          "x": 724,
+          "y": 327
+        },
+        {
+          "id": "t-dodge",
+          "w": 48,
+          "h": 48,
+          "x": 781,
+          "y": 327
+        },
+        {
+          "id": "t-team",
+          "w": 48,
+          "h": 48,
+          "x": 610,
+          "y": 327
+        }
+      ]
+    },
+    {
+      "nome": "mata",
+      "local": "Clareira das Raízes",
+      "esperado": "Clareira das Raízes",
+      "ativo": true,
+      "three": false,
+      "cache": 7,
+      "zoom": 2,
+      "pessoas": [
+        {
+          "nome": "jogador",
+          "altura": 20,
+          "k": 1
+        }
+      ],
+      "botoes": [
+        {
+          "id": "",
+          "w": 48,
+          "h": 48,
+          "x": 724,
+          "y": 327
+        },
+        {
+          "id": "t-dodge",
+          "w": 48,
+          "h": 48,
+          "x": 781,
+          "y": 327
+        },
+        {
+          "id": "t-team",
+          "w": 48,
+          "h": 48,
+          "x": 610,
+          "y": 327
+        }
+      ]
+    },
+    {
+      "nome": "ruina",
+      "local": "Ruína do Pomar",
+      "esperado": "Ruína do Pomar",
+      "ativo": true,
+      "three": false,
+      "cache": 8,
+      "zoom": 2,
+      "pessoas": [
+        {
+          "nome": "jogador",
+          "altura": 20,
+          "k": 1
+        }
+      ],
+      "botoes": [
+        {
+          "id": "",
+          "w": 48,
+          "h": 48,
+          "x": 724,
+          "y": 327
+        },
+        {
+          "id": "t-dodge",
+          "w": 48,
+          "h": 48,
+          "x": 781,
+          "y": 327
+        },
+        {
+          "id": "t-team",
+          "w": 48,
+          "h": 48,
+          "x": 610,
+          "y": 327
+        }
+      ]
+    },
+    {
+      "nome": "montaria-agua",
+      "kind": "nadar",
+      "x": 16895.668644,
+      "y": 18442,
+      "dist": 71.66864400000122
+    },
+    {
+      "nome": "combate",
+      "arena": "encontro-coral",
+      "mon": 4,
+      "formato": "pokemon",
+      "visual": true,
+      "classe": true,
+      "novaClasse": true
+    },
+    {
+      "nome": "retorno",
+      "dist": 0,
+      "mapa": true
+    }
+  ],
+  "erros": []
+}

@@ -1,0 +1,112 @@
+[
+  {
+    "nome": "Rota 9, Estepe dos Ventos",
+    "rect": [
+      504,
+      144,
+      1044,
+      144
+    ],
+    "bosque": 492,
+    "trilha": 2686
+  },
+  {
+    "nome": "Rota 6, Ferrovia da Aurora",
+    "rect": [
+      1080,
+      504,
+      324,
+      144
+    ],
+    "bosque": 82,
+    "trilha": 886
+  },
+  {
+    "nome": "Rota 8, Escalada do Paredão",
+    "rect": [
+      468,
+      288,
+      180,
+      144
+    ],
+    "bosque": 41,
+    "trilha": 549
+  },
+  {
+    "nome": "Rota 7, Ravina do Rochedo",
+    "rect": [
+      900,
+      450,
+      468,
+      54
+    ],
+    "bosque": 0,
+    "trilha": 230
+  },
+  {
+    "nome": "Rota 1, Campos de Lúmen",
+    "rect": [
+      432,
+      990,
+      396,
+      54
+    ],
+    "bosque": 246,
+    "trilha": 94
+  },
+  {
+    "nome": "Rota 3, Margem das Garças",
+    "rect": [
+      972,
+      990,
+      324,
+      54
+    ],
+    "bosque": 0,
+    "trilha": 296
+  },
+  {
+    "nome": "Rota 11, Escadaria dos Vigias",
+    "rect": [
+      828,
+      216,
+      72,
+      108
+    ],
+    "bosque": 0,
+    "trilha": 134
+  },
+  {
+    "nome": "Rota 1, Campos de Lúmen",
+    "rect": [
+      540,
+      954,
+      318,
+      168
+    ],
+    "bosque": 82,
+    "trilha": 992
+  },
+  {
+    "nome": "Rota 7, Ravina do Rochedo",
+    "rect": [
+      900,
+      450,
+      468,
+      54
+    ],
+    "bosque": 0,
+    "trilha": 23
+  },
+  {
+    "nome": "Rota 6, Ferrovia da Aurora",
+    "rect": [
+      1068,
+      504,
+      360,
+      138
+    ],
+    "bosque": 41,
+    "trilha": 136
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "layout": 6,
+  "largura": 2400,
+  "alturaExterna": 1920,
+  "rotas": [
+    {
+      "nome": "Alvorada → Campina",
+      "inicio": [
+        930,
+        1064
+      ],
+      "fim": [
+        441,
+        1083
+      ],
+      "blocos": 508
+    },
+    {
+      "nome": "Campina → Sussurro",
+      "inicio": [
+        441,
+        1083
+      ],
+      "fim": [
+        474,
+        697
+      ],
+      "blocos": 567
+    },
+    {
+      "nome": "Sussurro → Porto Espelho",
+      "inicio": [
+        474,
+        697
+      ],
+      "fim": [
+        1290,
+        948
+      ],
+      "blocos": 1069
+    }
+  ]
+}
+(node:60018) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

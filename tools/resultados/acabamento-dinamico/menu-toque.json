@@ -1,0 +1,74 @@
+[
+  {
+    "texto": "▶Pokédex",
+    "altura": 44,
+    "visivel": true,
+    "clicavel": true
+  },
+  {
+    "texto": "▶Pokémon",
+    "altura": 44,
+    "visivel": true,
+    "clicavel": true
+  },
+  {
+    "texto": "▶Montarias",
+    "altura": 44,
+    "visivel": true,
+    "clicavel": true
+  },
+  {
+    "texto": "▶Mochila",
+    "altura": 44,
+    "visivel": true,
+    "clicavel": true
+  },
+  {
+    "texto": "▶Missões",
+    "altura": 44,
+    "visivel": true,
+    "clicavel": true
+  },
+  {
+    "texto": "▶Mapa",
+    "altura": 44,
+    "visivel": true,
+    "clicavel": true
+  },
+  {
+    "texto": "▶Voar",
+    "altura": 44,
+    "visivel": true,
+    "clicavel": true
+  },
+  {
+    "texto": "▶Teste",
+    "altura": 44,
+    "visivel": true,
+    "clicavel": true
+  },
+  {
+    "texto": "▶Online",
+    "altura": 44,
+    "visivel": true,
+    "clicavel": true
+  },
+  {
+    "texto": "▶Opções",
+    "altura": 44,
+    "visivel": true,
+    "clicavel": true
+  },
+  {
+    "texto": "▶Salvar",
+    "altura": 44,
+    "visivel": true,
+    "clicavel": true
+  },
+  {
+    "texto": "▶Fechar",
+    "altura": 44,
+    "visivel": true,
+    "clicavel": true
+  }
+]

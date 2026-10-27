@@ -1,0 +1,443 @@
+[
+  {
+    "versao": "antes",
+    "pontos": [
+      {
+        "nome": "coral",
+        "heap": 172.05381679534912,
+        "S": {
+          "J": "obj",
+          "W": 2400,
+          "H": 3040,
+          "florestaPorSetor": true,
+          "tiles": 7296000,
+          "block": 7296000,
+          "seed": 151,
+          "objects": 66447,
+          "placed": 66313,
+          "decor": 8939,
+          "people": 388,
+          "pets": 85,
+          "novos": 0,
+          "plantaW": 1200,
+          "plantaH": 2080,
+          "plantaTiles": "obj",
+          "nearSpot": 0,
+          "postesOrganizados": true,
+          "postesRetirados": 28,
+          "coralComposta": true
+        },
+        "partes": [
+          {
+            "id": "nucleo",
+            "pronta": true
+          },
+          {
+            "id": "nucleo",
+            "pronta": true
+          },
+          {
+            "id": "geada",
+            "pronta": true
+          },
+          {
+            "id": "sertao",
+            "pronta": true
+          },
+          {
+            "id": "jandaia",
+            "pronta": true
+          },
+          {
+            "id": "austral",
+            "pronta": true
+          },
+          {
+            "id": "brasas",
+            "pronta": true
+          }
+        ],
+        "people": {
+          "g": "obj",
+          "opcoes": "obj",
+          "cache": 6,
+          "carregando": 0,
+          "atores": 6,
+          "indices": "obj",
+          "token": 0,
+          "volta": 0,
+          "restaurar": 0,
+          "J": "obj",
+          "proxima": 13309.700000017881,
+          "mundo": "obj"
+        }
+      },
+      {
+        "nome": "campina",
+        "heap": 172.88082218170166,
+        "S": {
+          "J": "obj",
+          "W": 2400,
+          "H": 3040,
+          "florestaPorSetor": true,
+          "tiles": 7296000,
+          "block": 7296000,
+          "seed": 151,
+          "objects": 66447,
+          "placed": 66313,
+          "decor": 8939,
+          "people": 388,
+          "pets": 85,
+          "novos": 0,
+          "plantaW": 1200,
+          "plantaH": 2080,
+          "plantaTiles": "obj",
+          "nearSpot": 0,
+          "postesOrganizados": true,
+          "postesRetirados": 28,
+          "coralComposta": true
+        },
+        "partes": [
+          {
+            "id": "nucleo",
+            "pronta": true
+          },
+          {
+            "id": "nucleo",
+            "pronta": true
+          },
+          {
+            "id": "geada",
+            "pronta": true
+          },
+          {
+            "id": "sertao",
+            "pronta": true
+          },
+          {
+            "id": "jandaia",
+            "pronta": true
+          },
+          {
+            "id": "austral",
+            "pronta": true
+          },
+          {
+            "id": "brasas",
+            "pronta": true
+          }
+        ],
+        "people": {
+          "g": "obj",
+          "opcoes": "obj",
+          "cache": 4,
+          "carregando": 0,
+          "atores": 4,
+          "indices": "obj",
+          "token": 0,
+          "volta": 0,
+          "restaurar": 0,
+          "J": "obj",
+          "proxima": 15838.09999999404,
+          "mundo": "obj"
+        }
+      },
+      {
+        "nome": "rota",
+        "heap": 173.5337495803833,
+        "S": {
+          "J": "obj",
+          "W": 2400,
+          "H": 3040,
+          "florestaPorSetor": true,
+          "tiles": 7296000,
+          "block": 7296000,
+          "seed": 151,
+          "objects": 66447,
+          "placed": 66313,
+          "decor": 8939,
+          "people": 388,
+          "pets": 85,
+          "novos": 0,
+          "plantaW": 1200,
+          "plantaH": 2080,
+          "plantaTiles": "obj",
+          "nearSpot": 0,
+          "postesOrganizados": true,
+          "postesRetirados": 28,
+          "coralComposta": true
+        },
+        "partes": [
+          {
+            "id": "nucleo",
+            "pronta": true
+          },
+          {
+            "id": "nucleo",
+            "pronta": true
+          },
+          {
+            "id": "geada",
+            "pronta": true
+          },
+          {
+            "id": "sertao",
+            "pronta": true
+          },
+          {
+            "id": "jandaia",
+            "pronta": true
+          },
+          {
+            "id": "austral",
+            "pronta": true
+          },
+          {
+            "id": "brasas",
+            "pronta": true
+          }
+        ],
+        "people": {
+          "g": "obj",
+          "opcoes": "obj",
+          "cache": 1,
+          "carregando": 0,
+          "atores": 1,
+          "indices": "obj",
+          "token": 0,
+          "volta": 0,
+          "restaurar": 0,
+          "J": "obj",
+          "proxima": 18298.09999999404,
+          "mundo": "obj"
+        }
+      }
+    ],
+    "erros": []
+  },
+  {
+    "versao": "depois",
+    "pontos": [
+      {
+        "nome": "coral",
+        "heap": 172.03477001190186,
+        "S": {
+          "J": "obj",
+          "W": 2400,
+          "H": 3040,
+          "florestaPorSetor": true,
+          "tiles": 7296000,
+          "block": 7296000,
+          "seed": 151,
+          "objects": 66447,
+          "placed": 66313,
+          "decor": 8939,
+          "people": 388,
+          "pets": 85,
+          "novos": 0,
+          "plantaW": 1200,
+          "plantaH": 2080,
+          "plantaTiles": "obj",
+          "nearSpot": 0,
+          "postesOrganizados": true,
+          "postesRetirados": 28,
+          "coralComposta": true
+        },
+        "partes": [
+          {
+            "id": "nucleo",
+            "pronta": true
+          },
+          {
+            "id": "nucleo",
+            "pronta": true
+          },
+          {
+            "id": "geada",
+            "pronta": true
+          },
+          {
+            "id": "sertao",
+            "pronta": true
+          },
+          {
+            "id": "jandaia",
+            "pronta": true
+          },
+          {
+            "id": "austral",
+            "pronta": true
+          },
+          {
+            "id": "brasas",
+            "pronta": true
+          }
+        ],
+        "people": {
+          "g": "obj",
+          "opcoes": "obj",
+          "cache": 6,
+          "carregando": 0,
+          "atores": 6,
+          "indices": "obj",
+          "token": 0,
+          "volta": 0,
+          "ultimos": "obj",
+          "pendentes": 0,
+          "visVolta": 0,
+          "restaurar": 0,
+          "J": "obj",
+          "proxima": 13144.799999982119,
+          "mundo": "obj"
+        }
+      },
+      {
+        "nome": "campina",
+        "heap": 173.71265411376953,
+        "S": {
+          "J": "obj",
+          "W": 2400,
+          "H": 3040,
+          "florestaPorSetor": true,
+          "tiles": 7296000,
+          "block": 7296000,
+          "seed": 151,
+          "objects": 66447,
+          "placed": 66313,
+          "decor": 8939,
+          "people": 388,
+          "pets": 85,
+          "novos": 0,
+          "plantaW": 1200,
+          "plantaH": 2080,
+          "plantaTiles": "obj",
+          "nearSpot": 0,
+          "postesOrganizados": true,
+          "postesRetirados": 28,
+          "coralComposta": true
+        },
+        "partes": [
+          {
+            "id": "nucleo",
+            "pronta": true
+          },
+          {
+            "id": "nucleo",
+            "pronta": true
+          },
+          {
+            "id": "geada",
+            "pronta": true
+          },
+          {
+            "id": "sertao",
+            "pronta": true
+          },
+          {
+            "id": "jandaia",
+            "pronta": true
+          },
+          {
+            "id": "austral",
+            "pronta": true
+          },
+          {
+            "id": "brasas",
+            "pronta": true
+          }
+        ],
+        "people": {
+          "g": "obj",
+          "opcoes": "obj",
+          "cache": 7,
+          "carregando": 0,
+          "atores": 4,
+          "indices": "obj",
+          "token": 0,
+          "volta": 0,
+          "ultimos": "obj",
+          "pendentes": 0,
+          "visVolta": 0,
+          "restaurar": 0,
+          "J": "obj",
+          "proxima": 15858.299999982119,
+          "mundo": "obj"
+        }
+      },
+      {
+        "nome": "rota",
+        "heap": 174.56427574157715,
+        "S": {
+          "J": "obj",
+          "W": 2400,
+          "H": 3040,
+          "florestaPorSetor": true,
+          "tiles": 7296000,
+          "block": 7296000,
+          "seed": 151,
+          "objects": 66447,
+          "placed": 66313,
+          "decor": 8939,
+          "people": 388,
+          "pets": 85,
+          "novos": 0,
+          "plantaW": 1200,
+          "plantaH": 2080,
+          "plantaTiles": "obj",
+          "nearSpot": 0,
+          "postesOrganizados": true,
+          "postesRetirados": 28,
+          "coralComposta": true
+        },
+        "partes": [
+          {
+            "id": "nucleo",
+            "pronta": true
+          },
+          {
+            "id": "nucleo",
+            "pronta": true
+          },
+          {
+            "id": "geada",
+            "pronta": true
+          },
+          {
+            "id": "sertao",
+            "pronta": true
+          },
+          {
+            "id": "jandaia",
+            "pronta": true
+          },
+          {
+            "id": "austral",
+            "pronta": true
+          },
+          {
+            "id": "brasas",
+            "pronta": true
+          }
+        ],
+        "people": {
+          "g": "obj",
+          "opcoes": "obj",
+          "cache": 4,
+          "carregando": 0,
+          "atores": 1,
+          "indices": "obj",
+          "token": 0,
+          "volta": 0,
+          "ultimos": "obj",
+          "pendentes": 0,
+          "visVolta": 0,
+          "restaurar": 0,
+          "J": "obj",
+          "proxima": 18373.399999976158,
+          "mundo": "obj"
+        }
+      }
+    ],
+    "erros": []
+  }
+]

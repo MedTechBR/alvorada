@@ -1,0 +1,26 @@
+[
+  {
+    "teste": "acabamento-dinamico-20-casos",
+    "codigo": 0
+  },
+  {
+    "teste": "desempenho-controlado",
+    "codigo": 0
+  },
+  {
+    "teste": "equilibrio-depois",
+    "codigo": 0
+  },
+  {
+    "teste": "combate-paredes-final",
+    "codigo": 0
+  },
+  {
+    "teste": "firered-jogo-final",
+    "codigo": 0
+  },
+  {
+    "teste": "firered-interface-final",
+    "codigo": 0
+  }
+]

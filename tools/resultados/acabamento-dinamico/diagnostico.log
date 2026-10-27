@@ -1,0 +1,20 @@
+{
+  body: { y: -15, anchor: 0.71875, scale: 1 },
+  ator: { pe: 24, altura: 13, montado: true },
+  rig: {
+    dex: 749,
+    name: 'Mudbray',
+    label: 'Correr',
+    h: 1,
+    walk: 132,
+    run: 190,
+    acc: 7,
+    anim: 55,
+    lift: 1,
+    back: 4,
+    r: 7,
+    lean: 150,
+    bob: 1.5
+  }
+}
+erros []
