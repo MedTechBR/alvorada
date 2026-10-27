@@ -12,7 +12,9 @@ A escolha é salva pelo UID do Pokémon, preservando sua identidade ao reorganiz
 
 ## Bolsa de combate
 
-**Itens** abre uma bandeja curta, com as abas **Itens** e **Poké Bolas**. No computador também funciona pela tecla **I**; Esc, o botão fechar ou um toque fora fecham a bandeja. A escolha pausa apenas o combate offline, assim como a mochila existente. A bandeja não está disponível no modo online.
+Os controles de movimento (esquiva, pulo e voo/mergulho) ficam na coluna da esquerda; itens, captura e equipe ficam juntos acima dos golpes, à direita. Os lugares permanecem reservados quando uma ação está indisponível.
+
+**Itens** abre uma bandeja curta, junto ao canto dos controles, com as abas **Itens** e **Poké Bolas**. No computador também funciona pela tecla **I**; Esc, o botão fechar ou um toque fora fecham a bandeja. A escolha pausa apenas o combate offline, assim como a mochila existente. A bandeja não está disponível no modo online.
 
 - Remédios e frutas mostram descrição e quantidade. Toque no item e em quem deve recebê-lo. As regras existentes de `useItemOn` decidem o efeito; falhas não consomem o item e deixam uma explicação.
 - Poké Bolas mostram cor, modelo e quantidade. Toque no modelo para lançar no selvagem disponível. O botão de captura direta continua lançando a bola preparada com um toque e mostra sua quantidade.
@@ -33,6 +35,7 @@ A escolha é salva pelo UID do Pokémon, preservando sua identidade ao reorganiz
 | `src/ui/ui.js` | Pausa, atalhos e limpeza ao iniciar outro jogo. |
 | `src/ui/toque.js` | Lugar do botão Itens no grupo de controles. |
 | `src/visual2d/firered/interface.css` | Painel compacto, quantidades e rolagem. |
+| `sw.js` | Cache de código v6 para a publicação; cache compartilhado dos sprites preservado. |
 | `index.html` | Descoberta antecipada dos dois novos módulos. |
 
 ## Verificação
@@ -43,4 +46,4 @@ A escolha é salva pelo UID do Pokémon, preservando sua identidade ao reorganiz
 
 O teste de regressão de captura confirmou lançamento pelo botão real, uma única captura por alvo e cancelamento ao fugir. Não houve alteração de dano, recarga, antecipação ou agressividade. A validação desta rodada é local, no Chrome; iPhone físico/Safari não foi testado.
 
-[Imagens reais e acesso ao jogo local](../tools/shots/acompanhante-bolsa/index.html).
+[Imagens reais e acesso ao jogo](../tools/shots/acompanhante-bolsa/index.html).

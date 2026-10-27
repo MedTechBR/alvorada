@@ -64,7 +64,7 @@ body.firered .gm-info{right:calc(402px + var(--safe-r));max-width:none;padding:1
 .bc-fundo { position:fixed;inset:0;z-index:160;pointer-events:auto; }
 .bc-fundo[hidden] { display:none; }
 .bc-painel { position:absolute;right:24px;bottom:16px;width:330px;max-width:calc(100vw - 24px);max-height:calc(100dvh - 28px);display:flex;flex-direction:column;padding:10px;border:2px solid #426673;border-radius:16px;background:#f3f8f6;color:#173e4b;box-shadow:0 5px 18px #132f4140;font:13px system-ui,sans-serif; }
-body.touch .bc-painel { right:calc(226px + var(--nr,0px)); }
+body.touch .bc-painel { right:calc(12px + var(--nr,0px));bottom:calc(12px + var(--sb,0px)); }
 .bc-painel header { display:flex;align-items:center;justify-content:space-between;gap:10px; }
 .bc-painel header strong { display:block;font-size:16px; }
 .bc-painel small { display:block;color:#56717a;font-size:11px;line-height:1.35; }
@@ -89,3 +89,6 @@ body.touch .bc-painel { right:calc(226px + var(--nr,0px)); }
 .bc-quantidade { position:absolute;right:-3px;bottom:-4px;min-width:18px;padding:1px 3px;border-radius:6px;background:#f3f8f6;color:#173e4b;border:1px solid #759197;font:700 11px system-ui; }
 body:not(.touch) #t-items { position:fixed;right:22px;top:142px;width:52px;height:52px;pointer-events:auto;z-index:50; }
 @media(max-width:600px) { body.touch .bc-painel { right:12px;bottom:calc(14px + var(--sb,0px)); } }
+/* O nome fica sob o botão; não espreme o desenho do frasco. */
+body.firered #t-items .tq-contexto{position:absolute;left:50%;bottom:-10px;transform:translateX(-50%);padding:0 4px;border-radius:4px;background:#173e4b;color:#fff;font:650 9px/12px system-ui;pointer-events:none}
+body.firered #t-items>svg{flex-shrink:0}

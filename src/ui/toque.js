@@ -40,16 +40,16 @@ export const ICONES = {
 };
 const ICONE_CAT = { phys: ICONES.fisico, spec: ICONES.especial, status: ICONES.status };
 
-// Golpes em duas fileiras próximas; esquiva ao lado e utilidades agrupadas acima.
+// Golpes à direita, movimento numa coluna à esquerda e bolsa/captura/equipe juntos acima.
 // Centros medidos a partir do canto inferior direito. Nenhuma ação ocupa o centro da luta.
 const TAM = { main: 60, arco: 56, esq: 56, peq: 44 };
 const ARCO = [[34, 34], [100, 34], [100, 104], [34, 104]];
 const LAYOUT = {
-  deitado: { esq: [166, 34], peq: [[166, 104], [28, 170], [78, 170], [128, 170], [178, 170], [166, 222]] },
-  empe: { esq: [166, 34], peq: [[166, 104], [28, 170], [78, 170], [128, 170], [178, 170], [166, 222]] },
+  deitado: { esq: [194, 34], peq: [[194, 96], [194, 152], [28, 170], [78, 170], [128, 170], [28, 222], [78, 222]] },
+  empe: { esq: [194, 34], peq: [[194, 96], [194, 152], [28, 170], [78, 170], [128, 170], [28, 222], [78, 222]] },
 };
 // lugar fixo de cada botão pequeno (índice em peq); os de contexto (Mega, A no modo Pokémon) ocupam a próxima vaga livre
-const FIXO = { pokemon: { 't-ball': 0, 't-team': 1, 't-jump': 2, 't-alt': 3, 't-items': 4 }, treinador: { 't-mount': 0 } };
+const FIXO = { pokemon: { 't-jump': 0, 't-alt': 1, 't-items': 2, 't-ball': 3, 't-team': 4 }, treinador: { 't-mount': 0 } };
 
 export class Toque {
   constructor(g, ui) {
@@ -225,6 +225,8 @@ export class Toque {
     // A: no treinador fica no arco (lugar do golpe 3); com o Pokémon, vai para uma vaga dos pequenos
     const peq = L.peq, livres = new Set(peq.map((_, i) => i)), fixo = FIXO[pk ? 'pokemon' : 'treinador'];
     const ids = ['t-items', 't-ball', 't-team', 't-jump', 't-alt', 't-mount', 't-power', 't-act', 't-battle'];
+    // As vagas fixas não recebem ações de outra categoria quando um botão some.
+    if(pk)for(const k of Object.values(fixo))livres.delete(k);
     const lugar = {};
     for (const id of ids) if (vis[id] && fixo[id] != null) { lugar[id] = fixo[id]; livres.delete(fixo[id]); }
     if (!pk) { pos($('t-act'), ARCO[2], TAM.arco); lugar['t-act'] = -1; pos($('t-team'), ARCO[3], TAM.peq); lugar['t-team'] = -1; }
