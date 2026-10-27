@@ -1,7 +1,9 @@
 // Enquadra os combatentes, sem deixar o treinador parado puxar a câmera.
 // A aproximação é suave e os controles recebem margem própria no celular.
 export function cameraBatalha(g,anterior,dt=1/60){
- const es=[g.lead,...g.entities.filter(e=>e.side!=='ally'&&e.mon)].filter(e=>e?.alive&&!e.dead);
+ const batalha=g.story?.battle,selvagem=g.encontro?.selvagem;
+ const adversarios=batalha?.active??(g.encontro?.ativo&&selvagem?[selvagem]:g.entities.filter(e=>e.side!=='ally'&&e.mon&&(!g.lead||Math.hypot(e.x-g.lead.x,e.y-g.lead.y)<600)));
+ const es=[g.lead,...adversarios].filter(e=>e?.alive&&!e.dead);
  if(!es.length)return{x:g.cam.x,y:g.cam.y,z:2};
  const xs=es.map(e=>e.x),ys=es.map(e=>e.y),alturas=es.map(e=>Math.min(90,e.topH??24));
  const x0=Math.min(...xs)-42,x1=Math.max(...xs)+42,y0=Math.min(...ys.map((y,i)=>y-alturas[i]))-24,y1=Math.max(...ys)+30;

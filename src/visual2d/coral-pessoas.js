@@ -49,7 +49,7 @@ export class PessoasCoral{
     montar({id,look,correndo,jogador,montado,baseURL:this.opcoes.base}).then(f=>{if(token!==this.token){descartar(f);return;}f.visto=performance.now();this.cache.set(key,f);}).catch(e=>console.warn('[Coral] Mantendo personagem original.',id,e)).finally(()=>{if(token===this.token)this.carregando.delete(key);});
    }}
   }
-  for(const [k,f]of this.cache)if(!vistos.has(k)&&agora-f.visto>(k.startsWith('J:')?15000:5000)){descartar(f);this.cache.delete(k);}
+  for(const [k,f]of this.cache)if(!vistos.has(k)&&agora-f.visto>(k.startsWith('J:')?5000:2500)){descartar(f);this.cache.delete(k);}
  }
  aplicar(){
   const volta=this.volta;volta.length=0;for(const b of this.pendentes)if(!b.destroyed){this.visVolta.push([b,b.renderable]);b.renderable=false;}
