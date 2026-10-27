@@ -233,6 +233,11 @@ export class Combat {
     this.g.arenaGinasio?.aoUsar(user, id, mv); // arena de ginásio: golpe no ritmo do berimbau
     if (mv.max) this.onMax?.(user, id, mv, ax, ay); // Max Golpe: recarga única, clima, campo e estágios (src/combat/poder.js)
     if (user.mon.status === 'par' && Math.random() < 0.15) { this.g.fx.number(user.x, user.y - 24, 'Paralisado!', '#fff27a'); user.lock = 0.5; return true; }
+    // Tocar a cabeça/corpo de um alvo alto deve orientar o contato até ele,
+    // sem inclinar o Talho ou a mordida para um ponto acima do chão.
+    if(user.side==='ally'&&['melee','multi','dash'].includes(opts.asDash?'dash':kindOf(id,mv))){
+      const alvo=this.#aimTarget(user,ax,ay);if(alvo){ax=alvo.x;ay=alvo.y;}
+    }
     let dx = ax - user.x, dy = ay - user.y; const d = Math.hypot(dx, dy) || 1; dx /= d; dy /= d;
     user.face(dx, dy);
     if (!opts.charged) this.anunciar(user, mv);
