@@ -7,6 +7,7 @@ import { Espetaculo } from './ui/espetaculo.js';
 import { makeTiles, T, TILE } from './world/tiles.js';
 import { GameMap, MAP_ID } from './world/map.js';
 import { WorldLife } from './world/life.js';
+import { Acompanhante } from './world/acompanhante.js';
 import { Mounts } from './world/mounts.js';
 import { Grade, DIRV, VEL, ancoraX, ancoraY, blocoX, blocoY } from './world/grade.js';
 import { Viagem } from './world/viagem.js';
@@ -84,6 +85,7 @@ class Game {
     this.mount = new Mounts(this); // montarias do treinador (X): src/world/mounts.js
     this.party = []; this.box = []; this.bag = { pokeball: 0, potion: 0 }; this.money = 0; this.flags = {};
     this.leadIdx = 0; this.entities = [];
+    this.acompanhante = new Acompanhante(this);
     this.quality = new Quality(this); // qualidade gráfica automática (src/engine/quality.js)
     this.ui = new UI(this);        // HUD, menus, diálogo, título e save (src/ui)
     this.story = new Story(this);  // capítulo 1 (src/story)
@@ -617,6 +619,7 @@ class Game {
     this.encontro?.update();
     if(this.encontro?.transicao){this.#camera(rdt);inp.endFrame();return;}
     if (inp.pressed('perf')) $('perf').hidden = !$('perf').hidden;
+    this.acompanhante?.quadro(this.ui?.blocking?0:rdt);
     if (this.viagem?.ocupada) { this.viagem.quadro(rdt); this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // trocando de mundo
     // título, menu e diálogo param o mundo (a câmera e o desenho continuam)
     if (this.ui?.frame(rdt)) { this.show.update(0); if(!this.encontro?.ativo)this.net?.update(rdt, true); this.#camera(rdt); this.map.flushDirty(); if(this.encontro?.ativo)this.map.update(rdt);else this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // o online segue mesmo com o menu aberto

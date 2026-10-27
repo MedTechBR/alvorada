@@ -45,6 +45,7 @@ export function serialize(g) {
     bag: { ...g.bag },
     money: g.money ?? 0,
     leadIdx: g.leadIdx ?? 0,
+    acompanhante: g.acompanhanteMon?.uid??null,
     pos: { x: Math.round(p.x), y: Math.round(p.y), dir: p.dir },
     // mundo (continente) em que o jogador está; dentro de uma sala, a posição também vai relativa à sala (as salas
     // ganham lugar sozinhas na faixa de interiores e podem mudar de lugar quando uma região cresce)
@@ -68,6 +69,7 @@ export async function applySave(g, d) {
   const safe = (arr) => (arr ?? []).map((o) => { try { const m = Mon.from(o); if (o.item != null && m.item == null) m.item = o.item; return m; } catch { return null; } }).filter(Boolean);
   g.party = safe(d.party).slice(0, 6);
   g.box = safe(d.box);
+  g.acompanhante?.escolher(g.party.find(m=>m.uid===d.acompanhante)??null);
   g.bag = { pokeball: 0, potion: 0, ...(d.bag ?? {}) };
   g.money = d.money ?? 0;
   g.flags = d.flags ?? {};

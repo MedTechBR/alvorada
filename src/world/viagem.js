@@ -78,6 +78,7 @@ export class Viagem {
   // destruído pelo próprio mapa e não volta.
   #limpar() {
     const g = this.g, de = g.map.id;
+    g.acompanhante?.limpar(); // a escolha acompanha a equipe; o visual não fica guardado no continente antigo
     for (const w of [...(g.wilds ?? [])]) { w.dead = true; g.removeEntity?.(w); }
     for (const b of g.balls ?? []) b.s?.destroy(); g.balls = [];
     const fica = new Set([g.player?.view, g.lead?.view, ...[...(g.net?.remotes?.map?.values?.() ?? [])].flatMap((r) => [r.view, r.follower?.view])].filter(Boolean));

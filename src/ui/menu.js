@@ -586,7 +586,7 @@ export class GameMenu {
           const held = heldKey(m) ? `<span class="gm-ic sm" title="${esc(itemName(heldKey(m)))}">${itemIcon(heldKey(m))}</span>` : '';
           return `<div class="nav gm-box gm-pcard ${big ? 'big' : ''} ${m.fainted ? 'ko' : ''} ${L.swap === i ? 'swap' : ''}" data-i="${i}" style="--tc:${TYPE_COLOR[m.types[0]] ?? '#8d93ab'}">
             <span class="gm-cur">▶</span>${slot(m.spriteKey ?? m.dex, big ? 'big' : '', false, TYPE_COLOR[m.types[0]])}
-            <div class="gm-pmain"><div class="gm-pline"><span class="gm-pn">${esc(m.name)}</span><span class="gm-lv">Nv. ${m.level}</span>${st}${held}${campo}</div>
+            <div class="gm-pmain"><div class="gm-pline"><span class="gm-pn">${esc(m.name)}</span><span class="gm-lv">Nv. ${m.level}</span>${st}${held}${campo}${g.acompanhanteMon===m?'<span class="gm-tag">Acompanhando</span>':''}</div>
               ${big ? `<div class="gm-pline"><span class="gm-types">${typePills(m.types)}</span></div>` : ''}
               <div class="gm-hp"><span>PS</span><div class="hpbar"><i style="width:${f * 100}%;background:${hpColor(f)}"></i></div><span class="gm-hpt">${m.hp} / ${m.stats.hp}</span></div></div></div>`;
         };
@@ -616,10 +616,12 @@ export class GameMenu {
     const m = g.party[i];
     const canSend = i !== g.leadIdx && !m.fainted && !this.ui.story?.busy;
     const escolha=g.encontro?.passeio()?'Escolher para batalha':'Enviar ao campo';
-    const opts = ['Resumo', 'Editar golpes', ...(canSend ? [escolha] : []), 'Mudar ordem', 'Usar item', 'Item equipado', ...(mountModes(m).length ? ['Usar como montaria'] : []), 'Cancelar'];
+    const seguir=g.acompanhanteMon===m?'Parar de acompanhar':'Acompanhar treinador';
+    const opts = ['Resumo', 'Editar golpes', ...(!m.fainted||g.acompanhanteMon===m?[seguir]:[]), ...(canSend ? [escolha] : []), 'Mudar ordem', 'Usar item', 'Item equipado', ...(mountModes(m).length ? ['Usar como montaria'] : []), 'Cancelar'];
     const c = await this.#choose(esc(m.name), opts);
     const pick = opts[c];
-    if (pick === 'Resumo') this.#summary(i);
+    if(pick===seguir){g.acompanhante.escolher(g.acompanhanteMon===m?null:m);g.toast(g.acompanhanteMon?`${m.name} vai acompanhar você!`:`${m.name} voltou para a Poké Bola.`);this.refresh();}
+    else if (pick === 'Resumo') this.#summary(i);
     else if (pick === 'Editar golpes') telaEditarGolpes(this, { screen: (o) => this.#screen(o), push: (l) => this.#push(l), choose: (t, o) => this.#choose(t, o), msg: (t) => this.#msg(t), refresh: () => this.refresh(), focus: (n) => this.#focus(n), pop: () => this.#pop(), q: (s) => this.q(s), helpers: { CAT_PT, KIND_PT, moveEffect } }, i);
     else if(pick==='Escolher para batalha'){g.escolher(i);this.ui.partyChanged();this.refresh();}
     else if (pick === 'Enviar ao campo') { await g.sendOut(i); g.toast?.(`Vai, ${m.name}!`); this.ui.partyChanged(); this.refresh(); }

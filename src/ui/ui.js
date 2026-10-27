@@ -49,7 +49,7 @@ export class UI {
     setSaveSlot(acc.id);
     this.account = acc;
     if (r.save) await applySave(g, r.save); // pode montar outro mundo (o save guarda o continente)
-    else { g.flags = {}; g.party = []; g.box = []; g.bag = { pokeball: 0, potion: 0 }; g.money = 0; g.leadIdx = 0; const h = this.story?.spots.get('home'); if (h) { g.player.x = h.x; g.player.y = h.y; } if (g.cam) { g.cam.x = g.player.x; g.cam.y = g.player.y; } }
+    else { g.acompanhante?.escolher(null);g.flags = {}; g.party = []; g.box = []; g.bag = { pokeball: 0, potion: 0 }; g.money = 0; g.leadIdx = 0; const h = this.story?.spots.get('home'); if (h) { g.player.x = h.x; g.player.y = h.y; } if (g.cam) { g.cam.x = g.player.x; g.cam.y = g.player.y; } }
     g.flags.playerName = acc.look?.name ?? acc.name;
     g.flags.look = acc.look ?? null;
     // o online (src/net/online.js) lê game.look e usa o nome do treinador nas salas
