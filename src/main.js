@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import {spritePokebola} from './engine/pokebola.js';
 import { Lendarios } from './world/lendarios.js';
 import { Input, IS_TOUCH } from './engine/input.js';
 import { Fx } from './engine/fx.js';
@@ -97,7 +98,7 @@ class Game {
     if(!VISUAL_3D){
       const {VisualFireRed}=await import('./visual2d/firered/index.js');
       this.visual2d=new VisualFireRed(this);await this.visual2d.carregar();
-      this.coralPixel=this.visual2d.combate;
+      this.coralPixel=null; // o compositor FireRed atende também às arenas
       this.app.ticker.remove(this.app.render,this.app);
       this.app.ticker.add(()=>this.visual2d.quadro(Math.min(.05,this.app.ticker.deltaMS/1000)),null,-25);
     }
@@ -231,7 +232,7 @@ class Game {
     if (this.mount?.active) { if (!this.mount.busy) this.mount.dismount(() => this.throwMon(i, ax, ay)); return; }
     const p = this.player, dx = ax - p.x, dy = ay - p.y, d = Math.hypot(dx, dy) || 1;
     const dist = Math.min(d, 90), tx = p.x + dx / d * dist, ty = p.y + dy / d * dist;
-    const ball = new PIXI.Graphics(); ball.circle(0, 0, 3).fill(0xffffff); ball.rect(-3, -3, 6, 3).fill(0xe5383b); ball.circle(0, 0, 1).fill(0x222222);
+    const ball = spritePokebola();
     this.world.addChild(ball);
     this.throwingMon = { s: ball, i, x0: p.x, y0: p.y - 14, x1: tx, y1: ty, t: 0, dur: 0.22 + dist / 500 };
     p.throwT = 0.3; p.dir = dir4(dx, dy);
@@ -531,11 +532,10 @@ class Game {
     if (!key) { this.toast('Sem Poké Bolas! Compre mais no Mercado.'); return; }
     this.bag[key]--; this.hudMoves();
     const p = this.player, dx = ax - p.x, dy = ay - p.y, d = Math.hypot(dx, dy) || 1;
-    const ball = new PIXI.Graphics(); ball.circle(0, 0, 3).fill(0xffffff); ball.rect(-3, -3, 6, 3).fill(0xe5383b); ball.circle(0, 0, 1).fill(0x222222);
+    const col = parseInt((ITEM_INFO[key]?.color ?? '#e5383b').slice(1), 16);
+    const ball = spritePokebola(col,key);
     this.world.addChild(ball);
     const dist = Math.min(d, 260), tx = p.x + dx / d * dist, ty = p.y + dy / d * dist; // alcança o selvagem que o seu Pokémon enfrenta
-    const col = parseInt((ITEM_INFO[key]?.color ?? '#e5383b').slice(1), 16);
-    if (key !== 'pokeball' && col !== 0xe5383b) { ball.clear(); ball.circle(0, 0, 3).fill(0xffffff); ball.rect(-3, -3, 6, 3).fill(col); ball.circle(0, 0, 1).fill(0x222222); }
     this.balls ??= []; this.balls.push({ s: ball, key, x0: p.x, y0: p.y - 12, x1: tx, y1: ty, t: 0, dur: 0.25 + dist / 600 });
     this.audio.sfx('throw');
   }

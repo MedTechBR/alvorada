@@ -25,8 +25,8 @@ function descartar(f){for(const ds of Object.values(f.sets))for(const t of ds)t.
 // Folhas prontas FRLG/HGSS: o mesmo acervo do 3D, agora também no desenho do bairro.
 // Substitui o corpo apenas ao renderizar; direção, passos, colisão e interações continuam nativos.
 export class PessoasCoral{
- constructor(g,opcoes={}){this.g=g;this.opcoes=opcoes;this.cache=new Map();this.carregando=new Set();this.atores=[];this.indices=new WeakMap();this.token=0;this.volta=[];
-  this.restaurar=()=>{const v=this.volta;for(let i=0;i<v.length;i+=5){const b=v[i];if(!b.destroyed){b.texture=v[i+1];b.scale.set(v[i+2],v[i+3]);b.y=v[i+4];}}v.length=0;};}
+ constructor(g,opcoes={}){this.g=g;this.opcoes=opcoes;this.cache=new Map();this.carregando=new Set();this.atores=[];this.indices=new WeakMap();this.token=0;this.volta=[];this.ultimos=new WeakMap();this.pendentes=[];this.visVolta=[];
+  this.restaurar=()=>{for(const [b,on]of this.visVolta)if(!b.destroyed)b.renderable=on;this.visVolta.length=0;const v=this.volta;for(let i=0;i<v.length;i+=5){const b=v[i];if(!b.destroyed){b.texture=v[i+1];b.scale.set(v[i+2],v[i+3]);b.y=v[i+4];}}v.length=0;};}
  atualizar(view){
   const g=this.g,agora=performance.now();
   if(!this.J){if(!this.indice){this.indice=true;fetch(new URL('indice.json',BASE)).then(r=>r.json()).then(J=>this.J=J).catch(e=>{this.indice=false;console.warn('[Coral] Índice de personagens indisponível.',e);});}return;}
@@ -34,36 +34,36 @@ export class PessoasCoral{
   this.proxima=agora+100;this.mundo=g.map.S;
   const remotos=new Set(this.opcoes.original?[...(g.net?.remotes?.map?.values()??[])]:[]);
   const vistos=new Set(),lista=new Set([g.player,...remotos,...(g.mundo.people.list??[]),...(g.story.npcs?.values()??[]),...(g.story.roteiro.atores?.values()??[]),g.story.battle?.npc]);
-  this.ocultar();
+  this.ocultar();this.pendentes=[];
   for(const n of lista){
    if(!n?.body||!n.frames||!n.view?.visible||n.body.destroyed||n.x<view.x0||n.x>view.x1||n.y<view.y0||n.y>view.y1)continue;
    // Montaria conserva a pose sentada existente; estas folhas são de caminhada/corrida.
    if(n===g.player&&g.mount?.active&&!this.opcoes.original)continue;
    const jogador=n===g.player||remotos.has(n),correndo=jogador&&!!(n.correndo||(n.speed??0)>95),look=jogador?toCharLook(n===g.player?(g.look??n.look??g.flags?.look):(n.frames.look??n.look)):null;
    const id=jogador?null:(this.opcoes.resolver??idPessoaCoral)(n,this.J);
-   const montado=jogador&&(n===g.player?!!g.mount?.active:!!n.rig?.kind),key=jogador?'J:'+chaveDe(look,correndo)+(montado?':montado':''):id;vistos.add(key);
+   const montado=jogador&&(n===g.player?!!g.mount?.active&&!g.mount.hop:!!n.rig?.kind),key=jogador?'J:'+chaveDe(look,correndo)+(montado?':montado':''):id;vistos.add(key);
    const f=this.cache.get(key);
-   if(f){f.visto=agora;const altura=this.opcoes.original?f.altura:(n.def?.kid||/little|kid|youngster/.test(id??''))?(g.encontro?.ativo?25:30):(g.encontro?.ativo?30:36);n.alturaVisual=altura*(this.opcoes.original?1:Math.abs(n.body.scale.y));this.atores.push({n,f,k:altura/Math.max(1,f.altura),montado});}
-   else if(!this.carregando.has(key)){
+   if(f){this.ultimos.set(n,{f,montado});f.visto=agora;const altura=this.opcoes.original?f.altura:(n.def?.kid||/little|kid|youngster/.test(id??''))?(g.encontro?.ativo?25:30):(g.encontro?.ativo?30:36);n.alturaVisual=altura*(this.opcoes.original?1:Math.abs(n.body.scale.y));this.atores.push({n,f,k:altura/Math.max(1,f.altura),montado});}
+   else{const anterior=this.opcoes.original&&this.ultimos.get(n);if(anterior&&!anterior.f.source.destroyed){anterior.f.visto=agora;this.atores.push({n,...anterior,k:1});}else if(this.opcoes.original)this.pendentes.push(n.body);if(!this.carregando.has(key)){
     const token=this.token;this.carregando.add(key);
     montar({id,look,correndo,jogador,montado,baseURL:this.opcoes.base}).then(f=>{if(token!==this.token){descartar(f);return;}f.visto=performance.now();this.cache.set(key,f);}).catch(e=>console.warn('[Coral] Mantendo personagem original.',id,e)).finally(()=>{if(token===this.token)this.carregando.delete(key);});
-   }
+   }}
   }
-  for(const [k,f]of this.cache)if(!vistos.has(k)&&agora-f.visto>1500){descartar(f);this.cache.delete(k);}
+  for(const [k,f]of this.cache)if(!vistos.has(k)&&agora-f.visto>(k.startsWith('J:')?15000:5000)){descartar(f);this.cache.delete(k);}
  }
  aplicar(){
-  const volta=this.volta;volta.length=0;
+  const volta=this.volta;volta.length=0;for(const b of this.pendentes)if(!b.destroyed){this.visVolta.push([b,b.renderable]);b.renderable=false;}
   for(const {n,f,k,montado}of this.atores){
    if(n.body.destroyed)continue;
    let idx=this.indices.get(n.frames);
    if(!idx){idx=new Map();for(const a of ['walk','run','throw','ride'])for(const d of DIRS)(n.frames[a]?.[d]??(a==='walk'?n.frames[d]:[])??[]).forEach((t,i)=>idx.set(t,{a,d,i}));this.indices.set(n.frames,idx);}
    const p=idx.get(n.body.texture)??{a:'walk',d:n.dir??'down',i:0};
    const col=p.a==='throw'?0:COLUNAS_ANDAR[p.i%4],tex=f.sets[p.d]?.[col];
-   if(tex){const b=n.body,sx=b.scale.x,sy=b.scale.y,fh=n.frames.fh??b.texture.height,ground=n.frames.groundY??fh-1;volta.push(b,b.texture,sx,sy,b.y);b.texture=tex;b.scale.set(this.opcoes.original?1:sx*k,this.opcoes.original?1:sy*k);if(!montado)b.y+=(((f.fh??32)-f.pe)*k-(fh-ground))*sy;}
+   if(tex){const b=n.body,sx=b.scale.x,sy=b.scale.y,fh=n.frames.fh??b.texture.height,ground=n.frames.groundY??fh-1;volta.push(b,b.texture,sx,sy,b.y);b.texture=tex;b.scale.set(this.opcoes.original?1:sx*k,this.opcoes.original?1:sy*k);if(montado&&this.opcoes.original)b.y-=7;else if(!montado)b.y+=(((f.fh??32)-f.pe)*k-(fh-ground))*sy;}
   }
   return this.restaurar;
  }
  ocultar(){for(const {n}of this.atores)delete n.alturaVisual;this.atores=[];}
  get bytes(){let n=0;for(const f of this.cache.values())n+=f.bytes;return n;}
- liberar(){this.token++;this.carregando.clear();this.ocultar();for(const f of this.cache.values())descartar(f);this.cache.clear();this.indices=new WeakMap();this.mundo=null;this.proxima=0;}
+ liberar(){this.token++;this.carregando.clear();this.ocultar();for(const f of this.cache.values())descartar(f);this.cache.clear();this.indices=new WeakMap();this.ultimos=new WeakMap();this.pendentes=[];this.mundo=null;this.proxima=0;}
 }

@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import {spritePokebola} from '../engine/pokebola.js';
 import { Mon } from '../data/mon.js';
 import { PokeEntity } from '../entities/pokemon.js';
 import { dexMark } from '../ui/menu.js';
@@ -68,7 +69,7 @@ export class TrainerBattle {
     g.later(delay, () => {
       if (this.done) { this.pending--; return; }
       // arremesso da bola, em arco
-      const ball = new PIXI.Graphics(); ball.circle(0, 0, 3).fill(0xffffff); ball.rect(-3, -3, 6, 3).fill(0xe5383b); ball.circle(0, 0, 1).fill(0x222222);
+      const ball = spritePokebola();
       g.world.addChild(ball);
       const x0 = this.npc.x, y0 = this.npc.y - 14; let t = 0;
       this.npc.faceTo(to.x, to.y); this.npc.throwPose?.();

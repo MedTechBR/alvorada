@@ -25,7 +25,8 @@ export class Quality {
     if (g.mundo) g.mundo.lowLights = low;
     const r = g.app?.renderer;
     if (r) {
-      const want = low ? 0.75 : 1;
+      // Pixel art conserva a grade; a redução automática atua nas partículas.
+      const want = g.visual2d ? 1 : low ? 0.75 : 1;
       if (r.resolution !== want) { r.resolution = want; r.resize(innerWidth, innerHeight); }
     }
     document.body.classList.toggle('q-low', low);

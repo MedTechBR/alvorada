@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import {spritePokebola} from '../engine/pokebola.js';
 import { T } from './tiles.js';
 import { SPR } from './art.js';
 import { MAP_ID } from './map.js';
@@ -371,7 +372,7 @@ export class Tocas {
     m.clearBattleForm(); m.hp = 1;
     const c = g.combat.catchChance(b, key);
     const chance = Math.min(1, c * 1.5 + 0.2); // reide: uma tentativa só, então a bola ajuda mais
-    const ball = new PIXI.Graphics(); ball.circle(0, 0, 3).fill(0xffffff); ball.rect(-3, -3, 6, 3).fill(0xe5383b); ball.circle(0, 0, 1).fill(0x222222);
+    const ball = spritePokebola();
     g.world.addChild(ball);
     const p = g.player, x0 = p.x, y0 = p.y - 14;
     g.audio?.sfx?.('throw');

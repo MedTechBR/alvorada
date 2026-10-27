@@ -1,10 +1,10 @@
 import * as PIXI from 'pixi.js';
-import { CoralPixel } from '../coral.js';
 import { PessoasCoral } from '../coral-pessoas.js';
 import { idPessoaCoral } from '../../sprites/pessoas-coral.js';
 import { compositor, escolherBloco } from './terreno.js';
 import { montarObjeto, tipoObjeto } from './objetos.js';
 import { emCombate } from './estado.js';
+import {cameraBatalha} from './camera-batalha.js';
 import { KINDS } from '../../world/objects.js';
 
 const BASE=new URL('../../../assets/firered/',import.meta.url);
@@ -14,7 +14,7 @@ async function imagem(nome){const r=await fetch(new URL(nome,BASE));if(!r.ok)thr
 export class VisualFireRed{
  constructor(g){
   this.g=g;this.ativo=false;this.texturas=new Map();this.objetos=new Map();this.matos=new Map();this.camadasOcultas=new Map();
-  this.combate=new CoralPixel({g});this.combate.ligado=false;this.combate.manterPronto=true;
+  this.local=document.createElement('div');this.local.id='coral-local';document.body.appendChild(this.local);
   g.worldToScreen=(x,y,h=0)=>({x:g.world.x+x*g.world.scale.x,y:g.world.y+(y-h)*g.world.scale.y});
   g.screenToWorld=(x,y)=>({x:(x-g.world.x)/g.world.scale.x,y:(y-g.world.y)/g.world.scale.y});
   const l=document.createElement('link');l.rel='stylesheet';l.href=new URL('./interface.css',import.meta.url).href;document.head.appendChild(l);
@@ -37,30 +37,33 @@ export class VisualFireRed{
   }
   this.atlasObjetos=await imagem('objetos.png');this.pessoas=new PessoasCoral(this.g,{original:true,base:new URL('pessoas/',BASE),resolver:(n,j)=>aliases[idPessoaCoral(n,j)]??'man'});this.pessoas.J=J;
   const cv=document.createElement('canvas');cv.width=cv.height=16;const c=cv.getContext('2d');c.putImageData(new ImageData(this.#bloco(0x00d),16,16),0,0);c.clearRect(0,0,16,8);this.mato=PIXI.Texture.from(cv);this.mato.source.scaleMode='nearest';
-  this.g.map.pintar=compositor(this.bancos);this.pronto=true;
-  await this.combate.carregar(); // atlas pronto antes da transição da primeira batalha
+  this.pintar=compositor(this.bancos);this.g.map.pintar=this.pintar;this.pronto=true;
   const agua=this.#bloco(0x1d9);this.agua=Array.from({length:4},(_,fase)=>{const cv=document.createElement('canvas');cv.width=cv.height=16;const d=new Uint8ClampedArray(agua.length);for(let y=0;y<16;y++)for(let x=0;x<16;x++){const k=(y*16+(x+fase*2)%16)*4;d.set(agua.subarray(k,k+4),(y*16+x)*4);}cv.getContext('2d').putImageData(new ImageData(d,16,16),0,0);const t=PIXI.Texture.from(cv);t.source.scaleMode='nearest';return t;});this.g.map.waterFrames=this.agua;
  }
  #bloco(id){const b=this.bancos.exterior,out=new Uint8ClampedArray(16*16*4);for(let y=0;y<16;y++)out.set(b.data.subarray((((id>>4)*16+y)*b.w+(id%16)*16)*4,(((id>>4)*16+y)*b.w+(id%16)*16)*4+64),y*64);return out;}
  cull(){
   const g=this.g,luta=emCombate(g);
-  this.#camadas(!luta&&this.pronto);
-  const anterior=this.emCombate;this.emCombate=luta;this.combate.ligado=luta;const combate=this.combate.cull();
-  if(anterior&&!luta)this.combate.limparCena();
-  this.ativo=!luta&&this.pronto;document.body.classList.toggle('firered',this.ativo);
-  if(luta){g.barreiras?.cull(g.map===g.mundo.map?this.combate.view:null);this.#limparObjetos();this.pessoas.ocultar();return combate;}
+  this.emCombate=luta;this.#camadas(this.pronto);
+  this.ativo=!!this.pronto;document.body.classList.toggle('firered',this.ativo);document.body.classList.toggle('em-combate',luta);
   if(!this.ativo)return false;
-  const z=Math.max(1,Math.round(g.zoom||2)),c=g.cam;
+  if(this.mundoAtual!==g.map.S){this.mundoAtual=g.map.S;g.map.classico=true;g.map.semArte=false;g.map.pintar=this.pintar;g.map.waterFrames=this.agua;if(!luta&&!g.mount?.active&&g.map.solidAt(g.player.x,g.player.y)){
+   const p=g.map.blocoLivrePerto(g.player.x,g.player.y,(x,y)=>g.map.solidAt(x*16+8,y*16+8),64);
+   if(p){g.grade.soltar(g.player);Object.assign(g.player,{x:p.x,y:p.y,vx:0,vy:0});g.cam.x=p.x;g.cam.y=p.y;}
+  }}
+  const dt=Math.min(.05,g.app.ticker.deltaMS/1000||1/60);
+  this.cameraLuta=luta?cameraBatalha(g,this.cameraLuta,dt):null;
+  const z=this.cameraLuta?.z??Math.max(1,Math.round(g.zoom||2)),c=this.cameraLuta??g.cam;
   g.ui.hud.seta.scale.set(.65);
   const sala=g.map.interiorAt(g.player.x,g.player.y),hw=innerWidth/2/z,hh=innerHeight/2/z;
   const limitar=(v,a,n,h)=>n*16<=h*2?(a+n/2)*16:Math.max(a*16+h,Math.min((a+n)*16-h,v));
   // Como no GBA: uma sala pequena cabe inteira e fica parada; numa sala maior
   // a câmera acompanha até a borda. Não mostra vazio no lugar dos móveis.
   const cx=sala?limitar(c.x,sala.x,sala.w,hw):c.x,cy=sala?limitar(c.y,sala.y,sala.h,hh):c.y;
-  g.world.scale.set(z);g.world.position.set(Math.round(innerWidth/2-(cx+(c.sx??0))*z),Math.round(innerHeight/2-(cy+(c.sy??0))*z));
+  g.world.scale.set(z);g.world.position.set(Math.round(innerWidth/2-(cx+(g.cam.sx??0))*z),Math.round(innerHeight/2-(cy+(g.cam.sy??0))*z));
+  this.vista={x0:cx-hw,x1:cx+hw,y0:cy-hh,y1:cy+hh};
   const view={x0:cx-hw-64,x1:cx+hw+64,y0:cy-hh-112,y1:cy+hh+64};
   g.map.cullChunks(view);g.barreiras?.cull(view);this.pessoas.atualizar(view);
-  const nome=g.map.areaName(g.player.x,g.player.y);if(this.combate.local.textContent!==nome)this.combate.local.textContent=nome;
+  const nome=g.map.areaName(g.player.x,g.player.y);if(this.local.textContent!==nome)this.local.textContent=nome;
   const vistos=new Set(),objetosVistos=new Set(),matosVistos=new Set();
   for(const chunk of g.map.visible){
    for(const o of chunk.objs){
@@ -68,7 +71,7 @@ export class VisualFireRed{
     const nome=tipoObjeto(o);if(nome==='nativo')continue;const key=[nome,o.fw,o.fh,o.kind].join(':');vistos.add(key);objetosVistos.add(o);
     let entrada=this.objetos.get(o);
     if(!entrada){const f=this.objeto(o),sp=new PIXI.Sprite(f.tex);sp.anchor.set(.5,1);g.ents.addChild(sp);entrada={f,sp,renderable:o.sprite.renderable};this.objetos.set(o,entrada);o.sprite.renderable=false;}
-    const sp=entrada.sp;sp.position.set(o.x,o.y);sp.zIndex=o.sprite.zIndex;sp.alpha=o.sprite.alpha;sp.tint=o.sprite.tint;sp.visible=o.sprite.visible;
+    const sp=entrada.sp;sp.position.set(o.sprite.x,o.sprite.y);sp.rotation=o.sprite.rotation;sp.zIndex=o.sprite.zIndex;sp.alpha=o.sprite.alpha;sp.tint=o.sprite.tint;sp.visible=o.sprite.visible;
     entrada.f.visto=g.time;
    }
    for(const t of chunk.tall.values())if(!t.destroyed){
@@ -93,7 +96,7 @@ export class VisualFireRed{
   for(const c of atuais)if(c&&!this.camadasOcultas.has(c)){this.camadasOcultas.set(c,c.visible);c.visible=false;}
  }
  quadro(dt){
-  const g=this.g;if(this.emCombate&&this.combate.ativo){this.combate.quadro(dt);return;}
+  const g=this.g;
   if(!this.ativo){g.app.render();return;}
   const restaurar=this.pessoas.aplicar();
   try{g.app.render();}finally{restaurar();}
