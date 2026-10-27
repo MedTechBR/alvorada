@@ -1,0 +1,12 @@
+index.html OK
+vendor/pixi-8.6.6.min.js OK
+src/main.js OK
+src/combat/combat.js OK
+src/combat/encontro-coral.js OK
+src/visual2d/firered/index.js OK
+src/visual2d/firered/interface.css OK
+src/world/people.js OK
+src/world/rotas-compostas.js OK
+src/engine/pokebola.js OK
+sw.js OK
+tools/shots/acabamento-dinamico/index.html OK

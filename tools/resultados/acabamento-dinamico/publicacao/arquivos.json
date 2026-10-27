@@ -1,5 +1,15 @@
 [
   {
+    "arquivo": "index.html",
+    "igual": true,
+    "sha256": "56ae42b7aeddd0756604eefd5fef4142f2b806c86772c04fc6533d99ca082610"
+  },
+  {
+    "arquivo": "vendor/pixi-8.6.6.min.js",
+    "igual": true,
+    "sha256": "77549c6fb22228d0aa69194b33d5f6162881d9d883815a779438cacdbd435afb"
+  },
+  {
     "arquivo": "src/main.js",
     "igual": true,
     "sha256": "94c687fef974cabd5746058af5954da7e8809a00ea97a2482d4d2d8e01a6f34a"
@@ -17,7 +27,7 @@
   {
     "arquivo": "src/visual2d/firered/index.js",
     "igual": true,
-    "sha256": "a08f9159fccbec26c10f58eeef17a0a26bcdeb6f0ef6d2e08d4b9c47868e594e"
+    "sha256": "8620402f60ae919b12c4addd7810fbd15cf8cc9dd886437cd9380a707cf27e90"
   },
   {
     "arquivo": "src/visual2d/firered/interface.css",
@@ -42,16 +52,11 @@
   {
     "arquivo": "sw.js",
     "igual": true,
-    "sha256": "65d05bf73eb46668bb9e81d15138cfe57b7edb69c4275040e7d267a51fd03c41"
+    "sha256": "96b5979ab90477b44b22bd4e58de3f62aa71ec94f1d6b92527bdac70f5b5f64f"
   },
   {
     "arquivo": "tools/shots/acabamento-dinamico/index.html",
     "igual": true,
     "sha256": "ef79c1f5b05acab417717d8da97d934341a7171b0f76b4853191d3a0eecd0575"
-  },
-  {
-    "arquivo": "docs/acabamento-dinamico.md",
-    "igual": true,
-    "sha256": "b6593248c9e4db2f3203708fa0d821c08c5e1af5497e06abd861f5938186bf0b"
   }
 ]

@@ -1,0 +1,2 @@
+{"id":2,"result":{"result":{"type":"object","value":{"importmap":"\n    { \"imports\": { \"pixi.js\": \"./vendor/pixi-8.6.6.min.js\", \"three\": \"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js\", \"three/addons/\": \"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/\" } }\n  ","dependencias":[{"url":"https://medtechbr.com.br/alvorada/vendor/pixi-8.6.6.min.js","ms":25110.5,"bytes":186749}],"canvas":true,"carregando":"Pokémon\nAlvorada\nDesenhando o mundo…","tipo":"HTMLDivElement","preloads":229,"recursos":250}}}}
+[]

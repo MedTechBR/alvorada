@@ -10,7 +10,7 @@ const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 export async function launch(port = 9500 + Math.floor(Math.random() * 300)) {
   const dir = mkdtempSync(join(process.env.SCRATCH ?? tmpdir(), 'chr3d-'));
   const gpu = process.env.GPU === 'sw' ? ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : ['--use-angle=metal', '--enable-gpu-rasterization', '--ignore-gpu-blocklist'];
-  const p = spawn(CHROME, [`--remote-debugging-port=${port}`, `--user-data-dir=${dir}`, '--headless=new', '--no-first-run', '--mute-audio', '--no-default-browser-check', ...gpu,
+  const p = spawn(CHROME, [`--remote-debugging-port=${port}`, `--user-data-dir=${dir}`, '--headless=new', '--no-first-run', '--mute-audio', '--no-default-browser-check', '--disable-component-update', '--disable-background-networking', ...gpu,
     '--disable-background-timer-throttling', '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows',
     ...(process.env.FPS_LIVRE === '0' ? [] : ['--disable-gpu-vsync', '--disable-frame-rate-limit']),
     '--window-size=1280,800', 'about:blank'], { stdio: 'ignore', detached: true });

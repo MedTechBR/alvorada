@@ -16,25 +16,28 @@ export async function launch(port = 9333) {
   return { port, proc: p, kill: () => { p.kill('SIGKILL'); spawnSync('pkill', ['-9', '-f', dir]); } }; // também os processos filhos (renderizadores)
 }
 
-export async function open(b, url, tag = '') {
+export async function open(b, url, tag = '', opcoes = {}) {
   const t = await (await fetch(`http://127.0.0.1:${b.port}/json/new?${encodeURIComponent(url)}`, { method: 'PUT' })).json();
   const ws = new WebSocket(t.webSocketDebuggerUrl);
   await new Promise((r) => ws.addEventListener('open', r, { once: true }));
-  let id = 0; const wait = new Map(); const logs = [];
+  let id = 0; const wait = new Map(); const logs = [], pendentes=new Map();
   ws.addEventListener('message', (ev) => {
     const m = JSON.parse(ev.data);
     if (m.id && wait.has(m.id)) { wait.get(m.id)(m); wait.delete(m.id); }
+    if(m.method==='Network.requestWillBeSent')pendentes.set(m.params.requestId,m.params.request.url);
+    if(m.method==='Network.loadingFinished'||m.method==='Network.loadingFailed')pendentes.delete(m.params.requestId);
     if (m.method === 'Runtime.consoleAPICalled') { const s = m.params.args.map((a) => a.value ?? a.description ?? '').join(' '); logs.push(s); if (process.env.LOGS) console.log(`[${tag}]`, s); }
+    if(m.method==='Log.entryAdded'&&m.params.entry.level==='error'){const e=m.params.entry;logs.push('REDE '+e.text+' '+(e.url??''));if(process.env.LOGS)console.log(`[${tag}]`,logs.at(-1));}
     if (m.method === 'Runtime.exceptionThrown') { const s = 'EXC ' + (m.params.exceptionDetails.exception?.description ?? m.params.exceptionDetails.text); logs.push(s); console.log(`[${tag}]`, s.slice(0, 400)); }
   });
   const send = (method, params = {}) => new Promise((r) => { const i = ++id; wait.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
-  await send('Runtime.enable');
+  await send('Runtime.enable');await send('Log.enable');if(opcoes.rede)await send('Network.enable');
   const ev = async (expr) => {
     const r = await send('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true });
     if (r.result?.exceptionDetails) throw new Error(`[${tag}] ` + (r.result.exceptionDetails.exception?.description ?? r.result.exceptionDetails.text));
     return r.result?.result?.value;
   };
-  return { ev, raw: send, logs, tag, close: () => fetch(`http://127.0.0.1:${b.port}/json/close/${t.id}`), id: t.id };
+  return { ev, raw: send, logs, tag, pendentes:()=>[...pendentes.values()], close: () => fetch(`http://127.0.0.1:${b.port}/json/close/${t.id}`), id: t.id };
 }
 
 export async function until(fn, ms = 20000, step = 250) {

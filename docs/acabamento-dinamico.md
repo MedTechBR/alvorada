@@ -1,6 +1,6 @@
 # Revisão de combate, interface e fluidez — 27/10/2026
 
-Base publicada: `a71ef43d`. Código final de jogo: `6950e944` (os commits seguintes registram evidências). O padrão continua FireRed; as batalhas continuam em tempo real, com arenas separadas. Não houve mudança de roteiro, diálogos, progressão ou dados das espécies.
+Base publicada: `a71ef43d`. Código final de jogo: `0e3ec557` (os commits seguintes registram evidências). O padrão continua FireRed; as batalhas continuam em tempo real, com arenas separadas. Não houve mudança de roteiro, diálogos, progressão ou dados das espécies.
 
 ## Correções verificadas
 
@@ -85,7 +85,8 @@ As entradas existentes da Gruta de Lúmen, Clareira das Raízes e Ruína do Poma
 | `src/world/minimap.js` | Tamanho correto, moldura do enquadramento e desenho sem trabalho duplicado. |
 | `src/ui/menu.js` | Rótulos legíveis no mapa detalhado. |
 | `sw.js` | Cache de código v5 e biblioteca local; sprites mantêm o cache compartilhado. |
-| `index.html`, `vendor/` | PixiJS 8.6.6 no mesmo domínio, licença MIT e origem registrada. |
+| `index.html`, `vendor/` | PixiJS 8.6.6 no mesmo domínio, licença MIT, origem registrada e descoberta antecipada dos módulos. |
+| `tools/precarregar-modulos.py` | Geração e conferência dos 229 módulos da abertura padrão. |
 
 Os novos testes e os testes adaptados ficam em `tools/teste-acabamento.mjs`, `tools/teste-coral-pixel.mjs` e `tools/teste-3d/`. O servidor de comparação agora congela todas as fontes, evitando que mudanças posteriores contaminem a referência.
 
@@ -93,8 +94,12 @@ Os novos testes e os testes adaptados ficam em `tools/teste-acabamento.mjs`, `to
 
 [Galeria antes/depois, menus e três momentos de batalha](../tools/shots/acabamento-dinamico/index.html). As fotos da batalha são capturas reais em 844 × 390, com IA e dano ativos.
 
-Não houve teste em iPhone físico/Safari nesta rodada. O cache PMD é compartilhado e continua retendo espécies já visitadas; a redução medida vale para a abertura e o percurso descrito, não para uma sessão percorrendo todas as espécies. Não afirmamos ausência de qualquer bug em todas as combinações de golpes ou de mapas. A validação pública é feita depois do deploy, com entrada por toque, batalha, retorno, mapa original e service worker.
+Não houve teste em iPhone físico/Safari nesta rodada. O cache PMD é compartilhado e continua retendo espécies já visitadas; a redução medida vale para a abertura e o percurso descrito, não para uma sessão percorrendo todas as espécies. Não afirmamos ausência de qualquer bug em todas as combinações de golpes ou de mapas. A validação pública passou após o deploy: entrada por toque, batalha na arena nativa, fuga com retorno ao mesmo ponto, abertura do mapa pelo minimapa, 12 botões do menu visíveis e clicáveis e service worker v5 ativo. [Evidência pública](../tools/resultados/acabamento-dinamico/publicacao/publicacao.json).
 
 Para regressão impeditiva no jogo público, o ponto anterior de recuperação é `a71ef43d`; os commits estão separados por finalidade e não exigem reset forçado.
 
 A medição comparativa de quadro usa a mesma distribuição PixiJS 8.6.6; a alteração final troca a origem do arquivo, sem alterar a biblioteca ou as regras de combate.
+
+Na checagem pública, o Chrome cancelou requisições com `ERR_CERT_VERIFIER_CHANGED` (mudança da configuração do verificador, conforme o [código do Chromium](https://chromium.googlesource.com/chromium/src/+/refs/tags/131.0.6778.140/net/base/net_error_list.h)). O driver registra os erros de rede, evita atualizações de componentes no perfil descartável e permite recarregar essa sessão antes dos testes funcionais. Não ignora erros de certificado. As tentativas ficam registradas no resultado público.
+
+O HTML também antecipa a descoberta dos 229 módulos já necessários na abertura padrão, evitando a fila de descoberta observada na rede pública. `python3 tools/precarregar-modulos.py --verificar` confere a lista; não antecipa texturas ou modelos 3D.
