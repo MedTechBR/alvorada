@@ -1,0 +1,120 @@
+{
+  "revisao": "eb2ac3c370caebb626d6a42892bc172862d546d1",
+  "url": "https://medtechbr.com.br/alvorada/",
+  "arquivos": [
+    {
+      "arquivo": "index.html",
+      "bytes": 19490,
+      "sha256": "827aee57356bff4448e27e7727911df890954ca9224f4059ab4d12977553f2b9",
+      "igual": true
+    },
+    {
+      "arquivo": "sw.js",
+      "bytes": 4375,
+      "sha256": "03914e064e10ede0253f9945c82ca0927ce3dc389ea41888da00ff65b3011203",
+      "igual": true
+    },
+    {
+      "arquivo": "src/visual2d/firered/index.js",
+      "bytes": 12281,
+      "sha256": "d55fa9d0e660600e3f92697a3eca34d72f7eb113fe402c73fc7eda97b5f3760b",
+      "igual": true
+    },
+    {
+      "arquivo": "src/visual2d/firered/terreno.js",
+      "bytes": 5028,
+      "sha256": "7ce0863b48c5d3f87da65d8cdcf9b2883b3fb8028645b23a2abf4164948451fa",
+      "igual": true
+    },
+    {
+      "arquivo": "src/visual2d/firered/pracas.js",
+      "bytes": 1266,
+      "sha256": "bdf97ef1d3a1c0c7801cd8f7f3c463fc490968b95c167eb6081cb15d209b9940",
+      "igual": true
+    },
+    {
+      "arquivo": "src/visual2d/firered/pisos.js",
+      "bytes": 720,
+      "sha256": "878071ce9eae1861722031dbd8fd3a424f514a46e3b4fac265cc23044643d492",
+      "igual": true
+    },
+    {
+      "arquivo": "src/visual2d/firered/objetos.js",
+      "bytes": 4799,
+      "sha256": "0a7cadbe158ee60d0434195f6e6bbadd04bfe932731e218568339edd0c074241",
+      "igual": true
+    },
+    {
+      "arquivo": "src/visual2d/firered/interface.css",
+      "bytes": 11146,
+      "sha256": "e43bd9523b8521bd27058d49b1a78c31c11e497eec9d2699fcce4a224fc67e7a",
+      "igual": true
+    },
+    {
+      "arquivo": "src/visual2d/coral-pessoas.js",
+      "bytes": 6924,
+      "sha256": "5ef4a013f6d99748b04367e6035c31d0f8f5cbef5b12f91fbfba003fbcf6b577",
+      "igual": true
+    },
+    {
+      "arquivo": "src/ui/hud-batalha.js",
+      "bytes": 27178,
+      "sha256": "69328f6e2c33dfcfff98badfe1321ce29cc9f2003aa3127f5214473e34c4611b",
+      "igual": true
+    },
+    {
+      "arquivo": "src/ui/espetaculo.js",
+      "bytes": 15705,
+      "sha256": "15b00ffcef198958c4ea4bf432d34cca653ce0f75a61c4b0b70ce8de22456fcc",
+      "igual": true
+    },
+    {
+      "arquivo": "src/entities/pokemon.js",
+      "bytes": 17048,
+      "sha256": "422274c32395b4c7199915f46a4f3bd87ef83826894bf15ad60394b99be39fc8",
+      "igual": true
+    },
+    {
+      "arquivo": "src/world/mounts.js",
+      "bytes": 57925,
+      "sha256": "86636602a9c9cecb9bb81e7861fc7a6e1696a6680e9bc7e3e6426827ddfe34d4",
+      "igual": true
+    },
+    {
+      "arquivo": "src/combat/arena-ginasio.js",
+      "bytes": 48686,
+      "sha256": "447122511a43fed79a3ef717c3104b01b4fad8fd71f1b0d7fc3f74560ed5d469",
+      "igual": true
+    },
+    {
+      "arquivo": "assets/firered/objetos.png",
+      "bytes": 17374,
+      "sha256": "dec7fb0d932359a71277c5206f9d8842a9424ebd92c3eda86a02e8656c3e49df",
+      "igual": true
+    },
+    {
+      "arquivo": "assets/firered/indice.json",
+      "bytes": 16446,
+      "sha256": "02f2405503e9f70e407f76530b888f8a31a2f7c4e810cdb2def04451d20a38cc",
+      "igual": true
+    },
+    {
+      "arquivo": "tools/shots/revisao-visual/index.html",
+      "bytes": 16419,
+      "sha256": "be7a6a2e97241306a43b319e8805d573a6e34f20fa5864f5d5681dc80f05e371",
+      "igual": true
+    },
+    {
+      "arquivo": "tools/shots/revisao-visual/depois-regiao-10.png",
+      "bytes": 43001,
+      "sha256": "811c8a42ff21bd9b3fd91902f1c223f776379908a93cdca415a1ffff6fffec45",
+      "igual": true
+    },
+    {
+      "arquivo": "docs/revisao-visual-firered.md",
+      "bytes": 10037,
+      "sha256": "3addd17374fa3ffe6600d20afea5bff4b409681afe8b4abb4c9e66b80f8b6958",
+      "igual": true
+    }
+  ]
+}
