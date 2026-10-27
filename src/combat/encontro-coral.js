@@ -56,12 +56,16 @@ export class EncontroCoral {
   if(this.ativo||this.transicao)return false;
   this.transicao=true;this.inicio.hidden=true;const g=this.g;let cena;
   try{
-   cena=new GameMap(g.tx);cena.semArte=true;await cena.carregar('encontro-coral',{dados:plantaEncontroCoral(g.map.areaAt(g.player.x,g.player.y)),temporario:true});cena.g=g;cena.ents=g.ents;cena.buildLayer();
+   cena=new GameMap(g.tx);cena.classico=!!g.visual2d;cena.semArte=!cena.classico;
+   if(cena.classico){cena.pintar=g.visual2d.pintar;cena.waterFrames=g.visual2d.agua;}
+   await cena.carregar('encontro-coral',{dados:plantaEncontroCoral(g.map.areaAt(g.player.x,g.player.y)),temporario:true});cena.g=g;cena.ents=g.ents;
+   // O chão nativo precisa pertencer ao mundo, abaixo dos participantes.
+   g.world.addChildAt(cena.buildLayer(),0);cena.root.visible=false;
    cena.limite={x0:5*16,y0:6*16,x1:35*16,y1:23*16,quem:e=>e===g.player||!!e.mon};
    this.antes={map:g.map,entities:g.entities,wilds:g.wilds,player:pos(g.player),lead:g.lead,leadPos:g.lead?pos(g.lead):null,npc:batalha?.npc,npcPos:batalha?.npc?pos(batalha.npc):null,selvagemPos:selvagem?pos(selvagem):null,pack:selvagem?.pack,camFoco:g.camFoco,camFocus:g.camFocus,rootVisible:g.map.root.visible,area:g.area};
    this.batalha=batalha;this.selvagem=selvagem;this.fimEm=null;
    await g.ui.fade(async()=>{
-    this.ativo=true;g.input.limpar();this.limparGolpes();g.ui.hud.setPrompt(null);document.body.classList.add('coral-encontro');g.map.root.visible=false;g.map=cena;
+    this.ativo=true;g.input.limpar();this.limparGolpes();g.ui.hud.setPrompt(null);document.body.classList.add('coral-encontro');g.map.root.visible=false;g.map=cena;cena.root.visible=true;
     g.entities=[...(g.lead?.alive?[g.lead]:[]),...(selvagem?[selvagem]:[])];g.wilds=selvagem?[selvagem]:[];
     colocar(g,g.player,{x:12*16+8,y:18*16+8,dir:'up'});colocar(g,g.lead,{x:14*16+8,y:16*16+8});
     if(selvagem){selvagem.pack=null;selvagem.ai.state='aggro';selvagem.ai.t=12;selvagem.ai.react=Math.max(selvagem.ai.react??0,.9);colocar(g,selvagem,{x:24*16+8,y:14*16+8});selvagem.aggroTarget=g.lead?.alive?g.lead:g.player;selvagem.ai.home={x:selvagem.x,y:selvagem.y};}

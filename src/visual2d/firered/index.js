@@ -9,8 +9,8 @@ import { KINDS } from '../../world/objects.js';
 
 const BASE=new URL('../../../assets/firered/',import.meta.url);
 async function imagem(nome){const r=await fetch(new URL(nome,BASE));if(!r.ok)throw Error('Arte FireRed indisponível: '+nome);return createImageBitmap(await r.blob());}
-// Exploração nativa em Pixi. A apresentação já usada nas arenas continua no
-// compositor de combate, com a mesma câmera, sprites PMD e efeitos de impacto.
+// Exploração e arenas usam os mesmos bancos FireRed e pessoas originais.
+// A câmera de luta enquadra os participantes; os golpes mantêm sprites PMD.
 export class VisualFireRed{
  constructor(g){
   this.g=g;this.ativo=false;this.texturas=new Map();this.objetos=new Map();this.matos=new Map();this.camadasOcultas=new Map();
