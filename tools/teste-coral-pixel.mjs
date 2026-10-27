@@ -10,7 +10,12 @@ const {TILE,SOLID}=await import('../src/world/tiles.js');
 const R=plantaEncontroCoral(),S=prepararMundo(R);for(const p of R.partes)montarParte(S,p);
 const cena={id:'encontro-coral',w:R.w,h:R.h,warps:[],solidAt:(x,y)=>SOLID.has(S.tiles[Math.floor(x/16)+Math.floor(y/16)*R.w])||!!S.block[Math.floor(x/16)+Math.floor(y/16)*R.w]};
 assert.equal(cena.w,40);assert.equal(cena.h,28);assert.equal(cena.warps.length,0);
-for(let y=6;y<23;y++)for(let x=5;x<35;x++)assert(!cena.solidAt(x*16+8,y*16+8),'Campo deve ficar livre');
+// A arena agora tem coberturas. O centro fica livre e todo bloqueio interno
+// precisa pertencer a um objeto visível; nenhum piso livre pode ficar isolado.
+for(let y=12;y<18;y++)for(let x=10;x<31;x++)assert(!cena.solidAt(x*16+8,y*16+8),'Faixa central bloqueada');
+const coberturas=new Set([...S.placed,...S.novos].flatMap(o=>o.cells??[])),alcance=new Set([14+16*R.w]),abertos=[14+16*R.w];
+for(let i=0;i<abertos.length;i++){const k=abertos[i],x=k%R.w,y=Math.floor(k/R.w);for(const [a,b]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(a<5||a>=35||b<6||b>=23)continue;const n=a+b*R.w;if(!alcance.has(n)&&!cena.solidAt(a*16+8,b*16+8)){alcance.add(n);abertos.push(n);}}}
+for(let y=6;y<23;y++)for(let x=5;x<35;x++){const k=x+y*R.w;if(cena.solidAt(x*16+8,y*16+8))assert(coberturas.has(k),'Bloqueio sem cobertura visível');else assert(alcance.has(k),'Piso livre isolado pela cobertura');}
 for(let x=4;x<36;x++){assert(cena.solidAt(x*16+8,5*16+8));assert(cena.solidAt(x*16+8,23*16+8));}
 for(let y=5;y<24;y++){assert(cena.solidAt(4*16+8,y*16+8));assert(cena.solidAt(35*16+8,y*16+8));}
 assert(aguaCoral(TILE.DEEP));assert.equal(materialCoral(TILE.CLIFF),5);assert.notEqual(materialCoral(TILE.CLIFF),materialCoral(TILE.SAND));
@@ -20,7 +25,7 @@ const save=serialize(g);assert.deepEqual(save.pos,player);assert.equal(save.mund
 const meta=JSON.parse(readFileSync('assets/coral-pixel/atlas.json'));
 for(const [nome,[x,y,w,h]]of Object.entries(meta.frames)){assert(w>0&&h>0&&x>=0&&y>=0&&x+w<=768&&y+h<=512,nome);}
 for(const [nome,W,H]of [['objetos',768,512],['terrenos',512,256]]){const b=readFileSync(`assets/coral-pixel/${nome}.png`);assert.equal(b.readUInt32BE(16),W);assert.equal(b.readUInt32BE(20),H);assert(b.length<600000);}
-console.log('OK: planta isolada, bordas visíveis, campo livre, save no continente e atlas dentro do orçamento.');
+console.log('OK: planta isolada, centro livre, coberturas visíveis, circulação conectada e save no continente.');
 
 // Usa o mundo real, não uma planta reduzida: cada porta continua ligada à rua e ao roteiro.
 const {carregarMundo}=await import('./vestir/mundo.mjs');

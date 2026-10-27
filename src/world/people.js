@@ -49,7 +49,8 @@ export class People {
     view.addChild(shadow, body); view.visible = false;
     g.ents.addChild(view);
     const p = { d, view, body, shadow, x: d.x * T + 8, y: d.y * T + 10, home: { x: d.x * T + 8, y: d.y * T + 10 }, vx: 0, vy: 0, dir: 2, t: Math.random() * 3, anim: 'Idle', wanderT: 2, z: d.z ?? 0, r: 5 };
-    if(!d.ecologia)this.#carregarPet(p);
+    // Pokémon moradores distantes não precisam baixar todas as folhas PMD
+    // na abertura. A faixa NEAR antecipa a carga antes de entrarem na tela.
     return p;
   }
 
@@ -100,7 +101,7 @@ export class People {
   #updatePet(p, dt, paused) {
     const g = this.g, pl = g.player;
     const near = Math.abs(p.x - pl.x) < NEAR && Math.abs(p.y - pl.y) < NEAR;
-    if(near&&p.d.ecologia&&!p.set)this.#carregarPet(p);
+    if(near&&!p.set)this.#carregarPet(p);
     p.view.visible = near && !!p.set; if (!p.view.visible) return;
     p.t += dt;
     if (!paused && p.d.ecologia) rotinaCoral(p,pl,dt);
