@@ -1,6 +1,6 @@
 import {TILE,SOLID} from './tiles.js';
 // Estrada legível, pequenas clareiras laterais e bosquetes com bordas definidas.
-// Preserva piso/colisão existentes nos acessos; só ocupa gramado sem função.
+// Preserva a circulação dos acessos; só ocupa gramado sem função.
 const GRAMA=new Set([TILE.GRASS,TILE.GRASS2,TILE.FLOWERS,TILE.DARK,TILE.GOLD]);
 const VIA=new Set([TILE.PATH,TILE.PLAZA,TILE.STAIRS,TILE.BRIDGE,TILE.BRIDGEV,TILE.DOCK]);
 export function* comporRotas(S,P){
@@ -10,6 +10,20 @@ export function* comporRotas(S,P){
   if(!/^Rota \d/.test(area.name??'')||!area.rect||area.biome!=='campo')continue;
   const [x0,y0,w,h]=area.rect;
   if(x0<px||y0<py||x0+w>px+pw||y0+h>py+ph||y0+h>H)continue;
+  // A expansão geográfica alargou também as estradas. Recupera uma trilha
+  // de três blocos, mantendo os acostamentos livres e os cruzamentos largos.
+  const afinar=[];
+  const estrada=(x,y)=>x>=x0&&x<x0+w&&y>=y0&&y<y0+h&&S.tiles[x+y*W]===TILE.PATH;
+  for(let y=y0+2;y<y0+h-2;y++)for(let x=x0+2;x<x0+w-2;x++){
+   if(!estrada(x,y))continue;
+   for(const[dx,dy]of[[0,1],[1,0]]){
+    let a=0,b=0;while(a<13&&estrada(x-dx*(a+1),y-dy*(a+1)))a++;while(b<13&&estrada(x+dx*(b+1),y+dy*(b+1)))b++;
+    const largura=a+b+1;if(largura<6||largura>12||!estrada(x+dy*2,y+dx*2)||!estrada(x-dy*2,y-dx*2))continue;
+    const meio=Math.floor(largura/2);if(Math.abs(a-meio)>1){afinar.push(x+y*W);break;}
+   }
+  }
+  for(const k of afinar)S.tiles[k]=TILE.GRASS;
+  area.caminhoAfinado=afinar.length;
   const n=w*h,d=new Uint16Array(n).fill(65535),fila=new Int32Array(n),vias=[];let fim=0;
   const local=(x,y)=>(x-x0)+(y-y0)*w;
   const fonte=(x,y)=>{const i=local(x,y);if(x<x0||y<y0||x>=x0+w||y>=y0+h||d[i]===0)return;d[i]=0;fila[fim++]=i;};
