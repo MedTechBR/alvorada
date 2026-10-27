@@ -49,7 +49,7 @@ const LAYOUT = {
   empe: { esq: [166, 34], peq: [[166, 104], [28, 170], [78, 170], [128, 170], [178, 170], [166, 222]] },
 };
 // lugar fixo de cada botão pequeno (índice em peq); os de contexto (Mega, A no modo Pokémon) ocupam a próxima vaga livre
-const FIXO = { pokemon: { 't-ball': 0, 't-team': 1, 't-jump': 2, 't-alt': 3 }, treinador: { 't-mount': 0 } };
+const FIXO = { pokemon: { 't-ball': 0, 't-team': 1, 't-jump': 2, 't-alt': 3, 't-items': 4 }, treinador: { 't-mount': 0 } };
 
 export class Toque {
   constructor(g, ui) {
@@ -182,6 +182,7 @@ export class Toque {
     vis['t-act'] = fala&&!/Batalhar/.test(this.ui.hud?.promptKey??'');
     vis['t-team'] = g.party.length > 1 || pk;
     vis['t-ball'] = pk && selv;
+    vis['t-items'] = !!this.ui.bolsa?.pode();
     vis['t-alt'] = pk && !!(g.combat.alt.canFly(g.lead) || g.combat.alt.canDive(g.lead) || ['fly', 'dive'].includes(g.lead?.alt?.mode)); vis['t-jump'] = pk;
     vis['t-power'] = pk && !!g.poder?.opcao?.();
     const montaria=g.mount?.hint?.();
@@ -223,7 +224,7 @@ export class Toque {
     mostra($('t-swap'), false);
     // A: no treinador fica no arco (lugar do golpe 3); com o Pokémon, vai para uma vaga dos pequenos
     const peq = L.peq, livres = new Set(peq.map((_, i) => i)), fixo = FIXO[pk ? 'pokemon' : 'treinador'];
-    const ids = ['t-ball', 't-team', 't-jump', 't-alt', 't-mount', 't-power', 't-act', 't-battle'];
+    const ids = ['t-items', 't-ball', 't-team', 't-jump', 't-alt', 't-mount', 't-power', 't-act', 't-battle'];
     const lugar = {};
     for (const id of ids) if (vis[id] && fixo[id] != null) { lugar[id] = fixo[id]; livres.delete(fixo[id]); }
     if (!pk) { pos($('t-act'), ARCO[2], TAM.arco); lugar['t-act'] = -1; pos($('t-team'), ARCO[3], TAM.peq); lugar['t-team'] = -1; }

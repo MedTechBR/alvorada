@@ -1,4 +1,5 @@
 import { IS_TOUCH } from '../engine/input.js';
+import { BolsaCombate } from './bolsa-combate.js';
 import { Hud } from './hud.js';
 import { Dialog } from './dialog.js';
 import { GameMenu, dexMark } from './menu.js';
@@ -27,6 +28,7 @@ export class UI {
     this.hud = new Hud(g, this);
     this.dialog = new Dialog(this);
     this.menu = new GameMenu(this);
+    this.bolsa = new BolsaCombate(g,this);
     this.saveT = AUTOSAVE; this.seeT = 0; this.lastSave = 0;
     applyOpts(g);
     this.#vibration();
@@ -36,7 +38,7 @@ export class UI {
   }
   get story() { return this.g.story; }
   // o mundo para: título, menu, diálogo ou aviso de girar o aparelho
-  get blocking() { return this.state !== 'play' || this.menu.isOpen || this.dialog.open || this.rotateOn || this.sceneOn; }
+  get blocking() { return this.state !== 'play' || this.menu.isOpen || this.dialog.open || this.rotateOn || this.sceneOn || this.bolsa?.aberta; }
 
   // ---------- começo ----------
   async title() {
@@ -74,6 +76,8 @@ export class UI {
   // ---------- quadro ----------
   frame(dt) {
     const g = this.g, inp = g.input;
+    this.bolsa.quadro();
+    if(this.bolsa.aberta){if(inp.pressed('menu'))this.bolsa.fechar();this.#lock();return true;}
     if (this.state !== 'play') return true;
     g.flags.playTime = (g.flags.playTime ?? 0) + dt;
     if (!this.audioOk) this.audioOk = applyOpts(g);
@@ -109,7 +113,7 @@ export class UI {
   // ---------- atalhos ----------
   say(lines, opts) { this.g.input?.limpar(); return this.dialog.say(lines, opts); }
   toast(t, opts) { this.hud.toast(t, opts); }
-  openMenu() { if (this.state !== 'play' || this.menu.isOpen || this.dialog.open) return; this.g.input?.limpar();this.menu.open(); document.body.classList.add('menu-open'); this.g.audio?.duck?.(0.45); }
+  openMenu() { this.bolsa?.fechar();if (this.state !== 'play' || this.menu.isOpen || this.dialog.open) return; this.g.input?.limpar();this.menu.open(); document.body.classList.add('menu-open'); this.g.audio?.duck?.(0.45); }
   openOnline() { this.menu.close(); const u = this.g.net?.ui; if (u && !u.modalOpen) u.toggleMenu(); }
   openParty() { this.openMenu(); if(this.menu.isOpen)this.menu.openParty(); }
   openMap() { this.openMenu(); if(this.menu.isOpen)this.menu.openMap(); }

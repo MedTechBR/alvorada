@@ -537,7 +537,9 @@ class Game {
     const col = parseInt((ITEM_INFO[key]?.color ?? '#e5383b').slice(1), 16);
     const ball = spritePokebola(col,key);
     this.world.addChild(ball);
-    const dist = Math.min(d, 260), tx = p.x + dx / d * dist, ty = p.y + dy / d * dist; // alcança o selvagem que o seu Pokémon enfrenta
+    // Na arena selvagem o treinador pode recuar sem impedir a captura do adversário.
+    const alcance=this.encontro?.ativo&&!this.encontro.batalha?Math.hypot(this.map.w*T,this.map.h*T):260;
+    const dist = Math.min(d, alcance), tx = p.x + dx / d * dist, ty = p.y + dy / d * dist; // alcança o selvagem que o seu Pokémon enfrenta
     this.balls ??= []; this.balls.push({ s: ball, key, x0: p.x, y0: p.y - 12, x1: tx, y1: ty, t: 0, dur: 0.25 + dist / 600 });
     this.audio.sfx('throw');
   }
@@ -617,9 +619,9 @@ class Game {
     const inp = this.input; inp.poll();
     if(document.hidden&&!this.net?.room){inp.endFrame();return;} // fora do app, a luta offline espera pelo jogador
     this.encontro?.update();
+    this.acompanhante?.quadro(this.ui?.blocking?0:rdt);
     if(this.encontro?.transicao){this.#camera(rdt);inp.endFrame();return;}
     if (inp.pressed('perf')) $('perf').hidden = !$('perf').hidden;
-    this.acompanhante?.quadro(this.ui?.blocking?0:rdt);
     if (this.viagem?.ocupada) { this.viagem.quadro(rdt); this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // trocando de mundo
     // título, menu e diálogo param o mundo (a câmera e o desenho continuam)
     if (this.ui?.frame(rdt)) { this.show.update(0); if(!this.encontro?.ativo)this.net?.update(rdt, true); this.#camera(rdt); this.map.flushDirty(); if(this.encontro?.ativo)this.map.update(rdt);else this.mundo.update(rdt, true); inp.endFrame(); this.#perf(rdt, performance.now() - t0); return; } // o online segue mesmo com o menu aberto

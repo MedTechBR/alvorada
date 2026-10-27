@@ -1,0 +1,80 @@
+{
+  "caminho": {
+    "solido": 0,
+    "max": 22,
+    "fim": 22,
+    "foraDoCombate": true,
+    "hp": 48
+  },
+  "save": {
+    "uid": "0ryhd170",
+    "mesmoUid": true,
+    "restaurado": true
+  },
+  "viagem": {
+    "ida": true,
+    "emOcaso": true,
+    "volta": true,
+    "retorno": true
+  },
+  "ordem": true,
+  "parede": true,
+  "liberado": true,
+  "computador": {
+    "aberta": true,
+    "semToque": true
+  },
+  "bloqueio": true,
+  "rolou": true,
+  "acompanhanteEsperaBatalha": true,
+  "retornaDepois": true,
+  "curaConsumida": 1,
+  "semEfeitoNaoGasta": true,
+  "capturaSelecionada": true,
+  "pausaOffline": true,
+  "alvosDeToque": [
+    {
+      "h": 44,
+      "x": 562,
+      "y": 33.9375,
+      "b": 77.9375,
+      "d": 606
+    },
+    {
+      "h": 44,
+      "x": 300,
+      "y": 85.9375,
+      "b": 129.9375,
+      "d": 450
+    },
+    {
+      "h": 44,
+      "x": 456,
+      "y": 85.9375,
+      "b": 129.9375,
+      "d": 606
+    },
+    {
+      "h": 61.6875,
+      "x": 300,
+      "y": 164.9375,
+      "b": 226.625,
+      "d": 606
+    },
+    {
+      "h": 61.6875,
+      "x": 300,
+      "y": 232.625,
+      "b": 294.3125,
+      "d": 606
+    },
+    {
+      "h": 61.6875,
+      "x": 300,
+      "y": 300.3125,
+      "b": 362,
+      "d": 606
+    }
+  ],
+  "erros": []
+}
