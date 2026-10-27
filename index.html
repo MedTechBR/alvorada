@@ -324,7 +324,17 @@
         try { localStorage.setItem('alvorada.boot.n', String(performance.getEntriesByType('resource').length)); } catch (e) {}
         target = 1; el.classList.add('done'); setTimeout(function () { el.remove(); }, 450);
       };
-      window.addEventListener('error', function (e) { if (el.isConnected && !stage) txt.textContent = 'Algo deu errado ao carregar. Recarregue a página.'; });
+      function falhou() {
+        if (!el.isConnected) return;
+        txt.textContent = 'Não foi possível terminar o carregamento. Confira a conexão e tente novamente.';
+        if (document.getElementById('boot-tentar')) return;
+        var btn = document.createElement('button'); btn.id = 'boot-tentar'; btn.type = 'button'; btn.textContent = 'Tentar novamente';
+        btn.style.cssText = 'margin-top:16px;min-height:44px;padding:10px 20px;border:1px solid #b8d2cd;border-radius:10px;background:#f3f8f6;color:#173e4b;font:700 14px system-ui;cursor:pointer';
+        btn.onclick = function () { location.reload(); }; el.appendChild(btn);
+      }
+      // Falhas do script principal não borbulham: a captura evita uma tela de espera infinita.
+      window.addEventListener('error', function (e) { if (e.target === window || e.target.tagName === 'SCRIPT' && e.target.type === 'module') falhou(); }, true);
+      window.addEventListener('unhandledrejection', falhou);
     })();
   </script>
   <script type="module" src="src/main.js"></script>

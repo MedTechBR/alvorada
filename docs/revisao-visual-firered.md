@@ -36,6 +36,7 @@ As correções de recorte e identidade valem para as famílias de objetos no con
 - 24 verificações Node/camada vestir, com resultados individuais em `tools/resultados/revisao-visual/node.json`.
 - Navegador: cenário/visibilidade, oito direções da montaria, dois painéis de PS, retirada das duplicatas, troca/saída da arena, liberação do piso, mapa grande, montaria aquática, acompanhante, bolsa, batalha fluida, combate contra paredes e passagens de NPCs. Resultado final em `navegador-entrega.json`; as capturas comparativas estão em `depois-cenas.json`.
 - Recortes de rocha: `python3 tools/firered/verificar-objetos.py`.
+- Recuperação da entrada: download do módulo principal bloqueado no teste, botão de 44 px apresentado e início normal após nova tentativa. Evidência em `abertura-recuperacao.json`.
 - Módulos iniciais: `python3 tools/precarregar-modulos.py --verificar`.
 - Chrome sem interface, um processo principal de cada vez, com áudio silenciado. Não houve teste em iPhone/Safari físico.
 - Não foram alterados os cálculos de dano, recargas, IA, dados dos Pokémon ou avisos de ataque.
@@ -72,3 +73,9 @@ As três amostras iniciais identificaram uma regressão de aproximadamente 2,6 M
 - `assets/firered/objetos.png`, `indice.json`, `assets/CREDITOS.md`, `tools/firered/baixar.py`, `preparar.py` e `verificar-objetos.py`: recortes originais, extração reproduzível, origem e regressão dos pixels.
 - `index.html` e `sw.js`: dependências da abertura e atualização do cache de código v8, preservando o cache de espécies PMD.
 - Ferramentas de diagnóstico, desempenho, testes e publicação em `tools/teste-3d/`; evidências em `tools/resultados/revisao-visual/` e `tools/shots/revisao-visual/`.
+
+## Publicação e condição de rede
+
+A publicação da revisão funcional e dos jardins concluiu no GitHub Pages. Foram comparados 19 arquivos públicos com os locais, byte a byte. Na conferência externa, houve conexões reiniciadas ao baixar módulos; o carregamento frio não pode ser considerado aprovado. O teste registra esses problemas separadamente das verificações funcionais locais. O ajudante admite HTTP/1.1 e reutilização explícita de um perfil de teste descartável, sem desativar a verificação de certificados.
+
+A entrada do jogo passou a capturar a falha do script principal e oferecer **Tentar novamente**, em vez de manter apenas o aviso de carregamento. Essa recuperação foi validada por bloqueio de rede no Chrome local.
