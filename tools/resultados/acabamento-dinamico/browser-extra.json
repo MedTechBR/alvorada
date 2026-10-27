@@ -1,7 +1,9 @@
 [
   {
     "teste": "acabamento-dinamico",
-    "codigo": 1
+    "codigo": 0,
+    "casos": 20,
+    "evidencia": "acabamento-dinamico.log"
   },
   {
     "teste": "acabamento-captura",
