@@ -1,6 +1,6 @@
 # Exploração FireRed
 
-Implementação local no branch `visual-firered`, a partir do publicado `b307145e`. Esta rodada não foi publicada.
+Implementação no branch `visual-firered`, a partir do publicado `b307145e`. Publicação autorizada pelo dono em 26/10/2026.
 
 ## Direção adotada
 
