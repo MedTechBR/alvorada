@@ -1,7 +1,7 @@
 import {TILE,SOLID} from './tiles.js';
 // Estrada legível, pequenas clareiras laterais e bosquetes com bordas definidas.
 // Preserva a circulação dos acessos; só ocupa gramado sem função.
-const GRAMA=new Set([TILE.GRASS,TILE.GRASS2,TILE.FLOWERS,TILE.DARK,TILE.GOLD]);
+const GRAMA=new Set([TILE.GRASS,TILE.GRASS2,TILE.TALL,TILE.FLOWERS,TILE.DARK,TILE.GOLD]);
 const VIA=new Set([TILE.PATH,TILE.PLAZA,TILE.STAIRS,TILE.BRIDGE,TILE.BRIDGEV,TILE.DOCK]);
 export function* comporRotas(S,P){
  if(!P.escalaGeografica||!P.rect)return;
@@ -53,8 +53,8 @@ export function* comporRotas(S,P){
   let ocupados=0;
   // Bosquetes com uma volta livre em todo o perímetro. A borda de segurança
   // impede unir um bosque novo a um muro antigo e fechar uma passagem.
-  for(let cy=y0+10;cy<y0+h-7;cy+=16)for(let cx=x0+11;cx<x0+w-11;cx+=22){
-   const X=cx+((Math.floor(cy/16)%2)*3),rx=8,ry=5;let livre=true;
+  for(let cy=y0+10;cy<y0+h-7;cy+=12)for(let cx=x0+11;cx<x0+w-11;cx+=18){
+   const X=cx+((Math.floor(cy/16)%2)*3),rx=5,ry=3;let livre=true;
    for(let y=cy-ry-2;y<=cy+ry+2&&livre;y++)for(let x=X-rx-2;x<=X+rx+2;x++){
     const k=x+y*W;
     if(x<x0+3||x>=x0+w-3||y<y0+3||y>=y0+h-3||!GRAMA.has(S.tiles[k])||S.block[k]||S.nearSpot.has(k)||d[local(x,y)]<6){livre=false;break;}
