@@ -2,6 +2,7 @@ import { comporCoral } from './coral-piloto.js';
 import { organizarPostes } from './organizar-postes.js';
 import { comporPilotoVisual } from './piloto-visual.js';
 import { recomporNucleos, vestirPaisagem, criarRecantos } from './paisagem.js';
+import {comporRotas} from './rotas-compostas.js';
 import { refinarCaminhos } from './caminhos-ampliados.js';
 import { pontoGeografico, pontoTerrenoGeografico } from './geografia.js';
 import { TILE, CHARS, NAMES, SOLID } from './tiles.js';
@@ -205,6 +206,7 @@ export function* passosParte(S, P) {
     }
     yield;
   }
+  for(const _ of comporRotas(S,P))yield;
   if (!S.florestaPorSetor) {
   // floresta densa: árvores em grade sobre os blocos FOREST (fileiras alternadas, mesma paridade no mundo todo)
   const fk = J.forestKinds ?? ['tree', 'pine', 'tree2', 'pine2'];

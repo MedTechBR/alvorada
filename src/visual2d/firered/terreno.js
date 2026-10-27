@@ -12,6 +12,8 @@ function borda(map,x,y,igual,grid){const cx=!igual(map.at(x-1,y))?0:!igual(map.a
 const ESTRADA=[[0x0d3,0x0d4,0x0d5],[0x0db,0x0dc,0x0dd],[0x0e3,0x0e4,0x0e5]];
 const PRACA=[[0x1b8,0x1b9,0x1ba],[0x1c0,0x1c1,0x1c2],[0x1c8,0x1c9,0x1ca]];
 export function escolherBloco(map,t,x,y){
+ if(t===TILE.PLAZA&&map.R?.temaVisual==='Campo rochoso')return ['caverna',0x280];
+ if(t===TILE.PLAZA&&map.R?.temaVisual==='Clareira fria')return ['gelo',0x001];
  if(t===TILE.VOID)return ['exterior',0];
  const sala=map.interiorAt(x*16+8,y*16+8);
  if(y>=(map.outdoorH??map.h)&&!sala)return ['exterior',0];
