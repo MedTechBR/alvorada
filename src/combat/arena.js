@@ -17,7 +17,7 @@ export class Arena {
   get fx() { return this.g.fx; }
   get vivo() { return this.g.vivo; }
   cell(x, y) { return Math.floor(x / T) + Math.floor(y / T) * this.g.map.w; }
-  objAt(x, y) { const o = this.g.objSprites?.get(this.cell(x, y)); return o && !o.dead ? o : null; }
+  objAt(x, y) { const o = (this.g.map.cellObj??this.g.objSprites)?.get(this.cell(x, y)); return o && !o.dead ? o : null; }
   solidAt(x, y) { if (this.objAt(x, y)) return true; const t = this.g.map.at(Math.floor(x / T), Math.floor(y / T)); return t === TILE.CLIFF || t === TILE.VOID || WALLS.has(t); } // feixes e golpes em linha param na parede da sala
   // troca de bloco que volta com o tempo (pelo cenário vivo)
   #troca(tx, ty, t, tipo, by) { if (this.vivo) this.vivo.trocarTile(tx, ty, t, tipo, undefined, by); else this.g.map.setTile(tx, ty, t); }
@@ -39,7 +39,7 @@ export class Arena {
 
   hitObject(o, mv, P = 1, by = null, explosao = false) {
     if (this.g.mundo?.masmorra?.hitObject(o, mv, P)) return; // tochas, paredes rachadas, portões… (src/world/masmorra.js)
-    if (this.vivo?.golpe(o, mv, P, by, { explosao })) return; // árvores, rochas, madeira, prédios (src/world/vivo.js)
+    if (!o.decorativoEncontro && this.vivo?.golpe(o, mv, P, by, { explosao })) return; // árvores, rochas, madeira, prédios (src/world/vivo.js)
     const fx = this.fx, rock = o.kind === 'rock', bush = o.kind === 'bush', tree = o.kind === 'tree' || o.kind === 'pine';
     this.shakes.push({ o, t: 0.25, amp: 1.5 + P });
     if (o.breakable) {

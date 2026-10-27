@@ -330,7 +330,7 @@ export class Combat {
   }
   #aimTarget(user, ax, ay) {
     let best = null, bd = 28;
-    for (const t of this.targetsOf(user)) { const d = Math.hypot(t.x - ax, t.y - ay); if (d < bd) { bd = d; best = t; } }
+    for (const t of this.targetsOf(user)) { const y=user.side==='ally'?clamp(ay,t.y-(t.topH??20),t.y):t.y;const d = Math.hypot(t.x - ax, y - ay); if (d < bd) { bd = d; best = t; } }
     return best;
   }
 
@@ -348,11 +348,19 @@ export class Combat {
     const look = A.head ?? this.vfx.head(mv, id);
     const m = this.mouth(user, dx, dy, mv.cat === 'phys' ? 'hand' : 'mouth');
     const h0 = m.h;
+    // A mira do jogador parte da boca real, não de uma linha paralela aos pés.
+    // O aviso e a trajetória dos adversários conservam o comportamento anterior.
+    let distanciaAlvo=0;
+    if(user.side==='ally'&&aimT){
+      const espalhamento=angDiff(Math.atan2(dy,dx),Math.atan2(aimT.y-user.y,aimT.x-user.x));
+      const ang=Math.atan2(aimT.y-m.gy,aimT.x-m.x)+espalhamento;
+      dx=Math.cos(ang);dy=Math.sin(ang);distanciaAlvo=Math.max(1,Math.hypot(aimT.x-m.x,aimT.y-m.gy));
+    }
     const sp = (mv.speed ?? 15) * M;
     const p = { user, side: user.side, mv, id, x: m.x, gy: m.gy, h: h0, hT: aimT ? (aimT.y - this.centerY(aimT)) : Math.max(6, h0 * 0.8),
       vx: dx * sp, vy: dy * sp, left: this.range(mv, user), color, r: 4 + 2 * big, power: mv.power ?? 30, big, look, head: this.#head(look), t: 0, i,
       wob: id === 'bubble' ? Math.random() * TAU : id === 'razorLeaf' ? (i - 1) * 2.2 : 0,
-      A, draw: look.draw ?? null, hist: look.hist ? [] : null, histN: look.hist ?? 0, scale: A.power ?? 1, homing: !!A.homing, ox: m.x, oy: m.y };
+      h0, distanciaAlvo, percurso:0, A, draw: look.draw ?? null, hist: look.hist ? [] : null, histN: look.hist ?? 0, scale: A.power ?? 1, homing: !!A.homing, ox: m.x, oy: m.y };
     p.y = p.gy - p.h;
     this.projectiles.push(p);
     this.vfx.muzzle(mv.type, m.x, m.y, Math.atan2(dy, dx), mv.power ?? 40);
@@ -374,8 +382,10 @@ export class Combat {
     // folhas fazem curva, bolhas balançam
     if (p.id === 'razorLeaf' && p.t < 0.35) { const a = Math.atan2(p.vy, p.vx) - p.wob * dt * (0.35 - p.t) * 3; const s = Math.hypot(p.vx, p.vy); p.vx = Math.cos(a) * s; p.vy = Math.sin(a) * s; }
     let ox = 0; if (p.id === 'bubble') { p.wob += dt * 9; ox = Math.sin(p.wob) * 3; }
+    const anterior={x:p.x,y:p.gy,h:p.h};
     p.x += p.vx * dt; p.gy += p.vy * dt; p.left -= st;
-    p.h += (p.hT - p.h) * Math.min(1, dt * 6);
+    p.percurso+=st;
+    if(p.distanciaAlvo)p.h=p.h0+(p.hT-p.h0)*Math.min(1,p.percurso/p.distanciaAlvo);else p.h += (p.hT - p.h) * Math.min(1, dt * 6);
     p.y = p.gy - p.h;
     const hd = p.head, L = p.look;
     hd.halo.x = hd.core.x = p.x + ox; hd.halo.y = hd.core.y = p.y;
@@ -388,7 +398,7 @@ export class Combat {
     if (p.homing && p.t > 0.12) { let best = null, bd = 120; for (const t of this.targetsOf(p.user)) { const dd = Math.hypot(t.x - p.x, t.y - p.gy); if (dd < bd) { bd = dd; best = t; } } if (best) { const a0 = Math.atan2(p.vy, p.vx), a1 = Math.atan2(best.y - p.gy, best.x - p.x), sp = Math.hypot(p.vx, p.vy), a = a0 + clamp(angDiff(a1, a0), -6 * dt, 6 * dt); p.vx = Math.cos(a) * sp; p.vy = Math.sin(a) * sp; } }
     if (p.draw) p.draw(this.gfx, this.gfxN, p, p.t);
     if (p.A.trail) p.A.trail(this.vfx, p, dt); else this.vfx.trail(p, dt);
-    if (p.left <= 0) { p.dead = true; this.#impact(p.A, p.mv.type, p.x, p.y, 0, 0.5 * p.big, p.gy); this.arena.impact(p.x, p.gy, p.mv, 0.5, false, p.user); return; }
+    if (p.left <= 0 && p.user.side !== 'ally') { p.dead = true; this.#impact(p.A, p.mv.type, p.x, p.y, 0, 0.5 * p.big, p.gy); this.arena.impact(p.x, p.gy, p.mv, 0.5, false, p.user); return; }
     // choque com projéteis do outro lado
     for (const q of this.projectiles) {
       if (q === p || q.dead || q.grind || !this.hostile(p.user, q.user)) continue;
@@ -405,9 +415,19 @@ export class Combat {
         return;
       }
     }
+    // Varrimento entre quadros: um projétil rápido não salta o corpo nem uma parede.
+    let parede=null;
+    if(p.user.side==='ally')for(let i=1,n=Math.max(1,Math.ceil(st/4));i<=n;i++){
+      const f=i/n,x=anterior.x+(p.x-anterior.x)*f,y=anterior.y+(p.gy-anterior.y)*f;
+      if(this.arena.solidAt(x,y)){parede={x,y,f};break;}
+    }
     for (const t of this.targetsOf(p.user)) {
+      const vx=p.x-anterior.x,vy=p.gy-anterior.y,compr=vx*vx+vy*vy;
+      const f=p.user.side==='ally'&&compr?clamp(((t.x-anterior.x)*vx+(t.y-anterior.y)*vy)/compr,0,1):1;
+      if(parede&&f>=parede.f)continue;
+      const px=p.user.side==='ally'?anterior.x+vx*f:p.x,py=p.user.side==='ally'?anterior.y+vy*f:p.gy,h=p.user.side==='ally'?anterior.h+(p.h-anterior.h)*f:p.h;
       const hz = t.isTrainer ? 10 : t.y - this.centerY(t);
-      if (Math.hypot(t.x - p.x, t.y - p.gy) < t.r + p.r + 1 && Math.abs(p.h - hz) < 14 + t.r + (t.alt?.mode === 'fly' ? 40 : 0)) {
+      if (Math.hypot(t.x - px, t.y - py) < t.r + p.r + 1 && Math.abs(h - hz) < 14 + t.r + (t.alt?.mode === 'fly' ? 40 : 0)) {
         const d = Math.hypot(p.vx, p.vy) || 1;
         if (this.strike(p.user, t, p.mv, p.id, p.vx / d, p.vy / d, { src: 'proj', scale: p.scale }) === 'miss') continue;
         p.dead = true;
@@ -416,7 +436,9 @@ export class Combat {
         return;
       }
     }
+    if(parede){p.x=parede.x;p.gy=parede.y;p.y=p.gy-p.h;}
     if (this.arena.blockAt(p.x, p.gy, p.mv, p)) { p.dead = true; this.#impact(p.A, p.mv.type, p.x, p.y, 0, 0.8 * p.big, p.gy); this.ai.noise(p.x, p.gy, 70, p.user); }
+    else if(p.left<=0){p.dead=true;this.#impact(p.A,p.mv.type,p.x,p.y,0,.5*p.big,p.gy);}
   }
   // impacto da receita do golpe (ou o do tipo) + o resto que fica no chão
   #impact(A, type, x, y, dir, P, gy) {
@@ -964,7 +986,7 @@ export class Combat {
       t.react?.({ power: power * knock, eff, crit, quiet, dx, dy, forte: fluido ? forte : undefined });
       if (fluido) {
         t.andandoAte = 0; t.contato = null; t.fisico = null;
-        if (t.side === 'ally') t.iframes = Math.max(t.iframes, forte && !quiet ? 0.9 : 0.18);
+        if (t.side === 'ally') t.iframes = Math.max(t.iframes, forte && !quiet ? 0.9 : quiet ? 0.6 : 0.18); // um jato não prende o jogador em vários tiques seguidos
         if (forte && !quiet && !t.alt?.mode) {
           t.quedaAte = g.time + 0.42; t.charging = null; t.dashing = null;
           t.stun = Math.max(t.stun, 0.42); t.vz = 135;

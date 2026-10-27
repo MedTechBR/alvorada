@@ -88,7 +88,10 @@ export class PokeEntity {
 
   update(dt) {
     if (!this.set) return;
-    this.animT += dt;
+    // Integra a fase da passada: multiplicar todo o tempo pela velocidade
+    // fazia a animação saltar de quadro ao acelerar ou frear.
+    const ritmo=this.anim==='Walk'?Math.max(.7,Math.min(2,Math.hypot(this.svx??this.vx,this.svy??this.vy)/45)):1;
+    this.animT += dt*ritmo;
     if (this.quedaAte && this.alive) {
       if (this.g.time < this.quedaAte) {
         if (this.g.time > this.quedaAte - 0.28 && this.set.anims.Rotate && this.anim !== 'Rotate') this.play('Rotate');
@@ -153,7 +156,8 @@ export class PokeEntity {
       if (this.ai.state === 'sleep' && this.set.anims.Sleep) this.play('Sleep', true);
       else if (!this.charging) this.play(moving ? 'Walk' : 'Idle', true);
     }
-    const f = frameOf(this.set, this.anim, this.dir, this.animT * (this.anim === 'Walk' ? Math.max(0.7, Math.hypot(this.svx, this.svy) / 45) : 1), this.animLoop);
+    const direcao=this.anim==='Walk'&&this.g.visual2d?.emCombate&&moving?dir8(this.svx,this.svy):this.dir;
+    const f = frameOf(this.set, this.anim, direcao, this.animT, this.animLoop);
     if (!this.animLoop && f.done && !this.dead) this.play('Idle', true);
     this.lastFrame = f; this.f = f;
     this.body.texture = f.tex;
@@ -161,7 +165,7 @@ export class PokeEntity {
     // posição na tela (y-sort pelo pé)
     // no 2D a posição vai em pixel inteiro (arte nítida); no 3D não: um pixel do mundo vira vários na tela e o arredondamento
     // fazia o Pokémon andar aos saltos
-    if (this.g.v3d) { this.view.x = this.x; this.view.y = this.y; } else { this.view.x = Math.round(this.x); this.view.y = Math.round(this.y); }
+    if (this.g.v3d||this.g.visual2d?.emCombate) { this.view.x = this.x; this.view.y = this.y; } else { this.view.x = Math.round(this.x); this.view.y = Math.round(this.y); }
     let sx = 1, sy = 1, rot = 0, a = this.alpha;
     // respiração ao dormir
     if (this.ai.state === 'sleep' && !this.set.anims.Sleep) { sy = 1 - 0.05 * (0.5 + 0.5 * Math.sin(this.animT * 3)); sx = 2 - sy; }
