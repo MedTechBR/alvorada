@@ -1,0 +1,24 @@
+ABERTURA {"n":0} ["https://medtechbr.com.br/alvorada/src/story/enigmas.js","https://medtechbr.com.br/alvorada/src/story/especies.js","https://medtechbr.com.br/alvorada/src/story/itens.js","https://medtechbr.com.br/alvorada/src/story/jornada/00-alvorada.js","https://medtechbr.com.br/alvorada/src/story/jornada/01-campina.js","https://medtechbr.com.br/alvorada/src/story/jornada/02-sussurro.js","https://medtechbr.com.br/alvorada/src/story/jornada/03-espelho.js","https://medtechbr.com.br/alvorada/src/story/jornada/04-coral.js"]
+ABERTURA {"tipo":"HTMLDivElement","etapa":"Pokémon\nAlvorada\nCarregando o jogo…","n":119} ["https://medtechbr.com.br/alvorada/src/world/receitas.js","https://medtechbr.com.br/alvorada/src/world/rotas-compostas.js","https://medtechbr.com.br/alvorada/src/world/saidas.js","https://medtechbr.com.br/alvorada/src/world/tiles.js","https://medtechbr.com.br/alvorada/src/world/tocas.js","https://medtechbr.com.br/alvorada/src/world/vestir.js","https://medtechbr.com.br/alvorada/src/world/viagem.js","https://medtechbr.com.br/alvorada/src/world/vivo.js"]
+ABERTURA {"tipo":"HTMLDivElement","etapa":"Pokémon\nAlvorada\nCarregando o jogo…","n":238} ["https://medtechbr.com.br/alvorada/assets/tiles/tuxemon/core_outdoor_nature.png","https://medtechbr.com.br/alvorada/assets/tiles/tuxemon/core_outdoor_water.png","https://medtechbr.com.br/alvorada/assets/tiles/tuxemon/core_outdoor.png","https://medtechbr.com.br/alvorada/assets/icons/icon-192.png","https://medtechbr.com.br/alvorada/assets/icons/icon-192.png"]
+ABERTURA {"tipo":"HTMLDivElement","etapa":"Pokémon\nAlvorada\nDesenhando o mundo…","n":250} ["https://medtechbr.com.br/alvorada/assets/maps/vestir/nucleo.json","https://medtechbr.com.br/alvorada/assets/maps/vestir/geada.json","https://medtechbr.com.br/alvorada/assets/maps/vestir/sertao.json","https://medtechbr.com.br/alvorada/assets/maps/vestir/austral.json","https://medtechbr.com.br/alvorada/assets/maps/vestir/brasas.json"]
+ABERTURA {"tipo":"HTMLDivElement","etapa":"Pokémon\nAlvorada\nPreparando a aventura…","n":250} ["https://medtechbr.com.br/alvorada/src/data/habitats.js","https://medtechbr.com.br/alvorada/assets/pmd/0359/frames.json","https://medtechbr.com.br/alvorada/src/visual2d/firered/interface.css","https://medtechbr.com.br/alvorada/assets/firered/indice.json","https://medtechbr.com.br/alvorada/assets/firered/pessoas/aliases.json","https://medtechbr.com.br/alvorada/assets/hgss/personagens/indice.json"]
+[publicacao] ?ir= 1033,1181 → alvorada Object
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(arena.chaoNativo&&arena.semLegado&&arena.visualPreservado&&arena.adversarios===1&&arena.capturar&&arena.semBarraSelvagem&&arena.minimo>=44)
+
+    at file:///Users/matheusparente/Documents/Claude/pokemon-2d/tools/teste-3d/publicacao-firered.mjs:25:484 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v26.5.0

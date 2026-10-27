@@ -44,6 +44,6 @@ Os controles de movimento (esquiva, pulo e voo/mergulho) ficam na coluna da esqu
 
 15 testes Node passaram: dados, jornadas, progressão, alvos, guias, caminhadas, sólidos, saídas, falantes, obtenção, invisíveis, geografia, FireRed e revisão de combate. [Resultados](../tools/resultados/acompanhante-bolsa/node.json).
 
-O teste de regressão de captura confirmou lançamento pelo botão real, uma única captura por alvo e cancelamento ao fugir. Não houve alteração de dano, recarga, antecipação ou agressividade. A validação desta rodada é local, no Chrome; iPhone físico/Safari não foi testado.
+O teste de regressão de captura confirmou lançamento pelo botão real, uma única captura por alvo e cancelamento ao fugir. Não houve alteração de dano, recarga, antecipação ou agressividade. A validação local e a checagem do site publicado passaram no Chrome: acompanhante, entrada na arena, grupos de controles, bolsa junto ao canto, fuga, retorno e cache v6. A primeira tentativa pública falhou no conjunto de asserções da arena; a mesma rotina passou localmente e a repetição pública passou, sem mudança no código do jogo. A rotina registra os atributos da arena para diagnóstico. iPhone físico/Safari não foi testado. [Checagem pública](../tools/resultados/acompanhante-bolsa/publicacao/publicacao.json).
 
 [Imagens reais e acesso ao jogo](../tools/shots/acompanhante-bolsa/index.html).

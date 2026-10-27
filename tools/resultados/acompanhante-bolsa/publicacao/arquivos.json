@@ -1,0 +1,65 @@
+{
+  "revisao": "12470074351dcd5fe8fb9f0cb09cb12b7129150a",
+  "arquivos": [
+    {
+      "arquivo": "index.html",
+      "igual": true,
+      "sha256": "2f31876a487567b25cac9465821fc92b629dc373fdc9e38a3cefd8ed838ee148"
+    },
+    {
+      "arquivo": "sw.js",
+      "igual": true,
+      "sha256": "2e9e92be124329af22209639d419a7dda27a55483eb3a932b9736a76adaf2bd7"
+    },
+    {
+      "arquivo": "src/main.js",
+      "igual": true,
+      "sha256": "27de92d4e65116cf193826fdcef3fc6ce26f439bd26aa165aad91e9b417217bf"
+    },
+    {
+      "arquivo": "src/save.js",
+      "igual": true,
+      "sha256": "85da99be284daa59aa3c5ab6f8b15b8dc79d3337d5bc7ea2d577143ba0c9147e"
+    },
+    {
+      "arquivo": "src/world/acompanhante.js",
+      "igual": true,
+      "sha256": "eb2c8561f42af681fecc203849e7a81b3488d8cd498c223f4bf6ecc510f43ed8"
+    },
+    {
+      "arquivo": "src/world/viagem.js",
+      "igual": true,
+      "sha256": "0cd913e34c7e9d3d8f99955e91be895aa2278713102704536dccc41449a3a1f8"
+    },
+    {
+      "arquivo": "src/ui/menu.js",
+      "igual": true,
+      "sha256": "d68cf0b01540c4996557a248ae403bac703e376d83e64256ec713bd9398ddb0f"
+    },
+    {
+      "arquivo": "src/ui/ui.js",
+      "igual": true,
+      "sha256": "b51d033cba484a67fed8291132a62671ee0d169fdb01a09b04c2751318633f10"
+    },
+    {
+      "arquivo": "src/ui/toque.js",
+      "igual": true,
+      "sha256": "385cea0956ee8fb1a781aaaf0ccb811a77849cd96051fa5e2bbc926ae67f5b5e"
+    },
+    {
+      "arquivo": "src/ui/bolsa-combate.js",
+      "igual": true,
+      "sha256": "802e478538e9afd8406e477a5df19e66bfdc565966f33b86d6595fe11ab747d1"
+    },
+    {
+      "arquivo": "src/visual2d/firered/interface.css",
+      "igual": true,
+      "sha256": "397547556a7e942be16f501b631486ea33b1e4d859deb7ea79085a3460dae909"
+    },
+    {
+      "arquivo": "tools/shots/acompanhante-bolsa/index.html",
+      "igual": true,
+      "sha256": "aec220f052c50b491994e1b322dc8b5d151c652620537fdc728260e9b5794ffa"
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+ABERTURA {"n":0} ["https://medtechbr.com.br/alvorada/src/story/enigmas.js","https://medtechbr.com.br/alvorada/src/story/especies.js","https://medtechbr.com.br/alvorada/src/story/itens.js","https://medtechbr.com.br/alvorada/src/story/jornada/00-alvorada.js","https://medtechbr.com.br/alvorada/src/story/jornada/01-campina.js","https://medtechbr.com.br/alvorada/src/story/jornada/02-sussurro.js","https://medtechbr.com.br/alvorada/src/story/jornada/03-espelho.js","https://medtechbr.com.br/alvorada/src/story/jornada/04-coral.js"]
+ABERTURA {"tipo":"HTMLDivElement","etapa":"Pokémon\nAlvorada\nCarregando o jogo…","n":61} ["https://medtechbr.com.br/alvorada/src/world/receitas.js","https://medtechbr.com.br/alvorada/src/world/rotas-compostas.js","https://medtechbr.com.br/alvorada/src/world/saidas.js","https://medtechbr.com.br/alvorada/src/world/tiles.js","https://medtechbr.com.br/alvorada/src/world/tocas.js","https://medtechbr.com.br/alvorada/src/world/vestir.js","https://medtechbr.com.br/alvorada/src/world/viagem.js","https://medtechbr.com.br/alvorada/src/world/vivo.js"]
+ABERTURA {"tipo":"HTMLDivElement","etapa":"Pokémon\nAlvorada\nCarregando o jogo…","n":158} ["https://medtechbr.com.br/alvorada/src/world/paisagem.js","https://medtechbr.com.br/alvorada/src/world/people.js","https://medtechbr.com.br/alvorada/src/world/piloto-visual.js","https://medtechbr.com.br/alvorada/src/world/populacao.js","https://medtechbr.com.br/alvorada/src/world/receitas.js","https://medtechbr.com.br/alvorada/src/world/rotas-compostas.js","https://medtechbr.com.br/alvorada/src/world/saidas.js","https://medtechbr.com.br/alvorada/src/world/tocas.js"]
+ABERTURA {"tipo":"HTMLDivElement","etapa":"Pokémon\nAlvorada\nCarregando o jogo…","n":237} ["https://medtechbr.com.br/alvorada/assets/tiles/tuxemon/core_outdoor_nature.png","https://medtechbr.com.br/alvorada/assets/tiles/tuxemon/core_outdoor_water.png","https://medtechbr.com.br/alvorada/assets/tiles/tuxemon/core_outdoor.png","https://medtechbr.com.br/alvorada/assets/tiles/tuxemon/core_buildings.png","https://medtechbr.com.br/alvorada/assets/icons/icon-192.png","https://medtechbr.com.br/alvorada/assets/icons/icon-192.png"]
+ABERTURA {"tipo":"HTMLDivElement","etapa":"Pokémon\nAlvorada\nCarregando o jogo…","n":238} ["https://medtechbr.com.br/alvorada/assets/tiles/tuxemon/core_outdoor_nature.png","https://medtechbr.com.br/alvorada/assets/tiles/tuxemon/core_outdoor.png","https://medtechbr.com.br/alvorada/assets/tiles/tuxemon/core_buildings.png","https://medtechbr.com.br/alvorada/assets/icons/icon-192.png","https://medtechbr.com.br/alvorada/assets/icons/icon-192.png"]
+ABERTURA {"tipo":"HTMLDivElement","etapa":"Pokémon\nAlvorada\nCarregando o jogo…","n":241} ["https://medtechbr.com.br/alvorada/assets/tiles/tuxemon/core_outdoor_nature.png","https://medtechbr.com.br/alvorada/assets/tiles/tuxemon/core_outdoor.png"]
+ABERTURA {"tipo":"HTMLDivElement","etapa":"Pokémon\nAlvorada\nCarregando o jogo…","n":244} ["https://medtechbr.com.br/alvorada/assets/maps/alvorada.json"]
+ABERTURA {"tipo":"HTMLDivElement","etapa":"Pokémon\nAlvorada\nDesenhando o mundo…","n":250} ["https://medtechbr.com.br/alvorada/assets/maps/vestir/geada.json","https://medtechbr.com.br/alvorada/assets/maps/vestir/sertao.json","https://medtechbr.com.br/alvorada/assets/maps/vestir/jandaia.json","https://medtechbr.com.br/alvorada/assets/maps/vestir/austral.json","https://medtechbr.com.br/alvorada/assets/maps/vestir/brasas.json"]
+ABERTURA {"tipo":"HTMLDivElement","etapa":"Pokémon\nAlvorada\nDesenhando o mundo…","n":250} ["https://medtechbr.com.br/alvorada/assets/maps/vestir/sertao.json","https://medtechbr.com.br/alvorada/assets/maps/vestir/brasas.json"]
+ABERTURA {"tipo":"HTMLDivElement","etapa":"Pokémon\nAlvorada\nDesenhando o mundo…","n":250} ["https://medtechbr.com.br/alvorada/assets/maps/vestir/sertao.json","https://medtechbr.com.br/alvorada/assets/maps/vestir/brasas.json"]
+ABERTURA {"tipo":"HTMLDivElement","etapa":"Pokémon\nAlvorada\nPreparando a aventura…","n":250} ["https://medtechbr.com.br/alvorada/assets/firered/interior.png","https://medtechbr.com.br/alvorada/assets/firered/centro.png","blob:https://medtechbr.com.br/e62dde19-4b3a-4c97-957d-5ae6d1e97455","blob:https://medtechbr.com.br/e62dde19-4b3a-4c97-957d-5ae6d1e97455","blob:https://medtechbr.com.br/e62dde19-4b3a-4c97-957d-5ae6d1e97455","blob:https://medtechbr.com.br/e62dde19-4b3a-4c97-957d-5ae6d1e97455","blob:https://medtechbr.com.br/e62dde19-4b3a-4c97-957d-5ae6d1e97455","blob:https://medtechbr.com.br/e62dde19-4b3a-4c97-957d-5ae6d1e97455"]
+ABERTURA {"tipo":"HTMLDivElement","etapa":"Pokémon\nAlvorada\nPreparando a aventura…","n":250} ["blob:https://medtechbr.com.br/e62dde19-4b3a-4c97-957d-5ae6d1e97455","blob:https://medtechbr.com.br/e62dde19-4b3a-4c97-957d-5ae6d1e97455","blob:https://medtechbr.com.br/e62dde19-4b3a-4c97-957d-5ae6d1e97455","blob:https://medtechbr.com.br/e62dde19-4b3a-4c97-957d-5ae6d1e97455","blob:https://medtechbr.com.br/e62dde19-4b3a-4c97-957d-5ae6d1e97455","blob:https://medtechbr.com.br/e62dde19-4b3a-4c97-957d-5ae6d1e97455","blob:https://medtechbr.com.br/e62dde19-4b3a-4c97-957d-5ae6d1e97455","https://medtechbr.com.br/alvorada/assets/firered/objetos.png"]
+[publicacao] ?ir= 1033,1181 → alvorada Object
+ARENA {"chaoNativo":true,"semLegado":true,"visualPreservado":true,"nome":"Praia","adversarios":1,"capturar":true,"semBarraSelvagem":true,"minimo":44}
+{
+  "url": "https://medtechbr.com.br/alvorada/",
+  "interrupcoes": [],
+  "inicio": {
+    "x": 748,
+    "y": 351,
+    "acao": "Batalhar contra Krabby",
+    "semEnvio": true,
+    "montaria": true
+  },
+  "arena": {
+    "chaoNativo": true,
+    "semLegado": true,
+    "visualPreservado": true,
+    "nome": "Praia",
+    "adversarios": 1,
+    "capturar": true,
+    "semBarraSelvagem": true,
+    "minimo": 44
+  },
+  "controles": {
+    "dash": {
+      "x": 640,
+      "y": 346
+    },
+    "pulo": {
+      "x": 640,
+      "y": 284
+    },
+    "itens": {
+      "x": 806,
+      "y": 210
+    },
+    "bola": {
+      "x": 756,
+      "y": 210
+    },
+    "equipe": {
+      "x": 706,
+      "y": 210
+    },
+    "acompanhanteOculto": true
+  },
+  "painel": {
+    "x": 502,
+    "direita": 832,
+    "baixo": 378
+  },
+  "retorno": {
+    "classico": true,
+    "mapa": true,
+    "recolhido": true,
+    "dist": 0
+  },
+  "mapa": {
+    "aberto": true,
+    "largura": 1164
+  },
+  "menu": [
+    {
+      "texto": "▶Pokédex",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Pokémon",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Montarias",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Mochila",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Missões",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Mapa",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Voar",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Teste",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Online",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Opções",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Salvar",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    },
+    {
+      "texto": "▶Fechar",
+      "visivel": true,
+      "altura": 44,
+      "clicavel": true
+    }
+  ],
+  "offline": {
+    "registrado": true,
+    "ativo": true,
+    "controlado": true,
+    "bibliotecaLocal": true
+  },
+  "erros": []
+}
