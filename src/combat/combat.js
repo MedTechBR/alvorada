@@ -496,13 +496,17 @@ export class Combat {
       b.ang += clamp(angDiff(want, b.ang), -1.5 * dt, 1.5 * dt);
       b.t += dt;
     }
-    const ca = Math.cos(b.ang), sa = Math.sin(b.ang);
+    let ca = Math.cos(b.ang), sa = Math.sin(b.ang);
     u.face(ca, sa); u.lock = Math.max(u.lock, 0.08);
     if (u.side !== 'ally' || !this.fluido(u) || b.struggle) u.vx = u.vy = 0;
     if (u.anim !== 'Shoot' && u.set?.anims?.Shoot) u.play('Shoot');
     if (u.animT > 0.25) u.animT = 0.18; // segura a pose
     const m = this.mouth(u, ca, sa); b.ox = m.x; b.oy = m.y;
     const groundOff = u.y - m.y;
+    if(u.side==='ally'&&b.alvoVisual?.alive&&!b.struggle){
+      // Compensa o deslocamento lateral da boca sem retirar o limite de giro.
+      const t=b.alvoVisual,a0=Math.atan2(t.y-u.y,t.x-u.x),a1=Math.atan2(t.y-u.y,t.x-m.x),a=b.ang+angDiff(a1,a0);ca=Math.cos(a);sa=Math.sin(a);
+    }
     // comprimento: cresce até o alcance ou até bater em algo sólido
     let L = Math.min(b.maxLen, b.len + b.cfg.speed * dt); b.blocked = false;
     for (let s = 8; s < L; s += 6) { if (this.arena.solidAt(b.ox + ca * s, b.oy + sa * s + groundOff)) { L = s; b.blocked = true; break; } }
@@ -527,8 +531,8 @@ export class Combat {
         }
       }
       if (b.mv.type === 'fire') this.arena.burnLine(b.ox, b.oy + groundOff, b.hx, b.hy + groundOff);
-      if (b.blocked) this.arena.impact(b.hx, b.hy + groundOff, b.mv, 0.5, false, u);
-      if (b.mv.type === 'water') this.arena.soak(b.hx, b.hy + groundOff);
+      if (b.blocked) this.arena.impact(u.side==='ally'?b.gx:b.hx,u.side==='ally'?b.gy:b.hy+groundOff,b.mv,0.5,false,u);
+      if (b.mv.type === 'water') this.arena.soak(u.side==='ally'?b.gx:b.hx,u.side==='ally'?b.gy:b.hy+groundOff);
       g.fx.shake = Math.max(g.fx.shake, 0.06);
       this.ai.noise(b.hx, b.hy, 80, u);
     }
