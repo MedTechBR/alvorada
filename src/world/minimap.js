@@ -116,6 +116,7 @@ export class Minimap {
     ctx.translate(R, R); ctx.rotate(-a); ctx.scale(zoom, zoom); ctx.translate(-px, -py);
     const vr = S / zoom * 0.75; this.#base(ctx, px - vr, py - vr, px + vr, py + vr);
     g.coralPixel?.minimapa(ctx);g.visual2d?.minimapa(ctx);
+    const vista=g.visual2d?.vista;if(vista&&!g.visual2d.emCombate){ctx.strokeStyle='#f8ffffbf';ctx.lineWidth=1/zoom;ctx.strokeRect(vista.x0/T,vista.y0/T,(vista.x1-vista.x0)/T,(vista.y1-vista.y0)/T);}
     ctx.restore();
     // marcadores (sempre de pé)
     const toS = (wx, wy) => { const dx = (wx / T - px) * zoom, dy = (wy / T - py) * zoom; const c = Math.cos(-a), s = Math.sin(-a); return [R + dx * c - dy * s, R + dx * s + dy * c]; };
