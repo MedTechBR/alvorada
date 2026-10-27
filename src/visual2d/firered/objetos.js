@@ -9,7 +9,7 @@ export function tipoObjeto(o){
  if(/bench|sofa|varal|well|sundial|fountain|portico|stands|boat|jangada|barrel|crate|driftwood|log/i.test(k))return 'nativo';
  if(k!=='maquinaCura'&&/machine|maquinaCura/i.test(k)&&(K?.fw??1)<3)return 'nativo';
  if(/shelf|armario|estante|prateleira|mesa|table|desk|tv/i.test(k)&&(K?.fw??1)<2)return 'nativo';
- if(/geladeira|gondola|expositor|mail|radio|skull|ossada/i.test(k)||k==='cone')return 'nativo';
+ if(/geladeira|gondola|expositor|mail|radio|skull|ossada/i.test(k))return 'nativo';
  if(k==='maquinaCura')return 'maquina';
  if(K?.glow||/menhir|column|obelisk|torch|stump/i.test(k))return 'nativo';
  if(k==='escadaRolante')return 'escada';
