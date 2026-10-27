@@ -16,7 +16,7 @@ async function montar({id,look,correndo,jogador,montado=false,baseURL=BASE}){
  const d=ctx.getImageData(0,0,cv.width,cv.height).data;let topo=32,pe=0;
  for(let y=0;y<cv.height;y++)for(let x=0;x<cv.width;x++)if(d[(y*cv.width+x)*4+3]>40){topo=Math.min(topo,y%32);pe=Math.max(pe,y%32);}
  // Canvas RGBA evita enviar o bitmap WebP diretamente ao WebGL do Safari.
- 
+
  const base=PIXI.Texture.from(cv),source=base.source;source.scaleMode='nearest';
  const sets=Object.fromEntries(DIRS.map((dir,j)=>[dir,Array.from({length:3},(_,i)=>new PIXI.Texture({source,frame:new PIXI.Rectangle(i*32,j*32,32,32)}))]));
  return {base,source,sets,pe,altura:pe-topo+1,bytes:cv.width*cv.height*4,canvas:cv,pronto:true};

@@ -1,6 +1,8 @@
 import * as PIXI from 'pixi.js';
+import { HudBatalha } from '../../ui/hud-batalha.js';
 import { PessoasCoral } from '../coral-pessoas.js';
 import { idPessoaCoral } from '../../sprites/pessoas-coral.js';
+import { pisosUtilitarios } from './pisos.js';
 import { compositor, escolherBloco } from './terreno.js';
 import { montarObjeto, tipoObjeto } from './objetos.js';
 import { emCombate } from './estado.js';
@@ -13,7 +15,7 @@ async function imagem(nome){const r=await fetch(new URL(nome,BASE));if(!r.ok)thr
 // A câmera de luta enquadra os participantes; os golpes mantêm sprites PMD.
 export class VisualFireRed{
  constructor(g){
-  this.g=g;this.ativo=false;this.texturas=new Map();this.objetos=new Map();this.matos=new Map();this.nativos=new WeakSet();this.camadasOcultas=new Map();
+  this.g=g;this.hudBatalha=null;this.ativo=false;this.texturas=new Map();this.objetos=new Map();this.matos=new Map();this.nativos=new WeakSet();this.camadasOcultas=new Map();
   this.local=document.createElement('div');this.local.id='coral-local';document.body.appendChild(this.local);
   g.worldToScreen=(x,y,h=0)=>({x:g.world.x+x*g.world.scale.x,y:g.world.y+(y-h)*g.world.scale.y});
   g.screenToWorld=(x,y)=>({x:(x-g.world.x)/g.world.scale.x,y:(y-g.world.y)/g.world.scale.y});
@@ -26,6 +28,15 @@ export class VisualFireRed{
    const img=await imagem(n+'.png'),cv=document.createElement('canvas');cv.width=img.width;cv.height=img.height;const c=cv.getContext('2d',{willReadFrequently:true});c.drawImage(img,0,0);
    this.bancos[n]={w:cv.width,data:c.getImageData(0,0,cv.width,cv.height).data,canvas:cv};img.close();
   }));
+  // A areia do banco contém três pixels azuis por peça. Na área seca ficam na cor dos grãos;
+  // os recortes da margem e a água conservam a paleta original.
+  const exterior=this.bancos.exterior;
+  for(const id of [0x125,0x12d,0x12e])for(let y=0;y<16;y++)for(let x=0;x<16;x++){
+   const k=(((id>>4)*16+y)*exterior.w+(id%16)*16+x)*4;
+   if(exterior.data[k]===139&&exterior.data[k+1]===164&&exterior.data[k+2]===255)exterior.data.set([213,197,106],k);
+  }
+  exterior.canvas.getContext('2d').putImageData(new ImageData(exterior.data,exterior.w,exterior.canvas.height),0,0);
+  const piso=pisosUtilitarios();piso.canvas=document.createElement('canvas');piso.canvas.width=piso.w;piso.canvas.height=16;piso.canvas.getContext('2d').putImageData(new ImageData(piso.data,piso.w,16),0,0);this.bancos.pisos=piso;
   // Neve usa os mesmos pixels e uma paleta curta de gelo, sem textura pintada.
   const gelo={...this.bancos.exterior,data:new Uint8ClampedArray(this.bancos.exterior.data)};
   for(let i=0;i<gelo.data.length;i+=4){const k=(gelo.data[i]+gelo.data[i+1]+gelo.data[i+2])/3;gelo.data[i]=k<100?112:k<170?184:240;gelo.data[i+1]=k<100?152:k<170?208:248;gelo.data[i+2]=k<100?192:k<170?232:248;}
@@ -50,7 +61,8 @@ export class VisualFireRed{
    const p=g.map.blocoLivrePerto(g.player.x,g.player.y,(x,y)=>g.map.solidAt(x*16+8,y*16+8),64);
    if(p){g.grade.soltar(g.player);Object.assign(g.player,{x:p.x,y:p.y,vx:0,vy:0});g.cam.x=p.x;g.cam.y=p.y;}
   }}
-  const dt=Math.min(.05,g.app.ticker.deltaMS/1000||1/60);
+  const dt=Math.min(.05,g.app.ticker.deltaMS/1000||1/60);if(luta&&!this.hudBatalha)this.hudBatalha=new HudBatalha(g,{compacto:true});
+  this.hudBatalha?.update(dt);
   this.cameraLuta=luta?cameraBatalha(g,this.cameraLuta,dt):null;
   const z=this.cameraLuta?.z??Math.max(1,Math.round(g.zoom||2)),c=this.cameraLuta??g.cam;
   g.ui.hud.seta.scale.set(.65);
@@ -71,7 +83,7 @@ export class VisualFireRed{
     let entrada=this.objetos.get(o);
     if(!entrada){const nome=tipoObjeto(o);if(nome==='nativo'){this.nativos.add(o);continue;}const key=[nome,o.fw,o.fh,o.kind].join(':'),f=this.objeto(o),sp=new PIXI.Sprite(f.tex);sp.anchor.set(.5,1);g.ents.addChild(sp);entrada={f,sp,key,renderable:o.sprite.renderable};this.objetos.set(o,entrada);o.sprite.renderable=false;}
     vistos.add(entrada.key);objetosVistos.add(o);
-    const sp=entrada.sp;sp.position.set(o.sprite.x,o.sprite.y);sp.rotation=o.sprite.rotation;sp.zIndex=o.sprite.zIndex;sp.alpha=o.sprite.alpha;sp.tint=o.sprite.tint;sp.visible=o.sprite.visible;
+    const sp=entrada.sp;sp.position.set(o.sprite.x+(entrada.f.nome==='maquina'?Math.max(0,entrada.f.canvas.width-o.fw*16)/2:0),o.sprite.y);sp.rotation=o.sprite.rotation;sp.zIndex=o.sprite.zIndex;sp.alpha=o.sprite.alpha;sp.tint=o.sprite.tint;sp.visible=o.sprite.visible;
     entrada.f.visto=g.time;
    }
    for(const t of chunk.tall.values())if(!t.destroyed){
@@ -87,7 +99,10 @@ export class VisualFireRed{
  objeto(o){const nome=tipoObjeto(o);if(nome==='nativo')return{tex:o.sprite?.texture??this.g.tx[KINDS[o.kind]?.tex],nome};const key=[nome,o.fw,o.fh,o.kind].join(':');if(!this.texturas.has(key))this.texturas.set(key,montarObjeto(this.atlasObjetos,this.indice.objetos,o));const f=this.texturas.get(key);f.visto=this.g.time;return f;}
  bloco(ctx,t,x,y){const [b,id]=escolherBloco(this.g.map,t,x,y),f=this.bancos[b];ctx.drawImage(f.canvas,id%16*16,(id>>4)*16,16,16,x,y,1,1);}
  minimapaPronto(v){const m=this.g.map;if(!this.ativo||v.x0<0||v.y0<0||v.x1>m.w*16||v.y1>m.h*16)return false;for(let cy=Math.floor(v.y0/256);cy<=Math.floor(v.y1/256);cy++)for(let cx=Math.floor(v.x0/256);cx<=Math.floor(v.x1/256);cx++)if(!m.chunks[cx+cy*m.CW]?.built)return false;return true;}
- minimapa(ctx,v=this.vista){if(!this.ativo)return;const cabe=(x,y,w,h)=>!v||x<v.x1&&x+w>v.x0&&y<v.y1&&y+h>v.y0;const m=this.g.map;for(let cy=Math.max(0,Math.floor(v.y0/256));cy<=Math.min(m.CHh-1,Math.floor(v.y1/256));cy++)for(let cx=Math.max(0,Math.floor(v.x0/256));cx<=Math.min(m.CW-1,Math.floor(v.x1/256));cx++){const c=m.chunks[cx+cy*m.CW];if(c?.built&&c.canvas)ctx.drawImage(c.canvas,c.cx*16,c.cy*16,16,16);}for(const [o,{f}]of this.objetos){const x=o.x-f.canvas.width/2,y=o.y-f.canvas.height;if(cabe(x,y,f.canvas.width,f.canvas.height))ctx.drawImage(f.canvas,x/16,y/16,f.canvas.width/16,f.canvas.height/16);}}
+ minimapa(ctx,v=this.vista){if(!this.ativo)return;const cabe=(x,y,w,h)=>!v||x<v.x1&&x+w>v.x0&&y<v.y1&&y+h>v.y0;const m=this.g.map;for(let cy=Math.max(0,Math.floor(v.y0/256));cy<=Math.min(m.CHh-1,Math.floor(v.y1/256));cy++)for(let cx=Math.max(0,Math.floor(v.x0/256));cx<=Math.min(m.CW-1,Math.floor(v.x1/256));cx++){const c=m.chunks[cx+cy*m.CW];if(c?.built&&c.canvas)ctx.drawImage(c.canvas,c.cx*16,c.cy*16,16,16);}for(const [o,{f,sp}]of this.objetos){const x=sp.x-f.canvas.width/2,y=sp.y-f.canvas.height;if(cabe(x,y,f.canvas.width,f.canvas.height))ctx.drawImage(f.canvas,x/16,y/16,f.canvas.width/16,f.canvas.height/16);}
+  // Palmeiras, caixas e peças preservadas também entram no mapa, com o recorte real.
+  for(const c of m.visible)for(const o of c.objs){const s=o.sprite,t=s?.texture,f=t?.frame,img=t?.source?.resource;if(o.dead||this.objetos.has(o)||!s?.visible||!img||!f||!cabe(s.x-f.width/2,s.y-f.height,f.width,f.height))continue;if(!s.rotation){ctx.drawImage(img,f.x,f.y,f.width,f.height,(s.x-s.anchor.x*f.width*s.scale.x)/16,(s.y-s.anchor.y*f.height*s.scale.y)/16,f.width*s.scale.x/16,f.height*s.scale.y/16);continue;}ctx.save();ctx.translate(s.x/16,s.y/16);ctx.rotate(s.rotation);ctx.scale(s.scale.x/16,s.scale.y/16);ctx.drawImage(img,f.x,f.y,f.width,f.height,-s.anchor.x*f.width,-s.anchor.y*f.height,f.width,f.height);ctx.restore();}
+ }
  #limparObjetos(){for(const [o,e]of this.objetos){if(o.sprite&&!o.sprite.destroyed)o.sprite.renderable=e.renderable;e.sp.destroy();}this.objetos.clear();for(const [t,a]of this.matos)if(!t.destroyed){t.frames=a.frames;t.texture=a.texture;t.tint=a.tint;}this.matos.clear();}
  #camadas(on){
   const atuais=on?[this.g.map.decorLayer,this.g.mundo.lights]:[];

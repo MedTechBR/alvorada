@@ -80,7 +80,7 @@ export class Espetaculo {
   // selvagens, todos aparecem (a barra do topo é só para treinador, ginásio, lendário e reide: hud-batalha.js).
   #quemPlaca() {
     const g = this.g, out = (this.placasL ??= []); out.length = 0;
-    if (g.ui?.state !== 'play') return out;
+    if (g.ui?.state !== 'play'||g.hudBatalha?.v.on) return out;
     const f = g.lead?.alive ? g.lead : g.player; if (!f) return out;
     for (const e of g.entities ?? []) {
       if (!e.mon || e.side === 'ally' || e.side === 'peer' || !e.alive || e.dead || e.alt?.mode === 'dig' || e.alt?.mode === 'dive' || !e.set) continue;

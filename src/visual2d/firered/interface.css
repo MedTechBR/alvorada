@@ -92,3 +92,18 @@ body:not(.touch) #t-items { position:fixed;right:22px;top:142px;width:52px;heigh
 /* O nome fica sob o botão; não espreme o desenho do frasco. */
 body.firered #t-items .tq-contexto{position:absolute;left:50%;bottom:-10px;transform:translateX(-50%);padding:0 4px;border-radius:4px;background:#173e4b;color:#fff;font:650 9px/12px system-ui;pointer-events:none}
 body.firered #t-items>svg{flex-shrink:0}
+
+/* Duas vidas no topo em toda batalha; controles e terreno continuam livres. */
+body.firered #hb .topo{left:12px;right:66px;top:10px;min-height:54px;height:auto;padding:0;gap:16px;background:none;border:0;box-shadow:none}
+body.firered #hb .pn{padding:6px 8px;border:1px solid #ccdae2;border-radius:12px;background:#f8fbfdf5;color:#183445;gap:7px}
+body.firered #hb .rt{width:30px;height:30px;background:#edf4f5;border:0;box-shadow:none}
+body.firered #hb .nm{font:750 12px system-ui;color:#183445;text-transform:none;text-shadow:none;letter-spacing:0}
+body.firered #hb .lv{color:#56717a;text-shadow:none;font-size:10px}
+body.firered #hb .bar{height:12px;border:1px solid #b6cbd1;border-radius:5px;background:#d9e4e9}
+body.firered #hb .bar b{font:700 9px system-ui;-webkit-text-stroke:0;color:#173e4b;text-shadow:0 1px #ffffff88}
+body.firered #hb .losango,body.firered #hb .bt,body.firered #hb .intro,body.firered.hb-on #lead,body.firered.hb-on #foe{display:none!important}
+body.firered.hb-on #moves{display:flex;visibility:visible}
+body.firered.hb-on #menu-btn{visibility:visible}
+body.firered.hb-on #sair-encontro{top:74px;right:12px}
+@media(max-width:600px){body.firered #hb .topo{gap:6px;left:6px;right:56px}body.firered #hb .pn{padding:5px;gap:4px}body.firered #hb .rt{display:none}}
+body.firered #hb .tg,body.firered #hb .l3,body.firered #hb .xl,body.firered #hb .ps,body.firered #hb .meio{display:none!important}

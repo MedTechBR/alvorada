@@ -3,7 +3,8 @@ import { TYPE_PT, TYPE_COLOR } from '../data/types.js';
 import { IS_TOUCH } from '../engine/input.js';
 import { portraitURL } from './portrait.js';
 
-// HUD de batalha no estilo do demo (só no visual 3D): painéis escuros no topo com retrato, nome, nível, tipos,
+// HUD compartilhado de batalha: o 3D usa painéis escuros e o FireRed aplica seus painéis claros no topo.
+// Retrato, nome, nível, tipos,
 // estado e PS do seu Pokémon e do adversário, "VS" no meio; golpes em losango (1 em cima, 2 à esquerda,
 // 3 à direita, 4 embaixo) com a recarga em segundos, e os botões Pular (X), Itens (B) e Trocar (Tab).
 // Aparece quando há luta (o mesmo critério da câmera de batalha); fora dela fica o HUD de sempre.
@@ -133,13 +134,13 @@ body.touch #hb .intro { top: calc(42px + var(--st, 0px)); height: 34px; } body.t
 `;
 
 export class HudBatalha {
-  constructor(g) {
-    this.g = g; this.v = {}; this.t = 0;
-    const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
+  constructor(g, { compacto = false } = {}) {
+    this.compacto=compacto;this.g = g; g.hudBatalha=this;this.v = {}; this.t = 0;
+    const st = document.createElement('style'); st.textContent = compacto?CSS.slice(0,CSS.indexOf('#hb .losango')):CSS; document.head.appendChild(st);
     const el = this.el = document.createElement('div'); el.id = 'hb'; el.hidden = true;
     const hp = '<div class="hpl"><div class="bar hp"><span class="gh"></span><i></i><b></b></div></div>';
     const lado = (k, xp) => `<div class="pn ${k}"><div class="rt"></div><div class="cx"><div class="l1"><span class="nm"></span><span class="lv"></span></div><div class="tg"></div>${hp}${xp ? '<div class="hpl xl"><div class="bar xp"><i></i></div></div>' : ''}<div class="l3"><span class="bolas"></span><span class="tr"></span></div><div class="ps"></div></div></div>`;
-    el.innerHTML = `<div class="flash"></div><div class="wipe"><i></i><i></i></div>
+    el.innerHTML = compacto ? `<div class="topo">${lado('eu', true)}<div class="meio"><span class="tempo"></span></div>${lado('ele', false)}</div>` : `<div class="flash"></div><div class="wipe"><i></i><i></i></div>
       <div class="topo">${lado('eu', true)}<div class="meio"><span class="vs">VS</span><span class="tempo">0:00</span></div>${lado('ele', false)}</div>
       <div class="intro"><div class="a"><small></small><strong></strong></div><div class="v">VS</div><div class="b"><small></small><strong></strong></div></div>
       <div class="losango">${[0, 1, 2, 3].map((i) => `<div class="gp g${i}"><kbd>${i + 1}</kbd><span><b></b><em></em><small></small></span></div>`).join('')}</div>
@@ -151,12 +152,11 @@ export class HudBatalha {
   }
   #painel(sel) { const p = this.q(sel); return { p, rt: p.querySelector('.rt'), nm: p.querySelector('.nm'), lv: p.querySelector('.lv'), tg: p.querySelector('.tg'), hp: p.querySelector('.hp i'), gh: p.querySelector('.hp .gh'), num: p.querySelector('.hp b'), xp: p.querySelector('.xp i'), ps: p.querySelector('.ps'), bolas: p.querySelector('.bolas'), tr: p.querySelector('.tr') }; }
   #set(k, val, f) { if (this.v[k] !== val) { this.v[k] = val; f(val); } }
-  // o adversário da barra do topo: só quando há UM adversário claro com equipe (pedido do dono): Pokémon de treinador,
-  // líder, Elite e Campeã (lado 'foe'), duelo online ('rival'), lendário e chefe de reide. Selvagens comuns (muitas vezes
-  // vários de uma vez) não usam a barra: cada um tem a sua plaquinha de PS em cima (src/ui/espetaculo.js).
-  #chefe(e) { const r = this.g.tocas?.reide; return e.side === 'foe' || e.side === 'rival' || !!e.lendario || (r && !r.done && r.boss === e); }
+  // Na arena selvagem o alvo é único; nos duelos a equipe ativa define o adversário do topo.
+  // Fora dessas lutas não aparece painel de batalha durante a exploração.
+  #chefe(e) { const r = this.g.tocas?.reide; return (this.g.encontro?.ativo&&this.g.encontro.selvagem===e)||e.side === 'foe' || e.side === 'rival' || !!e.lendario || (r && !r.done && r.boss === e); }
   #alvo(l) {
-    const g = this.g; let best = null, bd = 15 * 16;
+    const g = this.g,fixo=g.encontro?.selvagem??g.story?.battle?.active?.find(e=>e.alive)??g.tocas?.reide?.boss;if(fixo?.alive&&fixo.mon)return fixo;let best = null, bd = 15 * 16;
     for (const e of g.entities ?? []) {
       if (!e.alive || e === l || e.side === 'ally' || !this.#chefe(e)) continue;
       const d = Math.hypot(e.x - l.x, e.y - l.y) * (e.side === 'foe' ? 0.5 : 1); if (d < bd) { bd = d; best = e; }
@@ -173,13 +173,13 @@ export class HudBatalha {
     void est; // barra fina: só o estado alterado (PAR, ENV...) numa pílula mínima; tipos e estágios saíram
     const tags = m.status && STATUS[m.status] ? `<i style="--c:${STATUS[m.status][1]}">${STATUS[m.status][0]}</i>` : '';
     this.#set(key + 'tg', tags, (t) => { P.tg.innerHTML = t; });
-    this.#set(key + 'hp', Math.round(k * 200), () => {
+    this.#set(key + 'hp', m.hp+'|'+m.stats.hp, () => {
       const antes = P.k ?? k; P.k = k;
       P.hp.style.width = (k * 100).toFixed(1) + '%'; P.hp.className = k < 0.2 ? 'low' : k < 0.5 ? 'mid' : '';
       if (k < antes) { P.p.classList.remove('hit'); void P.p.offsetWidth; P.p.classList.add('hit'); } // perdeu PS: o painel treme, a sombra clara escoa depois
       else P.gh.style.transition = 'none';
       P.gh.style.width = (k * 100).toFixed(1) + '%';
-      P.num.textContent = Math.ceil(m.hp);
+      P.num.textContent = Math.ceil(m.hp)+' / '+m.stats.hp;
       if (k >= antes) requestAnimationFrame(() => { P.gh.style.transition = ''; });
     });
     if (eu) {
@@ -202,6 +202,7 @@ export class HudBatalha {
   // Só UMA vez, no começo de uma luta de treinador/líder/Elite (story.battle); nunca numa troca ou no próximo Pokémon,
   // nem para selvagem, Alfa ou chefe selvagem (pedido do dono: a faixa "TREINADOR VS DESAFIANTE" no meio da luta)
   #intro(l, alvo) {
+    if(this.compacto)return;
     const g = this.g, b = g.story?.battle;
     if (!b || b.done || b.opts?.semBola || b.opts?.alfa || b.arena || this.introDe === b) return; // ginásio: a arena já tem o VS dela, na abertura
     this.introDe = b;
@@ -221,8 +222,8 @@ export class HudBatalha {
     const g = this.g, l = g.mode === 'pokemon' && g.lead?.alive ? g.lead : null;
     const alvo = l ? this.#alvo(l) : null;
     // troca (o seu desmaiou e o próximo vem, ou entre um Pokémon do líder e o próximo): a barra fica, sem sumir e voltar
-    const luta = (g.story?.battle && !g.story.battle.done) || (g.tocas?.reide && !g.tocas.reide.done);
-    if (this.v.on && (!l || !alvo) && g.ui?.state === 'play' && (luta || g.time - (this.ultOn ?? 0) < 1.5)) return;
+    const luta = g.encontro?.ativo || (g.story?.battle && !g.story.battle.done) || (g.tocas?.reide && !g.tocas.reide.done);
+    if (this.v.on && (!l || !alvo) && g.ui?.state === 'play' && luta) {if(this.ultimoLead)this.#encher(this.eu,this.ultimoLead,'a',true);if(this.ultimoAlvo)this.#encher(this.ele,this.ultimoAlvo,'b',false);return;}
     const on = !!(l && alvo && g.ui?.state === 'play');
     if (on) this.ultOn = g.time;
     this.#set('on', on, (v) => {
@@ -235,6 +236,7 @@ export class HudBatalha {
         this.tOff = setTimeout(() => { if (!this.v.on) this.el.hidden = true; }, 480);
       }
     });
+    if(l)this.ultimoLead=l;
     if (alvo) this.ultimoAlvo = alvo;
     if (!on) return;
     // tempo da luta (relógio do jogo: para no menu e na pausa)
@@ -242,6 +244,7 @@ export class HudBatalha {
     this.#set('tempo', seg, (n) => { this.q('.tempo').textContent = `${Math.floor(n / 60)}:${String(n % 60).padStart(2, '0')}`; });
     this.#encher(this.eu, l, 'a', true);
     this.#encher(this.ele, alvo, 'b', false);
+    if(this.compacto)return; // no FireRed os controles existentes já mostram os golpes
     // golpes: recarga em segundos (pronto = "OK")
     const lead = g.lead, dmax = !!lead.maxMoves;
     this.q('.losango').hidden = IS_TOUCH;

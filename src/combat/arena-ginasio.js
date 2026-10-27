@@ -582,10 +582,19 @@ export class ArenaGinasio {
   }
   // Linhas claras e poucas cores; a cor do ginásio fica apenas na faixa externa.
   #quadra(G) {
+    // O piso é estático: geometria criada uma vez e liberada junto das peças da arena.
+    // As cores identificam o ginásio sem mudar terreno, perigos ou colisões.
+    if(this.quadraArte&&!this.quadraArte.destroyed)return;
+    G=this.quadraArte=new PIXI.Graphics();this.g.fx.ground.addChildAt(G,0);this.gfxs.push(G);
+    const temas={electric:[0x34495c,0x3c566a],water:[0x426d80,0x4b788a],grass:[0x4c7158,0x557c61],fire:[0x795d4b,0x846552],rock:[0x777267,0x827c70],psychic:[0x635c77,0x6d6582],ghost:[0x4b5366,0x555e72]};
+    const [base,faixa]=temas[this.cfg.tipo]??[0x4f6d60,0x587668];
     const R = this.R, w = R.x1 - R.x0, h = R.y1 - R.y0;
     const cor = parseInt(this.cfg.cor.replace('#', ''), 16), linha = 0xe4eddb;
-    G.rect(R.x0, R.y0, w, h).fill(0x355b50);
-    for (let i = 0; i < 8; i += 2) G.rect(R.x0, R.y0 + h * i / 8, w, h / 8).fill({ color: 0x527666, alpha: 0.23 });
+    G.rect(R.x0, R.y0, w, h).fill(base);
+    for (let i = 0; i < 8; i += 2) G.rect(R.x0, R.y0 + h * i / 8, w, h / 8).fill({ color: faixa, alpha: 0.5 });
+    for(let x=R.x0+16;x<R.x1;x+=16)G.moveTo(x,R.y0+12).lineTo(x,R.y1-12);
+    for(let y=R.y0+16;y<R.y1;y+=16)G.moveTo(R.x0+12,y).lineTo(R.x1-12,y);
+    G.stroke({color:0xffffff,width:1,alpha:.035});
     G.rect(R.x0 + 4, R.y0 + 4, w - 8, h - 8).stroke({ color: cor, width: 5, alpha: 0.8 });
     G.rect(R.x0 + 18, R.y0 + 18, w - 36, h - 36).stroke({ color: linha, width: 2, alpha: 0.7 });
     G.moveTo(R.cx, R.y0 + 18).lineTo(R.cx, R.cy - 48).moveTo(R.cx, R.cy + 48).lineTo(R.cx, R.y1 - 18).stroke({ color: linha, width: 2, alpha: 0.6 });
