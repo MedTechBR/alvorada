@@ -52,17 +52,18 @@ export function escolherBloco(map,t,x,y){
  return ['exterior',[0x001,0x008,0x009,0x010,0x011][ix(x,y)%5]];
 }
 export function compositor(bancos){
+ const pixels=Object.fromEntries(Object.entries(bancos).map(([k,b])=>[k,new Uint32Array(b.data.buffer,b.data.byteOffset,b.data.byteLength/4)]));
  return (map,img,ox,oy,tx0,ty0,tw,th)=>{
-  const out=img.data,W=img.width;
+  const out=img.data,W=img.width,out32=new Uint32Array(out.buffer,out.byteOffset,out.byteLength/4);
   for(let ty=ty0;ty<ty0+th;ty++)for(let tx=tx0;tx<tx0+tw;tx++){
    const tipo=map.at(tx,ty),[b,id]=escolherBloco(map,tipo,tx,ty),fonte=bancos[b]??bancos.exterior,sx=(id%16)*16,sy=(id>>4)*16;
    if(AGUA.has(tipo)&&ty<(map.outdoorH??map.h)){
     const cima=!AGUA.has(map.at(tx,ty-1)),baixo=!AGUA.has(map.at(tx,ty+1)),esq=!AGUA.has(map.at(tx-1,ty)),dir=!AGUA.has(map.at(tx+1,ty));
     const f=bancos.exterior;
     for(let y=0;y<16;y++)for(let x=0;x<16;x++){
-     const k=((ty*16-oy*16+y)*W+tx*16-ox*16+x)*4;out.fill(0,k,k+4);
+     const k=(ty*16-oy*16+y)*W+tx*16-ox*16+x;out32[k]=0;
      const n=cima&&y<4?y:baixo&&y>11?15-y:esq&&x<4?x:dir&&x>11?15-x:-1;
-     if(n<0)continue;const a=(((0x1f9>>4)*16+n)*f.w+(0x1f9%16)*16+x)*4;out.set(f.data.subarray(a,a+4),k);
+     if(n<0)continue;const a=((0x1f9>>4)*16+n)*f.w+(0x1f9%16)*16+x;out32[k]=pixels.exterior[a];
     }
     continue;
    }

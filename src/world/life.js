@@ -182,7 +182,7 @@ export class WorldLife {
   // ---------- itens no chão ----------
   #itemsInit() {
     for (const s of this.itemSprites ?? []) { s.parent?.removeChild(s); s.sparkle.parent?.removeChild(s.sparkle); s.sparkle.destroy(); s.destroy(); }
-    this.itemSprites = [];
+    this.itemSprites = []; this.itemSetores = new Map(); this.itensAtivos = new Set();
     // chave do item pego: "x,y" em Alvorada (como sempre foi) e "mundo:x,y" nos outros mundos
     const pre = this.map.id && this.map.id !== 'alvorada' ? this.map.id + ':' : '';
     for (const it of this.map.items) {
@@ -190,11 +190,25 @@ export class WorldLife {
       if (it.hidden) s.alpha = 0; // item escondido: só um brilho de vez em quando, bem de perto
       const sp = new PIXI.Sprite(SPR.sparkle); sp.anchor.set(0.5); sp.blendMode = 'add'; s.sparkle = sp; sp.x = s.x + 3; sp.y = s.y - 9;
       this.itemSprites.push(s);
+      const k = Math.floor(s.x / (16 * T)) + Math.floor(s.y / (16 * T)) * this.map.CW;
+      if (!this.itemSetores.has(k)) this.itemSetores.set(k, []);
+      this.itemSetores.get(k).push(s);
     }
   }
   #items(dt) {
     const g = this.g, p = g.player, t = this.map.time;
-    for (const s of this.itemSprites) {
+    let itens = this.itemSprites;
+    if (this.map.classico) {
+      // A coleta usa a mesma distância e as mesmas chaves do save. Só a busca
+      // passa pelos setores próximos, sem reler os itens do continente todo.
+      itens = [];
+      const lado = 16 * T;
+      for (let y = Math.floor((p.y - 200) / lado); y <= Math.floor((p.y + 200) / lado); y++) for (let x = Math.floor((p.x - 260) / lado); x <= Math.floor((p.x + 260) / lado); x++) itens.push(...(this.itemSetores.get(x + y * this.map.CW) ?? []));
+      const ativos = new Set(itens);
+      for (const s of this.itensAtivos) if (!ativos.has(s)) { s.parent?.removeChild(s); s.sparkle.parent?.removeChild(s.sparkle); }
+      this.itensAtivos = ativos;
+    }
+    for (const s of itens) {
       if (this.taken.has(s.key) || (s.it.chaveAnterior && this.taken.has('legado:'+s.it.chaveAnterior)) || (s.it.chaveLayout3 && this.taken.has('layout3:'+s.it.chaveLayout3)) || (s.it.chaveLayout4 && this.taken.has('layout4:'+s.it.chaveLayout4)) || (s.it.chaveLayout5 && this.taken.has('layout5:'+s.it.chaveLayout5))) { if (s.parent) { s.parent.removeChild(s); s.sparkle.parent?.removeChild(s.sparkle); } continue; }
       const near = Math.abs(s.x - p.x) < 260 && Math.abs(s.y - p.y) < 200;
       if (near && !s.parent) { g.ents.addChild(s); this.air.addChild(s.sparkle); }

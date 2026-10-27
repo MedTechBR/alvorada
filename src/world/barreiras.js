@@ -67,7 +67,20 @@ export class Barreiras {
         const s = S.mapa.get(k);
         if (s && s.grupo && (antes.get(k)?.length ?? 0) + (this.porSetor.get(k)?.length ?? 0)) try { S.modelos.setor(s); } catch (e) { console.warn('barreiras 3D', e); }
       }
-    } else if (!v) this.#desenhar2D(props);
+    } else if (!v) this.cull(this.vista2D);
+  }
+
+  // A colisão continua no continente inteiro. Só o desenho acompanha a câmera:
+  // montar todas as cercas de uma vez guardava milhares de polígonos invisíveis.
+  cull(view) {
+    this.vista2D = view;
+    if (!view || this.g.v3d) { this.#limpar(); this.chaveVista = ''; return; }
+    const lado = CH * T, x0 = Math.floor(view.x0 / lado), x1 = Math.floor(view.x1 / lado), y0 = Math.floor(view.y0 / lado), y1 = Math.floor(view.y1 / lado);
+    const chave = [this.chaveProps, x0, x1, y0, y1].join('|');
+    if (chave === this.chaveVista) return;
+    const props = [];
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) props.push(...(this.porSetor.get(x + y * 4096) ?? []));
+    this.#desenhar2D(props); this.chaveVista = chave;
   }
 
   // guardas no caminho: moradores do mapa (falam com o botão A, aparecem no 3D como os outros)
@@ -100,7 +113,7 @@ export class Barreiras {
   // 2D: cada peça como um bloquinho em pé (sombra, corpo e contorno), sem linha no chão
   #desenhar2D(props) {
     this.#limpar();
-    const g = this.g; if (!g.world) return;
+    const g = this.g; if (!g.world || !props.length) return;
     const gfx = new PIXI.Graphics();
     for (const p of props) {
       const [cor, h] = CORES_2D[p.kind] ?? [0x888888, 8], cx = p.x, by = p.y - 3, w = p.kind === 'barCorda' || p.kind === 'barEspuma' ? 14 : p.kind === 'barCone' || p.kind === 'boia' ? 7 : 13;

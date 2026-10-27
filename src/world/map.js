@@ -411,7 +411,7 @@ export class GameMap {
     this.groundLayer.addChild(c.sprite);
     // decoração plana: flores animadas, vitórias-régias, seixos, tapetes...
     c.deco = new PIXI.Container(); c.deco.visible = false; c.flowers = []; c.waves = []; c.anims = [];
-    for (let ty = oy; ty < Math.min(oy + CH, this.h); ty++) for (let tx = ox; tx < Math.min(ox + CH, this.w); tx++) {
+    if (!this.classico) for (let ty = oy; ty < Math.min(oy + CH, this.h); ty++) for (let tx = ox; tx < Math.min(ox + CH, this.w); tx++) {
       const t = this.at(tx, ty), h = hash(tx, ty, 31);
       if (t === TILE.FLOWERS) {
         const kind = this.R.flowerRows ? this.R.flowerRows[Math.floor(h * this.R.flowerRows.length)] : Math.floor(h * FLOWERS.length);
@@ -435,7 +435,7 @@ export class GameMap {
         const s = new PIXI.Sprite(SPR[h < 0.015 ? 'mush' : 'mush2']); s.x = tx * T; s.y = ty * T; c.deco.addChild(s);
       }
     }
-    for (const d of c.decor) { const s = new PIXI.Sprite(SPR[DECOR[d.kind] ?? d.kind]); s.x = d.x * T + (d.ox ?? 0); s.y = d.y * T + (d.oy ?? 0); c.deco.addChild(s); }
+    if (!this.classico) for (const d of c.decor) { const s = new PIXI.Sprite(SPR[DECOR[d.kind] ?? d.kind]); s.x = d.x * T + (d.ox ?? 0); s.y = d.y * T + (d.oy ?? 0); c.deco.addChild(s); }
     this.decorLayer.addChild(c.deco);
     // mato alto (y-sort): esconde a parte de baixo de quem está dentro
     c.tall = new Map();
@@ -502,6 +502,17 @@ export class GameMap {
     const mx = (view.x0 + view.x1) / 2, my = (view.y0 + view.y1) / 2, vx = mx - (this.lastMx ?? mx), vy = my - (this.lastMy ?? my);
     this.lastMx = mx; this.lastMy = my;
     const ax = mx + vx * 40, ay = my + vy * 40; // para onde a câmera vai em ~40 quadros
+    // Quatro setores adiantados bastam para o chão clássico. Montar o anel
+    // inteiro e descartá-lo logo depois repetia trabalho e alocações sem uso.
+    let adiantar = null;
+    if (this.classico) {
+      const perto = [];
+      for (let cy = cy0 - 1; cy <= cy1 + 1; cy++) for (let cx = cx0 - 1; cx <= cx1 + 1; cx++) {
+        if (cx < 0 || cy < 0 || cx >= this.CW || cy >= this.CHh || cx >= cx0 && cx <= cx1 && cy >= cy0 && cy <= cy1) continue;
+        perto.push({ k: cx + cy * this.CW, d: Math.hypot(cx * CPX + CPX / 2 - ax, cy * CPX + CPX / 2 - ay) });
+      }
+      adiantar = new Set(perto.sort((a, b) => a.d - b.d).slice(0, 4).map(p => p.k));
+    }
     const t0 = agora();
     for (let guard = 0; guard < 64 && agora() - t0 < 2.5; guard++) {
       if (this.pending && (this.pending.built || !this.pending.img)) this.pending = null;
@@ -509,7 +520,8 @@ export class GameMap {
         let best = null, bd = Infinity;
         for (let cy = cy0 - 1; cy <= cy1 + 1; cy++) for (let cx = cx0 - 1; cx <= cx1 + 1; cx++) {
           if (cx < 0 || cy < 0 || cx >= this.CW || cy >= this.CHh) continue;
-          const c = this.#chunkAt(cx * CH, cy * CH); if (c.built) continue;
+          if (adiantar && !adiantar.has(cx + cy * this.CW)) continue;
+          const c = this.#chunkAt(cx * CH, cy * CH); if (c.built) { if (adiantar) c.seen = this.frameK; continue; }
           const d = Math.hypot(c.x + CPX / 2 - ax, c.y + CPX / 2 - ay); if (d < bd) { bd = d; best = c; }
         }
         if (!best) break;
@@ -522,7 +534,8 @@ export class GameMap {
     if (this.frameK % 60 === 0) {
       const built = this.chunks.filter((c) => c.built && !c.shown);
       const limite = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches ? 16 : 48;
-      if (built.length > limite) built.sort((a, b) => a.seen - b.seen).slice(0, built.length - limite).forEach((c) => this.#freeChunk(c));
+      if (adiantar) { for (const c of built) if (!adiantar.has(c.cx + c.cy * this.CW)) this.#freeChunk(c); }
+      else if (built.length > limite) built.sort((a, b) => a.seen - b.seen).slice(0, built.length - limite).forEach((c) => this.#freeChunk(c));
     }
     // água animada só cobre a tela
     // (presa aos limites da parte externa do mapa: fora dele e nos interiores não há água)

@@ -12,7 +12,7 @@ async function imagem(nome){const r=await fetch(new URL(nome,BASE));if(!r.ok)thr
 // compositor de combate, com a mesma câmera, sprites PMD e efeitos de impacto.
 export class VisualFireRed{
  constructor(g){
-  this.g=g;this.ativo=false;this.texturas=new Map();this.objetos=new Map();this.volta=[];
+  this.g=g;this.ativo=false;this.texturas=new Map();this.objetos=new Map();this.matos=new Map();this.camadasOcultas=new Map();
   this.combate=new CoralPixel({g});this.combate.ligado=false;this.combate.manterPronto=true;
   g.worldToScreen=(x,y,h=0)=>({x:g.world.x+x*g.world.scale.x,y:g.world.y+(y-h)*g.world.scale.y});
   g.screenToWorld=(x,y)=>({x:(x-g.world.x)/g.world.scale.x,y:(y-g.world.y)/g.world.scale.y});
@@ -43,38 +43,58 @@ export class VisualFireRed{
  #bloco(id){const b=this.bancos.exterior,out=new Uint8ClampedArray(16*16*4);for(let y=0;y<16;y++)out.set(b.data.subarray((((id>>4)*16+y)*b.w+(id%16)*16)*4,(((id>>4)*16+y)*b.w+(id%16)*16)*4+64),y*64);return out;}
  cull(){
   const g=this.g,luta=!!(g.encontro?.ativo||g.story?.battle&&!g.story.battle.done||g.arenaGinasio?.contem&&!g.arenaGinasio.done);
+  this.#camadas(!luta&&this.pronto);
   const anterior=this.emCombate;this.emCombate=luta;this.combate.ligado=luta;const combate=this.combate.cull();
   if(anterior&&!luta)this.combate.limparCena();
   this.ativo=!luta&&this.pronto;document.body.classList.toggle('firered',this.ativo);
-  if(luta){this.pessoas.ocultar();return combate;}
+  if(luta){g.barreiras?.cull(null);this.#limparObjetos();this.pessoas.ocultar();return combate;}
   if(!this.ativo)return false;
   const z=Math.max(1,Math.round(g.zoom||2)),c=g.cam;
   g.ui.hud.seta.scale.set(.65);
-  g.world.scale.set(z);g.world.position.set(Math.round(innerWidth/2-(c.x+(c.sx??0))*z),Math.round(innerHeight/2-(c.y+(c.sy??0))*z));
-  const view={x0:c.x-innerWidth/2/z-64,x1:c.x+innerWidth/2/z+64,y0:c.y-innerHeight/2/z-112,y1:c.y+innerHeight/2/z+64};
-  g.map.cullChunks(view);this.pessoas.atualizar(view);
+  const sala=g.map.interiorAt(g.player.x,g.player.y),hw=innerWidth/2/z,hh=innerHeight/2/z;
+  const limitar=(v,a,n,h)=>n*16<=h*2?(a+n/2)*16:Math.max(a*16+h,Math.min((a+n)*16-h,v));
+  // Como no GBA: uma sala pequena cabe inteira e fica parada; numa sala maior
+  // a câmera acompanha até a borda. Não mostra vazio no lugar dos móveis.
+  const cx=sala?limitar(c.x,sala.x,sala.w,hw):c.x,cy=sala?limitar(c.y,sala.y,sala.h,hh):c.y;
+  g.world.scale.set(z);g.world.position.set(Math.round(innerWidth/2-(cx+(c.sx??0))*z),Math.round(innerHeight/2-(cy+(c.sy??0))*z));
+  const view={x0:cx-hw-64,x1:cx+hw+64,y0:cy-hh-112,y1:cy+hh+64};
+  g.map.cullChunks(view);g.barreiras?.cull(view);this.pessoas.atualizar(view);
   const nome=g.map.areaName(g.player.x,g.player.y);if(this.combate.local.textContent!==nome)this.combate.local.textContent=nome;
-  const vistos=new Set();this.objetos.clear();
-  for(const chunk of g.map.visible)for(const o of chunk.objs){
-   if(!o.sprite?.parent||o.dead)continue;
-   const nome=tipoObjeto(o);if(nome==='nativo')continue;const key=[nome,o.fw,o.fh,o.kind].join(':');vistos.add(key);
-   const f=this.objeto(o);this.objetos.set(o,f);
+  const vistos=new Set(),objetosVistos=new Set(),matosVistos=new Set();
+  for(const chunk of g.map.visible){
+   for(const o of chunk.objs){
+    if(!o.sprite?.parent||o.dead)continue;
+    const nome=tipoObjeto(o);if(nome==='nativo')continue;const key=[nome,o.fw,o.fh,o.kind].join(':');vistos.add(key);objetosVistos.add(o);
+    let entrada=this.objetos.get(o);
+    if(!entrada){const f=this.objeto(o),sp=new PIXI.Sprite(f.tex);sp.anchor.set(.5,1);g.ents.addChild(sp);entrada={f,sp,renderable:o.sprite.renderable};this.objetos.set(o,entrada);o.sprite.renderable=false;}
+    const sp=entrada.sp;sp.position.set(o.x,o.y);sp.zIndex=o.sprite.zIndex;sp.alpha=o.sprite.alpha;sp.tint=o.sprite.tint;sp.visible=o.sprite.visible;
+    entrada.f.visto=g.time;
+   }
+   for(const t of chunk.tall.values())if(!t.destroyed){
+    matosVistos.add(t);if(!this.matos.has(t)){this.matos.set(t,{frames:t.frames,texture:t.texture,tint:t.tint});t.frames=t.frames.map(()=>this.mato);t.texture=this.mato;t.tint=0xffffff;}
+   }
   }
+  for(const [o,e]of this.objetos)if(!objetosVistos.has(o)){if(o.sprite&&!o.sprite.destroyed)o.sprite.renderable=e.renderable;e.sp.destroy();this.objetos.delete(o);}
+  for(const [t,a]of this.matos)if(!matosVistos.has(t)){if(!t.destroyed){t.frames=a.frames;t.texture=a.texture;t.tint=a.tint;}this.matos.delete(t);}
   // Peças de salas/regiões antigas saem do cache; os atlas compartilhados ficam.
   if(g.time>(this.proximaLimpeza??0)){this.proximaLimpeza=g.time+1;for(const [k,f]of this.texturas)if(!vistos.has(k)&&g.time-f.visto>2){f.tex.destroy(true);f.canvas.width=f.canvas.height=0;this.texturas.delete(k);}}
   return true;
  }
  objeto(o){const nome=tipoObjeto(o);if(nome==='nativo')return{tex:o.sprite?.texture??this.g.tx[KINDS[o.kind]?.tex],nome};const key=[nome,o.fw,o.fh,o.kind].join(':');if(!this.texturas.has(key))this.texturas.set(key,montarObjeto(this.atlasObjetos,this.indice.objetos,o));const f=this.texturas.get(key);f.visto=this.g.time;return f;}
  bloco(ctx,t,x,y){const [b,id]=escolherBloco(this.g.map,t,x,y),f=this.bancos[b];ctx.drawImage(f.canvas,id%16*16,(id>>4)*16,16,16,x,y,1,1);}
- minimapa(ctx){if(!this.ativo)return;for(const c of this.g.map.visible)if(c.canvas)ctx.drawImage(c.canvas,c.cx*16,c.cy*16,16,16);for(const [o,f]of this.objetos)ctx.drawImage(f.canvas,(o.x-f.canvas.width/2)/16,(o.y-f.canvas.height)/16,f.canvas.width/16,f.canvas.height/16);}
+ minimapa(ctx){if(!this.ativo)return;for(const c of this.g.map.visible)if(c.canvas)ctx.drawImage(c.canvas,c.cx*16,c.cy*16,16,16);for(const [o,{f}]of this.objetos)ctx.drawImage(f.canvas,(o.x-f.canvas.width/2)/16,(o.y-f.canvas.height)/16,f.canvas.width/16,f.canvas.height/16);}
+ #limparObjetos(){for(const [o,e]of this.objetos){if(o.sprite&&!o.sprite.destroyed)o.sprite.renderable=e.renderable;e.sp.destroy();}this.objetos.clear();for(const [t,a]of this.matos)if(!t.destroyed){t.frames=a.frames;t.texture=a.texture;t.tint=a.tint;}this.matos.clear();}
+ #camadas(on){
+  const atuais=on?[this.g.map.decorLayer,this.g.mundo.lights]:[];
+  for(const [c,visivel]of this.camadasOcultas)if(!atuais.includes(c)){if(!c.destroyed)c.visible=visivel;this.camadasOcultas.delete(c);}
+  // Alterar a visibilidade duas vezes por quadro refazia os lotes do Pixi.
+  // Só restaura as camadas ao sair da exploração ou trocar de mapa.
+  for(const c of atuais)if(c&&!this.camadasOcultas.has(c)){this.camadasOcultas.set(c,c.visible);c.visible=false;}
+ }
  quadro(dt){
   const g=this.g;if(this.emCombate&&this.combate.ativo){this.combate.quadro(dt);return;}
   if(!this.ativo){g.app.render();return;}
-  const v=this.volta;v.length=0;
-  const decor=g.map.decorLayer.visible,luzes=g.mundo.lights.visible;g.map.decorLayer.visible=false;g.mundo.lights.visible=false;
-  for(const [o,f]of this.objetos){const s=o.sprite;if(!s||s.destroyed)continue;v.push([s,s.texture,s.y,s.tint]);s.texture=f.tex;s.y=o.y;s.tint=0xffffff;}
-  for(const ch of g.map.visible)for(const s of ch.tall.values())if(!s.destroyed){v.push([s,s.texture,s.y,s.tint]);s.texture=this.mato;s.tint=0xffffff;}
   const restaurar=this.pessoas.aplicar();
-  try{g.app.render();}finally{restaurar();for(const [s,tex,y,tint]of v)if(!s.destroyed){s.texture=tex;s.y=y;s.tint=tint;}g.map.decorLayer.visible=decor;g.mundo.lights.visible=luzes;v.length=0;}
+  try{g.app.render();}finally{restaurar();}
  }
 }
