@@ -1,0 +1,46 @@
+{
+  "ok": true,
+  "destinos": [
+    {
+      "destino": "Gruta de Lúmen",
+      "entrada": [
+        776,
+        1053
+      ],
+      "trilha": 16,
+      "recompensa": [
+        "potion",
+        2
+      ],
+      "portao": "circuito livre"
+    },
+    {
+      "destino": "Clareira das Raízes",
+      "entrada": [
+        858,
+        748
+      ],
+      "trilha": 16,
+      "recompensa": [
+        "pokeball",
+        3
+      ],
+      "portao": "circuito livre"
+    },
+    {
+      "destino": "Ruína do Pomar",
+      "entrada": [
+        1091,
+        1033
+      ],
+      "trilha": 14,
+      "recompensa": [
+        "superPotion",
+        1
+      ],
+      "portao": "fecha antes / abre depois"
+    }
+  ]
+}
+(node:38073) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

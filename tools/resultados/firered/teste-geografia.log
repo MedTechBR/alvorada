@@ -1,0 +1,5 @@
+OK: saves preservados, migração idempotente, portas livres, salas sem ampliação e 50 setores de mata cobertos.
+OK: layout 3 → atual preserva posição, coleta, outros mundos e idempotência; quarteirões compactos.
+Recantos: {"recanto_ipe":[768,1052],"jardim_bosque":[850,747],"pomar_espelho":[1083,1032],"clareira_ventos":[874,922]}
+(node:38032) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

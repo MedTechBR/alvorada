@@ -1,0 +1,92 @@
+[
+  {
+    "versao": "antes",
+    "pontos": [
+      {
+        "nome": "coral",
+        "cpuP95": 12.400000005960464,
+        "quadroP95": 14.200000000000728,
+        "picoMiB": 198.2123317718506,
+        "dist": 232.71591111111047,
+        "geometrias": 16,
+        "texturas3d": 15,
+        "pixelMiB": 6.125,
+        "setores": 15,
+        "three": true,
+        "heapMiB": 192.38065814971924
+      },
+      {
+        "nome": "campina",
+        "cpuP95": 9.599999994039536,
+        "quadroP95": 11.099999999998545,
+        "picoMiB": 202.48817253112793,
+        "dist": 96,
+        "geometrias": 16,
+        "texturas3d": 15,
+        "pixelMiB": 5.234375,
+        "setores": 15,
+        "three": true,
+        "heapMiB": 195.06458187103271
+      },
+      {
+        "nome": "rota",
+        "cpuP95": 10.5,
+        "quadroP95": 13.100000000002183,
+        "picoMiB": 207.35647106170654,
+        "dist": 224.09600000000137,
+        "geometrias": 16,
+        "texturas3d": 15,
+        "pixelMiB": 5.84375,
+        "setores": 15,
+        "three": true,
+        "heapMiB": 195.7805757522583
+      }
+    ],
+    "erros": []
+  },
+  {
+    "versao": "depois",
+    "pontos": [
+      {
+        "nome": "coral",
+        "cpuP95": 10.199999988079071,
+        "quadroP95": 13,
+        "picoMiB": 177.55515480041504,
+        "dist": 229.261681777778,
+        "geometrias": 0,
+        "texturas3d": 0,
+        "pixelMiB": 4.8916015625,
+        "setores": 6,
+        "three": false,
+        "heapMiB": 172.52699661254883
+      },
+      {
+        "nome": "campina",
+        "cpuP95": 5.299999982118607,
+        "quadroP95": 6.400000000001455,
+        "picoMiB": 178.04615116119385,
+        "dist": 96,
+        "geometrias": 0,
+        "texturas3d": 0,
+        "pixelMiB": 5.6103515625,
+        "setores": 9,
+        "three": false,
+        "heapMiB": 174.0253210067749
+      },
+      {
+        "nome": "rota",
+        "cpuP95": 5,
+        "quadroP95": 6.5,
+        "picoMiB": 180.20264339447021,
+        "dist": 227.89760000000024,
+        "geometrias": 0,
+        "texturas3d": 0,
+        "pixelMiB": 4.599609375,
+        "setores": 6,
+        "three": false,
+        "heapMiB": 173.95674991607666
+      }
+    ],
+    "erros": []
+  }
+]

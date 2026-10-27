@@ -1,0 +1,49 @@
+formas: 392 (regional 57, mega 97, primal 2, gmax 34, battle 22, gender 6, alt 66, visual 108)
+roteiro: 296 Pokémon de treinadores conferidos
+receitas: 251 animações, 217 golpes oficiais alinhados com a receita
+OK  Status de Garchomp Nv78 (Bulbapedia): {"hp":289,"atk":278,"def":193,"spa":135,"spd":171,"spe":171}
+OK  1) Lança-Chamas: Charizard → Venusaur (mín, máx): [152,180]
+OK  2) Terremoto: Garchomp → Aggron (mín, máx): [396,468]
+OK  2b) Robustez segura o golpe com 1 PS: 280
+OK  3) Bola Sombria crítica com Orbe da Vida: Gengar → Alakazam: 330
+OK  3b) Orbe da Vida tira 1/10 dos PS de quem usa: 13
+OK  Levitação anula Terra (Mismagius): 0
+OK  Normal não acerta Fantasma: 0
+OK  Ritmo 0,55 no caso 1 (máx): 99
+OK  XP no nível 100 (errática, rápida, média-rápida, média-lenta, lenta, flutuante): [600000,800000,1000000,1059860,1250000,1640000]
+OK  Captura de Bulbasaur Nv30 com PS cheios (Poké Bola): 0.1194
+OK  Ultra Bola dobra o "a": 30
+OK  Bola Mestra sempre captura: 1
+OK  Bola de Rede ×3,5 em Água: 52.5
+OK  EVs: 252 por status, 510 no total: [252,252,504]
+OK  EVs param em 510: 510
+OK  Charmander evolui no nível 16: 5
+OK  Pedra do Trovão em Pikachu: 26
+OK  Eevee com amizade, de dia → Espeon; de noite → Umbreon: [196,197]
+OK  Onix segurando Revestimento Metálico, nível 30 → Steelix (o item não é gasto): 208
+OK  Onix sem o item não evolui por nível: null
+OK  Onix: usar o Revestimento Metálico não evolui mais (troca substituída): undefined
+OK  Kadabra com 4 golpes Psíquicos → Alakazam (sem troca): 65
+OK  Haunter de noite no Cemitério das Velas → Gengar: 94
+OK  Save antigo migra (IVs, golpes válidos, EVs zerados, não shiny): [[1,2,3,4,5,6],["scratch"],[0,0,0,0,0,0],false,10,"abc"]
+OK  toJSON → from preserva tudo: "{\"v\":2,\"dex\":4,\"level\":15,\"ivs\":[31,31,31,31,31,31],\"evs\":[252,252,6,0,0,0],\"nature\":\"hardy\",\"ability\":\"blaze\",\"gender\":\"f\",\"shiny\":false,\"friendship\":70,\"item\":null,\"ball\":\"pokeBall\",\"metLevel\":15,\"nick\":null,\"xp\":2035,\"moves\":[\"growl\",\"ember\",\"smokescreen\",\"dragonBreath\"],\"status\":null,\"hp\":50,\"uid\":\"h8398p7k\",\"learned\":[\"growl\",\"ember\",\"smokescreen\",\"dragonBreath\"]}"
+OK  Raichu de Alola: tipos, chave do sprite e forma no save: [["electric","psychic"],"26-alola","alola"]
+OK  Forma volta do save: "alola"
+OK  Save sem forma = forma padrão (e o JSON continua sem o campo): [null,false]
+OK  Forma inexistente no save cai na padrão: null
+OK  Forma de batalha não fica no save (Mega vira padrão): null
+OK  Mega Charizard X (forma temporária): tipo e Ataque maiores; sai do save: [["fire","dragon"],true,null,"6-megaX"]
+OK  Volta da Mega: [["fire","flying"],104]
+OK  Rattata de Alola evolui à noite para Raticate de Alola: [20,"alola"]
+OK  … e continua de Alola depois de evoluir: [20,"alola",["dark","normal"]]
+OK  Meowth de Galar evolui para Perrserker: 863
+OK  Pikachu + Pedra do Trovão fora de Alola = Raichu comum: null
+OK  Meowstic fêmea assume a forma de fêmea: ["female",null]
+OK  Catálogo Rotom troca a forma (Calor → Lavagem): ["heat","wash",["electric","water"]]
+OK  Toxtricity pela natureza: [null,"lowKey"]
+sprites: 980 espécies com sprite próprio, 45 com substituto; formas: 280 próprias, 112 com substituto; 16240 arquivos, 143.5 MB (maior arquivo 136 KB)
+
+1025 espécies, 827 golpes, 620 itens (230 MTs), 313 habilidades
+golpes por kind: {"melee":150,"proj":268,"self":121,"cone":32,"dash":65,"fly":2,"multi":17,"wave":103,"surf":2,"cloud":23,"target":11,"bolt":2,"sky":1,"rain":10,"quake":12,"dig":2,"shield":4,"dive":1,"line":1}
+
+Tudo certo.

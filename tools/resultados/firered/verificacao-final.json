@@ -1,0 +1,19 @@
+{
+  "testes_node": 23,
+  "testes_navegador": 6,
+  "todos_passaram": true,
+  "comparacao_desempenho": [
+    {
+      "percurso": "coral",
+      "cpu_quadro_heap_pico_sem_aumento": true
+    },
+    {
+      "percurso": "campina",
+      "cpu_quadro_heap_pico_sem_aumento": true
+    },
+    {
+      "percurso": "rota",
+      "cpu_quadro_heap_pico_sem_aumento": true
+    }
+  ]
+}

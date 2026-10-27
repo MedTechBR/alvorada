@@ -1,0 +1,32 @@
+[
+  {
+    "teste": "jogo",
+    "codigo": 0,
+    "log": "tools/resultados/firered/jogo-final.log"
+  },
+  {
+    "teste": "passagens-npc",
+    "codigo": 0,
+    "log": "tools/resultados/firered/passagens-npc-final.log"
+  },
+  {
+    "teste": "batalha-fluida",
+    "codigo": 0,
+    "log": "tools/resultados/firered/batalha-fluida-final.log"
+  },
+  {
+    "teste": "combate-paredes",
+    "codigo": 0,
+    "log": "tools/resultados/firered/combate-paredes-final.log"
+  },
+  {
+    "teste": "exploracao-rotas",
+    "codigo": 0,
+    "log": "tools/resultados/firered/exploracao-rotas-final.log"
+  },
+  {
+    "teste": "interface",
+    "codigo": 0,
+    "log": "tools/resultados/firered/interface.log"
+  }
+]
