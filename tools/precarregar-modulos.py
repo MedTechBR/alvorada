@@ -8,8 +8,10 @@ def visitar(rel):
     visitados.add(rel)
     if rel.startswith('vendor/'):return
     texto=(raiz/rel).read_text()
-    for m in re.finditer(r'''\bfrom\s*['"]([^'"]+)['"]|\bimport\s*['"]([^'"]+)['"]''',texto):
-        p=m.group(1)or m.group(2)
+    texto=re.sub(r'/\*[\s\S]*?\*/','',texto)
+    texto=re.sub(r'(?m)^\s*//.*$','',texto)
+    for m in re.finditer(r'''(?:^|;)\s*(?:import|export)\s*(?:[^;'"()]*?\bfrom\s*)?['"]([^'"]+)['"]''',texto,re.M):
+        p=m.group(1)
         if p=='pixi.js':visitar(iniciais[0]);continue
         if not p.startswith('.'):continue
         arquivo=((raiz/rel).parent/p).resolve()
