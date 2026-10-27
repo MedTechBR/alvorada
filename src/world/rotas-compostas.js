@@ -57,7 +57,7 @@ export function* comporRotas(S,P){
    const X=cx+((Math.floor(cy/16)%2)*3),rx=5,ry=3;let livre=true;
    for(let y=cy-ry-2;y<=cy+ry+2&&livre;y++)for(let x=X-rx-2;x<=X+rx+2;x++){
     const k=x+y*W;
-    if(x<x0+3||x>=x0+w-3||y<y0+3||y>=y0+h-3||!GRAMA.has(S.tiles[k])||S.block[k]||S.nearSpot.has(k)||d[local(x,y)]<6){livre=false;break;}
+    if(x<x0+3||x>=x0+w-3||y<y0+3||y>=y0+h-3||!GRAMA.has(S.tiles[k])||S.block[k]||S.nearSpot.has(k)||d[local(x,y)]<1){livre=false;break;}
    }
    if(!livre)continue;
    for(let y=cy-ry;y<=cy+ry;y++)for(let x=X-rx;x<=X+rx;x++){
