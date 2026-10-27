@@ -6,11 +6,11 @@
 //   assets/pmd (index.json, substitutos.json) mudam quando entram sprites novos: essas vão pela rede primeiro.
 // - Na primeira visita a página ainda não passa pelo service worker; por isso ela manda a lista do que já
 //   carregou ({ type: 'guardar', urls }) e ele guarda esses arquivos, para o modo offline funcionar logo.
-const CODE = 'alvorada-codigo-v4-acabamento';
+const CODE = 'alvorada-codigo-v5-biblioteca-local';
 const SPR = 'alvorada-sprites-v2'; // v2: todas as espécies e formas, só as animações usadas
 const KEEP = [CODE, SPR];
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'src/main.js', 'src/ui/style.css', 'src/ui/menu.css', 'src/ui/encaixe.js', 'assets/icons/icon-192.png',
-  'https://cdn.jsdelivr.net/npm/pixi.js@8.6.6/dist/pixi.min.mjs', 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js'];
+  'vendor/pixi-8.6.6.min.js'];
 const NET_TIMEOUT = 6000; // ms: rede lenta demais = usa a cópia guardada
 
 const isSprite = (url) => url.origin === location.origin && url.pathname.includes('/assets/pmd/') && !/\/assets\/pmd\/[^/]+\.json$/.test(url.pathname);
