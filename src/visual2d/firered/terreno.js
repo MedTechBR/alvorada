@@ -12,7 +12,7 @@ function borda(map,x,y,igual,grid){const cx=!igual(map.at(x-1,y))?0:!igual(map.a
 const ESTRADA=[[0x0d3,0x0d4,0x0d5],[0x0db,0x0dc,0x0dd],[0x0e3,0x0e4,0x0e5]];
 const PRACA=[[0x1b8,0x1b9,0x1ba],[0x1c0,0x1c1,0x1c2],[0x1c8,0x1c9,0x1ca]];
 export function escolherBloco(map,t,x,y){
- if(t===TILE.PLAZA&&map.R?.temaVisual==='Campo rochoso')return ['caverna',0x280];
+ if(t===TILE.PLAZA&&map.R?.temaVisual==='Campo rochoso')return ['caverna',0x281];
  if(t===TILE.PLAZA&&map.R?.temaVisual==='Clareira fria')return ['gelo',0x001];
  if(t===TILE.VOID)return ['exterior',0];
  const sala=map.interiorAt(x*16+8,y*16+8);
@@ -20,6 +20,7 @@ export function escolherBloco(map,t,x,y){
  if(t===TILE.FOREST||t===TILE.ROOTS)return ['exterior',[[0x01c,0x01d],[0x014,0x015],[0x024,0x025]][((y%3)+3)%3][x&1]];
  if(t===TILE.CLIMB)return ['caverna',0x283];
  if(t===TILE.MUD||t===TILE.MANGMUD)return ['lama',0x1d9];
+ if(t===TILE.WALL&&/cave|caver|gruta|mina|t[uú]nel/i.test(sala?.biome??sala?.name??''))return ['caverna',map.at(x-1,y)!==TILE.WALL?0x28b:map.at(x+1,y)!==TILE.WALL?0x28d:0x28c];
  if(t===TILE.WALL)return sala?.id.startsWith('centro')?['centro',0x284]:['interior',map.at(x,y+1)===TILE.WALL?0x020:0x028];
  if(WALLS.has(t)||t===TILE.CLIFF||t===TILE.CANYON){
   const baixo=map.at(x,y+1),ponta=!WALLS.has(baixo)&&baixo!==TILE.CLIFF&&baixo!==TILE.CANYON;
@@ -32,23 +33,23 @@ export function escolherBloco(map,t,x,y){
  if(t===TILE.LAVA||t===TILE.LAVAFLOOR)return ['lava',0x1d9];
  if(t===TILE.HOTSPRING||t===TILE.SALTMIRROR)return ['gelo',0x1d9];
  if(t===TILE.REEF)return ['exterior',0x208];
- if(t===TILE.HOLE||t===TILE.CRACK)return ['caverna',0x284];
- if(t===TILE.CAVEDOOR)return ['caverna',0x285];
- if(t===TILE.STAIRUP||t===TILE.STAIRDOWN)return ['caverna',0x283];
+ if(t===TILE.HOLE||t===TILE.CRACK)return ['caverna',0x286];
+ if(t===TILE.CAVEDOOR)return ['caverna',0x286];
+ if(t===TILE.STAIRUP||t===TILE.STAIRDOWN)return ['caverna',0x284];
  if(t===TILE.STAIRS)return ['exterior',0x088];
- if(t===TILE.BRIDGE||t===TILE.DOCK)return ['exterior',0x13a];
- if(t===TILE.BRIDGEV)return ['exterior',0x142];
+ if(t===TILE.BRIDGE||t===TILE.DOCK)return ['pisos',0];
+ if(t===TILE.BRIDGEV)return ['pisos',1];
  if(t===TILE.MAT)return ['interior',0x013];
  if(t===TILE.FLOOR)return ['interior',0x001];
  if(t===TILE.TILEFLOOR)return sala?.id.startsWith('centro')?['centro',0x281]:['interior',0x081];
  if(t===TILE.TEMPLEFLOOR||t===TILE.MOSAIC||t===TILE.OLDSTONE)return ['interior',0x081];
- if(t===TILE.RAIL)return ['caverna',0x283];
+ if(t===TILE.RAIL)return ['pisos',map.at(x,y-1)===TILE.RAIL||map.at(x,y+1)===TILE.RAIL?3:2];
  if(CAMINHO.has(t)){
   const urbana=t!==TILE.PATH||map.areaAt(x*16+8,y*16+8)?.biome==='vila';
   return ['exterior',borda(map,x,y,q=>CAMINHO.has(q),urbana?PRACA:ESTRADA)];
  }
- if(AREIA.has(t))return ['exterior',0x126];
- if(CAVERNA.has(t))return ['caverna',ix(x,y)%7===0?0x281:0x280];
+ if(AREIA.has(t))return ['exterior',[0x125,0x12d,0x12e][ix(x,y)%3]];
+ if(CAVERNA.has(t))return ['caverna',ix(x,y)%7===0?0x289:0x281];
  if(GELO.has(t))return ['gelo',0x001];
  if(t===TILE.FLOWERS)return ['exterior',ix(x,y)%4===0?0x004:0x001];
  return ['exterior',[0x001,0x008,0x009,0x010,0x011][ix(x,y)%5]];

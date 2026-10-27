@@ -300,6 +300,10 @@
     "originais/secondary/pokemon_center/palettes/13.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
     "originais/secondary/pokemon_center/palettes/14.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
     "originais/secondary/pokemon_center/palettes/15.pal": "bf04092ebe65f2846c64e84f686749bce590f62b490303c8d23f275fe4067fa2",
-    "originais/secondary/pokemon_center/tiles.png": "6aeb12ed0248b4b241ec687cb06dd37ab9a89c3f7804413668bcf4e6c6ef1774"
+    "originais/secondary/pokemon_center/tiles.png": "6aeb12ed0248b4b241ec687cb06dd37ab9a89c3f7804413668bcf4e6c6ef1774",
+    "misc/cut_tree.png": "819545f25316a679f4c1c5697339a3bc0dcf2722a612978acd7cc6bd9f2e0dac",
+    "misc/rock_smash_rock.png": "af378cbfcff984645f391b1e7228d6b997e06de482618b8217b92e8427b704e3",
+    "misc/strength_boulder.png": "60c4e11133c8c23419cbdd41a9a3d80fb316914566431fb63948a782f4039762",
+    "misc/wooden_sign.png": "62f2042def39641d6ff27addc5442edd8314966032337fa036938a27bf9861b1"
   }
 }

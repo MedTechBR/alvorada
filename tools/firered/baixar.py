@@ -29,3 +29,9 @@ def pessoa(p):
  alvo=pessoas/p['name']
  if not alvo.exists():alvo.write_bytes(urllib.request.urlopen(p['download_url'],timeout=30).read())
 with concurrent.futures.ThreadPoolExecutor(max_workers=6)as ex:list(ex.map(pessoa,lista))
+
+# Objetos móveis: transparência própria evita trazer o chão do tileset junto da rocha.
+misc=raiz.parent/'misc';misc.mkdir(exist_ok=True)
+for nome in ['strength_boulder.png','rock_smash_rock.png','wooden_sign.png','cut_tree.png']:
+ p=misc/nome
+ if not p.exists():p.write_bytes(urllib.request.urlopen('https://raw.githubusercontent.com/pret/pokefirered/'+sha+'/graphics/object_events/pics/misc/'+nome,timeout=30).read())

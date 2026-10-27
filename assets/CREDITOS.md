@@ -68,3 +68,5 @@ Nintendo, Game Freak e The Pokémon Company; aqui entram só como referência de
   As fachadas repetem colunas inteiras para respeitar os lotes e as portas de Alvorada; não usam os mapas de Kanto.
 - Neve, lama e lava reutilizam os pixels com paletas curtas para os biomas próprios de Alvorada.
   Os objetos exclusivos de enigmas mantêm seus sprites e estados existentes.
+
+Rochas FireRed (outubro de 2026): `graphics/object_events/pics/misc/strength_boulder.png` e `rock_smash_rock.png`, da mesma revisão `ce6406d8c2eaf46d543c8a2606de0c3cb1951982` de pret/pokefirered. A transparência dos objetos é preservada. O atlas registra os hashes das fontes em `assets/firered/indice.json`.

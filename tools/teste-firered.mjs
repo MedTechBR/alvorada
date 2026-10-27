@@ -13,6 +13,7 @@ for(const[n,b]of Object.entries(J.bancos)){
  const data=new Uint8ClampedArray(w*h*4);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=(y>>4)*16+(x>>4),k=(x+y*w)*4;data[k]=i&255;data[k+1]=i>>8;data[k+2]=bi;data[k+3]=255;}bancos[n]={w,data};bi++;
 }
 for(const n of ['gelo','lama','lava'])bancos[n]=bancos.exterior;
+bancos.pisos=(await import('../src/visual2d/firered/pisos.js')).pisosUtilitarios();
 const tipos=Object.values(TILE),W=10,H=8,map={w:W,h:H,outdoorH:H,at:(x,y)=>tipos[(Math.max(0,Math.min(H-1,y))*W+Math.max(0,Math.min(W-1,x)))%tipos.length],interiorAt:()=>null,areaAt:()=>({biome:'vila'})};
 for(let y=0;y<H;y++)for(let x=0;x<W;x++){
  const t=map.at(x,y),[b,id]=escolherBloco(map,t,x,y),fonte=bancos[b];assert(fonte,`banco ausente ${t}: ${b}`);assert(id>=0&&id<fonte.data.length/1024,`bloco fora do atlas ${t}: ${id}`);

@@ -3,7 +3,15 @@ import { KINDS } from '../../world/objects.js';
 
 export function tipoObjeto(o){
  const k=o.kind,K=KINDS[k];
+ // Mantém a identidade das peças sem equivalente no banco geral: palmeira não vira moita,
+ // caixa não vira placa, sofá não vira cerca e utensílios não viram bordas de água.
+ if(/palm|palmeira|coqueiro|pine|pinheiro|araucaria|cact|mandacaru|xiquexique|mangue|oran|pecha/i.test(k)||K?.berry)return 'nativo';
+ if(/bench|sofa|varal|well|sundial|fountain|portico|stands|boat|jangada|barrel|crate|driftwood|log/i.test(k))return 'nativo';
+ if(k!=='maquinaCura'&&/machine|maquinaCura/i.test(k)&&(K?.fw??1)<3)return 'nativo';
+ if(/shelf|armario|estante|prateleira|mesa|table|desk|tv/i.test(k)&&(K?.fw??1)<2)return 'nativo';
+ if(/geladeira|gondola|expositor|mail|radio|skull|ossada/i.test(k)||k==='cone')return 'nativo';
  if(k==='maquinaCura')return 'maquina';
+ if(K?.glow||/menhir|column|obelisk|torch|stump/i.test(k))return 'nativo';
  if(k==='escadaRolante')return 'escada';
  if(k==='balltable')return 'nativo';
  if(k==='farol')return 'nativo';
@@ -13,7 +21,9 @@ export function tipoObjeto(o){
  if(typeof K?.door==='number')return /center|centro/i.test(k)?'centro':/mart|loja/i.test(k)?'loja':/lab/i.test(k)?'laboratorio':/gym|ginas|hall|farol|temple|greenhouse/i.test(k)?'ginasio':'casa';
  if(/tree|pine|autumn|ipe|paineira|jequitiba|araucaria|bambu|juazeiro|umbu|mangue|palm|coqueiro|mandacaru|cactus|oran|pecha|folhaGigante|arvore|pinheiro/i.test(k))return (o.fw??K?.fw)>2?'arvore_grande':(o.fw??K?.fw)===1?'arbusto':'arvore';
  if(/fence|gate|cerca/i.test(k))return 'cerca';
- if(/flower|canteiro|moita|bush|cone/i.test(k))return 'arbusto';
+ if(/flowerpot/i.test(k))return 'vaso';
+ if(/flower|canteiro/i.test(k))return 'flores';
+ if(/moita|bush|cone/i.test(k))return 'arbusto';
  if(/sign|placa|mail/i.test(k))return 'placa';
  if(/lamp|torch|column|menhir|obelisk|bell|crystal|luzita/i.test(k))return 'poste';
  if(/bench|sofa|log|driftwood/i.test(k))return 'banco';
@@ -49,11 +59,13 @@ export function montarObjeto(imagem,frames,o){
   let s;
   if(door!==null){s=x===door?centro:x===0?0:x===fw-1?src-1:x<door?Math.max(0,centro-1):Math.min(src-1,centro+1);}
   else s=nome==='balcao'?(x===0?0:x===fw-1?src-1:x===Math.floor(fw/2)?3:1):src===1?0:Math.min(src-1,Math.floor(x*src/fw));
-  for(let y=0;y<f[3]/16;y++){
+  // Balcões baixos deixam a pessoa que atende aparecer atrás do tampo.
+  const altura=nome==='balcao'?16:f[3];
+  for(let y=0;y<altura/16;y++){
    let col=s;
    if(nome==='centro'&&y===f[3]/16-1&&x>1&&x<door)col=3;
    if(nome==='loja'&&x>door&&x<fw-1)col=1;
-   c.drawImage(imagem,f[0]+col*16,f[1]+y*16,16,16,x*16,cv.height-f[3]+y*16,16,16);
+   c.drawImage(imagem,f[0]+col*16,f[1]+y*16,16,16,x*16,cv.height-altura+y*16,16,16);
   }
  }
  const tex=PIXI.Texture.from(cv);tex.source.scaleMode='nearest';return {tex,canvas:cv,nome};

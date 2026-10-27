@@ -68,7 +68,7 @@ por('placa',[[0x002]])
 por('cerca',[[0x284]])
 por('cerca_madeira',[[0x0f1]])
 por('pedra',[[0x2f5]],'caverna')
-por('rochedo',[[0x2ee,0x2ef],[0x2f6,0x2f7]],'caverna')
+por('rochedo',[[0x2e6,0x2e7],[0x2ee,0x2ef]],'caverna')
 por('casa',[[0x281,0x282,0x282,0x282,0x283],[0x289,0x28a,0x28a,0x28a,0x28b],[0x291,0x293,0x292,0x292,0x294],[0x298,0x29a,0x299,0x29b,0x29c],[0x2a0,0x2a2,0x2a3,0x2a1,0x2a4]])
 por('centro',[[0x17b,0x17c,0x17d,0x17e,0x17f],[0x048,0x049,0x04a,0x04b,0x187],[0x050,0x051,0x052,0x053,0x18f],[0x058,0x059,0x05a,0x05b,0x197],[0x060,0x061,0x062,0x186,0x19f]])
 por('loja',[[0x028,0x029,0x02a,0x02b],[0x030,0x031,0x032,0x033],[0x038,0x039,0x03a,0x03b],[0x040,0x041,0x062,0x063]])
@@ -87,6 +87,13 @@ por('poste',[[0x0e8],[0x0f1]])
 por('banco',[[0x284,0x284]])
 por('borda_pedra',[[0x135,0x136]])
 por('bau',[[0x003]])
+# Rochas móveis originais têm transparência própria; não levam chão/água do tileset.
+for nome,arquivo,tamanho in [('pedra','rock_smash_rock.png',16),('rochedo','strength_boulder.png',32)]:
+ p=root/'misc'/arquivo
+ if p.exists():
+  src=Image.open(p);im=src.crop((0,0,16,16));rgba=im.convert('RGBA');rgba.putalpha(im.point([0]+[255]*255,'L'))
+  objetos[nome]=rgba.resize((tamanho,tamanho),Image.Resampling.NEAREST)
+
 # Um único atlas para os objetos; as peças maiores são montadas por coluna de 16 px.
 atlas=Image.new('RGBA',(512,512));frames={};x=y=linha=0
 for nome,im in objetos.items():
@@ -95,7 +102,7 @@ for nome,im in objetos.items():
  atlas.paste(im,(x,y));frames[nome]=[x,y,im.width,im.height];x+=im.width;linha=max(linha,im.height)
 atlas.save(SAIDA/'objetos.png',optimize=True)
 fontes={str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(raw.rglob('*')) if p.is_file() and any(str(p.relative_to(raw)).startswith(('primary/'+v[0], 'secondary/'+v[1])) for v in BANCOS.values())}
-J={'origem':json.loads((root/'origem.json').read_text()),'bloco':16,'bancos':{k:{'arquivo':k+'.png','blocos':len(v)}for k,v in ts.items()},'objetos':frames,'fontes':fontes}
+J={'origem':json.loads((root/'origem.json').read_text()),'bloco':16,'bancos':{k:{'arquivo':k+'.png','blocos':len(v)}for k,v in ts.items()},'objetos':frames,'fontes':{**fontes,**{'misc/'+p.name:hashlib.sha256(p.read_bytes()).hexdigest()for p in sorted((root/'misc').glob('*.png'))}}}
 (SAIDA/'indice.json').write_text(json.dumps(J,ensure_ascii=False,indent=2)+'\n')
 print('Atlas de terreno e objetos:',SAIDA)
 
