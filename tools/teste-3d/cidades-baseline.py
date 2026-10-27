@@ -1,5 +1,6 @@
 """Serve a versão publicada anterior à compactação, compartilhando os assets intactos."""
 import http.server
+import os
 import pathlib
 import socketserver
 import subprocess
@@ -7,7 +8,8 @@ import tempfile
 import urllib.parse
 
 raiz = pathlib.Path(__file__).resolve().parents[2]
-commit = 'fcde2264'
+commit = os.environ.get('REFERENCIA', 'fcde2264')
+porta = int(os.environ.get('PORTA', '8701'))
 
 with tempfile.TemporaryDirectory(prefix='alvorada-cidades-antes-') as pasta:
     base = pathlib.Path(pasta)
@@ -38,7 +40,7 @@ with tempfile.TemporaryDirectory(prefix='alvorada-cidades-antes-') as pasta:
 
     socketserver.ThreadingTCPServer.allow_reuse_address = True
     socketserver.ThreadingTCPServer.request_queue_size = 128
-    with socketserver.ThreadingTCPServer(('127.0.0.1', 8701), Servidor) as servidor:
+    with socketserver.ThreadingTCPServer(('127.0.0.1', porta), Servidor) as servidor:
         servidor.daemon_threads = True
-        print('Antes da compactação: http://127.0.0.1:8701', flush=True)
+        print(f'Referência {commit}: http://127.0.0.1:{porta}', flush=True)
         servidor.serve_forever()
