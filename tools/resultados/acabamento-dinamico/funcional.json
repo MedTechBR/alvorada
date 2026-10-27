@@ -41,7 +41,7 @@
       "mirarCorpo": false,
       "ok": true,
       "acertos": 1,
-      "dano": 7,
+      "dano": 8,
       "altura": 37.5,
       "alvo": 15
     },
@@ -101,7 +101,7 @@
       "mirarCorpo": false,
       "ok": true,
       "acertos": 1,
-      "dano": 20,
+      "dano": 17,
       "altura": 75,
       "alvo": 15
     },
@@ -176,7 +176,7 @@
       "mirarCorpo": false,
       "ok": true,
       "acertos": 1,
-      "dano": 6,
+      "dano": 10,
       "altura": 37.5,
       "alvo": 15
     },
@@ -206,7 +206,7 @@
       "mirarCorpo": false,
       "ok": true,
       "acertos": 1,
-      "dano": 7,
+      "dano": 9,
       "altura": 37.5,
       "alvo": 15
     },
@@ -221,7 +221,7 @@
       "mirarCorpo": false,
       "ok": true,
       "acertos": 1,
-      "dano": 11,
+      "dano": 13,
       "altura": 40.5,
       "alvo": 15
     },
@@ -236,7 +236,7 @@
       "mirarCorpo": false,
       "ok": true,
       "acertos": 1,
-      "dano": 9,
+      "dano": 10,
       "altura": 75,
       "alvo": 15
     },
@@ -251,7 +251,7 @@
       "mirarCorpo": false,
       "ok": true,
       "acertos": 1,
-      "dano": 8,
+      "dano": 5,
       "altura": 37.5,
       "alvo": 15
     },
@@ -266,7 +266,7 @@
       "mirarCorpo": false,
       "ok": true,
       "acertos": 1,
-      "dano": 13,
+      "dano": 9,
       "altura": 75,
       "alvo": 15
     },
@@ -281,7 +281,7 @@
       "mirarCorpo": true,
       "ok": true,
       "acertos": 1,
-      "dano": 5,
+      "dano": 4,
       "altura": 19,
       "alvo": 82.5
     },

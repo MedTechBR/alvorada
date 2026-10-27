@@ -1,8 +1,11 @@
 # Revisão de combate, interface e fluidez — 27/10/2026
 
-Base publicada: `a71ef43d`. Código final de jogo: `3df1a370` (os commits seguintes registram evidências). O padrão continua FireRed; as batalhas continuam em tempo real, com arenas separadas. Não houve mudança de roteiro, diálogos, progressão ou dados das espécies.
+Base publicada: `a71ef43d`. Código final de jogo: `6950e944` (os commits seguintes registram evidências). O padrão continua FireRed; as batalhas continuam em tempo real, com arenas separadas. Não houve mudança de roteiro, diálogos, progressão ou dados das espécies.
 
 ## Correções verificadas
+
+- **Abertura pública:** a checagem de deploy encontrou uma espera antes de iniciar o motor. PixiJS 8.6.6, a mesma distribuição anteriormente pedida à CDN, agora é servida pelo próprio jogo, com licença e SHA-256 registrados em `vendor/`. O cache v5 inclui essa biblioteca e não antecipa o download do three.js de diagnóstico. Os testes locais de jogo e os 20 casos de acerto foram repetidos com a cópia local.
+
 
 - **Talho e outros contatos físicos:** reproduzimos um Talho que não acertava ao mirar na parte alta de Wailord. A direção usava o ponto visual como se fosse um ponto no chão. Agora o contato identifica o Pokémon tocado e orienta o golpe até ele. Presa de Fogo foi incluída nos testes, com Growlithe, Arcanine e Gyarados.
 - **Jatos e projéteis:** a receita visual de Revólver d’Água encurtava seu alcance. O jogador conserva o alcance dos dados do golpe. Boca, altura visual, colisão e impacto no cenário usam referências coerentes. Projéteis do jogador têm varrimento entre quadros e param na parede.
@@ -81,7 +84,8 @@ As entradas existentes da Gruta de Lúmen, Clareira das Raízes e Ruína do Poma
 | `src/world/build.js` | Aplicação da composição antes de montar as árvores. |
 | `src/world/minimap.js` | Tamanho correto, moldura do enquadramento e desenho sem trabalho duplicado. |
 | `src/ui/menu.js` | Rótulos legíveis no mapa detalhado. |
-| `sw.js` | Cache de código v4; sprites mantêm o cache compartilhado. |
+| `sw.js` | Cache de código v5 e biblioteca local; sprites mantêm o cache compartilhado. |
+| `index.html`, `vendor/` | PixiJS 8.6.6 no mesmo domínio, licença MIT e origem registrada. |
 
 Os novos testes e os testes adaptados ficam em `tools/teste-acabamento.mjs`, `tools/teste-coral-pixel.mjs` e `tools/teste-3d/`. O servidor de comparação agora congela todas as fontes, evitando que mudanças posteriores contaminem a referência.
 
@@ -92,3 +96,5 @@ Os novos testes e os testes adaptados ficam em `tools/teste-acabamento.mjs`, `to
 Não houve teste em iPhone físico/Safari nesta rodada. O cache PMD é compartilhado e continua retendo espécies já visitadas; a redução medida vale para a abertura e o percurso descrito, não para uma sessão percorrendo todas as espécies. Não afirmamos ausência de qualquer bug em todas as combinações de golpes ou de mapas. A validação pública é feita depois do deploy, com entrada por toque, batalha, retorno, mapa original e service worker.
 
 Para regressão impeditiva no jogo público, o ponto anterior de recuperação é `a71ef43d`; os commits estão separados por finalidade e não exigem reset forçado.
+
+A medição comparativa de quadro usa a mesma distribuição PixiJS 8.6.6; a alteração final troca a origem do arquivo, sem alterar a biblioteca ou as regras de combate.

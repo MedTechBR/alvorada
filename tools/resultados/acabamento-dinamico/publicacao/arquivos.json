@@ -1,0 +1,57 @@
+[
+  {
+    "arquivo": "src/main.js",
+    "igual": true,
+    "sha256": "94c687fef974cabd5746058af5954da7e8809a00ea97a2482d4d2d8e01a6f34a"
+  },
+  {
+    "arquivo": "src/combat/combat.js",
+    "igual": true,
+    "sha256": "ca5b7a27732d2d83d4a52bb314f8a92a6cc673408224b24eff264eb8eaa6ca1f"
+  },
+  {
+    "arquivo": "src/combat/encontro-coral.js",
+    "igual": true,
+    "sha256": "f09a2c55f3d331be4e8b56e8dc56e9beca4cfbaa7d8e91be14e5205d686aba29"
+  },
+  {
+    "arquivo": "src/visual2d/firered/index.js",
+    "igual": true,
+    "sha256": "a08f9159fccbec26c10f58eeef17a0a26bcdeb6f0ef6d2e08d4b9c47868e594e"
+  },
+  {
+    "arquivo": "src/visual2d/firered/interface.css",
+    "igual": true,
+    "sha256": "d9a2fe504942f0d705385a1df7f05c5bec0b5d3fbc4aa160a38e3c488ead1298"
+  },
+  {
+    "arquivo": "src/world/people.js",
+    "igual": true,
+    "sha256": "43c5fd93c6f8b9c23d7f3b5e008810868f195bb0f139b32fec17e707ed0d0411"
+  },
+  {
+    "arquivo": "src/world/rotas-compostas.js",
+    "igual": true,
+    "sha256": "12960d72f19d000a99b7fcce2015fe695d9b22ca8fe2ce6bb8e193178a1dab6c"
+  },
+  {
+    "arquivo": "src/engine/pokebola.js",
+    "igual": true,
+    "sha256": "4f8c546f35adbde42e6cd6e8c46595870148caa6296ce8cee51b3583fddb985d"
+  },
+  {
+    "arquivo": "sw.js",
+    "igual": true,
+    "sha256": "65d05bf73eb46668bb9e81d15138cfe57b7edb69c4275040e7d267a51fd03c41"
+  },
+  {
+    "arquivo": "tools/shots/acabamento-dinamico/index.html",
+    "igual": true,
+    "sha256": "ef79c1f5b05acab417717d8da97d934341a7171b0f76b4853191d3a0eecd0575"
+  },
+  {
+    "arquivo": "docs/acabamento-dinamico.md",
+    "igual": true,
+    "sha256": "b6593248c9e4db2f3203708fa0d821c08c5e1af5497e06abd861f5938186bf0b"
+  }
+]
