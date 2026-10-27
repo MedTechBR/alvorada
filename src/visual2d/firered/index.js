@@ -4,6 +4,7 @@ import { PessoasCoral } from '../coral-pessoas.js';
 import { idPessoaCoral } from '../../sprites/pessoas-coral.js';
 import { compositor, escolherBloco } from './terreno.js';
 import { montarObjeto, tipoObjeto } from './objetos.js';
+import { emCombate } from './estado.js';
 import { KINDS } from '../../world/objects.js';
 
 const BASE=new URL('../../../assets/firered/',import.meta.url);
@@ -42,12 +43,12 @@ export class VisualFireRed{
  }
  #bloco(id){const b=this.bancos.exterior,out=new Uint8ClampedArray(16*16*4);for(let y=0;y<16;y++)out.set(b.data.subarray((((id>>4)*16+y)*b.w+(id%16)*16)*4,(((id>>4)*16+y)*b.w+(id%16)*16)*4+64),y*64);return out;}
  cull(){
-  const g=this.g,luta=!!(g.encontro?.ativo||g.story?.battle&&!g.story.battle.done||g.arenaGinasio?.contem&&!g.arenaGinasio.done);
+  const g=this.g,luta=emCombate(g);
   this.#camadas(!luta&&this.pronto);
   const anterior=this.emCombate;this.emCombate=luta;this.combate.ligado=luta;const combate=this.combate.cull();
   if(anterior&&!luta)this.combate.limparCena();
   this.ativo=!luta&&this.pronto;document.body.classList.toggle('firered',this.ativo);
-  if(luta){g.barreiras?.cull(null);this.#limparObjetos();this.pessoas.ocultar();return combate;}
+  if(luta){g.barreiras?.cull(g.map===g.mundo.map?this.combate.view:null);this.#limparObjetos();this.pessoas.ocultar();return combate;}
   if(!this.ativo)return false;
   const z=Math.max(1,Math.round(g.zoom||2)),c=g.cam;
   g.ui.hud.seta.scale.set(.65);
