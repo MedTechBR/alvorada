@@ -66,6 +66,7 @@ export class GameMap {
     this.R = R; this.S = S; this.id = id; this.nome = R.nome;
     this.w = R.w; this.h = R.h; this.tiles = S.tiles; this.block = S.block;
     this.objects = [...S.placed, ...S.novos]; S.novos.length = 0;
+    S.retiradosCenario?.clear(); // na abertura, os objetos retirados nem chegaram a ser instalados
     this.decorDefs = S.decor; this.peopleDefs = S.people; this.petDefs = S.pets;
     this.outdoorH = R.outdoorH ?? this.h; this.areas = R.areas;if(!temporario)AREAS = listaAreas(R.areas);
     this.signs = R.signs ?? []; this.items = R.items ?? []; this.regioes = R.regioes ?? [];
@@ -77,6 +78,7 @@ export class GameMap {
     for (const d of this.decorDefs) { const c = this.#chunkAt(d.x, d.y); if (c) c.decor.push(d); }
     this.cellObj = new Map();
     this.#instalar(this.objects);
+    S.instalado=true;
     this.#indices();
     // regiões ainda não montadas: setores marcados (uma consulta a um bloco delas monta na hora)
     this.secPend = new Uint8Array(this.CW * this.CHh); this.nPend = 0; this.construindo = null;
@@ -142,6 +144,12 @@ export class GameMap {
   }
   #pronta(P) {
     this.#entradasEscada();
+    if(this.S.retiradosCenario?.size){
+      const retirados=this.S.retiradosCenario;
+      this.objects=this.objects.filter(o=>!retirados.has(o));
+      for(const o of retirados){const c=this.#chunkAt((o.tx??o.x)+Math.floor(o.fw/2),(o.ty??o.y)+o.fh-1);if(c)c.objs=c.objs.filter(p=>p!==o);for(const k of o.cells??[])if(this.cellObj.get(k)===o)this.cellObj.delete(k);o.sprite?.destroy();o.sprite=null;}
+      retirados.clear();
+    }
     if (this.construindo?.P === P) this.construindo = null;
     for (const r of [P.rect, P.faixa]) if (r) this.#marcarSetores(r, 0);
     this.nPend--;

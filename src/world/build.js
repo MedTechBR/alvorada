@@ -1,4 +1,6 @@
 import { comporCoral } from './coral-piloto.js';
+import {comporNatureza} from './composicao-natural.js';
+import {ligarPisos} from './ligacoes-piso.js';
 import { organizarPostes } from './organizar-postes.js';
 import { comporPilotoVisual } from './piloto-visual.js';
 import { recomporNucleos, vestirPaisagem, criarRecantos } from './paisagem.js';
@@ -244,6 +246,8 @@ export function* passosParte(S, P) {
   comporPilotoVisual(S, P);
   organizarPostes(S, P);
   comporCoral(S, P);
+  ligarPisos(S,P);
+  for(const _ of comporNatureza(S,P,occupy))yield;
   P.pronta = true;
 }
 export function montarParte(S, P) { for (const _ of passosParte(S, P)) { /* tudo de uma vez */ } }

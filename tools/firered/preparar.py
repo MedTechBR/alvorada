@@ -65,6 +65,8 @@ def por(nome,rows,banco='exterior'):objetos[nome]=matriz(rows,banco)
 por('arvore',[[0x00e,0x00f],[0x01e,0x01f],[0x024,0x025]])
 objetos['arvore_grande']=objetos['arvore'].copy()
 por('arbusto',[[0x005]])
+por('arbusto_medio',[[0x13d,0x13f]])
+por('arbusto_largo',[[0x13d,0x13e,0x13f]])
 por('flores',[[0x004]])
 por('placa',[[0x002]])
 por('cerca',[[0x284]])
@@ -95,20 +97,45 @@ for y in range(20,32):
  a,b=(4,12)if y in[20,30]else(5,11)if y==31 else(3,13)
  for x in range(a,b):im.putpixel((x,y),original.getpixel((x,y)))
 grama=set(c for i in[0x001,0x008,0x009,0x010,0x011]for c in ts['exterior'][i].get_flattened_data())
-for nome in ['arvore','arvore_grande','arbusto','flores','placa']:
+for nome in ['arvore','arvore_grande','arbusto','arbusto_medio','arbusto_largo','flores','placa']:
  limpar_borda(objetos[nome],grama)
 por('prateleira',[[0x2cb,0x2cc],[0x2cd,0x2ce]],'centro')
-por('pc',[[0x062],[0x295]],'centro')
+por('pc',[[0x287],[0x28f]],'interior')
 por('tv',[[0x036,0x037],[0x03e,0x03f]],'interior')
 por('mesa',[[0x04c,0x04d],[0x054,0x055]],'interior')
 por('balcao',[[0x2b9,0x2bc,0x2bc,0x298,0x2bc,0x2bc,0x2bd],[0x2a3,0x2b7,0x2b7,0x2b7,0x2b7,0x2b7,0x2bf]],'centro')
+# O posto de trocas tem duas colunas: recebe o móvel azul completo, com as
+# quatro quinas originais, em vez de duas pontas do balcão grande da enfermeira.
+ts['loja_objetos']=tileset('building','mart')
+por('balcao_pequeno',[[0x2b0,0x2b2]],'loja_objetos')
+por('balcao_loja',[[0x2b0,0x2b1,0x2b1,0x2b2]],'loja_objetos')
 por('escada',[[0x2d0,0x2d1],[0x2d8,0x2d9],[0x2e0,0x2e1]],'centro')
 por('maquina',[[0x2a9,0x2aa,0x2ab],[0x2b1,0x2b2,0x2b3]],'centro')
-por('cama',[[0x287],[0x28f]],'interior')
+# Cama completa do quarto original: cabeceira, colchão e pé. 0x287/0x28f
+# são o computador; usar essas peças aqui trocava a identidade do móvel.
+por('cama',[[0x283,0x284,0x285],[0x28b,0x28c,0x28d],[0x293,0x294,0x295]],'interior')
+limpar_borda(objetos['cama'],set(c for i in[0x001,0x008,0x009]for c in ts['interior'][i].get_flattened_data()))
+objetos['cama']=objetos['cama'].crop(objetos['cama'].getbbox())
 por('poste',[[0x0e8],[0x0f1]])
 por('banco',[[0x284,0x284]])
 por('borda_pedra',[[0x135,0x136]])
 por('bau',[[0x003]])
+# Remove somente quadrantes que são cópias exatas de piso. As bordas do móvel
+# e suas cores internas ficam intactas, inclusive os pés e o contorno do balcão.
+pisos=set()
+for banco,ids in [('interior',[0x001,0x008,0x009,0x059,0x081]),('centro',[0x281,0x2b7])]:
+ for i in ids:
+  for y in[0,8]:
+   for x in[0,8]:pisos.add(ts[banco][i].crop((x,y,x+8,y+8)).tobytes())
+for nome in['prateleira','pc','tv','mesa','escada','maquina']:
+ im=objetos[nome]
+ for y in range(0,im.height-7,8):
+  for x in range(0,im.width-7,8):
+   if im.crop((x,y,x+8,y+8)).tobytes() in pisos:im.paste((0,0,0,0),(x,y,x+8,y+8))
+# O computador original fica encostado à parede. Essa parede não acompanha
+# o equipamento quando ele é usado em outra posição ou em outra sala.
+limpar_borda(objetos['pc'],set(c for i in[0x020,0x028]for c in ts['interior'][i].get_flattened_data()))
+objetos['pc']=objetos['pc'].crop(objetos['pc'].getbbox())
 # Pedras do cenário mantêm a escala original. A pedra de Força ampliada parecia
 # uma esfera gigante, além de comunicar uma interação que esses enfeites não têm.
 for nome,arquivo,tamanho in [('pedra','rock_smash_rock.png',16),('rochedo','rock_smash_rock.png',32)]:
@@ -126,8 +153,8 @@ for nome,im in objetos.items():
  if y+im.height>512:raise ValueError('Atlas de objetos cheio')
  atlas.paste(im,(x,y));frames[nome]=[x,y,im.width,im.height];x+=im.width;linha=max(linha,im.height)
 atlas.save(SAIDA/'objetos.png',optimize=True)
-fontes={str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(raw.rglob('*')) if p.is_file() and any(str(p.relative_to(raw)).startswith(('primary/'+v[0], 'secondary/'+v[1])) for v in BANCOS.values())}
-J={'origem':json.loads((root/'origem.json').read_text()),'bloco':16,'bancos':{k:{'arquivo':k+'.png','blocos':len(v)}for k,v in ts.items()},'objetos':frames,'fontes':{**fontes,**{'misc/'+p.name:hashlib.sha256(p.read_bytes()).hexdigest()for p in sorted((root/'misc').glob('*.png'))}}}
+fontes={str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(raw.rglob('*')) if p.is_file() and (str(p.relative_to(raw)).startswith('secondary/mart/') or any(str(p.relative_to(raw)).startswith(('primary/'+v[0], 'secondary/'+v[1])) for v in BANCOS.values()))}
+J={'origem':json.loads((root/'origem.json').read_text()),'bloco':16,'bancos':{k:{'arquivo':k+'.png','blocos':len(ts[k])}for k in BANCOS},'objetos':frames,'fontes':{**fontes,**{'misc/'+p.name:hashlib.sha256(p.read_bytes()).hexdigest()for p in sorted((root/'misc').glob('*.png'))}}}
 J['versaoObjetos']=hashlib.sha256((SAIDA/'objetos.png').read_bytes()).hexdigest()[:16]
 (SAIDA/'indice.json').write_text(json.dumps(J,ensure_ascii=False,indent=2)+'\n')
 print('Atlas de terreno e objetos:',SAIDA)

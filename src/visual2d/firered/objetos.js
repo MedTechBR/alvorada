@@ -3,6 +3,9 @@ import { KINDS } from '../../world/objects.js';
 
 export function tipoObjeto(o){
  const k=o.kind,K=KINDS[k];
+ if(/^pine2?$/.test(k))return 'arvore';
+ if(k==='lamp'||k==='fenceV'||/^wfence/.test(k))return 'nativo';
+ if(k==='roundbush'||k==='cone')return (o.fw??K?.fw??1)>2?'arbusto_largo':'arbusto_medio';
  // Mantém a identidade das peças sem equivalente no banco geral: palmeira não vira moita,
  // caixa não vira placa, sofá não vira cerca e utensílios não viram bordas de água.
  if(/palm|palmeira|coqueiro|pine|pinheiro|araucaria|cact|mandacaru|xiquexique|mangue|oran|pecha/i.test(k)||K?.berry)return 'nativo';
@@ -11,6 +14,8 @@ export function tipoObjeto(o){
  if(/shelf|armario|estante|prateleira|mesa|table|desk|tv/i.test(k)&&(K?.fw??1)<2)return 'nativo';
  if(/geladeira|gondola|expositor|mail|radio|skull|ossada/i.test(k))return 'nativo';
  if(k==='maquinaCura')return 'maquina';
+ if(k==='counterTroca')return 'balcao_pequeno';
+ if(k==='counterLoja'||k==='counter')return 'balcao_loja';
  if(K?.glow||/menhir|column|obelisk|torch|stump/i.test(k))return 'nativo';
  if(k==='escadaRolante')return 'escada';
  if(k==='balltable')return 'nativo';
@@ -48,8 +53,7 @@ export function montarObjeto(imagem,frames,o){
  const cv=document.createElement('canvas');cv.width=w;cv.height=Math.max(f[3],(o.fh??K?.fh??1)*16);
  const c=cv.getContext('2d');c.imageSmoothingEnabled=false;
  // Copas são objetos inteiros. Repetir suas colunas produz duas árvores cortadas.
- if(door===null&&['arvore','arvore_grande'].includes(nome)){c.drawImage(imagem,...f,Math.floor((w-f[2])/2),cv.height-f[3],f[2],f[3]);const tex=PIXI.Texture.from(cv);tex.source.scaleMode='nearest';return{tex,canvas:cv,nome};}
- if(door===null&&['maquina','pc','tv','prateleira','vaso','mesa','cama','escada'].includes(nome)){cv.width=f[2];c.drawImage(imagem,...f,0,cv.height-f[3],f[2],f[3]);const tex=PIXI.Texture.from(cv);tex.source.scaleMode='nearest';return{tex,canvas:cv,nome};}
+ if(door===null&&['arvore','arvore_grande','arbusto_medio','arbusto_largo','balcao_pequeno','balcao_loja','maquina','pc','tv','prateleira','vaso','mesa','cama','escada'].includes(nome)){cv.width=f[2];c.imageSmoothingEnabled=false;c.drawImage(imagem,...f,0,cv.height-f[3],f[2],f[3]);const tex=PIXI.Texture.from(cv);tex.source.scaleMode='nearest';return{tex,canvas:cv,nome};}
  const esquerda=door===null?-1:door-centro;
  if(door!==null&&esquerda>=0&&esquerda+src<=fw){
   const jardim=frames.arbusto;

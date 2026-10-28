@@ -20,6 +20,9 @@ export function escolherBloco(map,t,x,y){
  if(t===TILE.VOID)return ['exterior',0];
  const sala=map.interiorAt(x*16+8,y*16+8);
  if(y>=(map.outdoorH??map.h)&&!sala)return ['exterior',0];
+ // No continente, a mata já tem árvores inteiras por setor. Pintá-las também
+ // no chão duplicava copas e deixava fragmentos de tronco entre os objetos.
+ if(t===TILE.FOREST&&map.S?.florestaPorSetor)return ['exterior',0x001];
  if(t===TILE.FOREST||t===TILE.ROOTS)return ['exterior',[[0x00e,0x00f],[0x01e,0x01f],[0x024,0x025]][((y%3)+3)%3][x&1]];
  if(t===TILE.CLIMB)return ['caverna',0x283];
  if(t===TILE.MUD||t===TILE.MANGMUD)return ['lama',0x1d9];
@@ -53,7 +56,7 @@ export function escolherBloco(map,t,x,y){
   const urbana=t!==TILE.PATH||map.areaAt(x*16+8,y*16+8)?.biome==='vila';
   return ['exterior',borda(map,x,y,(q,xx,yy)=>CAMINHO.has(pisoPraca(map,q,xx,yy)),urbana?PRACA:ESTRADA)];
  }
- if(AREIA.has(t))return ['exterior',[0x125,0x12d,0x12e][ix(x,y)%3]];
+ if(AREIA.has(t))return ['pisos',borda(map,x,y,q=>![TILE.GRASS,TILE.GRASS2,TILE.TALL,TILE.FLOWERS,TILE.DARK,TILE.FOREST,TILE.ROOTS].includes(q),[[4,5,6],[7,8,9],[10,11,12]])];
  if(CAVERNA.has(t))return ['caverna',ix(x,y)%7===0?0x289:0x281];
  if(GELO.has(t))return ['gelo',0x001];
  if(t===TILE.FLOWERS)return ['exterior',ix(x,y)%4===0?0x004:0x001];

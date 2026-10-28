@@ -41,56 +41,68 @@
       16,
       16
     ],
-    "flores": [
+    "arbusto_medio": [
       80,
+      0,
+      32,
+      16
+    ],
+    "arbusto_largo": [
+      112,
+      0,
+      48,
+      16
+    ],
+    "flores": [
+      160,
       0,
       16,
       16
     ],
     "placa": [
-      96,
+      176,
       0,
       16,
       16
     ],
     "cerca": [
-      112,
+      192,
       0,
       16,
       16
     ],
     "cerca_madeira": [
-      128,
+      208,
       0,
       16,
       16
     ],
     "pedra": [
-      144,
+      224,
       0,
       16,
       16
     ],
     "rochedo": [
-      160,
+      240,
       0,
       32,
       32
     ],
     "casa": [
-      192,
-      0,
-      80,
-      80
-    ],
-    "centro": [
       272,
       0,
       80,
       80
     ],
-    "loja": [
+    "centro": [
       352,
+      0,
+      80,
+      80
+    ],
+    "loja": [
+      432,
       0,
       64,
       64
@@ -122,65 +134,77 @@
     "pc": [
       272,
       80,
-      16,
-      32
+      15,
+      20
     ],
     "tv": [
-      288,
+      287,
       80,
       32,
       32
     ],
     "mesa": [
-      320,
+      319,
       80,
       32,
       32
     ],
     "balcao": [
-      352,
+      351,
       80,
       112,
       32
     ],
-    "escada": [
-      464,
+    "balcao_pequeno": [
+      463,
       80,
+      32,
+      16
+    ],
+    "balcao_loja": [
+      0,
+      160,
+      64,
+      16
+    ],
+    "escada": [
+      64,
+      160,
       32,
       48
     ],
     "maquina": [
-      0,
+      96,
       160,
       48,
       32
     ],
     "cama": [
-      48,
+      144,
       160,
-      16,
-      32
+      24,
+      34
     ],
     "poste": [
-      64,
+      168,
       160,
       16,
       32
     ],
     "banco": [
-      80,
+      184,
       160,
       32,
       16
     ],
     "borda_pedra": [
-      112,
+      216,
       160,
       32,
       16
     ],
     "bau": [
-      144,
+      248,
       160,
       16,
       16
@@ -263,6 +287,25 @@
     "originais/secondary/generic_building_1/palettes/14.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
     "originais/secondary/generic_building_1/palettes/15.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
     "originais/secondary/generic_building_1/tiles.png": "efff402dbbe15d908c73aed857c19ca61ea5cdc5347c2815f81304746cd5ac4f",
+    "originais/secondary/mart/metatile_attributes.bin": "7dbd2c93c112903bae8ecd78a9e9a31c0afe5121a05980bb1dddc72c67486ef4",
+    "originais/secondary/mart/metatiles.bin": "ba42fc92f0e14255aae6ae13a45f59bc5a9d5835e2e7f4f71575d54c59e2b0db",
+    "originais/secondary/mart/palettes/00.pal": "db75c8cdc25dd0de19b1f55dddc7e3dd2f27c95786dd95e5ee8ce32cc2637279",
+    "originais/secondary/mart/palettes/01.pal": "ca4e5d1beca2e2622a32ba39f02c67a390107a1fe1515ed28baf5e54b05eb862",
+    "originais/secondary/mart/palettes/02.pal": "e2e9e8e38bae82c1a4aaffa3ef30d410413a9f56bc4189462da53e52f44959ce",
+    "originais/secondary/mart/palettes/03.pal": "5823b7bc8dc9b7dd6142ee3ec5b15a2febafb72b5ead803328e1f376bad159fb",
+    "originais/secondary/mart/palettes/04.pal": "de915f823eedf2ea3b1285cf006a53103fd04dca2e41b8267977def71d2c0969",
+    "originais/secondary/mart/palettes/05.pal": "de915f823eedf2ea3b1285cf006a53103fd04dca2e41b8267977def71d2c0969",
+    "originais/secondary/mart/palettes/06.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/mart/palettes/07.pal": "c243110031a6a8a4e7c42d0c80e4a7f8cadca4c3dee6c8cb594d9e2fe6770b94",
+    "originais/secondary/mart/palettes/08.pal": "8c2193213389f558a59e346a62bb853f8e20734ce8fe7fc55f1b1054a64e79a9",
+    "originais/secondary/mart/palettes/09.pal": "5e101354a6cc25baec6777d1645934e135545d278acce0f34936c591273bf5ef",
+    "originais/secondary/mart/palettes/10.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/secondary/mart/palettes/11.pal": "9fd961331b3d93c934ae2606e4c71e915af26bdefdded710b3992d047360fc3e",
+    "originais/secondary/mart/palettes/12.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/mart/palettes/13.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/mart/palettes/14.pal": "226f0ddc9a6d3b26b78e138333dfde67d39aa7ac95a257e9e53c766fb6035675",
+    "originais/secondary/mart/palettes/15.pal": "bf04092ebe65f2846c64e84f686749bce590f62b490303c8d23f275fe4067fa2",
+    "originais/secondary/mart/tiles.png": "d3db888db856f7d3987c5365db580e9f43c2889c2c9e04ae4b0a1eb3e2afc3c7",
     "originais/secondary/pallet_town/metatile_attributes.bin": "8af5fbc8c32e5d0de4fe66735603d46ecd3506c42fcbe8b6cac744496a25203a",
     "originais/secondary/pallet_town/metatiles.bin": "3b7ba7f75fd5d750413fc252519569a9f98fac586d87f62066bdf1e3edf35ca2",
     "originais/secondary/pallet_town/palettes/00.pal": "77bf9872166325d3efeac30fd239248fdf52d9f726aad11658c3b9043af6294f",
@@ -306,5 +349,5 @@
     "misc/strength_boulder.png": "60c4e11133c8c23419cbdd41a9a3d80fb316914566431fb63948a782f4039762",
     "misc/wooden_sign.png": "62f2042def39641d6ff27addc5442edd8314966032337fa036938a27bf9861b1"
   },
-  "versaoObjetos": "4033bed4ffc10498"
+  "versaoObjetos": "78e8af07708791d9"
 }

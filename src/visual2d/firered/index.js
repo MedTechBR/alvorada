@@ -37,7 +37,7 @@ export class VisualFireRed{
    if(exterior.data[k]===139&&exterior.data[k+1]===164&&exterior.data[k+2]===255)exterior.data.set([213,197,106],k);
   }
   exterior.canvas.getContext('2d').putImageData(new ImageData(exterior.data,exterior.w,exterior.canvas.height),0,0);
-  const piso=pisosUtilitarios();piso.canvas=document.createElement('canvas');piso.canvas.width=piso.w;piso.canvas.height=16;piso.canvas.getContext('2d').putImageData(new ImageData(piso.data,piso.w,16),0,0);this.bancos.pisos=piso;
+  const piso=pisosUtilitarios(this.bancos.exterior);piso.canvas=document.createElement('canvas');piso.canvas.width=piso.w;piso.canvas.height=16;piso.canvas.getContext('2d').putImageData(new ImageData(piso.data,piso.w,16),0,0);this.bancos.pisos=piso;
   // Neve usa os mesmos pixels e uma paleta curta de gelo, sem textura pintada.
   const gelo={...this.bancos.exterior,data:new Uint8ClampedArray(this.bancos.exterior.data)};
   for(let i=0;i<gelo.data.length;i+=4){const k=(gelo.data[i]+gelo.data[i+1]+gelo.data[i+2])/3;gelo.data[i]=k<100?112:k<170?184:240;gelo.data[i+1]=k<100?152:k<170?208:248;gelo.data[i+2]=k<100?192:k<170?232:248;}
