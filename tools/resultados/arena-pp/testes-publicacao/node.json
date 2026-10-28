@@ -1,0 +1,92 @@
+[
+  {
+    "teste": "verificar_dados",
+    "codigo": 0,
+    "segundos": 0.98
+  },
+  {
+    "teste": "teste-jornada",
+    "codigo": 0,
+    "segundos": 0.1
+  },
+  {
+    "teste": "teste-jornada-completa",
+    "codigo": 0,
+    "segundos": 12.46
+  },
+  {
+    "teste": "teste-progressao",
+    "codigo": 0,
+    "segundos": 3.09
+  },
+  {
+    "teste": "alvos-passos",
+    "codigo": 0,
+    "segundos": 2.86
+  },
+  {
+    "teste": "teste-guia",
+    "codigo": 0,
+    "segundos": 54.31
+  },
+  {
+    "teste": "teste-guia-caminhada",
+    "codigo": 0,
+    "segundos": 3.72
+  },
+  {
+    "teste": "auditar-solidos",
+    "codigo": 0,
+    "segundos": 3.3
+  },
+  {
+    "teste": "auditar-saidas",
+    "codigo": 0,
+    "segundos": 4.01
+  },
+  {
+    "teste": "auditar-falantes",
+    "codigo": 0,
+    "segundos": 0.09
+  },
+  {
+    "teste": "auditar-obtencao",
+    "codigo": 0,
+    "segundos": 0.13
+  },
+  {
+    "teste": "auditar-invisiveis",
+    "codigo": 0,
+    "segundos": 14.52
+  },
+  {
+    "teste": "teste-geografia",
+    "codigo": 0,
+    "segundos": 3.65
+  },
+  {
+    "teste": "teste-firered",
+    "codigo": 0,
+    "segundos": 0.09
+  },
+  {
+    "teste": "teste-pp",
+    "codigo": 0,
+    "segundos": 0.04
+  },
+  {
+    "teste": "teste-entradas-escada",
+    "codigo": 0,
+    "segundos": 0.04
+  },
+  {
+    "teste": "teste-composicao-cenario",
+    "codigo": 0,
+    "segundos": 0.08
+  },
+  {
+    "teste": "vestir",
+    "codigo": 0,
+    "segundos": 1.49
+  }
+]

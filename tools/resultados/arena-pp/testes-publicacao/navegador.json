@@ -1,0 +1,27 @@
+[
+  {
+    "teste": "combate",
+    "codigo": 0,
+    "segundos": 10.82
+  },
+  {
+    "teste": "cenas",
+    "codigo": 0,
+    "segundos": 47.15
+  },
+  {
+    "teste": "batalha-fluida",
+    "codigo": 0,
+    "segundos": 75.14
+  },
+  {
+    "teste": "combate-paredes",
+    "codigo": 0,
+    "segundos": 16.91
+  },
+  {
+    "teste": "passagens-npc",
+    "codigo": 0,
+    "segundos": 5.04
+  }
+]

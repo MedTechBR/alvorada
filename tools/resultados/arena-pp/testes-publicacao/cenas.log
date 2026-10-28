@@ -1,0 +1,57 @@
+{
+  "cenas": 25,
+  "escadas": [
+    {
+      "nome": "Coral",
+      "passos": [
+        {
+          "dir": "up",
+          "alvo": 1180,
+          "y": 18890,
+          "ok": true
+        },
+        {
+          "dir": "down",
+          "alvo": 1186,
+          "y": 18986,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "nome": "Jandaia",
+      "passos": [
+        {
+          "dir": "up",
+          "alvo": 1568,
+          "y": 25098,
+          "ok": true
+        },
+        {
+          "dir": "down",
+          "alvo": 1574,
+          "y": 25194,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "nome": "Selva",
+      "passos": [
+        {
+          "dir": "up",
+          "alvo": 1659,
+          "y": 26554,
+          "ok": true
+        },
+        {
+          "dir": "down",
+          "alvo": 1668,
+          "y": 26698,
+          "ok": true
+        }
+      ]
+    }
+  ],
+  "erros": []
+}

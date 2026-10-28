@@ -1,0 +1,66 @@
+{
+  "contatos": [
+    {
+      "golpe": "Talho",
+      "usou": true,
+      "antes": 264,
+      "depois": 256,
+      "ppAntes": 100,
+      "ppDepois": 95.08799999999997
+    },
+    {
+      "golpe": "Presa de Fogo",
+      "usou": true,
+      "antes": 256,
+      "depois": 245,
+      "ppAntes": 95.08799999999997,
+      "ppDepois": 90.17599999999992
+    }
+  ],
+  "pp": {
+    "decorrido": 2.499999999999991,
+    "antes": 100,
+    "ok": true,
+    "apos": 66,
+    "custo": 34,
+    "liberou": true,
+    "final": 85.99999999999993,
+    "basico": "Golpe básico",
+    "valor": 1.999999999999929,
+    "pausa": 1.999999999999929,
+    "gratuito": true,
+    "aposBasico": 1.999999999999929,
+    "aviso": true,
+    "avisoVazio": false,
+    "W": 1.5565,
+    "cd": 7.08,
+    "cdVazio": 0,
+    "barra": "1"
+  },
+  "cena": {
+    "projecao": 0.72,
+    "volume": true,
+    "contextos": 1,
+    "limite": {
+      "x0": 80,
+      "y0": 96,
+      "x1": 560,
+      "y1": 368,
+      "quem": {}
+    },
+    "nomes": [
+      "Charizard",
+      "Snorlax"
+    ],
+    "ps": [
+      66,
+      202
+    ]
+  },
+  "liberacao": {
+    "destruiu": true,
+    "semMapa": true,
+    "normal": true
+  },
+  "erros": []
+}

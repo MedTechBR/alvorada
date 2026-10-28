@@ -1,0 +1,6668 @@
+{
+  "resultados": [
+    {
+      "nome": "coral",
+      "x": 16616,
+      "y": 18954,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "houseYellow",
+          "x": 16216,
+          "y": 18848,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16160,
+          "y": 18784,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16368,
+          "y": 18864,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 16152,
+          "y": 18704,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 16152,
+          "y": 18736,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 16360,
+          "y": 18768,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "center",
+          "x": 16440,
+          "y": 18848,
+          "arte": "centro",
+          "w": 144,
+          "h": 80
+        },
+        {
+          "tipo": "housePink",
+          "x": 16440,
+          "y": 18720,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "sign",
+          "x": 16392,
+          "y": 18896,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "posteLuzita",
+          "x": 16504,
+          "y": 18720,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "sign",
+          "x": 16472,
+          "y": 18864,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "sign",
+          "x": 16632,
+          "y": 18832,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16512,
+          "y": 18720,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16624,
+          "y": 18800,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 16504,
+          "y": 18768,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "posteLuzita",
+          "x": 16648,
+          "y": 18720,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "mart",
+          "x": 16376,
+          "y": 19008,
+          "arte": "loja",
+          "w": 112,
+          "h": 64
+        },
+        {
+          "tipo": "houseYellow",
+          "x": 16296,
+          "y": 19088,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "sign",
+          "x": 16264,
+          "y": 19120,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "housePink",
+          "x": 16392,
+          "y": 19168,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "posteLuzita",
+          "x": 16456,
+          "y": 19168,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16480,
+          "y": 19056,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 16472,
+          "y": 19072,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 16488,
+          "y": 19072,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16784,
+          "y": 19104,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "boulder",
+          "x": 16752,
+          "y": 19120,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "boulder",
+          "x": 16752,
+          "y": 18960,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        }
+      ]
+    },
+    {
+      "nome": "jandaia",
+      "x": 7064,
+      "y": 25210,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "rock",
+          "x": 6872,
+          "y": 25024,
+          "arte": "pedra",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "bush",
+          "x": 6776,
+          "y": 25040,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "autumn",
+          "x": 6832,
+          "y": 24848,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6800,
+          "y": 24848,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "moita",
+          "x": 6664,
+          "y": 24864,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "boulder",
+          "x": 7184,
+          "y": 25072,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "bush",
+          "x": 7368,
+          "y": 25040,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "bush",
+          "x": 7352,
+          "y": 25024,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "boulder",
+          "x": 6768,
+          "y": 25232,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "bush",
+          "x": 6776,
+          "y": 25248,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6976,
+          "y": 25344,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bush",
+          "x": 6984,
+          "y": 25328,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "bush",
+          "x": 7016,
+          "y": 25216,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "tree",
+          "x": 6800,
+          "y": 25376,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6784,
+          "y": 25360,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 6816,
+          "y": 25360,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bush",
+          "x": 6808,
+          "y": 25392,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "bigautumn",
+          "x": 6992,
+          "y": 25360,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bush",
+          "x": 7000,
+          "y": 25376,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        }
+      ]
+    },
+    {
+      "nome": "mata",
+      "x": 6440,
+      "y": 25370,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "boulder",
+          "x": 6768,
+          "y": 25232,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "bush",
+          "x": 6776,
+          "y": 25248,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "tree",
+          "x": 6800,
+          "y": 25376,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6784,
+          "y": 25360,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 6816,
+          "y": 25360,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bush",
+          "x": 6808,
+          "y": 25392,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "sign",
+          "x": 6296,
+          "y": 25200,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "bush",
+          "x": 6248,
+          "y": 25216,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "rock",
+          "x": 6536,
+          "y": 25312,
+          "arte": "pedra",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "tree",
+          "x": 6400,
+          "y": 25344,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6432,
+          "y": 25344,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 6592,
+          "y": 25344,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "autumn",
+          "x": 6624,
+          "y": 25344,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "boulder",
+          "x": 6640,
+          "y": 25232,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "boulder",
+          "x": 6608,
+          "y": 25232,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "bush",
+          "x": 6200,
+          "y": 25376,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "bush",
+          "x": 6392,
+          "y": 25376,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "rock",
+          "x": 6632,
+          "y": 25440,
+          "arte": "pedra",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "pine",
+          "x": 6416,
+          "y": 25360,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bush",
+          "x": 6424,
+          "y": 25376,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "tree",
+          "x": 6608,
+          "y": 25360,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bush",
+          "x": 6584,
+          "y": 25376,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "bush",
+          "x": 6616,
+          "y": 25376,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "grayrock",
+          "x": 6624,
+          "y": 25536,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        }
+      ]
+    },
+    {
+      "nome": "selva",
+      "x": 7272,
+      "y": 26714,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "sign",
+          "x": 7304,
+          "y": 26512,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "sign",
+          "x": 7160,
+          "y": 26784,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "folhaGigante",
+          "x": 7024,
+          "y": 26688,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bambu",
+          "x": 7056,
+          "y": 26688,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "ipe",
+          "x": 6928,
+          "y": 26768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6960,
+          "y": 26768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6992,
+          "y": 26768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "ipe",
+          "x": 7088,
+          "y": 26768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6944,
+          "y": 26800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "paineira",
+          "x": 6976,
+          "y": 26800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7008,
+          "y": 26800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7040,
+          "y": 26800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 7072,
+          "y": 26800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "paineira",
+          "x": 7104,
+          "y": 26800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7136,
+          "y": 26800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6928,
+          "y": 26832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6960,
+          "y": 26832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6992,
+          "y": 26832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 7024,
+          "y": 26832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "ipe",
+          "x": 7056,
+          "y": 26832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "paineira",
+          "x": 7088,
+          "y": 26832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "ipe",
+          "x": 6944,
+          "y": 26864,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "moita",
+          "x": 7064,
+          "y": 26768,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7016,
+          "y": 26784,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7032,
+          "y": 26784,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7048,
+          "y": 26784,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7064,
+          "y": 26784,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7112,
+          "y": 26784,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7128,
+          "y": 26784,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7144,
+          "y": 26784,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "arvoreSelva",
+          "x": 7376,
+          "y": 26704,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bambu",
+          "x": 7392,
+          "y": 26672,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bambu",
+          "x": 7408,
+          "y": 26816,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bambu",
+          "x": 7392,
+          "y": 26848,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "folhaGigante",
+          "x": 7552,
+          "y": 26752,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "arvoreSelva",
+          "x": 7568,
+          "y": 26688,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "arvoreSelva",
+          "x": 7616,
+          "y": 26704,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "folhaGigante",
+          "x": 7552,
+          "y": 26720,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "folhaGigante",
+          "x": 7648,
+          "y": 26720,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "arvoreSelva",
+          "x": 7616,
+          "y": 26736,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "folhaGigante",
+          "x": 7648,
+          "y": 26752,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "folhaGigante",
+          "x": 7600,
+          "y": 26768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "folhaGigante",
+          "x": 7648,
+          "y": 26784,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "folhaGigante",
+          "x": 7648,
+          "y": 26880,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "umbu",
+          "x": 7576,
+          "y": 26672,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7664,
+          "y": 26832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "moita",
+          "x": 7640,
+          "y": 26816,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7656,
+          "y": 26816,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7672,
+          "y": 26816,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7640,
+          "y": 26832,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7640,
+          "y": 26848,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        }
+      ]
+    },
+    {
+      "nome": "passagem",
+      "x": 5944,
+      "y": 27354,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "paineira",
+          "x": 5872,
+          "y": 27152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 5792,
+          "y": 27184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "moita",
+          "x": 5768,
+          "y": 27184,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "tree2",
+          "x": 5904,
+          "y": 27152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 5936,
+          "y": 27152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "paineira",
+          "x": 5968,
+          "y": 27152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6000,
+          "y": 27152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6032,
+          "y": 27152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "ipe",
+          "x": 6064,
+          "y": 27152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "ipe",
+          "x": 6112,
+          "y": 27184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6144,
+          "y": 27184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "moita",
+          "x": 6088,
+          "y": 27152,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6088,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6104,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6120,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6136,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6056,
+          "y": 27232,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6072,
+          "y": 27232,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6088,
+          "y": 27232,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6176,
+          "y": 27184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6208,
+          "y": 27184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "paineira",
+          "x": 6240,
+          "y": 27184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "paineira",
+          "x": 6272,
+          "y": 27184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6304,
+          "y": 27184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6336,
+          "y": 27184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "paineira",
+          "x": 6368,
+          "y": 27184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6400,
+          "y": 27184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "paineira",
+          "x": 6304,
+          "y": 27248,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "moita",
+          "x": 6392,
+          "y": 27152,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6152,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6168,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6184,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6200,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6216,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6232,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6248,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6264,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6280,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6296,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6312,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6328,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6344,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6360,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6376,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6392,
+          "y": 27168,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6328,
+          "y": 27248,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6392,
+          "y": 27264,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6392,
+          "y": 27280,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "sign",
+          "x": 5816,
+          "y": 27552,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 5656,
+          "y": 27440,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "arvoreSelva",
+          "x": 6368,
+          "y": 27440,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "rock",
+          "x": 6248,
+          "y": 27552,
+          "arte": "pedra",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6248,
+          "y": 27440,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6232,
+          "y": 27424,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6352,
+          "y": 27472,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6384,
+          "y": 27472,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6272,
+          "y": 27504,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6304,
+          "y": 27504,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "ipe",
+          "x": 6336,
+          "y": 27504,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6368,
+          "y": 27504,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6400,
+          "y": 27504,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6256,
+          "y": 27536,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6288,
+          "y": 27536,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "paineira",
+          "x": 6320,
+          "y": 27536,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6352,
+          "y": 27536,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6384,
+          "y": 27536,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6368,
+          "y": 27568,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6400,
+          "y": 27568,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "ipe",
+          "x": 6352,
+          "y": 27600,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6384,
+          "y": 27600,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6272,
+          "y": 27632,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6304,
+          "y": 27632,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bigtree",
+          "x": 6336,
+          "y": 27632,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6368,
+          "y": 27632,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "paineira",
+          "x": 6400,
+          "y": 27632,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "moita",
+          "x": 6248,
+          "y": 27488,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6264,
+          "y": 27488,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6280,
+          "y": 27488,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6296,
+          "y": 27488,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6312,
+          "y": 27488,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6328,
+          "y": 27488,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6248,
+          "y": 27504,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6248,
+          "y": 27520,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6344,
+          "y": 27568,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6344,
+          "y": 27584,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6248,
+          "y": 27616,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6264,
+          "y": 27616,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6280,
+          "y": 27616,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6296,
+          "y": 27616,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6312,
+          "y": 27616,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6328,
+          "y": 27616,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 6248,
+          "y": 27632,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        }
+      ]
+    },
+    {
+      "nome": "centro_coral",
+      "x": 296,
+      "y": 32826,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "armarioCentro",
+          "x": 240,
+          "y": 32752,
+          "arte": "prateleira",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "plantaGrande",
+          "x": 184,
+          "y": 32752,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "plantaGrande",
+          "x": 200,
+          "y": 32752,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "counterJoy",
+          "x": 272,
+          "y": 32768,
+          "arte": "balcao",
+          "w": 128,
+          "h": 32
+        },
+        {
+          "tipo": "maquinaCura",
+          "x": 288,
+          "y": 32752,
+          "arte": "maquina",
+          "w": 48,
+          "h": 32
+        },
+        {
+          "tipo": "pc",
+          "x": 344,
+          "y": 32768,
+          "arte": "pc",
+          "w": 15,
+          "h": 20
+        },
+        {
+          "tipo": "escadaRolante",
+          "x": 368,
+          "y": 32768,
+          "arte": "escada",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "plantaGrande",
+          "x": 344,
+          "y": 32752,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "counterTroca",
+          "x": 192,
+          "y": 32784,
+          "arte": "balcao_pequeno",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "plantaGrande",
+          "x": 184,
+          "y": 32848,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "plantaGrande",
+          "x": 184,
+          "y": 32800,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "tvRack",
+          "x": 368,
+          "y": 32800,
+          "arte": "tv",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "plantaGrande",
+          "x": 376,
+          "y": 32848,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        }
+      ]
+    },
+    {
+      "nome": "loja_coral",
+      "x": 888,
+      "y": 32810,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "counterLoja",
+          "x": 832,
+          "y": 32768,
+          "arte": "balcao_loja",
+          "w": 64,
+          "h": 16
+        },
+        {
+          "tipo": "prateleiraParede",
+          "x": 824,
+          "y": 32752,
+          "arte": "prateleira",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "plantaGrande",
+          "x": 872,
+          "y": 32752,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "plantaGrande",
+          "x": 968,
+          "y": 32768,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "plantaGrande",
+          "x": 968,
+          "y": 32832,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "plantaGrande",
+          "x": 808,
+          "y": 32832,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        }
+      ]
+    },
+    {
+      "nome": "farol_coral",
+      "x": 3224,
+      "y": 32858,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "sign",
+          "x": 3112,
+          "y": 32848,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        }
+      ]
+    },
+    {
+      "nome": "farol_coral_2",
+      "x": 3864,
+      "y": 32874,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "sign",
+          "x": 3864,
+          "y": 32864,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_campina",
+      "x": 7064,
+      "y": 17354,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "canteiro",
+          "x": 7360,
+          "y": 17152,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "houseA",
+          "x": 6760,
+          "y": 17248,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "canteiro",
+          "x": 6864,
+          "y": 17216,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "tree2",
+          "x": 6832,
+          "y": 17216,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 6848,
+          "y": 17232,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "moita",
+          "x": 6856,
+          "y": 17200,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "center",
+          "x": 7064,
+          "y": 17328,
+          "arte": "centro",
+          "w": 144,
+          "h": 80
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 6984,
+          "y": 17328,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "moita",
+          "x": 7032,
+          "y": 17216,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "mart",
+          "x": 7224,
+          "y": 17328,
+          "arte": "loja",
+          "w": 112,
+          "h": 64
+        },
+        {
+          "tipo": "houseB",
+          "x": 7368,
+          "y": 17248,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 7272,
+          "y": 17328,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "canteiro",
+          "x": 7216,
+          "y": 17232,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 7312,
+          "y": 17328,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 7312,
+          "y": 17360,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "tree2",
+          "x": 7216,
+          "y": 17216,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7216,
+          "y": 17248,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "sign",
+          "x": 6808,
+          "y": 17504,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 6888,
+          "y": 17424,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "sign",
+          "x": 7112,
+          "y": 17424,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 6920,
+          "y": 17600,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "canteiro",
+          "x": 7392,
+          "y": 17536,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_sussurro",
+      "x": 7592,
+      "y": 11178,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "jequitiba",
+          "x": 7240,
+          "y": 10880,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7184,
+          "y": 10768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7216,
+          "y": 10768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7248,
+          "y": 10768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7280,
+          "y": 10768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7312,
+          "y": 10768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7344,
+          "y": 10768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7376,
+          "y": 10768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7408,
+          "y": 10768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7200,
+          "y": 10800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7232,
+          "y": 10800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7264,
+          "y": 10800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7296,
+          "y": 10800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7328,
+          "y": 10800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7360,
+          "y": 10800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7392,
+          "y": 10800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7424,
+          "y": 10800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7184,
+          "y": 10832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7216,
+          "y": 10832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7248,
+          "y": 10832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7280,
+          "y": 10832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7312,
+          "y": 10832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7344,
+          "y": 10832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7376,
+          "y": 10832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7408,
+          "y": 10832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7200,
+          "y": 10864,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7232,
+          "y": 10864,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7264,
+          "y": 10864,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7296,
+          "y": 10864,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7328,
+          "y": 10864,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7360,
+          "y": 10864,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7392,
+          "y": 10864,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7424,
+          "y": 10864,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7184,
+          "y": 10896,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7216,
+          "y": 10896,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7248,
+          "y": 10896,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7280,
+          "y": 10896,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7312,
+          "y": 10896,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7344,
+          "y": 10896,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7376,
+          "y": 10896,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7408,
+          "y": 10896,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7200,
+          "y": 10928,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7232,
+          "y": 10928,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7264,
+          "y": 10928,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7296,
+          "y": 10928,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7328,
+          "y": 10928,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7360,
+          "y": 10928,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7392,
+          "y": 10928,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7424,
+          "y": 10928,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7184,
+          "y": 10960,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7216,
+          "y": 10960,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7248,
+          "y": 10960,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7280,
+          "y": 10960,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7312,
+          "y": 10960,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7344,
+          "y": 10960,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7376,
+          "y": 10960,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7408,
+          "y": 10960,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7200,
+          "y": 10992,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7232,
+          "y": 10992,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7264,
+          "y": 10992,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7296,
+          "y": 10992,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7328,
+          "y": 10992,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7360,
+          "y": 10992,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7392,
+          "y": 10992,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7424,
+          "y": 10992,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7440,
+          "y": 10768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7472,
+          "y": 10768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7504,
+          "y": 10768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7536,
+          "y": 10768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7568,
+          "y": 10768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7600,
+          "y": 10768,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7456,
+          "y": 10800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7488,
+          "y": 10800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7520,
+          "y": 10800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7552,
+          "y": 10800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7584,
+          "y": 10800,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7440,
+          "y": 10832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7472,
+          "y": 10832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7504,
+          "y": 10832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7536,
+          "y": 10832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7568,
+          "y": 10832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7600,
+          "y": 10832,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7456,
+          "y": 10864,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7488,
+          "y": 10864,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7520,
+          "y": 10864,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7552,
+          "y": 10864,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7584,
+          "y": 10864,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7440,
+          "y": 10896,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7472,
+          "y": 10896,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7504,
+          "y": 10896,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7536,
+          "y": 10896,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7568,
+          "y": 10896,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7600,
+          "y": 10896,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7456,
+          "y": 10928,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7488,
+          "y": 10928,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7520,
+          "y": 10928,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7552,
+          "y": 10928,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7584,
+          "y": 10928,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7616,
+          "y": 10928,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7440,
+          "y": 10960,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7472,
+          "y": 10960,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7504,
+          "y": 10960,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7536,
+          "y": 10960,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7568,
+          "y": 10960,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7600,
+          "y": 10960,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7632,
+          "y": 10960,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7456,
+          "y": 10992,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7488,
+          "y": 10992,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7520,
+          "y": 10992,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7552,
+          "y": 10992,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7584,
+          "y": 10992,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7616,
+          "y": 10992,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "moita",
+          "x": 7608,
+          "y": 10800,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7608,
+          "y": 10816,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7624,
+          "y": 10832,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7624,
+          "y": 10848,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7608,
+          "y": 10864,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7608,
+          "y": 10880,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7624,
+          "y": 10912,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7640,
+          "y": 10992,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7640,
+          "y": 11008,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7656,
+          "y": 11008,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7928,
+          "y": 10832,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7928,
+          "y": 10848,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "tree",
+          "x": 7184,
+          "y": 11024,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7216,
+          "y": 11024,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7248,
+          "y": 11024,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7280,
+          "y": 11024,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7312,
+          "y": 11024,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7344,
+          "y": 11024,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7376,
+          "y": 11024,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7408,
+          "y": 11024,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7200,
+          "y": 11056,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7232,
+          "y": 11056,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7264,
+          "y": 11056,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7296,
+          "y": 11056,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7328,
+          "y": 11056,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7360,
+          "y": 11056,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7392,
+          "y": 11056,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7424,
+          "y": 11056,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7184,
+          "y": 11088,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7216,
+          "y": 11088,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7248,
+          "y": 11088,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7280,
+          "y": 11088,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7312,
+          "y": 11088,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7344,
+          "y": 11088,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7376,
+          "y": 11088,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7408,
+          "y": 11088,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7200,
+          "y": 11120,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7232,
+          "y": 11120,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7264,
+          "y": 11120,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7296,
+          "y": 11120,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7328,
+          "y": 11120,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7360,
+          "y": 11120,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7392,
+          "y": 11120,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7424,
+          "y": 11120,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7184,
+          "y": 11152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7216,
+          "y": 11152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7248,
+          "y": 11152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7280,
+          "y": 11152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7312,
+          "y": 11152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7344,
+          "y": 11152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7376,
+          "y": 11152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7408,
+          "y": 11152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7232,
+          "y": 11184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7264,
+          "y": 11184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7296,
+          "y": 11184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7328,
+          "y": 11184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7360,
+          "y": 11184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7392,
+          "y": 11184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7424,
+          "y": 11184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7376,
+          "y": 11216,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7408,
+          "y": 11216,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "moita",
+          "x": 7352,
+          "y": 11216,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "treeCenter",
+          "x": 7592,
+          "y": 11152,
+          "arte": "centro",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 7576,
+          "y": 11088,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 7576,
+          "y": 11104,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "sign",
+          "x": 7640,
+          "y": 11200,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "tree",
+          "x": 7440,
+          "y": 11024,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7472,
+          "y": 11024,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7504,
+          "y": 11024,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7536,
+          "y": 11024,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7568,
+          "y": 11024,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7600,
+          "y": 11024,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7632,
+          "y": 11024,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7456,
+          "y": 11056,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7488,
+          "y": 11056,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7520,
+          "y": 11056,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7440,
+          "y": 11088,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7472,
+          "y": 11088,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7504,
+          "y": 11088,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7456,
+          "y": 11120,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7488,
+          "y": 11120,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7440,
+          "y": 11152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7472,
+          "y": 11152,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7456,
+          "y": 11184,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7440,
+          "y": 11216,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "moita",
+          "x": 7656,
+          "y": 11024,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7544,
+          "y": 11056,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7464,
+          "y": 11216,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7448,
+          "y": 11248,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "mart",
+          "x": 7912,
+          "y": 11152,
+          "arte": "loja",
+          "w": 112,
+          "h": 64
+        },
+        {
+          "tipo": "sign",
+          "x": 7784,
+          "y": 11216,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 7896,
+          "y": 11056,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "canteiro",
+          "x": 7744,
+          "y": 11072,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 7744,
+          "y": 11104,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 7712,
+          "y": 11216,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 7888,
+          "y": 11216,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "tree",
+          "x": 7200,
+          "y": 11312,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7232,
+          "y": 11312,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7264,
+          "y": 11312,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7296,
+          "y": 11312,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7328,
+          "y": 11312,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7360,
+          "y": 11312,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7392,
+          "y": 11312,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7424,
+          "y": 11312,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7184,
+          "y": 11344,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7216,
+          "y": 11344,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7248,
+          "y": 11344,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7280,
+          "y": 11344,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7312,
+          "y": 11344,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7344,
+          "y": 11344,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7376,
+          "y": 11344,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7408,
+          "y": 11344,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7200,
+          "y": 11376,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7232,
+          "y": 11376,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7264,
+          "y": 11376,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7296,
+          "y": 11376,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7328,
+          "y": 11376,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7360,
+          "y": 11376,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7392,
+          "y": 11376,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7424,
+          "y": 11376,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7184,
+          "y": 11408,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7216,
+          "y": 11408,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7248,
+          "y": 11408,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7280,
+          "y": 11408,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7312,
+          "y": 11408,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7344,
+          "y": 11408,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7376,
+          "y": 11408,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7408,
+          "y": 11408,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7200,
+          "y": 11440,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7232,
+          "y": 11440,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7264,
+          "y": 11440,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7296,
+          "y": 11440,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7328,
+          "y": 11440,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7360,
+          "y": 11440,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7392,
+          "y": 11440,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7184,
+          "y": 11472,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7216,
+          "y": 11472,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree2",
+          "x": 7248,
+          "y": 11472,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7200,
+          "y": 11504,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "moita",
+          "x": 7176,
+          "y": 11296,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7192,
+          "y": 11296,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7208,
+          "y": 11296,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7224,
+          "y": 11296,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7240,
+          "y": 11296,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7256,
+          "y": 11296,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7272,
+          "y": 11296,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7288,
+          "y": 11296,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7304,
+          "y": 11296,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7320,
+          "y": 11296,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7336,
+          "y": 11296,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7272,
+          "y": 11472,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "treeHouse",
+          "x": 7528,
+          "y": 11376,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "jequitiba",
+          "x": 7608,
+          "y": 11504,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7440,
+          "y": 11344,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7456,
+          "y": 11376,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine",
+          "x": 7440,
+          "y": 11408,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7504,
+          "y": 11472,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "pine2",
+          "x": 7536,
+          "y": 11472,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7488,
+          "y": 11504,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7520,
+          "y": 11504,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7552,
+          "y": 11504,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7584,
+          "y": 11504,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "tree",
+          "x": 7616,
+          "y": 11504,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "moita",
+          "x": 7448,
+          "y": 11328,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7464,
+          "y": 11344,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7464,
+          "y": 11360,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7480,
+          "y": 11376,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7544,
+          "y": 11440,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7512,
+          "y": 11456,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7528,
+          "y": 11456,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7544,
+          "y": 11456,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7560,
+          "y": 11472,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7480,
+          "y": 11488,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7560,
+          "y": 11488,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7576,
+          "y": 11488,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7592,
+          "y": 11488,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7464,
+          "y": 11504,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7448,
+          "y": 11520,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7464,
+          "y": 11520,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7640,
+          "y": 11520,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7656,
+          "y": 11520,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "greenhouse",
+          "x": 7744,
+          "y": 11488,
+          "arte": "ginasio",
+          "w": 128,
+          "h": 80
+        },
+        {
+          "tipo": "sign",
+          "x": 7704,
+          "y": 11424,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "jequitiba",
+          "x": 7896,
+          "y": 11520,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "canteiro",
+          "x": 7792,
+          "y": 11440,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7880,
+          "y": 11504,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7896,
+          "y": 11504,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7832,
+          "y": 11520,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7848,
+          "y": 11520,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7864,
+          "y": 11520,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7880,
+          "y": 11520,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7896,
+          "y": 11520,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7912,
+          "y": 11520,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 7928,
+          "y": 11520,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_porto",
+      "x": 20648,
+      "y": 15194,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "sign",
+          "x": 20856,
+          "y": 15072,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 20784,
+          "y": 15104,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "center",
+          "x": 20648,
+          "y": 15168,
+          "arte": "centro",
+          "w": 144,
+          "h": 80
+        },
+        {
+          "tipo": "houseC",
+          "x": 20616,
+          "y": 15312,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "sign",
+          "x": 20664,
+          "y": 15184,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "sign",
+          "x": 20552,
+          "y": 15328,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 20696,
+          "y": 15120,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "canteiro",
+          "x": 20704,
+          "y": 15184,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "sign",
+          "x": 20872,
+          "y": 15184,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "table",
+          "x": 20784,
+          "y": 15248,
+          "arte": "mesa",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 20936,
+          "y": 15120,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_lamparina",
+      "x": 16152,
+      "y": 10442,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "lampiao",
+          "x": 16072,
+          "y": 10192,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 15992,
+          "y": 10192,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 15880,
+          "y": 10192,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "moita",
+          "x": 16232,
+          "y": 10160,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "houseStone2",
+          "x": 15912,
+          "y": 10416,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "sign",
+          "x": 16024,
+          "y": 10464,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "lampiao",
+          "x": 16008,
+          "y": 10432,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16096,
+          "y": 10464,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "center",
+          "x": 16152,
+          "y": 10416,
+          "arte": "centro",
+          "w": 144,
+          "h": 80
+        },
+        {
+          "tipo": "mart",
+          "x": 16312,
+          "y": 10416,
+          "arte": "loja",
+          "w": 112,
+          "h": 64
+        },
+        {
+          "tipo": "lampiao",
+          "x": 16312,
+          "y": 10480,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 16232,
+          "y": 10432,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16224,
+          "y": 10352,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "sign",
+          "x": 15880,
+          "y": 10688,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16016,
+          "y": 10624,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 15984,
+          "y": 10672,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16016,
+          "y": 10672,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "houseStone",
+          "x": 16136,
+          "y": 10672,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "houseStone2",
+          "x": 16296,
+          "y": 10672,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "sign",
+          "x": 16200,
+          "y": 10688,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "lampiao",
+          "x": 16312,
+          "y": 10608,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 16216,
+          "y": 10704,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 16376,
+          "y": 10704,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16336,
+          "y": 10560,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16336,
+          "y": 10576,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16336,
+          "y": 10592,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16336,
+          "y": 10608,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16128,
+          "y": 10624,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16160,
+          "y": 10624,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16272,
+          "y": 10624,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 16336,
+          "y": 10624,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_aurora",
+      "x": 24344,
+      "y": 9002,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "estacao",
+          "x": 24184,
+          "y": 8784,
+          "arte": "casa",
+          "w": 144,
+          "h": 80
+        },
+        {
+          "tipo": "posteLuzita",
+          "x": 24248,
+          "y": 8880,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "sign",
+          "x": 24184,
+          "y": 8816,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "posteLuzita",
+          "x": 24536,
+          "y": 8880,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "sign",
+          "x": 24616,
+          "y": 8720,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 24736,
+          "y": 8864,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 24800,
+          "y": 8864,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 24784,
+          "y": 8880,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "sign",
+          "x": 24216,
+          "y": 9024,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 24176,
+          "y": 9168,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "center",
+          "x": 24344,
+          "y": 8976,
+          "arte": "centro",
+          "w": 144,
+          "h": 80
+        },
+        {
+          "tipo": "redacao",
+          "x": 24520,
+          "y": 9136,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "posteLuzita",
+          "x": 24440,
+          "y": 9040,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "sign",
+          "x": 24328,
+          "y": 8992,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "megaloja",
+          "x": 24824,
+          "y": 8976,
+          "arte": "loja",
+          "w": 144,
+          "h": 64
+        },
+        {
+          "tipo": "posteLuzita",
+          "x": 24728,
+          "y": 9040,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "posteLuzita",
+          "x": 24632,
+          "y": 9168,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "sign",
+          "x": 24744,
+          "y": 8992,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "sign",
+          "x": 24584,
+          "y": 9152,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_jandaia",
+      "x": 3176,
+      "y": 24906,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "sign",
+          "x": 2888,
+          "y": 24928,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 2888,
+          "y": 24912,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "canteiro",
+          "x": 2896,
+          "y": 25008,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 3040,
+          "y": 25024,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "center",
+          "x": 3176,
+          "y": 24880,
+          "arte": "centro",
+          "w": 144,
+          "h": 80
+        },
+        {
+          "tipo": "canteiro",
+          "x": 3376,
+          "y": 25040,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "bush",
+          "x": 3560,
+          "y": 24864,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_termas",
+      "x": 34744,
+      "y": 25738,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "arvoreCinza",
+          "x": 34320,
+          "y": 25456,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "arvoreCinza",
+          "x": 34704,
+          "y": 25568,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "arvoreCinza",
+          "x": 34688,
+          "y": 25584,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "lampiao",
+          "x": 35000,
+          "y": 25424,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 35064,
+          "y": 25424,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 35000,
+          "y": 25520,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 35064,
+          "y": 25520,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "sign",
+          "x": 34984,
+          "y": 25392,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 35064,
+          "y": 25488,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 35000,
+          "y": 25360,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 35064,
+          "y": 25440,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34888,
+          "y": 25488,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 35000,
+          "y": 25504,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34904,
+          "y": 25600,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "bambu",
+          "x": 34832,
+          "y": 25520,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "boulder",
+          "x": 34864,
+          "y": 25408,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "sign",
+          "x": 34376,
+          "y": 25664,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "center",
+          "x": 34744,
+          "y": 25712,
+          "arte": "centro",
+          "w": 144,
+          "h": 80
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34696,
+          "y": 25776,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "sign",
+          "x": 34632,
+          "y": 25776,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 34688,
+          "y": 25728,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 34800,
+          "y": 25728,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "arvoreCinza",
+          "x": 34656,
+          "y": 25680,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34616,
+          "y": 25728,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34680,
+          "y": 25776,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "arvoreCinza",
+          "x": 34784,
+          "y": 25792,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "bambu",
+          "x": 34640,
+          "y": 25840,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "boulder",
+          "x": 34656,
+          "y": 25808,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "mart",
+          "x": 34904,
+          "y": 25712,
+          "arte": "loja",
+          "w": 112,
+          "h": 64
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34824,
+          "y": 25776,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34952,
+          "y": 25776,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 35000,
+          "y": 25616,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34984,
+          "y": 25680,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34824,
+          "y": 25728,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34888,
+          "y": 25776,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 35064,
+          "y": 25824,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "bush",
+          "x": 34824,
+          "y": 25696,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "houseStone",
+          "x": 34728,
+          "y": 25872,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "houseA",
+          "x": 34712,
+          "y": 26064,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 34712,
+          "y": 25984,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34632,
+          "y": 25872,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34776,
+          "y": 25888,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34648,
+          "y": 25968,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34632,
+          "y": 26064,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "bush",
+          "x": 34616,
+          "y": 26000,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "bush",
+          "x": 34632,
+          "y": 26032,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "houseGlass",
+          "x": 34888,
+          "y": 25872,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "houseC",
+          "x": 34872,
+          "y": 26064,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 34984,
+          "y": 25968,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34984,
+          "y": 25872,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34984,
+          "y": 25984,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34936,
+          "y": 25888,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 35000,
+          "y": 26032,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 34920,
+          "y": 26080,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 35064,
+          "y": 26080,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_538_186",
+      "x": 25144,
+      "y": 9002,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "posteLuzita",
+          "x": 25048,
+          "y": 8880,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "canteiro",
+          "x": 25248,
+          "y": 8800,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 25248,
+          "y": 8848,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 25248,
+          "y": 8896,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 25248,
+          "y": 8928,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "posteLuzita",
+          "x": 24920,
+          "y": 9040,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "sign",
+          "x": 25064,
+          "y": 8992,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "hospital",
+          "x": 25144,
+          "y": 8976,
+          "arte": "casa",
+          "w": 144,
+          "h": 80
+        },
+        {
+          "tipo": "posteLuzita",
+          "x": 25208,
+          "y": 9040,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "posteLuzita",
+          "x": 25240,
+          "y": 9168,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "canteiro",
+          "x": 25248,
+          "y": 9040,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 25248,
+          "y": 9072,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 25248,
+          "y": 9136,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 25248,
+          "y": 9152,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "tree2",
+          "x": 25424,
+          "y": 9040,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_269_164",
+      "x": 13112,
+      "y": 8010,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "flowerpot",
+          "x": 13064,
+          "y": 7792,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "canteiro",
+          "x": 12928,
+          "y": 8032,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 12824,
+          "y": 8032,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "center",
+          "x": 13112,
+          "y": 7984,
+          "arte": "centro",
+          "w": 144,
+          "h": 80
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_137_95",
+      "x": 6776,
+      "y": 4698,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "flowerpot",
+          "x": 7160,
+          "y": 4528,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "pine2",
+          "x": 6992,
+          "y": 4592,
+          "arte": "arvore",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "canteiro",
+          "x": 6592,
+          "y": 4720,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "center",
+          "x": 6776,
+          "y": 4672,
+          "arte": "centro",
+          "w": 144,
+          "h": 80
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_521_32",
+      "x": 25208,
+      "y": 1674,
+      "solido": true,
+      "objetos": [
+        {
+          "tipo": "flowerpot",
+          "x": 25208,
+          "y": 1408,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "canteiro",
+          "x": 25024,
+          "y": 1696,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "center",
+          "x": 25208,
+          "y": 1648,
+          "arte": "centro",
+          "w": 144,
+          "h": 80
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_290_5",
+      "x": 14120,
+      "y": 378,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "estacao",
+          "x": 14408,
+          "y": 160,
+          "arte": "casa",
+          "w": 144,
+          "h": 80
+        },
+        {
+          "tipo": "center",
+          "x": 14120,
+          "y": 352,
+          "arte": "centro",
+          "w": 144,
+          "h": 80
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_geada",
+      "x": 31528,
+      "y": 5274,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "moitaNeve",
+          "x": 31368,
+          "y": 4896,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 31688,
+          "y": 4880,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 31688,
+          "y": 4896,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 31896,
+          "y": 4880,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "moita",
+          "x": 31896,
+          "y": 4896,
+          "arte": "arbusto",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "igloo",
+          "x": 31416,
+          "y": 5248,
+          "arte": "casa",
+          "w": 48,
+          "h": 80
+        },
+        {
+          "tipo": "center",
+          "x": 31528,
+          "y": 5248,
+          "arte": "centro",
+          "w": 144,
+          "h": 80
+        },
+        {
+          "tipo": "mart",
+          "x": 31688,
+          "y": 5248,
+          "arte": "loja",
+          "w": 112,
+          "h": 64
+        },
+        {
+          "tipo": "igloo",
+          "x": 31800,
+          "y": 5248,
+          "arte": "casa",
+          "w": 48,
+          "h": 80
+        },
+        {
+          "tipo": "torre",
+          "x": 31984,
+          "y": 5248,
+          "arte": "casa",
+          "w": 128,
+          "h": 80
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_mandacaru",
+      "x": 31320,
+      "y": 10410,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "sign",
+          "x": 31176,
+          "y": 10144,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 31016,
+          "y": 10144,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 31112,
+          "y": 10144,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 31144,
+          "y": 10096,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 31224,
+          "y": 10240,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "umbu",
+          "x": 30984,
+          "y": 10016,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "boulder",
+          "x": 30992,
+          "y": 10128,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "boulder",
+          "x": 30992,
+          "y": 10192,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "flowerpot",
+          "x": 31640,
+          "y": 10192,
+          "arte": "vaso",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "estacao",
+          "x": 31144,
+          "y": 10336,
+          "arte": "casa",
+          "w": 144,
+          "h": 80
+        },
+        {
+          "tipo": "center",
+          "x": 31320,
+          "y": 10384,
+          "arte": "centro",
+          "w": 144,
+          "h": 80
+        },
+        {
+          "tipo": "mart",
+          "x": 31480,
+          "y": 10384,
+          "arte": "loja",
+          "w": 112,
+          "h": 64
+        },
+        {
+          "tipo": "taipa",
+          "x": 31608,
+          "y": 10384,
+          "arte": "casa",
+          "w": 80,
+          "h": 80
+        },
+        {
+          "tipo": "barn",
+          "x": 31736,
+          "y": 10384,
+          "arte": "casa",
+          "w": 112,
+          "h": 80
+        },
+        {
+          "tipo": "sign",
+          "x": 31208,
+          "y": 10528,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 31448,
+          "y": 10672,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 31464,
+          "y": 10672,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 31480,
+          "y": 10672,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 31448,
+          "y": 10720,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "sign",
+          "x": 31336,
+          "y": 10528,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 31496,
+          "y": 10672,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 31512,
+          "y": 10672,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 31528,
+          "y": 10672,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 31544,
+          "y": 10672,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 31560,
+          "y": 10672,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 31576,
+          "y": 10672,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 31592,
+          "y": 10672,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 31608,
+          "y": 10672,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 31608,
+          "y": 10720,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_buriti",
+      "x": 35272,
+      "y": 12426,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "umbu",
+          "x": 35048,
+          "y": 12080,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "juazeiro",
+          "x": 35064,
+          "y": 12048,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "juazeiro",
+          "x": 35032,
+          "y": 12064,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "umbu",
+          "x": 34872,
+          "y": 12240,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "juazeiro",
+          "x": 35016,
+          "y": 12240,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "boulder",
+          "x": 35024,
+          "y": 12256,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "juazeiro",
+          "x": 35256,
+          "y": 12096,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "mesa",
+          "x": 34840,
+          "y": 12320,
+          "arte": "mesa",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "mesa",
+          "x": 34872,
+          "y": 12416,
+          "arte": "mesa",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "boulder",
+          "x": 35040,
+          "y": 12448,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "boulder",
+          "x": 34896,
+          "y": 12496,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "center",
+          "x": 35272,
+          "y": 12400,
+          "arte": "centro",
+          "w": 144,
+          "h": 80
+        },
+        {
+          "tipo": "boulder",
+          "x": 35072,
+          "y": 12496,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 35192,
+          "y": 12352,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 35192,
+          "y": 12400,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 35192,
+          "y": 12448,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 35192,
+          "y": 12496,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "mart",
+          "x": 35448,
+          "y": 12400,
+          "arte": "loja",
+          "w": 112,
+          "h": 64
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 35352,
+          "y": 12352,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 35352,
+          "y": 12400,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 35352,
+          "y": 12448,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 35352,
+          "y": 12496,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 35384,
+          "y": 12352,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 35384,
+          "y": 12400,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 35384,
+          "y": 12448,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "cercaVara",
+          "x": 35384,
+          "y": 12496,
+          "arte": "cerca",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "umbu",
+          "x": 35048,
+          "y": 12736,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "umbu",
+          "x": 35032,
+          "y": 12720,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "sign",
+          "x": 35240,
+          "y": 12592,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "sign",
+          "x": 35496,
+          "y": 12592,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        }
+      ]
+    },
+    {
+      "nome": "cidade-centro_siri",
+      "x": 30312,
+      "y": 17946,
+      "solido": false,
+      "objetos": [
+        {
+          "tipo": "umbu",
+          "x": 30040,
+          "y": 17696,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "juazeiro",
+          "x": 30024,
+          "y": 17680,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "umbu",
+          "x": 30072,
+          "y": 17856,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "boulder",
+          "x": 30048,
+          "y": 17872,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "center",
+          "x": 30312,
+          "y": 17920,
+          "arte": "centro",
+          "w": 144,
+          "h": 80
+        },
+        {
+          "tipo": "mart",
+          "x": 30472,
+          "y": 17920,
+          "arte": "loja",
+          "w": 112,
+          "h": 64
+        },
+        {
+          "tipo": "taipa",
+          "x": 30600,
+          "y": 17920,
+          "arte": "casa",
+          "w": 80,
+          "h": 80
+        },
+        {
+          "tipo": "boulder",
+          "x": 30016,
+          "y": 18016,
+          "arte": "rochedo",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tipo": "juazeiro",
+          "x": 30072,
+          "y": 18160,
+          "arte": "arvore_grande",
+          "w": 32,
+          "h": 48
+        },
+        {
+          "tipo": "sign",
+          "x": 30280,
+          "y": 18160,
+          "arte": "placa",
+          "w": 16,
+          "h": 16
+        },
+        {
+          "tipo": "canteiro",
+          "x": 30256,
+          "y": 17968,
+          "arte": "flores",
+          "w": 32,
+          "h": 16
+        },
+        {
+          "tipo": "lampiao",
+          "x": 30600,
+          "y": 18064,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        },
+        {
+          "tipo": "lampiao",
+          "x": 30696,
+          "y": 18064,
+          "arte": "poste",
+          "w": 16,
+          "h": 32
+        }
+      ]
+    }
+  ],
+  "escadas": [
+    {
+      "nome": "Coral",
+      "passos": [
+        {
+          "dir": "up",
+          "alvo": 1180,
+          "y": 18890,
+          "ok": true
+        },
+        {
+          "dir": "down",
+          "alvo": 1186,
+          "y": 18986,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "nome": "Jandaia",
+      "passos": [
+        {
+          "dir": "up",
+          "alvo": 1568,
+          "y": 25098,
+          "ok": true
+        },
+        {
+          "dir": "down",
+          "alvo": 1574,
+          "y": 25194,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "nome": "Selva",
+      "passos": [
+        {
+          "dir": "up",
+          "alvo": 1659,
+          "y": 26554,
+          "ok": true
+        },
+        {
+          "dir": "down",
+          "alvo": 1668,
+          "y": 26698,
+          "ok": true
+        }
+      ]
+    }
+  ],
+  "templo": [
+    {
+      "x": 369,
+      "passagem": true,
+      "destino": {
+        "x": 264,
+        "y": 2592
+      }
+    },
+    {
+      "x": 370,
+      "passagem": true,
+      "destino": {
+        "x": 264,
+        "y": 2592
+      }
+    },
+    {
+      "x": 371,
+      "passagem": true,
+      "destino": {
+        "x": 265,
+        "y": 2592
+      }
+    },
+    {
+      "x": 372,
+      "passagem": true,
+      "destino": {
+        "x": 265,
+        "y": 2592
+      }
+    },
+    {
+      "x": 373,
+      "passagem": true,
+      "destino": {
+        "x": 265,
+        "y": 2592
+      }
+    },
+    {
+      "x": 374,
+      "passagem": true,
+      "destino": {
+        "x": 265,
+        "y": 2592
+      }
+    }
+  ],
+  "erros": []
+}
