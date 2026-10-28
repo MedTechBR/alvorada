@@ -7,6 +7,7 @@ import { compositor, escolherBloco } from './terreno.js';
 import { montarObjeto, tipoObjeto } from './objetos.js';
 import { emCombate } from './estado.js';
 import {cameraBatalha} from './camera-batalha.js';
+import {ArenaVolume,arenaInclinada,INCLINACAO} from './arena-volume.js';
 import { KINDS } from '../../world/objects.js';
 
 const BASE=new URL('../../../assets/firered/',import.meta.url);
@@ -22,7 +23,7 @@ export class VisualFireRed{
   const l=document.createElement('link');l.rel='stylesheet';l.href=new URL('./interface.css',import.meta.url).href;document.head.appendChild(l);
  }
  async carregar(){
-  const [indice,aliases,J]=await Promise.all([fetch(new URL('indice.json',BASE)).then(r=>r.json()),fetch(new URL('pessoas/aliases.json',BASE)).then(r=>r.json()),fetch(new URL('../../../assets/hgss/personagens/indice.json',import.meta.url)).then(r=>r.json())]);
+  const [indice,aliases,J]=await Promise.all([fetch(new URL('indice.json',BASE),{cache:'no-store'}).then(r=>r.json()),fetch(new URL('pessoas/aliases.json',BASE)).then(r=>r.json()),fetch(new URL('../../../assets/hgss/personagens/indice.json',import.meta.url)).then(r=>r.json())]);
   this.indice=indice;this.bancos={};
   await Promise.all(Object.keys(indice.bancos).map(async n=>{
    const img=await imagem(n+'.png'),cv=document.createElement('canvas');cv.width=img.width;cv.height=img.height;const c=cv.getContext('2d',{willReadFrequently:true});c.drawImage(img,0,0);
@@ -46,7 +47,7 @@ export class VisualFireRed{
    const data=new Uint8ClampedArray(this.bancos.exterior.data);for(let i=0;i<data.length;i+=4){const k=(data[i]+data[i+1]+data[i+2])/3,c=paleta[k<100?0:k<170?1:2];data[i]=c[0];data[i+1]=c[1];data[i+2]=c[2];}
    const cv=document.createElement('canvas');cv.width=this.bancos.exterior.w;cv.height=this.bancos.exterior.canvas.height;cv.getContext('2d').putImageData(new ImageData(data,cv.width,cv.height),0,0);this.bancos[nome]={w:cv.width,data,canvas:cv};
   }
-  this.atlasObjetos=await imagem('objetos.png');this.pessoas=new PessoasCoral(this.g,{original:true,base:new URL('pessoas/',BASE),resolver:(n,j)=>aliases[idPessoaCoral(n,j)]??'man'});this.pessoas.J=J;
+  this.atlasObjetos=await imagem('objetos.png?v='+indice.versaoObjetos);this.pessoas=new PessoasCoral(this.g,{original:true,base:new URL('pessoas/',BASE),resolver:(n,j)=>aliases[idPessoaCoral(n,j)]??'man'});this.pessoas.J=J;
   const cv=document.createElement('canvas');cv.width=cv.height=16;const c=cv.getContext('2d');c.putImageData(new ImageData(this.#bloco(0x00d),16,16),0,0);c.clearRect(0,0,16,8);this.mato=PIXI.Texture.from(cv);this.mato.source.scaleMode='nearest';
   this.pintar=compositor(this.bancos);this.g.map.pintar=this.pintar;this.pronto=true;
   const agua=this.#bloco(0x1d9);this.agua=Array.from({length:4},(_,fase)=>{const cv=document.createElement('canvas');cv.width=cv.height=16;const d=new Uint8ClampedArray(agua.length);for(let y=0;y<16;y++)for(let x=0;x<16;x++){const k=(y*16+(x+fase*2)%16)*4;d.set(agua.subarray(k,k+4),(y*16+x)*4);}cv.getContext('2d').putImageData(new ImageData(d,16,16),0,0);const t=PIXI.Texture.from(cv);t.source.scaleMode='nearest';return t;});this.g.map.waterFrames=this.agua;
@@ -63,15 +64,18 @@ export class VisualFireRed{
   }}
   const dt=Math.min(.05,g.app.ticker.deltaMS/1000||1/60);if(luta&&!this.hudBatalha)this.hudBatalha=new HudBatalha(g,{compacto:true});
   this.hudBatalha?.update(dt);
+  (this.volume??=new ArenaVolume(g)).atualizar();
   this.cameraLuta=luta?cameraBatalha(g,this.cameraLuta,dt):null;
   const z=this.cameraLuta?.z??Math.max(1,Math.round(g.zoom||2)),c=this.cameraLuta??g.cam;
   g.ui.hud.seta.scale.set(.65);
-  const sala=g.map.interiorAt(g.player.x,g.player.y)??(g.encontro?.ativo?{x:0,y:0,w:g.map.w,h:g.map.h}:null),hw=innerWidth/2/z,hh=innerHeight/2/z;
+  const inclinacao=arenaInclinada(g)?INCLINACAO:1;
+  this.inclinacao=inclinacao;
+  const sala=g.map.interiorAt(g.player.x,g.player.y)??(g.encontro?.ativo?{x:0,y:0,w:g.map.w,h:g.map.h}:null),hw=innerWidth/2/z,hh=innerHeight/2/z/inclinacao;
   const limitar=(v,a,n,h)=>n*16<=h*2?(a+n/2)*16:Math.max(a*16+h,Math.min((a+n)*16-h,v));
   // Como no GBA: uma sala pequena cabe inteira e fica parada; numa sala maior
   // a câmera acompanha até a borda. Não mostra vazio no lugar dos móveis.
   const cx=sala?limitar(c.x,sala.x,sala.w,hw):c.x,cy=sala?limitar(c.y,sala.y,sala.h,hh):c.y;
-  g.world.scale.set(z);g.world.position.set(Math.round(innerWidth/2-(cx+(g.cam.sx??0))*z),Math.round(innerHeight/2-(cy+(g.cam.sy??0))*z));
+  g.world.scale.set(z,z*inclinacao);g.world.position.set(Math.round(innerWidth/2-(cx+(g.cam.sx??0))*z),Math.round(innerHeight/2+(inclinacao<1?10:0)-(cy+(g.cam.sy??0))*z*inclinacao));
   this.vista={x0:cx-hw,x1:cx+hw,y0:cy-hh,y1:cy+hh};
   const view={x0:cx-hw-64,x1:cx+hw+64,y0:cy-hh-112,y1:cy+hh+64};
   g.map.cullChunks(view);g.barreiras?.cull(view);this.pessoas.atualizar(view);
@@ -114,7 +118,7 @@ export class VisualFireRed{
  quadro(dt){
   const g=this.g;
   if(!this.ativo){g.app.render();return;}
-  const restaurar=this.pessoas.aplicar();
-  try{g.app.render();}finally{restaurar();}
+  const restaurar=this.pessoas.aplicar(),corpos=this.volume?.corpos();
+  try{g.app.render();}finally{corpos?.();restaurar();}
  }
 }
