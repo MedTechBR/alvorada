@@ -2,6 +2,7 @@ import { pontoGeografico, contemAreaGeografica, pontoDaGeografia } from './geogr
 import { NUCLEOS } from './nucleos.js';
 import { florestaDoSetor } from './floresta-setor.js';
 import * as PIXI from 'pixi.js';
+import { completarEntradasEscada } from './entradas-escada.js';
 import { T, TILE, SOLID, SWIMMABLE, MOUNT_PASS, TALLS, WALLS } from './tiles.js';
 import { WATER_FRAMES, FLOWERS, LILY, TALL, CORN, SPR } from './art.js';
 import { KINDS, DECOR } from './objects.js';
@@ -140,6 +141,7 @@ export class GameMap {
     (this.estat ??= []).push({ parte: P.id, como: 'na hora', ms: Math.round(agora() - t) });
   }
   #pronta(P) {
+    this.#entradasEscada();
     if (this.construindo?.P === P) this.construindo = null;
     for (const r of [P.rect, P.faixa]) if (r) this.#marcarSetores(r, 0);
     this.nPend--;
@@ -206,8 +208,12 @@ export class GameMap {
     for (const r of this.interiors) if (r.trap) r.rows.forEach((row, j) => [...row].forEach((ch, i) => { if (ch === r.trap.tile) this.warps.push({ x: r.x + i, y: r.y + j, dir: 'any', to: { x: r.x + r.trap.to[0], y: r.y + r.trap.to[1] }, face: 'up', trap: true }); }));
     // cada ponto diz em que interior está (map: id) ou fica fora (map: 'mundo') e em que mundo (mundo: id)
     for (const s of Object.values(this.spots)) { const r = this.interiors.find((q) => s.tx >= q.x && s.ty >= q.y && s.tx < q.x + q.w && s.ty < q.y + q.h); s.map = r ? r.id : 'mundo'; s.mundo = this.id; }
-    this.warpAt = new Map(this.warps.map((w) => [w.x + w.y * this.w, w]));
+    this.#entradasEscada();
     this.spawn = this.spots.inicio ?? this.spots.chegada ?? { x: this.w * 8, y: (this.outdoorH ?? this.h) * 8 };
+  }
+  #entradasEscada(){
+    this.entradasEscada=completarEntradasEscada(this,{escada:TILE.STAIRS,paredes:new Set([TILE.CLIFF,TILE.WALL,TILE.ROCK,TILE.TEMPLEWALL])});
+    this.warpAt=new Map(this.warps.map(w=>[w.x+w.y*this.w,w]));
   }
 
   // ---------- consultas ----------

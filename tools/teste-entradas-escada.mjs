@@ -1,0 +1,12 @@
+import assert from'node:assert/strict';
+import{completarEntradasEscada}from'../src/world/entradas-escada.js';
+const m={w:20,h:10,outdoorH:8,tiles:new Uint8Array(200),warps:[{x:4,y:5,dir:'up',to:{x:20,y:30},requer:['insignia'],msg:'Ainda fechado'},{x:7,y:5,dir:'up',to:{x:21,y:30},requer:['insignia'],msg:'Ainda fechado'}],at:()=>{throw Error('Não deve montar região distante');}};
+for(let x=4;x<=9;x++)m.tiles[x+5*m.w]=10;
+for(const y of[3,4])m.tiles[6+y*m.w]=64;
+const op={escada:10,paredes:new Set([64])},desenho=completarEntradasEscada(m,op);
+assert.equal(m.warps.length,6);assert(m.warps.every(w=>w.requer[0]==='insignia'&&w.msg==='Ainda fechado'));
+assert.equal(m.warps.find(w=>w.x===5).to.x,20);assert.equal(m.warps.find(w=>w.x===9).to.x,21);
+assert.deepEqual(desenho.get(6+3*m.w),['caverna',0x28c]);assert.deepEqual(desenho.get(6+4*m.w),['caverna',0x294]);
+completarEntradasEscada(m,op);assert.equal(m.warps.length,6,'Sem passagens duplicadas ao montar mais setores');
+const n={...m,tiles:new Uint8Array(200),warps:[m.warps[0]]};completarEntradasEscada(n,op);assert.equal(n.warps.length,1,'Região distante continua sem montar');
+console.log('Entradas: seis colunas, destinos, requisitos, fachada, montagem gradual e idempotência OK.');

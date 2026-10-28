@@ -47,6 +47,8 @@ export function montarObjeto(imagem,frames,o){
  const w=Math.max(1,fw)*16,src=f[2]/16,door=typeof K?.door==='number'?K.door:null,centro=Math.floor(src/2);
  const cv=document.createElement('canvas');cv.width=w;cv.height=Math.max(f[3],(o.fh??K?.fh??1)*16);
  const c=cv.getContext('2d');c.imageSmoothingEnabled=false;
+ // Copas são objetos inteiros. Repetir suas colunas produz duas árvores cortadas.
+ if(door===null&&['arvore','arvore_grande'].includes(nome)){c.drawImage(imagem,...f,Math.floor((w-f[2])/2),cv.height-f[3],f[2],f[3]);const tex=PIXI.Texture.from(cv);tex.source.scaleMode='nearest';return{tex,canvas:cv,nome};}
  if(door===null&&['maquina','pc','tv','prateleira','vaso','mesa','cama','escada'].includes(nome)){cv.width=f[2];c.drawImage(imagem,...f,0,cv.height-f[3],f[2],f[3]);const tex=PIXI.Texture.from(cv);tex.source.scaleMode='nearest';return{tex,canvas:cv,nome};}
  const esquerda=door===null?-1:door-centro;
  if(door!==null&&esquerda>=0&&esquerda+src<=fw){

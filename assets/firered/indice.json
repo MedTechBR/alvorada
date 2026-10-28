@@ -32,65 +32,65 @@
     "arvore_grande": [
       32,
       0,
-      48,
+      32,
       48
     ],
     "arbusto": [
-      80,
+      64,
       0,
       16,
       16
     ],
     "flores": [
-      96,
+      80,
       0,
       16,
       16
     ],
     "placa": [
-      112,
+      96,
       0,
       16,
       16
     ],
     "cerca": [
-      128,
+      112,
       0,
       16,
       16
     ],
     "cerca_madeira": [
-      144,
+      128,
       0,
       16,
       16
     ],
     "pedra": [
-      160,
+      144,
       0,
       16,
       16
     ],
     "rochedo": [
-      176,
+      160,
       0,
       32,
       32
     ],
     "casa": [
-      208,
+      192,
       0,
       80,
       80
     ],
     "centro": [
-      288,
+      272,
       0,
       80,
       80
     ],
     "loja": [
-      368,
+      352,
       0,
       64,
       64
@@ -305,5 +305,6 @@
     "misc/rock_smash_rock.png": "af378cbfcff984645f391b1e7228d6b997e06de482618b8217b92e8427b704e3",
     "misc/strength_boulder.png": "60c4e11133c8c23419cbdd41a9a3d80fb316914566431fb63948a782f4039762",
     "misc/wooden_sign.png": "62f2042def39641d6ff27addc5442edd8314966032337fa036938a27bf9861b1"
-  }
+  },
+  "versaoObjetos": "4033bed4ffc10498"
 }

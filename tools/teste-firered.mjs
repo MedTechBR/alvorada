@@ -2,6 +2,9 @@
 import assert from 'node:assert/strict';import{readFileSync,existsSync}from'node:fs';
 await import('./vestir/mundo.mjs');
 const{TILE,SOLID}=await import('../src/world/tiles.js');const{escolherBloco,compositor}=await import('../src/visual2d/firered/terreno.js');
+const parede={w:3,h:3,outdoorH:3,at:(x,y)=>y<2?TILE.CLIFF:TILE.GRASS,interiorAt:()=>null};
+assert.equal(escolherBloco(parede,TILE.CLIFF,1,1)[1],0x079,'Parede não pode parecer uma escada');
+assert.equal(escolherBloco({...parede,at:()=>TILE.STAIRS},TILE.STAIRS,1,1)[1],0x089,'Escada usa degraus, não lateral de rocha');
 const{emCombate}=await import('../src/visual2d/firered/estado.js');
 const passeio={player:{x:0,y:0},wilds:[]};assert(!emCombate(passeio));
 for(const estado of [{encontro:{ativo:true}},{story:{battle:{done:false}}},{arenaGinasio:{contem:true}},{tocas:{reide:{done:false}}},{net:{duel:{active:true}}}])assert(emCombate({...passeio,...estado}));

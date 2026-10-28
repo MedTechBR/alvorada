@@ -60,8 +60,10 @@ def matriz(rows,banco='exterior',limpo=True):
  return im
 objetos={}
 def por(nome,rows,banco='exterior'):objetos[nome]=matriz(rows,banco)
-por('arvore',[[0x01c,0x01d],[0x014,0x015],[0x024,0x025]])
-por('arvore_grande',[[0x01c,0x01e,0x01d],[0x014,0x016,0x015],[0x024,0x026,0x025]])
+# Árvore isolada de Pewter: ponta, copa e tronco. As peças 0x014/0x015
+# pertencem à sobreposição de uma mata, não ao topo de uma árvore avulsa.
+por('arvore',[[0x00e,0x00f],[0x01e,0x01f],[0x024,0x025]])
+objetos['arvore_grande']=objetos['arvore'].copy()
 por('arbusto',[[0x005]])
 por('flores',[[0x004]])
 por('placa',[[0x002]])
@@ -75,6 +77,26 @@ por('loja',[[0x028,0x029,0x02a,0x02b],[0x030,0x031,0x032,0x033],[0x038,0x039,0x0
 por('ginasio',[[0x139]+[0x13a]*5+[0x13b],[0x141]+[0x142]*5+[0x143],[0x149]+[0x14a]*5+[0x14b],[0x150,0x151,0x152,0x153,0x154,0x155,0x156],[0x158,0x159,0x15a,0x15b,0x15c,0x15d,0x15e]])
 por('laboratorio',[[0x2a8,0x2a9,0x2a9,0x2a9,0x2a9,0x2bd,0x2b5],[0x2b0,0x2b1,0x2b1,0x2b1,0x2b1,0x2b3,0x2b4],[0x2b8,0x2b9,0x2b9,0x2b9,0x2b9,0x2bb,0x2bc],[0x2c0,0x2c1,0x2c2,0x2d0,0x2c3,0x2c4,0x2c5],[0x2c8,0x2c9,0x2ac,0x2d8,0x2cb,0x2cc,0x2cd]])
 por('vaso',[[0x057],[0x05f]],'interior')
+# O vaso carrega o piso do tileset. Retira somente o fundo conectado à borda,
+# preservando a borda escura da planta e as cores do vaso dentro do contorno.
+def limpar_borda(im,cores):
+ fila=[];visitados=set()
+ for x in range(im.width):fila.extend([(x,0),(x,im.height-1)])
+ for y in range(im.height):fila.extend([(0,y),(im.width-1,y)])
+ while fila:
+  x,y=fila.pop()
+  if (x,y) in visitados or not(0<=x<im.width and 0<=y<im.height):continue
+  visitados.add((x,y));p=im.getpixel((x,y))
+  if p[3] and p not in cores:continue
+  im.putpixel((x,y),(0,0,0,0));fila.extend([(x-1,y),(x+1,y),(x,y-1),(x,y+1)])
+im=objetos['vaso'];original=im.copy();limpar_borda(im,set(ts['interior'][0x059].get_flattened_data()))
+# O miolo dourado compartilha a paleta do piso, mas pertence ao vaso.
+for y in range(20,32):
+ a,b=(4,12)if y in[20,30]else(5,11)if y==31 else(3,13)
+ for x in range(a,b):im.putpixel((x,y),original.getpixel((x,y)))
+grama=set(c for i in[0x001,0x008,0x009,0x010,0x011]for c in ts['exterior'][i].get_flattened_data())
+for nome in ['arvore','arvore_grande','arbusto','flores','placa']:
+ limpar_borda(objetos[nome],grama)
 por('prateleira',[[0x2cb,0x2cc],[0x2cd,0x2ce]],'centro')
 por('pc',[[0x062],[0x295]],'centro')
 por('tv',[[0x036,0x037],[0x03e,0x03f]],'interior')
@@ -87,12 +109,15 @@ por('poste',[[0x0e8],[0x0f1]])
 por('banco',[[0x284,0x284]])
 por('borda_pedra',[[0x135,0x136]])
 por('bau',[[0x003]])
-# Rochas móveis originais têm transparência própria; não levam chão/água do tileset.
-for nome,arquivo,tamanho in [('pedra','rock_smash_rock.png',16),('rochedo','strength_boulder.png',32)]:
+# Pedras do cenário mantêm a escala original. A pedra de Força ampliada parecia
+# uma esfera gigante, além de comunicar uma interação que esses enfeites não têm.
+for nome,arquivo,tamanho in [('pedra','rock_smash_rock.png',16),('rochedo','rock_smash_rock.png',32)]:
  p=root/'misc'/arquivo
  if p.exists():
   src=Image.open(p);im=src.crop((0,0,16,16));rgba=im.convert('RGBA');rgba.putalpha(im.point([0]+[255]*255,'L'))
-  objetos[nome]=rgba.resize((tamanho,tamanho),Image.Resampling.NEAREST)
+  if tamanho==16:objetos[nome]=rgba
+  else:
+   grupo=Image.new('RGBA',(32,32));grupo.alpha_composite(rgba,(0,12));grupo.alpha_composite(rgba,(16,16));objetos[nome]=grupo
 
 # Um único atlas para os objetos; as peças maiores são montadas por coluna de 16 px.
 atlas=Image.new('RGBA',(512,512));frames={};x=y=linha=0
@@ -103,6 +128,7 @@ for nome,im in objetos.items():
 atlas.save(SAIDA/'objetos.png',optimize=True)
 fontes={str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(raw.rglob('*')) if p.is_file() and any(str(p.relative_to(raw)).startswith(('primary/'+v[0], 'secondary/'+v[1])) for v in BANCOS.values())}
 J={'origem':json.loads((root/'origem.json').read_text()),'bloco':16,'bancos':{k:{'arquivo':k+'.png','blocos':len(v)}for k,v in ts.items()},'objetos':frames,'fontes':{**fontes,**{'misc/'+p.name:hashlib.sha256(p.read_bytes()).hexdigest()for p in sorted((root/'misc').glob('*.png'))}}}
+J['versaoObjetos']=hashlib.sha256((SAIDA/'objetos.png').read_bytes()).hexdigest()[:16]
 (SAIDA/'indice.json').write_text(json.dumps(J,ensure_ascii=False,indent=2)+'\n')
 print('Atlas de terreno e objetos:',SAIDA)
 
