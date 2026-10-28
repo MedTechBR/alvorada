@@ -4,13 +4,15 @@
 import { sessao } from './rb-lib.mjs';
 import { writeFileSync, readFileSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 const fase='depois',versao=process.env.VERSAO??'depois';
+const pares=process.env.FORTE==='1'?[[130,143,'hydroPump','bodySlam'],[6,3,'slash','sludgeBomb']]:[[25,133,'thunderShock','tackle'],[4,7,'scratch','waterGun']];
 const pasta = process.env.RESULTADOS??'tools/resultados/revisao-jogabilidade/equilibrio'; mkdirSync(pasta, { recursive: true });
 const s = await sessao({ W: 844, H: 390, qs: 'nosw&coral='+(fase==='antes'?'3d':'pixel'), port: process.env.PORT ?? 8700 });
 try {
   await s.P.ev(`(async () => { for(let i=0;i<60 && (game.story.busy || game.ui.dialog.open);i++){ dispatchEvent(new KeyboardEvent('keydown',{code:'Enter',key:'Enter',bubbles:true})); await new Promise(r=>setTimeout(r,100)); } game.app.ticker.stop(); return true; })()`);
   const resultados = [];
-  for (const modo of ['selvagem', 'rival']) for (const seed of [31, 73, 137]) for (const par of [[25, 133, 'thunderShock', 'tackle'], [4, 7, 'scratch', 'waterGun']]) {
+  for (const modo of ['selvagem', 'rival']) for (const seed of [31, 73, 137]) for (const par of pares) {
     const r = await s.P.ev(`(async () => {
       const g=game, {Mon}=await import('/src/data/mon.js'), {PokeEntity}=await import('/src/entities/pokemon.js'), {TrainerBattle}=await import('/src/story/battle.js');
       const random=Math.random; let seed=${seed}; Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
@@ -59,7 +61,8 @@ try {
     })()`);
     resultados.push(r);console.log(JSON.stringify(r));
   }
-  const doc={ protocolo:'mesma arena, coordenadas, Pokémon, níveis, sementes e piloto; reação inicial zero nos dois lados', commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),fase,resultados };
+  const fontes={};for(const arquivo of['src/combat/combat.js','src/visual2d/firered/index.js']){const r=await fetch(`http://127.0.0.1:${process.env.PORT??8700}/${arquivo}`);if(!r.ok)throw Error('Fonte da medição indisponível: '+arquivo);fontes[arquivo]=createHash('sha256').update(await r.text()).digest('hex');}
+  const doc={ protocolo:'mesma arena, coordenadas, Pokémon, níveis, sementes e piloto; reação inicial zero nos dois lados', commit:versao==='antes'?(process.env.REFERENCIA??null):execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),fontes,fase,resultados };
   writeFileSync(`${pasta}/${versao}.json`,JSON.stringify(doc,null,2)+'\n');
   if(versao==='depois'){
     const base=JSON.parse(readFileSync(`${pasta}/antes.json`)).resultados;

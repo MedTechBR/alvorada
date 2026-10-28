@@ -97,7 +97,7 @@ export class Combat {
     const at=ov??{ id, mv: MOVES[id] };
     // O primeiro botão vira uma saída gratuita quando falta energia. Os demais
     // conservam seu golpe e mostram o custo, sem bloquear movimento ou esquiva.
-    if(slot===0&&at.mv&&!this.podePP(user,at.mv))return{id:BASICO.id,mv:user.side==='ally'?BASICO:{...BASICO,cd:at.mv.cd,power:Math.min(30,at.mv.power??30),avisoPP:at}};
+    if(user?.side==='ally'&&slot===0&&at.mv&&!this.podePP(user,at.mv))return{id:BASICO.id,mv:BASICO};
     return at;
   }
   inRange(user, mv, d, id) {
@@ -165,12 +165,11 @@ export class Combat {
     if(!this.gastarPP(user,mv))return false;
     user.ultimaRecarga = mv.cd * 1.2; user.cds.fill(user.ultimaRecarga);
     const kind = kindOf(id, mv);
-    const aviso=mv.avisoPP??{id,mv},forma=kindOf(aviso.id,aviso.mv);
-    const pw = aviso.mv.power ?? 40, melee = forma === 'melee' || forma === 'multi';
-    let W = (melee ? 0.36 : 0.5) + pw / 320 + (BEAMS[aviso.id] ? 0.25 + (BEAMS[aviso.id].charge ?? 0) : 0) + (forma === 'sky' ? 0.2 : 0);
+    const pw = mv.power ?? 40, melee = kind === 'melee' || kind === 'multi';
+    let W = (melee ? 0.36 : 0.5) + pw / 320 + (BEAMS[id] ? 0.25 + (BEAMS[id].charge ?? 0) : 0) + (kind === 'sky' ? 0.2 : 0);
     if (user.temper === 'aggressive') W *= 0.88;
     if (user.isAlpha) W *= 1.1;
-    if (forma === 'self' || forma === 'shield') W = 0.25;
+    if (kind === 'self' || kind === 'shield') W = 0.25;
     const ang = Math.atan2(target.y - user.y, target.x - user.x);
     user.charging = { slot, id, mv, kind, t: 0, W, ang, tx: target.x, ty: target.y, target, lockAt: W * 0.62, A: animFor(id) };
     this.anunciar(user, mv);
