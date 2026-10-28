@@ -1,4 +1,5 @@
 import { curar, reservaCura } from '../mechanics/recuperacao.js';
+import { ReservaPP, custoPP, BASICO } from './pp.js';
 import * as PIXI from 'pixi.js';
 import { combateFluido, golpeLeve } from './fluidez.js';
 import { MOVES } from '../data/moves.js';
@@ -41,6 +42,7 @@ export function calcDamage(user, t, mv, rnd = Math.random) { return computeDamag
 export class Combat {
   constructor(g) {
     this.g = g;
+    this.reservaPP = new ReservaPP();
     this.projectiles = []; this.zones = []; this.beams = []; this.waves = []; this.falls = []; this.swings = []; this.struggles = [];
     this.layer = new PIXI.Container();
     this.vfx = new Vfx(g);
@@ -60,6 +62,10 @@ export class Combat {
     this.sfxT = {};
   }
   move(id) { return MOVES[id]; }
+  usaPP(e) { return !!e?.mon && !e.pvp && !e.remote && ['ally','wild','foe'].includes(e.side); }
+  pp(e) { return this.usaPP(e) ? this.reservaPP.ler(e.mon,this.g.time,e.side==='ally') : 100; }
+  podePP(e,mv) { return !this.usaPP(e) || this.pp(e)+1e-6>=custoPP(mv); }
+  gastarPP(e,mv) { return !this.usaPP(e) || this.reservaPP.gastar(e.mon,mv,this.g.time,e.side==='ally'); }
   fluido(e) { return combateFluido(this.g, e); }
   recarga(e, mv) {
     if (!this.fluido(e) || e.side !== 'ally') return mv.cd;
@@ -87,11 +93,15 @@ export class Combat {
   // Golpe do espaço `slot`: o do Pokémon ou, em Dynamax, o Max Golpe no lugar dele (user.maxMoves, src/combat/poder.js)
   moveAt(user, slot) {
     const ov = user?.maxMoves?.[slot];
-    if (ov) return ov;
     const id = user?.mon?.moves?.[slot];
-    return { id, mv: MOVES[id] };
+    const at=ov??{ id, mv: MOVES[id] };
+    // O primeiro botão vira uma saída gratuita quando falta energia. Os demais
+    // conservam seu golpe e mostram o custo, sem bloquear movimento ou esquiva.
+    if(slot===0&&at.mv&&!this.podePP(user,at.mv))return{id:BASICO.id,mv:user.side==='ally'?BASICO:{...BASICO,cd:at.mv.cd,power:Math.min(30,at.mv.power??30),avisoPP:at}};
+    return at;
   }
   inRange(user, mv, d, id) {
+    if(!this.podePP(user,mv))return false;
     if (mv.eff?.heal && (reservaCura(user) <= 0 || user.mon.hp >= user.mon.stats.hp)) return false;
     const k = kindOf(id, mv);
     if (k === 'self' || k === 'shield') return true;
@@ -152,13 +162,15 @@ export class Combat {
   windup(user, slot, target) {
     const { id, mv } = this.moveAt(user, slot);
     if (!mv || Math.max(0, ...user.cds) > 0 || user.lock > 0 || user.stun > 0 || user.charging || !user.alive) return false;
+    if(!this.gastarPP(user,mv))return false;
     user.ultimaRecarga = mv.cd * 1.2; user.cds.fill(user.ultimaRecarga);
     const kind = kindOf(id, mv);
-    const pw = mv.power ?? 40, melee = kind === 'melee' || kind === 'multi';
-    let W = (melee ? 0.36 : 0.5) + pw / 320 + (BEAMS[id] ? 0.25 + (BEAMS[id].charge ?? 0) : 0) + (kind === 'sky' ? 0.2 : 0);
+    const aviso=mv.avisoPP??{id,mv},forma=kindOf(aviso.id,aviso.mv);
+    const pw = aviso.mv.power ?? 40, melee = forma === 'melee' || forma === 'multi';
+    let W = (melee ? 0.36 : 0.5) + pw / 320 + (BEAMS[aviso.id] ? 0.25 + (BEAMS[aviso.id].charge ?? 0) : 0) + (forma === 'sky' ? 0.2 : 0);
     if (user.temper === 'aggressive') W *= 0.88;
     if (user.isAlpha) W *= 1.1;
-    if (kind === 'self' || kind === 'shield') W = 0.25;
+    if (forma === 'self' || forma === 'shield') W = 0.25;
     const ang = Math.atan2(target.y - user.y, target.x - user.x);
     user.charging = { slot, id, mv, kind, t: 0, W, ang, tx: target.x, ty: target.y, target, lockAt: W * 0.62, A: animFor(id) };
     this.anunciar(user, mv);
@@ -228,6 +240,10 @@ export class Combat {
     if (user.alt?.mode === 'dive' || user.alt?.mode === 'dig') { this.alt.emerge(user, ax, ay); return true; }
     if (!opts.forced) {
       if (Math.max(0, ...user.cds) > 0 || user.lock > 0 || user.stun > 0 || user.charging) return false;
+      if(!this.gastarPP(user,mv)){
+        if(user.side==='ally'&&this.g.time>=(this.avisoPPAte??0)){this.avisoPPAte=this.g.time+2;this.g.toast?.('PP insuficiente. Use um golpe mais leve ou aguarde.');}
+        return false;
+      }
       user.ultimaRecarga = this.recarga(user, mv) * (user.side === 'wild' ? 1.2 : 1); user.cds.fill(user.ultimaRecarga);
     }
     this.g.arenaGinasio?.aoUsar(user, id, mv); // arena de ginásio: golpe no ritmo do berimbau
@@ -335,7 +351,8 @@ export class Combat {
   }
   #aimTarget(user, ax, ay) {
     let best = null, bd = 28;
-    for (const t of this.targetsOf(user)) { const y=user.side==='ally'?clamp(ay,t.y-(t.topH??20),t.y):t.y;const d = Math.hypot(t.x - ax, y - ay); if (d < bd) { bd = d; best = t; } }
+    const inclinacao=this.g.visual2d?.inclinacao??1;
+    for (const t of this.targetsOf(user)) { const y=user.side==='ally'?clamp(ay,t.y-(t.topH??20)/inclinacao,t.y):t.y;const d = Math.hypot(t.x - ax, y - ay); if (d < bd) { bd = d; best = t; } }
     return best;
   }
 

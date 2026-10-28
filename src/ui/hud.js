@@ -1,6 +1,7 @@
 import { itemName } from '../data/items.js';
 import * as PIXI from 'pixi.js';
 import { MOVES } from '../data/moves.js';
+import { custoPP } from '../combat/pp.js';
 import { TYPE_PT, TYPE_COLOR } from '../data/types.js';
 import { IS_TOUCH } from '../engine/input.js';
 import { portraitURL } from './portrait.js';
@@ -228,7 +229,7 @@ export class Hud {
     const power = g.poder?.hudHtml() ?? ''; // botão Mega/Dynamax (src/combat/poder.js)
     $('moves').innerHTML = IS_TOUCH || !m ? '' : m.moves.map((id, i) => {
       const mv = mvAt(i);
-      return `<div class="mv${dmax ? ' max' : ''}" style="--tc:${TYPE_COLOR[mv?.type] ?? '#999'}"><kbd>${keys[i]}</kbd><span><b>${esc(mv?.name ?? id)}</b><small>${TYPE_PT[mv?.type] ?? ''} · ${mv?.power || '—'}</small></span><div class="cd"></div></div>`;
+      return `<div class="mv${dmax ? ' max' : ''}" title="Poder ${mv?.power||'—'} · ${custoPP(mv)} PP" style="--tc:${TYPE_COLOR[mv?.type] ?? '#999'}"><kbd>${keys[i]}</kbd><span><b>${esc(mv?.name ?? id)}</b><small>${TYPE_PT[mv?.type] ?? 'Neutro'} · ${custoPP(mv)} PP</small></span><div class="cd"></div></div>`;
     }).join('') + power;
     this.toque.moves();
     this.cdEls = IS_TOUCH ? null : [...document.querySelectorAll('#moves .mv .cd')];

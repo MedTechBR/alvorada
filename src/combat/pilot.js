@@ -73,19 +73,24 @@ export class Pilot {
   hud(dt) {
     this.hudT = (this.hudT ?? 0) - dt; if (this.hudT > 0) return; this.hudT = 0.05;
     const l = this.g.lead; if (!l) return;
+    let mudou=false;
+    this.nomesPP??=[];
     const els = document.querySelectorAll('#moves .mv:not(.power)'), tbs = document.querySelectorAll('.tb.move');
     for (let i = 0; i < 4; i++) {
       const mv = this.c.moveAt(l, i).mv; if (!mv) continue; // em Dynamax, o Max Golpe
+      if(this.nomesPP[i]!==mv.name){this.nomesPP[i]=mv.name;mudou=true;}
       const cd = Math.max(0, l.cds[i]), k = cd / (l.ultimaRecarga || this.c.recarga(l, mv) || 1);
       const el = els[i];
+      el?.classList.toggle('sem-pp',!this.c.podePP(l,mv));
       if (el) {
         let n = el.querySelector('.cdn'); if (!n) { n = document.createElement('i'); n.className = 'cdn'; el.appendChild(n); }
         n.textContent = cd > 0.05 ? cd.toFixed(1) : '';
       }
       let tb = null; for (const b of tbs) if (+b.dataset.slot === i) tb = b;
-      if (tb) tb.style.setProperty('--cd', k.toFixed(3));
+      if (tb) {tb.style.setProperty('--cd', k.toFixed(3));tb.classList.toggle('sem-pp',!this.c.podePP(l,mv));}
       if ((this.cdPrev[i] ?? 0) > 0 && cd <= 0) { for (const e of [el, tb]) if (e) { e.classList.remove('ready'); void e.offsetWidth; e.classList.add('ready'); } }
       this.cdPrev[i] = cd;
     }
+    if(mudou)this.g.hudMoves();
   }
 }

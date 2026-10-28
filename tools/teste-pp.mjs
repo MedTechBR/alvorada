@@ -1,0 +1,14 @@
+import assert from'node:assert/strict';
+import{ReservaPP,custoPP,BASICO,PP_MAX}from'../src/combat/pp.js';
+const leve={power:40,cat:'phys'},forte={power:120,cat:'spec'},cura={cat:'status',eff:{heal:.5}};
+assert(custoPP(forte)>custoPP(leve));assert(custoPP(cura)>custoPP(forte));assert.equal(custoPP(BASICO),0);
+assert.equal(custoPP({cat:'phys',eff:{ohko:true}}),100,'Nocaute em um golpe exige a reserva inteira');
+const r=new ReservaPP(),a={},b={};assert.equal(r.ler(a,0),PP_MAX);
+assert(r.gastar(a,forte,0));assert(r.gastar(a,forte,0));assert(!r.gastar(a,forte,0));assert.equal(r.ler(a,0),32);
+assert(r.gastar(a,BASICO,0));assert.equal(r.ler(a,0),32,'Pausa não recupera PP');
+assert.equal(r.ler(b,0),100,'Cada Pokémon possui sua reserva');
+assert.equal(r.ler(a,1),40,'Recuperação do jogador: 8/s');
+assert.equal(r.ler(a,1),40,'Ler a mesma barra duas vezes não recupera PP');
+assert.equal(r.ler(a,20),100,'Nunca ultrapassa o limite');
+assert(r.gastar(b,forte,0,false));assert.equal(r.ler(b,1,false),70,'Adversário recupera menos');
+console.log('PP: custos, reserva compartilhada, limite, pausa, troca e golpe básico OK.');

@@ -139,7 +139,7 @@ export class HudBatalha {
     const st = document.createElement('style'); st.textContent = compacto?CSS.slice(0,CSS.indexOf('#hb .losango')):CSS; document.head.appendChild(st);
     const el = this.el = document.createElement('div'); el.id = 'hb'; el.hidden = true;
     const hp = '<div class="hpl"><div class="bar hp"><span class="gh"></span><i></i><b></b></div></div>';
-    const lado = (k, xp) => `<div class="pn ${k}"><div class="rt"></div><div class="cx"><div class="l1"><span class="nm"></span><span class="lv"></span></div><div class="tg"></div>${hp}${xp ? '<div class="hpl xl"><div class="bar xp"><i></i></div></div>' : ''}<div class="l3"><span class="bolas"></span><span class="tr"></span></div><div class="ps"></div></div></div>`;
+    const lado = (k, xp) => `<div class="pn ${k}"><div class="rt"></div><div class="cx"><div class="l1"><span class="nm"></span><span class="lv"></span></div><div class="tg"></div>${hp}<div class="energia" role="meter" aria-label="PP" aria-valuemin="0" aria-valuemax="100"><small>PP</small><div class="bar pp"><i></i></div></div>${xp ? '<div class="hpl xl"><div class="bar xp"><i></i></div></div>' : ''}<div class="l3"><span class="bolas"></span><span class="tr"></span></div><div class="ps"></div></div></div>`;
     el.innerHTML = compacto ? `<div class="topo">${lado('eu', true)}<div class="meio"><span class="tempo"></span></div>${lado('ele', false)}</div>` : `<div class="flash"></div><div class="wipe"><i></i><i></i></div>
       <div class="topo">${lado('eu', true)}<div class="meio"><span class="vs">VS</span><span class="tempo">0:00</span></div>${lado('ele', false)}</div>
       <div class="intro"><div class="a"><small></small><strong></strong></div><div class="v">VS</div><div class="b"><small></small><strong></strong></div></div>
@@ -150,7 +150,7 @@ export class HudBatalha {
     this.eu = this.#painel('.pn.eu'); this.ele = this.#painel('.pn.ele');
     this.gps = [...el.querySelectorAll('.gp')];
   }
-  #painel(sel) { const p = this.q(sel); return { p, rt: p.querySelector('.rt'), nm: p.querySelector('.nm'), lv: p.querySelector('.lv'), tg: p.querySelector('.tg'), hp: p.querySelector('.hp i'), gh: p.querySelector('.hp .gh'), num: p.querySelector('.hp b'), xp: p.querySelector('.xp i'), ps: p.querySelector('.ps'), bolas: p.querySelector('.bolas'), tr: p.querySelector('.tr') }; }
+  #painel(sel) { const p = this.q(sel); return { p, rt: p.querySelector('.rt'), nm: p.querySelector('.nm'), lv: p.querySelector('.lv'), tg: p.querySelector('.tg'), hp: p.querySelector('.hp i'), gh: p.querySelector('.hp .gh'), num: p.querySelector('.hp b'), pp: p.querySelector('.pp i'), energia:p.querySelector('.energia'), xp: p.querySelector('.xp i'), ps: p.querySelector('.ps'), bolas: p.querySelector('.bolas'), tr: p.querySelector('.tr') }; }
   #set(k, val, f) { if (this.v[k] !== val) { this.v[k] = val; f(val); } }
   // Na arena selvagem o alvo é único; nos duelos a equipe ativa define o adversário do topo.
   // Fora dessas lutas não aparece painel de batalha durante a exploração.
@@ -165,6 +165,7 @@ export class HudBatalha {
   }
   #encher(P, e, key, eu) {
     const m = e.mon, k = m.hp / m.stats.hp;
+    this.#set(key+'pp',Math.floor(this.g.combat.pp(e)),v=>{P.pp.style.width=v+'%';P.energia.setAttribute('aria-valuenow',v);P.energia.title=`PP: ${v} / 100`;});
     this.#set(key + 'pic', m.spriteKey ?? m.dex, (dex) => { P.rt.innerHTML = ''; portraitURL(dex).then((src) => { if (src && this.v[key + 'pic'] === dex) P.rt.innerHTML = `<img src="${src}" alt="">`; }); });
     this.#set(key + 'nm', m.name, (t) => { P.nm.textContent = t; });
     this.#set(key + 'lv', m.level, (t) => { P.lv.textContent = 'Nv ' + t; });

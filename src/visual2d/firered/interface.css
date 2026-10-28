@@ -107,3 +107,27 @@ body.firered.hb-on #menu-btn{visibility:visible}
 body.firered.hb-on #sair-encontro{top:74px;right:12px}
 @media(max-width:600px){body.firered #hb .topo{gap:6px;left:6px;right:56px}body.firered #hb .pn{padding:5px;gap:4px}body.firered #hb .rt{display:none}}
 body.firered #hb .tg,body.firered #hb .l3,body.firered #hb .xl,body.firered #hb .ps,body.firered #hb .meio{display:none!important}
+/* Retratos, equipe e energia legíveis sem cobrir os combatentes. */
+body.firered #hb .topo{display:grid;grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr);gap:8px;align-items:start}
+body.firered #hb .pn{min-width:0;padding:6px 8px;gap:8px;border-radius:10px;background:#142d3ff5;border-color:#52778d;color:#f5f9fc}
+body.firered #hb .rt{display:block;width:46px;height:46px;flex:none;border-radius:7px;background:#e4ecde}
+body.firered #hb .cx,body.firered #hb .ele .cx{display:flex;flex:1;min-width:0;flex-direction:column;align-items:stretch;gap:3px}
+body.firered #hb .l1,body.firered #hb .ele .l1{display:flex;flex-direction:row;align-items:center;max-width:none;justify-content:space-between;gap:6px}
+body.firered #hb .nm{color:#fff;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.firered #hb .lv{color:#c3d8e4;white-space:nowrap;flex:none}
+body.firered #hb .hpl{width:100%;min-height:11px;flex:none}
+body.firered #hb .bar{height:11px;background:#091924;border-color:#628394;border-radius:4px}
+body.firered #hb .bar b{color:#fff;text-shadow:0 1px 2px #000;font-size:8px}
+body.firered #hb .energia{display:flex;align-items:center;gap:4px;height:8px}
+body.firered #hb .energia small{font:700 7px system-ui;color:#91cfff;line-height:8px}
+body.firered #hb .pp{flex:1;height:6px;border:0;border-radius:3px;background:#091924}
+body.firered #hb .pp i{background:linear-gradient(#6ed7ff,#2588e3);transition:width .12s linear}
+body.firered #hb .l3{display:flex!important;justify-content:space-between;align-items:center;gap:5px;height:9px;margin:0}
+body.firered #hb .bolas{display:flex;gap:3px;flex:none}
+body.firered #hb .bolas i{width:7px;height:7px;border-width:1px}
+body.firered #hb .tr{display:block;font:600 8px system-ui;color:#b8cbd7;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-shadow:none}
+body.firered #hb .meio{display:flex!important;align-items:center;justify-content:center;min-width:0;padding:6px 0;background:#142d3fe8;border-radius:7px;color:#fff}
+body.firered #hb .tempo{font:700 10px system-ui;letter-spacing:0}
+body.firered .tb.move.sem-pp,body.firered #moves .mv.sem-pp{opacity:.55}
+body.firered .tq-pp{position:absolute;left:5px;top:4px;font:700 8px system-ui;color:#9ee2ff;text-shadow:0 1px #000}
+@media(max-width:600px){body.firered #hb .topo{grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr);gap:4px}body.firered #hb .rt{width:30px;height:38px}body.firered #hb .nm{font-size:10px}body.firered #hb .pn{gap:4px;padding:5px}body.firered #hb .tr{display:none}}

@@ -1,4 +1,5 @@
 import { MOVES } from '../data/moves.js';
+import { custoPP } from '../combat/pp.js';
 import { TYPE_COLOR } from '../data/types.js';
 import { itemName } from '../data/items.js';
 import { IS_TOUCH } from '../engine/input.js';
@@ -145,9 +146,9 @@ export class Toque {
       }
       b.dataset.acao='';
       const mv = m && (lead ? g.combat.moveAt(lead, i).mv : MOVES[m.moves[i]]);
-      b.setAttribute('aria-label',mv?.name??'Sem golpe');
+      b.setAttribute('aria-label',mv?`${mv.name}, ${custoPP(mv)} PP`:'Sem golpe');
       b.dataset.tem = mv ? '1' : '';
-      b.innerHTML = mv ? `<i class="tq-ic">${ICONE_CAT[mv.cat] ?? ICONES.fisico}</i><b class="tq-cd"></b><span class="tq-nome">${mv.name}</span>` : '';
+      b.innerHTML = mv ? `<i class="tq-ic">${ICONE_CAT[mv.cat] ?? ICONES.fisico}</i><b class="tq-cd"></b><b class="tq-pp">${custoPP(mv)} PP</b><span class="tq-nome">${mv.name}</span>` : '';
       b.style.setProperty('--tc', TYPE_COLOR[mv?.type] ?? '#999');
       b.classList.toggle('max', dmax);
     }
